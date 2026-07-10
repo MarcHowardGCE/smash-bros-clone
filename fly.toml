@@ -1,0 +1,14 @@
+app = "smash-clone"
+primary_region = "ord"
+
+[build]
+  dockerfile = "apps/server/Dockerfile"
+
+[http_service]
+  internal_port = 3001
+  force_https = true
+
+[[vm]]
+  cpu_kind = "shared"
+  cpus = 1
+  memory_mb = 512

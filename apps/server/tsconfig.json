@@ -1,0 +1,14 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "rootDir": "./src",
+    "outDir": "./dist",
+    "composite": false
+  },
+  "references": [
+    { "path": "../../packages/shared" },
+    { "path": "../../packages/engine" }
+  ],
+  "include": ["src"],
+  "exclude": ["node_modules", "dist"]
+}

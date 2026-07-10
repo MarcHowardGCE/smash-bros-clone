@@ -1,0 +1,22 @@
+
+> @smash/client@0.0.1 build /Users/marc.howard/Documents/GitHub/smash-clone/apps/client
+> tsc -p tsconfig.json && vite build
+
+vite v5.4.21 building for production...
+transforming...
+✓ 811 modules transformed.
+rendering chunks...
+computing gzip size...
+dist/index.html                               0.68 kB │ gzip:  0.44 kB
+dist/assets/CanvasPool-9st913ts.js            0.78 kB │ gzip:  0.43 kB
+dist/assets/Filter-C2HIKB2V.js                0.90 kB │ gzip:  0.48 kB
+dist/assets/canvasUtils-hqDVvH3c.js           5.68 kB │ gzip:  1.79 kB
+dist/assets/BufferResource-BHgHcHRO.js       10.61 kB │ gzip:  2.80 kB
+dist/assets/webworkerAll-DXqbIbHb.js         15.81 kB │ gzip:  5.03 kB
+dist/assets/CanvasRenderer-9hZGSVLw.js       17.51 kB │ gzip:  5.85 kB
+dist/assets/WebGPURenderer-BcyelGGU.js       38.92 kB │ gzip: 10.86 kB
+dist/assets/browserAll-gBH4m-iy.js           43.09 kB │ gzip: 11.30 kB
+dist/assets/RenderTargetSystem-DRgWzS58.js   46.81 kB │ gzip: 12.85 kB
+dist/assets/WebGLRenderer-DMvNbu64.js        68.70 kB │ gzip: 18.85 kB
+dist/assets/index-DTQyPo6-.js               326.94 kB │ gzip: 99.77 kB
+✓ built in 1.79s

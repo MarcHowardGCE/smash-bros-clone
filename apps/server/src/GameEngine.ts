@@ -3,7 +3,9 @@ import {
 	applyGravity,
 	applyMovement,
 	checkHitboxCollision,
+	checkLedgeGrab,
 	checkPlatformCollision,
+	DEFAULT_STAGE,
 	FSMController,
 	getMoveData,
 	NO_HIT,
@@ -26,18 +28,6 @@ import {
 } from "@smash/shared";
 
 const DEFAULT_SPAWN = { x: 640, y: MATCH_CONFIG.RESPAWN_PLATFORM_Y };
-const DEFAULT_STAGE_DATA: StageData = {
-	width: STAGE.WIDTH,
-	height: STAGE.HEIGHT,
-	blastTop: STAGE.BLAST_TOP,
-	blastBottom: STAGE.BLAST_BOTTOM,
-	blastLeft: STAGE.BLAST_LEFT,
-	blastRight: STAGE.BLAST_RIGHT,
-	mainPlatform: { id: "main", ...STAGE.MAIN_PLATFORM },
-	platforms: STAGE.PLATFORMS.map((platform) => ({ ...platform })),
-	ledges: STAGE.LEDGES.map((ledge) => ({ ...ledge })),
-	spawnPositions: [...STAGE.SPAWN_POSITIONS],
-};
 // EMPTY_INPUT is used when no real input has arrived for a player (network lag or
 // disconnect). Physics functions require a non-null InputEvent to read bitfields;
 // zeroed bits cause the player to coast to a stop with no movement applied.
@@ -162,18 +152,34 @@ export class GameEngine {
 
 		this.tick += 1;
 		const players = Object.fromEntries(
-			Object.entries(this.state.players).map(([playerId, player]) => {
-				const nextPlayer = this.updatePlayer(
-					playerId as PlayerId,
-					player,
-					inputs.get(playerId as PlayerId) ?? null,
-				);
-				return [playerId, nextPlayer];
-			}),
+			Object.entries(this.state.players).map(([playerId, player]) => [
+				playerId,
+				clonePlayer(player),
+			]),
 		) as Record<PlayerId, PlayerState>;
+
+		for (const playerId of Object.keys(players) as PlayerId[]) {
+			const currentPlayer = players[playerId];
+			if (!currentPlayer) {
+				continue;
+			}
+
+			players[playerId] = this.updatePlayer(
+				playerId,
+				currentPlayer,
+				inputs.get(playerId) ?? null,
+				players,
+			);
+		}
 
 		this.applyHitDetection(players);
 		this.applyKnockouts(players);
+		this.tickLedgeCooldowns();
+
+		const ledgesSnapshot: Record<string, string | null> = {};
+		for (const [id, data] of this.ledgeState) {
+			ledgesSnapshot[id] = data.occupantId;
+		}
 
 		const alivePlayers = Object.values(players).filter(
 			(player) => player.stocks > 0,
@@ -186,7 +192,7 @@ export class GameEngine {
 			players,
 			matchPhase: winnerId ? "result" : "match",
 			winnerId,
-			ledges: this.state.ledges,
+			ledges: ledgesSnapshot,
 		};
 
 		return this.state;
@@ -239,8 +245,9 @@ export class GameEngine {
 		playerId: PlayerId,
 		current: PlayerState,
 		input: InputEvent | null,
+		players: Record<PlayerId, PlayerState>,
 	): PlayerState {
-		const player = clonePlayer(current);
+		let player = clonePlayer(current);
 
 		if (player.stocks <= 0) {
 			return {
@@ -263,6 +270,49 @@ export class GameEngine {
 				vx: 0,
 				vy: 0,
 			};
+		}
+
+		const ledgeEligibleStates: string[] = [
+			PlayerStateEnum.AIRBORNE,
+			PlayerStateEnum.DOUBLE_JUMP,
+		];
+		if (ledgeEligibleStates.includes(player.state)) {
+			const ledge = checkLedgeGrab(player, DEFAULT_STAGE);
+			if (ledge) {
+				const previousOccupantId = this.getLedgeOccupant(ledge.id);
+				const result = this.tryGrabLedge(player.id, ledge.id);
+				if (result === "granted") {
+					player = this.snapPlayerToLedge(player, ledge.id);
+				} else if (
+					result === "trumped" &&
+					previousOccupantId &&
+					players[previousOccupantId as PlayerId]
+				) {
+					const poppedPlayer = players[previousOccupantId as PlayerId];
+					if (!poppedPlayer) {
+						return player;
+					}
+
+					const popVx =
+						ledge.id === "left"
+							? PHYSICS.LEDGE_TRUMP_POP_VX
+							: -PHYSICS.LEDGE_TRUMP_POP_VX;
+					players[previousOccupantId as PlayerId] = {
+						...poppedPlayer,
+						state: PlayerStateEnum.AIRBORNE,
+						stateFrame: 0,
+						ledgeId: null,
+						vx: popVx,
+						vy: PHYSICS.LEDGE_TRUMP_POP_VY,
+						isGrounded: false,
+						isInvincible: true,
+						invincibilityFrames: PHYSICS.LEDGE_TRUMP_INVINCIBILITY_FRAMES,
+						activeHitbox: null,
+						currentMoveId: null,
+					};
+					player = this.snapPlayerToLedge(player, ledge.id);
+				}
+			}
 		}
 
 		const controller = this.fsmControllers.get(playerId);
@@ -344,8 +394,62 @@ export class GameEngine {
 		}
 
 		if (
+			previous.state === PlayerStateEnum.LEDGE_JUMP &&
+			player.state === PlayerStateEnum.AIRBORNE
+		) {
+			nextPlayer = startJump(nextPlayer, false);
+			if (previous.ledgeId) {
+				this.releaseLedge(player.id, previous.ledgeId);
+			}
+			nextPlayer = { ...nextPlayer, ledgeId: null };
+		}
+
+		if (
+			previous.state === PlayerStateEnum.LEDGE_HANG &&
+			player.state === PlayerStateEnum.AIRBORNE
+		) {
+			if (previous.ledgeId) {
+				this.releaseLedge(player.id, previous.ledgeId);
+			}
+			nextPlayer = { ...nextPlayer, ledgeId: null };
+		}
+
+		if (
+			[
+				PlayerStateEnum.LEDGE_CLIMB,
+				PlayerStateEnum.LEDGE_ATTACK,
+				PlayerStateEnum.LEDGE_ROLL,
+			].includes(previous.state as PlayerStateEnum) &&
+			player.state === PlayerStateEnum.IDLE
+		) {
+			if (previous.ledgeId) {
+				this.releaseLedge(player.id, previous.ledgeId);
+			}
+			nextPlayer = {
+				...nextPlayer,
+				ledgeId: null,
+				y: STAGE.MAIN_PLATFORM.y - PHYSICS.HURTBOX_RADIUS,
+				vy: 0,
+				isGrounded: true,
+			};
+		}
+
+		if (
+			previous.state === PlayerStateEnum.LEDGE_HANG &&
+			[
+				PlayerStateEnum.LEDGE_CLIMB,
+				PlayerStateEnum.LEDGE_ATTACK,
+				PlayerStateEnum.LEDGE_ROLL,
+				PlayerStateEnum.LEDGE_JUMP,
+			].includes(player.state as PlayerStateEnum)
+		) {
+			nextPlayer = { ...nextPlayer, ledgeId: previous.ledgeId };
+		}
+
+		if (
 			(player.state === PlayerStateEnum.ATTACK ||
 				player.state === PlayerStateEnum.AIR_ATTACK ||
+				player.state === PlayerStateEnum.LEDGE_ATTACK ||
 				player.state === PlayerStateEnum.GRAB ||
 				player.state === PlayerStateEnum.GRAB_HOLDING) &&
 			previous.state !== player.state
@@ -356,7 +460,7 @@ export class GameEngine {
 			};
 		}
 
-		if (![PlayerStateEnum.ATTACK, PlayerStateEnum.AIR_ATTACK].includes(
+		if (![PlayerStateEnum.ATTACK, PlayerStateEnum.AIR_ATTACK, PlayerStateEnum.LEDGE_ATTACK].includes(
 			player.state as PlayerStateEnum,
 		)) {
 			nextPlayer = {
@@ -421,10 +525,10 @@ export class GameEngine {
 		// the stage floor.
 		const stage: StageData = isHeld(input, INPUT_BITS.DOWN)
 			? {
-					...DEFAULT_STAGE_DATA,
+					...DEFAULT_STAGE,
 					platforms: [],
 				}
-			: DEFAULT_STAGE_DATA;
+			: DEFAULT_STAGE;
 
 		return checkPlatformCollision(
 			applyMovement(applyFastFall(applyGravity(player), input), input),
@@ -462,7 +566,7 @@ export class GameEngine {
 		player: PlayerState,
 		input: InputEvent | null,
 	): PlayerState {
-		if (![PlayerStateEnum.ATTACK, PlayerStateEnum.AIR_ATTACK].includes(
+		if (![PlayerStateEnum.ATTACK, PlayerStateEnum.AIR_ATTACK, PlayerStateEnum.LEDGE_ATTACK].includes(
 			player.state as PlayerStateEnum,
 		)) {
 			return {
@@ -492,12 +596,33 @@ export class GameEngine {
 		};
 	}
 
-	// biome-ignore lint/correctness/noUnusedPrivateClassMembers: Task 13 wires ledge side effects into transition handling.
+	private snapPlayerToLedge(player: PlayerState, ledgeId: string): PlayerState {
+		const ledgeConfig = STAGE.LEDGES.find((ledge) => ledge.id === ledgeId);
+		if (!ledgeConfig) {
+			return player;
+		}
+
+		const hangX = ledgeId === "left" ? ledgeConfig.x + 15 : ledgeConfig.x - 15;
+		const hangY = ledgeConfig.y + 10;
+		return {
+			...player,
+			state: PlayerStateEnum.LEDGE_HANG,
+			stateFrame: 0,
+			ledgeId,
+			x: hangX,
+			y: hangY,
+			vx: 0,
+			vy: 0,
+			isGrounded: false,
+			isInvincible: true,
+			invincibilityFrames: PHYSICS.LEDGE_HANG_INVINCIBILITY_FRAMES,
+		};
+	}
+
 	private getLedgeOccupant(ledgeId: string): string | null {
 		return this.ledgeState.get(ledgeId)?.occupantId ?? null;
 	}
 
-	// biome-ignore lint/correctness/noUnusedPrivateClassMembers: Task 13 calls this when a player enters ledge hang.
 	private tryGrabLedge(
 		playerId: string,
 		ledgeId: string,
@@ -524,7 +649,6 @@ export class GameEngine {
 		return "trumped";
 	}
 
-	// biome-ignore lint/correctness/noUnusedPrivateClassMembers: Task 13 calls this when a player leaves ledge hang.
 	private releaseLedge(playerId: string, ledgeId: string): void {
 		const ledge = this.ledgeState.get(ledgeId);
 		if (!ledge) return;
@@ -534,7 +658,6 @@ export class GameEngine {
 		ledge.cooldowns.set(playerId, PHYSICS.LEDGE_REGRAB_COOLDOWN_FRAMES);
 	}
 
-	// biome-ignore lint/correctness/noUnusedPrivateClassMembers: Task 13 ticks cooldowns from the game loop.
 	private tickLedgeCooldowns(): void {
 		for (const ledge of this.ledgeState.values()) {
 			for (const [playerId, frames] of ledge.cooldowns) {
@@ -557,6 +680,10 @@ export class GameEngine {
 		const wantsToward =
 			(player.facing === 1 && wantsRight) || (player.facing === -1 && wantsLeft);
 		const wantsAway = wantsHorizontal && !wantsToward;
+
+		if (player.state === PlayerStateEnum.LEDGE_ATTACK) {
+			return MoveId.LEDGE_ATTACK;
+		}
 
 		if (player.state === PlayerStateEnum.AIR_ATTACK || !player.isGrounded) {
 			if (wantsSpecial) {
@@ -680,6 +807,10 @@ export class GameEngine {
 	}
 
 	private applyHit(player: PlayerState, hit: typeof NO_HIT): PlayerState {
+		if (player.ledgeId) {
+			this.releaseLedge(player.id, player.ledgeId);
+		}
+
 		return {
 			...player,
 			percent: player.percent + hit.damage,
@@ -689,6 +820,7 @@ export class GameEngine {
 			hitstunFramesRemaining: hit.hitstunFrames,
 			state: PlayerStateEnum.HITSTUN,
 			stateFrame: 0,
+			ledgeId: null,
 			isGrounded: false,
 			activeHitbox: null,
 			currentMoveId: null,
@@ -709,6 +841,10 @@ export class GameEngine {
 		for (const [playerId, player] of Object.entries(players)) {
 			if (!player.isKnockedOut) {
 				continue;
+			}
+
+			if (player.ledgeId) {
+				this.releaseLedge(player.id, player.ledgeId);
 			}
 
 			const remainingStocks = Math.max(0, player.stocks - 1);

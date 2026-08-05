@@ -28,6 +28,20 @@ export class StageRenderer {
     mainPlatform.stroke({ color: COLOR_BLACK, width: STROKE_WIDTH });
     this.container.addChild(mainPlatform);
 
+    // Ledge markers
+    for (const ledge of STAGE.LEDGES) {
+      const marker = new Graphics();
+      const size = 6;
+      marker.moveTo(ledge.x, ledge.y - size);
+      marker.lineTo(ledge.x + size, ledge.y);
+      marker.lineTo(ledge.x, ledge.y + size);
+      marker.lineTo(ledge.x - size, ledge.y);
+      marker.closePath();
+      marker.fill({ color: COLOR_WHITE });
+      marker.stroke({ color: COLOR_BLACK, width: STROKE_WIDTH });
+      this.container.addChild(marker);
+    }
+
     // Soft platforms — lighter visual (semi-transparent white or dashed appearance)
     for (const platform of STAGE.PLATFORMS) {
       const softPlatform = new Graphics();

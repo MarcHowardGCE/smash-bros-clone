@@ -13,7 +13,9 @@ export {
 	applyGravity,
 	applyMovement,
 	applyMovementInput,
+	checkLedgeGrab,
 	checkPlatformCollision,
+	DEFAULT_STAGE,
 	resolveJump,
 	startJump,
 } from "./physics/index.js";

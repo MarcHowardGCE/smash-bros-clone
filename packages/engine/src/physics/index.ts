@@ -7,7 +7,7 @@ import {
 } from "@smash/shared";
 import type { LedgeData, StageData } from "./types.js";
 
-const DEFAULT_STAGE: StageData = {
+export const DEFAULT_STAGE: StageData = {
 	width: STAGE.WIDTH,
 	height: STAGE.HEIGHT,
 	blastTop: STAGE.BLAST_TOP,

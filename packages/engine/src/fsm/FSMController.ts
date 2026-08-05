@@ -87,10 +87,10 @@ export class FSMController {
   }
 
   tick(player: PlayerState, input: InputEvent | null): PlayerState {
-		if (player.state !== this.stateName) {
-			this.stateName = player.state as PlayerStateEnum;
-			this.currentState = this.getState(this.stateName);
-		}
+    if (player.state !== this.stateName) {
+      this.stateName = player.state as PlayerStateEnum;
+      this.currentState = this.getState(this.stateName);
+    }
 
     // HITLAG: zero velocity for both attacker and defender during the freeze window.
     // This is a deliberate Smash Bros game-feel mechanic — the brief shared freeze on

@@ -291,7 +291,7 @@ export class GameEngine {
 			if (ledge) {
 				const previousOccupantId = this.getLedgeOccupant(ledge.id);
 				const result = this.tryGrabLedge(player.id, ledge.id);
-				console.log(`[GameEngine] Player ${player.id} tried to grab ${ledge.id}. Result: ${result}`);
+	
 				if (result === "granted") {
 					player = this.snapPlayerToLedge(player, ledge.id);
 				} else if (

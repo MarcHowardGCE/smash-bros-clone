@@ -315,8 +315,11 @@ async function main() {
 	};
 
 	if (import.meta.env.DEV) {
-		// @ts-ignore — dev-only debug hook for E2E tests
-		window.__DEBUG_GAME_STATE__ = () => gameClient.getLatestSnapshot?.() ?? null;
+		(
+			window as Window & {
+				__DEBUG_GAME_STATE__?: () => ReturnType<GameClient["getLatestSnapshot"]>;
+			}
+		).__DEBUG_GAME_STATE__ = () => gameClient.getLatestSnapshot?.() ?? null;
 	}
 
 	window.addEventListener("beforeunload", () => {
@@ -324,10 +327,12 @@ async function main() {
 		gameClient.disconnect();
 	});
 
-	console.log("[client] initialized. Server:", SERVER_URL);
-	console.log(
-		`[client] Renderer: ${app.renderer.type === 1 ? "WebGL" : "Canvas"}`,
-	);
+	if (import.meta.env.DEV) {
+		console.log("[client] initialized. Server:", SERVER_URL);
+		console.log(
+			`[client] Renderer: ${app.renderer.type === 1 ? "WebGL" : "Canvas"}`,
+		);
+	}
 }
 
 main().catch(console.error);

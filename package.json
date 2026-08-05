@@ -5,13 +5,14 @@
   "scripts": {
     "build": "pnpm -r build",
     "dev": "concurrently \"pnpm -F @smash/client dev\" \"pnpm -F @smash/server dev\"",
-    "test": "pnpm -F @smash/engine test && pnpm -F @smash/client test",
+    "test": "pnpm -F @smash/engine test && pnpm -F @smash/server test && pnpm -F @smash/client test",
     "lint": "pnpm -r lint",
     "start": "node apps/server/dist/index.js",
     "deploy:render": "echo 'Push to GitHub and connect repo to Render.com'",
     "deploy:fly": "fly deploy --config fly.toml"
   },
   "devDependencies": {
+    "@playwright/test": "1.61.1",
     "concurrently": "^8.0.0",
     "playwright": "^1.61.1",
     "typescript": "^5.0.0"

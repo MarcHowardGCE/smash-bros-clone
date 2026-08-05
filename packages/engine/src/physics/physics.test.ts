@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { INPUT_BITS, PHYSICS, STAGE, type InputEvent, type PlayerState } from '@smash/shared';
-import { applyFastFall, applyGravity, applyMovement, applyMovementInput, checkPlatformCollision, startJump } from './index.js';
+import { applyFastFall, applyGravity, applyMovement, applyMovementInput, checkLedgeGrab, checkPlatformCollision, startJump } from './index.js';
 
 function makePlayer(overrides: Partial<PlayerState> = {}): PlayerState {
   return {
@@ -57,6 +57,7 @@ function makeStage() {
     blastRight: STAGE.BLAST_RIGHT,
     mainPlatform: { ...STAGE.MAIN_PLATFORM, id: 'main' },
     platforms: STAGE.PLATFORMS.map((platform) => ({ ...platform })),
+    ledges: STAGE.LEDGES.map((ledge) => ({ ...ledge })),
     spawnPositions: [...STAGE.SPAWN_POSITIONS],
   };
 }
@@ -291,5 +292,55 @@ describe('Physics Engine - applyMovementInput', () => {
     expect(result.x).toBeCloseTo(200 + PHYSICS.AIR_SPEED * 0.15);
     expect(result.y).toBe(STAGE.MAIN_PLATFORM.y - PHYSICS.HURTBOX_RADIUS);
     expect(result.isGrounded).toBe(true);
+  });
+});
+
+describe('Physics Engine - checkLedgeGrab', () => {
+  it('returns left LedgeData when player is near the left ledge', () => {
+    const player = makePlayer({ x: 10, y: 505, isGrounded: false, hitstunFramesRemaining: 0 });
+    const stage = makeStage();
+    const result = checkLedgeGrab(player, stage);
+    expect(result).not.toBeNull();
+    expect(result!.id).toBe('left');
+  });
+
+  it('returns right LedgeData when player is near the right ledge', () => {
+    const player = makePlayer({ x: 1270, y: 505, isGrounded: false, hitstunFramesRemaining: 0 });
+    const stage = makeStage();
+    const result = checkLedgeGrab(player, stage);
+    expect(result).not.toBeNull();
+    expect(result!.id).toBe('right');
+  });
+
+  it('returns null when player is far from all ledges (center stage)', () => {
+    const player = makePlayer({ x: 640, y: 505, isGrounded: false, hitstunFramesRemaining: 0 });
+    const stage = makeStage();
+    expect(checkLedgeGrab(player, stage)).toBeNull();
+  });
+
+  it('returns null when player is grounded', () => {
+    const player = makePlayer({ x: 10, y: 505, isGrounded: true, hitstunFramesRemaining: 0 });
+    const stage = makeStage();
+    expect(checkLedgeGrab(player, stage)).toBeNull();
+  });
+
+  it('returns null when player is in hitstun', () => {
+    const player = makePlayer({ x: 10, y: 505, isGrounded: false, hitstunFramesRemaining: 15 });
+    const stage = makeStage();
+    expect(checkLedgeGrab(player, stage)).toBeNull();
+  });
+
+  it('allows grab when player faces away from ledge (no facing check)', () => {
+    const player = makePlayer({ x: 1270, y: 505, isGrounded: false, hitstunFramesRemaining: 0, facing: -1 });
+    const stage = makeStage();
+    const result = checkLedgeGrab(player, stage);
+    expect(result).not.toBeNull();
+    expect(result!.id).toBe('right');
+  });
+
+  it('returns null when player is outside vertical tolerance', () => {
+    const player = makePlayer({ x: 10, y: 700, isGrounded: false, hitstunFramesRemaining: 0 });
+    const stage = makeStage();
+    expect(checkLedgeGrab(player, stage)).toBeNull();
   });
 });

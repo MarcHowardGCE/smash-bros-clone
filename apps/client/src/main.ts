@@ -314,6 +314,11 @@ async function main() {
 		getSnapshot: () => gameClient.getLatestSnapshot(),
 	};
 
+	if (import.meta.env.DEV) {
+		// @ts-ignore — dev-only debug hook for E2E tests
+		window.__DEBUG_GAME_STATE__ = () => gameClient.getLatestSnapshot?.() ?? null;
+	}
+
 	window.addEventListener("beforeunload", () => {
 		cleanupLocalMode();
 		gameClient.disconnect();

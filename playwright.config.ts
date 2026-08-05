@@ -1,0 +1,14 @@
+import { defineConfig } from '@playwright/test';
+
+export default defineConfig({
+  testDir: './apps/client/e2e',
+  use: {
+    baseURL: 'http://localhost:5173',
+  },
+  webServer: {
+    command: 'just dev',
+    url: 'http://localhost:5173',
+    reuseExistingServer: !process.env.CI,
+    timeout: 30000,
+  },
+});

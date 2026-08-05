@@ -55,6 +55,16 @@ function isPressed(input: InputEvent | null, bit: number): boolean {
 	return Boolean((input?.pressed ?? 0) & bit);
 }
 
+function isLedgeLockedState(state: string): boolean {
+	return [
+		PlayerStateEnum.LEDGE_HANG,
+		PlayerStateEnum.LEDGE_CLIMB,
+		PlayerStateEnum.LEDGE_ATTACK,
+		PlayerStateEnum.LEDGE_ROLL,
+		PlayerStateEnum.LEDGE_JUMP,
+	].includes(state as PlayerStateEnum);
+}
+
 export interface GameEngineOptions {
 	playerIds: PlayerId[];
 }
@@ -281,6 +291,7 @@ export class GameEngine {
 			if (ledge) {
 				const previousOccupantId = this.getLedgeOccupant(ledge.id);
 				const result = this.tryGrabLedge(player.id, ledge.id);
+				console.log(`[GameEngine] Player ${player.id} tried to grab ${ledge.id}. Result: ${result}`);
 				if (result === "granted") {
 					player = this.snapPlayerToLedge(player, ledge.id);
 				} else if (
@@ -323,14 +334,28 @@ export class GameEngine {
 		const beforeTick = clonePlayer(player);
 		let nextPlayer = controller.tick(player, input);
 		nextPlayer = this.applyStateTransitions(beforeTick, nextPlayer, input);
+		const gainedInvincibilityThisTick =
+			!current.isInvincible &&
+			nextPlayer.isInvincible &&
+			nextPlayer.invincibilityFrames > current.invincibilityFrames;
+		const droppedFromLedgeThisTick =
+			beforeTick.state === PlayerStateEnum.LEDGE_HANG &&
+			nextPlayer.state === PlayerStateEnum.AIRBORNE &&
+			isPressed(input, INPUT_BITS.DOWN);
 
 		if (nextPlayer.hitlagFramesRemaining > 0) {
 			return this.withHitboxState(nextPlayer, input);
 		}
 
-		nextPlayer = this.applyPhysicsToPlayer(nextPlayer, input);
+		nextPlayer = this.applyPhysicsToPlayer(
+			nextPlayer,
+			input,
+			droppedFromLedgeThisTick,
+		);
 		nextPlayer = this.applyFacing(nextPlayer, input);
-		nextPlayer = this.updateInvincibility(nextPlayer);
+		if (!gainedInvincibilityThisTick) {
+			nextPlayer = this.updateInvincibility(nextPlayer);
+		}
 		nextPlayer = this.withHitboxState(nextPlayer, input);
 
 		if (nextPlayer.state === PlayerStateEnum.SHIELD) {
@@ -483,6 +508,7 @@ export class GameEngine {
 	private applyPhysicsToPlayer(
 		player: PlayerState,
 		input: InputEvent | null,
+		preventImmediateFastFall = false,
 	): PlayerState {
 		const effectiveInput = input ?? {
 			...EMPTY_INPUT,
@@ -490,6 +516,10 @@ export class GameEngine {
 			tick: this.tick,
 		};
 		let nextPlayer = player;
+
+		if (isLedgeLockedState(player.state)) {
+			return nextPlayer;
+		}
 
 		if (player.state === PlayerStateEnum.JUMPSQUAT) {
 			nextPlayer = {
@@ -501,7 +531,12 @@ export class GameEngine {
 			player.state !== PlayerStateEnum.ROLL &&
 			player.state !== PlayerStateEnum.SPOT_DODGE
 		) {
-			nextPlayer = this.applyMovementPipeline(nextPlayer, effectiveInput);
+			nextPlayer = preventImmediateFastFall
+				? checkPlatformCollision(
+						applyMovement(applyGravity(nextPlayer), effectiveInput),
+						DEFAULT_STAGE,
+				  )
+				: this.applyMovementPipeline(nextPlayer, effectiveInput);
 		}
 
 		if (nextPlayer.hitstunFramesRemaining > 0) {

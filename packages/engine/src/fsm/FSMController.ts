@@ -111,13 +111,27 @@ export class FSMController {
       isGrounded: player.isGrounded,
     };
 
-    const transition = this.currentState.update(ctx, player.stateFrame);
+    let transition = this.currentState.update(ctx, player.stateFrame);
 
     // stateFrame advances here — before any transition is applied. This is intentional:
     // the current state's update() already ran against the current stateFrame value,
     // so the incremented count correctly represents "frames spent in this state so far"
     // at the moment the transition fires. applyTransition() will reset it to 0 for
     // the incoming state.
+    
+    // Force drop from grounded states if we walked off an edge
+    const groundedStates = [
+      PlayerStateEnum.IDLE,
+      PlayerStateEnum.WALK,
+      PlayerStateEnum.RUN,
+      PlayerStateEnum.JUMPSQUAT,
+      PlayerStateEnum.SHIELD,
+      PlayerStateEnum.ATTACK,
+    ];
+    if (!player.isGrounded && groundedStates.includes(player.state as PlayerStateEnum) && !transition) {
+      transition = { nextState: PlayerStateEnum.AIRBORNE };
+    }
+
     let nextPlayer: PlayerState = {
       ...player,
       stateFrame: player.stateFrame + 1,

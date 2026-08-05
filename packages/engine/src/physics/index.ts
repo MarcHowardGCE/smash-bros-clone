@@ -230,6 +230,22 @@ export function checkPlatformCollision(
 		};
 	}
 
+	if (player.isGrounded) {
+		const onMain =
+			isWithinPlatformBounds(player.x, stage.mainPlatform) &&
+			Math.abs(player.y - (stage.mainPlatform.y - PHYSICS.HURTBOX_RADIUS)) <= 1;
+
+		const onSoft = stage.platforms.some(
+			(p) =>
+				isWithinPlatformBounds(player.x, p) &&
+				Math.abs(player.y - (p.y - PHYSICS.HURTBOX_RADIUS)) <= 1,
+		);
+
+		if (!onMain && !onSoft) {
+			player = { ...player, isGrounded: false };
+		}
+	}
+
 	if (player.vy < 0) {
 		return player;
 	}

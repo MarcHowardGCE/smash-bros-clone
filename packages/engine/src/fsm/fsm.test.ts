@@ -203,3 +203,182 @@ describe('FSM - Hitlag', () => {
     expect(player.stateFrame).toBe(6);
   });
 });
+
+describe('FSM - LedgeHang transitions', () => {
+  it('LedgeHang → LedgeJump on JUMP pressed', () => {
+    const controller = new FSMController(PlayerStateEnum.LEDGE_HANG);
+    const result = controller.tick(
+      makePlayer({ state: PlayerStateEnum.LEDGE_HANG, isGrounded: false }),
+      makeInput(INPUT_BITS.JUMP, 0),
+    );
+
+    expect(result.state).toBe(PlayerStateEnum.LEDGE_JUMP);
+    expect(result.stateFrame).toBe(0);
+    expect(controller.getCurrentStateName()).toBe(PlayerStateEnum.LEDGE_JUMP);
+  });
+
+  it('LedgeHang → LedgeAttack on ATTACK pressed', () => {
+    const controller = new FSMController(PlayerStateEnum.LEDGE_HANG);
+    const result = controller.tick(
+      makePlayer({ state: PlayerStateEnum.LEDGE_HANG, isGrounded: false }),
+      makeInput(INPUT_BITS.ATTACK, 0),
+    );
+
+    expect(result.state).toBe(PlayerStateEnum.LEDGE_ATTACK);
+  });
+
+  it('LedgeHang → LedgeRoll on SHIELD pressed', () => {
+    const controller = new FSMController(PlayerStateEnum.LEDGE_HANG);
+    const result = controller.tick(
+      makePlayer({ state: PlayerStateEnum.LEDGE_HANG, isGrounded: false }),
+      makeInput(INPUT_BITS.SHIELD, 0),
+    );
+
+    expect(result.state).toBe(PlayerStateEnum.LEDGE_ROLL);
+  });
+
+  it('LedgeHang → Airborne on DOWN pressed (drop)', () => {
+    const controller = new FSMController(PlayerStateEnum.LEDGE_HANG);
+    const result = controller.tick(
+      makePlayer({ state: PlayerStateEnum.LEDGE_HANG, isGrounded: false }),
+      makeInput(INPUT_BITS.DOWN, 0),
+    );
+
+    expect(result.state).toBe(PlayerStateEnum.AIRBORNE);
+  });
+
+  it('LedgeHang → LedgeClimb on LEFT held', () => {
+    const controller = new FSMController(PlayerStateEnum.LEDGE_HANG);
+    const result = controller.tick(
+      makePlayer({ state: PlayerStateEnum.LEDGE_HANG, isGrounded: false }),
+      makeInput(0, INPUT_BITS.LEFT),
+    );
+
+    expect(result.state).toBe(PlayerStateEnum.LEDGE_CLIMB);
+  });
+
+  it('LedgeHang stays LedgeHang with no input', () => {
+    const controller = new FSMController(PlayerStateEnum.LEDGE_HANG);
+    const result = controller.tick(
+      makePlayer({ state: PlayerStateEnum.LEDGE_HANG, isGrounded: false }),
+      makeInput(),
+    );
+
+    expect(result.state).toBe(PlayerStateEnum.LEDGE_HANG);
+    expect(result.stateFrame).toBe(1);
+  });
+});
+
+describe('FSM - LedgeClimb timing', () => {
+  it(`stays LedgeClimb at frame ${PHYSICS.LEDGE_CLIMB_FRAMES - 2}`, () => {
+    const controller = new FSMController(PlayerStateEnum.LEDGE_CLIMB);
+    const result = controller.tick(
+      makePlayer({ state: PlayerStateEnum.LEDGE_CLIMB, stateFrame: PHYSICS.LEDGE_CLIMB_FRAMES - 2 }),
+      makeInput(),
+    );
+
+    expect(result.state).toBe(PlayerStateEnum.LEDGE_CLIMB);
+  });
+
+  it(`transitions to Idle after exactly ${PHYSICS.LEDGE_CLIMB_FRAMES} frames`, () => {
+    const controller = new FSMController(PlayerStateEnum.LEDGE_CLIMB);
+    const result = controller.tick(
+      makePlayer({ state: PlayerStateEnum.LEDGE_CLIMB, stateFrame: PHYSICS.LEDGE_CLIMB_FRAMES - 1 }),
+      makeInput(),
+    );
+
+    expect(result.state).toBe(PlayerStateEnum.IDLE);
+    expect(result.stateFrame).toBe(0);
+  });
+});
+
+describe('FSM - LedgeJump timing', () => {
+  it(`stays LedgeJump at frame ${PHYSICS.LEDGE_JUMP_FRAMES - 2}`, () => {
+    const controller = new FSMController(PlayerStateEnum.LEDGE_JUMP);
+    const result = controller.tick(
+      makePlayer({ state: PlayerStateEnum.LEDGE_JUMP, stateFrame: PHYSICS.LEDGE_JUMP_FRAMES - 2 }),
+      makeInput(),
+    );
+
+    expect(result.state).toBe(PlayerStateEnum.LEDGE_JUMP);
+  });
+
+  it(`transitions to Airborne after exactly ${PHYSICS.LEDGE_JUMP_FRAMES} frames`, () => {
+    const controller = new FSMController(PlayerStateEnum.LEDGE_JUMP);
+    const result = controller.tick(
+      makePlayer({ state: PlayerStateEnum.LEDGE_JUMP, stateFrame: PHYSICS.LEDGE_JUMP_FRAMES - 1 }),
+      makeInput(),
+    );
+
+    expect(result.state).toBe(PlayerStateEnum.AIRBORNE);
+    expect(result.stateFrame).toBe(0);
+  });
+});
+
+describe('FSM - LedgeAttack timing', () => {
+  it(`stays LedgeAttack at frame ${PHYSICS.LEDGE_ATTACK_FRAMES - 2}`, () => {
+    const controller = new FSMController(PlayerStateEnum.LEDGE_ATTACK);
+    const result = controller.tick(
+      makePlayer({ state: PlayerStateEnum.LEDGE_ATTACK, stateFrame: PHYSICS.LEDGE_ATTACK_FRAMES - 2 }),
+      makeInput(),
+    );
+
+    expect(result.state).toBe(PlayerStateEnum.LEDGE_ATTACK);
+  });
+
+  it(`transitions to Idle after exactly ${PHYSICS.LEDGE_ATTACK_FRAMES} frames`, () => {
+    const controller = new FSMController(PlayerStateEnum.LEDGE_ATTACK);
+    const result = controller.tick(
+      makePlayer({ state: PlayerStateEnum.LEDGE_ATTACK, stateFrame: PHYSICS.LEDGE_ATTACK_FRAMES - 1 }),
+      makeInput(),
+    );
+
+    expect(result.state).toBe(PlayerStateEnum.IDLE);
+    expect(result.stateFrame).toBe(0);
+  });
+});
+
+describe('FSM - LedgeRoll timing', () => {
+  it(`stays LedgeRoll at frame ${PHYSICS.LEDGE_ROLL_FRAMES - 2}`, () => {
+    const controller = new FSMController(PlayerStateEnum.LEDGE_ROLL);
+    const result = controller.tick(
+      makePlayer({ state: PlayerStateEnum.LEDGE_ROLL, stateFrame: PHYSICS.LEDGE_ROLL_FRAMES - 2 }),
+      makeInput(),
+    );
+
+    expect(result.state).toBe(PlayerStateEnum.LEDGE_ROLL);
+  });
+
+  it(`transitions to Idle after exactly ${PHYSICS.LEDGE_ROLL_FRAMES} frames`, () => {
+    const controller = new FSMController(PlayerStateEnum.LEDGE_ROLL);
+    const result = controller.tick(
+      makePlayer({ state: PlayerStateEnum.LEDGE_ROLL, stateFrame: PHYSICS.LEDGE_ROLL_FRAMES - 1 }),
+      makeInput(),
+    );
+
+    expect(result.state).toBe(PlayerStateEnum.IDLE);
+    expect(result.stateFrame).toBe(0);
+  });
+});
+
+describe('FSM - Registry completeness (ledge states)', () => {
+  it('instantiates FSMController with LEDGE_HANG without throwing', () => {
+    expect(() => new FSMController(PlayerStateEnum.LEDGE_HANG)).not.toThrow();
+  });
+
+  it('instantiates FSMController with LEDGE_CLIMB without throwing', () => {
+    expect(() => new FSMController(PlayerStateEnum.LEDGE_CLIMB)).not.toThrow();
+  });
+
+  it('instantiates FSMController with LEDGE_JUMP without throwing', () => {
+    expect(() => new FSMController(PlayerStateEnum.LEDGE_JUMP)).not.toThrow();
+  });
+
+  it('instantiates FSMController with LEDGE_ATTACK without throwing', () => {
+    expect(() => new FSMController(PlayerStateEnum.LEDGE_ATTACK)).not.toThrow();
+  });
+
+  it('instantiates FSMController with LEDGE_ROLL without throwing', () => {
+    expect(() => new FSMController(PlayerStateEnum.LEDGE_ROLL)).not.toThrow();
+  });
+});

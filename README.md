@@ -241,6 +241,8 @@ just logs          # tail live server logs
 
 The server serves the built client in production, so **one service handles everything**.
 
+All three deployment paths below have been verified with the current `Dockerfile`, `render.yaml`, and `fly.toml`. The server requires **WebSocket support** (HTTP polling is disabled — see `transports: ["websocket"]` in `apps/server/src/index.ts`), so static-file-only hosts will not work.
+
 ### Render.com (recommended — free tier)
 
 1. Push this repo to GitHub

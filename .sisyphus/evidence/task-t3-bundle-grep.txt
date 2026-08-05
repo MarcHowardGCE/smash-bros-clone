@@ -1,3 +1,0 @@
-CLEAN - no server-only code (MatchSession, RoomManager, httpServer, socket.io Server) found in client bundle
-Patterns checked: MatchSession, RoomManager, httpServer, socket.io.*Server
-Counts: 0

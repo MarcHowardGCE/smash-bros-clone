@@ -13,6 +13,10 @@ just play
 
 That's it. Your browser opens automatically. Share the room URL with others to play.
 
+### What's next?
+
+The engine and netcode are production-quality, but the game is still a prototype. See [**ROADMAP.md**](./ROADMAP.md) for a detailed gap analysis covering visuals, audio, input, engine wiring, backend hardening, content, and meta-game features — plus a recommended first milestone to bridge the gap from prototype to polished game.
+
 ---
 
 ## Requirements

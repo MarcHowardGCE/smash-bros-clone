@@ -7,6 +7,12 @@ export interface PlatformData {
   solid: boolean;
 }
 
+export interface LedgeData {
+  id: string;
+  x: number;
+  y: number;
+}
+
 export interface StageData {
   width: number;
   height: number;
@@ -16,5 +22,6 @@ export interface StageData {
   blastRight: number;
   mainPlatform: PlatformData;
   platforms: PlatformData[];
+  ledges: LedgeData[];
   spawnPositions: Array<{ x: number; y: number }>;
 }

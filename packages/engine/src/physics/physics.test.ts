@@ -27,6 +27,7 @@ function makePlayer(overrides: Partial<PlayerState> = {}): PlayerState {
     shieldHealth: 100,
     isGrabbing: false,
     grabbedPlayerId: null,
+    ledgeId: null,
     activeHitbox: null,
     currentMoveId: null,
     respawnTimer: 0,

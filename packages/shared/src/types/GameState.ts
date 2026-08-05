@@ -48,6 +48,7 @@ export interface PlayerState {
   shieldHealth: number;
   isGrabbing: boolean;
   grabbedPlayerId: PlayerId | null;
+  ledgeId: string | null;
   activeHitbox: HitboxData | null;
   currentMoveId: string | null; // MoveId value
   respawnTimer: number;
@@ -58,6 +59,7 @@ export interface GameState {
   players: Record<PlayerId, PlayerState>;
   matchPhase: 'lobby' | 'countdown' | 'match' | 'result';
   winnerId: PlayerId | null;
+  ledges: Record<string, string | null>;
 }
 
 export interface StateSnapshot {
@@ -67,4 +69,5 @@ export interface StateSnapshot {
   players: Record<PlayerId, PlayerState>;
   matchPhase: 'lobby' | 'countdown' | 'match' | 'result';
   winnerId: PlayerId | null;
+  ledges: Record<string, string | null>;
 }

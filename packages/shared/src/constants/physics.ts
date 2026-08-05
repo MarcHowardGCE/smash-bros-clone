@@ -18,6 +18,20 @@ export const PHYSICS = {
   SHIELD_DRAIN_PER_FRAME: 0.4,      // HP lost per frame while shielding (~250 frames before breaking)
   SHIELD_REGEN_PER_FRAME: 0.2,      // HP gained per frame when not shielding (slower than drain by design)
   SHIELD_BREAK_STUN_FRAMES: 150,    // ~2.5 seconds at 60 Hz; long enough to guarantee a punish
+  LEDGE_GRAB_RADIUS: 50,            // px — proximity radius for hurtbox-to-ledge-point circleOverlap check
+  LEDGE_GRAB_VERTICAL_TOLERANCE: 40, // px — max vertical distance above/below ledge y where grab is valid
+  LEDGE_HANG_INVINCIBILITY_FRAMES: 45, // frames of invincibility granted on ledge grab (flat, not percent-based)
+  LEDGE_REGRAB_COOLDOWN_FRAMES: 30, // frames before same player can regrab same ledge after dropping (~0.5s)
+  LEDGE_CLIMB_FRAMES: 40,           // total animation/lock frames for climb getup
+  LEDGE_JUMP_FRAMES: 12,            // frames before ledge jump becomes airborne-controllable
+  LEDGE_ATTACK_FRAMES: 60,          // total animation frames for ledge attack getup
+  LEDGE_ATTACK_HITBOX_START_FRAME: 20, // frame hitbox becomes active during ledge attack
+  LEDGE_ATTACK_HITBOX_END_FRAME: 27, // frame hitbox deactivates during ledge attack
+  LEDGE_ROLL_FRAMES: 45,            // total animation frames for roll getup
+  LEDGE_DROP_FRAMES: 19,            // frames of helpless drop before normal airborne control resumes (unused FSM, informational)
+  LEDGE_TRUMP_POP_VX: 3,            // horizontal speed applied to a trumped player (× outward direction)
+  LEDGE_TRUMP_POP_VY: -6,           // upward velocity applied to a trumped player (negative = upward)
+  LEDGE_TRUMP_INVINCIBILITY_FRAMES: 20, // brief invincibility grace period for the popped player
 } as const;
 
 export type Physics = typeof PHYSICS;

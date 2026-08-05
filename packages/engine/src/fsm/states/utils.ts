@@ -34,6 +34,7 @@ const MOVE_TOTAL_FRAMES: Partial<Record<MoveId, number>> = {
   [MoveId.BACK_THROW]: 28,
   [MoveId.UP_THROW]: 30,
   [MoveId.DOWN_THROW]: 30,
+  [MoveId.LEDGE_ATTACK]: 60,
 };
 
 export abstract class BaseState implements IFSMState {

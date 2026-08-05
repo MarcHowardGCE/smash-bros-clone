@@ -35,6 +35,7 @@ const DEFAULT_STAGE_DATA: StageData = {
 	blastRight: STAGE.BLAST_RIGHT,
 	mainPlatform: { id: "main", ...STAGE.MAIN_PLATFORM },
 	platforms: STAGE.PLATFORMS.map((platform) => ({ ...platform })),
+	ledges: STAGE.LEDGES.map((ledge) => ({ ...ledge })),
 	spawnPositions: [...STAGE.SPAWN_POSITIONS],
 };
 // EMPTY_INPUT is used when no real input has arrived for a player (network lag or
@@ -97,34 +98,35 @@ export class GameEngine {
 		const players = Object.fromEntries(
 			options.playerIds.map((id, index) => {
 				const spawn = STAGE.SPAWN_POSITIONS[index] ?? DEFAULT_SPAWN;
-				const player: PlayerState = {
-					id,
-					slotIndex: index,
-					x: spawn.x,
-					y: spawn.y,
-					vx: 0,
-					vy: 0,
-					facing: index % 2 === 0 ? 1 : -1,
-					state: PlayerStateEnum.AIRBORNE,
-					stateFrame: 0,
-					hitlagFramesRemaining: 0,
-					hitstunFramesRemaining: 0,
-					percent: 0,
-					stocks: MATCH_CONFIG.STOCKS,
-					isGrounded: false,
-					isKnockedOut: false,
-					hasDoubleJump: true,
-					isFastFalling: false,
-					isInvincible: false,
-					invincibilityFrames: 0,
-					isShielding: false,
-					shieldHealth: PHYSICS.SHIELD_MAX_HEALTH,
-					isGrabbing: false,
-					grabbedPlayerId: null,
-					activeHitbox: null,
-					currentMoveId: null,
-					respawnTimer: 0,
-				};
+			const player: PlayerState = {
+				id,
+				slotIndex: index,
+				x: spawn.x,
+				y: spawn.y,
+				vx: 0,
+				vy: 0,
+				facing: index % 2 === 0 ? 1 : -1,
+				state: PlayerStateEnum.AIRBORNE,
+				stateFrame: 0,
+				hitlagFramesRemaining: 0,
+				hitstunFramesRemaining: 0,
+				percent: 0,
+				stocks: MATCH_CONFIG.STOCKS,
+				isGrounded: false,
+				isKnockedOut: false,
+				hasDoubleJump: true,
+				isFastFalling: false,
+				isInvincible: false,
+				invincibilityFrames: 0,
+				isShielding: false,
+				shieldHealth: PHYSICS.SHIELD_MAX_HEALTH,
+				isGrabbing: false,
+				grabbedPlayerId: null,
+				ledgeId: null,
+				activeHitbox: null,
+				currentMoveId: null,
+				respawnTimer: 0,
+			};
 
 				this.fsmControllers.set(
 					id,
@@ -139,6 +141,7 @@ export class GameEngine {
 			players,
 			matchPhase: "match",
 			winnerId: null,
+			ledges: {},
 		};
 	}
 
@@ -173,6 +176,7 @@ export class GameEngine {
 			players,
 			matchPhase: winnerId ? "result" : "match",
 			winnerId,
+			ledges: this.state.ledges,
 		};
 
 		return this.state;
@@ -189,6 +193,7 @@ export class GameEngine {
 			players: this.state.players,
 			matchPhase: this.state.matchPhase,
 			winnerId: this.state.winnerId,
+			ledges: this.state.ledges,
 		};
 	}
 

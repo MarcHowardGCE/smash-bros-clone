@@ -15,6 +15,7 @@ import {
   MOVE_GRAB, MOVE_PUMMEL,
   MOVE_FORWARD_THROW, MOVE_BACK_THROW, MOVE_UP_THROW, MOVE_DOWN_THROW,
 } from './grab.js';
+import { MOVE_LEDGE_ATTACK } from './ledge.js';
 
 const MOVE_REGISTRY: ReadonlyMap<MoveId, MoveData> = new Map([
   [MoveId.JAB, MOVE_JAB],
@@ -39,6 +40,7 @@ const MOVE_REGISTRY: ReadonlyMap<MoveId, MoveData> = new Map([
   [MoveId.BACK_THROW, MOVE_BACK_THROW],
   [MoveId.UP_THROW, MOVE_UP_THROW],
   [MoveId.DOWN_THROW, MOVE_DOWN_THROW],
+  [MoveId.LEDGE_ATTACK, MOVE_LEDGE_ATTACK],
 ]);
 
 export function getMoveData(id: MoveId): MoveData {

@@ -13,6 +13,7 @@ const DEFAULT_STAGE: StageData = {
     ...STAGE.MAIN_PLATFORM,
   },
   platforms: STAGE.PLATFORMS.map((platform) => ({ ...platform })),
+  ledges: STAGE.LEDGES.map((ledge) => ({ ...ledge })),
   spawnPositions: [...STAGE.SPAWN_POSITIONS],
 };
 

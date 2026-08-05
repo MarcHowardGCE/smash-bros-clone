@@ -23,6 +23,7 @@ export enum MoveId {
   BACK_THROW = 'BACK_THROW',
   UP_THROW = 'UP_THROW',
   DOWN_THROW = 'DOWN_THROW',
+  LEDGE_ATTACK = 'LEDGE_ATTACK',
 }
 
 export interface MoveData {

@@ -36,6 +36,10 @@ export const STAGE = {
     { x: 640, y: 300 },
     { x: 640, y: 450 },
   ],
+  LEDGES: [
+    { id: 'left', x: 0, y: 500 },
+    { id: 'right', x: 1280, y: 500 },
+  ],
 } as const;
 
 export type Stage = typeof STAGE;

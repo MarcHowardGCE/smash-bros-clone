@@ -92,6 +92,10 @@ export interface GameEngineOptions {
 export class GameEngine {
 	private state: GameState;
 	private readonly fsmControllers = new Map<PlayerId, FSMController>();
+	private ledgeState: Map<
+		string,
+		{ occupantId: string | null; cooldowns: Map<string, number> }
+	>;
 	private tick = 0;
 
 	constructor(options: GameEngineOptions) {
@@ -143,6 +147,12 @@ export class GameEngine {
 			winnerId: null,
 			ledges: {},
 		};
+		this.ledgeState = new Map(
+			STAGE.LEDGES.map((ledge) => [
+				ledge.id,
+				{ occupantId: null, cooldowns: new Map<string, number>() },
+			]),
+		);
 	}
 
 	tickGame(inputs: Map<PlayerId, InputEvent | null>): GameState {
@@ -480,6 +490,59 @@ export class GameEngine {
 			currentMoveId: move.id,
 			activeHitbox,
 		};
+	}
+
+	// biome-ignore lint/correctness/noUnusedPrivateClassMembers: Task 13 wires ledge side effects into transition handling.
+	private getLedgeOccupant(ledgeId: string): string | null {
+		return this.ledgeState.get(ledgeId)?.occupantId ?? null;
+	}
+
+	// biome-ignore lint/correctness/noUnusedPrivateClassMembers: Task 13 calls this when a player enters ledge hang.
+	private tryGrabLedge(
+		playerId: string,
+		ledgeId: string,
+	): "granted" | "trumped" | "denied" {
+		const ledge = this.ledgeState.get(ledgeId);
+		if (!ledge) return "denied";
+
+		const cooldown = ledge.cooldowns.get(playerId) ?? 0;
+		if (cooldown > 0) return "denied";
+
+		if (!ledge.occupantId) {
+			ledge.occupantId = playerId;
+			return "granted";
+		}
+
+		if (ledge.occupantId === playerId) return "denied";
+
+		const previousOccupantId = ledge.occupantId;
+		ledge.occupantId = playerId;
+		ledge.cooldowns.set(
+			previousOccupantId,
+			PHYSICS.LEDGE_REGRAB_COOLDOWN_FRAMES,
+		);
+		return "trumped";
+	}
+
+	// biome-ignore lint/correctness/noUnusedPrivateClassMembers: Task 13 calls this when a player leaves ledge hang.
+	private releaseLedge(playerId: string, ledgeId: string): void {
+		const ledge = this.ledgeState.get(ledgeId);
+		if (!ledge) return;
+		if (ledge.occupantId === playerId) {
+			ledge.occupantId = null;
+		}
+		ledge.cooldowns.set(playerId, PHYSICS.LEDGE_REGRAB_COOLDOWN_FRAMES);
+	}
+
+	// biome-ignore lint/correctness/noUnusedPrivateClassMembers: Task 13 ticks cooldowns from the game loop.
+	private tickLedgeCooldowns(): void {
+		for (const ledge of this.ledgeState.values()) {
+			for (const [playerId, frames] of ledge.cooldowns) {
+				if (frames > 0) {
+					ledge.cooldowns.set(playerId, frames - 1);
+				}
+			}
+		}
 	}
 
 	private selectMoveId(player: PlayerState, input: InputEvent | null): MoveId {

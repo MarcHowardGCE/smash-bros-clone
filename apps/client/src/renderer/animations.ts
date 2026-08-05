@@ -78,6 +78,41 @@ export const ANIMATIONS: Record<string, Animation> = {
   GRAB_HOLDING: [
     { leftArmAngle: 0.8, rightArmAngle: -0.8, leftLegAngle: 0.2, rightLegAngle: -0.2, bodyScaleX: 1, bodyScaleY: 1, headOffsetX: 0, headOffsetY: 0 },
   ],
+  // Ledge states
+  LEDGE_HANG: [
+    // Arms raised in gripping pose, body slightly lowered
+    { leftArmAngle: -2.0, rightArmAngle: 2.0, leftLegAngle: 0.3, rightLegAngle: -0.3, bodyScaleX: 0.95, bodyScaleY: 0.9, headOffsetX: 0, headOffsetY: 5 },
+  ],
+  LEDGE_CLIMB: [
+    // Start: arms raised, body low (like hang)
+    { leftArmAngle: -2.0, rightArmAngle: 2.0, leftLegAngle: 0.3, rightLegAngle: -0.3, bodyScaleX: 0.95, bodyScaleY: 0.9, headOffsetX: 0, headOffsetY: 5 },
+    // Mid: pulling up, arms lowering
+    { leftArmAngle: -1.0, rightArmAngle: 1.0, leftLegAngle: 0.5, rightLegAngle: -0.5, bodyScaleX: 1.0, bodyScaleY: 0.95, headOffsetX: 0, headOffsetY: 2 },
+    // End: upright, transitioning to IDLE
+    DEFAULT_POSE,
+  ],
+  LEDGE_JUMP: [
+    // Crouched launch: arms pushing down, legs extending
+    { leftArmAngle: 0.5, rightArmAngle: -0.5, leftLegAngle: 0.6, rightLegAngle: -0.6, bodyScaleX: 1.05, bodyScaleY: 0.85, headOffsetX: 0, headOffsetY: 4 },
+    // Extending upward
+    { leftArmAngle: -0.8, rightArmAngle: 0.8, leftLegAngle: -0.3, rightLegAngle: 0.3, bodyScaleX: 1, bodyScaleY: 1.05, headOffsetX: 0, headOffsetY: -3 },
+  ],
+  LEDGE_ATTACK: [
+    // Wind-up: crouched
+    { leftArmAngle: -0.3, rightArmAngle: 0.3, leftLegAngle: 0.4, rightLegAngle: -0.4, bodyScaleX: 0.95, bodyScaleY: 0.9, headOffsetX: 0, headOffsetY: 3 },
+    // Active: arm extended forward aggressively
+    { leftArmAngle: -0.3, rightArmAngle: 1.6, leftLegAngle: -0.1, rightLegAngle: 0.1, bodyScaleX: 1.05, bodyScaleY: 1, headOffsetX: 6, headOffsetY: 0 },
+    // Recovery: back to neutral
+    DEFAULT_POSE,
+  ],
+  LEDGE_ROLL: [
+    // Start: body extended from ledge, arms tucked
+    DEFAULT_POSE,
+    // Mid: rolling/tucked position
+    { leftArmAngle: 0.8, rightArmAngle: 0.8, leftLegAngle: 0.8, rightLegAngle: 0.8, bodyScaleX: 0.8, bodyScaleY: 0.8, headOffsetX: 0, headOffsetY: 0 },
+    // End: upright
+    DEFAULT_POSE,
+  ],
 };
 
 export function getAnimationPose(stateName: string, stateFrame: number): JointPose {

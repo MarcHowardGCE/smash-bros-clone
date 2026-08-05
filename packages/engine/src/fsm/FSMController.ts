@@ -16,6 +16,11 @@ import { RunState } from './states/RunState.js';
 import { ShieldState } from './states/ShieldState.js';
 import { SpotDodgeState } from './states/SpotDodgeState.js';
 import { WalkState } from './states/WalkState.js';
+import { LedgeHangState } from './states/LedgeHangState.js';
+import { LedgeClimbState } from './states/LedgeClimbState.js';
+import { LedgeJumpState } from './states/LedgeJumpState.js';
+import { LedgeAttackState } from './states/LedgeAttackState.js';
+import { LedgeRollState } from './states/LedgeRollState.js';
 
 /**
  * FSMController — per-fighter finite state machine driver.
@@ -70,6 +75,11 @@ export class FSMController {
       [PlayerStateEnum.HITSTUN, new HitstunState()],
       [PlayerStateEnum.GRAB, new GrabState()],
       [PlayerStateEnum.GRAB_HOLDING, new GrabHoldingState()],
+      [PlayerStateEnum.LEDGE_HANG, new LedgeHangState()],
+      [PlayerStateEnum.LEDGE_CLIMB, new LedgeClimbState()],
+      [PlayerStateEnum.LEDGE_JUMP, new LedgeJumpState()],
+      [PlayerStateEnum.LEDGE_ATTACK, new LedgeAttackState()],
+      [PlayerStateEnum.LEDGE_ROLL, new LedgeRollState()],
     ]);
 
     this.stateName = initialState;

@@ -43,3 +43,8 @@ export { RunState } from './states/RunState.js';
 export { ShieldState } from './states/ShieldState.js';
 export { SpotDodgeState } from './states/SpotDodgeState.js';
 export { WalkState } from './states/WalkState.js';
+export { LedgeHangState } from './states/LedgeHangState.js';
+export { LedgeClimbState } from './states/LedgeClimbState.js';
+export { LedgeJumpState } from './states/LedgeJumpState.js';
+export { LedgeAttackState } from './states/LedgeAttackState.js';
+export { LedgeRollState } from './states/LedgeRollState.js';

@@ -1,0 +1,3 @@
+- T8: `main.ts` now converts `StateSnapshot` into `RenderState` locally so offline matches can reuse the existing fighter renderer + HUD pipeline without touching online interpolation code.
+- T8: Local mode explicitly disconnects the existing `GameClient` socket the first time `Local Play` is entered, preventing the offline flow from leaving an unused websocket open.
+- T8: Local countdown interval/timeout handles need explicit cleanup so `Play Again` cannot stack countdown timers across repeated local matches.

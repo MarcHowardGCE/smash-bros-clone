@@ -1,5 +1,6 @@
 import type { PlayerId } from '@smash/shared';
 import type { RenderState } from '../network/InterpolationBuffer.js';
+import type { FighterChoice } from '../local/types.js';
 
 export type UIPhase = 'connecting' | 'lobby' | 'waiting' | 'countdown' | 'match' | 'result';
 
@@ -15,6 +16,8 @@ export class UIManager {
   onJoinRoom: ((code: string) => void) | null = null;
   onReady: (() => void) | null = null;
   onPlayAgain: (() => void) | null = null;
+  onLocalPlay: (() => void) | null = null;
+  onLocalPlayAgain: (() => void) | null = null;
 
   constructor(overlayElement: HTMLElement) {
     this.overlay = overlayElement;
@@ -64,6 +67,7 @@ export class UIManager {
                <button id="join-btn" class="ui-btn">Join</button>
              </div>`
         }
+        <button id="local-play-btn" class="ui-btn" style="margin-top:24px">Local Play</button>
       </div>`;
 
     document.getElementById('create-btn')?.addEventListener('click', () => this.onCreateRoom?.());
@@ -75,9 +79,89 @@ export class UIManager {
       this.onReady?.();
       this.showWaiting();
     });
+    document.getElementById('local-play-btn')?.addEventListener('click', () => this.onLocalPlay?.());
     document.getElementById('join-code')?.addEventListener('keydown', (e) => {
       if (e.key === 'Enter') document.getElementById('join-btn')?.click();
     });
+  }
+
+  showCharacterSelect(
+    fighters: FighterChoice[],
+    onSelected: (p1: FighterChoice, p2: FighterChoice) => void
+  ): void {
+    this.hudPanel.style.display = 'none';
+    let p1Choice: FighterChoice | null = null;
+    let p2Choice: FighterChoice | null = null;
+
+    // Render the overlay with two panels side by side
+    this.overlay.innerHTML = `
+      <div class="overlay-center" style="flex-direction:row;gap:60px">
+        <div id="p1-panel" style="text-align:center">
+          <div style="font-size:20px;margin-bottom:16px">P1 Choose</div>
+          ${fighters.map(f => `
+            <div class="fighter-option" data-player="1" data-id="${f.id}" 
+                 style="border:2px solid rgba(255,255,255,0.3);padding:12px 24px;margin-bottom:8px;cursor:pointer;font-size:18px">
+              ${f.displayName}
+            </div>
+          `).join('')}
+          <div id="p1-status" style="font-size:14px;margin-top:12px;color:rgba(255,255,255,0.5)">
+            Press Enter or Z to confirm
+          </div>
+        </div>
+        <div id="p2-panel" style="text-align:center">
+          <div style="font-size:20px;margin-bottom:16px">P2 Choose</div>
+          ${fighters.map(f => `
+            <div class="fighter-option" data-player="2" data-id="${f.id}"
+                 style="border:2px solid rgba(255,255,255,0.3);padding:12px 24px;margin-bottom:8px;cursor:pointer;font-size:18px">
+              ${f.displayName}
+            </div>
+          `).join('')}
+          <div id="p2-status" style="font-size:14px;margin-top:12px;color:rgba(255,255,255,0.5)">
+            Press U to confirm
+          </div>
+        </div>
+      </div>`;
+
+    // Auto-select the first fighter for each player (since there's only one)
+    if (fighters[0]) {
+      p1Choice = fighters[0];
+      p2Choice = fighters[0];
+      // Highlight first option for both
+      document.querySelectorAll('[data-player="1"]').forEach(el => {
+        (el as HTMLElement).style.borderColor = 'white';
+      });
+      document.querySelectorAll('[data-player="2"]').forEach(el => {
+        (el as HTMLElement).style.borderColor = 'white';
+      });
+    }
+
+    let p1Confirmed = false;
+    let p2Confirmed = false;
+
+    const checkBothConfirmed = () => {
+      if (p1Confirmed && p2Confirmed && p1Choice && p2Choice) {
+        this.overlay.removeEventListener('keydown', onKey as EventListener);
+        window.removeEventListener('keydown', onKey);
+        onSelected(p1Choice, p2Choice);
+      }
+    };
+
+    const onKey = (e: KeyboardEvent) => {
+      if (!p1Confirmed && (e.code === 'Enter' || e.code === 'KeyZ')) {
+        p1Confirmed = true;
+        const status = document.getElementById('p1-status');
+        if (status) { status.textContent = '✓ Ready!'; status.style.color = 'white'; }
+        checkBothConfirmed();
+      }
+      if (!p2Confirmed && e.code === 'KeyU') {
+        p2Confirmed = true;
+        const status = document.getElementById('p2-status');
+        if (status) { status.textContent = '✓ Ready!'; status.style.color = 'white'; }
+        checkBothConfirmed();
+      }
+    };
+
+    window.addEventListener('keydown', onKey);
   }
 
   showRoomCreated(code: string): void {
@@ -205,5 +289,32 @@ export class UIManager {
   hideRoomCode(): void {
     const el = document.getElementById('room-code-display');
     if (el) el.style.display = 'none';
+  }
+
+  showLocalResult(winnerId: PlayerId | null): void {
+    this.phase = 'result';
+    this.hudPanel.style.display = 'none';
+    this.hideRoomCode();
+
+    let msg: string;
+    if (!winnerId) {
+      msg = 'Draw!';
+    } else if (winnerId === 'local-p1') {
+      msg = 'P1 Wins!';
+    } else if (winnerId === 'local-p2') {
+      msg = 'P2 Wins!';
+    } else {
+      msg = `${winnerId} Wins!`;
+    }
+
+    this.overlay.innerHTML = `
+      <div class="overlay-center">
+        <div style="font-size:64px;margin-bottom:32px">${msg}</div>
+        <button id="local-play-again-btn" class="ui-btn">Play Again</button>
+      </div>`;
+
+    document.getElementById('local-play-again-btn')?.addEventListener('click', () => {
+      this.onLocalPlayAgain?.();
+    });
   }
 }

@@ -1,0 +1,23 @@
+{
+  "active_plan": "/Users/marc.howard/Documents/GitHub/smash-bros-clone/.sisyphus/plans/local-2-player.md",
+  "started_at": "2026-08-05T15:30:34.135Z",
+  "session_ids": [
+    "ses_02d73c1f9ffeCSSgKzYHOAHKoZ"
+  ],
+  "session_origins": {
+    "ses_02d73c1f9ffeCSSgKzYHOAHKoZ": "direct"
+  },
+  "plan_name": "local-2-player",
+  "agent": "atlas",
+  "task_sessions": {
+    "final-wave:f1": {
+      "task_key": "final-wave:f1",
+      "task_label": "F1",
+      "task_title": "**Plan Compliance Audit** — `oracle`",
+      "session_id": "ses_02d657349ffehhH9yTAOsF0OrI",
+      "agent": "Sisyphus-Junior",
+      "category": "quick",
+      "updated_at": "2026-08-05T15:48:25.620Z"
+    }
+  }
+}

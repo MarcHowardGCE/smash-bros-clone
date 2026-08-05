@@ -6,17 +6,22 @@
   "scripts": {
     "dev": "vite --port 5173",
     "build": "tsc -p tsconfig.json && vite build",
-    "lint": "echo 'lint ok'"
+    "lint": "echo 'lint ok'",
+    "test": "vitest run"
   },
   "dependencies": {
     "@msgpack/msgpack": "^3.1.3",
     "@smash/engine": "workspace:*",
+    "@smash/server": "workspace:*",
     "@smash/shared": "workspace:*",
     "pixi.js": "^8.19.0",
     "socket.io-client": "^4.8.3"
   },
   "devDependencies": {
+    "@vitest/coverage-v8": "^4.1.10",
+    "jsdom": "^30.0.1",
     "typescript": "^5.0.0",
-    "vite": "^5.0.0"
+    "vite": "^5.0.0",
+    "vitest": "^1.6.1"
   }
 }

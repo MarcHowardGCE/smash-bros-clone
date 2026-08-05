@@ -1,0 +1,2 @@
+- T8: Reused the always-created `GameClient` bootstrap for online mode and disconnected it on first local-mode entry instead of restructuring startup, minimizing risk to the existing online flow.
+- T8: `Play Again` in local mode returns to character select and destroys all existing fighter renderers before restarting, ensuring fresh controllers/camera state per match.

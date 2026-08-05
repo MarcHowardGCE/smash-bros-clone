@@ -1,5 +1,5 @@
-import { INPUT_BITS } from '@smash/shared';
 import type { InputBitmask, InputEvent, PlayerId } from '@smash/shared';
+import { DEFAULT_KEYMAP_P1 } from './keymaps.js';
 
 export class InputManager {
   private currentHeld: InputBitmask = 0;
@@ -7,11 +7,14 @@ export class InputManager {
   private seqCounter: number = 0;
   private playerId: PlayerId = '';
   private currentTick: number = 0;
+  private readonly keymap: Record<string, InputBitmask>;
 
   // Pending inputs for T14 (LocalPredictor) — stored here, used there
   readonly pendingInputs: InputEvent[] = [];
 
-  constructor() {
+  constructor(keymap: Record<string, InputBitmask> = DEFAULT_KEYMAP_P1, playerId: PlayerId = '') {
+    this.keymap = keymap;
+    this.playerId = playerId;
     this.setupListeners();
   }
 
@@ -23,53 +26,33 @@ export class InputManager {
     this.currentTick = tick;
   }
 
-  private setupListeners(): void {
-    window.addEventListener('keydown', (e) => {
-      const bit = this.keyToBit(e.code);
-      if (bit !== 0) {
-        e.preventDefault();
-        this.currentHeld |= bit;
-      }
-    });
-
-    window.addEventListener('keyup', (e) => {
-      const bit = this.keyToBit(e.code);
-      if (bit !== 0) {
-        this.currentHeld &= ~bit;
-      }
-    });
+  destroy(): void {
+    window.removeEventListener('keydown', this.onKeyDown);
+    window.removeEventListener('keyup', this.onKeyUp);
   }
 
-  private keyToBit(code: string): InputBitmask {
-    switch (code) {
-      case 'ArrowLeft':
-      case 'KeyA':
-        return INPUT_BITS.LEFT;
-      case 'ArrowRight':
-      case 'KeyD':
-        return INPUT_BITS.RIGHT;
-      case 'ArrowUp':
-      case 'KeyW':
-      case 'KeyX':
-        return INPUT_BITS.JUMP;
-      case 'ArrowDown':
-        return INPUT_BITS.DOWN;
-      case 'KeyZ':
-      case 'KeyU':
-        return INPUT_BITS.ATTACK;
-      case 'KeyS':
-      case 'KeyI':
-        return INPUT_BITS.SPECIAL;
-      case 'ShiftLeft':
-      case 'ShiftRight':
-      case 'KeyO':
-        return INPUT_BITS.SHIELD;
-      case 'KeyC':
-      case 'KeyP':
-        return INPUT_BITS.GRAB;
-      default:
-        return 0;
+  private setupListeners(): void {
+    window.addEventListener('keydown', this.onKeyDown);
+    window.addEventListener('keyup', this.onKeyUp);
+  }
+
+  private readonly onKeyDown = (e: KeyboardEvent): void => {
+    const bit = this.keyToBit(e.code);
+    if (bit !== 0) {
+      e.preventDefault();
+      this.currentHeld |= bit;
     }
+  };
+
+  private readonly onKeyUp = (e: KeyboardEvent): void => {
+    const bit = this.keyToBit(e.code);
+    if (bit !== 0) {
+      this.currentHeld &= ~bit;
+    }
+  };
+
+  private keyToBit(code: string): InputBitmask {
+    return this.keymap[code] ?? 0;
   }
 
   /**

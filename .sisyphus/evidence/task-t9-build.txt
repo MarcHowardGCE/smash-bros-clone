@@ -1,0 +1,5 @@
+apps/client build: [2mdist/[22m[2massets/[22m[36mRenderTargetSystem-CAEko8D0.js  [39m[1m[2m 46.81 kB[22m[1m[22m[2m │ gzip:  12.85 kB[22m
+apps/client build: [2mdist/[22m[2massets/[22m[36mWebGLRenderer-Dj8vgXb3.js       [39m[1m[2m 68.70 kB[22m[1m[22m[2m │ gzip:  18.85 kB[22m
+apps/client build: [2mdist/[22m[2massets/[22m[36mindex-B6VceuG4.js               [39m[1m[2m347.21 kB[22m[1m[22m[2m │ gzip: 105.70 kB[22m
+apps/client build: [32m✓ built in 1.75s[39m
+apps/client build: Done

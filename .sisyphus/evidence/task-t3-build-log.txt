@@ -1,0 +1,30 @@
+> smash-clone@0.0.1 build /Users/marc.howard/Documents/GitHub/smash-bros-clone
+> pnpm -r build
+
+Scope: 4 of 5 workspace projects
+packages/shared build$ tsc -p tsconfig.json
+packages/shared build: Done
+packages/engine build$ tsc -p tsconfig.json
+packages/engine build: Done
+apps/server build$ tsc -p tsconfig.json
+apps/server build: Done
+apps/client build$ tsc -p tsconfig.json && vite build
+apps/client build: vite v5.4.21 building for production...
+apps/client build: transforming...
+apps/client build: ✓ 812 modules transformed.
+apps/client build: rendering chunks...
+apps/client build: computing gzip size...
+apps/client build: dist/index.html                               0.68 kB │ gzip:   0.44 kB
+apps/client build: dist/assets/CanvasPool-BHWsaJ-P.js            0.78 kB │ gzip:   0.43 kB
+apps/client build: dist/assets/Filter-BuEF-Q9q.js                0.90 kB │ gzip:   0.47 kB
+apps/client build: dist/assets/canvasUtils-BuB-bPuO.js           5.68 kB │ gzip:   1.79 kB
+apps/client build: dist/assets/BufferResource-Bd-mQbKm.js       10.61 kB │ gzip:   2.80 kB
+apps/client build: dist/assets/webworkerAll-DYeedFyJ.js         15.81 kB │ gzip:   5.03 kB
+apps/client build: dist/assets/CanvasRenderer-CNS7YttJ.js       17.51 kB │ gzip:   5.85 kB
+apps/client build: dist/assets/WebGPURenderer-DdGV780o.js       38.92 kB │ gzip:  10.86 kB
+apps/client build: dist/assets/browserAll-Bho4uuCc.js           43.09 kB │ gzip:  11.30 kB
+apps/client build: dist/assets/RenderTargetSystem-DbP5wv8p.js   46.81 kB │ gzip:  12.85 kB
+apps/client build: dist/assets/WebGLRenderer-CZWM6fuh.js        68.70 kB │ gzip:  18.85 kB
+apps/client build: dist/assets/index-COBpjXrC.js               330.86 kB │ gzip: 100.74 kB
+apps/client build: ✓ built in 1.74s
+apps/client build: Done

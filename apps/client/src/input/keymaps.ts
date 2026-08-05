@@ -11,14 +11,10 @@ export const DEFAULT_KEYMAP_P1: Record<string, InputBitmask> = {
   KeyX: INPUT_BITS.JUMP,
   ArrowDown: INPUT_BITS.DOWN,
   KeyZ: INPUT_BITS.ATTACK,
-  KeyU: INPUT_BITS.ATTACK,
   KeyS: INPUT_BITS.SPECIAL,
-  KeyI: INPUT_BITS.SPECIAL,
   ShiftLeft: INPUT_BITS.SHIELD,
   ShiftRight: INPUT_BITS.SHIELD,
-  KeyO: INPUT_BITS.SHIELD,
   KeyC: INPUT_BITS.GRAB,
-  KeyP: INPUT_BITS.GRAB,
 };
 
 export const DEFAULT_KEYMAP_P2: Record<string, InputBitmask> = {

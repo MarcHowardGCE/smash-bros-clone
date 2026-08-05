@@ -177,6 +177,10 @@ export class GameEngine {
 		return this.state.winnerId;
 	}
 
+	getCurrentTick(): number {
+		return this.tick;
+	}
+
 	getStateHash(): string {
 		return Object.values(this.state.players)
 			.sort((left, right) => left.slotIndex - right.slotIndex)

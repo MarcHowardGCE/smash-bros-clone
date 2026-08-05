@@ -51,7 +51,7 @@ export class LocalMatch {
   };
 
   private tick(): void {
-    const currentTick = this.engine['tick'];
+    const currentTick = this.engine.getCurrentTick();
     for (const controller of this.controllers) {
       controller.setTick(currentTick);
     }

@@ -5,11 +5,11 @@ import { INPUT_BITS } from '@smash/shared';
 import { LocalPlayerController } from '../LocalPlayerController.js';
 
 describe('InputManager with injected keymap', () => {
-  it('defaults to P1 keymap when no keymap provided', () => {
-    const manager = new InputManager();
-    // keyToBit is private, test via the map structure
-    expect(manager).toBeDefined();
-    manager.destroy();
+  it('defaults to P1 keymap: KeyA maps to LEFT', () => {
+    // DEFAULT_KEYMAP_P1 maps KeyA → INPUT_BITS.LEFT
+    expect(DEFAULT_KEYMAP_P1['KeyA']).toBe(INPUT_BITS.LEFT);
+    // DEFAULT_KEYMAP_P2 maps KeyJ → INPUT_BITS.LEFT (not KeyA)
+    expect(DEFAULT_KEYMAP_P2['KeyA']).toBeUndefined();
   });
 
   it('returns null when no keys pressed', () => {

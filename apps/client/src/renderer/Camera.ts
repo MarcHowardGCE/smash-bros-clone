@@ -36,8 +36,8 @@ export class Camera {
     const scaleForStage = Math.min(viewportWidth / STAGE.WIDTH, viewportHeight / STAGE.HEIGHT);
     const targetScale = Math.max(MIN_SCALE, Math.min(MAX_SCALE, Math.min(scaleForBox, scaleForStage)));
 
-    const centerX = (Math.min(...positions.map(p => p.x)) + Math.max(...positions.map(p => p.x))) / 2;
-    const centerY = (Math.min(...positions.map(p => p.y)) + Math.max(...positions.map(p => p.y))) / 2;
+    const centerX = (minX + maxX) / 2;
+    const centerY = (minY + maxY) / 2;
 
     const halfVW = viewportWidth / (2 * targetScale);
     const halfVH = viewportHeight / (2 * targetScale);

@@ -2,10 +2,18 @@
   "active_plan": "/Users/marc.howard/Documents/GitHub/smash-bros-clone/.sisyphus/plans/local-2-player.md",
   "started_at": "2026-08-05T15:30:34.135Z",
   "session_ids": [
-    "ses_02d73c1f9ffeCSSgKzYHOAHKoZ"
+    "ses_02d73c1f9ffeCSSgKzYHOAHKoZ",
+    "ses_02d6292b5ffeuM2fOtt5DFjAFo",
+    "ses_02d62708dffe456pCFXrNRPPdj",
+    "ses_02d62447affe7XN3plgz2EI7ps",
+    "ses_02d621e77fferpGWC6V7IEfd5U"
   ],
   "session_origins": {
-    "ses_02d73c1f9ffeCSSgKzYHOAHKoZ": "direct"
+    "ses_02d73c1f9ffeCSSgKzYHOAHKoZ": "direct",
+    "ses_02d6292b5ffeuM2fOtt5DFjAFo": "appended",
+    "ses_02d62708dffe456pCFXrNRPPdj": "appended",
+    "ses_02d62447affe7XN3plgz2EI7ps": "appended",
+    "ses_02d621e77fferpGWC6V7IEfd5U": "appended"
   },
   "plan_name": "local-2-player",
   "agent": "atlas",
@@ -14,10 +22,10 @@
       "task_key": "final-wave:f1",
       "task_label": "F1",
       "task_title": "**Plan Compliance Audit** — `oracle`",
-      "session_id": "ses_02d657349ffehhH9yTAOsF0OrI",
+      "session_id": "ses_02d5bd9eeffehsabOqvjrwW553",
       "agent": "Sisyphus-Junior",
       "category": "quick",
-      "updated_at": "2026-08-05T15:48:25.620Z"
+      "updated_at": "2026-08-05T15:57:24.324Z"
     }
   }
 }

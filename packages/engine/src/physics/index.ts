@@ -43,6 +43,10 @@ function landOnPlatform(player: PlayerState, platformY: number): PlayerState {
   };
 }
 
+// Tunneling prevention: checks whether the player's bottom edge crossed the platform
+// surface between the previous frame and this frame, rather than just checking current
+// position. Without this, a fast-moving player (high vy) can pass entirely through a
+// thin platform in a single tick and never trigger the landing check.
 function crossesPlatformTop(player: PlayerState, platformY: number): boolean {
   const playerBottom = player.y + PHYSICS.HURTBOX_RADIUS;
   const previousBottom = playerBottom - player.vy;
@@ -50,6 +54,11 @@ function crossesPlatformTop(player: PlayerState, platformY: number): boolean {
   return previousBottom <= platformY && playerBottom >= platformY;
 }
 
+// Applies per-frame gravitational acceleration. Only runs when airborne — grounded
+// players are held at platform height by checkPlatformCollision instead.
+// isFastFalling multiplies vy when already moving downward (vy > 0), simulating
+// the player choosing to accelerate toward the ground. The FAST_FALL_MULTIPLIER
+// check on vy > 0 prevents fast fall from applying on the way up.
 export function applyGravity(player: PlayerState): PlayerState {
   if (player.isGrounded) {
     return player;
@@ -87,6 +96,10 @@ export function applyMovement(player: PlayerState, input: InputEvent): PlayerSta
   } else {
     const airSpeedLimit = PHYSICS.AIR_SPEED * 8;
 
+    // Air speed cap is deliberately loose (8× the acceleration factor) so the player
+    // has wide lateral freedom in the air. The tight limit only applies in rare edge
+    // cases (e.g. extreme knockback velocity); normal aerial drift never reaches it.
+
     if (movingLeft) {
       vx = clamp(vx - PHYSICS.AIR_SPEED * 0.15, -airSpeedLimit, airSpeedLimit);
     }
@@ -108,6 +121,11 @@ export function applyMovement(player: PlayerState, input: InputEvent): PlayerSta
   };
 }
 
+// Sets the initial upward velocity for a jump. Called by GameEngine when the
+// JUMPSQUAT → AIRBORNE transition fires (full hop or short hop is determined by
+// how long JUMP was held, evaluated in JumpsquatState before the transition).
+// For double jump: consumes hasDoubleJump and ignores isGrounded check, allowing
+// one aerial jump regardless of current vy.
 export function startJump(player: PlayerState, isShortHop: boolean): PlayerState {
   if (player.isGrounded) {
     return {
@@ -139,6 +157,10 @@ export function resolveJump(player: PlayerState, input: InputEvent, jumpHeldFram
   return startJump(player, isShortHop);
 }
 
+// Fast fall activates when the player holds DOWN while airborne and already moving
+// downward (vy >= 0). The vy >= 0 guard prevents fast fall from triggering on the
+// way up — it would cancel the jump arc. Once activated, isFastFalling is latched
+// true and vy is set to a high fraction of TERMINAL_VELOCITY for instant fall speed.
 export function applyFastFall(player: PlayerState, input: InputEvent): PlayerState {
   if (
     player.isGrounded ||
@@ -156,6 +178,11 @@ export function applyFastFall(player: PlayerState, input: InputEvent): PlayerSta
   };
 }
 
+// Resolves platform landing and blast-zone KO detection.
+// Blast zones are checked first: any position outside the stage boundary immediately
+// sets isKnockedOut. Platform landing uses crossesPlatformTop (see above) to handle
+// tunneling. Only checks landing (vy >= 0) — a player moving upward passes through
+// platform bottoms freely, matching Smash Bros soft-platform behaviour.
 export function checkPlatformCollision(player: PlayerState, stage: StageData): PlayerState {
   if (player.y > stage.blastBottom || player.y < stage.blastTop || player.x < stage.blastLeft || player.x > stage.blastRight) {
     return {

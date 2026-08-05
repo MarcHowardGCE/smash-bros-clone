@@ -1,6 +1,10 @@
 import { applyMovementInput, startJump } from '@smash/engine';
 import { INPUT_BITS, PlayerStateEnum, type InputEvent, type PlayerId, type PlayerState, type StateSnapshot } from '@smash/shared';
 
+// activeHitbox is a nested object; a plain spread of `player` would copy only the
+// reference, meaning two cloned states would share the same hitbox object. Any mutation
+// to one clone's hitbox (e.g. the prediction applying a new active hit) would silently
+// corrupt the other. The explicit inner spread breaks that aliasing.
 function clonePlayerState(player: PlayerState): PlayerState {
   return {
     ...player,
@@ -8,6 +12,38 @@ function clonePlayerState(player: PlayerState): PlayerState {
   };
 }
 
+/**
+ * LocalPredictor — client-side prediction and server reconciliation for the local player.
+ *
+ * WHY client-side prediction exists:
+ *   Without it every keystroke would feel delayed by the full network round-trip
+ *   (~50–200 ms). Prediction applies the local player's inputs immediately in the
+ *   browser so movement feels instant. The server remains authoritative for everything
+ *   that matters competitively (damage, knockback, stocks, hit detection).
+ *
+ * HOW reconciliation works:
+ *   The client maintains a `pendingInputs` queue — inputs that have been applied
+ *   locally but not yet acknowledged by the server. On each server snapshot:
+ *     1. The confirmed player state from the snapshot is accepted as ground truth.
+ *     2. Inputs the server has already processed (seq <= lastConfirmedSeq) are discarded.
+ *     3. The remaining pending inputs are replayed in order on top of the confirmed state.
+ *   The result becomes the new `predictedState` shown to the renderer.
+ *
+ * WHY pendingInputs uses sequence numbers (seq):
+ *   The server echoes back `lastConfirmedSeq` per player in every snapshot. Inputs with
+ *   seq <= lastConfirmedSeq are already baked into the confirmed state we just received;
+ *   keeping them would double-apply their movement effect. Sequence numbers let us trim
+ *   exactly the right subset in O(n) without relying on wall-clock time or round-trip
+ *   estimates.
+ *
+ * WHY applyLocalMovement is a simplified physics approximation:
+ *   Running the full server FSM (AttackState, HitstunState, hitbox detection, etc.) on
+ *   the client would require keeping all server-side combat state in sync, drastically
+ *   increasing complexity and the risk of divergence. Instead, only movement physics are
+ *   predicted — position, velocity, facing, and a coarse visual state. The server is
+ *   solely authoritative on combat outcomes; any misprediction is corrected on the next
+ *   snapshot.
+ */
 export class LocalPredictor {
   private confirmedState: PlayerState | null = null;
   private pendingInputs: InputEvent[] = [];
@@ -35,6 +71,10 @@ export class LocalPredictor {
 
     this.confirmedState = clonePlayerState(serverPlayerState);
 
+    // Trim confirmed inputs — the server has already processed every input with
+    // seq <= lastSeq and their effect is reflected in the snapshot state we just
+    // received. Keeping them would cause those inputs to be replayed again on top
+    // of confirmed state, double-applying their movement.
     const lastSeq = snapshot.lastConfirmedSeq[this.playerId] ?? -1;
     this.pendingInputs = this.pendingInputs.filter((input) => input.seq > lastSeq);
     this.predictedState = this.replayFromConfirmed();
@@ -56,6 +96,11 @@ export class LocalPredictor {
       throw new Error('LocalPredictor replay attempted before initialization');
     }
 
+    // Replay all still-pending inputs from scratch on top of confirmed state.
+    // Starting fresh from confirmed absorbs any server correction (position, velocity,
+    // state) before layering on unacknowledged inputs. This keeps the prediction
+    // visually consistent with the server's version of reality while preserving the
+    // responsiveness of inputs the server hasn't seen yet.
     let state = clonePlayerState(baseState);
     for (const input of this.pendingInputs) {
       state = this.applyLocalMovement(state, input);
@@ -97,6 +142,10 @@ export class LocalPredictor {
     return currentFacing;
   }
 
+  // CLIENT-ONLY visual approximation — infers a display state from movement physics
+  // and raw input bits. This is NOT a faithful FSM run: ATTACK lasts only one predicted
+  // frame, jumpsquat duration is not tracked, and hitlag/hitstun entry is simplified.
+  // The server's FSM result, delivered via snapshot, is always the authoritative state.
   private getVisualState(player: PlayerState, input: InputEvent): PlayerState['state'] {
 		if (player.hitstunFramesRemaining > 0) {
 			return PlayerStateEnum.HITSTUN;

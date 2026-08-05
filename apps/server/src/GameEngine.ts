@@ -37,6 +37,9 @@ const DEFAULT_STAGE_DATA: StageData = {
 	platforms: STAGE.PLATFORMS.map((platform) => ({ ...platform })),
 	spawnPositions: [...STAGE.SPAWN_POSITIONS],
 };
+// EMPTY_INPUT is used when no real input has arrived for a player (network lag or
+// disconnect). Physics functions require a non-null InputEvent to read bitfields;
+// zeroed bits cause the player to coast to a stop with no movement applied.
 const EMPTY_INPUT: InputEvent = {
 	tick: -1,
 	seq: -1,
@@ -65,6 +68,26 @@ export interface GameEngineOptions {
 	playerIds: PlayerId[];
 }
 
+/**
+ * GameEngine is the server-authoritative tick driver that orchestrates the full
+ * simulation pipeline each frame: FSM transitions → physics → hitbox state →
+ * hit detection → KOs → win condition.
+ *
+ * ## Why GameEngine exists separately from FSMController
+ *
+ * FSMController is pure state logic — it answers "which state am I in?" and
+ * "when do I transition?". GameEngine owns the *side effects* of those transitions.
+ * For example, when JumpSquat → Airborne fires, it is GameEngine (via
+ * `applyStateTransitions`) that calls `startJump()` to set the initial `vy`.
+ * The FSM drives the state; GameEngine drives the physics consequences of
+ * state changes.
+ *
+ * ## Why `fsmControllers` is a Map keyed by PlayerId
+ *
+ * Each fighter needs its own independent FSMController instance — the controller is
+ * stateful (it tracks `stateFrame`, hitlag freeze, transition history, etc.).
+ * A Map gives O(1) lookup per tick when processing each player independently.
+ */
 export class GameEngine {
 	private state: GameState;
 	private readonly fsmControllers = new Map<PlayerId, FSMController>();
@@ -181,6 +204,10 @@ export class GameEngine {
 		return this.tick;
 	}
 
+	// Determinism debugging: rounded integer values eliminate false-positive mismatches
+	// caused by floating-point arithmetic differences between JS engine runs or execution
+	// order. Server and client both log this hash at the same tick; a mismatch means
+	// the simulations have diverged.
 	getStateHash(): string {
 		return Object.values(this.state.players)
 			.sort((left, right) => left.slotIndex - right.slotIndex)
@@ -264,6 +291,22 @@ export class GameEngine {
 		return nextPlayer;
 	}
 
+	/**
+	 * Applies the one-time physics side effects that correspond to FSM state transitions.
+	 *
+	 * ## Why this exists as a separate step after the FSM tick
+	 *
+	 * The FSM is "pure logic" — after `controller.tick()` it simply reports "I am now in
+	 * AIRBORNE state". The physics consequence of that (e.g. setting vy = JUMP_VELOCITY)
+	 * must happen *exactly once*, on the tick the transition fires. Comparing
+	 * `previous.state` vs `player.state` (captured before/after the FSM tick) detects
+	 * fresh transitions and applies their one-time side effects.
+	 *
+	 * ## Why `previous.state !== player.state` is the trigger
+	 *
+	 * If the states differ, a transition fired this tick — the side effect runs once.
+	 * If they are equal, the player is mid-state and no side effect is needed.
+	 */
 	private applyStateTransitions(
 		previous: PlayerState,
 		player: PlayerState,
@@ -356,6 +399,11 @@ export class GameEngine {
 		player: PlayerState,
 		input: InputEvent,
 	): PlayerState {
+		// Drop-through mechanic: when the player holds DOWN, we pass an empty platforms
+		// array to checkPlatformCollision. With no soft platforms registered, the physics
+		// code finds nothing to land on and the fighter falls through. The main platform
+		// (a separate field on StageData) is unaffected, so fighters cannot fall through
+		// the stage floor.
 		const stage: StageData = isHeld(input, INPUT_BITS.DOWN)
 			? {
 					...DEFAULT_STAGE_DATA,
@@ -408,8 +456,14 @@ export class GameEngine {
 			};
 		}
 
+		// `currentMoveId` may not be set yet on the very first frame of an attack (it is
+		// assigned in applyStateTransitions which runs before this). Falling back to
+		// selectMoveId ensures the hitbox is never stale for one frame.
 		const moveId = (player.currentMoveId ?? this.selectMoveId(player, input)) as MoveId;
 		const move = getMoveData(moveId);
+		// activeFrame maps stateFrame onto the hitboxPerActiveFrame array by subtracting
+		// startup frames. Index 0 = first active frame, 1 = second, etc. Different frames
+		// can have different hitbox positions/sizes (e.g. a sweetspot only on frame 0).
 		const activeFrame = player.stateFrame - move.startupFrames;
 		const activeHitbox =
 			activeFrame >= 0 && activeFrame < move.hitboxPerActiveFrame.length
@@ -482,6 +536,9 @@ export class GameEngine {
 	private applyHitDetection(players: Record<PlayerId, PlayerState>): void {
 		const playerList = Object.values(players);
 
+		// O(n²) over player pairs using i < j to avoid checking the same pair twice
+		// and to keep hitOnA / hitOnB both resolved in a single iteration.
+		// Both directions are checked per pair because either player may be attacking.
 		for (let i = 0; i < playerList.length; i += 1) {
 			for (let j = i + 1; j < playerList.length; j += 1) {
 				const playerAEntry = playerList[i];
@@ -503,6 +560,10 @@ export class GameEngine {
 				let hitOnA = NO_HIT;
 				let hitOnB = NO_HIT;
 
+				// When both players have active hitboxes we run trade resolution first.
+				// resolveHitTrade uses hitbox priority to determine whether both hits land,
+				// only one, or neither. The direct collision results are used as fallback
+				// for whichever side the trade ruled out.
 				if (playerA.activeHitbox && playerB.activeHitbox) {
 					const [tradeA, tradeB] = resolveHitTrade(playerA, playerB);
 					const directA = checkHitboxCollision(playerB, playerA);
@@ -619,6 +680,9 @@ export class GameEngine {
 				currentMoveId: null,
 				respawnTimer: MATCH_CONFIG.RESPAWN_DELAY_FRAMES,
 			};
+			// Reset the FSMController on respawn — the old controller may be mid-animation
+			// (e.g. HITSTUN with frames remaining). A fresh controller in AIRBORNE state
+			// matches the respawning fighter's physical situation (falling from above stage).
 			this.fsmControllers.set(
 				playerId as PlayerId,
 				new FSMController(PlayerStateEnum.AIRBORNE),

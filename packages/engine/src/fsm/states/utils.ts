@@ -2,8 +2,15 @@ import type { InputEvent } from '@smash/shared';
 import { INPUT_BITS, MoveId, PHYSICS, PlayerStateEnum } from '@smash/shared';
 import type { FSMContext, FSMTransition, IFSMState } from '../index.js';
 
+// Fallback used when currentMoveId is null or unrecognised. 20 frames (~333ms) is
+// a safe default that prevents a broken attack from locking the fighter indefinitely.
 export const DEFAULT_MOVE_TOTAL_FRAMES = 20;
 
+// Total frame counts per move (startup + active + recovery). Duplicated here from
+// packages/engine/src/moves/ to avoid a circular import: FSM states need frame
+// counts to know when to exit (e.g. AttackState transitions to IDLE after totalFrames),
+// but importing MoveData directly would create engine/fsm → engine/moves → engine/fsm.
+// Keeping a lightweight lookup here breaks the cycle.
 const MOVE_TOTAL_FRAMES: Partial<Record<MoveId, number>> = {
   [MoveId.JAB]: 20,
   [MoveId.FORWARD_TILT]: 24,

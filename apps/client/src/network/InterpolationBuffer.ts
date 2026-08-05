@@ -23,6 +23,25 @@ export interface RenderState {
   winnerId: PlayerId | null;
 }
 
+/**
+ * Bridges the gap between the server's 20 Hz broadcast rate and the client's 60 fps render loop.
+ *
+ * WHY this class exists: The server broadcasts authoritative game state at 20 Hz (every 3 game
+ * ticks at 60 Hz), but the renderer runs at 60 fps via requestAnimationFrame. Without
+ * interpolation, remote players would visually teleport every ~50ms instead of moving smoothly.
+ * This buffer stores the last N snapshots and lerps remote player positions between them,
+ * producing fluid 60 fps visuals from a 20 Hz data stream.
+ *
+ * WHY bufferSize = 3: Three snapshots at 20 Hz provides 150ms of buffer depth. This covers
+ * typical network jitter (10–80ms) without introducing excessive visual latency. Fewer snapshots
+ * risks running out of data to interpolate during a delayed packet; more adds unnecessary lag
+ * between what happened on the server and what the player sees.
+ *
+ * WHY the local player is NOT interpolated here: The local player's position is driven by
+ * `LocalPredictor` (client-side prediction), which applies inputs immediately without waiting
+ * for a server snapshot. Interpolating the local player on top of prediction would cause
+ * double-movement and visual jitter — the player would feel laggy on their own machine.
+ */
 export class InterpolationBuffer {
   private snapshots: StateSnapshot[] = [];
   private readonly bufferSize = 3;
@@ -56,6 +75,10 @@ export class InterpolationBuffer {
       return this.snapshotToRenderState(snap1);
     }
 
+    // WHY alpha is clamped to [0, 1]: If `now` is ahead of snap1.timestamp (we're slightly
+    // behind the broadcast schedule), alpha would exceed 1.0 and we'd extrapolate beyond the
+    // known state — producing speculative positions that may diverge from reality. Clamping
+    // keeps rendering strictly between two known-good authoritative states.
     const alpha = Math.max(0, Math.min(1, (now - snap0.timestamp) / duration));
 
     const players = new Map<PlayerId, RenderPlayerState>();
@@ -69,7 +92,11 @@ export class InterpolationBuffer {
         continue;
       }
 
-      // For local player: don't interpolate position (T14 handles that with prediction)
+      // WHY local player uses snap-to-latest instead of lerp: The local player's rendering
+      // position is already managed by `LocalPredictor` (client-side prediction). The caller
+      // (`GameClient.renderTick`) overwrites the local player's entry in the returned map with
+      // the predicted state immediately after this call. The snap-to-latest here is just a
+      // safe fallback that ensures the map always contains an entry for the local player.
       if (id === localPlayerId) {
         players.set(id as PlayerId, this.playerToRenderState(p1));
         continue;
@@ -83,6 +110,11 @@ export class InterpolationBuffer {
         y: lerp(p0.y, p1.y, alpha),
         vx: lerp(p0.vx, p1.vx, alpha),
         vy: lerp(p0.vy, p1.vy, alpha),
+        // WHY facing/state/stateFrame/percent/stocks snap rather than lerp: These are discrete
+        // values where interpolation produces nonsense. Lerping `facing` between -1 and 1 yields
+        // 0 (no direction). Lerping `state` (a string enum) is impossible. Lerping `percent`
+        // would display fractional damage like "12.4%" between two integer server states. All
+        // are snapped to the authoritative latest value from the most recent snapshot.
         facing: p1.facing,        // snap to latest (no lerp)
         state: p1.state,          // snap to latest
         stateFrame: p1.stateFrame, // snap to latest

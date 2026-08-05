@@ -62,6 +62,9 @@ export function resolveHit(
     return NO_HIT;
   }
 
+  // Knockback scales with defender's current percent — the higher the damage already
+  // taken, the more the next hit launches them. This is the core Smash Bros feel:
+  // early hits do little knockback, but the same move at high percent can KO.
   const knockbackMagnitude = calculateKnockback(
     defender.percent,
     hitbox.baseKnockback,
@@ -93,6 +96,11 @@ export function checkHitboxCollision(
   return resolveHit(attacker, defender, attacker.activeHitbox);
 }
 
+// When both fighters have active hitboxes simultaneously, we resolve priority rather
+// than always applying both hits. Higher-priority hitbox wins; the other player's
+// hit is cancelled. Equal priority = both hits land (a true trade). This mirrors
+// Smash Bros priority rules and prevents both players from always trading on
+// simultaneous attacks.
 export function resolveHitTrade(
   playerA: PlayerState,
   playerB: PlayerState

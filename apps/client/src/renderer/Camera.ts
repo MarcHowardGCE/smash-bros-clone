@@ -1,6 +1,13 @@
 import type { Container } from 'pixi.js';
 import { STAGE } from '@smash/shared';
 
+// Camera follows all players and zooms to keep everyone in frame.
+// PADDING: extra space beyond the outermost players so fighters near the edge
+//          aren't right at the viewport border.
+// MIN_SCALE / MAX_SCALE: prevent the camera from zooming so far out the stage is
+//                        tiny, or so far in that distant players go off-screen.
+// LERP_SPEED: smoothing factor (0–1) applied each frame; 0.1 gives gentle easing
+//             without feeling sluggish during fast chases.
 const PADDING = 200;
 const MIN_SCALE = 0.4;
 const MAX_SCALE = 1.0;
@@ -32,6 +39,10 @@ export class Camera {
     const boxWidth = Math.max(maxX - minX, 1);
     const boxHeight = Math.max(maxY - minY, 1);
 
+    // Compute two candidate scales: one that fits all players (scaleForBox) and one
+    // that fits the full stage (scaleForStage). Using the minimum of both prevents the
+    // camera from zooming in past the point where the blast zones would be off-screen,
+    // even if all players are clustered in one corner.
     const scaleForBox = Math.min(viewportWidth / boxWidth, viewportHeight / boxHeight);
     const scaleForStage = Math.min(viewportWidth / STAGE.WIDTH, viewportHeight / STAGE.HEIGHT);
     const targetScale = Math.max(MIN_SCALE, Math.min(MAX_SCALE, Math.min(scaleForBox, scaleForStage)));

@@ -299,12 +299,14 @@ export class UIManager {
     let msg: string;
     if (!winnerId) {
       msg = 'Draw!';
-    } else if (winnerId === 'local-p1') {
-      msg = 'P1 Wins!';
-    } else if (winnerId === 'local-p2') {
-      msg = 'P2 Wins!';
     } else {
-      msg = `${winnerId} Wins!`;
+      const match = winnerId.match(/^local-p(\d+)$/);
+      if (match) {
+        const playerNum = match[1];
+        msg = `P${playerNum} Wins!`;
+      } else {
+        msg = `${winnerId} Wins!`;
+      }
     }
 
     this.overlay.innerHTML = `

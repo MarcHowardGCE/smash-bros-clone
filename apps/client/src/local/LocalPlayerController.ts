@@ -10,7 +10,11 @@ export class LocalPlayerController {
   constructor(config: LocalPlayerConfig) {
     this.playerId = config.playerId;
     this.slotIndex = config.slotIndex;
-    this.inputManager = new InputManager(config.keymap, config.playerId);
+    this.inputManager = new InputManager(
+      config.keymap,
+      config.playerId,
+      config.gamepadSource ?? null
+    );
   }
 
   pollInput(): InputEvent | null {

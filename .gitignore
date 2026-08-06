@@ -5,3 +5,7 @@ dist/
 *.tsbuildinfo
 /.sisyphus
 /.omo
+/.playwright-mcp
+/apps/client/test-results
+BUGS.md
+/test-results

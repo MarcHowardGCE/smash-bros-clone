@@ -5,10 +5,10 @@
 | Severity | Count |
 |----------|-------|
 | Blocker | 0 |
-| Major | 5 |
+| Major | 6 |
 | Minor | 2 |
 | Cosmetic | 1 |
-| **Total** | **8** |
+| **Total** | **9** |
 
 | Tier | Rows executed | PASS | FAIL | BLOCKED |
 |------|--------------|------|------|---------|
@@ -165,5 +165,21 @@ Each bug entry follows this template:
   3. Inspect browser console.
 - Expected: No resource load errors from static shell assets.
 - Actual: Console logs `Failed to load resource: the server responded with a status of 404 (Not Found)` for `/favicon.ico`.
+- Related ROADMAP gap (if any): None
+- Found in: Tier 1 (agent)
+
+---
+
+## [Major] Tier-1 blast-zone QA: KO/respawn telemetry not isolatable per boundary in natural-play run
+
+- Area: physics
+- Repro steps:
+  1. Start local environment with fallback launch:
+     - `pnpm -F @smash/server dev`
+     - `pnpm -F @smash/client dev --host 127.0.0.1 --port 5173`
+  2. Run Playwright Tier-1 boundary checklist attempt that drives local player toward each blast zone (`x=-300`, `x=1580`, `y=-200`, `y=820`) while recording stocks/respawn/invincibility telemetry.
+  3. Inspect measurement output in `.omo/evidence/task-4-local-playtest-qa.md`.
+- Expected: For each of 4 boundaries, capture one isolated KO event with stock decrement exactly 1, respawn delay ~2s, respawn near center, and invincibility ~180 frames.
+- Actual: Run captured non-isolated stock changes (e.g., delta=2 for horizontal runs), missed explicit boundary-cross/KO edge detection on several runs, and failed to capture top/bottom KOs within timeout under natural play constraints. Right-side run captured invincibility duration near expected (~192 ticks) but full per-boundary checklist remained unsatisfied.
 - Related ROADMAP gap (if any): None
 - Found in: Tier 1 (agent)

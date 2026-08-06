@@ -60,6 +60,8 @@ This starts both the game server (port 3001) and the client (port 5173), opens y
 | Grab | `C` or `P` |
 | Dodge / Roll | `Shift` + direction (while shielding) |
 
+**Xbox/Standard-mapping controllers** are auto-detected. Open the in-game **Controls** screen (from the local-play lobby) to view device assignments and rebind keys/buttons.
+
 ### Win condition
 
 Last player with stocks remaining wins. Default: **3 stocks per player**, no time limit.

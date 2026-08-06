@@ -100,13 +100,9 @@ The renderer (`apps/client`) is the biggest gap between "working prototype" and 
 
 `InputManager.ts` is solid — bitmask, pressed/released tracking, configurable keymap. Three specific gaps:
 
-### Gamepad support
+### ✅ Gamepad support (Implemented)
 
-**What's missing:** Keyboard only; `navigator.getGamepads()` is never polled.
-
-**Existing hooks:** `InputManager` assembles an `InputBitmask` (uint16 bitfield) — the rest of the pipeline doesn't care how bits get set. Gamepad axes/buttons just need to map to the same bitmask.
-
-**Approach:** Poll `navigator.getGamepads()` in the rAF loop (or a separate 60 Hz interval), map stick axes to directional bits and face buttons to `ATTACK`/`SPECIAL`/`SHIELD`/`GRAB`. No downstream changes needed.
+Implemented in `packages/gamepad-input`. Auto-detects Xbox/Standard-mapping controllers, supports up to 4 controllers simultaneously, and persists slot assignments across sessions. Open the **Controls** screen from the local-play lobby to view device assignments and rebind keys/buttons.
 
 ### Remapping UI
 
@@ -219,7 +215,7 @@ No persistence exists today. This is the lowest priority but required for a publ
 | Effort | High impact | Lower impact |
 |---|---|---|
 | **Low** | Short hop (wire `JumpsquatState`) · Landing lag · Shield break stun · Hit SFX (5 clips) | Damage % color progression · Blast-zone edge glow |
-| **Medium** | Gamepad support · Smash charge · Grab victim pinning · Stage background art · Shield bubble | Down Special counter logic · Reconnection handling · Settings persistence |
+| **Medium** | Smash charge · Grab victim pinning · Stage background art · Shield bubble | Down Special counter logic · Reconnection handling · Settings persistence |
 | **High** | Sprite art for fighters · Additional fighter (full move set) · Additional stage · Audio system + BGM | Ranked / matchmaking · Replays · Ledge grab |
 
 ### Recommended first milestone — "It feels like a game"
@@ -237,7 +233,6 @@ These six changes close the gap between "working prototype" and "feels like a re
 
 ### After milestone 1
 
-- Gamepad support (medium effort, opens the game to controller players)
 - Sprite art for the existing fighter (highest visual impact)
 - Second stage (low effort once art exists)
 - Reconnection handling (required before sharing publicly)

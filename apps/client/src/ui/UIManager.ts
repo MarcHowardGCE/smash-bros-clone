@@ -1,8 +1,9 @@
 import type { PlayerId } from '@smash/shared';
 import type { RenderState } from '../network/InterpolationBuffer.js';
 import type { FighterChoice } from '../local/types.js';
+import { renderControlsScreen } from './ControlsScreen.js';
 
-export type UIPhase = 'connecting' | 'lobby' | 'waiting' | 'countdown' | 'match' | 'result';
+export type UIPhase = 'connecting' | 'lobby' | 'waiting' | 'countdown' | 'match' | 'result' | 'controls';
 
 export class UIManager {
   private overlay: HTMLElement;
@@ -18,6 +19,7 @@ export class UIManager {
   onPlayAgain: (() => void) | null = null;
   onLocalPlay: (() => void) | null = null;
   onLocalPlayAgain: (() => void) | null = null;
+  onOpenControls: (() => void) | null = null;
 
   constructor(overlayElement: HTMLElement) {
     this.overlay = overlayElement;
@@ -68,6 +70,7 @@ export class UIManager {
              </div>`
         }
         <button id="local-play-btn" class="ui-btn" style="margin-top:24px">Local Play</button>
+        <button id="controls-btn" class="ui-btn" style="margin-top:12px">Controls</button>
       </div>`;
 
     document.getElementById('create-btn')?.addEventListener('click', () => this.onCreateRoom?.());
@@ -80,8 +83,20 @@ export class UIManager {
       this.showWaiting();
     });
     document.getElementById('local-play-btn')?.addEventListener('click', () => this.onLocalPlay?.());
+    document.getElementById('controls-btn')?.addEventListener('click', () => this.onOpenControls?.());
     document.getElementById('join-code')?.addEventListener('keydown', (e) => {
       if (e.key === 'Enter') document.getElementById('join-btn')?.click();
+    });
+  }
+
+  showControls(deps: { assignmentManager: any; preferenceStore: any }): void {
+    this.phase = 'controls';
+    this.hudPanel.style.display = 'none';
+    this.overlay.innerHTML = '';
+    
+    renderControlsScreen(this.overlay, {
+      ...deps,
+      onBack: () => this.showLobby(),
     });
   }
 

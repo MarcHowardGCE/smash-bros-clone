@@ -346,6 +346,10 @@ async function main() {
 		});
 	};
 
+	uiManager.onOpenControls = () => {
+		uiManager.showControls({ assignmentManager, preferenceStore: store });
+	};
+
 	(
 		window as Window & {
 			__smashDebug?: {

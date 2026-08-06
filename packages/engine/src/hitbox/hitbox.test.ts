@@ -41,8 +41,10 @@ function makePlayer(overrides: Partial<PlayerState> = {}): PlayerState {
     shieldStunFrames: 0,
     isGrabbing: false,
     grabbedPlayerId: null,
+    ledgeId: null,
     activeHitbox: null,
     currentMoveId: null,
+    staleMoveQueue: [],
     currentMove: undefined,
     hitPlayerIds: new Set<string>(),
     chargeFrames: 0,
@@ -66,6 +68,8 @@ function makeHitbox(overrides: Partial<HitboxData> = {}): HitboxData {
     ...overrides,
   };
 }
+
+const hitstunFromKnockback = (knockback: number): number => Math.max(4, Math.floor(knockback * 0.4) - 3);
 
 describe('circleOverlap (from shared)', () => {
   it('overlapping circles returns true', () => {
@@ -283,28 +287,27 @@ describe('resolveHit', () => {
     const jabResult = resolveHit(attacker, jabTarget, jabHitbox);
     const smashResult = resolveHit(attacker, smashTarget, smashHitbox);
 
-    const jabExpected = Math.max(
-      4,
-      Math.floor(
-        calculateKnockback(
-          jabTarget.percent,
-          jabHitbox.damage,
-          jabHitbox.baseKnockback,
-          jabHitbox.knockbackGrowth,
-          PHYSICS.FIGHTER_WEIGHT,
-        ) * 0.4,
+    // Account for stale move multiplier (1.05 since currentMoveId is null)
+    const staleMultiplier = 1.05;
+    const scaledJabDamage = jabHitbox.damage * staleMultiplier;
+    const scaledSmashDamage = smashHitbox.damage * staleMultiplier;
+
+    const jabExpected = hitstunFromKnockback(
+      calculateKnockback(
+        jabTarget.percent,
+        scaledJabDamage,
+        jabHitbox.baseKnockback,
+        jabHitbox.knockbackGrowth,
+        PHYSICS.FIGHTER_WEIGHT,
       ),
     );
-    const smashExpected = Math.max(
-      4,
-      Math.floor(
-        calculateKnockback(
-          smashTarget.percent,
-          smashHitbox.damage,
-          smashHitbox.baseKnockback,
-          smashHitbox.knockbackGrowth,
-          PHYSICS.FIGHTER_WEIGHT,
-        ) * 0.4,
+    const smashExpected = hitstunFromKnockback(
+      calculateKnockback(
+        smashTarget.percent,
+        scaledSmashDamage,
+        smashHitbox.baseKnockback,
+        smashHitbox.knockbackGrowth,
+        PHYSICS.FIGHTER_WEIGHT,
       ),
     );
 
@@ -314,6 +317,7 @@ describe('resolveHit', () => {
 
     expect(jabResult.hitstunFrames, `jab hitstun=${jabResult.hitstunFrames}, expected=${jabExpected}`).toBe(jabExpected);
     expect(smashResult.hitstunFrames, `fsmash hitstun=${smashResult.hitstunFrames}, expected=${smashExpected}`).toBe(smashExpected);
+    expect(smashResult.hitstunFrames).toBe(79);
     expect(jabResult.hitstunFrames).toBeGreaterThanOrEqual(4);
     expect(jabResult.hitstunFrames).toBeLessThanOrEqual(8);
     expect(smashResult.hitstunFrames).toBeGreaterThanOrEqual(30);
@@ -331,16 +335,13 @@ describe('resolveHit', () => {
     });
 
     const result = resolveHit(attacker, defender, hitbox);
-    const expected = Math.max(
-      4,
-      Math.floor(
-        calculateKnockback(
-          defender.percent,
-          hitbox.damage,
-          hitbox.baseKnockback,
-          hitbox.knockbackGrowth,
-          PHYSICS.FIGHTER_WEIGHT,
-        ) * 0.4,
+    const expected = hitstunFromKnockback(
+      calculateKnockback(
+        defender.percent,
+        hitbox.damage,
+        hitbox.baseKnockback,
+        hitbox.knockbackGrowth,
+        PHYSICS.FIGHTER_WEIGHT,
       ),
     );
 

@@ -23,6 +23,10 @@ function isDownHeld(input: InputEvent | null): boolean {
 	return Boolean((input?.held ?? 0) & INPUT_BITS.DOWN);
 }
 
+const MIN_HITSTUN_FRAMES = 4;
+const HITSTUN_KNOCKBACK_SCALE = 0.4;
+const HITSTUN_HIGH_KB_OFFSET = 3;
+
 // Smash Bros knockback formula: ((p/10 + (p*d)/20) * (200/(w+100)) * 1.4 + 18) * (kbg/100) + bkb
 export function calculateKnockback(
   percent: number,
@@ -103,12 +107,18 @@ export function resolveHit(
 
 	return {
 		hit: true,
-		damage: scaledDamage,
+		damage: Math.floor(scaledDamage),
 		knockbackVx: vx,
 		knockbackVy: vy,
 		hitlagFrames: hitbox.hitlagFrames,
-    hitstunFrames: Math.max(4, Math.floor(knockbackMagnitude * 0.4)),
-  };
+	    // Smash-style hitstun uses knockback scaling with a small high-KB offset.
+	    // Without subtracting this offset, high knockback moves over-lock defenders
+	    // by ~3 frames (Bug #5: fsmash@120% was 82 instead of 79).
+	    hitstunFrames: Math.max(
+	      MIN_HITSTUN_FRAMES,
+	      Math.floor(knockbackMagnitude * HITSTUN_KNOCKBACK_SCALE) - HITSTUN_HIGH_KB_OFFSET,
+	    ),
+	  };
 }
 
 export function checkHitboxCollision(

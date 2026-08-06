@@ -11,6 +11,7 @@ export class LocalMatch {
   private lastTime = 0;
   private accumulator = 0;
   private readonly TICK_MS = 1000 / 60;
+  private latestSnapshot: StateSnapshot | null = null;
 
   onSnapshot: ((snapshot: StateSnapshot) => void) | null = null;
 
@@ -39,6 +40,10 @@ export class LocalMatch {
     }
   }
 
+  getLatestSnapshot(): StateSnapshot | null {
+    return this.latestSnapshot;
+  }
+
   private loop = (now: number): void => {
     this.animationFrameId = requestAnimationFrame(this.loop);
     this.accumulator += now - this.lastTime;
@@ -62,6 +67,7 @@ export class LocalMatch {
     const state = this.engine.tickGame(inputs);
 
     const snapshot: StateSnapshot = this.engine.getSnapshot(performance.now(), {});
+    this.latestSnapshot = snapshot;
     this.onSnapshot?.(snapshot);
 
     if (state.matchPhase === 'result') {

@@ -350,6 +350,14 @@ async function main() {
 		uiManager.showControls({ assignmentManager, preferenceStore: store });
 	};
 
+	const getDebugSnapshot = (): StateSnapshot | null => {
+		if (isLocalMode) {
+			return localMatch?.getLatestSnapshot() ?? null;
+		}
+
+		return gameClient.getLatestSnapshot();
+	};
+
 	(
 		window as Window & {
 			__smashDebug?: {
@@ -363,7 +371,7 @@ async function main() {
 		}
 	).__smashDebug = {
 		sendInput: (input) => gameClient.debugSendInput(input),
-		getSnapshot: () => gameClient.getLatestSnapshot(),
+		getSnapshot: getDebugSnapshot,
 	};
 
 	if (import.meta.env.DEV) {
@@ -371,7 +379,7 @@ async function main() {
 			window as Window & {
 				__DEBUG_GAME_STATE__?: () => ReturnType<GameClient["getLatestSnapshot"]>;
 			}
-		).__DEBUG_GAME_STATE__ = () => gameClient.getLatestSnapshot?.() ?? null;
+		).__DEBUG_GAME_STATE__ = getDebugSnapshot;
 	}
 
 	window.addEventListener("beforeunload", () => {

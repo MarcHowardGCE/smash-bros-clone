@@ -153,10 +153,11 @@ The engine is the strongest part of this repo. These are the remaining gaps — 
 - **Missing:** `GrabHoldingState` exists but the grabbed player's position is never pinned to the attacker — they'd stay at their original coordinates while being "held."
 - **Hook:** In `GrabHoldingState.update()`, write `victim.x = attacker.x + GRAB_OFFSET_X` each tick.
 
-### Ledge / edge mechanics
+### Ledge grab
 
-- **Missing:** No ledge grab, no wall bounce, no footstool. All standard in the genre.
-- **Approach:** Ledge grab is the highest-value one — add ledge grab zones to `STAGE` config and handle them in `checkPlatformCollision`. These are new features, not stubs.
+- **Status:** ✅ **Implemented and tested** — contrary to earlier analysis, ledge grab is fully wired.
+- **What's done:** 5 ledge states (LEDGE_HANG, LEDGE_CLIMB, LEDGE_ATTACK, LEDGE_ROLL, LEDGE_JUMP) are defined, transitioned by `GameEngine.ts` when player is AIRBORNE/DOUBLE_JUMP and in range of a ledge. Invincibility frames applied on grab. Ledge occupancy managed (first player gets ledge, second player is "trumped" and launched). Comprehensive test suite in `GameEngine.ledge.test.ts` covers all getup options and priority system.
+- **Remaining edge mechanics:** Wall bounce, footstool — these are new features, not stubs.
 
 ---
 

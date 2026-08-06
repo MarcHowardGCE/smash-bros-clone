@@ -56,12 +56,12 @@ describe('UIManager', () => {
 
     it('should set phase to result', () => {
       uiManager.showLocalResult('local-p2');
-      expect(uiManager.phase).toBe('result');
+      expect((uiManager as any).phase).toBe('result');
     });
 
     it('should hide hud panel', () => {
       uiManager.showLocalResult('local-p1');
-      expect(uiManager.hudPanel.style.display).toBe('none');
+      expect((uiManager as any).hudPanel.style.display).toBe('none');
     });
   });
 

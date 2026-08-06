@@ -1,10 +1,18 @@
 import type { PlayerId, StateSnapshot } from "@smash/shared";
 import { STAGE } from "@smash/shared";
+import { GamepadPoller, GamepadPreferenceStore } from "@smash/gamepad-input";
 import { Application } from "pixi.js";
-import { DEFAULT_KEYMAP_P1, DEFAULT_KEYMAP_P2 } from "./input/keymaps.js";
+import {
+	DEFAULT_KEYMAP_P1,
+	DEFAULT_KEYMAP_P2,
+	DEFAULT_KEYMAP_P3,
+	DEFAULT_KEYMAP_P4,
+} from "./input/keymaps.js";
+import { ControllerAssignmentManager } from "./input/ControllerAssignmentManager.js";
+import { GamepadInputSource } from "./input/GamepadInputSource.js";
 import { LocalMatch } from "./local/LocalMatch.js";
 import { LocalPlayerController } from "./local/LocalPlayerController.js";
-import type { FighterChoice } from "./local/types.js";
+import type { FighterChoice, LocalPlayerConfig } from "./local/types.js";
 import { GameClient } from "./network/GameClient.js";
 import type {
 	RenderPlayerState,
@@ -33,6 +41,9 @@ const AVAILABLE_FIGHTERS: FighterChoice[] = [
 
 async function main() {
 	injectStyles();
+	const poller = new GamepadPoller();
+	const store = new GamepadPreferenceStore(localStorage);
+	const assignmentManager = new ControllerAssignmentManager(poller, store, 4);
 
 	const app = new Application();
 	await app.init({
@@ -75,6 +86,8 @@ async function main() {
 	}
 
 	const uiManager = new UIManager(uiOverlay);
+	(uiManager as UIManager & { _gamepadPoller?: GamepadPoller })._gamepadPoller =
+		poller;
 	let myPlayerId: PlayerId | null = null;
 	let isLocalMode = false;
 	let localMatch: LocalMatch | null = null;
@@ -227,28 +240,51 @@ async function main() {
 		window.location.href = window.location.pathname;
 	};
 
-	const startLocalMatch = (
-		_p1Choice: FighterChoice,
-		_p2Choice: FighterChoice,
-	): void => {
+	const getLocalPlayerCount = (): number => {
+		return Math.max(
+			2,
+			Math.min(4, 1 + assignmentManager.getAssignments().size),
+		);
+	};
+
+	const startLocalMatch = (): void => {
 		cleanupLocalMode();
 
 		if (!camera) {
 			camera = new Camera(layers.game);
 		}
 
-		const p1Controller = new LocalPlayerController({
-			playerId: "local-p1",
-			keymap: DEFAULT_KEYMAP_P1,
-			slotIndex: 0,
-		});
-		const p2Controller = new LocalPlayerController({
-			playerId: "local-p2",
-			keymap: DEFAULT_KEYMAP_P2,
-			slotIndex: 1,
-		});
+		const playerCount = getLocalPlayerCount();
+		const assignments = assignmentManager.getAssignments();
+		const configs: LocalPlayerConfig[] = [];
+		for (let i = 0; i < playerCount; i += 1) {
+			const assignment = assignments.get(i);
+			const gamepadSource = assignment
+				? new GamepadInputSource(poller, assignment.gamepadIndex)
+				: undefined;
 
-		localMatch = new LocalMatch([p1Controller, p2Controller]);
+			const keymap =
+				i === 0
+					? DEFAULT_KEYMAP_P1
+					: i === 1
+						? DEFAULT_KEYMAP_P2
+						: i === 2
+							? DEFAULT_KEYMAP_P3
+							: DEFAULT_KEYMAP_P4;
+
+			configs.push({
+				playerId: `local-p${i + 1}`,
+				keymap,
+				slotIndex: i,
+				gamepadSource,
+			});
+		}
+
+		const controllers = configs.map((config) =>
+			new LocalPlayerController(config),
+		);
+
+		localMatch = new LocalMatch(controllers);
 		localMatch.onSnapshot = (snapshot) => {
 			const renderState = snapshotToRenderState(snapshot);
 			updateRenderers(renderState);
@@ -292,8 +328,9 @@ async function main() {
 			gameClient.disconnect();
 		}
 
-		uiManager.showCharacterSelect(AVAILABLE_FIGHTERS, 2, (choices) => {
-			startLocalMatch(choices[0], choices[1]);
+		const playerCount = getLocalPlayerCount();
+		uiManager.showCharacterSelect(AVAILABLE_FIGHTERS, playerCount, (_choices) => {
+			startLocalMatch();
 		});
 	};
 
@@ -303,8 +340,9 @@ async function main() {
 			renderer.destroy();
 		}
 		fighterRenderers.clear();
-		uiManager.showCharacterSelect(AVAILABLE_FIGHTERS, 2, (choices) => {
-			startLocalMatch(choices[0], choices[1]);
+		const playerCount = getLocalPlayerCount();
+		uiManager.showCharacterSelect(AVAILABLE_FIGHTERS, playerCount, (_choices) => {
+			startLocalMatch();
 		});
 	};
 

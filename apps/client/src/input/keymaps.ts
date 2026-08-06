@@ -27,3 +27,25 @@ export const DEFAULT_KEYMAP_P2: Record<string, InputBitmask> = {
   KeyP: INPUT_BITS.SHIELD,
   Semicolon: INPUT_BITS.GRAB,
 };
+
+export const DEFAULT_KEYMAP_P3: Record<string, InputBitmask> = {
+  Numpad4: INPUT_BITS.LEFT,
+  Numpad6: INPUT_BITS.RIGHT,
+  Numpad8: INPUT_BITS.JUMP,
+  Numpad5: INPUT_BITS.DOWN,
+  Numpad1: INPUT_BITS.ATTACK,
+  Numpad2: INPUT_BITS.SPECIAL,
+  Numpad0: INPUT_BITS.SHIELD,
+  Numpad3: INPUT_BITS.GRAB,
+};
+
+export const DEFAULT_KEYMAP_P4: Record<string, InputBitmask> = {
+  KeyF: INPUT_BITS.LEFT,
+  KeyH: INPUT_BITS.RIGHT,
+  KeyT: INPUT_BITS.JUMP,
+  KeyG: INPUT_BITS.DOWN,
+  KeyR: INPUT_BITS.ATTACK,
+  KeyY: INPUT_BITS.SPECIAL,
+  KeyV: INPUT_BITS.SHIELD,
+  KeyB: INPUT_BITS.GRAB,
+};

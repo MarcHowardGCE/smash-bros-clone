@@ -52,10 +52,10 @@ describe('LocalMatch N-player support (up to 4 controllers)', () => {
 
     // Verify engine was initialized with 4 playerIds
     expect(match['controllers'].length).toBe(4);
-    expect(match['controllers'][0].playerId).toBe('local-p1');
-    expect(match['controllers'][1].playerId).toBe('local-p2');
-    expect(match['controllers'][2].playerId).toBe('local-p3');
-    expect(match['controllers'][3].playerId).toBe('local-p4');
+    expect(match['controllers'][0]?.playerId).toBe('local-p1');
+    expect(match['controllers'][1]?.playerId).toBe('local-p2');
+    expect(match['controllers'][2]?.playerId).toBe('local-p3');
+    expect(match['controllers'][3]?.playerId).toBe('local-p4');
 
     // Capture a snapshot to verify 4 players in game state
     let snapshotCaptured: any = null;

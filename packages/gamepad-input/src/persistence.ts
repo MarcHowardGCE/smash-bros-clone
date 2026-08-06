@@ -33,6 +33,8 @@ export interface SavedAssignment {
   gamepadId: string;
   /** Last slot index this gamepad was assigned to (0–3) */
   lastSlotIndex: number;
+  /** Optional custom button remapping: standard button index → action name */
+  buttonRemap?: Record<number, string>;
 }
 
 /**

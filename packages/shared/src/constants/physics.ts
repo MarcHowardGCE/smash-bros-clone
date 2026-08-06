@@ -1,3 +1,5 @@
+export const SMASH_CHARGE_MAX_FRAMES = 60;
+
 export const PHYSICS = {
   GRAVITY: 0.65,                    // px/frame² — tuned for a floaty but responsive jump arc
   TERMINAL_VELOCITY: 18,            // px/frame — caps fall speed; prevents tunneling through thin platforms
@@ -14,6 +16,12 @@ export const PHYSICS = {
   JUMPSQUAT_FRAMES: 3,              // frames of crouch before leaving ground (authentic Smash timing)
   HURTBOX_RADIUS: 28,               // px; fighter collision sphere radius used for both hurt and platform checks
   FIGHTER_WEIGHT: 100,              // knockback formula weight divisor; higher = less knockback taken
+  TUMBLE_THRESHOLD: 80,             // knockback magnitude threshold for tumble state (SSB-style)
+  TECH_WINDOW_FRAMES: 20,           // buffered tech input window before landing while tumbling
+  TECH_NEUTRAL_FRAMES: 26,          // neutral tech total vulnerable lock duration (invincible during animation)
+  TECH_ROLL_FRAMES: 40,             // directional tech roll total animation duration
+  TECH_MISS_LANDING_FRAMES: 30,     // missed-tech prone/hard-landing lock duration
+  TECH_LOCKOUT_FRAMES: 40,          // cooldown after failed tech attempt before another buffer is allowed
   SHIELD_MAX_HEALTH: 100,           // shield starts full; reaching 0 triggers shield break stun
   SHIELD_DRAIN_PER_FRAME: 0.4,      // HP lost per frame while shielding (~250 frames before breaking)
   SHIELD_REGEN_PER_FRAME: 0.2,      // HP gained per frame when not shielding (slower than drain by design)

@@ -27,6 +27,8 @@ function clamp(value: number, min: number, max: number): number {
 	return Math.max(min, Math.min(max, value));
 }
 
+const MAX_DI_ANGLE_RADIANS = 0.17;
+
 function isHeld(input: InputEvent, bit: number): boolean {
 	return (input.held & bit) !== 0;
 }
@@ -66,19 +68,14 @@ function crossesPlatformTop(player: PlayerState, platformY: number): boolean {
 
 // Applies per-frame gravitational acceleration. Only runs when airborne — grounded
 // players are held at platform height by checkPlatformCollision instead.
-// isFastFalling multiplies vy when already moving downward (vy > 0), simulating
-// the player choosing to accelerate toward the ground. The FAST_FALL_MULTIPLIER
-// check on vy > 0 prevents fast fall from applying on the way up.
+// Fast-fall speed is now a one-time set in applyFastFall(); once latched, gravity
+// no longer accelerates vy further during that airborne segment.
 export function applyGravity(player: PlayerState): PlayerState {
 	if (player.isGrounded) {
 		return player;
 	}
 
-	let vy = player.vy + PHYSICS.GRAVITY;
-
-	if (player.isFastFalling && vy > 0) {
-		vy *= PHYSICS.FAST_FALL_MULTIPLIER;
-	}
+	const vy = player.isFastFalling ? player.vy : player.vy + PHYSICS.GRAVITY;
 
 	return {
 		...player,
@@ -90,6 +87,14 @@ export function applyMovement(
 	player: PlayerState,
 	input: InputEvent,
 ): PlayerState {
+	if (player.hitstunFramesRemaining > 0) {
+		return {
+			...player,
+			x: player.x + player.vx,
+			y: player.y + player.vy,
+		};
+	}
+
 	const movingLeft = isHeld(input, INPUT_BITS.LEFT);
 	const movingRight = isHeld(input, INPUT_BITS.RIGHT);
 	let vx = player.vx;
@@ -142,6 +147,62 @@ export function applyMovement(
 	};
 }
 
+export function applyKnockbackDecay(player: PlayerState): PlayerState {
+	if (player.hitstunFramesRemaining <= 0) {
+		return player;
+	}
+
+	return {
+		...player,
+		vx: player.vx * 0.95,
+	};
+}
+
+export function applyDI(
+	knockbackAngle: number,
+	inputX: number,
+	inputY: number,
+	_facing: number,
+): number {
+	if (inputX === 0 && inputY === 0) {
+		return knockbackAngle;
+	}
+
+	const inputMagnitude = Math.hypot(inputX, inputY);
+	if (inputMagnitude === 0) {
+		return knockbackAngle;
+	}
+
+	const normalizedX = inputX / inputMagnitude;
+	const normalizedY = inputY / inputMagnitude;
+
+	const directionX = Math.cos(knockbackAngle);
+	const directionY = Math.sin(knockbackAngle);
+	const perpendicularX = -directionY;
+	const perpendicularY = directionX;
+
+	const perpendicularProjection = normalizedX * perpendicularX + normalizedY * perpendicularY;
+	const parallelProjection = normalizedX * directionX + normalizedY * directionY;
+	const projectionSum =
+		Math.abs(perpendicularProjection) + Math.abs(parallelProjection);
+	const perpendicularComponent =
+		projectionSum === 0
+			? 0
+			: clamp(
+					perpendicularProjection / projectionSum,
+		-1,
+		1,
+			  );
+
+	const angleShift = clamp(
+		perpendicularComponent * MAX_DI_ANGLE_RADIANS,
+		-MAX_DI_ANGLE_RADIANS,
+		MAX_DI_ANGLE_RADIANS,
+	);
+
+	return knockbackAngle + angleShift;
+}
+
 // Sets the initial upward velocity for a jump. Called by GameEngine when the
 // JUMPSQUAT → AIRBORNE transition fires (full hop or short hop is determined by
 // how long JUMP was held, evaluated in JumpsquatState before the transition).
@@ -188,7 +249,7 @@ export function resolveJump(
 // Fast fall activates when the player holds DOWN while airborne and already moving
 // downward (vy >= 0). The vy >= 0 guard prevents fast fall from triggering on the
 // way up — it would cancel the jump arc. Once activated, isFastFalling is latched
-// true and vy is set to a high fraction of TERMINAL_VELOCITY for instant fall speed.
+// true and vy is set once to a fixed fraction of TERMINAL_VELOCITY.
 export function applyFastFall(
 	player: PlayerState,
 	input: InputEvent,
@@ -205,7 +266,7 @@ export function applyFastFall(
 	return {
 		...player,
 		isFastFalling: true,
-		vy: PHYSICS.TERMINAL_VELOCITY * 0.8,
+		vy: PHYSICS.TERMINAL_VELOCITY * 0.9,
 	};
 }
 
@@ -258,6 +319,10 @@ export function checkPlatformCollision(
 	}
 
 	for (const platform of stage.platforms) {
+		if (player.hitstunFramesRemaining > 0 && !platform.solid) {
+			continue;
+		}
+
 		if (
 			isWithinPlatformBounds(player.x, platform) &&
 			crossesPlatformTop(player, platform.y)
@@ -310,8 +375,10 @@ export function applyMovementInput(
 			}
 		: DEFAULT_STAGE;
 
-	return checkPlatformCollision(
-		applyMovement(applyGravity(player), input),
-		stage,
+	return applyKnockbackDecay(
+		checkPlatformCollision(
+			applyMovement(applyGravity(player), input),
+			stage,
+		),
 	);
 }

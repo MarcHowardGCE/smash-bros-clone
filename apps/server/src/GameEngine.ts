@@ -1,6 +1,7 @@
 import {
 	applyFastFall,
 	applyGravity,
+	applyDI,
 	applyMovement,
 	checkHitboxCollision,
 	checkLedgeGrab,
@@ -14,12 +15,14 @@ import {
 	startJump,
 } from "@smash/engine";
 import {
+	knockbackAngleToVelocity,
 	type GameState,
 	INPUT_BITS,
 	type InputEvent,
 	MATCH_CONFIG,
 	MoveId,
 	PHYSICS,
+	SMASH_CHARGE_MAX_FRAMES,
 	type PlayerId,
 	type PlayerState,
 	PlayerStateEnum,
@@ -44,6 +47,8 @@ function clonePlayer(player: PlayerState): PlayerState {
 	return {
 		...player,
 		activeHitbox: player.activeHitbox ? { ...player.activeHitbox } : null,
+		hitPlayerIds: new Set(player.hitPlayerIds),
+		staleMoveQueue: [...(player.staleMoveQueue ?? [])],
 	};
 }
 
@@ -92,6 +97,7 @@ export interface GameEngineOptions {
 export class GameEngine {
 	private state: GameState;
 	private readonly fsmControllers = new Map<PlayerId, FSMController>();
+	private readonly techAttemptBuffered = new Map<PlayerId, boolean>();
 	private ledgeState: Map<
 		string,
 		{ occupantId: string | null; cooldowns: Map<string, number> }
@@ -111,9 +117,14 @@ export class GameEngine {
 				vy: 0,
 				facing: index % 2 === 0 ? 1 : -1,
 				state: PlayerStateEnum.AIRBORNE,
-				stateFrame: 0,
-				hitlagFramesRemaining: 0,
-				hitstunFramesRemaining: 0,
+					stateFrame: 0,
+					hitlagFramesRemaining: 0,
+					sdiInputCooldown: 0,
+					hitstunFramesRemaining: 0,
+				isTumbling: false,
+				techWindowFrames: 0,
+				techLockoutFrames: 0,
+				landingLagFrames: 0,
 				percent: 0,
 				stocks: MATCH_CONFIG.STOCKS,
 				isGrounded: false,
@@ -124,14 +135,24 @@ export class GameEngine {
 				invincibilityFrames: 0,
 				isShielding: false,
 				shieldHealth: PHYSICS.SHIELD_MAX_HEALTH,
+				shieldStunFrames: 0,
 				isGrabbing: false,
 				grabbedPlayerId: null,
 				ledgeId: null,
 				activeHitbox: null,
 				currentMoveId: null,
+				currentMove: undefined,
+				hitPlayerIds: new Set<string>(),
+					chargeFrames: 0,
+					staleMoveQueue: [],
+					lastHitByFacing: null,
+					lastHitKnockbackAngle: null,
+					pendingKnockbackVx: null,
+					pendingKnockbackVy: null,
 				respawnTimer: 0,
 			};
 
+				this.techAttemptBuffered.set(id, false);
 				this.fsmControllers.set(
 					id,
 					new FSMController(PlayerStateEnum.AIRBORNE),
@@ -182,7 +203,7 @@ export class GameEngine {
 			);
 		}
 
-		this.applyHitDetection(players);
+		this.applyHitDetection(players, inputs);
 		this.applyKnockouts(players);
 		this.tickLedgeCooldowns();
 
@@ -258,28 +279,50 @@ export class GameEngine {
 		players: Record<PlayerId, PlayerState>,
 	): PlayerState {
 		let player = clonePlayer(current);
+		player = {
+			...player,
+			chargeFrames: Number.isFinite(player.chargeFrames) ? player.chargeFrames : 0,
+		};
+		player = this.updateTechFrameCounters(playerId, player, input);
 
 		if (player.stocks <= 0) {
 			return {
 				...player,
 				activeHitbox: null,
 				currentMoveId: null,
+				currentMove: undefined,
+				chargeFrames: 0,
+				sdiInputCooldown: 0,
 				vx: 0,
 				vy: 0,
 			};
 		}
 
 		if (player.respawnTimer > 0) {
+			this.techAttemptBuffered.set(playerId, false);
 			return {
 				...player,
 				respawnTimer: player.respawnTimer - 1,
 				activeHitbox: null,
 				currentMoveId: null,
-				hitlagFramesRemaining: 0,
-				hitstunFramesRemaining: 0,
-				vx: 0,
-				vy: 0,
-			};
+				currentMove: undefined,
+				hitPlayerIds: new Set<string>(),
+				chargeFrames: 0,
+					hitlagFramesRemaining: 0,
+					sdiInputCooldown: 0,
+					hitstunFramesRemaining: 0,
+				isTumbling: false,
+				techWindowFrames: 0,
+				techLockoutFrames: 0,
+					landingLagFrames: 0,
+					sdiInputCooldown: 0,
+					lastHitByFacing: null,
+					lastHitKnockbackAngle: null,
+					pendingKnockbackVx: null,
+					pendingKnockbackVy: null,
+					vx: 0,
+					vy: 0,
+				};
 		}
 
 		const ledgeEligibleStates: string[] = [
@@ -316,11 +359,15 @@ export class GameEngine {
 						vx: popVx,
 						vy: PHYSICS.LEDGE_TRUMP_POP_VY,
 						isGrounded: false,
-						isInvincible: true,
-						invincibilityFrames: PHYSICS.LEDGE_TRUMP_INVINCIBILITY_FRAMES,
-						activeHitbox: null,
-						currentMoveId: null,
-					};
+					isInvincible: true,
+					invincibilityFrames: PHYSICS.LEDGE_TRUMP_INVINCIBILITY_FRAMES,
+					activeHitbox: null,
+					currentMoveId: null,
+					currentMove: undefined,
+					landingLagFrames: 0,
+					hitPlayerIds: new Set<string>(),
+					chargeFrames: 0,
+				};
 					player = this.snapPlayerToLedge(player, ledge.id);
 				}
 			}
@@ -334,6 +381,8 @@ export class GameEngine {
 		const beforeTick = clonePlayer(player);
 		let nextPlayer = controller.tick(player, input);
 		nextPlayer = this.applyStateTransitions(beforeTick, nextPlayer, input);
+		nextPlayer = this.applyDirectionalInfluenceOnHitlagEnd(player, nextPlayer, input);
+		nextPlayer = this.tickLandingLagCounter(nextPlayer);
 		const gainedInvincibilityThisTick =
 			!current.isInvincible &&
 			nextPlayer.isInvincible &&
@@ -348,6 +397,7 @@ export class GameEngine {
 		}
 
 		nextPlayer = this.applyPhysicsToPlayer(
+			playerId,
 			nextPlayer,
 			input,
 			droppedFromLedgeThisTick,
@@ -367,6 +417,10 @@ export class GameEngine {
 					nextPlayer.shieldHealth - PHYSICS.SHIELD_DRAIN_PER_FRAME,
 				),
 			};
+
+			if (nextPlayer.shieldHealth <= 0 && player.shieldHealth > 0) {
+				nextPlayer = this.applyShieldBreak(nextPlayer);
+			}
 		} else {
 			nextPlayer = {
 				...nextPlayer,
@@ -375,8 +429,47 @@ export class GameEngine {
 					PHYSICS.SHIELD_MAX_HEALTH,
 					nextPlayer.shieldHealth + PHYSICS.SHIELD_REGEN_PER_FRAME,
 				),
+				shieldStunFrames: 0,
 			};
 		}
+
+		if (!nextPlayer.isTumbling) {
+			this.techAttemptBuffered.set(playerId, false);
+			nextPlayer = {
+				...nextPlayer,
+				techWindowFrames: 0,
+			};
+		}
+
+		return nextPlayer;
+	}
+
+	private updateTechFrameCounters(
+		playerId: PlayerId,
+		player: PlayerState,
+		input: InputEvent | null,
+	): PlayerState {
+		let nextPlayer: PlayerState = {
+			...player,
+			techWindowFrames: Math.max(0, player.techWindowFrames - 1),
+			techLockoutFrames: Math.max(0, player.techLockoutFrames - 1),
+		};
+
+		const shouldStartTechWindow =
+			isPressed(input, INPUT_BITS.SHIELD) &&
+			!nextPlayer.isGrounded &&
+			nextPlayer.isTumbling &&
+			nextPlayer.techLockoutFrames === 0;
+
+		if (!shouldStartTechWindow) {
+			return nextPlayer;
+		}
+
+		this.techAttemptBuffered.set(playerId, true);
+		nextPlayer = {
+			...nextPlayer,
+			techWindowFrames: PHYSICS.TECH_WINDOW_FRAMES,
+		};
 
 		return nextPlayer;
 	}
@@ -450,14 +543,15 @@ export class GameEngine {
 			if (previous.ledgeId) {
 				this.releaseLedge(player.id, previous.ledgeId);
 			}
-			nextPlayer = {
-				...nextPlayer,
-				ledgeId: null,
-				y: STAGE.MAIN_PLATFORM.y - PHYSICS.HURTBOX_RADIUS,
-				vy: 0,
-				isGrounded: true,
-			};
-		}
+				nextPlayer = {
+					...nextPlayer,
+					ledgeId: null,
+					y: STAGE.MAIN_PLATFORM.y - PHYSICS.HURTBOX_RADIUS,
+					vy: 0,
+					isGrounded: true,
+					isFastFalling: false,
+				};
+			}
 
 		if (
 			previous.state === PlayerStateEnum.LEDGE_HANG &&
@@ -479,9 +573,28 @@ export class GameEngine {
 				player.state === PlayerStateEnum.GRAB_HOLDING) &&
 			previous.state !== player.state
 		) {
+			const moveId = this.selectMoveId(player, input);
 			nextPlayer = {
 				...nextPlayer,
-				currentMoveId: this.selectMoveId(player, input),
+				currentMoveId: moveId,
+				currentMove: {
+					landingLag: getMoveData(moveId).landingLag,
+				},
+				hitPlayerIds: new Set<string>(),
+				chargeFrames: 0,
+			};
+		}
+
+		const leftRegularAttackState =
+			(previous.state === PlayerStateEnum.ATTACK ||
+				previous.state === PlayerStateEnum.AIR_ATTACK) &&
+			player.state !== PlayerStateEnum.ATTACK &&
+			player.state !== PlayerStateEnum.AIR_ATTACK;
+
+		if (leftRegularAttackState) {
+			nextPlayer = {
+				...nextPlayer,
+				hitPlayerIds: new Set<string>(),
 			};
 		}
 
@@ -491,6 +604,9 @@ export class GameEngine {
 			nextPlayer = {
 				...nextPlayer,
 				currentMoveId: null,
+				currentMove: undefined,
+				hitPlayerIds: new Set<string>(),
+				chargeFrames: 0,
 			};
 		}
 
@@ -498,7 +614,19 @@ export class GameEngine {
 			nextPlayer = {
 				...nextPlayer,
 				currentMoveId: null,
+				currentMove: undefined,
+				chargeFrames: 0,
 				activeHitbox: null,
+			};
+		}
+
+		if (
+			previous.state === PlayerStateEnum.HITSTUN &&
+			player.state === PlayerStateEnum.AIRBORNE
+		) {
+			nextPlayer = {
+				...nextPlayer,
+				isTumbling: false,
 			};
 		}
 
@@ -506,6 +634,7 @@ export class GameEngine {
 	}
 
 	private applyPhysicsToPlayer(
+		playerId: PlayerId,
 		player: PlayerState,
 		input: InputEvent | null,
 		preventImmediateFastFall = false,
@@ -526,10 +655,24 @@ export class GameEngine {
 				...nextPlayer,
 				vx: nextPlayer.vx * PHYSICS.GROUND_FRICTION,
 			};
+		} else if (player.hitstunFramesRemaining > 0) {
+			const withGravity = applyGravity(nextPlayer);
+			nextPlayer = checkPlatformCollision(
+				{
+					...withGravity,
+					x: withGravity.x + withGravity.vx,
+					y: withGravity.y + withGravity.vy,
+				},
+				DEFAULT_STAGE,
+			);
 		} else if (
 			player.state !== PlayerStateEnum.SHIELD &&
 			player.state !== PlayerStateEnum.ROLL &&
-			player.state !== PlayerStateEnum.SPOT_DODGE
+			player.state !== PlayerStateEnum.SPOT_DODGE &&
+			player.state !== PlayerStateEnum.TECH_NEUTRAL &&
+			player.state !== PlayerStateEnum.TECH_ROLL &&
+			player.state !== PlayerStateEnum.HARD_LANDING &&
+			player.state !== PlayerStateEnum.LANDING_LAG
 		) {
 			nextPlayer = preventImmediateFastFall
 				? checkPlatformCollision(
@@ -539,6 +682,32 @@ export class GameEngine {
 				: this.applyMovementPipeline(nextPlayer, effectiveInput);
 		}
 
+		const landedThisTick = !player.isGrounded && nextPlayer.isGrounded;
+		if (landedThisTick && player.isTumbling) {
+			nextPlayer = this.resolveTumbleLanding(playerId, nextPlayer, effectiveInput);
+		}
+
+			if (landedThisTick && player.state === PlayerStateEnum.AIR_ATTACK) {
+				const landingLagFrames = player.currentMove?.landingLag ?? 0;
+				nextPlayer = {
+					...nextPlayer,
+					state:
+						landingLagFrames > 0
+							? PlayerStateEnum.LANDING_LAG
+							: PlayerStateEnum.IDLE,
+					stateFrame: 0,
+					landingLagFrames,
+					sdiInputCooldown: 0,
+				};
+			}
+
+			if (landedThisTick && player.state !== PlayerStateEnum.AIR_ATTACK) {
+				nextPlayer = {
+					...nextPlayer,
+					sdiInputCooldown: 0,
+				};
+			}
+
 		if (nextPlayer.hitstunFramesRemaining > 0) {
 			nextPlayer = {
 				...nextPlayer,
@@ -547,6 +716,26 @@ export class GameEngine {
 		}
 
 		return nextPlayer;
+	}
+
+	private tickLandingLagCounter(player: PlayerState): PlayerState {
+		if (player.state !== PlayerStateEnum.LANDING_LAG) {
+			return player.landingLagFrames > 0
+				? {
+						...player,
+						landingLagFrames: 0,
+				  }
+				: player;
+		}
+
+		if (player.landingLagFrames <= 0) {
+			return player;
+		}
+
+		return {
+			...player,
+			landingLagFrames: player.landingLagFrames - 1,
+		};
 	}
 
 	private applyMovementPipeline(
@@ -569,6 +758,56 @@ export class GameEngine {
 			applyMovement(applyFastFall(applyGravity(player), input), input),
 			stage,
 		);
+	}
+
+	private resolveTumbleLanding(
+		playerId: PlayerId,
+		player: PlayerState,
+		input: InputEvent,
+	): PlayerState {
+		if (player.techWindowFrames > 0) {
+			this.techAttemptBuffered.set(playerId, false);
+			const rollLeft = isHeld(input, INPUT_BITS.LEFT);
+			const rollRight = isHeld(input, INPUT_BITS.RIGHT);
+			const isTechRoll = rollLeft !== rollRight;
+			const invincibilityFrames = isTechRoll
+				? PHYSICS.TECH_ROLL_FRAMES
+				: PHYSICS.TECH_NEUTRAL_FRAMES;
+
+			return {
+				...player,
+				state: isTechRoll ? PlayerStateEnum.TECH_ROLL : PlayerStateEnum.TECH_NEUTRAL,
+				stateFrame: 0,
+				isInvincible: true,
+				invincibilityFrames,
+				isTumbling: false,
+				techWindowFrames: 0,
+				landingLagFrames: 0,
+				isFastFalling: false,
+				vx: 0,
+				vy: 0,
+			};
+		}
+
+		const attemptedTech = this.techAttemptBuffered.get(playerId) === true;
+		this.techAttemptBuffered.set(playerId, false);
+
+		return {
+			...player,
+			state: PlayerStateEnum.HARD_LANDING,
+			stateFrame: 0,
+			isInvincible: false,
+			invincibilityFrames: 0,
+			isTumbling: false,
+			techWindowFrames: 0,
+			landingLagFrames: 0,
+			isFastFalling: false,
+			techLockoutFrames: attemptedTech
+				? PHYSICS.TECH_LOCKOUT_FRAMES
+				: player.techLockoutFrames,
+			vx: 0,
+			vy: 0,
+		};
 	}
 
 	private applyFacing(
@@ -597,6 +836,76 @@ export class GameEngine {
 		};
 	}
 
+	private applyDirectionalInfluenceOnHitlagEnd(
+		playerBeforeTick: PlayerState,
+		playerAfterTick: PlayerState,
+		input: InputEvent | null,
+	): PlayerState {
+		const hitlagEndedThisFrame =
+			playerBeforeTick.hitlagFramesRemaining === 1 &&
+			playerAfterTick.hitlagFramesRemaining === 0;
+
+		if (!hitlagEndedThisFrame) {
+			return playerAfterTick;
+		}
+
+		const hasPendingKnockback =
+			playerBeforeTick.pendingKnockbackVx !== null &&
+			playerBeforeTick.pendingKnockbackVx !== undefined &&
+			playerBeforeTick.pendingKnockbackVy !== null &&
+			playerBeforeTick.pendingKnockbackVy !== undefined;
+
+		if (!hasPendingKnockback) {
+			return playerAfterTick;
+		}
+
+		const baseVx = playerBeforeTick.pendingKnockbackVx ?? playerBeforeTick.vx;
+		const baseVy = playerBeforeTick.pendingKnockbackVy ?? playerBeforeTick.vy;
+		const knockbackMagnitude = Math.hypot(baseVx, baseVy);
+		if (knockbackMagnitude === 0) {
+			return {
+				...playerAfterTick,
+				pendingKnockbackVx: null,
+				pendingKnockbackVy: null,
+			};
+		}
+
+		const { inputX, inputY } = this.getDirectionalInputVector(input);
+		const knockbackAngle = Math.atan2(-baseVy, baseVx);
+		const attackerFacing = playerBeforeTick.lastHitByFacing ?? 1;
+		const adjustedAngle = applyDI(knockbackAngle, inputX, inputY, attackerFacing);
+		const adjustedAngleDegs = (adjustedAngle * 180) / Math.PI;
+		const adjustedVelocity = knockbackAngleToVelocity(
+			knockbackMagnitude,
+			adjustedAngleDegs,
+			1,
+		);
+
+			return {
+				...playerAfterTick,
+				vx: adjustedVelocity.x,
+				vy: adjustedVelocity.y,
+				lastHitKnockbackAngle: ((adjustedAngle % (Math.PI * 2)) + Math.PI * 2) % (Math.PI * 2),
+				pendingKnockbackVx: null,
+				pendingKnockbackVy: null,
+			};
+		}
+
+	private getDirectionalInputVector(input: InputEvent | null): {
+		inputX: -1 | 0 | 1;
+		inputY: -1 | 0 | 1;
+	} {
+		const leftHeld = isHeld(input, INPUT_BITS.LEFT);
+		const rightHeld = isHeld(input, INPUT_BITS.RIGHT);
+		const upHeld = isHeld(input, INPUT_BITS.JUMP);
+		const downHeld = isHeld(input, INPUT_BITS.DOWN);
+
+		const inputX = leftHeld === rightHeld ? 0 : leftHeld ? -1 : 1;
+		const inputY = upHeld === downHeld ? 0 : upHeld ? 1 : -1;
+
+		return { inputX, inputY };
+	}
+
 	private withHitboxState(
 		player: PlayerState,
 		input: InputEvent | null,
@@ -615,18 +924,66 @@ export class GameEngine {
 		// selectMoveId ensures the hitbox is never stale for one frame.
 		const moveId = (player.currentMoveId ?? this.selectMoveId(player, input)) as MoveId;
 		const move = getMoveData(moveId);
+		const isSmashMove =
+			move.id === MoveId.FORWARD_SMASH ||
+			move.id === MoveId.UP_SMASH ||
+			move.id === MoveId.DOWN_SMASH;
+
+		const safeChargeFrames = Number.isFinite(player.chargeFrames)
+			? player.chargeFrames
+			: 0;
+		const clampedChargeFrames = Math.max(
+			0,
+			Math.min(safeChargeFrames, SMASH_CHARGE_MAX_FRAMES),
+		);
+
+		const activeFrameWithoutAdditionalCharge =
+			player.stateFrame - move.startupFrames - clampedChargeFrames;
+
+		if (isSmashMove && activeFrameWithoutAdditionalCharge < 0) {
+			const attackHeld = isHeld(input, INPUT_BITS.ATTACK);
+			const attackJustPressed = isPressed(input, INPUT_BITS.ATTACK);
+			const canCharge =
+				attackHeld && !attackJustPressed && clampedChargeFrames < SMASH_CHARGE_MAX_FRAMES;
+
+			if (canCharge) {
+				return {
+					...player,
+					currentMoveId: move.id,
+					chargeFrames: clampedChargeFrames + 1,
+					activeHitbox: null,
+				};
+			}
+		}
+
 		// activeFrame maps stateFrame onto the hitboxPerActiveFrame array by subtracting
 		// startup frames. Index 0 = first active frame, 1 = second, etc. Different frames
 		// can have different hitbox positions/sizes (e.g. a sweetspot only on frame 0).
-		const activeFrame = player.stateFrame - move.startupFrames;
-		const activeHitbox =
+		const activeFrame = isSmashMove
+			? player.stateFrame - move.startupFrames - clampedChargeFrames
+			: player.stateFrame - move.startupFrames;
+		const baseActiveHitbox =
 			activeFrame >= 0 && activeFrame < move.hitboxPerActiveFrame.length
 				? (move.hitboxPerActiveFrame[activeFrame] ?? null)
 				: null;
 
+		const smashChargeMultiplier = isSmashMove
+			? 1 + (clampedChargeFrames / SMASH_CHARGE_MAX_FRAMES) * 0.4
+			: 1;
+
+		const activeHitbox =
+			baseActiveHitbox && isSmashMove
+				? {
+					...baseActiveHitbox,
+					damage: baseActiveHitbox.damage * smashChargeMultiplier,
+					baseKnockback: baseActiveHitbox.baseKnockback * smashChargeMultiplier,
+				}
+				: baseActiveHitbox;
+
 		return {
 			...player,
 			currentMoveId: move.id,
+			chargeFrames: isSmashMove ? clampedChargeFrames : 0,
 			activeHitbox,
 		};
 	}
@@ -649,6 +1006,7 @@ export class GameEngine {
 			vx: 0,
 			vy: 0,
 			isGrounded: false,
+			isFastFalling: false,
 			isInvincible: true,
 			invincibilityFrames: PHYSICS.LEDGE_HANG_INVINCIBILITY_FRAMES,
 		};
@@ -763,7 +1121,10 @@ export class GameEngine {
 		return MoveId.JAB;
 	}
 
-	private applyHitDetection(players: Record<PlayerId, PlayerState>): void {
+	private applyHitDetection(
+		players: Record<PlayerId, PlayerState>,
+		inputs: Map<PlayerId, InputEvent | null> = new Map<PlayerId, InputEvent | null>(),
+	): void {
 		const playerList = Object.values(players);
 
 		// O(n²) over player pairs using i < j to avoid checking the same pair twice
@@ -783,27 +1144,50 @@ export class GameEngine {
 					continue;
 				}
 
+				const playerAHitPlayerIds = playerA.hitPlayerIds ?? new Set<string>();
+				const playerBHitPlayerIds = playerB.hitPlayerIds ?? new Set<string>();
+
 				if (!this.canInteract(playerA) || !this.canInteract(playerB)) {
 					continue;
 				}
 
 				let hitOnA = NO_HIT;
 				let hitOnB = NO_HIT;
+				const playerAAlreadyHitByB =
+					!playerA.id || playerBHitPlayerIds.has(playerA.id);
+				const playerBAlreadyHitByA =
+					!playerB.id || playerAHitPlayerIds.has(playerB.id);
 
 				// When both players have active hitboxes we run trade resolution first.
 				// resolveHitTrade uses hitbox priority to determine whether both hits land,
 				// only one, or neither. The direct collision results are used as fallback
 				// for whichever side the trade ruled out.
-				if (playerA.activeHitbox && playerB.activeHitbox) {
-					const [tradeA, tradeB] = resolveHitTrade(playerA, playerB);
-					const directA = checkHitboxCollision(playerB, playerA);
-					const directB = checkHitboxCollision(playerA, playerB);
-					hitOnA = tradeA.hit ? tradeA : directA;
-					hitOnB = tradeB.hit ? tradeB : directB;
-				} else {
-					hitOnA = checkHitboxCollision(playerB, playerA);
-					hitOnB = checkHitboxCollision(playerA, playerB);
-				}
+					const playerAInput = inputs.get(playerA.id) ?? null;
+					const playerBInput = inputs.get(playerB.id) ?? null;
+
+					if (playerA.activeHitbox && playerB.activeHitbox) {
+						const [tradeA, tradeB] = resolveHitTrade(
+							playerA,
+							playerB,
+							playerAInput,
+							playerBInput,
+						);
+						const directA = playerAAlreadyHitByB
+							? NO_HIT
+							: checkHitboxCollision(playerB, playerA, playerAInput);
+						const directB = playerBAlreadyHitByA
+							? NO_HIT
+							: checkHitboxCollision(playerA, playerB, playerBInput);
+						hitOnA = playerAAlreadyHitByB ? NO_HIT : tradeA.hit ? tradeA : directA;
+						hitOnB = playerBAlreadyHitByA ? NO_HIT : tradeB.hit ? tradeB : directB;
+					} else {
+						hitOnA = playerAAlreadyHitByB
+							? NO_HIT
+							: checkHitboxCollision(playerB, playerA, playerAInput);
+						hitOnB = playerBAlreadyHitByA
+							? NO_HIT
+							: checkHitboxCollision(playerA, playerB, playerBInput);
+					}
 
 				if (hitOnA.hit) {
 					const updatedA = players[playerA.id];
@@ -812,9 +1196,31 @@ export class GameEngine {
 						continue;
 					}
 
-					players[playerA.id] = this.applyHit(updatedA, hitOnA);
-					players[playerB.id] = this.consumeAttackOnHit(updatedB, hitOnA.hitlagFrames);
-				}
+					const hitShieldOnA =
+						(updatedA.state === PlayerStateEnum.SHIELD || updatedA.isShielding) &&
+						updatedA.shieldHealth > 0;
+
+					players[playerA.id] = this.applyHit(updatedA, hitOnA, updatedB.facing);
+						const staleMoveId = updatedB.currentMoveId;
+						const attackerAfterHit = this.consumeAttackOnHit(updatedB, hitOnA.hitlagFrames);
+						const trackedHitIds = new Set(attackerAfterHit.hitPlayerIds);
+						trackedHitIds.add(updatedA.id);
+						if (hitShieldOnA) {
+							const attackerPushback = hitOnA.damage * 0.1;
+							players[playerB.id] = {
+								...attackerAfterHit,
+								hitPlayerIds: trackedHitIds,
+								staleMoveQueue: this.pushStaleMoveToQueue(attackerAfterHit, staleMoveId),
+								vx: attackerAfterHit.vx + -attackerPushback * updatedB.facing,
+							};
+						} else {
+							players[playerB.id] = {
+								...attackerAfterHit,
+								hitPlayerIds: trackedHitIds,
+								staleMoveQueue: this.pushStaleMoveToQueue(attackerAfterHit, staleMoveId),
+							};
+						}
+					}
 
 				if (hitOnB.hit) {
 					const updatedA = players[playerA.id];
@@ -823,11 +1229,50 @@ export class GameEngine {
 						continue;
 					}
 
-					players[playerB.id] = this.applyHit(updatedB, hitOnB);
-					players[playerA.id] = this.consumeAttackOnHit(updatedA, hitOnB.hitlagFrames);
-				}
+					const hitShieldOnB =
+						(updatedB.state === PlayerStateEnum.SHIELD || updatedB.isShielding) &&
+						updatedB.shieldHealth > 0;
+
+					players[playerB.id] = this.applyHit(updatedB, hitOnB, updatedA.facing);
+						const staleMoveId = updatedA.currentMoveId;
+						const attackerAfterHit = this.consumeAttackOnHit(updatedA, hitOnB.hitlagFrames);
+						const trackedHitIds = new Set(attackerAfterHit.hitPlayerIds);
+						trackedHitIds.add(updatedB.id);
+						if (hitShieldOnB) {
+							const attackerPushback = hitOnB.damage * 0.1;
+							players[playerA.id] = {
+								...attackerAfterHit,
+								hitPlayerIds: trackedHitIds,
+								staleMoveQueue: this.pushStaleMoveToQueue(attackerAfterHit, staleMoveId),
+								vx: attackerAfterHit.vx + -attackerPushback * updatedA.facing,
+							};
+						} else {
+							players[playerA.id] = {
+								...attackerAfterHit,
+								hitPlayerIds: trackedHitIds,
+								staleMoveQueue: this.pushStaleMoveToQueue(attackerAfterHit, staleMoveId),
+							};
+						}
+					}
 			}
 		}
+	}
+
+	private pushStaleMoveToQueue(
+		player: PlayerState,
+		moveId: PlayerState['currentMoveId'],
+	): PlayerState['staleMoveQueue'] {
+		const staleMoveQueue = player.staleMoveQueue ?? [];
+		if (!moveId) {
+			return [...staleMoveQueue];
+		}
+
+		const updatedQueue = [...staleMoveQueue, moveId];
+		if (updatedQueue.length > 9) {
+			updatedQueue.shift();
+		}
+
+		return updatedQueue;
 	}
 
 	private consumeAttackOnHit(player: PlayerState, hitlagFrames: number): PlayerState {
@@ -836,15 +1281,52 @@ export class GameEngine {
 			state: player.isGrounded ? PlayerStateEnum.IDLE : PlayerStateEnum.AIRBORNE,
 			stateFrame: 0,
 			hitlagFramesRemaining: Math.max(player.hitlagFramesRemaining, hitlagFrames),
+			sdiInputCooldown: 0,
 			activeHitbox: null,
 			currentMoveId: null,
+			currentMove: undefined,
+			landingLagFrames: 0,
+			chargeFrames: 0,
 		};
 	}
 
-	private applyHit(player: PlayerState, hit: typeof NO_HIT): PlayerState {
+	private applyHit(
+		player: PlayerState,
+		hit: typeof NO_HIT,
+		attackerFacing: 1 | -1,
+	): PlayerState {
+		if ((player.state === PlayerStateEnum.SHIELD || player.isShielding) && player.shieldHealth > 0) {
+			const shieldStunFrames = Math.floor(hit.damage * 0.8) + 2;
+			const remainingShieldHealth = player.shieldHealth - hit.damage;
+
+			if (remainingShieldHealth <= 0) {
+				return this.applyShieldBreak(player);
+			}
+
+			const pushStrength = hit.damage * 0.3;
+
+			return {
+				...player,
+				shieldHealth: remainingShieldHealth,
+				shieldStunFrames,
+				vx: player.vx + pushStrength * attackerFacing,
+				hitlagFramesRemaining: Math.max(player.hitlagFramesRemaining, hit.hitlagFrames),
+				activeHitbox: null,
+				currentMoveId: null,
+				currentMove: undefined,
+				landingLagFrames: 0,
+				chargeFrames: 0,
+			};
+		}
+
 		if (player.ledgeId) {
 			this.releaseLedge(player.id, player.ledgeId);
 		}
+
+		const knockbackMagnitude = Math.hypot(hit.knockbackVx, hit.knockbackVy);
+		const knockbackAngleRadians =
+			((Math.atan2(-hit.knockbackVy, hit.knockbackVx) % (Math.PI * 2)) + Math.PI * 2) %
+			(Math.PI * 2);
 
 		return {
 			...player,
@@ -853,12 +1335,52 @@ export class GameEngine {
 			vy: hit.knockbackVy,
 			hitlagFramesRemaining: hit.hitlagFrames,
 			hitstunFramesRemaining: hit.hitstunFrames,
+			isTumbling: knockbackMagnitude > PHYSICS.TUMBLE_THRESHOLD,
+			techWindowFrames: 0,
 			state: PlayerStateEnum.HITSTUN,
 			stateFrame: 0,
 			ledgeId: null,
 			isGrounded: false,
 			activeHitbox: null,
 			currentMoveId: null,
+			currentMove: undefined,
+				landingLagFrames: 0,
+				sdiInputCooldown: 0,
+				chargeFrames: 0,
+				shieldStunFrames: 0,
+			lastHitByFacing: attackerFacing,
+			lastHitKnockbackAngle: knockbackAngleRadians,
+			pendingKnockbackVx: hit.knockbackVx,
+			pendingKnockbackVy: hit.knockbackVy,
+		};
+	}
+
+	private applyShieldBreak(player: PlayerState): PlayerState {
+		return {
+			...player,
+			state: PlayerStateEnum.HITSTUN,
+			stateFrame: 0,
+			hitlagFramesRemaining: 0,
+			hitstunFramesRemaining: PHYSICS.SHIELD_BREAK_STUN_FRAMES,
+			isShielding: false,
+			shieldHealth: 0,
+			vx: 0,
+			vy: -8,
+			isGrounded: false,
+			isTumbling: false,
+			techWindowFrames: 0,
+			techLockoutFrames: 0,
+				landingLagFrames: 0,
+				sdiInputCooldown: 0,
+				activeHitbox: null,
+			currentMoveId: null,
+			currentMove: undefined,
+			hitPlayerIds: new Set<string>(),
+			chargeFrames: 0,
+			shieldStunFrames: 0,
+			lastHitKnockbackAngle: null,
+			pendingKnockbackVx: null,
+			pendingKnockbackVy: null,
 		};
 	}
 
@@ -884,15 +1406,22 @@ export class GameEngine {
 
 			const remainingStocks = Math.max(0, player.stocks - 1);
 			if (remainingStocks === 0) {
+				this.techAttemptBuffered.set(playerId as PlayerId, false);
 				players[playerId as PlayerId] = {
 					...player,
 					stocks: 0,
 					percent: 0,
 					vx: 0,
 					vy: 0,
+					isFastFalling: false,
 					activeHitbox: null,
 					currentMoveId: null,
-				};
+					currentMove: undefined,
+					landingLagFrames: 0,
+					sdiInputCooldown: 0,
+					lastHitKnockbackAngle: null,
+				shieldStunFrames: 0,
+			};
 				continue;
 			}
 
@@ -909,16 +1438,29 @@ export class GameEngine {
 				stateFrame: 0,
 				hitlagFramesRemaining: 0,
 				hitstunFramesRemaining: 0,
-				isGrounded: false,
-				isKnockedOut: false,
-				hasDoubleJump: true,
+				isTumbling: false,
+				techWindowFrames: 0,
+				techLockoutFrames: 0,
+					landingLagFrames: 0,
+					sdiInputCooldown: 0,
+					isGrounded: false,
+					isKnockedOut: false,
+					lastHitByFacing: null,
+					lastHitKnockbackAngle: null,
+					pendingKnockbackVx: null,
+					pendingKnockbackVy: null,
+					hasDoubleJump: true,
 				isFastFalling: false,
 				isInvincible: true,
 				invincibilityFrames: MATCH_CONFIG.RESPAWN_INVINCIBILITY_FRAMES,
 				activeHitbox: null,
-				currentMoveId: null,
+			currentMoveId: null,
+			currentMove: undefined,
+			chargeFrames: 0,
+			shieldStunFrames: 0,
 				respawnTimer: MATCH_CONFIG.RESPAWN_DELAY_FRAMES,
 			};
+			this.techAttemptBuffered.set(playerId as PlayerId, false);
 			// Reset the FSMController on respawn — the old controller may be mid-animation
 			// (e.g. HITSTUN with frames remaining). A fresh controller in AIRBORNE state
 			// matches the respawning fighter's physical situation (falling from above stage).

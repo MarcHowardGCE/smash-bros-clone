@@ -1,11 +1,25 @@
 import { Buffer } from 'node:buffer';
 import { performance } from 'node:perf_hooks';
-import { decode, encode } from '@msgpack/msgpack';
+import { decode, encode, ExtensionCodec } from '@msgpack/msgpack';
 import type { InputEvent, PlayerId } from '@smash/shared';
 import { GameEngine } from './GameEngine.js';
 
 const TICK_MS = 1000 / 60;
 const BROADCAST_EVERY = 3;
+
+const extensionCodec = new ExtensionCodec();
+extensionCodec.register({
+	type: 1,
+	encode: (input: unknown): Uint8Array | null => {
+		if (!(input instanceof Set)) {
+			return null;
+		}
+
+		return encode(Array.from(input), { extensionCodec });
+	},
+	decode: (data: Uint8Array): Set<string> =>
+		new Set<string>(decode(data, { extensionCodec }) as string[]),
+});
 
 /**
  * MatchSession — authoritative fixed-timestep game loop for a single match.
@@ -160,7 +174,7 @@ export class MatchSession {
     // (binary ints vs. string-encoded numbers). At 20 Hz × 4 players this is the
     // hottest network write in the server; every byte saved reduces bandwidth and
     // client decode time.
-    const encoded = encode(snapshot);
+		const encoded = encode(snapshot, { extensionCodec });
     this.onBroadcast(Buffer.from(encoded.buffer, encoded.byteOffset, encoded.byteLength));
   }
 
@@ -170,7 +184,10 @@ export class MatchSession {
     }
 
     try {
-      const decoded = decode(rawInput instanceof Uint8Array ? rawInput : new Uint8Array(rawInput));
+			const decoded = decode(
+				rawInput instanceof Uint8Array ? rawInput : new Uint8Array(rawInput),
+				{ extensionCodec },
+			);
       return this.isInputEvent(decoded) ? decoded : null;
     } catch {
       return null;

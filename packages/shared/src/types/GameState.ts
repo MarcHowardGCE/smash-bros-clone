@@ -1,3 +1,5 @@
+import type { MoveId } from './MoveData.js';
+
 export type PlayerId = string;
 
 export interface Vec2 {
@@ -20,7 +22,8 @@ export interface HitboxData {
   knockbackGrowth: number;
   knockbackAngle: number;
   hitlagFrames: number;
-  hitstunFrames: number;
+  // Optional legacy/special override hook. Core hitstun now scales dynamically from knockback.
+  hitstunFrames?: number;
   priority: number;
 }
 
@@ -33,9 +36,14 @@ export interface PlayerState {
   vy: number;
   facing: 1 | -1;
   state: string; // PlayerStateEnum value
-  stateFrame: number;
-  hitlagFramesRemaining: number;
-  hitstunFramesRemaining: number;
+	stateFrame: number;
+	hitlagFramesRemaining: number;
+	sdiInputCooldown?: number;
+	hitstunFramesRemaining: number;
+	isTumbling: boolean;
+  techWindowFrames: number;
+  techLockoutFrames: number;
+  landingLagFrames: number;
   percent: number;
   stocks: number;
   isGrounded: boolean;
@@ -46,11 +54,22 @@ export interface PlayerState {
   invincibilityFrames: number;
   isShielding: boolean;
   shieldHealth: number;
+  shieldStunFrames: number;
   isGrabbing: boolean;
   grabbedPlayerId: PlayerId | null;
   ledgeId: string | null;
-  activeHitbox: HitboxData | null;
-  currentMoveId: string | null; // MoveId value
+	activeHitbox: HitboxData | null;
+	currentMoveId: MoveId | null;
+	staleMoveQueue: MoveId[];
+  currentMove?: {
+    landingLag: number;
+  };
+	hitPlayerIds: Set<string>;
+	chargeFrames: number;
+	lastHitByFacing?: 1 | -1 | null;
+	lastHitKnockbackAngle?: number | null;
+  pendingKnockbackVx?: number | null;
+  pendingKnockbackVy?: number | null;
   respawnTimer: number;
 }
 

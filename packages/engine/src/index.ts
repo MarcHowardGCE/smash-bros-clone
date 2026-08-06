@@ -11,6 +11,8 @@ export { getMoveData } from "./moves/index.js";
 export {
 	applyFastFall,
 	applyGravity,
+	applyDI,
+	applyKnockbackDecay,
 	applyMovement,
 	applyMovementInput,
 	checkLedgeGrab,

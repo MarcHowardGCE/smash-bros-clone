@@ -1,4 +1,11 @@
-import { BaseState, DEFAULT_MOVE_TOTAL_FRAMES, PlayerStateEnum, resolveMoveTotalFrames, transition } from './utils.js';
+import {
+  BaseState,
+  DEFAULT_MOVE_TOTAL_FRAMES,
+  PlayerStateEnum,
+  isSmashMoveId,
+  resolveMoveTotalFrames,
+  transition,
+} from './utils.js';
 import type { FSMContext, FSMTransition } from '../index.js';
 
 export class AttackState extends BaseState {
@@ -9,7 +16,17 @@ export class AttackState extends BaseState {
   }
 
   update(ctx: FSMContext, frame: number): FSMTransition | null {
-    this.totalFrames = resolveMoveTotalFrames(ctx.player.currentMoveId);
-    return frame >= this.totalFrames - 1 ? transition(PlayerStateEnum.IDLE) : null;
+    const moveId = ctx.player.currentMoveId;
+    this.totalFrames = resolveMoveTotalFrames(moveId);
+
+    const chargeExtensionFrames = isSmashMoveId(moveId)
+      ? Number.isFinite(ctx.player.chargeFrames)
+        ? ctx.player.chargeFrames
+        : 0
+      : 0;
+
+    return frame >= this.totalFrames + chargeExtensionFrames - 1
+      ? transition(PlayerStateEnum.IDLE)
+      : null;
   }
 }

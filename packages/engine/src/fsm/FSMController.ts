@@ -1,20 +1,26 @@
 import type { InputEvent, PlayerState } from '@smash/shared';
 import { PlayerStateEnum } from '@smash/shared';
+import { INPUT_BITS } from '@smash/shared';
 import type { FSMContext, FSMTransition, IFSMState } from './index.js';
 import { AirAttackState } from './states/AirAttackState.js';
 import { AirborneState } from './states/AirborneState.js';
 import { AirDodgeState } from './states/AirDodgeState.js';
 import { AttackState } from './states/AttackState.js';
+import { DashState } from './states/DashState.js';
 import { DoubleJumpState } from './states/DoubleJumpState.js';
 import { GrabHoldingState } from './states/GrabHoldingState.js';
 import { GrabState } from './states/GrabState.js';
 import { HitstunState } from './states/HitstunState.js';
+import { HardLandingState } from './states/HardLandingState.js';
+import { LandingLagState } from './states/LandingLagState.js';
 import { IdleState } from './states/IdleState.js';
 import { JumpsquatState } from './states/JumpsquatState.js';
 import { RollState } from './states/RollState.js';
 import { RunState } from './states/RunState.js';
 import { ShieldState } from './states/ShieldState.js';
 import { SpotDodgeState } from './states/SpotDodgeState.js';
+import { TechNeutralState } from './states/TechNeutralState.js';
+import { TechRollState } from './states/TechRollState.js';
 import { WalkState } from './states/WalkState.js';
 import { LedgeHangState } from './states/LedgeHangState.js';
 import { LedgeClimbState } from './states/LedgeClimbState.js';
@@ -62,6 +68,7 @@ export class FSMController {
     this.stateRegistry = new Map([
       [PlayerStateEnum.IDLE, new IdleState()],
       [PlayerStateEnum.WALK, new WalkState()],
+      [PlayerStateEnum.DASH, new DashState()],
       [PlayerStateEnum.RUN, new RunState()],
       [PlayerStateEnum.JUMPSQUAT, new JumpsquatState()],
       [PlayerStateEnum.AIRBORNE, new AirborneState()],
@@ -73,6 +80,10 @@ export class FSMController {
       [PlayerStateEnum.SPOT_DODGE, new SpotDodgeState()],
       [PlayerStateEnum.AIR_DODGE, new AirDodgeState()],
       [PlayerStateEnum.HITSTUN, new HitstunState()],
+      [PlayerStateEnum.TECH_NEUTRAL, new TechNeutralState()],
+      [PlayerStateEnum.TECH_ROLL, new TechRollState()],
+      [PlayerStateEnum.HARD_LANDING, new HardLandingState()],
+      [PlayerStateEnum.LANDING_LAG, new LandingLagState()],
       [PlayerStateEnum.GRAB, new GrabState()],
       [PlayerStateEnum.GRAB_HOLDING, new GrabHoldingState()],
       [PlayerStateEnum.LEDGE_HANG, new LedgeHangState()],
@@ -86,7 +97,7 @@ export class FSMController {
     this.currentState = this.getState(initialState);
   }
 
-  tick(player: PlayerState, input: InputEvent | null): PlayerState {
+	  tick(player: PlayerState, input: InputEvent | null): PlayerState {
     if (player.state !== this.stateName) {
       this.stateName = player.state as PlayerStateEnum;
       this.currentState = this.getState(this.stateName);
@@ -96,14 +107,32 @@ export class FSMController {
     // This is a deliberate Smash Bros game-feel mechanic — the brief shared freeze on
     // impact makes hits feel weighty and impactful rather than passing through.
     // No state machine progress occurs during hitlag; the early return skips the rest of tick().
-    if (player.hitlagFramesRemaining > 0) {
-      return {
-        ...player,
-        hitlagFramesRemaining: player.hitlagFramesRemaining - 1,
-        vx: 0,
-        vy: 0,
-      };
-    }
+	    if (player.hitlagFramesRemaining > 0) {
+	      const decrementedCooldown = Math.max(0, (player.sdiInputCooldown ?? 0) - 1);
+	      const leftHeld = Boolean((input?.held ?? 0) & INPUT_BITS.LEFT);
+	      const rightHeld = Boolean((input?.held ?? 0) & INPUT_BITS.RIGHT);
+	      const upHeld = Boolean((input?.held ?? 0) & INPUT_BITS.JUMP);
+	      const downHeld = Boolean((input?.held ?? 0) & INPUT_BITS.DOWN);
+	      const inputX = leftHeld === rightHeld ? 0 : leftHeld ? -1 : 1;
+	      const inputY = upHeld === downHeld ? 0 : upHeld ? -1 : 1;
+	      const hasDirectionalInput = inputX !== 0 || inputY !== 0;
+	      const canAcceptSdiInput = decrementedCooldown <= 0;
+
+	      const sdiDeltaX = hasDirectionalInput && canAcceptSdiInput ? inputX * 3 : 0;
+	      const sdiDeltaY = hasDirectionalInput && canAcceptSdiInput ? inputY * 3 : 0;
+	      const nextSdiCooldown =
+	        hasDirectionalInput && canAcceptSdiInput ? 4 : decrementedCooldown;
+
+	      return {
+	        ...player,
+	        hitlagFramesRemaining: player.hitlagFramesRemaining - 1,
+	        sdiInputCooldown: nextSdiCooldown,
+	        x: player.x + sdiDeltaX,
+	        y: player.y + sdiDeltaY,
+	        vx: 0,
+	        vy: 0,
+	      };
+	    }
 
     const ctx: FSMContext = {
       player,
@@ -112,6 +141,14 @@ export class FSMController {
     };
 
     let transition = this.currentState.update(ctx, player.stateFrame);
+
+		if (
+			transition?.nextState === PlayerStateEnum.WALK &&
+			player.isGrounded &&
+			player.state === PlayerStateEnum.IDLE
+		) {
+			transition = { nextState: PlayerStateEnum.DASH };
+		}
 
     // stateFrame advances here — before any transition is applied. This is intentional:
     // the current state's update() already ran against the current stateFrame value,
@@ -123,6 +160,7 @@ export class FSMController {
     const groundedStates = [
       PlayerStateEnum.IDLE,
       PlayerStateEnum.WALK,
+      PlayerStateEnum.DASH,
       PlayerStateEnum.RUN,
       PlayerStateEnum.JUMPSQUAT,
       PlayerStateEnum.SHIELD,

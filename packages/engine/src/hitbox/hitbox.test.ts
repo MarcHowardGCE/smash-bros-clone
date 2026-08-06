@@ -24,6 +24,10 @@ function makePlayer(overrides: Partial<PlayerState> = {}): PlayerState {
     stateFrame: 0,
     hitlagFramesRemaining: 0,
     hitstunFramesRemaining: 0,
+    isTumbling: false,
+    techWindowFrames: 0,
+    techLockoutFrames: 0,
+    landingLagFrames: 0,
     percent: 0,
     stocks: 3,
     isGrounded: true,
@@ -34,10 +38,14 @@ function makePlayer(overrides: Partial<PlayerState> = {}): PlayerState {
     invincibilityFrames: 0,
     isShielding: false,
     shieldHealth: 100,
+    shieldStunFrames: 0,
     isGrabbing: false,
     grabbedPlayerId: null,
     activeHitbox: null,
     currentMoveId: null,
+    currentMove: undefined,
+    hitPlayerIds: new Set<string>(),
+    chargeFrames: 0,
     respawnTimer: 0,
     ...overrides,
   };
@@ -75,28 +83,40 @@ describe('circleOverlap (from shared)', () => {
 
 describe('calculateKnockback', () => {
   it('knockback at 0% returns a positive value', () => {
-    const kb0 = calculateKnockback(0, 5, 50, PHYSICS.FIGHTER_WEIGHT);
+    const kb0 = calculateKnockback(0, 8, 5, 50, PHYSICS.FIGHTER_WEIGHT);
     expect(kb0).toBeGreaterThan(0);
   });
 
   it('knockback at 150% is strictly greater than at 0%', () => {
-    const kb0 = calculateKnockback(0, 5, 50, PHYSICS.FIGHTER_WEIGHT);
-    const kb150 = calculateKnockback(150, 5, 50, PHYSICS.FIGHTER_WEIGHT);
+    const kb0 = calculateKnockback(0, 8, 5, 50, PHYSICS.FIGHTER_WEIGHT);
+    const kb150 = calculateKnockback(150, 8, 5, 50, PHYSICS.FIGHTER_WEIGHT);
     expect(kb150).toBeGreaterThan(kb0);
   });
 
   it('knockback scales monotonically with percent', () => {
-    const kb50 = calculateKnockback(50, 5, 50, PHYSICS.FIGHTER_WEIGHT);
-    const kb100 = calculateKnockback(100, 5, 50, PHYSICS.FIGHTER_WEIGHT);
-    const kb150 = calculateKnockback(150, 5, 50, PHYSICS.FIGHTER_WEIGHT);
+    const kb50 = calculateKnockback(50, 8, 5, 50, PHYSICS.FIGHTER_WEIGHT);
+    const kb100 = calculateKnockback(100, 8, 5, 50, PHYSICS.FIGHTER_WEIGHT);
+    const kb150 = calculateKnockback(150, 8, 5, 50, PHYSICS.FIGHTER_WEIGHT);
     expect(kb100).toBeGreaterThan(kb50);
     expect(kb150).toBeGreaterThan(kb100);
   });
 
   it('heavier fighter takes less knockback than lighter fighter', () => {
-    const kbLight = calculateKnockback(100, 5, 50, 80);
-    const kbHeavy = calculateKnockback(100, 5, 50, 120);
+    const kbLight = calculateKnockback(100, 8, 5, 50, 80);
+    const kbHeavy = calculateKnockback(100, 8, 5, 50, 120);
     expect(kbLight).toBeGreaterThan(kbHeavy);
+  });
+
+  it('malformed damage values still produce finite outputs', () => {
+    const kbZeroDamage = calculateKnockback(100, 0, 30, 100, PHYSICS.FIGHTER_WEIGHT);
+    const kbHugeDamage = calculateKnockback(100, 999, 30, 100, PHYSICS.FIGHTER_WEIGHT);
+    const kbNegativeDamage = calculateKnockback(100, -10, 30, 100, PHYSICS.FIGHTER_WEIGHT);
+
+    expect(Number.isFinite(kbZeroDamage)).toBe(true);
+    expect(Number.isFinite(kbHugeDamage)).toBe(true);
+    expect(Number.isFinite(kbNegativeDamage)).toBe(true);
+    expect(kbHugeDamage).toBeGreaterThan(kbZeroDamage);
+    expect(kbNegativeDamage).toBeLessThan(kbZeroDamage);
   });
 });
 
@@ -129,6 +149,57 @@ describe('getHurtbox', () => {
 });
 
 describe('resolveHit', () => {
+  it('BUG CHARACTERIZATION (legacy formula): d=baseKnockback makes 3% and 18% moves identical at 100%', () => {
+    const legacyBugFormula = (percent: number, damage: number, baseKnockback: number): number => {
+      const p = percent;
+      const d = baseKnockback;
+      const w = PHYSICS.FIGHTER_WEIGHT;
+      const kbg = 100;
+      const bkb = baseKnockback;
+      return ((p / 10 + (p * d) / 20) * (200 / (w + 100)) * 1.4 + 18) * (kbg / 100) + bkb;
+    };
+
+    const jabKb = legacyBugFormula(100, 3, 30);
+    const fsmashKb = legacyBugFormula(100, 18, 30);
+
+    console.info(`[baseline-bug] KB_jab=${jabKb.toFixed(4)} KB_fsmash=${fsmashKb.toFixed(4)}`);
+
+    expect(Math.abs(fsmashKb - jabKb)).toBeLessThan(0.000001);
+  });
+
+  it('REGRESSION TARGET: at 100%, fsmash(18%) should launch substantially harder than jab(3%)', () => {
+    const attacker = makePlayer({ x: 0, y: 0, facing: 1 });
+    const defender = makePlayer({ x: 50, y: 0, percent: 100 });
+
+    const jabHitbox = makeHitbox({
+      offsetX: 40,
+      radius: 30,
+      damage: 3,
+      baseKnockback: 30,
+      knockbackGrowth: 100,
+      knockbackAngle: 45,
+    });
+
+    const fsmashHitbox = makeHitbox({
+      offsetX: 40,
+      radius: 30,
+      damage: 18,
+      baseKnockback: 30,
+      knockbackGrowth: 100,
+      knockbackAngle: 45,
+    });
+
+    const jabResult = resolveHit(attacker, defender, jabHitbox);
+    const fsmashResult = resolveHit(attacker, defender, fsmashHitbox);
+
+    const jabKb = Math.hypot(jabResult.knockbackVx, jabResult.knockbackVy);
+    const fsmashKb = Math.hypot(fsmashResult.knockbackVx, fsmashResult.knockbackVy);
+
+    console.info(`[regression-target] KB_jab=${jabKb.toFixed(4)} KB_fsmash=${fsmashKb.toFixed(4)}`);
+
+    expect(fsmashKb).toBeGreaterThan(jabKb * 2);
+  });
+
   it('non-overlapping hitbox/hurtbox returns hit: false', () => {
     const attacker = makePlayer({ x: 0, y: 0, facing: 1 });
     const defender = makePlayer({ x: 500, y: 0 });
@@ -146,14 +217,137 @@ describe('resolveHit', () => {
     expect(result.damage).toBe(8);
   });
 
-  it('returns hitlag and hitstun frames from hitbox', () => {
+  it('returns hitlag from hitbox', () => {
     const attacker = makePlayer({ x: 0, y: 0, facing: 1 });
     const defender = makePlayer({ x: 50, y: 0 });
-    const hitbox = makeHitbox({ offsetX: 40, radius: 20, hitlagFrames: 7, hitstunFrames: 20 });
+    const hitbox = makeHitbox({ offsetX: 40, radius: 20, hitlagFrames: 7 });
     const result = resolveHit(attacker, defender, hitbox);
     expect(result.hit).toBe(true);
     expect(result.hitlagFrames).toBe(7);
-    expect(result.hitstunFrames).toBe(20);
+  });
+
+  it.skip('baseline characterization (pre-change): static hitstun ignored knockback magnitude differences', () => {
+    const attacker = makePlayer({ x: 0, y: 0, facing: 1 });
+    const jabTarget = makePlayer({ x: 50, y: 0, percent: 0 });
+    const smashTarget = makePlayer({ x: 50, y: 0, percent: 120 });
+
+    const sharedStaticHitstun = 15;
+    const jabHitbox = makeHitbox({
+      offsetX: 40,
+      radius: 30,
+      damage: 3,
+      baseKnockback: 2,
+      knockbackGrowth: 30,
+      hitstunFrames: sharedStaticHitstun,
+    });
+    const smashHitbox = makeHitbox({
+      offsetX: 40,
+      radius: 30,
+      damage: 18,
+      baseKnockback: 12,
+      knockbackGrowth: 100,
+      hitstunFrames: sharedStaticHitstun,
+    });
+
+    const jabResult = resolveHit(attacker, jabTarget, jabHitbox);
+    const smashResult = resolveHit(attacker, smashTarget, smashHitbox);
+
+    const jabKnockbackMagnitude = Math.hypot(jabResult.knockbackVx, jabResult.knockbackVy);
+    const smashKnockbackMagnitude = Math.hypot(smashResult.knockbackVx, smashResult.knockbackVy);
+
+    expect(smashKnockbackMagnitude).toBeGreaterThan(jabKnockbackMagnitude);
+    expect(jabResult.hitstunFrames).toBe(sharedStaticHitstun);
+    expect(smashResult.hitstunFrames).toBe(sharedStaticHitstun);
+  });
+
+  it('hitstun scales with knockback (jab 0% low, fsmash 120% high)', () => {
+    const attacker = makePlayer({ x: 0, y: 0, facing: 1 });
+    const jabTarget = makePlayer({ x: 50, y: 0, percent: 0 });
+    const smashTarget = makePlayer({ x: 50, y: 0, percent: 120 });
+
+    const jabHitbox = makeHitbox({
+      offsetX: 40,
+      radius: 30,
+      damage: 3,
+      baseKnockback: 2,
+      knockbackGrowth: 30,
+    });
+    const smashHitbox = makeHitbox({
+      offsetX: 40,
+      radius: 30,
+      damage: 18,
+      baseKnockback: 12,
+      knockbackGrowth: 100,
+    });
+
+    const jabResult = resolveHit(attacker, jabTarget, jabHitbox);
+    const smashResult = resolveHit(attacker, smashTarget, smashHitbox);
+
+    const jabExpected = Math.max(
+      4,
+      Math.floor(
+        calculateKnockback(
+          jabTarget.percent,
+          jabHitbox.damage,
+          jabHitbox.baseKnockback,
+          jabHitbox.knockbackGrowth,
+          PHYSICS.FIGHTER_WEIGHT,
+        ) * 0.4,
+      ),
+    );
+    const smashExpected = Math.max(
+      4,
+      Math.floor(
+        calculateKnockback(
+          smashTarget.percent,
+          smashHitbox.damage,
+          smashHitbox.baseKnockback,
+          smashHitbox.knockbackGrowth,
+          PHYSICS.FIGHTER_WEIGHT,
+        ) * 0.4,
+      ),
+    );
+
+    console.info(
+      `[hitstun-scaling] jab0=${jabResult.hitstunFrames} expected=${jabExpected} fsmash120=${smashResult.hitstunFrames} expected=${smashExpected}`,
+    );
+
+    expect(jabResult.hitstunFrames, `jab hitstun=${jabResult.hitstunFrames}, expected=${jabExpected}`).toBe(jabExpected);
+    expect(smashResult.hitstunFrames, `fsmash hitstun=${smashResult.hitstunFrames}, expected=${smashExpected}`).toBe(smashExpected);
+    expect(jabResult.hitstunFrames).toBeGreaterThanOrEqual(4);
+    expect(jabResult.hitstunFrames).toBeLessThanOrEqual(8);
+    expect(smashResult.hitstunFrames).toBeGreaterThanOrEqual(30);
+  });
+
+  it('hitstun has a minimum floor of 4 frames even at zero knockback', () => {
+    const attacker = makePlayer({ x: 0, y: 0, facing: 1 });
+    const defender = makePlayer({ x: 50, y: 0, percent: 999 });
+    const hitbox = makeHitbox({
+      offsetX: 40,
+      radius: 30,
+      damage: 0,
+      baseKnockback: 0,
+      knockbackGrowth: 0,
+    });
+
+    const result = resolveHit(attacker, defender, hitbox);
+    const expected = Math.max(
+      4,
+      Math.floor(
+        calculateKnockback(
+          defender.percent,
+          hitbox.damage,
+          hitbox.baseKnockback,
+          hitbox.knockbackGrowth,
+          PHYSICS.FIGHTER_WEIGHT,
+        ) * 0.4,
+      ),
+    );
+
+    console.info(`[hitstun-floor] percent=${defender.percent} hitstun=${result.hitstunFrames} expected=${expected}`);
+
+    expect(result.hitstunFrames, `min-floor case hitstun=${result.hitstunFrames}, expected=${expected}`).toBe(expected);
+    expect(result.hitstunFrames).toBe(4);
   });
 
   it('facing right with 0° angle: positive knockbackVx', () => {

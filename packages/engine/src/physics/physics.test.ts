@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { INPUT_BITS, PHYSICS, STAGE, type InputEvent, type PlayerState } from '@smash/shared';
-import { applyFastFall, applyGravity, applyMovement, applyMovementInput, checkLedgeGrab, checkPlatformCollision, startJump } from './index.js';
+import { applyFastFall, applyGravity, applyKnockbackDecay, applyMovement, applyMovementInput, checkLedgeGrab, checkPlatformCollision, startJump } from './index.js';
 
 function makePlayer(overrides: Partial<PlayerState> = {}): PlayerState {
   return {
@@ -15,6 +15,10 @@ function makePlayer(overrides: Partial<PlayerState> = {}): PlayerState {
     stateFrame: 0,
     hitlagFramesRemaining: 0,
     hitstunFramesRemaining: 0,
+    isTumbling: false,
+    techWindowFrames: 0,
+    techLockoutFrames: 0,
+    landingLagFrames: 0,
     percent: 0,
     stocks: 3,
     isGrounded: true,
@@ -25,11 +29,15 @@ function makePlayer(overrides: Partial<PlayerState> = {}): PlayerState {
     invincibilityFrames: 0,
     isShielding: false,
     shieldHealth: 100,
+    shieldStunFrames: 0,
     isGrabbing: false,
     grabbedPlayerId: null,
     ledgeId: null,
     activeHitbox: null,
     currentMoveId: null,
+    currentMove: undefined,
+    hitPlayerIds: new Set<string>(),
+    chargeFrames: 0,
     respawnTimer: 0,
     ...overrides,
   };
@@ -115,6 +123,28 @@ describe('Physics Engine - applyMovement', () => {
     const result = applyMovement(player, makeInput());
 
     expect(result.vx).toBeCloseTo(4 * PHYSICS.AIR_FRICTION);
+  });
+});
+
+describe('Physics Engine - applyKnockbackDecay', () => {
+  it('does not decay when hitstun has ended', () => {
+    const player = makePlayer({ vx: 3, hitstunFramesRemaining: 0 });
+    expect(applyKnockbackDecay(player)).toBe(player);
+  });
+
+  it('keeps zero velocity at zero while in hitstun', () => {
+    const player = makePlayer({ vx: 0, hitstunFramesRemaining: 5 });
+    const result = applyKnockbackDecay(player);
+
+    expect(result.vx).toBe(0);
+  });
+
+  it('decays negative vx toward zero while in hitstun', () => {
+    const player = makePlayer({ vx: -10, hitstunFramesRemaining: 5 });
+    const result = applyKnockbackDecay(player);
+
+    expect(result.vx).toBeCloseTo(-9.5);
+    expect(Math.abs(result.vx)).toBeLessThan(Math.abs(player.vx));
   });
 });
 
@@ -278,6 +308,97 @@ describe('Physics Engine - checkPlatformCollision', () => {
 });
 
 describe('Physics Engine - applyMovementInput', () => {
+  it('baseline characterization: gravity+movement path keeps horizontal velocity constant while gravity changes vy', () => {
+    const input = makeInput({ held: INPUT_BITS.LEFT | INPUT_BITS.RIGHT });
+    let player = makePlayer({
+      isGrounded: false,
+      x: 100,
+      y: 300,
+      vx: 10,
+      vy: 0,
+      hitstunFramesRemaining: 30,
+    });
+
+    const vxFrames: number[] = [];
+    const vyFrames: number[] = [];
+
+    for (let frame = 0; frame < 5; frame += 1) {
+      player = applyMovement(applyGravity(player), input);
+      vxFrames.push(player.vx);
+      vyFrames.push(player.vy);
+      player = {
+        ...player,
+        hitstunFramesRemaining: Math.max(0, player.hitstunFramesRemaining - 1),
+      };
+    }
+
+    expect(vxFrames).toEqual([10, 10, 10, 10, 10]);
+    expect(vyFrames[0]).toBeCloseTo(PHYSICS.GRAVITY);
+    expect(vyFrames[4]).toBeGreaterThan(vyFrames[0] ?? 0);
+  });
+
+  it('decays knockback vx during hitstun over 30 frames', () => {
+    const input = makeInput({ held: INPUT_BITS.LEFT | INPUT_BITS.RIGHT });
+    let player = makePlayer({
+      isGrounded: false,
+      x: 100,
+      y: 300,
+      vx: 10,
+      vy: 0,
+      hitstunFramesRemaining: 30,
+    });
+
+    const vxFrames: number[] = [player.vx];
+    const vyFrames: number[] = [player.vy];
+
+    for (let frame = 0; frame < 30; frame += 1) {
+      player = applyMovementInput(player, input);
+      vxFrames.push(player.vx);
+      vyFrames.push(player.vy);
+      player = {
+        ...player,
+        hitstunFramesRemaining: Math.max(0, player.hitstunFramesRemaining - 1),
+      };
+    }
+
+    // Visual sanity check for decay curve when running tests.
+    console.info('hitstun vx decay curve', vxFrames.map((vx) => Number(vx.toFixed(4))));
+
+    for (let i = 1; i < vxFrames.length; i += 1) {
+      expect(Math.abs(vxFrames[i] ?? 0)).toBeLessThan(Math.abs(vxFrames[i - 1] ?? 0));
+    }
+
+    expect(vxFrames[10]).toBeCloseTo(5.99, 2);
+    expect(vxFrames[30]).toBeCloseTo(2.15, 2);
+    expect(vyFrames[1]).toBeCloseTo(PHYSICS.GRAVITY);
+  });
+
+  it('stops decaying once hitstun ends and weak knockback is near-zero', () => {
+    const input = makeInput({ held: INPUT_BITS.LEFT | INPUT_BITS.RIGHT });
+    let player = makePlayer({
+      isGrounded: false,
+      x: 100,
+      y: 300,
+      vx: 1,
+      vy: 0,
+      hitstunFramesRemaining: 10,
+    });
+
+    for (let frame = 0; frame < 10; frame += 1) {
+      player = applyMovementInput(player, input);
+      player = {
+        ...player,
+        hitstunFramesRemaining: Math.max(0, player.hitstunFramesRemaining - 1),
+      };
+    }
+
+    const vxAfterHitstun = player.vx;
+    expect(Math.abs(vxAfterHitstun)).toBeLessThan(1);
+
+    player = applyMovementInput(player, input);
+    expect(player.vx).toBeCloseTo(vxAfterHitstun);
+  });
+
   it('composes gravity, movement, and collision checks for client prediction', () => {
     const player = makePlayer({
       isGrounded: false,

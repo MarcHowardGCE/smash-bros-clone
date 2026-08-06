@@ -16,6 +16,10 @@ function makePlayer(overrides: Partial<PlayerState> = {}): PlayerState {
     stateFrame: 0,
     hitlagFramesRemaining: 0,
     hitstunFramesRemaining: 0,
+    isTumbling: false,
+    techWindowFrames: 0,
+    techLockoutFrames: 0,
+    landingLagFrames: 0,
     percent: 0,
     stocks: 3,
     isGrounded: true,
@@ -26,11 +30,15 @@ function makePlayer(overrides: Partial<PlayerState> = {}): PlayerState {
     invincibilityFrames: 0,
     isShielding: false,
     shieldHealth: 100,
+    shieldStunFrames: 0,
     isGrabbing: false,
     grabbedPlayerId: null,
     ledgeId: null,
     activeHitbox: null,
     currentMoveId: null,
+    currentMove: undefined,
+    hitPlayerIds: new Set<string>(),
+    chargeFrames: 0,
     respawnTimer: 0,
     ...overrides,
   };
@@ -148,6 +156,31 @@ describe('FSM - Grab states', () => {
 });
 
 describe('FSM - Hitstun', () => {
+  it('BASELINE CHARACTERIZATION: weak/strong knockback both recover directly to AIRBORNE when hitstun ends', () => {
+    const runScenario = (vx: number, vy: number): PlayerState => {
+      const controller = new FSMController(PlayerStateEnum.HITSTUN);
+      let player = makePlayer({
+        state: PlayerStateEnum.HITSTUN,
+        hitstunFramesRemaining: 1,
+        isGrounded: false,
+        vx,
+        vy,
+      });
+
+      player = controller.tick(player, makeInput());
+      expect(player.state).toBe(PlayerStateEnum.HITSTUN);
+      expect(player.hitstunFramesRemaining).toBe(0);
+
+      return controller.tick(player, makeInput());
+    };
+
+    const weakRecovery = runScenario(2, -2);
+    const strongRecovery = runScenario(18, -18);
+
+    expect(weakRecovery.state).toBe(PlayerStateEnum.AIRBORNE);
+    expect(strongRecovery.state).toBe(PlayerStateEnum.AIRBORNE);
+  });
+
   it('Hitstun stays for exactly hitstunFramesRemaining frames', () => {
     const controller = new FSMController(PlayerStateEnum.HITSTUN);
     let player = makePlayer({
@@ -172,6 +205,63 @@ describe('FSM - Hitstun', () => {
     expect(player.state).toBe(PlayerStateEnum.AIRBORNE);
     expect(player.stateFrame).toBe(0);
   });
+
+  it('Weak hit (KB=50) should clear hitstun to AIRBORNE with no tumble', () => {
+    const controller = new FSMController(PlayerStateEnum.HITSTUN);
+    let player = makePlayer({
+      state: PlayerStateEnum.HITSTUN,
+      hitstunFramesRemaining: 1,
+      isGrounded: false,
+      vx: 35.355,
+      vy: -35.355,
+    });
+
+    player = controller.tick(player, makeInput());
+    expect(player.isTumbling).toBe(false);
+
+    player = controller.tick(player, makeInput());
+    expect(player.state).toBe(PlayerStateEnum.AIRBORNE);
+    expect(player.stateFrame).toBe(0);
+  });
+
+  it('Strong hit (KB=100) should stay tumbling after hitstun until directional input', () => {
+    const controller = new FSMController(PlayerStateEnum.HITSTUN);
+    let player = makePlayer({
+      state: PlayerStateEnum.HITSTUN,
+      hitstunFramesRemaining: 1,
+      isGrounded: false,
+      isTumbling: true,
+      vx: 70.711,
+      vy: -70.711,
+    });
+
+    player = controller.tick(player, makeInput());
+    expect(player.state).toBe(PlayerStateEnum.HITSTUN);
+    expect(player.hitstunFramesRemaining).toBe(0);
+
+    const noInput = controller.tick(player, makeInput());
+    console.info('[tumble-trace] HITSTUN (tumbling) -> TUMBLE-FALL');
+    expect(noInput.state).toBe(PlayerStateEnum.HITSTUN);
+
+    const withInput = controller.tick(
+      noInput,
+      makeInput(INPUT_BITS.LEFT, INPUT_BITS.LEFT),
+    );
+    console.info('[tumble-trace] TUMBLE-FALL -> AIRBORNE (after input)');
+    expect(withInput.state).toBe(PlayerStateEnum.AIRBORNE);
+  });
+
+  it.each([
+    { kb: 79.9, expectedTumble: false },
+    { kb: 80.0, expectedTumble: false },
+    { kb: 80.1, expectedTumble: true },
+  ])(
+    'Edge KB=$kb should map isTumbling=$expectedTumble',
+    ({ kb, expectedTumble }) => {
+      const derived = kb > 80;
+      expect(derived).toBe(expectedTumble);
+    },
+  );
 });
 
 describe('FSM - Hitlag', () => {

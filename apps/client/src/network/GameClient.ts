@@ -1,10 +1,24 @@
-import { decode, encode } from '@msgpack/msgpack';
+import { decode, encode, ExtensionCodec } from '@msgpack/msgpack';
 import type { Socket } from 'socket.io-client';
 import { io } from 'socket.io-client';
 import type { InputEvent, PlayerId, StateSnapshot } from '@smash/shared';
 import { InputManager } from '../input/InputManager.js';
 import { InterpolationBuffer, type RenderState } from './InterpolationBuffer.js';
 import { LocalPredictor } from './LocalPredictor.js';
+
+const extensionCodec = new ExtensionCodec();
+extensionCodec.register({
+	type: 1,
+	encode: (input: unknown): Uint8Array | null => {
+		if (!(input instanceof Set)) {
+			return null;
+		}
+
+		return encode(Array.from(input), { extensionCodec });
+	},
+	decode: (data: Uint8Array): Set<string> =>
+		new Set<string>(decode(data, { extensionCodec }) as string[]),
+});
 
 export interface GameClientOptions {
   serverUrl: string;
@@ -138,7 +152,7 @@ export class GameClient {
     this.socket.on('game:state', (binaryData: ArrayBuffer | Uint8Array) => {
       try {
         const data = binaryData instanceof Uint8Array ? binaryData : new Uint8Array(binaryData);
-        const snapshot = decode(data) as StateSnapshot;
+			const snapshot = decode(data, { extensionCodec }) as StateSnapshot;
         this.currentTick = snapshot.tick;
         this.inputManager.setCurrentTick(this.currentTick);
         this.interpolationBuffer.pushSnapshot(snapshot);

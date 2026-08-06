@@ -37,6 +37,38 @@ const MOVE_TOTAL_FRAMES: Partial<Record<MoveId, number>> = {
   [MoveId.LEDGE_ATTACK]: 60,
 };
 
+const MOVE_STARTUP_FRAMES: Partial<Record<MoveId, number>> = {
+  [MoveId.JAB]: 3,
+  [MoveId.FORWARD_TILT]: 7,
+  [MoveId.UP_TILT]: 6,
+  [MoveId.DOWN_TILT]: 5,
+  [MoveId.FORWARD_SMASH]: 15,
+  [MoveId.UP_SMASH]: 12,
+  [MoveId.DOWN_SMASH]: 10,
+  [MoveId.NEUTRAL_AIR]: 5,
+  [MoveId.FORWARD_AIR]: 8,
+  [MoveId.BACK_AIR]: 6,
+  [MoveId.UP_AIR]: 4,
+  [MoveId.DOWN_AIR]: 10,
+  [MoveId.NEUTRAL_SPECIAL]: 12,
+  [MoveId.SIDE_SPECIAL]: 9,
+  [MoveId.UP_SPECIAL]: 6,
+  [MoveId.DOWN_SPECIAL]: 8,
+  [MoveId.GRAB]: 6,
+  [MoveId.PUMMEL]: 3,
+  [MoveId.FORWARD_THROW]: 4,
+  [MoveId.BACK_THROW]: 4,
+  [MoveId.UP_THROW]: 5,
+  [MoveId.DOWN_THROW]: 5,
+  [MoveId.LEDGE_ATTACK]: 20,
+};
+
+const SMASH_MOVE_IDS = new Set<MoveId>([
+  MoveId.FORWARD_SMASH,
+  MoveId.UP_SMASH,
+  MoveId.DOWN_SMASH,
+]);
+
 export abstract class BaseState implements IFSMState {
   enter(_ctx: FSMContext): void {}
   exit(_ctx: FSMContext): void {}
@@ -65,6 +97,22 @@ export function resolveMoveTotalFrames(moveId: string | null): number {
   }
 
   return MOVE_TOTAL_FRAMES[moveId as MoveId] ?? DEFAULT_MOVE_TOTAL_FRAMES;
+}
+
+export function resolveMoveStartupFrames(moveId: string | null): number {
+  if (!moveId) {
+    return 0;
+  }
+
+  return MOVE_STARTUP_FRAMES[moveId as MoveId] ?? 0;
+}
+
+export function isSmashMoveId(moveId: string | null): moveId is MoveId.FORWARD_SMASH | MoveId.UP_SMASH | MoveId.DOWN_SMASH {
+  if (!moveId) {
+    return false;
+  }
+
+  return SMASH_MOVE_IDS.has(moveId as MoveId);
 }
 
 export { INPUT_BITS, PHYSICS, PlayerStateEnum };

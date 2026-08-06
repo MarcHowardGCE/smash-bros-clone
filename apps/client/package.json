@@ -12,6 +12,7 @@
   "dependencies": {
     "@msgpack/msgpack": "^3.1.3",
     "@smash/engine": "workspace:*",
+    "@smash/gamepad-input": "workspace:*",
     "@smash/server": "workspace:*",
     "@smash/shared": "workspace:*",
     "pixi.js": "^8.19.0",

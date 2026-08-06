@@ -29,6 +29,9 @@ importers:
       '@smash/engine':
         specifier: workspace:*
         version: link:../../packages/engine
+      '@smash/gamepad-input':
+        specifier: workspace:*
+        version: link:../../packages/gamepad-input
       '@smash/server':
         specifier: workspace:*
         version: link:../server

@@ -16,7 +16,17 @@ import { createLayers } from "./renderer/layers.js";
 import { StageRenderer } from "./renderer/StageRenderer.js";
 import { injectStyles, UIManager } from "./ui/index.js";
 
-const SERVER_URL = import.meta.env.VITE_SERVER_URL ?? "http://localhost:3001";
+// In production on Render, use the same domain. In dev, use localhost.
+const getDefaultServerUrl = () => {
+	if (import.meta.env.DEV) {
+		return "http://localhost:3001";
+	}
+	// Production: use same domain with secure protocol
+	const protocol = window.location.protocol === "https:" ? "https:" : "http:";
+	return `${protocol}//${window.location.host}`;
+};
+
+const SERVER_URL = import.meta.env.VITE_SERVER_URL ?? getDefaultServerUrl();
 const AVAILABLE_FIGHTERS: FighterChoice[] = [
 	{ id: "all-rounder", displayName: "All-Rounder" },
 ];

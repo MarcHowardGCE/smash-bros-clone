@@ -87,81 +87,112 @@ export class UIManager {
 
   showCharacterSelect(
     fighters: FighterChoice[],
-    onSelected: (p1: FighterChoice, p2: FighterChoice) => void
+    playerCount: number,
+    onSelected: (choices: FighterChoice[]) => void
   ): void {
     this.hudPanel.style.display = 'none';
-    let p1Choice: FighterChoice | null = null;
-    let p2Choice: FighterChoice | null = null;
 
-    // Render the overlay with two panels side by side
+    // Keyboard confirm keys per slot (slot 0: Enter/Z, slot 1: U, slots 2-3: fallback keys)
+    const CONFIRM_KEYS: string[][] = [
+      ['Enter', 'KeyZ'],
+      ['KeyU'],
+      ['Digit1'],
+      ['Digit2'],
+    ];
+
+    const choices: (FighterChoice | null)[] = Array(playerCount).fill(null);
+    const confirmed: boolean[] = Array(playerCount).fill(false);
+    const rafIds: number[] = [];
+
+    // Render N panels dynamically
+    const panelsHtml = (() => {
+      let html = '';
+      for (let i = 0; i < playerCount; i++) {
+        const confirmHint = i === 0 ? 'Enter or Z' : i === 1 ? 'U' : CONFIRM_KEYS[i]?.[0] ?? 'Gamepad A';
+        html += `
+        <div id="p${i + 1}-panel" style="text-align:center">
+          <div style="font-size:20px;margin-bottom:16px">P${i + 1} Choose</div>
+          ${fighters.map(f => `
+            <div class="fighter-option" data-player="${i + 1}" data-id="${f.id}"
+                 style="border:2px solid rgba(255,255,255,0.3);padding:12px 24px;margin-bottom:8px;cursor:pointer;font-size:18px">
+              ${f.displayName}
+            </div>
+          `).join('')}
+          <div id="p${i + 1}-status" style="font-size:14px;margin-top:12px;color:rgba(255,255,255,0.5)">
+            Press ${confirmHint} to confirm
+          </div>
+        </div>`;
+      }
+      return html;
+    })();
+
     this.overlay.innerHTML = `
       <div class="overlay-center" style="flex-direction:row;gap:60px">
-        <div id="p1-panel" style="text-align:center">
-          <div style="font-size:20px;margin-bottom:16px">P1 Choose</div>
-          ${fighters.map(f => `
-            <div class="fighter-option" data-player="1" data-id="${f.id}" 
-                 style="border:2px solid rgba(255,255,255,0.3);padding:12px 24px;margin-bottom:8px;cursor:pointer;font-size:18px">
-              ${f.displayName}
-            </div>
-          `).join('')}
-          <div id="p1-status" style="font-size:14px;margin-top:12px;color:rgba(255,255,255,0.5)">
-            Press Enter or Z to confirm
-          </div>
-        </div>
-        <div id="p2-panel" style="text-align:center">
-          <div style="font-size:20px;margin-bottom:16px">P2 Choose</div>
-          ${fighters.map(f => `
-            <div class="fighter-option" data-player="2" data-id="${f.id}"
-                 style="border:2px solid rgba(255,255,255,0.3);padding:12px 24px;margin-bottom:8px;cursor:pointer;font-size:18px">
-              ${f.displayName}
-            </div>
-          `).join('')}
-          <div id="p2-status" style="font-size:14px;margin-top:12px;color:rgba(255,255,255,0.5)">
-            Press U to confirm
-          </div>
-        </div>
+        ${panelsHtml}
       </div>`;
 
-    // Auto-select the first fighter for each player (since there's only one)
+    // Auto-select the first fighter for each player (since there's only one fighter today)
     if (fighters[0]) {
-      p1Choice = fighters[0];
-      p2Choice = fighters[0];
-      // Highlight first option for both
-      document.querySelectorAll('[data-player="1"]').forEach(el => {
-        (el as HTMLElement).style.borderColor = 'white';
-      });
-      document.querySelectorAll('[data-player="2"]').forEach(el => {
-        (el as HTMLElement).style.borderColor = 'white';
-      });
+      for (let i = 0; i < playerCount; i++) {
+        choices[i] = fighters[0];
+        document.querySelectorAll(`[data-player="${i + 1}"]`).forEach(el => {
+          (el as HTMLElement).style.borderColor = 'white';
+        });
+      }
     }
 
-    let p1Confirmed = false;
-    let p2Confirmed = false;
+    const cleanup = () => {
+      window.removeEventListener('keydown', onKey);
+      for (const id of rafIds) {
+        cancelAnimationFrame(id);
+      }
+      rafIds.length = 0;
+    };
 
-    const checkBothConfirmed = () => {
-      if (p1Confirmed && p2Confirmed && p1Choice && p2Choice) {
-        this.overlay.removeEventListener('keydown', onKey as EventListener);
-        window.removeEventListener('keydown', onKey);
-        onSelected(p1Choice, p2Choice);
+    const checkAllConfirmed = () => {
+      if (confirmed.every(c => c) && choices.every(c => c !== null)) {
+        cleanup();
+        onSelected(choices as FighterChoice[]);
       }
     };
 
+    const confirmSlot = (slotIndex: number) => {
+      if (confirmed[slotIndex]) return;
+      confirmed[slotIndex] = true;
+      const status = document.getElementById(`p${slotIndex + 1}-status`);
+      if (status) { status.textContent = '✓ Ready!'; status.style.color = 'white'; }
+      checkAllConfirmed();
+    };
+
     const onKey = (e: KeyboardEvent) => {
-      if (!p1Confirmed && (e.code === 'Enter' || e.code === 'KeyZ')) {
-        p1Confirmed = true;
-        const status = document.getElementById('p1-status');
-        if (status) { status.textContent = '✓ Ready!'; status.style.color = 'white'; }
-        checkBothConfirmed();
-      }
-      if (!p2Confirmed && e.code === 'KeyU') {
-        p2Confirmed = true;
-        const status = document.getElementById('p2-status');
-        if (status) { status.textContent = '✓ Ready!'; status.style.color = 'white'; }
-        checkBothConfirmed();
+      for (let i = 0; i < playerCount; i++) {
+        if (!confirmed[i] && CONFIRM_KEYS[i]?.includes(e.code)) {
+          confirmSlot(i);
+          break;
+        }
       }
     };
 
     window.addEventListener('keydown', onKey);
+
+    // Gamepad A-button polling for slots 1-3 (if gamepad-input available)
+    if (typeof requestAnimationFrame !== 'undefined' && (this as any)._gamepadPoller) {
+      const poller = (this as any)._gamepadPoller;
+      for (let i = 1; i < playerCount; i++) {
+        const slotIndex = i;
+        const gamepadIndex = i - 1; // gamepads assigned to slots 1-3 map to gamepad indices 0-2
+        const checkGamepad = () => {
+          if (confirmed[slotIndex]) return;
+          const state = poller.poll().get(gamepadIndex);
+          if (state?.bits & 0x0010) { // GenericInputBits.A
+            confirmSlot(slotIndex);
+          } else {
+            rafIds.push(requestAnimationFrame(checkGamepad));
+          }
+        };
+        rafIds.push(requestAnimationFrame(checkGamepad));
+      }
+    }
   }
 
   showRoomCreated(code: string): void {

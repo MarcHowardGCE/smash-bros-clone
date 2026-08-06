@@ -292,8 +292,8 @@ async function main() {
 			gameClient.disconnect();
 		}
 
-		uiManager.showCharacterSelect(AVAILABLE_FIGHTERS, (p1Choice, p2Choice) => {
-			startLocalMatch(p1Choice, p2Choice);
+		uiManager.showCharacterSelect(AVAILABLE_FIGHTERS, 2, (choices) => {
+			startLocalMatch(choices[0], choices[1]);
 		});
 	};
 
@@ -303,8 +303,8 @@ async function main() {
 			renderer.destroy();
 		}
 		fighterRenderers.clear();
-		uiManager.showCharacterSelect(AVAILABLE_FIGHTERS, (p1Choice, p2Choice) => {
-			startLocalMatch(p1Choice, p2Choice);
+		uiManager.showCharacterSelect(AVAILABLE_FIGHTERS, 2, (choices) => {
+			startLocalMatch(choices[0], choices[1]);
 		});
 	};
 

@@ -1,5 +1,6 @@
-import { describe, it, expect, beforeEach, afterEach } from 'vitest';
+import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import { UIManager } from '../UIManager';
+import type { FighterChoice } from '../../local/types';
 
 describe('UIManager', () => {
   let mockOverlay: HTMLElement;
@@ -61,6 +62,87 @@ describe('UIManager', () => {
     it('should hide hud panel', () => {
       uiManager.showLocalResult('local-p1');
       expect(uiManager.hudPanel.style.display).toBe('none');
+    });
+  });
+
+  describe('showCharacterSelect', () => {
+    const fighters: FighterChoice[] = [{ id: 'fighter1', displayName: 'Fighter One' }];
+
+    it('should render 4 panels when playerCount=4', () => {
+      const onSelected = vi.fn();
+      uiManager.showCharacterSelect(fighters, 4, onSelected);
+
+      expect(mockOverlay.querySelector('#p1-panel')).not.toBeNull();
+      expect(mockOverlay.querySelector('#p2-panel')).not.toBeNull();
+      expect(mockOverlay.querySelector('#p3-panel')).not.toBeNull();
+      expect(mockOverlay.querySelector('#p4-panel')).not.toBeNull();
+    });
+
+    it('should render 4 fighter-option elements per panel for playerCount=4', () => {
+      const onSelected = vi.fn();
+      uiManager.showCharacterSelect(fighters, 4, onSelected);
+
+      const options = mockOverlay.querySelectorAll('.fighter-option');
+      // 1 fighter × 4 panels = 4 options
+      expect(options.length).toBe(4);
+    });
+
+    it('should call onSelected with length-4 array when all 4 slots confirm via keyboard', () => {
+      const onSelected = vi.fn();
+      uiManager.showCharacterSelect(fighters, 4, onSelected);
+
+      // Slot 0: Enter
+      window.dispatchEvent(new KeyboardEvent('keydown', { code: 'Enter' }));
+      // Slot 1: KeyU
+      window.dispatchEvent(new KeyboardEvent('keydown', { code: 'KeyU' }));
+      // Slot 2: Digit1
+      window.dispatchEvent(new KeyboardEvent('keydown', { code: 'Digit1' }));
+      // Slot 3: Digit2
+      window.dispatchEvent(new KeyboardEvent('keydown', { code: 'Digit2' }));
+
+      expect(onSelected).toHaveBeenCalledTimes(1);
+      const choices = onSelected.mock.calls[0][0];
+      expect(choices).toHaveLength(4);
+      expect(choices[0]).toEqual(fighters[0]);
+      expect(choices[3]).toEqual(fighters[0]);
+    });
+
+    it('should NOT call onSelected until all slots confirm', () => {
+      const onSelected = vi.fn();
+      uiManager.showCharacterSelect(fighters, 4, onSelected);
+
+      // Only confirm 3 of 4
+      window.dispatchEvent(new KeyboardEvent('keydown', { code: 'Enter' }));
+      window.dispatchEvent(new KeyboardEvent('keydown', { code: 'KeyU' }));
+      window.dispatchEvent(new KeyboardEvent('keydown', { code: 'Digit1' }));
+
+      expect(onSelected).not.toHaveBeenCalled();
+    });
+
+    it('should work with playerCount=2 (regression)', () => {
+      const onSelected = vi.fn();
+      uiManager.showCharacterSelect(fighters, 2, onSelected);
+
+      expect(mockOverlay.querySelector('#p1-panel')).not.toBeNull();
+      expect(mockOverlay.querySelector('#p2-panel')).not.toBeNull();
+      expect(mockOverlay.querySelector('#p3-panel')).toBeNull();
+
+      // Slot 0: KeyZ, Slot 1: KeyU
+      window.dispatchEvent(new KeyboardEvent('keydown', { code: 'KeyZ' }));
+      window.dispatchEvent(new KeyboardEvent('keydown', { code: 'KeyU' }));
+
+      expect(onSelected).toHaveBeenCalledTimes(1);
+      expect(onSelected.mock.calls[0][0]).toHaveLength(2);
+    });
+
+    it('should show Ready status after confirm', () => {
+      const onSelected = vi.fn();
+      uiManager.showCharacterSelect(fighters, 2, onSelected);
+
+      window.dispatchEvent(new KeyboardEvent('keydown', { code: 'Enter' }));
+
+      const status = mockOverlay.querySelector('#p1-status');
+      expect(status?.textContent).toBe('✓ Ready!');
     });
   });
 });

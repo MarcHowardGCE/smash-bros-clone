@@ -308,21 +308,20 @@ export class GameEngine {
 				currentMove: undefined,
 				hitPlayerIds: new Set<string>(),
 				chargeFrames: 0,
-					hitlagFramesRemaining: 0,
-					sdiInputCooldown: 0,
-					hitstunFramesRemaining: 0,
+				hitlagFramesRemaining: 0,
+				sdiInputCooldown: 0,
+				hitstunFramesRemaining: 0,
 				isTumbling: false,
 				techWindowFrames: 0,
 				techLockoutFrames: 0,
-					landingLagFrames: 0,
-					sdiInputCooldown: 0,
-					lastHitByFacing: null,
-					lastHitKnockbackAngle: null,
-					pendingKnockbackVx: null,
-					pendingKnockbackVy: null,
-					vx: 0,
-					vy: 0,
-				};
+				landingLagFrames: 0,
+				lastHitByFacing: null,
+				lastHitKnockbackAngle: null,
+				pendingKnockbackVx: null,
+				pendingKnockbackVy: null,
+				vx: 0,
+				vy: 0,
+			};
 		}
 
 		const ledgeEligibleStates: string[] = [

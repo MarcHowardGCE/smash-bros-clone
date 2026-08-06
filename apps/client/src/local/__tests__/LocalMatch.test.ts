@@ -1,7 +1,7 @@
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import { LocalPlayerController } from '../LocalPlayerController.js';
 import { LocalMatch } from '../LocalMatch.js';
-import { DEFAULT_KEYMAP_P1, DEFAULT_KEYMAP_P2 } from '../../input/keymaps.js';
+import { DEFAULT_KEYMAP_P1, DEFAULT_KEYMAP_P2, DEFAULT_KEYMAP_P3, DEFAULT_KEYMAP_P4 } from '../../input/keymaps.js';
 import { INPUT_BITS } from '@smash/shared';
 import type { GamepadInputSource } from '../../input/GamepadInputSource.js';
 
@@ -155,5 +155,137 @@ describe('LocalMatch N-player support (up to 4 controllers)', () => {
     expect((inputManager as any).gamepadSource).toBe(mockGamepad);
 
     ctrl.destroy();
+  });
+
+  it('4-player local match integration test - 10 ticks with mixed keyboard/gamepad inputs', () => {
+    // Create mock gamepad sources with distinct fixed bits for P3 and P4
+    const mockGamepadP3 = {
+      getHeldBits: vi.fn(() => INPUT_BITS.LEFT), // P3 always holds LEFT
+      updateGamepadIndex: vi.fn(),
+    } as unknown as GamepadInputSource;
+
+    const mockGamepadP4 = {
+      getHeldBits: vi.fn(() => INPUT_BITS.RIGHT), // P4 always holds RIGHT
+      updateGamepadIndex: vi.fn(),
+    } as unknown as GamepadInputSource;
+
+    // Construct 4 LocalPlayerControllers:
+    // - P1: keyboard (DEFAULT_KEYMAP_P1), no input (idle)
+    // - P2: keyboard (DEFAULT_KEYMAP_P2), no input (idle)
+    // - P3: gamepad (mocked LEFT input)
+    // - P4: gamepad (mocked RIGHT input)
+    const p1Controller = new LocalPlayerController({
+      playerId: 'local-p1',
+      keymap: DEFAULT_KEYMAP_P1,
+      slotIndex: 0,
+      gamepadSource: null,
+    });
+
+    const p2Controller = new LocalPlayerController({
+      playerId: 'local-p2',
+      keymap: DEFAULT_KEYMAP_P2,
+      slotIndex: 1,
+      gamepadSource: null,
+    });
+
+    const p3Controller = new LocalPlayerController({
+      playerId: 'local-p3',
+      keymap: DEFAULT_KEYMAP_P3, // Keyboard fallback (not used, gamepad takes precedence)
+      slotIndex: 2,
+      gamepadSource: mockGamepadP3,
+    });
+
+    const p4Controller = new LocalPlayerController({
+      playerId: 'local-p4',
+      keymap: DEFAULT_KEYMAP_P4, // Keyboard fallback (not used, gamepad takes precedence)
+      slotIndex: 3,
+      gamepadSource: mockGamepadP4,
+    });
+
+    // Build LocalMatch with all 4 controllers
+    const match = new LocalMatch([p1Controller, p2Controller, p3Controller, p4Controller]);
+
+    // Verify engine was initialized with 4 controllers
+    expect(match['controllers'].length).toBe(4);
+    expect(match['controllers'][0]?.playerId).toBe('local-p1');
+    expect(match['controllers'][1]?.playerId).toBe('local-p2');
+    expect(match['controllers'][2]?.playerId).toBe('local-p3');
+    expect(match['controllers'][3]?.playerId).toBe('local-p4');
+
+    // Capture snapshots across multiple ticks
+    const snapshots: any[] = [];
+    match.onSnapshot = (snapshot) => {
+      snapshots.push(snapshot);
+    };
+
+    // Tick 10 times to allow movement to accumulate
+    for (let i = 0; i < 10; i++) {
+      match['tick']();
+    }
+
+    // Verify we captured 10 snapshots
+    expect(snapshots.length).toBe(10);
+
+    // Take the final snapshot for assertions
+    const finalSnapshot = snapshots[snapshots.length - 1];
+    expect(finalSnapshot).not.toBeNull();
+    expect(finalSnapshot.players).toBeDefined();
+
+    // Verify all 4 players exist in final snapshot
+    const playerIds = Object.keys(finalSnapshot.players);
+    expect(playerIds).toHaveLength(4);
+    expect(playerIds).toContain('local-p1');
+    expect(playerIds).toContain('local-p2');
+    expect(playerIds).toContain('local-p3');
+    expect(playerIds).toContain('local-p4');
+
+    // Verify all 4 players have distinct slotIndex (0-3)
+    const p1 = finalSnapshot.players['local-p1'];
+    const p2 = finalSnapshot.players['local-p2'];
+    const p3 = finalSnapshot.players['local-p3'];
+    const p4 = finalSnapshot.players['local-p4'];
+
+    expect(p1.slotIndex).toBe(0);
+    expect(p2.slotIndex).toBe(1);
+    expect(p3.slotIndex).toBe(2);
+    expect(p4.slotIndex).toBe(3);
+
+    // Verify movement reflects distinct inputs after 10 ticks:
+    // - P1 & P2 have no input (keyboard idle) → remain near spawn x positions
+    // - P3 holds LEFT (gamepad) → x position should decrease (move left from spawn)
+    // - P4 holds RIGHT (gamepad) → x position should increase (move right from spawn)
+    
+    // Capture initial positions from first snapshot
+    const initialSnapshot = snapshots[0];
+    const p1Initial = initialSnapshot.players['local-p1'];
+    const p2Initial = initialSnapshot.players['local-p2'];
+    const p3Initial = initialSnapshot.players['local-p3'];
+    const p4Initial = initialSnapshot.players['local-p4'];
+
+    // P1 & P2: no input → x should remain unchanged (or very close due to physics rounding)
+    expect(Math.abs(p1.x - p1Initial.x)).toBeLessThan(5); // Allow small physics drift
+    expect(Math.abs(p2.x - p2Initial.x)).toBeLessThan(5);
+
+    // P3: LEFT input → x should decrease significantly over 10 ticks
+    expect(p3.x).toBeLessThan(p3Initial.x);
+    expect(p3Initial.x - p3.x).toBeGreaterThan(5); // At least 5 units moved left (realistic for 10 ticks)
+
+    // P4: RIGHT input → x should increase significantly over 10 ticks
+    expect(p4.x).toBeGreaterThan(p4Initial.x);
+    expect(p4.x - p4Initial.x).toBeGreaterThan(5); // At least 5 units moved right (realistic for 10 ticks)
+
+    // Verify all 4 players have different x positions at end (distinct trajectories)
+    const xPositions = [p1.x, p2.x, p3.x, p4.x];
+    const uniqueXPositions = new Set(xPositions);
+    expect(uniqueXPositions.size).toBe(4); // All 4 x positions are distinct
+
+    // Verify facing directions reflect input:
+    // - P3 holds LEFT → faces left (-1)
+    // - P4 holds RIGHT → faces right (1)
+    expect(p3.facing).toBe(-1);
+    expect(p4.facing).toBe(1);
+
+    // Cleanup
+    match.cleanup();
   });
 });

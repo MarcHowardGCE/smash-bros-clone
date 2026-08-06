@@ -142,14 +142,6 @@ export class FSMController {
 
     let transition = this.currentState.update(ctx, player.stateFrame);
 
-		if (
-			transition?.nextState === PlayerStateEnum.WALK &&
-			player.isGrounded &&
-			player.state === PlayerStateEnum.IDLE
-		) {
-			transition = { nextState: PlayerStateEnum.DASH };
-		}
-
     // stateFrame advances here — before any transition is applied. This is intentional:
     // the current state's update() already ran against the current stateFrame value,
     // so the incremented count correctly represents "frames spent in this state so far"

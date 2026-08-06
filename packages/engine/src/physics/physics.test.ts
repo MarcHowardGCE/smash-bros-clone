@@ -305,6 +305,32 @@ describe('Physics Engine - checkPlatformCollision', () => {
     expect(result.isGrounded).toBe(true);
     expect(result.y).toBe(platform.y - PHYSICS.HURTBOX_RADIUS);
   });
+
+  it('wall-side contact at platform lip keeps player airborne and preserves double jump', () => {
+    const stage = makeStage();
+    const platform = stage.platforms[0];
+    expect(platform).toBeDefined();
+
+    if (!platform) {
+      throw new Error('Expected left platform test fixture');
+    }
+
+    const player = makePlayer({
+      isGrounded: false,
+      hasDoubleJump: true,
+      x: platform.x,
+      y: platform.y - PHYSICS.HURTBOX_RADIUS,
+      vx: -3,
+      vy: 0,
+    });
+
+    const collided = checkPlatformCollision(player, stage);
+    const jumped = startJump(collided, false);
+
+    expect(collided.isGrounded).toBe(false);
+    expect(jumped.vy).toBe(PHYSICS.DOUBLE_JUMP_VELOCITY);
+    expect(jumped.hasDoubleJump).toBe(false);
+  });
 });
 
 describe('Physics Engine - applyMovementInput', () => {

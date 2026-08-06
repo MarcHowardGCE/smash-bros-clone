@@ -44,6 +44,13 @@ function isWithinPlatformBounds(
 	return playerX >= platform.x && playerX <= platform.x + platform.width;
 }
 
+function isWithinLandingBounds(
+	playerX: number,
+	platform: StageData["mainPlatform"],
+): boolean {
+	return playerX > platform.x && playerX < platform.x + platform.width;
+}
+
 function landOnPlatform(player: PlayerState, platformY: number): PlayerState {
 	return {
 		...player,
@@ -266,7 +273,7 @@ export function applyFastFall(
 	return {
 		...player,
 		isFastFalling: true,
-		vy: PHYSICS.TERMINAL_VELOCITY * 0.9,
+		vy: PHYSICS.TERMINAL_VELOCITY * 0.8,
 	};
 }
 
@@ -312,7 +319,7 @@ export function checkPlatformCollision(
 	}
 
 	if (
-		isWithinPlatformBounds(player.x, stage.mainPlatform) &&
+		isWithinLandingBounds(player.x, stage.mainPlatform) &&
 		crossesPlatformTop(player, stage.mainPlatform.y)
 	) {
 		return landOnPlatform(player, stage.mainPlatform.y);
@@ -324,7 +331,7 @@ export function checkPlatformCollision(
 		}
 
 		if (
-			isWithinPlatformBounds(player.x, platform) &&
+			isWithinLandingBounds(player.x, platform) &&
 			crossesPlatformTop(player, platform.y)
 		) {
 			return landOnPlatform(player, platform.y);

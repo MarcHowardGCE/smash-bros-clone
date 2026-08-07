@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { INPUT_BITS, PHYSICS, STAGE, type InputEvent, type PlayerState } from '@smash/shared';
-import { applyFastFall, applyGravity, applyKnockbackDecay, applyMovement, applyMovementInput, checkLedgeGrab, checkPlatformCollision, startJump } from './index.js';
+import { applyDI, applyFastFall, applyGravity, applyKnockbackDecay, applyMovement, applyMovementInput, checkLedgeGrab, checkPlatformCollision, startJump } from './index.js';
 
 function makePlayer(overrides: Partial<PlayerState> = {}): PlayerState {
   return {
@@ -212,7 +212,29 @@ describe('Physics Engine - applyFastFall', () => {
     const result = applyFastFall(player, input);
 
     expect(result.isFastFalling).toBe(true);
-    expect(result.vy).toBeCloseTo(PHYSICS.TERMINAL_VELOCITY * 0.8);
+    expect(result.vy).toBe(0.5); // vy unchanged on activation
+  });
+
+  it('applies progressive acceleration via applyGravity when fast falling', () => {
+    // Frame 1: activate fast fall
+    let player = makePlayer({ isGrounded: false, vy: 0.5, isFastFalling: false });
+    const input = makeInput({ held: INPUT_BITS.DOWN });
+    player = applyFastFall(player, input);
+    expect(player.isFastFalling).toBe(true);
+    expect(player.vy).toBe(0.5);
+
+    // Frame 2: gravity applies GRAVITY * FAST_FALL_MULTIPLIER
+    player = applyGravity(player);
+    const expectedVy2 = 0.5 + PHYSICS.GRAVITY * PHYSICS.FAST_FALL_MULTIPLIER;
+    expect(player.vy).toBeCloseTo(expectedVy2);
+
+    // Frame 3: continues accelerating
+    player = applyGravity(player);
+    const expectedVy3 = expectedVy2 + PHYSICS.GRAVITY * PHYSICS.FAST_FALL_MULTIPLIER;
+    expect(player.vy).toBeCloseTo(expectedVy3);
+
+    // Verify it's capped by TERMINAL_VELOCITY
+    expect(player.vy).toBeLessThanOrEqual(PHYSICS.TERMINAL_VELOCITY);
   });
 
   it('does not activate while rising', () => {
@@ -439,6 +461,64 @@ describe('Physics Engine - applyMovementInput', () => {
     expect(result.x).toBeCloseTo(200 + PHYSICS.AIR_SPEED * 0.15);
     expect(result.y).toBe(STAGE.MAIN_PLATFORM.y - PHYSICS.HURTBOX_RADIUS);
     expect(result.isGrounded).toBe(true);
+  });
+});
+
+describe('Physics Engine - applyDI', () => {
+  it('returns knockback angle unchanged when no input', () => {
+    const angle = Math.PI / 4; // 45°
+    const result = applyDI(angle, 0, 0, 1);
+    expect(result).toBe(angle);
+  });
+
+  it('clamps DI angle shift to ±0.314159 radians (±18°)', () => {
+    const knockbackAngle = 0; // horizontal right
+    // Input perpendicular to knockback (straight up) should max out at ±18°
+    const resultUp = applyDI(knockbackAngle, 0, 1, 1);
+    const resultDown = applyDI(knockbackAngle, 0, -1, 1);
+
+    // Should be clamped to ±0.314159
+    expect(Math.abs(resultUp - knockbackAngle)).toBeLessThanOrEqual(0.314159 + 0.0001);
+    expect(Math.abs(resultDown - knockbackAngle)).toBeLessThanOrEqual(0.314159 + 0.0001);
+  });
+
+  it('shifts angle upward when input is perpendicular upward', () => {
+    const knockbackAngle = 0; // horizontal right
+    const result = applyDI(knockbackAngle, 0, 1, 1);
+    expect(result).toBeGreaterThan(knockbackAngle);
+  });
+
+  it('shifts angle downward when input is perpendicular downward', () => {
+    const knockbackAngle = 0; // horizontal right
+    const result = applyDI(knockbackAngle, 0, -1, 1);
+    expect(result).toBeLessThan(knockbackAngle);
+  });
+
+  it('does not shift angle when input is parallel to knockback', () => {
+    const knockbackAngle = 0; // horizontal right
+    const result = applyDI(knockbackAngle, 1, 0, 1); // input also right
+    expect(result).toBeCloseTo(knockbackAngle);
+  });
+
+  it('applies partial shift for diagonal input', () => {
+    const knockbackAngle = 0; // horizontal right
+    const result = applyDI(knockbackAngle, 1, 1, 1); // diagonal up-right
+    expect(result).toBeGreaterThan(knockbackAngle);
+    expect(result).toBeLessThan(0.314159 + 0.0001); // less than max shift
+  });
+
+  it('18° cone: max positive shift is ~0.314159 radians', () => {
+    const knockbackAngle = 0;
+    const result = applyDI(knockbackAngle, 0, 1, 1);
+    const shift = result - knockbackAngle;
+    expect(shift).toBeCloseTo(0.314159, 5);
+  });
+
+  it('18° cone: max negative shift is ~-0.314159 radians', () => {
+    const knockbackAngle = 0;
+    const result = applyDI(knockbackAngle, 0, -1, 1);
+    const shift = result - knockbackAngle;
+    expect(shift).toBeCloseTo(-0.314159, 5);
   });
 });
 

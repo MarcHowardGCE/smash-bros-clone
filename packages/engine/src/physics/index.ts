@@ -27,7 +27,9 @@ function clamp(value: number, min: number, max: number): number {
 	return Math.max(min, Math.min(max, value));
 }
 
-const MAX_DI_ANGLE_RADIANS = 0.17;
+// 18° (Melee/Brawl-style) vs. ~9.74° (Smash4/Ultimate-style)
+// Design choice: wider DI cone for more player agency in knockback direction
+const MAX_DI_ANGLE_RADIANS = 0.314159;
 
 function isHeld(input: InputEvent, bit: number): boolean {
 	return (input.held & bit) !== 0;
@@ -75,14 +77,17 @@ function crossesPlatformTop(player: PlayerState, platformY: number): boolean {
 
 // Applies per-frame gravitational acceleration. Only runs when airborne — grounded
 // players are held at platform height by checkPlatformCollision instead.
-// Fast-fall speed is now a one-time set in applyFastFall(); once latched, gravity
-// no longer accelerates vy further during that airborne segment.
+// Fast-fall applies GRAVITY * FAST_FALL_MULTIPLIER per frame for progressive acceleration,
+// capped by TERMINAL_VELOCITY. This creates a smooth curve rather than a one-time snap.
 export function applyGravity(player: PlayerState): PlayerState {
 	if (player.isGrounded) {
 		return player;
 	}
 
-	const vy = player.isFastFalling ? player.vy : player.vy + PHYSICS.GRAVITY;
+	const gravityAccel = player.isFastFalling
+		? PHYSICS.GRAVITY * PHYSICS.FAST_FALL_MULTIPLIER
+		: PHYSICS.GRAVITY;
+	const vy = player.vy + gravityAccel;
 
 	return {
 		...player,
@@ -256,7 +261,8 @@ export function resolveJump(
 // Fast fall activates when the player holds DOWN while airborne and already moving
 // downward (vy >= 0). The vy >= 0 guard prevents fast fall from triggering on the
 // way up — it would cancel the jump arc. Once activated, isFastFalling is latched
-// true and vy is set once to a fixed fraction of TERMINAL_VELOCITY.
+// true and applyGravity will apply GRAVITY * FAST_FALL_MULTIPLIER per frame for
+// progressive acceleration (capped by TERMINAL_VELOCITY).
 export function applyFastFall(
 	player: PlayerState,
 	input: InputEvent,
@@ -273,7 +279,6 @@ export function applyFastFall(
 	return {
 		...player,
 		isFastFalling: true,
-		vy: PHYSICS.TERMINAL_VELOCITY * 0.8,
 	};
 }
 

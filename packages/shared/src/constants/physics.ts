@@ -15,6 +15,7 @@ export const PHYSICS = {
   DOUBLE_JUMP_VELOCITY: -14,        // px/frame; slightly weaker than full hop for balance
   JUMPSQUAT_FRAMES: 3,              // frames of crouch before leaving ground (authentic Smash timing)
   HURTBOX_RADIUS: 28,               // px; fighter collision sphere radius used for both hurt and platform checks
+  GRAB_OFFSET_X: 40,                // px; horizontal offset for pinning victim position during active grab hold
   FIGHTER_WEIGHT: 100,              // knockback formula weight divisor; higher = less knockback taken
   TUMBLE_THRESHOLD: 80,             // knockback magnitude threshold for tumble state (SSB-style)
   TECH_WINDOW_FRAMES: 20,           // buffered tech input window before landing while tumbling
@@ -40,6 +41,9 @@ export const PHYSICS = {
   LEDGE_TRUMP_POP_VX: 3,            // horizontal speed applied to a trumped player (× outward direction)
   LEDGE_TRUMP_POP_VY: -6,           // upward velocity applied to a trumped player (negative = upward)
   LEDGE_TRUMP_INVINCIBILITY_FRAMES: 20, // brief invincibility grace period for the popped player
+  COUNTER_DAMAGE_MULTIPLIER: 1.3,   // scales reflected damage when Down Special counter window is active
+  COUNTER_KNOCKBACK_MULTIPLIER: 1.2, // scales reflected knockback magnitude for successful counters
+  COUNTER_ANGLE_DEGREES: 45,        // launch angle used by counter-hit resolution (mirrored by defender facing)
 } as const;
 
 export type Physics = typeof PHYSICS;

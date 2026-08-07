@@ -14,6 +14,7 @@ import {
 	type StageData,
 	startJump,
 } from "@smash/engine";
+import { calculateKnockback } from '../../../packages/engine/src/hitbox/index.js';
 import {
 	knockbackAngleToVelocity,
 	type GameState,
@@ -204,6 +205,7 @@ export class GameEngine {
 		}
 
 		this.applyHitDetection(players, inputs);
+		this.syncGrabState(players);
 		this.applyKnockouts(players);
 		this.tickLedgeCooldowns();
 
@@ -1143,8 +1145,41 @@ export class GameEngine {
 					continue;
 				}
 
+				const playerAInput = inputs.get(playerA.id) ?? null;
+				const playerBInput = inputs.get(playerB.id) ?? null;
+
+				const playerACountered = this.tryApplyCounterHit(players, playerB, playerA, playerAInput);
+				if (playerACountered) {
+					continue;
+				}
+
+				const playerBCountered = this.tryApplyCounterHit(players, playerA, playerB, playerBInput);
+				if (playerBCountered) {
+					continue;
+				}
+
 				const playerAHitPlayerIds = playerA.hitPlayerIds ?? new Set<string>();
 				const playerBHitPlayerIds = playerB.hitPlayerIds ?? new Set<string>();
+
+				const playerAGrabConnected = this.tryApplyGrabConnect(
+					players,
+					playerA.id,
+					playerB.id,
+					playerBInput,
+				);
+				if (playerAGrabConnected) {
+					continue;
+				}
+
+				const playerBGrabConnected = this.tryApplyGrabConnect(
+					players,
+					playerB.id,
+					playerA.id,
+					playerAInput,
+				);
+				if (playerBGrabConnected) {
+					continue;
+				}
 
 				if (!this.canInteract(playerA) || !this.canInteract(playerB)) {
 					continue;
@@ -1161,9 +1196,6 @@ export class GameEngine {
 				// resolveHitTrade uses hitbox priority to determine whether both hits land,
 				// only one, or neither. The direct collision results are used as fallback
 				// for whichever side the trade ruled out.
-					const playerAInput = inputs.get(playerA.id) ?? null;
-					const playerBInput = inputs.get(playerB.id) ?? null;
-
 					if (playerA.activeHitbox && playerB.activeHitbox) {
 						const [tradeA, tradeB] = resolveHitTrade(
 							playerA,
@@ -1255,6 +1287,181 @@ export class GameEngine {
 					}
 			}
 		}
+	}
+
+	private tryApplyGrabConnect(
+		players: Record<PlayerId, PlayerState>,
+		attackerId: PlayerId,
+		victimId: PlayerId,
+		victimInput: InputEvent | null,
+	): boolean {
+		const attacker = players[attackerId];
+		const victim = players[victimId];
+
+		if (!attacker || !victim) {
+			return false;
+		}
+
+		if (attacker.currentMoveId !== MoveId.GRAB || !attacker.activeHitbox) {
+			return false;
+		}
+
+		if (!this.canInteract(attacker) || !this.isGrabVictimEligible(victim)) {
+			return false;
+		}
+
+		if (attacker.hitPlayerIds.has(victim.id)) {
+			return false;
+		}
+
+		const hit = checkHitboxCollision(attacker, victim, victimInput);
+		if (!hit.hit) {
+			return false;
+		}
+
+		const trackedHitIds = new Set(attacker.hitPlayerIds);
+		trackedHitIds.add(victim.id);
+
+		players[attacker.id] = {
+			...attacker,
+			state: PlayerStateEnum.GRAB_HOLDING,
+			stateFrame: 0,
+			isGrabbing: true,
+			grabbedPlayerId: victim.id,
+			hitPlayerIds: trackedHitIds,
+			activeHitbox: null,
+			currentMoveId: null,
+			currentMove: undefined,
+			vx: 0,
+			vy: 0,
+		};
+
+		players[victim.id] = {
+			...victim,
+			state: PlayerStateEnum.GRAB_HOLDING,
+			stateFrame: 0,
+			isGrabbing: true,
+			x: attacker.x + PHYSICS.GRAB_OFFSET_X * attacker.facing,
+			y: attacker.y,
+			vx: 0,
+			vy: 0,
+			activeHitbox: null,
+			currentMoveId: null,
+			currentMove: undefined,
+		};
+
+		return true;
+	}
+
+	private isGrabVictimEligible(victim: PlayerState): boolean {
+		return (
+			this.canInteract(victim) &&
+			victim.state !== PlayerStateEnum.GRAB_HOLDING &&
+			!victim.isGrabbing
+		);
+	}
+
+	private syncGrabState(players: Record<PlayerId, PlayerState>): void {
+		for (const attacker of Object.values(players)) {
+			if (!attacker.isGrabbing || !attacker.grabbedPlayerId) {
+				continue;
+			}
+
+			const victim = players[attacker.grabbedPlayerId as PlayerId];
+			if (!victim) {
+				players[attacker.id] = {
+					...attacker,
+					isGrabbing: false,
+					grabbedPlayerId: null,
+				};
+				continue;
+			}
+
+			const bothHolding =
+				attacker.state === PlayerStateEnum.GRAB_HOLDING &&
+				victim.state === PlayerStateEnum.GRAB_HOLDING;
+
+			if (bothHolding) {
+				players[victim.id] = {
+					...victim,
+					x: attacker.x + PHYSICS.GRAB_OFFSET_X * attacker.facing,
+					y: attacker.y,
+					vx: 0,
+					vy: 0,
+				};
+				continue;
+			}
+
+			const bothIdle =
+				attacker.state === PlayerStateEnum.IDLE &&
+				victim.state === PlayerStateEnum.IDLE;
+
+			if (!bothIdle) {
+				continue;
+			}
+
+			players[attacker.id] = {
+				...attacker,
+				isGrabbing: false,
+				grabbedPlayerId: null,
+			};
+			players[victim.id] = {
+				...victim,
+				isGrabbing: false,
+			};
+		}
+	}
+
+	private tryApplyCounterHit(
+		players: Record<PlayerId, PlayerState>,
+		attacker: PlayerState,
+		defender: PlayerState,
+		defenderInput: InputEvent | null,
+	): boolean {
+		if (defender.currentMoveId !== MoveId.DOWN_SPECIAL || defender.stateFrame >= 6) {
+			return false;
+		}
+
+		const connectingHit = checkHitboxCollision(attacker, defender, defenderInput);
+		if (!connectingHit.hit || !attacker.activeHitbox) {
+			return false;
+		}
+
+		const currentAttacker = players[attacker.id];
+		const currentDefender = players[defender.id];
+		if (!currentAttacker || !currentDefender) {
+			return false;
+		}
+
+		const counterDamage = Math.floor(connectingHit.damage * PHYSICS.COUNTER_DAMAGE_MULTIPLIER);
+		const counterKnockbackMagnitude =
+			calculateKnockback(
+				currentAttacker.percent,
+				counterDamage,
+				attacker.activeHitbox.baseKnockback,
+				attacker.activeHitbox.knockbackGrowth,
+				PHYSICS.FIGHTER_WEIGHT,
+			) * PHYSICS.COUNTER_KNOCKBACK_MULTIPLIER;
+		const counterVelocity = knockbackAngleToVelocity(
+			counterKnockbackMagnitude,
+			PHYSICS.COUNTER_ANGLE_DEGREES,
+			currentDefender.facing,
+		);
+
+		players[attacker.id] = this.applyHit(
+			currentAttacker,
+			{
+				hit: true,
+				damage: counterDamage,
+				knockbackVx: counterVelocity.x,
+				knockbackVy: counterVelocity.y,
+				hitlagFrames: connectingHit.hitlagFrames,
+				hitstunFrames: connectingHit.hitstunFrames,
+			},
+			currentDefender.facing,
+		);
+
+		return true;
 	}
 
 	private pushStaleMoveToQueue(

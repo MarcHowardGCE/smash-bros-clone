@@ -134,7 +134,7 @@ CLIENT receives snapshot ◄──────────  (msgpack, NOT JSON)
 | Netcode | Hybrid: local movement prediction + server-auth combat | Movement feels instant; hits/damage never cheat |
 | Renderer | PixiJS v8 (WebGL/WebGPU) | GPU-accelerated; scales to particles/shaders in future |
 | Physics | Hand-rolled — no engine | Full control over hitboxes, hitstun, knockback |
-| FSM | Explicit 15-state machine | No spaghetti `if/else`; transitions are auditable |
+| FSM | Explicit 25-state machine | No spaghetti `if/else`; transitions are auditable |
 
 ---
 
@@ -145,7 +145,7 @@ CLIENT receives snapshot ◄──────────  (msgpack, NOT JSON)
 Zero-dependency types, constants, and pure math. Imported by all other packages.
 
 - **Types**: `PlayerState`, `GameState`, `StateSnapshot`, `InputEvent`, `MoveData`, `HitboxData`
-- **Enums**: `PlayerStateEnum` (15 states), `MoveId` (22 moves)
+- **Enums**: `PlayerStateEnum` (25-state enum), `MoveId` (22 moves)
 - **Constants**: `PHYSICS` (gravity, speeds, jump velocities), `STAGE` (platforms, blast zones), `MATCH_CONFIG` (stocks, respawn timers)
 - **Math**: `lerp`, `clamp`, `circleOverlap`, `knockbackAngleToVelocity`, vector utils
 
@@ -154,12 +154,12 @@ Zero-dependency types, constants, and pure math. Imported by all other packages.
 Deterministic game simulation. **No Node.js, no browser APIs, no I/O of any kind.** Fully unit-tested with Vitest. Imported by the server; also imported by the client for local movement prediction.
 
 - **Physics** (`src/physics/`): gravity accumulation, terminal velocity, ground/air movement, short hop vs full hop, double jump, fast fall, platform collision, blast zone detection
-- **FSM** (`src/fsm/`): 15-state finite state machine per fighter — `Idle`, `Walk`, `Run`, `Jumpsquat`, `Airborne`, `DoubleJump`, `Attack`, `AirAttack`, `Shield`, `Roll`, `SpotDodge`, `AirDodge`, `Hitstun`, `Grab`, `GrabHolding`. Hitlag freezes `stateFrame`; hitstun holds exactly N frames.
+- **FSM** (`src/fsm/`): 25-state finite state machine per fighter — `Idle`, `Walk`, `Dash`, `Run`, `Jumpsquat`, `Airborne`, `DoubleJump`, `Attack`, `AirAttack`, `Shield`, `Roll`, `SpotDodge`, `AirDodge`, `Hitstun`, `TechNeutral`, `TechRoll`, `HardLanding`, `LandingLag`, `Grab`, `GrabHolding`, `LedgeHang`, `LedgeClimb`, `LedgeAttack`, `LedgeRoll`, `LedgeJump`. Hitlag freezes `stateFrame`; hitstun holds exactly N frames.
 - **Hitbox** (`src/hitbox/`): circle overlap collision, Smash Bros knockback formula, hit trading by priority
 - **Moves** (`src/moves/`): 22 declarative `MoveData` const objects with startup/active/recovery frame data, per-frame hitbox definitions, knockback angles
 
 ```bash
-pnpm test              # run all 67 engine unit tests
+pnpm test              # run all 113 engine unit tests
 ```
 
 ### `apps/server`
@@ -220,7 +220,7 @@ pnpm build         # builds all 4 packages in dependency order
 ### Test
 
 ```bash
-pnpm test          # runs 67 Vitest unit tests in packages/engine
+pnpm test          # runs 113 Vitest unit tests in packages/engine
 just test          # same
 ```
 

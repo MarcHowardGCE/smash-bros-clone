@@ -130,28 +130,24 @@ The engine is the strongest part of this repo. These are the remaining gaps — 
 
 ### Smash charge
 
-- **Missing:** `chargeMax: 60` is defined on smash moves in `packages/engine/src/moves/ground.ts`, but nothing in `GameEngine` or the FSM tracks how long `ATTACK` is held to charge.
-- **Hook:** `AttackState` — add a `chargeFrames` counter, clamp to `chargeMax`, scale damage/knockback on release.
+- **Status:** ✅ **Implemented (Wave 2)** — `GameEngine.ts:908-988` (`withHitboxState`) tracks `chargeFrames` per player, clamps to `SMASH_CHARGE_MAX_FRAMES`, and scales both `damage` and `baseKnockback` by up to 1.4× on release. Charge is held while `ATTACK` is held and `stateFrame < startupFrames + clampedChargeFrames`.
 
 ### Down Special (Counter)
 
-- **Missing:** `MOVE_DOWN_SPECIAL` has `activeFrames: 0` and empty `hitboxPerActiveFrame` — it's a placeholder. No invincibility window, no counter-hit detection.
+- **Status:** Still a stub — `packages/engine/src/moves/special.ts:43-47` shows `activeFrames: 0` and `hitboxPerActiveFrame: []`. No invincibility window, no counter-hit detection.
 - **Hook:** Add `invincible: true` frames to the move data; `hitbox/` already handles invincibility flags.
 
 ### Landing lag
 
-- **Missing:** `landingLag` is defined on aerial moves (e.g. Up Special = 14 frames) but `checkPlatformCollision` never reads it.
-- **Hook:** `checkPlatformCollision` in `packages/engine/src/physics/` — on landing, check `currentMove.landingLag` and lock the FSM for N frames.
+- **Status:** ✅ **Implemented (Wave 2)** — `GameEngine.ts:689-700` reads `player.currentMove?.landingLag` on landing from `AIR_ATTACK` and transitions to the `LANDING_LAG` state (defined in `PlayerFSMState.ts:19`). `tickLandingLagCounter` (`GameEngine.ts:720-738`) decrements `landingLagFrames` each tick and releases back to `IDLE` when exhausted.
 
 ### Shield break stun
 
-- **Missing:** `SHIELD_BREAK_STUN_FRAMES: 150` is defined but never applied when `shieldHealth` reaches 0.
-- **Hook:** `Shield` state handler — when `shieldHealth <= 0`, transition to a `ShieldBreak` state (or re-use `Hitstun` with 150 frames).
+- **Status:** ✅ **Implemented (Wave 2)** — `GameEngine.ts:1363` applies `PHYSICS.SHIELD_BREAK_STUN_FRAMES` directly as `hitstunFramesRemaining` when shield health reaches 0, launching the fighter upward (`vy: -8`) and transitioning to `HITSTUN`.
 
 ### Grab victim position
 
-- **Missing:** `GrabHoldingState` exists but the grabbed player's position is never pinned to the attacker — they'd stay at their original coordinates while being "held."
-- **Hook:** In `GrabHoldingState.update()`, write `victim.x = attacker.x + GRAB_OFFSET_X` each tick.
+- **Status:** ✅ **Position pinning implemented (Wave 2).** Still open: Pummel/throw execution — `GameEngine.ts` handles the `GRAB_HOLDING` state transition but pummel damage and directional throw launch are not yet wired.
 
 ### Ledge grab
 

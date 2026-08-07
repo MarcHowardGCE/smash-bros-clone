@@ -13,8 +13,8 @@ import {
 	resolveHitTrade,
 	type StageData,
 	startJump,
+	calculateKnockback,
 } from "@smash/engine";
-import { calculateKnockback } from '../../../packages/engine/src/hitbox/index.js';
 import {
 	knockbackAngleToVelocity,
 	type GameState,

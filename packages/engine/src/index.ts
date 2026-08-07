@@ -2,6 +2,7 @@ export type { FSMContext, FSMTransition, IFSMState } from "./fsm/index.js";
 export { createFSM, FSMController, tickFSM } from "./fsm/index.js";
 export type { HitResult } from "./hitbox/index.js";
 export {
+	calculateKnockback,
 	checkHitboxCollision,
 	NO_HIT,
 	resolveHit,

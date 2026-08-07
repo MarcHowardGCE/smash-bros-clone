@@ -10,8 +10,7 @@ import {
 	type PlayerId,
 	type PlayerState,
 } from '@smash/shared';
-import { checkHitboxCollision } from '@smash/engine';
-import { calculateKnockback } from '../../../packages/engine/src/hitbox/index.js';
+import { checkHitboxCollision, calculateKnockback } from '@smash/engine';
 import { GameEngine } from './GameEngine.js';
 
 function createEngine(): GameEngine {

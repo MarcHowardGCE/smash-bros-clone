@@ -63,6 +63,7 @@ export class MatchSession {
   private readonly onMatchOver: (winnerId: PlayerId) => void;
   private tickCount = 0;
   private isRunning = false;
+  private paused = false;
   private accumulator = 0;
   private lastTime = 0;
   private loopHandle: ReturnType<typeof setImmediate> | null = null;
@@ -98,7 +99,30 @@ export class MatchSession {
     }
   }
 
+  pause(): void {
+    if (!this.isRunning || this.paused) return;
+    this.paused = true;
+    // Broadcast pause event as a simple msgpack-encoded object.
+    // Keep the loop scheduling alive (don't call stop()), just skip tick processing.
+    const pauseEvent = encode({ type: 'game:paused' }, { extensionCodec });
+    this.onBroadcast(Buffer.from(pauseEvent.buffer, pauseEvent.byteOffset, pauseEvent.byteLength));
+  }
+
+  resume(): void {
+    if (!this.isRunning || !this.paused) return;
+    this.paused = false;
+    // Reset lastTime to prevent accumulator spike after pause duration.
+    this.lastTime = performance.now();
+    const resumeEvent = encode({ type: 'game:resumed' }, { extensionCodec });
+    this.onBroadcast(Buffer.from(resumeEvent.buffer, resumeEvent.byteOffset, resumeEvent.byteLength));
+  }
+
   queueInput(playerId: PlayerId, rawInput: InputEvent | Uint8Array | ArrayBuffer): void {
+    // Drop inputs when paused. Buffering them would cause a burst of stale inputs on
+    // resume (e.g., 10 seconds of accumulated "held RIGHT" would replay and desync the
+    // client's prediction). Dropping ensures clean state on resume.
+    if (this.paused) return;
+
     const queue = this.inputQueue.get(playerId);
     if (!queue) return;
 
@@ -117,6 +141,14 @@ export class MatchSession {
 
     let processedTick = false;
     while (this.accumulator >= TICK_MS) {
+      // When paused, drain accumulator without processing ticks. This prevents a massive
+      // accumulator spike when resuming after a long pause (e.g., 10 seconds paused would
+      // otherwise try to process 600 ticks in one loop call on resume).
+      if (this.paused) {
+        this.accumulator -= TICK_MS;
+        continue;
+      }
+
       this.processTick();
       this.tickCount += 1;
       this.accumulator -= TICK_MS;

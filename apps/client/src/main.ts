@@ -401,6 +401,42 @@ async function main() {
 		uiManager.showControls({ assignmentManager, preferenceStore: store });
 	};
 
+	uiManager.onResume = () => {
+		if (!isLocalMode || !localMatch?.paused) return;
+		localMatch.resume();
+		uiManager.hidePauseOverlay();
+	};
+
+	uiManager.onMainMenu = () => {
+		// T24 will wire full main-menu navigation; for now reload to lobby
+		cleanupLocalMode();
+		for (const [, renderer] of fighterRenderers) {
+			renderer.destroy();
+		}
+		fighterRenderers.clear();
+		isLocalMode = false;
+		window.location.href = window.location.pathname;
+	};
+
+	window.addEventListener('keydown', (e: KeyboardEvent) => {
+		if (e.key !== 'Escape') return;
+		if (!isLocalMode || !localMatch) return;
+
+		const phase = uiManager.getPhase();
+
+		// If already paused, resume
+		if (phase === 'paused') {
+			uiManager.onResume?.();
+			return;
+		}
+
+		// Only allow pause during active match (not countdown, result, etc.)
+		if (phase !== 'match') return;
+
+		localMatch.pause();
+		uiManager.showPauseOverlay();
+	});
+
 	const getDebugSnapshot = (): StateSnapshot | null => {
 		if (isLocalMode) {
 			return localMatch?.getLatestSnapshot() ?? null;

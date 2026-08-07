@@ -3,7 +3,7 @@ import type { RenderState } from '../network/InterpolationBuffer.js';
 import type { FighterChoice } from '../local/types.js';
 import { renderControlsScreen } from './ControlsScreen.js';
 
-export type UIPhase = 'connecting' | 'lobby' | 'waiting' | 'countdown' | 'match' | 'result' | 'controls';
+export type UIPhase = 'connecting' | 'lobby' | 'waiting' | 'countdown' | 'match' | 'result' | 'controls' | 'paused';
 
 export class UIManager {
   private overlay: HTMLElement;
@@ -20,6 +20,8 @@ export class UIManager {
   onLocalPlay: (() => void) | null = null;
   onLocalPlayAgain: (() => void) | null = null;
   onOpenControls: (() => void) | null = null;
+  onResume: (() => void) | null = null;
+  onMainMenu: (() => void) | null = null;
 
   constructor(overlayElement: HTMLElement) {
     this.overlay = overlayElement;
@@ -276,6 +278,30 @@ export class UIManager {
     this.phase = 'match';
     this.overlay.innerHTML = '';
     this.hudPanel.style.display = 'flex';
+  }
+
+  showPauseOverlay(): void {
+    this.phase = 'paused';
+    this.overlay.innerHTML = `
+      <div class="overlay-center">
+        <div style="font-size:48px;letter-spacing:4px;margin-bottom:40px">PAUSED</div>
+        <button id="resume-btn" class="ui-btn" style="margin-bottom:16px">Resume</button>
+        <button id="main-menu-btn" class="ui-btn">Main Menu</button>
+      </div>`;
+
+    document.getElementById('resume-btn')?.addEventListener('click', () => this.onResume?.());
+    document.getElementById('main-menu-btn')?.addEventListener('click', () => this.onMainMenu?.());
+  }
+
+  hidePauseOverlay(): void {
+    if (this.phase !== 'paused') return;
+    this.phase = 'match';
+    this.overlay.innerHTML = '';
+    this.hudPanel.style.display = 'flex';
+  }
+
+  getPhase(): UIPhase {
+    return this.phase;
   }
 
   showResult(winnerId: PlayerId | null, myPlayerId: PlayerId | null): void {

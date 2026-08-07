@@ -133,6 +133,32 @@ io.on("connection", (socket) => {
 		}
 	});
 
+	socket.on("game:pause", () => {
+		const roomInfo = roomManager.getRoomBySocketId(socket.id);
+		if (!roomInfo) return;
+
+		// Only allow pause during MATCH phase
+		if (roomInfo.room.phase !== 'MATCH') return;
+
+		const session = matchSessions.get(roomInfo.room.code);
+		if (!session) return;
+
+		session.pause();
+	});
+
+	socket.on("game:resume", () => {
+		const roomInfo = roomManager.getRoomBySocketId(socket.id);
+		if (!roomInfo) return;
+
+		// Only allow resume during MATCH phase
+		if (roomInfo.room.phase !== 'MATCH') return;
+
+		const session = matchSessions.get(roomInfo.room.code);
+		if (!session) return;
+
+		session.resume();
+	});
+
 	socket.on("room:leave", () => {
 		handleDisconnect(socket.id);
 	});

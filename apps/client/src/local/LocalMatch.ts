@@ -12,6 +12,7 @@ export class LocalMatch {
   private accumulator = 0;
   private readonly TICK_MS = 1000 / 60;
   private latestSnapshot: StateSnapshot | null = null;
+  private _paused = false;
 
   onSnapshot: ((snapshot: StateSnapshot) => void) | null = null;
 
@@ -38,6 +39,27 @@ export class LocalMatch {
     for (const controller of this.controllers) {
       controller.destroy();
     }
+  }
+
+  get paused(): boolean {
+    return this._paused;
+  }
+
+  pause(): void {
+    if (this._paused) return;
+    this._paused = true;
+    if (this.animationFrameId !== null) {
+      cancelAnimationFrame(this.animationFrameId);
+      this.animationFrameId = null;
+    }
+  }
+
+  resume(): void {
+    if (!this._paused) return;
+    this._paused = false;
+    this.lastTime = performance.now();
+    this.accumulator = 0;
+    this.loop(this.lastTime);
   }
 
   getLatestSnapshot(): StateSnapshot | null {

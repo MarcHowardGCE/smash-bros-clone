@@ -1,3 +1,5 @@
+import { MoveId } from '@smash/shared';
+
 export interface JointPose {
   leftArmAngle: number;    // radians
   rightArmAngle: number;
@@ -19,6 +21,65 @@ export const DEFAULT_POSE: JointPose = {
 // Each animation is an array of up to 6 keyframes
 // Lerp between them based on stateFrame progress
 export type Animation = JointPose[];
+
+type AttackMoveId =
+  | MoveId.JAB
+  | MoveId.FORWARD_TILT
+  | MoveId.UP_TILT
+  | MoveId.DOWN_TILT
+  | MoveId.FORWARD_SMASH
+  | MoveId.UP_SMASH
+  | MoveId.DOWN_SMASH
+  | MoveId.NEUTRAL_SPECIAL
+  | MoveId.SIDE_SPECIAL
+  | MoveId.UP_SPECIAL
+  | MoveId.DOWN_SPECIAL
+  | MoveId.GRAB
+  | MoveId.PUMMEL
+  | MoveId.FORWARD_THROW
+  | MoveId.BACK_THROW
+  | MoveId.UP_THROW
+  | MoveId.DOWN_THROW
+  | MoveId.NEUTRAL_AIR
+  | MoveId.FORWARD_AIR
+  | MoveId.BACK_AIR
+  | MoveId.UP_AIR
+  | MoveId.DOWN_AIR;
+
+const GENERIC_ATTACK_ANIMATION: Animation = [
+  DEFAULT_POSE,
+  { leftArmAngle: -1.5, rightArmAngle: 1.5, leftLegAngle: -0.2, rightLegAngle: 0.2, bodyScaleX: 1, bodyScaleY: 1, headOffsetX: 5, headOffsetY: 0 },
+  DEFAULT_POSE,
+];
+
+function moveAttackPose(activePose: JointPose): Animation {
+  return [DEFAULT_POSE, activePose, DEFAULT_POSE];
+}
+
+export const ATTACK_MOVE_ANIMATIONS: Readonly<Record<AttackMoveId, Animation>> = {
+  [MoveId.JAB]: moveAttackPose({ leftArmAngle: -2.4, rightArmAngle: 0.9, leftLegAngle: -0.6, rightLegAngle: 0.4, bodyScaleX: 1.02, bodyScaleY: 0.98, headOffsetX: 6, headOffsetY: 0 }),
+  [MoveId.FORWARD_TILT]: moveAttackPose({ leftArmAngle: -2.18, rightArmAngle: 1.05, leftLegAngle: -0.8, rightLegAngle: 0.2, bodyScaleX: 1.04, bodyScaleY: 0.96, headOffsetX: 8, headOffsetY: 0 }),
+  [MoveId.UP_TILT]: moveAttackPose({ leftArmAngle: -1.96, rightArmAngle: 1.4, leftLegAngle: -0.55, rightLegAngle: 0.55, bodyScaleX: 1.0, bodyScaleY: 1.02, headOffsetX: 1, headOffsetY: -5 }),
+  [MoveId.DOWN_TILT]: moveAttackPose({ leftArmAngle: -1.74, rightArmAngle: 0.75, leftLegAngle: -1.1, rightLegAngle: 0.15, bodyScaleX: 1.08, bodyScaleY: 0.84, headOffsetX: 5, headOffsetY: 7 }),
+  [MoveId.FORWARD_SMASH]: moveAttackPose({ leftArmAngle: -1.52, rightArmAngle: 1.9, leftLegAngle: -0.85, rightLegAngle: 0.35, bodyScaleX: 1.12, bodyScaleY: 0.92, headOffsetX: 11, headOffsetY: -1 }),
+  [MoveId.UP_SMASH]: moveAttackPose({ leftArmAngle: -1.3, rightArmAngle: 2.2, leftLegAngle: -0.45, rightLegAngle: 0.75, bodyScaleX: 0.98, bodyScaleY: 1.08, headOffsetX: 0, headOffsetY: -8 }),
+  [MoveId.DOWN_SMASH]: moveAttackPose({ leftArmAngle: -1.08, rightArmAngle: 1.6, leftLegAngle: -1.2, rightLegAngle: 1.0, bodyScaleX: 1.14, bodyScaleY: 0.82, headOffsetX: 0, headOffsetY: 6 }),
+  [MoveId.NEUTRAL_SPECIAL]: moveAttackPose({ leftArmAngle: -0.86, rightArmAngle: 0.35, leftLegAngle: -0.5, rightLegAngle: 0.5, bodyScaleX: 0.97, bodyScaleY: 1.03, headOffsetX: 0, headOffsetY: -2 }),
+  [MoveId.SIDE_SPECIAL]: moveAttackPose({ leftArmAngle: -0.64, rightArmAngle: 1.35, leftLegAngle: -0.95, rightLegAngle: 0.25, bodyScaleX: 1.1, bodyScaleY: 0.9, headOffsetX: 10, headOffsetY: 0 }),
+  [MoveId.UP_SPECIAL]: moveAttackPose({ leftArmAngle: -0.42, rightArmAngle: 1.8, leftLegAngle: -0.35, rightLegAngle: 0.95, bodyScaleX: 0.95, bodyScaleY: 1.12, headOffsetX: 0, headOffsetY: -10 }),
+  [MoveId.DOWN_SPECIAL]: moveAttackPose({ leftArmAngle: -0.2, rightArmAngle: 0.2, leftLegAngle: -1.15, rightLegAngle: 1.15, bodyScaleX: 1.06, bodyScaleY: 0.86, headOffsetX: 0, headOffsetY: 8 }),
+  [MoveId.GRAB]: moveAttackPose({ leftArmAngle: 0.02, rightArmAngle: 1.7, leftLegAngle: -0.45, rightLegAngle: 0.45, bodyScaleX: 1.03, bodyScaleY: 0.97, headOffsetX: 9, headOffsetY: 0 }),
+  [MoveId.PUMMEL]: moveAttackPose({ leftArmAngle: 0.24, rightArmAngle: 0.95, leftLegAngle: -0.7, rightLegAngle: 0.3, bodyScaleX: 1.01, bodyScaleY: 0.94, headOffsetX: 4, headOffsetY: 3 }),
+  [MoveId.FORWARD_THROW]: moveAttackPose({ leftArmAngle: 0.46, rightArmAngle: 2.1, leftLegAngle: -0.8, rightLegAngle: 0.6, bodyScaleX: 1.15, bodyScaleY: 0.9, headOffsetX: 13, headOffsetY: -1 }),
+  [MoveId.BACK_THROW]: moveAttackPose({ leftArmAngle: 0.68, rightArmAngle: -1.25, leftLegAngle: -0.65, rightLegAngle: 0.85, bodyScaleX: 1.08, bodyScaleY: 0.93, headOffsetX: -10, headOffsetY: 0 }),
+  [MoveId.UP_THROW]: moveAttackPose({ leftArmAngle: 0.9, rightArmAngle: 2.35, leftLegAngle: -0.25, rightLegAngle: 0.85, bodyScaleX: 1.0, bodyScaleY: 1.14, headOffsetX: 0, headOffsetY: -12 }),
+  [MoveId.DOWN_THROW]: moveAttackPose({ leftArmAngle: 1.12, rightArmAngle: 0.1, leftLegAngle: -1.3, rightLegAngle: 0.7, bodyScaleX: 1.09, bodyScaleY: 0.8, headOffsetX: 2, headOffsetY: 10 }),
+  [MoveId.NEUTRAL_AIR]: moveAttackPose({ leftArmAngle: 1.34, rightArmAngle: -1.34, leftLegAngle: 0.95, rightLegAngle: -0.95, bodyScaleX: 1.0, bodyScaleY: 1.0, headOffsetX: 0, headOffsetY: -1 }),
+  [MoveId.FORWARD_AIR]: moveAttackPose({ leftArmAngle: 1.56, rightArmAngle: 1.25, leftLegAngle: 0.7, rightLegAngle: -1.05, bodyScaleX: 1.06, bodyScaleY: 0.95, headOffsetX: 7, headOffsetY: -2 }),
+  [MoveId.BACK_AIR]: moveAttackPose({ leftArmAngle: 1.78, rightArmAngle: -1.7, leftLegAngle: 0.85, rightLegAngle: -0.85, bodyScaleX: 1.02, bodyScaleY: 0.98, headOffsetX: -7, headOffsetY: -1 }),
+  [MoveId.UP_AIR]: moveAttackPose({ leftArmAngle: 2.0, rightArmAngle: 1.9, leftLegAngle: 0.45, rightLegAngle: -0.55, bodyScaleX: 0.98, bodyScaleY: 1.1, headOffsetX: 0, headOffsetY: -9 }),
+  [MoveId.DOWN_AIR]: moveAttackPose({ leftArmAngle: 2.22, rightArmAngle: 0.5, leftLegAngle: 1.4, rightLegAngle: -1.4, bodyScaleX: 1.05, bodyScaleY: 0.88, headOffsetX: 1, headOffsetY: 8 }),
+};
 
 export const ANIMATIONS: Record<string, Animation> = {
   IDLE: [
@@ -47,9 +108,7 @@ export const ANIMATIONS: Record<string, Animation> = {
     { leftArmAngle: -1.2, rightArmAngle: 1.2, leftLegAngle: -0.5, rightLegAngle: 0.5, bodyScaleX: 1.2, bodyScaleY: 0.7, headOffsetX: 0, headOffsetY: 5 },
   ],
   ATTACK: [
-    DEFAULT_POSE,
-    { leftArmAngle: -1.5, rightArmAngle: 1.5, leftLegAngle: -0.2, rightLegAngle: 0.2, bodyScaleX: 1, bodyScaleY: 1, headOffsetX: 5, headOffsetY: 0 },
-    DEFAULT_POSE,
+    ...GENERIC_ATTACK_ANIMATION,
   ],
   AIR_ATTACK: [
     DEFAULT_POSE,
@@ -115,8 +174,13 @@ export const ANIMATIONS: Record<string, Animation> = {
   ],
 };
 
-export function getAnimationPose(stateName: string, stateFrame: number): JointPose {
-  const anim = ANIMATIONS[stateName] ?? ANIMATIONS['IDLE']!;
+export function getAnimationPose(stateName: string, stateFrame: number, currentMoveId?: MoveId | null): JointPose {
+  const moveId = currentMoveId as AttackMoveId | null | undefined;
+  const moveSpecificAnim =
+    (stateName === 'ATTACK' || stateName === 'AIR_ATTACK') && moveId
+      ? ATTACK_MOVE_ANIMATIONS[moveId]
+      : undefined;
+  const anim = moveSpecificAnim ?? (stateName === 'AIR_ATTACK' ? ANIMATIONS['ATTACK'] : ANIMATIONS[stateName]) ?? ANIMATIONS['IDLE']!;
   if (anim.length === 0) return DEFAULT_POSE;
   if (anim.length === 1) return anim[0]!;
   

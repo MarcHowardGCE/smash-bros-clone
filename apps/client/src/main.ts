@@ -131,6 +131,9 @@ async function main() {
 					stocks: playerState.stocks,
 					isInvincible: playerState.isInvincible,
 					isKnockedOut: playerState.isKnockedOut,
+					isShielding: playerState.isShielding,
+					shieldHealth: playerState.shieldHealth,
+					currentMoveId: playerState.currentMoveId,
 				},
 			]),
 		);

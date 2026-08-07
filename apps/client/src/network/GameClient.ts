@@ -235,6 +235,9 @@ export class GameClient {
         stocks: predictedLocal.stocks,
         isInvincible: predictedLocal.isInvincible,
         isKnockedOut: predictedLocal.isKnockedOut,
+        isShielding: predictedLocal.isShielding,
+        shieldHealth: predictedLocal.shieldHealth,
+        currentMoveId: predictedLocal.currentMoveId,
       });
     }
 

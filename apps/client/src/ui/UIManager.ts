@@ -297,6 +297,27 @@ export class UIManager {
     });
   }
 
+  private interpolateDamageColor(percent: number): string {
+    // 0% = white, 75% = yellow, 150%+ = red
+    let r: number, g: number, b: number;
+
+    if (percent <= 75) {
+      // 0% (white) → 75% (yellow): interpolate green from 255 to 255, red stays 255, blue goes 255 → 0
+      const t = percent / 75;
+      r = 255;
+      g = 255;
+      b = Math.round(255 * (1 - t));
+    } else {
+      // 75% (yellow) → 150%+ (red): interpolate green from 255 → 0, red stays 255, blue stays 0
+      const t = Math.min(1, (percent - 75) / 75);
+      r = 255;
+      g = Math.round(255 * (1 - t));
+      b = 0;
+    }
+
+    return `rgb(${r},${g},${b})`;
+  }
+
   updateHUD(state: RenderState, myPlayerId: PlayerId | null): void {
     if (this.phase !== 'match') return;
 
@@ -308,10 +329,11 @@ export class UIManager {
       const maxStocks = 3;
       const stockBar = '■'.repeat(Math.max(0, stocks)) + '□'.repeat(Math.max(0, maxStocks - stocks));
       const percent = Math.floor(p.percent ?? 0);
+      const damageColor = this.interpolateDamageColor(percent);
 
       return `<div style="text-align:center;${isMe ? 'text-shadow:0 0 8px #fff' : ''}">
         <div style="font-size:12px;margin-bottom:4px">P${p.slotIndex + 1}${isMe ? ' ★' : ''}</div>
-        <div style="font-size:32px;font-weight:bold">${percent}%</div>
+        <div style="font-size:32px;font-weight:bold;color:${damageColor}">${percent}%</div>
         <div style="font-size:18px;letter-spacing:2px;margin-top:4px">${stockBar}</div>
       </div>`;
     }).join('');

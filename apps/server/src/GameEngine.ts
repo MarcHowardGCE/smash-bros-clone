@@ -25,6 +25,7 @@ import {
 	MoveId,
 	PHYSICS,
 	SMASH_CHARGE_MAX_FRAMES,
+	type HitEventData,
 	type PlayerId,
 	type PlayerState,
 	PlayerStateEnum,
@@ -111,6 +112,7 @@ export interface GameEngineOptions {
  */
 export class GameEngine {
 	private state: GameState;
+	private readonly hitEvents: HitEventData[] = [];
 	private readonly fsmControllers = new Map<PlayerId, FSMController>();
 	private readonly techAttemptBuffered = new Map<PlayerId, boolean>();
 	private ledgeState: Map<
@@ -258,7 +260,12 @@ export class GameEngine {
 			matchPhase: this.state.matchPhase,
 			winnerId: this.state.winnerId,
 			ledges: this.state.ledges,
+			hitEvents: [...this.hitEvents],
 		};
+	}
+
+	clearHitEvents(): void {
+		this.hitEvents.length = 0;
 	}
 
 	isMatchOver(): boolean {
@@ -1320,6 +1327,18 @@ export class GameEngine {
 					if (!updatedA || !updatedB) {
 						continue;
 					}
+					if (updatedB.currentMoveId) {
+						this.emitHitEvent(
+							updatedB.id,
+							updatedA.id,
+							updatedB.currentMoveId,
+							hitOnA.damage,
+							hitOnA.knockbackVx,
+							hitOnA.knockbackVy,
+							updatedA.x,
+							updatedA.y,
+						);
+					}
 
 					const hitShieldOnA =
 						(updatedA.state === PlayerStateEnum.SHIELD || updatedA.isShielding) &&
@@ -1352,6 +1371,18 @@ export class GameEngine {
 					const updatedB = players[playerB.id];
 					if (!updatedA || !updatedB) {
 						continue;
+					}
+					if (updatedA.currentMoveId) {
+						this.emitHitEvent(
+							updatedA.id,
+							updatedB.id,
+							updatedA.currentMoveId,
+							hitOnB.damage,
+							hitOnB.knockbackVx,
+							hitOnB.knockbackVy,
+							updatedB.x,
+							updatedB.y,
+						);
 					}
 
 					const hitShieldOnB =
@@ -1486,6 +1517,19 @@ export class GameEngine {
 		const trackedHitIds = new Set(attacker.hitPlayerIds);
 		trackedHitIds.add(victim.id);
 
+		if (attacker.currentMoveId) {
+			this.emitHitEvent(
+				attacker.id,
+				victim.id,
+				attacker.currentMoveId,
+				hit.damage,
+				hit.knockbackVx,
+				hit.knockbackVy,
+				victim.x,
+				victim.y,
+			);
+		}
+
 		players[victim.id] = this.applyHit(
 			{
 				...victim,
@@ -1539,6 +1583,17 @@ export class GameEngine {
 
 		const trackedHitIds = new Set(attacker.hitPlayerIds);
 		trackedHitIds.add(victim.id);
+
+		this.emitHitEvent(
+			attacker.id,
+			victim.id,
+			MoveId.PUMMEL,
+			hit.damage,
+			hit.knockbackVx,
+			hit.knockbackVy,
+			victim.x,
+			victim.y,
+		);
 
 		players[victim.id] = {
 			...victim,
@@ -1661,6 +1716,17 @@ export class GameEngine {
 			currentDefender.facing,
 		);
 
+		this.emitHitEvent(
+			currentDefender.id,
+			currentAttacker.id,
+			MoveId.DOWN_SPECIAL,
+			counterDamage,
+			counterVelocity.x,
+			counterVelocity.y,
+			currentAttacker.x,
+			currentAttacker.y,
+		);
+
 		players[attacker.id] = this.applyHit(
 			currentAttacker,
 			{
@@ -1707,6 +1773,27 @@ export class GameEngine {
 			landingLagFrames: 0,
 			chargeFrames: 0,
 		};
+	}
+
+	private emitHitEvent(
+		attackerId: PlayerId,
+		defenderId: PlayerId,
+		moveId: MoveId,
+		damage: number,
+		knockbackVx: number,
+		knockbackVy: number,
+		worldX: number,
+		worldY: number,
+	): void {
+		this.hitEvents.push({
+			attackerId,
+			defenderId,
+			moveId,
+			damage,
+			knockbackMagnitude: Math.hypot(knockbackVx, knockbackVy),
+			worldX,
+			worldY,
+		});
 	}
 
 	private applyHit(

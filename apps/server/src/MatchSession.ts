@@ -176,6 +176,7 @@ export class MatchSession {
     // client decode time.
 		const encoded = encode(snapshot, { extensionCodec });
     this.onBroadcast(Buffer.from(encoded.buffer, encoded.byteOffset, encoded.byteLength));
+		this.engine.clearHitEvents();
   }
 
   private decodeInput(rawInput: InputEvent | Uint8Array | ArrayBuffer): InputEvent | null {

@@ -1,5 +1,5 @@
 import { lerp } from '@smash/shared';
-import type { StateSnapshot, PlayerState, PlayerId } from '@smash/shared';
+import type { StateSnapshot, PlayerState, PlayerId, MoveId } from '@smash/shared';
 
 export interface RenderPlayerState {
   id: PlayerId;
@@ -15,6 +15,9 @@ export interface RenderPlayerState {
   stocks: number;
   isInvincible: boolean;
   isKnockedOut: boolean;
+  isShielding: boolean;
+  shieldHealth: number;
+  currentMoveId: MoveId | null;
 }
 
 export interface RenderState {
@@ -122,6 +125,9 @@ export class InterpolationBuffer {
         stocks: p1.stocks,        // snap to latest
         isInvincible: p1.isInvincible,
         isKnockedOut: p1.isKnockedOut,
+        isShielding: p1.isShielding,
+        shieldHealth: p1.shieldHealth,
+        currentMoveId: p1.currentMoveId,
       };
 
       players.set(id as PlayerId, interpolated);
@@ -169,6 +175,9 @@ export class InterpolationBuffer {
       stocks: p.stocks,
       isInvincible: p.isInvincible,
       isKnockedOut: p.isKnockedOut,
+      isShielding: p.isShielding,
+      shieldHealth: p.shieldHealth,
+      currentMoveId: p.currentMoveId,
     };
   }
 }

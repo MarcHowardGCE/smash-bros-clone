@@ -1,5 +1,5 @@
 // Types
-export type { Vec2, Circle, HitboxData, PlayerState, GameState, StateSnapshot, PlayerId } from './types/GameState.js';
+export type { Vec2, Circle, HitboxData, PlayerState, GameState, StateSnapshot, PlayerId, HitEventData } from './types/GameState.js';
 export type { InputBitmask, InputEvent } from './types/InputEvent.js';
 export { INPUT_BITS } from './types/InputEvent.js';
 export type { MoveData } from './types/MoveData.js';

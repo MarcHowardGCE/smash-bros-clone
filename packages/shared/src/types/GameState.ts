@@ -82,6 +82,16 @@ export interface GameState {
   ledges: Record<string, string | null>;
 }
 
+export interface HitEventData {
+	attackerId: PlayerId;
+	defenderId: PlayerId;
+	moveId: MoveId;
+	damage: number;
+	knockbackMagnitude: number;
+	worldX: number;
+	worldY: number;
+}
+
 export interface StateSnapshot {
   tick: number;
   timestamp: number;
@@ -90,4 +100,5 @@ export interface StateSnapshot {
   matchPhase: 'lobby' | 'countdown' | 'match' | 'result';
   winnerId: PlayerId | null;
   ledges: Record<string, string | null>;
+	hitEvents: HitEventData[];
 }

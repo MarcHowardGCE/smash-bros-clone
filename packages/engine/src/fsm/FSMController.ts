@@ -134,13 +134,15 @@ export class FSMController {
 	      };
 	    }
 
+	    let playerForStateMachine = player;
+
 	    // ASDI (Automatic/Additional SDI): post-hitlag hitstun drift
 	    // Applies only when hitlag has ended (hitlagFramesRemaining <= 0) and player is in HITSTUN state.
 	    // Each frame with directional input, apply positional drift (not velocity) clamped to max total.
 	    if (
-	      player.hitlagFramesRemaining <= 0 &&
-	      player.state === PlayerStateEnum.HITSTUN &&
-	      player.hitstunFramesRemaining > 0
+	      playerForStateMachine.hitlagFramesRemaining <= 0 &&
+	      playerForStateMachine.state === PlayerStateEnum.HITSTUN &&
+	      playerForStateMachine.hitstunFramesRemaining > 0
 	    ) {
 	      const leftHeld = Boolean((input?.held ?? 0) & INPUT_BITS.LEFT);
 	      const rightHeld = Boolean((input?.held ?? 0) & INPUT_BITS.RIGHT);
@@ -150,31 +152,31 @@ export class FSMController {
 	      const inputY = upHeld === downHeld ? 0 : upHeld ? -1 : 1;
 	      const hasDirectionalInput = inputX !== 0 || inputY !== 0;
 
-      if (hasDirectionalInput) {
-        const currentAccumulated = player.asdiDriftAccumulated ?? 0;
-        const driftDelta = PHYSICS.ASDI_DRIFT_PX_PER_FRAME;
-        const newAccumulated = Math.min(
-          currentAccumulated + driftDelta,
-          PHYSICS.ASDI_MAX_TOTAL_DRIFT_PX,
-        );
+	      if (hasDirectionalInput) {
+	        const currentAccumulated = playerForStateMachine.asdiDriftAccumulated ?? 0;
+	        const driftDelta = PHYSICS.ASDI_DRIFT_PX_PER_FRAME;
+	        const newAccumulated = Math.min(
+	          currentAccumulated + driftDelta,
+	          PHYSICS.ASDI_MAX_TOTAL_DRIFT_PX,
+	        );
 	        const actualDrift = newAccumulated - currentAccumulated;
 
-	        return {
-	          ...player,
-	          x: player.x + inputX * actualDrift,
-	          y: player.y + inputY * actualDrift,
+	        playerForStateMachine = {
+	          ...playerForStateMachine,
+	          x: playerForStateMachine.x + inputX * actualDrift,
+	          y: playerForStateMachine.y + inputY * actualDrift,
 	          asdiDriftAccumulated: newAccumulated,
 	        };
 	      }
 	    }
 
     const ctx: FSMContext = {
-      player,
+      player: playerForStateMachine,
       input,
-      isGrounded: player.isGrounded,
+      isGrounded: playerForStateMachine.isGrounded,
     };
 
-    let transition = this.currentState.update(ctx, player.stateFrame);
+    let transition = this.currentState.update(ctx, playerForStateMachine.stateFrame);
 
     // stateFrame advances here — before any transition is applied. This is intentional:
     // the current state's update() already ran against the current stateFrame value,
@@ -197,8 +199,8 @@ export class FSMController {
     }
 
     let nextPlayer: PlayerState = {
-      ...player,
-      stateFrame: player.stateFrame + 1,
+      ...playerForStateMachine,
+      stateFrame: playerForStateMachine.stateFrame + 1,
     };
 
     // HITSTUN is tracked separately from HITLAG:
@@ -206,10 +208,10 @@ export class FSMController {
     // hitstun continues only for the defender and governs how long they remain unable to
     // act during knockback. Decrementing here keeps hitstun counting down every tick even
     // while the state machine is otherwise running normally.
-    if (player.hitstunFramesRemaining > 0) {
+    if (playerForStateMachine.hitstunFramesRemaining > 0) {
       nextPlayer = {
         ...nextPlayer,
-        hitstunFramesRemaining: player.hitstunFramesRemaining - 1,
+        hitstunFramesRemaining: playerForStateMachine.hitstunFramesRemaining - 1,
       };
     }
 

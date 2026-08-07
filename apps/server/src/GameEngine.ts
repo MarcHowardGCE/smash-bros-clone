@@ -10,6 +10,7 @@ import {
 	FSMController,
 	getMoveData,
 	NO_HIT,
+	resolveHit,
 	resolveHitTrade,
 	type StageData,
 	startJump,
@@ -43,6 +44,19 @@ const EMPTY_INPUT: InputEvent = {
 	pressed: 0,
 	released: 0,
 };
+
+function isThrowMoveId(playerMoveId: PlayerState['currentMoveId']): playerMoveId is
+	| MoveId.FORWARD_THROW
+	| MoveId.BACK_THROW
+	| MoveId.UP_THROW
+	| MoveId.DOWN_THROW {
+	return (
+		playerMoveId === MoveId.FORWARD_THROW ||
+		playerMoveId === MoveId.BACK_THROW ||
+		playerMoveId === MoveId.UP_THROW ||
+		playerMoveId === MoveId.DOWN_THROW
+	);
+}
 
 function clonePlayer(player: PlayerState): PlayerState {
 	return {
@@ -588,6 +602,22 @@ export class GameEngine {
 			};
 		}
 
+		if (
+			previous.state === PlayerStateEnum.ATTACK &&
+			player.state === PlayerStateEnum.IDLE &&
+			previous.currentMoveId === MoveId.PUMMEL &&
+			previous.isGrabbing
+		) {
+			nextPlayer = {
+				...nextPlayer,
+				state: PlayerStateEnum.GRAB_HOLDING,
+				stateFrame: 0,
+				currentMoveId: null,
+				currentMove: undefined,
+				hitPlayerIds: new Set<string>(),
+			};
+		}
+
 		const leftRegularAttackState =
 			(previous.state === PlayerStateEnum.ATTACK ||
 				previous.state === PlayerStateEnum.AIR_ATTACK) &&
@@ -601,7 +631,7 @@ export class GameEngine {
 			};
 		}
 
-		if (![PlayerStateEnum.ATTACK, PlayerStateEnum.AIR_ATTACK, PlayerStateEnum.LEDGE_ATTACK].includes(
+		if (![PlayerStateEnum.ATTACK, PlayerStateEnum.AIR_ATTACK, PlayerStateEnum.LEDGE_ATTACK, PlayerStateEnum.GRAB_HOLDING].includes(
 			player.state as PlayerStateEnum,
 		)) {
 			nextPlayer = {
@@ -817,6 +847,10 @@ export class GameEngine {
 		player: PlayerState,
 		input: InputEvent | null,
 	): PlayerState {
+		if (player.isGrabbing) {
+			return player;
+		}
+
 		if (isHeld(input, INPUT_BITS.LEFT) && !isHeld(input, INPUT_BITS.RIGHT)) {
 			return { ...player, facing: -1 };
 		}
@@ -1069,6 +1103,11 @@ export class GameEngine {
 		const wantsDown = isHeld(input, INPUT_BITS.DOWN);
 		const wantsLeft = isHeld(input, INPUT_BITS.LEFT);
 		const wantsRight = isHeld(input, INPUT_BITS.RIGHT);
+		const pressedUp = isPressed(input, INPUT_BITS.JUMP);
+		const pressedDown = isPressed(input, INPUT_BITS.DOWN);
+		const pressedLeft = isPressed(input, INPUT_BITS.LEFT);
+		const pressedRight = isPressed(input, INPUT_BITS.RIGHT);
+		const pressedHorizontal = pressedLeft !== pressedRight;
 		const wantsHorizontal = wantsLeft !== wantsRight;
 		const wantsSpecial = isPressed(input, INPUT_BITS.SPECIAL);
 		const wantsGrab = isPressed(input, INPUT_BITS.GRAB);
@@ -1094,6 +1133,19 @@ export class GameEngine {
 			if (wantsAway) return MoveId.BACK_AIR;
 			if (wantsToward || wantsHorizontal) return MoveId.FORWARD_AIR;
 			return MoveId.NEUTRAL_AIR;
+		}
+
+		if (player.isGrabbing || player.state === PlayerStateEnum.GRAB_HOLDING) {
+			if (isPressed(input, INPUT_BITS.ATTACK)) return MoveId.PUMMEL;
+			if (pressedUp) return MoveId.UP_THROW;
+			if (pressedDown) return MoveId.DOWN_THROW;
+			if (pressedHorizontal) {
+				const pressedToward =
+					(player.facing === 1 && pressedRight) ||
+					(player.facing === -1 && pressedLeft);
+				return pressedToward ? MoveId.FORWARD_THROW : MoveId.BACK_THROW;
+			}
+			return MoveId.GRAB;
 		}
 
 		if (wantsGrab) {
@@ -1173,6 +1225,26 @@ export class GameEngine {
 					continue;
 				}
 
+				const playerAThrowConnected = this.tryApplyThrowHit(
+					players,
+					playerA.id,
+					playerB.id,
+					playerBInput,
+				);
+				if (playerAThrowConnected) {
+					continue;
+				}
+
+				const playerAPummelConnected = this.tryApplyPummelHit(
+					players,
+					playerA.id,
+					playerB.id,
+					playerBInput,
+				);
+				if (playerAPummelConnected) {
+					continue;
+				}
+
 				const playerBGrabConnected = this.tryApplyGrabConnect(
 					players,
 					playerB.id,
@@ -1180,6 +1252,26 @@ export class GameEngine {
 					playerAInput,
 				);
 				if (playerBGrabConnected) {
+					continue;
+				}
+
+				const playerBPummelConnected = this.tryApplyPummelHit(
+					players,
+					playerB.id,
+					playerA.id,
+					playerAInput,
+				);
+				if (playerBPummelConnected) {
+					continue;
+				}
+
+				const playerBThrowConnected = this.tryApplyThrowHit(
+					players,
+					playerB.id,
+					playerA.id,
+					playerAInput,
+				);
+				if (playerBThrowConnected) {
 					continue;
 				}
 
@@ -1355,6 +1447,122 @@ export class GameEngine {
 		return true;
 	}
 
+	private tryApplyThrowHit(
+		players: Record<PlayerId, PlayerState>,
+		attackerId: PlayerId,
+		victimId: PlayerId,
+		victimInput: InputEvent | null,
+	): boolean {
+		const attacker = players[attackerId];
+		const victim = players[victimId];
+
+		if (!attacker || !victim) {
+			return false;
+		}
+
+		if (!attacker.isGrabbing || attacker.grabbedPlayerId !== victim.id) {
+			return false;
+		}
+
+		if (!isThrowMoveId(attacker.currentMoveId) || !attacker.activeHitbox) {
+			return false;
+		}
+
+		const guaranteedOverlapVictim: PlayerState = {
+			...victim,
+			x: attacker.x + attacker.activeHitbox.offsetX * attacker.facing,
+			y: attacker.y + attacker.activeHitbox.offsetY,
+		};
+		const hit = resolveHit(
+			attacker,
+			guaranteedOverlapVictim,
+			attacker.activeHitbox,
+			victimInput,
+		);
+		if (!hit.hit) {
+			return false;
+		}
+
+		const trackedHitIds = new Set(attacker.hitPlayerIds);
+		trackedHitIds.add(victim.id);
+
+		players[victim.id] = this.applyHit(
+			{
+				...victim,
+				isGrabbing: false,
+				grabbedPlayerId: null,
+			},
+			hit,
+			attacker.facing,
+		);
+
+		players[attacker.id] = {
+			...attacker,
+			isGrabbing: false,
+			grabbedPlayerId: null,
+			hitPlayerIds: trackedHitIds,
+		};
+
+		return true;
+	}
+
+	private tryApplyPummelHit(
+		players: Record<PlayerId, PlayerState>,
+		attackerId: PlayerId,
+		victimId: PlayerId,
+		victimInput: InputEvent | null,
+	): boolean {
+		const attacker = players[attackerId];
+		const victim = players[victimId];
+
+		if (!attacker || !victim) {
+			return false;
+		}
+
+		if (
+			!attacker.isGrabbing ||
+			attacker.grabbedPlayerId !== victim.id ||
+			attacker.currentMoveId !== MoveId.PUMMEL ||
+			!attacker.activeHitbox
+		) {
+			return false;
+		}
+
+		if (attacker.hitPlayerIds.has(victim.id)) {
+			return false;
+		}
+
+		const hit = resolveHit(attacker, victim, attacker.activeHitbox, victimInput);
+		if (!hit.hit) {
+			return false;
+		}
+
+		const trackedHitIds = new Set(attacker.hitPlayerIds);
+		trackedHitIds.add(victim.id);
+
+		players[victim.id] = {
+			...victim,
+			percent: victim.percent + hit.damage,
+			hitlagFramesRemaining: Math.max(victim.hitlagFramesRemaining, hit.hitlagFrames),
+			state: PlayerStateEnum.GRAB_HOLDING,
+			isGrabbing: true,
+			x: attacker.x + PHYSICS.GRAB_OFFSET_X * attacker.facing,
+			y: attacker.y,
+			vx: 0,
+			vy: 0,
+			activeHitbox: null,
+			currentMoveId: null,
+			currentMove: undefined,
+		};
+
+		players[attacker.id] = {
+			...attacker,
+			hitPlayerIds: trackedHitIds,
+		};
+
+		return true;
+	}
+
 	private isGrabVictimEligible(victim: PlayerState): boolean {
 		return (
 			this.canInteract(victim) &&
@@ -1373,6 +1581,8 @@ export class GameEngine {
 			if (!victim) {
 				players[attacker.id] = {
 					...attacker,
+					state: PlayerStateEnum.IDLE,
+					stateFrame: 0,
 					isGrabbing: false,
 					grabbedPlayerId: null,
 				};

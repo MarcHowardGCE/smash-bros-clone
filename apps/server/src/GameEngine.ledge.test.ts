@@ -101,7 +101,7 @@ function advanceUntilGrounded(
 function expectHangingOnLeftLedge(player: PlayerState): void {
 	expect(player.state).toBe(PlayerStateEnum.LEDGE_HANG);
 	expect(player.ledgeId).toBe('left');
-	expect(player.x).toBe(15);
+	expect(player.x).toBe(205);
 	expect(player.y).toBe(510);
 	expect(player.vx).toBe(0);
 	expect(player.vy).toBe(0);
@@ -522,7 +522,7 @@ describe('GameEngine ledge integration', () => {
 	it('grabs the left ledge end-to-end via tickGame/updatePlayer and populates the ledges snapshot', () => {
 		const engine = createEngine();
 		primePlayer(engine, 'p1', {
-			x: 10,
+			x: 150,
 			y: 505,
 			vx: -1,
 			vy: 4,
@@ -558,7 +558,7 @@ describe('GameEngine ledge integration', () => {
 			primePlayer(engine, 'p1', {
 				state: PlayerStateEnum.LEDGE_HANG,
 				stateFrame: 0,
-				x: 15,
+				x: 205,
 				y: 510,
 				vx: 0,
 				vy: 0,
@@ -627,7 +627,7 @@ describe('GameEngine ledge integration', () => {
 	it('trumps the current occupant and transfers ledge ownership', () => {
 		const engine = createEngine(['p1', 'p2']);
 		primePlayer(engine, 'p1', {
-			x: 10,
+			x: 150,
 			y: 505,
 			state: PlayerStateEnum.AIRBORNE,
 			isGrounded: false,
@@ -637,7 +637,7 @@ describe('GameEngine ledge integration', () => {
 		tick(engine);
 
 		primePlayer(engine, 'p2', {
-			x: 10,
+			x: 150,
 			y: 505,
 			state: PlayerStateEnum.AIRBORNE,
 			isGrounded: false,
@@ -667,7 +667,7 @@ describe('GameEngine ledge integration', () => {
 	it('enforces same-ledge regrab cooldown after a ledge drop', () => {
 		const engine = createEngine();
 		primePlayer(engine, 'p1', {
-			x: 10,
+			x: 150,
 			y: 505,
 			state: PlayerStateEnum.AIRBORNE,
 			isGrounded: false,
@@ -680,7 +680,7 @@ describe('GameEngine ledge integration', () => {
 		expect(dropState.players.p1?.state).toBe(PlayerStateEnum.AIRBORNE);
 
 		primePlayer(engine, 'p1', {
-			x: 10,
+			x: 150,
 			y: 505,
 			vx: 0,
 			vy: 0,
@@ -707,7 +707,7 @@ describe('GameEngine ledge integration', () => {
 		});
 		advance(engine, PHYSICS.LEDGE_REGRAB_COOLDOWN_FRAMES);
 		primePlayer(engine, 'p1', {
-			x: 10,
+			x: 150,
 			y: 505,
 			vx: 0,
 			vy: 0,
@@ -727,7 +727,7 @@ describe('GameEngine ledge integration', () => {
 		const engine = createEngine(['p1', 'p2', 'p3', 'p4']);
 
 		primePlayer(engine, 'p1', {
-			x: 10,
+			x: 150,
 			y: 505,
 			state: PlayerStateEnum.AIRBORNE,
 			isGrounded: false,
@@ -736,7 +736,7 @@ describe('GameEngine ledge integration', () => {
 		tick(engine);
 
 		primePlayer(engine, 'p2', {
-			x: 10,
+			x: 150,
 			y: 505,
 			state: PlayerStateEnum.AIRBORNE,
 			isGrounded: false,
@@ -747,7 +747,7 @@ describe('GameEngine ledge integration', () => {
 		expect(secondState.players.p1?.state).toBe(PlayerStateEnum.AIRBORNE);
 
 		primePlayer(engine, 'p3', {
-			x: 10,
+			x: 150,
 			y: 505,
 			state: PlayerStateEnum.AIRBORNE,
 			isGrounded: false,
@@ -790,7 +790,7 @@ describe('GameEngine ledge integration', () => {
 	it('shield break from hit: drains to 0, pops upward, enters HITSTUN for 150 frames, then expires', () => {
 		const engine = createEngine(['p1', 'p2']);
 		primePlayer(engine, 'p1', {
-			x: 60,
+			x: 640,
 			y: 300,
 			state: PlayerStateEnum.SHIELD,
 			stateFrame: 0,
@@ -801,7 +801,7 @@ describe('GameEngine ledge integration', () => {
 		});
 
 		primePlayer(engine, 'p2', {
-			x: 0,
+			x: 600,
 			y: 300,
 			facing: 1,
 			state: PlayerStateEnum.ATTACK,

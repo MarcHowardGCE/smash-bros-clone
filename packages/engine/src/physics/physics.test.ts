@@ -546,7 +546,7 @@ describe('Physics Engine - Stage Geometry Regression Guard', () => {
 
 describe('Physics Engine - checkLedgeGrab', () => {
   it('returns left LedgeData when player is near the left ledge', () => {
-    const player = makePlayer({ x: 10, y: 505, isGrounded: false, hitstunFramesRemaining: 0 });
+    const player = makePlayer({ x: 190, y: 505, isGrounded: false, hitstunFramesRemaining: 0 });
     const stage = makeStage();
     const result = checkLedgeGrab(player, stage);
     expect(result).not.toBeNull();
@@ -554,7 +554,7 @@ describe('Physics Engine - checkLedgeGrab', () => {
   });
 
   it('returns right LedgeData when player is near the right ledge', () => {
-    const player = makePlayer({ x: 1270, y: 505, isGrounded: false, hitstunFramesRemaining: 0 });
+    const player = makePlayer({ x: 1090, y: 505, isGrounded: false, hitstunFramesRemaining: 0 });
     const stage = makeStage();
     const result = checkLedgeGrab(player, stage);
     expect(result).not.toBeNull();
@@ -580,7 +580,7 @@ describe('Physics Engine - checkLedgeGrab', () => {
   });
 
   it('allows grab when player faces away from ledge (no facing check)', () => {
-    const player = makePlayer({ x: 1270, y: 505, isGrounded: false, hitstunFramesRemaining: 0, facing: -1 });
+    const player = makePlayer({ x: 1090, y: 505, isGrounded: false, hitstunFramesRemaining: 0, facing: -1 });
     const stage = makeStage();
     const result = checkLedgeGrab(player, stage);
     expect(result).not.toBeNull();

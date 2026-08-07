@@ -1,6 +1,6 @@
 import type { InputEvent, PlayerState } from '@smash/shared';
 import { PlayerStateEnum } from '@smash/shared';
-import { INPUT_BITS } from '@smash/shared';
+import { INPUT_BITS, PHYSICS } from '@smash/shared';
 import type { FSMContext, FSMTransition, IFSMState } from './index.js';
 import { AirAttackState } from './states/AirAttackState.js';
 import { AirborneState } from './states/AirborneState.js';
@@ -150,13 +150,13 @@ export class FSMController {
 	      const inputY = upHeld === downHeld ? 0 : upHeld ? -1 : 1;
 	      const hasDirectionalInput = inputX !== 0 || inputY !== 0;
 
-	      if (hasDirectionalInput) {
-	        const currentAccumulated = player.asdiDriftAccumulated ?? 0;
-	        const driftDelta = 2; // PHYSICS.ASDI_DRIFT_PX_PER_FRAME
-	        const newAccumulated = Math.min(
-	          currentAccumulated + driftDelta,
-	          30, // PHYSICS.ASDI_MAX_TOTAL_DRIFT_PX
-	        );
+      if (hasDirectionalInput) {
+        const currentAccumulated = player.asdiDriftAccumulated ?? 0;
+        const driftDelta = PHYSICS.ASDI_DRIFT_PX_PER_FRAME;
+        const newAccumulated = Math.min(
+          currentAccumulated + driftDelta,
+          PHYSICS.ASDI_MAX_TOTAL_DRIFT_PX,
+        );
 	        const actualDrift = newAccumulated - currentAccumulated;
 
 	        return {

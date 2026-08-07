@@ -6,9 +6,9 @@ export const STAGE = {
   BLAST_LEFT: -300,
   BLAST_RIGHT: 1580,
   MAIN_PLATFORM: {
-    x: 0,
+    x: 190,
     y: 500,
-    width: 1280,
+    width: 900,
     height: 20,
     solid: true,
   },
@@ -31,14 +31,14 @@ export const STAGE = {
     },
   ],
   SPAWN_POSITIONS: [
-    { x: 320, y: 400 },
-    { x: 960, y: 400 },
+    { x: 415, y: 400 },
+    { x: 865, y: 400 },
     { x: 640, y: 300 },
     { x: 640, y: 450 },
   ],
   LEDGES: [
-    { id: 'left', x: 0, y: 500 },
-    { id: 'right', x: 1280, y: 500 },
+    { id: 'left', x: 190, y: 500 },
+    { id: 'right', x: 1090, y: 500 },
   ],
 } as const;
 

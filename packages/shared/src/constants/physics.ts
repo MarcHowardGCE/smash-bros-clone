@@ -44,7 +44,9 @@ export const PHYSICS = {
   LEDGE_TRUMP_INVINCIBILITY_FRAMES: 20, // brief invincibility grace period for the popped player
   COUNTER_DAMAGE_MULTIPLIER: 1.3,   // scales reflected damage when Down Special counter window is active
   COUNTER_KNOCKBACK_MULTIPLIER: 1.2, // scales reflected knockback magnitude for successful counters
-  COUNTER_ANGLE_DEGREES: 45,        // launch angle used by counter-hit resolution (mirrored by defender facing)
+   COUNTER_ANGLE_DEGREES: 45,        // launch angle used by counter-hit resolution (mirrored by defender facing)
+   ASDI_DRIFT_PX_PER_FRAME: 2,       // px/frame positional drift during post-hitlag hitstun when direction held
+   ASDI_MAX_TOTAL_DRIFT_PX: 30,      // px; cumulative ASDI drift cap per hitstun instance
 } as const;
 
 export type Physics = typeof PHYSICS;

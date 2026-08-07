@@ -451,6 +451,148 @@ describe('FSM - LedgeRoll timing', () => {
   });
 });
 
+describe('FSM - ASDI (Automatic/Additional SDI) during post-hitlag hitstun', () => {
+  it('accumulates 2px drift per frame when direction held during hitstun (5 frames → 10px)', () => {
+    const controller = new FSMController(PlayerStateEnum.HITSTUN);
+    let player = makePlayer({
+      state: PlayerStateEnum.HITSTUN,
+      stateFrame: 0,
+      x: 640,
+      y: 480,
+      hitlagFramesRemaining: 0,
+      hitstunFramesRemaining: 10,
+      asdiDriftAccumulated: 0,
+    });
+
+    // Tick 1: RIGHT held, expect +2px drift
+    player = controller.tick(player, makeInput(0, INPUT_BITS.RIGHT));
+    expect(player.x).toBe(642); // 640 + 2
+    expect(player.asdiDriftAccumulated ?? 0).toBe(2);
+
+    // Tick 2: RIGHT held, expect +2px drift
+    player = controller.tick(player, makeInput(0, INPUT_BITS.RIGHT));
+    expect(player.x).toBe(644); // 642 + 2
+    expect(player.asdiDriftAccumulated ?? 0).toBe(4);
+
+    // Tick 3: RIGHT held, expect +2px drift
+    player = controller.tick(player, makeInput(0, INPUT_BITS.RIGHT));
+    expect(player.x).toBe(646); // 644 + 2
+    expect(player.asdiDriftAccumulated ?? 0).toBe(6);
+
+    // Tick 4: RIGHT held, expect +2px drift
+    player = controller.tick(player, makeInput(0, INPUT_BITS.RIGHT));
+    expect(player.x).toBe(648); // 646 + 2
+    expect(player.asdiDriftAccumulated ?? 0).toBe(8);
+
+    // Tick 5: RIGHT held, expect +2px drift
+    player = controller.tick(player, makeInput(0, INPUT_BITS.RIGHT));
+    expect(player.x).toBe(650); // 648 + 2
+    expect(player.asdiDriftAccumulated ?? 0).toBe(10);
+  });
+
+  it('caps cumulative drift at 30px max (20 frames held → 30px, not 40px)', () => {
+    const controller = new FSMController(PlayerStateEnum.HITSTUN);
+    let player = makePlayer({
+      state: PlayerStateEnum.HITSTUN,
+      stateFrame: 0,
+      x: 640,
+      y: 480,
+      hitlagFramesRemaining: 0,
+      hitstunFramesRemaining: 25,
+      asdiDriftAccumulated: 0,
+    });
+
+    // Hold RIGHT for 20 frames (should accumulate 40px worth, but capped at 30px)
+    for (let i = 0; i < 20; i += 1) {
+      player = controller.tick(player, makeInput(0, INPUT_BITS.RIGHT));
+    }
+
+    expect(player.x).toBe(670); // 640 + 30 (capped)
+    expect(player.asdiDriftAccumulated ?? 0).toBe(30);
+  });
+
+  it('does not apply drift during hitlag (hitlagFramesRemaining > 0)', () => {
+    const controller = new FSMController(PlayerStateEnum.HITSTUN);
+    let player = makePlayer({
+      state: PlayerStateEnum.HITSTUN,
+      stateFrame: 0,
+      x: 640,
+      y: 480,
+      hitlagFramesRemaining: 3,
+      hitstunFramesRemaining: 10,
+      asdiDriftAccumulated: 0,
+    });
+
+    // During hitlag, RIGHT held should NOT apply ASDI drift (only SDI during hitlag)
+    const beforeX = player.x;
+    player = controller.tick(player, makeInput(0, INPUT_BITS.RIGHT));
+    // During hitlag, SDI applies 3px per input, not ASDI 2px
+    expect(player.x).toBe(beforeX + 3); // SDI drift, not ASDI
+    expect(player.asdiDriftAccumulated ?? 0).toBe(0); // ASDI not applied during hitlag
+  });
+
+  it('resets asdiDriftAccumulated to 0 when new hitstun instance begins', () => {
+    const controller = new FSMController(PlayerStateEnum.HITSTUN);
+    let player = makePlayer({
+      state: PlayerStateEnum.HITSTUN,
+      stateFrame: 0,
+      x: 640,
+      y: 480,
+      hitlagFramesRemaining: 0,
+      hitstunFramesRemaining: 10,
+      asdiDriftAccumulated: 25, // Simulate accumulated drift from previous hitstun
+    });
+
+    // Simulate new hitstun instance (would be set by GameEngine.applyHit)
+    player = {
+      ...player,
+      hitstunFramesRemaining: 15,
+      asdiDriftAccumulated: 0, // Reset on new hitstun
+    };
+
+    // Now apply drift in new hitstun
+    player = controller.tick(player, makeInput(0, INPUT_BITS.RIGHT));
+    expect(player.asdiDriftAccumulated ?? 0).toBe(2); // Starts fresh
+  });
+
+  it('applies vertical drift when UP held during hitstun', () => {
+    const controller = new FSMController(PlayerStateEnum.HITSTUN);
+    let player = makePlayer({
+      state: PlayerStateEnum.HITSTUN,
+      stateFrame: 0,
+      x: 640,
+      y: 480,
+      hitlagFramesRemaining: 0,
+      hitstunFramesRemaining: 10,
+      asdiDriftAccumulated: 0,
+    });
+
+    // Hold UP (JUMP bit)
+    player = controller.tick(player, makeInput(0, INPUT_BITS.JUMP));
+    expect(player.y).toBe(478); // 480 - 2 (UP is negative)
+    expect(player.asdiDriftAccumulated ?? 0).toBe(2);
+  });
+
+  it('does not apply drift when no direction held during hitstun', () => {
+    const controller = new FSMController(PlayerStateEnum.HITSTUN);
+    let player = makePlayer({
+      state: PlayerStateEnum.HITSTUN,
+      stateFrame: 0,
+      x: 640,
+      y: 480,
+      hitlagFramesRemaining: 0,
+      hitstunFramesRemaining: 10,
+      asdiDriftAccumulated: 0,
+    });
+
+    // No input
+    player = controller.tick(player, makeInput());
+    expect(player.x).toBe(640); // No drift
+    expect(player.y).toBe(480); // No drift
+    expect(player.asdiDriftAccumulated ?? 0).toBe(0);
+  });
+});
+
 describe('FSM - Registry completeness (ledge states)', () => {
   it('instantiates FSMController with LEDGE_HANG without throwing', () => {
     expect(() => new FSMController(PlayerStateEnum.LEDGE_HANG)).not.toThrow();

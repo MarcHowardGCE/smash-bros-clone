@@ -134,6 +134,40 @@ export class FSMController {
 	      };
 	    }
 
+	    // ASDI (Automatic/Additional SDI): post-hitlag hitstun drift
+	    // Applies only when hitlag has ended (hitlagFramesRemaining <= 0) and player is in HITSTUN state.
+	    // Each frame with directional input, apply positional drift (not velocity) clamped to max total.
+	    if (
+	      player.hitlagFramesRemaining <= 0 &&
+	      player.state === PlayerStateEnum.HITSTUN &&
+	      player.hitstunFramesRemaining > 0
+	    ) {
+	      const leftHeld = Boolean((input?.held ?? 0) & INPUT_BITS.LEFT);
+	      const rightHeld = Boolean((input?.held ?? 0) & INPUT_BITS.RIGHT);
+	      const upHeld = Boolean((input?.held ?? 0) & INPUT_BITS.JUMP);
+	      const downHeld = Boolean((input?.held ?? 0) & INPUT_BITS.DOWN);
+	      const inputX = leftHeld === rightHeld ? 0 : leftHeld ? -1 : 1;
+	      const inputY = upHeld === downHeld ? 0 : upHeld ? -1 : 1;
+	      const hasDirectionalInput = inputX !== 0 || inputY !== 0;
+
+	      if (hasDirectionalInput) {
+	        const currentAccumulated = player.asdiDriftAccumulated ?? 0;
+	        const driftDelta = 2; // PHYSICS.ASDI_DRIFT_PX_PER_FRAME
+	        const newAccumulated = Math.min(
+	          currentAccumulated + driftDelta,
+	          30, // PHYSICS.ASDI_MAX_TOTAL_DRIFT_PX
+	        );
+	        const actualDrift = newAccumulated - currentAccumulated;
+
+	        return {
+	          ...player,
+	          x: player.x + inputX * actualDrift,
+	          y: player.y + inputY * actualDrift,
+	          asdiDriftAccumulated: newAccumulated,
+	        };
+	      }
+	    }
+
     const ctx: FSMContext = {
       player,
       input,

@@ -66,6 +66,7 @@ export interface PlayerState {
   };
 	hitPlayerIds: Set<string>;
 	chargeFrames: number;
+	asdiDriftAccumulated?: number;
 	lastHitByFacing?: 1 | -1 | null;
 	lastHitKnockbackAngle?: number | null;
   pendingKnockbackVx?: number | null;

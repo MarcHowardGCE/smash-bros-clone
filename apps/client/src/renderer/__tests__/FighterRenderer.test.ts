@@ -62,7 +62,7 @@ describe('FighterRenderer', () => {
       const player = {
         x: 50,
         y: 50,
-        facing: 1,
+        facing: 1 as const,
         isInvincible: false,
         state: 'IDLE',
         stateFrame: 5,

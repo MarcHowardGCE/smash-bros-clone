@@ -421,14 +421,39 @@ async function main() {
 	};
 
 	uiManager.onMainMenu = () => {
-		// T24 will wire full main-menu navigation; for now reload to lobby
+		// Clean up local match if active (safe no-op when not in local mode)
 		cleanupLocalMode();
+
+		// Multiplayer: disconnect triggers server forfeit via handleDisconnect
+		if (!isLocalMode) {
+			try {
+				gameClient.disconnect();
+			} catch {
+				// Socket already dead — navigate to lobby gracefully
+			}
+		}
+
+		// Destroy all fighter renderers
 		for (const [, renderer] of fighterRenderers) {
 			renderer.destroy();
 		}
 		fighterRenderers.clear();
+
+		// Clean up active impact sparks
+		for (let i = activeSparks.length - 1; i >= 0; i--) {
+			const spark = activeSparks[i]!;
+			layers.game.removeChild(spark.container);
+			spark.destroy();
+		}
+		activeSparks.length = 0;
+
 		isLocalMode = false;
-		window.location.href = window.location.pathname;
+		myPlayerId = null;
+
+		// Clean room code from URL so lobby shows create/join UI (not stale room)
+		window.history.replaceState({}, '', window.location.pathname);
+
+		uiManager.showLobby();
 	};
 
 	window.addEventListener('keydown', (e: KeyboardEvent) => {

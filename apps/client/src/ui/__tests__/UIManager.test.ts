@@ -54,6 +54,31 @@ describe('UIManager', () => {
       expect(mockOverlay.innerHTML).toContain('Play Again');
     });
 
+    it('should render Main Menu button', () => {
+      uiManager.showLocalResult('local-p1');
+      expect(mockOverlay.innerHTML).toContain('id="main-menu-btn"');
+      expect(mockOverlay.innerHTML).toContain('Main Menu');
+    });
+
+    it('should call onMainMenu when Main Menu button is clicked', () => {
+      const onMainMenu = vi.fn();
+      uiManager.onMainMenu = onMainMenu;
+      uiManager.showLocalResult('local-p1');
+      document.getElementById('main-menu-btn')?.click();
+      expect(onMainMenu).toHaveBeenCalledTimes(1);
+    });
+
+    it('should call onLocalPlayAgain when Play Again is clicked (not onMainMenu)', () => {
+      const onLocalPlayAgain = vi.fn();
+      const onMainMenu = vi.fn();
+      uiManager.onLocalPlayAgain = onLocalPlayAgain;
+      uiManager.onMainMenu = onMainMenu;
+      uiManager.showLocalResult('local-p1');
+      document.getElementById('local-play-again-btn')?.click();
+      expect(onLocalPlayAgain).toHaveBeenCalledTimes(1);
+      expect(onMainMenu).not.toHaveBeenCalled();
+    });
+
     it('should set phase to result', () => {
       uiManager.showLocalResult('local-p2');
       expect((uiManager as any).phase).toBe('result');
@@ -62,6 +87,49 @@ describe('UIManager', () => {
     it('should hide hud panel', () => {
       uiManager.showLocalResult('local-p1');
       expect((uiManager as any).hudPanel.style.display).toBe('none');
+    });
+  });
+
+  describe('showResult', () => {
+    it('should render Play Again button', () => {
+      uiManager.showResult('p1', 'p1');
+      expect(mockOverlay.innerHTML).toContain('id="play-again-btn"');
+      expect(mockOverlay.innerHTML).toContain('Play Again');
+    });
+
+    it('should render Main Menu button', () => {
+      uiManager.showResult('p1', 'p1');
+      expect(mockOverlay.innerHTML).toContain('id="main-menu-btn"');
+      expect(mockOverlay.innerHTML).toContain('Main Menu');
+    });
+
+    it('should call onMainMenu when Main Menu button is clicked', () => {
+      const onMainMenu = vi.fn();
+      uiManager.onMainMenu = onMainMenu;
+      uiManager.showResult('p1', 'p1');
+      document.getElementById('main-menu-btn')?.click();
+      expect(onMainMenu).toHaveBeenCalledTimes(1);
+    });
+
+    it('should call onPlayAgain when Play Again is clicked (not onMainMenu)', () => {
+      const onPlayAgain = vi.fn();
+      const onMainMenu = vi.fn();
+      uiManager.onPlayAgain = onPlayAgain;
+      uiManager.onMainMenu = onMainMenu;
+      uiManager.showResult('p1', 'p1');
+      document.getElementById('play-again-btn')?.click();
+      expect(onPlayAgain).toHaveBeenCalledTimes(1);
+      expect(onMainMenu).not.toHaveBeenCalled();
+    });
+
+    it('should display "You Win!" when winnerId matches myPlayerId', () => {
+      uiManager.showResult('p1', 'p1');
+      expect(mockOverlay.innerHTML).toContain('You Win!');
+    });
+
+    it('should display "Draw!" when winnerId is null', () => {
+      uiManager.showResult(null, 'p1');
+      expect(mockOverlay.innerHTML).toContain('Draw!');
     });
   });
 

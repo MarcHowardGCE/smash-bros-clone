@@ -316,10 +316,14 @@ export class UIManager {
       <div class="overlay-center">
         <div style="font-size:64px;margin-bottom:32px">${msg}</div>
         <button id="play-again-btn" class="ui-btn">Play Again</button>
+        <button id="main-menu-btn" class="ui-btn" style="margin-top:12px">Main Menu</button>
       </div>`;
 
     document.getElementById('play-again-btn')?.addEventListener('click', () => {
       this.onPlayAgain?.();
+    });
+    document.getElementById('main-menu-btn')?.addEventListener('click', () => {
+      this.onMainMenu?.();
     });
   }
 
@@ -407,10 +411,14 @@ export class UIManager {
       <div class="overlay-center">
         <div style="font-size:64px;margin-bottom:32px">${msg}</div>
         <button id="local-play-again-btn" class="ui-btn">Play Again</button>
+        <button id="main-menu-btn" class="ui-btn" style="margin-top:12px">Main Menu</button>
       </div>`;
 
     document.getElementById('local-play-again-btn')?.addEventListener('click', () => {
       this.onLocalPlayAgain?.();
+    });
+    document.getElementById('main-menu-btn')?.addEventListener('click', () => {
+      this.onMainMenu?.();
     });
   }
 }

@@ -614,3 +614,43 @@ describe('FSM - Registry completeness (ledge states)', () => {
     expect(() => new FSMController(PlayerStateEnum.LEDGE_ROLL)).not.toThrow();
   });
 });
+
+describe('FSM - Shield-grab transitions', () => {
+  it('Shield → Attack on GRAB pressed when shieldStunFrames=0', () => {
+    const controller = new FSMController(PlayerStateEnum.SHIELD);
+    const player = makePlayer({
+      state: PlayerStateEnum.SHIELD,
+      shieldStunFrames: 0,
+      isShielding: true,
+    });
+    const result = controller.tick(player, makeInput(INPUT_BITS.GRAB, INPUT_BITS.GRAB));
+
+    expect(result.state).toBe(PlayerStateEnum.ATTACK);
+    expect(result.stateFrame).toBe(0);
+  });
+
+  it('Shield stays Shield on GRAB pressed when shieldStunFrames > 0', () => {
+    const controller = new FSMController(PlayerStateEnum.SHIELD);
+    const player = makePlayer({
+      state: PlayerStateEnum.SHIELD,
+      shieldStunFrames: 5,
+      isShielding: true,
+    });
+    const result = controller.tick(player, makeInput(INPUT_BITS.GRAB, INPUT_BITS.GRAB));
+
+    expect(result.state).toBe(PlayerStateEnum.SHIELD);
+    expect(result.shieldStunFrames).toBe(4);
+  });
+
+  it('Shield → Idle on SHIELD released', () => {
+    const controller = new FSMController(PlayerStateEnum.SHIELD);
+    const player = makePlayer({
+      state: PlayerStateEnum.SHIELD,
+      shieldStunFrames: 0,
+      isShielding: true,
+    });
+    const result = controller.tick(player, makeInput(0, 0));
+
+    expect(result.state).toBe(PlayerStateEnum.IDLE);
+  });
+});

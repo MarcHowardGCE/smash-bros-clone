@@ -22,12 +22,13 @@ export const PHYSICS = {
   TECH_NEUTRAL_FRAMES: 26,          // neutral tech total vulnerable lock duration (invincible during animation)
   TECH_ROLL_FRAMES: 40,             // directional tech roll total animation duration
   TECH_MISS_LANDING_FRAMES: 30,     // missed-tech prone/hard-landing lock duration
-  TECH_LOCKOUT_FRAMES: 40,          // cooldown after failed tech attempt before another buffer is allowed
-  SHIELD_MAX_HEALTH: 100,           // shield starts full; reaching 0 triggers shield break stun
-  SHIELD_DRAIN_PER_FRAME: 0.4,      // HP lost per frame while shielding (~250 frames before breaking)
-  SHIELD_REGEN_PER_FRAME: 0.2,      // HP gained per frame when not shielding (slower than drain by design)
-  SHIELD_BREAK_STUN_FRAMES: 150,    // ~2.5 seconds at 60 Hz; long enough to guarantee a punish
-  LEDGE_GRAB_RADIUS: 50,            // px — proximity radius for hurtbox-to-ledge-point circleOverlap check
+   TECH_LOCKOUT_FRAMES: 40,          // cooldown after failed tech attempt before another buffer is allowed
+   SHIELD_MAX_HEALTH: 100,           // shield starts full; reaching 0 triggers shield break stun
+   SHIELD_DRAIN_PER_FRAME: 0.4,      // HP lost per frame while shielding (~250 frames before breaking)
+   SHIELD_REGEN_PER_FRAME: 0.2,      // HP gained per frame when not shielding (slower than drain by design)
+   SHIELD_BREAK_STUN_FRAMES: 150,    // ~2.5 seconds at 60 Hz; long enough to guarantee a punish
+   PERFECT_SHIELD_WINDOW_FRAMES: 4,  // frames after shield raise during which perfect shield (powershield) is active
+   LEDGE_GRAB_RADIUS: 50,            // px — proximity radius for hurtbox-to-ledge-point circleOverlap check
   LEDGE_GRAB_VERTICAL_TOLERANCE: 40, // px — max vertical distance above/below ledge y where grab is valid
   LEDGE_HANG_INVINCIBILITY_FRAMES: 45, // frames of invincibility granted on ledge grab (flat, not percent-based)
   LEDGE_REGRAB_COOLDOWN_FRAMES: 30, // frames before same player can regrab same ledge after dropping (~0.5s)

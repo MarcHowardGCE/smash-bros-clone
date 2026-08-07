@@ -1505,6 +1505,10 @@ export class GameEngine {
 			const shieldStunFrames = Math.floor(hit.damage * 0.8) + 2;
 			const remainingShieldHealth = player.shieldHealth - hit.damage;
 
+			// Perfect shield (powershield): if hit lands within PERFECT_SHIELD_WINDOW_FRAMES of shield raise,
+			// skip shield stun and shield health drain
+			const isPerfectShield = player.stateFrame < PHYSICS.PERFECT_SHIELD_WINDOW_FRAMES;
+
 			if (remainingShieldHealth <= 0) {
 				return this.applyShieldBreak(player);
 			}
@@ -1513,8 +1517,8 @@ export class GameEngine {
 
 			return {
 				...player,
-				shieldHealth: remainingShieldHealth,
-				shieldStunFrames,
+				shieldHealth: isPerfectShield ? player.shieldHealth : remainingShieldHealth,
+				shieldStunFrames: isPerfectShield ? 0 : shieldStunFrames,
 				vx: player.vx + pushStrength * attackerFacing,
 				hitlagFramesRemaining: Math.max(player.hitlagFramesRemaining, hit.hitlagFrames),
 				activeHitbox: null,

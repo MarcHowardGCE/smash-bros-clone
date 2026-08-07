@@ -2,7 +2,7 @@ import { BaseState, INPUT_BITS, PlayerStateEnum, isHeld, transition } from './ut
 import type { FSMContext, FSMTransition } from '../index.js';
 
 export class ShieldState extends BaseState {
-  update(ctx: FSMContext): FSMTransition | null {
+  update(ctx: FSMContext, frame: number): FSMTransition | null {
     if (ctx.player.shieldStunFrames > 0) {
       ctx.player.shieldStunFrames -= 1;
       return null;

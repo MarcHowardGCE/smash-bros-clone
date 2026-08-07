@@ -1671,6 +1671,7 @@ export class GameEngine {
 			currentMoveId: null,
 			currentMove: undefined,
 			chargeFrames: 0,
+			asdiDriftAccumulated: 0,
 			shieldStunFrames: 0,
 				respawnTimer: MATCH_CONFIG.RESPAWN_DELAY_FRAMES,
 			};

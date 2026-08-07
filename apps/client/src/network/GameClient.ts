@@ -29,6 +29,8 @@ export interface GameClientOptions {
   onRoomCreated: (roomCode: string, playerId: PlayerId) => void;
   onPlayerJoined: (slotIndex: number) => void;
   onHitEvents?: (hitEvents: HitEventData[]) => void;
+  onPaused?: () => void;
+  onResumed?: () => void;
 }
 
 export class GameClient {
@@ -41,6 +43,7 @@ export class GameClient {
   private currentTick = 0;
   private readonly options: GameClientOptions;
   private rafHandle: number | null = null;
+  private paused = false;
 
   constructor(options: GameClientOptions) {
     this.options = options;
@@ -86,6 +89,21 @@ export class GameClient {
     if (this.myRoomCode) {
       this.socket.emit('player:ready', this.myRoomCode);
     }
+  }
+
+  get isPaused(): boolean {
+    return this.paused;
+  }
+
+  emitPause(): void {
+    if (this.paused) return;
+    this.paused = true;
+    this.socket.emit('game:pause');
+  }
+
+  emitResume(): void {
+    if (!this.paused) return;
+    this.socket.emit('game:resume');
   }
 
   disconnect(): void {
@@ -181,8 +199,21 @@ export class GameClient {
       }
     });
 
+    this.socket.on('game:paused', () => {
+      console.log('[client] game paused by server');
+      this.paused = true;
+      this.options.onPaused?.();
+    });
+
+    this.socket.on('game:resumed', () => {
+      console.log('[client] game resumed by server');
+      this.paused = false;
+      this.options.onResumed?.();
+    });
+
     this.socket.on('game:over', (data: { winnerId: PlayerId }) => {
       console.log('[client] match over, winner:', data.winnerId);
+      this.paused = false;
       this.options.onMatchPhaseChange('result', data.winnerId);
       this.stopRenderLoop();
     });
@@ -213,10 +244,12 @@ export class GameClient {
       return;
     }
 
-    const inputEvent = this.inputManager.pollInput();
-		if (inputEvent) {
-			this.predictor?.onInput(inputEvent);
-			this.sendInput(inputEvent);
+    if (!this.paused) {
+      const inputEvent = this.inputManager.pollInput();
+      if (inputEvent) {
+        this.predictor?.onInput(inputEvent);
+        this.sendInput(inputEvent);
+      }
     }
 
     const interpolated = this.interpolationBuffer.getInterpolatedState(performance.now(), this.myPlayerId);

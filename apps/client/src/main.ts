@@ -254,6 +254,12 @@ async function main() {
 				camera?.shake(hitEvent.knockbackMagnitude);
 			}
 		},
+		onPaused: () => {
+			uiManager.showPauseOverlay();
+		},
+		onResumed: () => {
+			uiManager.hidePauseOverlay();
+		},
 	});
 
 	uiManager.onCreateRoom = () => {
@@ -402,9 +408,16 @@ async function main() {
 	};
 
 	uiManager.onResume = () => {
-		if (!isLocalMode || !localMatch?.paused) return;
-		localMatch.resume();
-		uiManager.hidePauseOverlay();
+		if (isLocalMode) {
+			if (!localMatch?.paused) return;
+			localMatch.resume();
+			uiManager.hidePauseOverlay();
+			return;
+		}
+		// Multiplayer: emit resume to server; overlay hides on game:resumed event
+		if (gameClient.isPaused) {
+			gameClient.emitResume();
+		}
 	};
 
 	uiManager.onMainMenu = () => {
@@ -420,11 +433,10 @@ async function main() {
 
 	window.addEventListener('keydown', (e: KeyboardEvent) => {
 		if (e.key !== 'Escape') return;
-		if (!isLocalMode || !localMatch) return;
 
 		const phase = uiManager.getPhase();
 
-		// If already paused, resume
+		// If already paused (either mode), resume via the shared callback
 		if (phase === 'paused') {
 			uiManager.onResume?.();
 			return;
@@ -433,8 +445,14 @@ async function main() {
 		// Only allow pause during active match (not countdown, result, etc.)
 		if (phase !== 'match') return;
 
-		localMatch.pause();
-		uiManager.showPauseOverlay();
+		if (isLocalMode && localMatch) {
+			// Local mode: pause the local match directly
+			localMatch.pause();
+			uiManager.showPauseOverlay();
+		} else if (!isLocalMode) {
+			// Multiplayer: emit pause to server; overlay shows on game:paused event
+			gameClient.emitPause();
+		}
 	});
 
 	const getDebugSnapshot = (): StateSnapshot | null => {

@@ -758,7 +758,7 @@ export class GameEngine {
 			: DEFAULT_STAGE;
 
 		return checkPlatformCollision(
-			applyMovement(applyFastFall(applyGravity(player), input), input),
+			applyMovement(applyGravity(applyFastFall(player, input)), input),
 			stage,
 		);
 	}

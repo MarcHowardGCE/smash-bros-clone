@@ -244,6 +244,26 @@ describe('Physics Engine - applyFastFall', () => {
 
     expect(result).toBe(player);
   });
+
+  it('applies fast-fall acceleration on activation frame and clamps to shared terminal ceiling', () => {
+    const player = makePlayer({ isGrounded: false, vy: 17.2, isFastFalling: false });
+    const input = makeInput({ held: INPUT_BITS.DOWN });
+
+    const result = applyGravity(applyFastFall(player, input));
+
+    expect(result.isFastFalling).toBe(true);
+    expect(result.vy).toBe(PHYSICS.TERMINAL_VELOCITY);
+  });
+
+  it('keeps non-fast-fall descent capped at TERMINAL_VELOCITY', () => {
+    const player = makePlayer({ isGrounded: false, vy: 17.6, isFastFalling: false });
+    const input = makeInput({ held: 0 });
+
+    const result = applyGravity(applyFastFall(player, input));
+
+    expect(result.isFastFalling).toBe(false);
+    expect(result.vy).toBe(PHYSICS.TERMINAL_VELOCITY);
+  });
 });
 
 describe('Physics Engine - checkPlatformCollision', () => {
@@ -328,30 +348,33 @@ describe('Physics Engine - checkPlatformCollision', () => {
     expect(result.y).toBe(platform.y - PHYSICS.HURTBOX_RADIUS);
   });
 
-  it('wall-side contact at platform lip keeps player airborne and preserves double jump', () => {
+  it('wall-contact repro: second jump while flush to platform side still fires double jump', () => {
     const stage = makeStage();
-    const platform = stage.platforms[0];
-    expect(platform).toBeDefined();
-
-    if (!platform) {
-      throw new Error('Expected left platform test fixture');
-    }
-
     const player = makePlayer({
-      isGrounded: false,
+      isGrounded: true,
       hasDoubleJump: true,
-      x: platform.x,
-      y: platform.y - PHYSICS.HURTBOX_RADIUS,
-      vx: -3,
-      vy: 0,
+      x: stage.mainPlatform.x,
+      y: stage.mainPlatform.y - PHYSICS.HURTBOX_RADIUS,
     });
 
-    const collided = checkPlatformCollision(player, stage);
-    const jumped = startJump(collided, false);
+    const firstJump = startJump(player, false);
+    expect(firstJump.isGrounded).toBe(false);
 
-    expect(collided.isGrounded).toBe(false);
-    expect(jumped.vy).toBe(PHYSICS.DOUBLE_JUMP_VELOCITY);
-    expect(jumped.hasDoubleJump).toBe(false);
+    const stillTouchingWallSide = checkPlatformCollision(
+      {
+        ...firstJump,
+        x: stage.mainPlatform.x,
+        y: stage.mainPlatform.y - PHYSICS.HURTBOX_RADIUS + 1,
+        vy: 1,
+      },
+      stage,
+    );
+
+    const secondJump = startJump(stillTouchingWallSide, false);
+
+    expect(stillTouchingWallSide.isGrounded).toBe(false);
+    expect(secondJump.vy).toBe(PHYSICS.DOUBLE_JUMP_VELOCITY);
+    expect(secondJump.hasDoubleJump).toBe(false);
   });
 });
 

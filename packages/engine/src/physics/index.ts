@@ -77,8 +77,9 @@ function crossesPlatformTop(player: PlayerState, platformY: number): boolean {
 
 // Applies per-frame gravitational acceleration. Only runs when airborne — grounded
 // players are held at platform height by checkPlatformCollision instead.
-// Fast-fall applies GRAVITY * FAST_FALL_MULTIPLIER per frame for progressive acceleration,
-// capped by TERMINAL_VELOCITY. This creates a smooth curve rather than a one-time snap.
+// Design intent: both normal-fall and fast-fall share one terminal ceiling
+// (PHYSICS.TERMINAL_VELOCITY = 18). Fast-fall only changes acceleration
+// (GRAVITY * FAST_FALL_MULTIPLIER), not the max speed cap.
 export function applyGravity(player: PlayerState): PlayerState {
 	if (player.isGrounded) {
 		return player;
@@ -389,7 +390,7 @@ export function applyMovementInput(
 
 	return applyKnockbackDecay(
 		checkPlatformCollision(
-			applyMovement(applyGravity(player), input),
+			applyMovement(applyGravity(applyFastFall(player, input)), input),
 			stage,
 		),
 	);

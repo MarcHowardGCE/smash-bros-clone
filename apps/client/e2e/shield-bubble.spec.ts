@@ -35,8 +35,17 @@ test('shield bubble renders with color interpolation', async ({ page }) => {
     return state?.matchPhase === 'match';
   }, { timeout: 15_000, polling: 100 });
 
-  // Wait for fighters to land from spawn
-  await page.waitForTimeout(1000);
+  // Wait for fighters to land from spawn and for spawn invincibility to clear
+  // (spawn invincibility is ~180 frames = ~3s; wait for shieldHealth to be full before starting)
+  await page.waitForTimeout(3500);
+
+  // Wait until shield is fully regenerated (100 HP) before starting drain test
+  await page.waitForFunction(() => {
+    const state = (window as any).__DEBUG_GAME_STATE__?.();
+    if (!state) return false;
+    const p1 = Object.values(state.players)[0] as any;
+    return p1?.shieldHealth >= 95;
+  }, { timeout: 10_000, polling: 200 });
 
   // --- Screenshot 1: Full shield health (blue bubble) ---
   await page.keyboard.down('ShiftLeft');
@@ -54,8 +63,8 @@ test('shield bubble renders with color interpolation', async ({ page }) => {
 
   // --- Screenshot 2: Low shield health (red-shifted bubble) ---
   // SHIELD_DRAIN_PER_FRAME: 0.4 at 60fps → ~24 HP/sec
-  // SHIELD_MAX_HEALTH: 100 → after ~3.5s ≈ 84 HP drained → ~16 HP remaining
-  await page.waitForTimeout(3500);
+  // Starting at ≥95 HP, drain 2.8s ≈ 67 HP drained → ~28 HP remaining (safely under 30)
+  await page.waitForTimeout(2800);
 
   const shieldState2 = await page.evaluate(() => {
     const state = (window as any).__DEBUG_GAME_STATE__?.();

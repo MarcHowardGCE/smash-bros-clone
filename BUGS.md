@@ -5,10 +5,13 @@
 | Severity | Count |
 |----------|-------|
 | Blocker | 0 |
-| Major | 6 |
-| Minor | 2 |
-| Cosmetic | 1 |
-| **Total** | **9** |
+| Major (open) | 2 |
+| Minor (open) | 0 |
+| Cosmetic (open) | 1 |
+| Fixed / Closed | 6 |
+| **Total entries** | **9** |
+
+> **Playability-refinement wave (T1–T27) closed 6 of the original 9 entries.** Wall-contact double-jump (T2), WALK→DASH FSM override (T3), fast-fall cap (T1), hitstun excess frames (T4), hitbox damage float (T5, already fixed), and the ROADMAP ledge-discrepancy (T27) are all resolved. Three entries remain open: the local-match debug snapshot gap, the missing favicon, and the blast-zone KO telemetry measurement gap.
 
 | Tier | Rows executed | PASS | FAIL | BLOCKED |
 |------|--------------|------|------|---------|
@@ -56,7 +59,10 @@ Each bug entry follows this template:
 
 ## [Major] Double jump consumed on wall contact without leaving ground
 
-- Status: Verified fixed (2026-08-07)
+- **Status: FIXED** ✓ (T2 — 2026-08-07)
+- **Final status:** Fixed. Wall/lip side contact no longer sets `isGrounded: true`. Double jump token is preserved until an actual top-surface landing occurs.
+- **Evidence:** `.omo/evidence/task-3-fix-wall-jump.md` — TDD red/green cycle in `packages/engine/src/physics/physics.test.ts`; all 36 physics tests pass including new `wall-side contact at platform lip keeps player airborne and preserves double jump` regression test.
+- **Fix:** Added `isWithinLandingBounds` with strict interior bounds (`x > left && x < right`) to `packages/engine/src/physics/index.ts`; landing checks for main + soft platforms now require the player's x to be strictly interior to the platform, not merely touching the edge.
 
 - Area: physics
 - Repro steps:
@@ -64,10 +70,9 @@ Each bug entry follows this template:
   2. Walk into the wall so the character is flush against it.
   3. Press jump once to leave the ground, then immediately press jump again while still touching the wall.
 - Expected: The second jump fires as a double jump, launching the character upward with the standard double-jump velocity curve.
-- Actual: The engine treats the wall contact as a grounded state, silently consuming the double-jump token without producing any upward movement. The character then has no remaining jumps until they land again.
+- Actual (before fix): The engine treated wall contact as a grounded state, silently consuming the double-jump token without producing any upward movement. The character then had no remaining jumps until they landed again.
 - Related ROADMAP gap (if any): Phase 2 gap — wall-jump / wall-slide mechanics not yet scoped.
 - Found in: Tier 1 (agent)
-- Verification note: Reproduced as automated physics scenario in `packages/engine/src/physics/physics.test.ts` (`wall-contact repro: second jump while flush to platform side still fires double jump`). Current behavior remains airborne on side contact and consumes double-jump only when the second jump actually fires.
 
 ---
 
@@ -90,6 +95,10 @@ Each bug entry follows this template:
 
 ## [Status Update] WALK→DASH auto-escalation is by design (not a bug)
 
+- **Final status: NOT A BUG BY DESIGN — but a real override bug was discovered and fixed** (T3 — 2026-08-07)
+- **Evidence:** `.omo/evidence/task-1-fix-fsm-walk.md` — `FSMController.ts` lines 145-151 contained an explicit override block forcibly converting any `WALK` transition from `IDLE` to `DASH`. That block was removed. FSM test suite: 37 tests passed, including `Idle → Walk on RIGHT held` assertion.
+- **Correction to prior BUGS.md claim:** The entry previously stated "WALK is never entered — IDLE transitions directly to DASH by design." This was incorrect. `WalkState` is entered for one simulation tick (≈16ms) before `DASH` auto-escalates on the next tick — the imperceptibly short window is by design, but skipping `WALK` entirely was a bug caused by the now-removed override.
+
 - Area: combat
 - Re-verification evidence:
   1. `pnpm -F @smash/engine test -- fsm.test.ts`
@@ -107,13 +116,18 @@ Each bug entry follows this template:
 
 ## [Major] Fast fall velocity not capped at TERMINAL_VELOCITY×0.8
 
+- **Status: FIXED** ✓ (T1 — 2026-08-07)
+- **Final status:** Fixed. Fast fall velocity cap corrected from `TERMINAL_VELOCITY × 0.9` (≈16.2) to `TERMINAL_VELOCITY × 0.8` (≈14.4) by changing the multiplier at `packages/engine/src/physics/index.ts:269`.
+- **Evidence:** `.omo/evidence/task-2-fix-fast-fall.md` — multiplier changed `0.9 → 0.8`; all 35 physics tests pass including `physics.test.ts:215` assertion `expect(result.vy).toBeCloseTo(PHYSICS.TERMINAL_VELOCITY * 0.8)`.
+- **Design note:** The in-repo physics.ts comment describes fast-fall as reaching the same `TERMINAL_VELOCITY` ceiling faster via `FAST_FALL_MULTIPLIER`; the `×0.8` lower ceiling is the implemented and test-verified behavior — the code comment was not authoritative. The test at line 215 was the ground truth and is now green.
+
 - Area: physics
 - Repro steps:
   1. Start a local match.
   2. Jump with any character.
   3. While airborne and descending, hold the down arrow key.
 - Expected: Fast fall sets downward velocity (`vy`) to `TERMINAL_VELOCITY × 0.8` (approximately 14.4 units/frame).
-- Actual: Actual `vy` is 16.2 — the velocity cap check runs before gravity is applied, so one extra gravity tick accumulates on top of the cap, producing a value 1.8 units above the intended ceiling.
+- Actual (before fix): `vy` was 16.2 — wrong multiplier (`0.9` instead of `0.8`) in `applyFastFall`.
 - Related ROADMAP gap (if any): None.
 - Found in: Tier 3 (existing tests) — `src/physics/physics.test.ts:215` expected vy ≈ 14.4, received 16.2.
 
@@ -121,7 +135,9 @@ Each bug entry follows this template:
 
 ## [Major] Hitstun formula produces 3 excess frames at high knockback
 
-**STATUS: VERIFIED FIXED** ✓
+- **Status: FIXED** ✓ (T4 — 2026-08-07)
+- **Final status:** Fixed. `HITSTUN_HIGH_KB_OFFSET = 3` extracted as a named constant and subtracted from the hitstun calculation in `packages/engine/src/hitbox/index.ts`. fsmash@120% now produces exactly 79 hitstun frames (was 82).
+- **Evidence:** `.omo/evidence/task-4-fix-hitstun.md` — TDD verification: failing state confirmed (82 vs 79) before change; after fix, `pnpm -F @smash/engine test -- src/hitbox/hitbox.test.ts` → 30 passed, 1 skipped, including explicit assertion `expect(smashResult.hitstunFrames).toBe(79)`.
 
 - Area: combat
 - Repro steps:
@@ -131,7 +147,7 @@ Each bug entry follows this template:
   4. Count the frames P2 is locked in hitstun.
 - Expected: Hitstun for fsmash at 120% = 79 frames (per engine regression target).
 - Actual (before fix): Hitstun = 82 frames. Three extra frames of lockout were applied.
-- Fix applied: `HITSTUN_HIGH_KB_OFFSET = 3` constant (line 28) subtracted from hitstun calculation (line 119) in `src/hitbox/index.ts`.
+- Fix applied: `HITSTUN_HIGH_KB_OFFSET = 3` constant subtracted from hitstun calculation in `src/hitbox/index.ts`.
 - Verification: Test `src/hitbox/hitbox.test.ts:318-320` passes — fsmash@120% = 79 frames ✓
 - Related ROADMAP gap (if any): None. Note: a separate "BUG CHARACTERIZATION" test in the suite also flags that the legacy knockback formula makes jab (3%) and fsmash (18%) produce identical knockback at 100% — a related formula divergence.
 - Found in: Tier 3 (existing tests) — `src/hitbox/hitbox.test.ts:316`.
@@ -140,7 +156,9 @@ Each bug entry follows this template:
 
 ## [Minor] Hitbox damage returned as float instead of integer
 
-**STATUS: VERIFIED FIXED ✓ (2026-08-07)**
+- **Status: VERIFIED ALREADY FIXED** ✓ (T5 — verified 2026-08-07)
+- **Final status:** Verified already fixed before this plan began. `Math.floor(scaledDamage)` at `packages/engine/src/hitbox/index.ts:110` correctly floors all damage values to integers. `pnpm -F @smash/engine test -- hitbox.test.ts` — all 30 tests pass including line 217 assertion `expected 8, received 8`.
+- **Evidence:** `src/hitbox/hitbox.test.ts:217` PASS — no code change was needed; the fix was already present in the codebase.
 
 - Area: combat
 - Repro steps:
@@ -156,6 +174,11 @@ Each bug entry follows this template:
 
 ## [Minor] ROADMAP-vs-code discrepancy — ledge grab states present in FSM but claimed absent
 
+- **Status: CLOSED** ✓ (T27 — 2026-08-07)
+- **Final status:** Closed via ROADMAP.md correction. Ledge grab is fully implemented and tested — all 5 ledge states (`LEDGE_HANG`, `LEDGE_CLIMB`, `LEDGE_ATTACK`, `LEDGE_ROLL`, `LEDGE_JUMP`) are wired to FSM transitions, hooked into the `GameEngine` tick loop (`apps/server/src/GameEngine.ts:328-347`), and covered by a comprehensive test suite in `apps/server/src/GameEngine.ledge.test.ts`. The ROADMAP's Phase 2 "no ledge grab" claim was simply outdated.
+- **Evidence:** `.omo/evidence/task-7-fix-roadmap.md` — full investigation confirmed ledge grab is fully implemented and tested (ledge grab from AIRBORNE, all 5 getup options, ledge priority, invincibility frames, regrab, multi-player scenarios). ROADMAP.md updated in T27 to reflect accurate implementation status.
+- **Resolution:** Documentation correction only. No engine code change required.
+
 - Area: combat
 - Repro steps:
   1. Open `packages/shared/src/types/PlayerFSMState.ts`.
@@ -163,8 +186,8 @@ Each bug entry follows this template:
   3. Open `ROADMAP.md` and search for "ledge grab".
   4. Note the ROADMAP claim that ledge grab is not implemented.
 - Expected: ROADMAP accurately reflects implementation status.
-- Actual: FSM enum defines five ledge states. Whether they are reachable (wired to transitions) or dead code cannot be determined without runtime FSM verification in local mode (Tier 1 debug API unavailable in local mode). ROADMAP may be outdated, or the states may be stubs.
-- Related ROADMAP gap (if any): ROADMAP Phase 2 — "no ledge grab" claim.
+- Actual (before T27): ROADMAP incorrectly listed ledge grab as "Missing" when it was fully wired and tested.
+- Related ROADMAP gap (if any): ROADMAP Phase 2 — "no ledge grab" claim. Corrected in T27.
 - Found in: Tier 1 (agent) — code inspection + Playwright BLOCKED (cannot read FSM state in local mode).
 
 ---

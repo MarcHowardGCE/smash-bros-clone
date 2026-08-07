@@ -10,7 +10,7 @@ The engine and netcode here are production-quality: a 15-state FSM per fighter, 
 |---|---|---|
 | Engine / physics | 15-state FSM, 22 moves, hitlag/hitstun, real knockback formula | ★★★★☆ |
 | Netcode | Client prediction, server reconciliation, interpolation buffer | ★★★★☆ |
-| Rendering | Geometric polygons, no sprites, no hit effects | ★★☆☆☆ |
+| Rendering | Part-based polygon renderer; hit flash, screen shake, impact sparks, shield bubble, damage% color, per-move poses, KO tumble/stars | ★★★★☆ |
 | Audio | Zero — no sound manager, no file references, nothing | ★☆☆☆☆ |
 | Input | Solid bitmask foundation; no gamepad, no remapping | ★★★☆☆ |
 | UI/UX | Functional prototype; raw `innerHTML`, text stock icons | ★★☆☆☆ |
@@ -21,28 +21,26 @@ The engine and netcode here are production-quality: a 15-state FSM per fighter, 
 
 ## 🎨 Visuals
 
-The renderer (`apps/client`) is the biggest gap between "working prototype" and "polished game." The architecture is already renderer-agnostic — `FighterRenderer.redraw()` is the single choke point for all fighter art.
+The renderer (`apps/client`) has received significant polish through T9-T20. The architecture is now part-based and renderer-agnostic — `FighterRenderer` delegates all drawing to an `IPartRenderer` contract (`apps/client/src/renderer/parts/IPartRenderer.ts`), with a `PolygonPartRenderer` as the current concrete backend and a `SpritePartRenderer` stub ready for a future art pass.
 
 ### Characters
 
-**What's missing:**
-- Sprite sheets or vector art — every fighter is a pentagon + circles + rectangles
-- Per-move visuals — `ATTACK` always renders the same "arms out" pose regardless of `MoveId`
-- Hit effects — no flash, no impact spark, no screen shake on hit
-- Shield bubble — `isShielding` is tracked and health ticks, but nothing is drawn
-- KO animation — `isKnockedOut` transitions immediately; no tumble, no star KO effect
+**What's shipped (T9-T20):**
+- Part-based renderer abstraction — `FighterRenderer` delegates to `PolygonPartRenderer` via `IPartRenderer` contract; a `SpritePartRenderer` stub exists for future sprite atlas work (`apps/client/src/renderer/parts/SpritePartRenderer.ts`)
+- Per-move poses — `getAnimationPose` now accepts `currentMoveId`; all 22 `MoveId` values have distinct keyframe entries differing by ≥0.2 radians on at least one limb angle (`apps/client/src/renderer/animations.ts`)
+- Hit flash — `FighterRenderer.startHitFlash()` applies a golden-yellow tint (`0xFFDD44`) to the part renderer container for 4 frames on every connecting hit (`apps/client/src/renderer/FighterRenderer.ts:110-121`)
+- Impact sparks — `ImpactSpark` radiates 6 white circles from the hit world position over 10 frames, auto-cleaned after expiry (`apps/client/src/renderer/effects/ImpactSpark.ts`)
+- Screen shake — `Camera.shake(knockbackMagnitude)` applies a decaying random offset for 8-15 frames, clamped to 20px max, skipping hits below a threshold of 5 to avoid shaking on pummels (`apps/client/src/renderer/Camera.ts:54`)
+- Shield bubble — `updateShieldBubble()` draws a semi-transparent circle (radius 36, alpha 0.4) color-cycling from blue (`0x4488ff`) at full health to red (`0xff2222`) near zero; disappears immediately when `isShielding` is false (`apps/client/src/renderer/FighterRenderer.ts:142-155`)
+- KO tumble/star effect — `KOEffect` rotates the fighter container 18°/frame for 40 frames and spawns 8 star particles at 45° spacing that fade to alpha 0; wired via `updateKOEffect()` on `isKnockedOut` transitions (`apps/client/src/renderer/FighterRenderer.ts:124-137`, `apps/client/src/renderer/KOEffect.ts`)
 
-**Existing hooks:**
-- `FighterRenderer.redraw()` is the sole draw call — swap `g.drawPolygon()` here to sample a sprite atlas
-- `PlayerState.currentMoveId` is already tracked and passed to the renderer — attack art just needs to key off it
-- `applyHit` fires correctly on every hit — emit a visual event from there for impact effects
-- `isShielding` and `isKnockedOut` are already on `PlayerState`
+**Still missing:**
+- Sprite sheets or vector art — every fighter is still a pentagon + circles + rectangles (the `SpritePartRenderer` contract exists but has no art assets yet)
 
-**Approach:**
-1. Add a sprite atlas loader to `FighterRenderer`; fall back to polygon art if no atlas is found
-2. Map `MoveId` → frame offset in the atlas for attack poses
-3. Emit a `HitEffect` event from `applyHit` and render it in `GameLayer` for 3–5 frames
-4. Draw a circle around the fighter when `isShielding === true` (color-cycle it as `shieldHealth` drops)
+**Existing hooks (unchanged):**
+- `FighterRenderer.redraw()` remains the sole draw call — swap `PolygonPartRenderer` for `SpritePartRenderer` via the `createPartRenderer` factory (`apps/client/src/renderer/parts/index.ts`) to sample a sprite atlas, no `FighterRenderer` rewrite needed
+- `PlayerState.currentMoveId` is tracked and passed to the renderer — per-move art now keys off it
+- `HitEventData` in `StateSnapshot.hitEvents` is the event source for all client-side hit effects
 
 ### Stage
 
@@ -62,9 +60,11 @@ The renderer (`apps/client`) is the biggest gap between "working prototype" and 
 
 ### UI
 
-**What's missing:**
+**What's shipped (T18):**
+- Damage % color progression — `UIManager.interpolateDamageColor()` interpolates white (0%) → yellow (~50-100%) → red (150%+), applied every `updateHUD` call (`apps/client/src/ui/UIManager.ts:351-366`)
+
+**Still missing:**
 - Stock icons are `■□` text characters — needs fighter portrait thumbnails
-- Damage % has no color progression (low % = white → high % = red is a Smash convention)
 - No countdown animation — the number just appears
 - Character select exists (`showCharacterSelect()` in `UIManager`) but has one fighter and placeholder text
 
@@ -147,7 +147,7 @@ The engine is the strongest part of this repo. These are the remaining gaps — 
 
 ### Grab victim position
 
-- **Status:** ✅ **Position pinning implemented (Wave 2).** Still open: Pummel/throw execution — `GameEngine.ts` handles the `GRAB_HOLDING` state transition but pummel damage and directional throw launch are not yet wired.
+- **Status:** ✅ **Fully implemented (T6-T8).** Position pinning, pummel, and all four directional throws are wired. `GrabHoldingState` detects `ATTACK` for pummel and directional inputs for throws; `GameEngine.ts` generates hitboxes, applies damage/knockback, and clears grab flags on throw resolution. Pummel suppresses `HITSTUN` to keep victim in `GRAB_HOLDING`; stale-move scaling accumulates across repeated pummels. Tests: `apps/server/src/GameEngine.grab.test.ts` — pummel stale accumulation (line 442), forward/back/up/down throw assertions (lines 324-408).
 
 ### Ledge grab
 
@@ -211,22 +211,20 @@ No persistence exists today. This is the lowest priority but required for a publ
 
 | Effort | High impact | Lower impact |
 |---|---|---|
-| **Low** | Short hop (wire `JumpsquatState`) · Landing lag · Shield break stun · Hit SFX (5 clips) | Damage % color progression · Blast-zone edge glow |
-| **Medium** | Smash charge · Grab victim pinning · Stage background art · Shield bubble | Down Special counter logic · Reconnection handling · Settings persistence |
-| **High** | Sprite art for fighters · Additional fighter (full move set) · Additional stage · Audio system + BGM | Ranked / matchmaking · Replays · Ledge grab |
+| **Low** | ~~Short hop (wire `JumpsquatState`)~~ ✅ · ~~Landing lag~~ ✅ · ~~Shield break stun~~ ✅ · Hit SFX (5 clips) | ~~Damage % color progression~~ ✅ · Blast-zone edge glow |
+| **Medium** | ~~Smash charge~~ ✅ · ~~Grab victim pinning + pummel/throw~~ ✅ · Stage background art · ~~Shield bubble~~ ✅ | ~~Down Special counter logic~~ ✅ · Reconnection handling · Settings persistence |
+| **High** | Sprite art for fighters · Additional fighter (full move set) · Additional stage · Audio system + BGM | Ranked / matchmaking · Replays · ~~Ledge grab~~ ✅ |
 
 ### Recommended first milestone — "It feels like a game"
 
-These changes are high-impact, low-to-medium effort, and require no new architecture:
+These changes closed the gap between "working prototype" and "feels like a real game." All six are now shipped:
 
-1. **Wire short hop** — `JumpsquatState` already has the physics; just count held frames
-2. **Wire landing lag** — one read from `currentMove.landingLag` in `checkPlatformCollision`
-3. **Wire shield break stun** — apply `SHIELD_BREAK_STUN_FRAMES` when `shieldHealth <= 0`
-4. **5 hit SFX** — create `AudioManager`, hook `applyHit`, add jump/land sounds
-5. **Damage % color** — low % white → mid % yellow → high % red in `UIManager`
-6. **Shield bubble** — draw a circle in `FighterRenderer` when `isShielding`
-
-These six changes close the gap between "working prototype" and "feels like a real game" faster than any art work. Art is higher polish but also higher effort — do the engine wiring first.
+1. ✅ **Wire short hop** — `JumpsquatState` counts held frames; `resolveJump` produces a short hop when `JUMP` is released before the jumpsquat window ends (`packages/engine/src/physics/index.ts`)
+2. ✅ **Wire landing lag** — reads `currentMove.landingLag` on landing from `AIR_ATTACK`; transitions to `LANDING_LAG` state (`apps/server/src/GameEngine.ts:689-700`)
+3. ✅ **Wire shield break stun** — applies `PHYSICS.SHIELD_BREAK_STUN_FRAMES` when `shieldHealth <= 0`, launches fighter upward, transitions to `HITSTUN` (`apps/server/src/GameEngine.ts:1363`)
+4. **5 hit SFX** — not yet; `AudioManager` does not exist. Zero audio shipped.
+5. ✅ **Damage % color** — `UIManager.interpolateDamageColor()` white → yellow → red (`apps/client/src/ui/UIManager.ts:351-366`)
+6. ✅ **Shield bubble** — `FighterRenderer.updateShieldBubble()` draws a color-cycling semi-transparent circle (`apps/client/src/renderer/FighterRenderer.ts:142-155`)
 
 ### After milestone 1
 
@@ -237,3 +235,16 @@ These six changes close the gap between "working prototype" and "feels like a re
 ---
 
 *This document reflects the state of the codebase as analyzed — the engine is the hard part and it's done well. Everything else builds on existing hooks.*
+
+---
+
+## Recommended next milestone — "Audio foundation + character sprite sheet"
+
+After T1–T26, the two largest remaining gaps are audio and art. The engine, netcode, FSM, physics, all 22 moves, grab/throw, ledge, shield, counters, smash charge, stale-move queue, DI, teching, KO effects, hit flash, pause, and result screen are all shipped and green across 132 engine tests, 69 server tests, and 12 Playwright e2e specs.
+
+**Gap 1 — Audio (highest priority):** No `AudioManager` exists. Zero SFX or BGM ships today. A minimal audio pass (5–8 clips: hit, shield, jump, KO, menu confirm, BGM loop) would close the single largest "feels unfinished" gap. The hook points already exist — hit events fire from the server, UI state transitions are discrete, and PixiJS has no audio opinion.
+
+**Gap 2 — Sprite art (highest visual impact):** `FighterRenderer` draws a functional polygon fighter, but the art contract is fully pluggable — swapping in a sprite sheet requires only a new render path in `FighterRenderer`. No engine or server changes needed. Even a single hand-drawn sprite sheet for the existing all-rounder would transform first impressions.
+
+**Suggested milestone scope:** `AudioManager` class with Web Audio API, 5 SFX clips wired to existing hit/KO/shield events, 1 BGM loop, and a sprite sheet import path in `FighterRenderer`. Estimated effort: medium. No architecture changes required.
+

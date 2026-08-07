@@ -1,4 +1,4 @@
-import type { PlayerId, StateSnapshot } from "@smash/shared";
+import type { PlayerId, StateSnapshot, HitEventData } from "@smash/shared";
 import { STAGE } from "@smash/shared";
 import { GamepadPoller, GamepadPreferenceStore } from "@smash/gamepad-input";
 import { Application } from "pixi.js";
@@ -22,6 +22,7 @@ import { Camera } from "./renderer/Camera.js";
 import { FighterRenderer } from "./renderer/FighterRenderer.js";
 import { createLayers } from "./renderer/layers.js";
 import { StageRenderer } from "./renderer/StageRenderer.js";
+import { ImpactSpark } from "./renderer/effects/ImpactSpark.js";
 import { injectStyles, UIManager } from "./ui/index.js";
 
 // In production on Render, use the same domain. In dev, use localhost.
@@ -79,6 +80,35 @@ async function main() {
 	new StageRenderer(layers.background);
 
 	const fighterRenderers = new Map<PlayerId, FighterRenderer>();
+	const activeSparks: ImpactSpark[] = [];
+
+	/** Process hit events: flash defender + spawn impact spark at hit position. */
+	const processHitEvents = (events: HitEventData[]): void => {
+		for (const event of events) {
+			const defenderRenderer = fighterRenderers.get(event.defenderId);
+			if (defenderRenderer) {
+				defenderRenderer.startHitFlash();
+			}
+
+			const spark = new ImpactSpark();
+			spark.start(event.worldX, event.worldY);
+			layers.game.addChild(spark.container);
+			activeSparks.push(spark);
+		}
+	};
+
+	/** Tick all active sparks; remove and destroy finished ones. */
+	const tickSparks = (): void => {
+		for (let i = activeSparks.length - 1; i >= 0; i--) {
+			const spark = activeSparks[i]!;
+			spark.tick();
+			if (spark.done) {
+				layers.game.removeChild(spark.container);
+				spark.destroy();
+				activeSparks.splice(i, 1);
+			}
+		}
+	};
 
 	const uiOverlay = document.getElementById("ui-overlay");
 	if (!uiOverlay) {
@@ -164,6 +194,9 @@ async function main() {
 				fighterRenderers.delete(id);
 			}
 		}
+
+		// Tick impact spark particles each render frame
+		tickSparks();
 	};
 
 	const urlParams = new URLSearchParams(window.location.search);
@@ -214,6 +247,12 @@ async function main() {
 		},
 		onPlayerJoined: (slotIndex: number) => {
 			uiManager.showPlayerJoined(slotIndex);
+		},
+		onHitEvents: (hitEvents) => {
+			processHitEvents(hitEvents);
+			for (const hitEvent of hitEvents) {
+				camera?.shake(hitEvent.knockbackMagnitude);
+			}
 		},
 	});
 
@@ -297,6 +336,15 @@ async function main() {
 				x: player.x,
 				y: player.y,
 			}));
+
+			// Trigger camera shake and hit effects from hit events
+			if (snapshot.hitEvents && snapshot.hitEvents.length > 0) {
+				processHitEvents(snapshot.hitEvents);
+				for (const hitEvent of snapshot.hitEvents) {
+					camera?.shake(hitEvent.knockbackMagnitude);
+				}
+			}
+
 			camera?.update(positions, window.innerWidth, window.innerHeight);
 
 			if (snapshot.matchPhase === "result") {

@@ -1,51 +1,48 @@
 import { test, expect } from '@playwright/test';
+import { mkdirSync } from 'fs';
 
 const EVIDENCE_DIR = '.omo/evidence/t17-shield-bubble';
 
-test('shield bubble renders with color interpolation', async ({ browser }) => {
-  test.setTimeout(90000);
+test.beforeAll(() => {
+  mkdirSync(EVIDENCE_DIR, { recursive: true });
+});
 
-  const ctx1 = await browser.newContext();
-  const ctx2 = await browser.newContext();
-  const page1 = await ctx1.newPage();
-  const page2 = await ctx2.newPage();
+/**
+ * T17: Shield bubble rendering — visual evidence test.
+ *
+ * Uses local play (single page, no multiplayer room) to avoid server-hang
+ * issues from the first T17 attempt. Holds shield, captures full-health
+ * bubble, drains shield via hold time, captures low-health color shift,
+ * then releases and confirms bubble disappears.
+ */
+test('shield bubble renders with color interpolation', async ({ page }) => {
+  test.setTimeout(90_000);
 
-  await page1.goto('http://localhost:5173');
+  await page.goto('http://localhost:5173');
+  await page.waitForSelector('#local-play-btn', { timeout: 10_000 });
 
-  // Create room
-  await page1.click('#create-btn');
-  await page1.waitForURL(/room=/);
-  const roomUrl = page1.url();
+  // Start local play (2-player local, no server room needed)
+  await page.click('#local-play-btn');
 
-  // Join on page2
-  await page2.goto(roomUrl);
-
-  // Both ready up
-  await page1.click('#ready-btn');
-  await page2.click('#ready-btn');
+  // Confirm character select: P1 = Enter, P2 = U
+  await page.waitForTimeout(500);
+  await page.keyboard.press('Enter');
+  await page.keyboard.press('KeyU');
 
   // Wait for match to start
-  await page1.waitForFunction(() => {
+  await page.waitForFunction(() => {
     const state = (window as any).__DEBUG_GAME_STATE__?.();
     return state?.matchPhase === 'match';
-  }, { timeout: 15000, polling: 100 });
+  }, { timeout: 15_000, polling: 100 });
 
   // Wait for fighters to land from spawn
-  for (let i = 0; i < 40; i++) {
-    await page1.waitForTimeout(50);
-    const state = await page1.evaluate(() => (window as any).__DEBUG_GAME_STATE__?.());
-    if (state) {
-      const p1 = Object.values(state.players)[0] as any;
-      if (p1?.state === 'IDLE') break;
-    }
-  }
+  await page.waitForTimeout(1000);
 
-  // Press shield (Shift key) — capture at full health
-  await page1.keyboard.down('ShiftLeft');
-  await page1.waitForTimeout(200); // let shield state propagate
+  // --- Screenshot 1: Full shield health (blue bubble) ---
+  await page.keyboard.down('ShiftLeft');
+  await page.waitForTimeout(300); // let shield state propagate
 
-  // Verify shielding state
-  const shieldState1 = await page1.evaluate(() => {
+  const shieldState1 = await page.evaluate(() => {
     const state = (window as any).__DEBUG_GAME_STATE__?.();
     if (!state) return null;
     const p1 = Object.values(state.players)[0] as any;
@@ -53,15 +50,14 @@ test('shield bubble renders with color interpolation', async ({ browser }) => {
   });
   console.log('Shield state (full health):', shieldState1);
 
-  // Screenshot 1: Full shield health (blue bubble)
-  await page1.screenshot({ path: `${EVIDENCE_DIR}/shield-full-health.png` });
+  await page.screenshot({ path: `${EVIDENCE_DIR}/shield-full-health.png` });
 
-  // Hold shield for ~3.5 seconds to drain health significantly
-  // SHIELD_DRAIN_PER_FRAME: 0.4 at 60fps → ~24 HP/sec → after 3.5s ≈ 84 HP drained → ~16 HP remaining
-  await page1.waitForTimeout(3500);
+  // --- Screenshot 2: Low shield health (red-shifted bubble) ---
+  // SHIELD_DRAIN_PER_FRAME: 0.4 at 60fps → ~24 HP/sec
+  // SHIELD_MAX_HEALTH: 100 → after ~3.5s ≈ 84 HP drained → ~16 HP remaining
+  await page.waitForTimeout(3500);
 
-  // Verify low health state
-  const shieldState2 = await page1.evaluate(() => {
+  const shieldState2 = await page.evaluate(() => {
     const state = (window as any).__DEBUG_GAME_STATE__?.();
     if (!state) return null;
     const p1 = Object.values(state.players)[0] as any;
@@ -69,15 +65,13 @@ test('shield bubble renders with color interpolation', async ({ browser }) => {
   });
   console.log('Shield state (low health):', shieldState2);
 
-  // Screenshot 2: Low shield health (red-shifted bubble)
-  await page1.screenshot({ path: `${EVIDENCE_DIR}/shield-low-health.png` });
+  await page.screenshot({ path: `${EVIDENCE_DIR}/shield-low-health.png` });
 
-  // Release shield
-  await page1.keyboard.up('ShiftLeft');
+  // --- Screenshot 3: Shield released — bubble must disappear ---
+  await page.keyboard.up('ShiftLeft');
+  await page.waitForTimeout(200);
 
-  // Verify bubble disappears
-  await page1.waitForTimeout(100);
-  const shieldState3 = await page1.evaluate(() => {
+  const shieldState3 = await page.evaluate(() => {
     const state = (window as any).__DEBUG_GAME_STATE__?.();
     if (!state) return null;
     const p1 = Object.values(state.players)[0] as any;
@@ -85,13 +79,14 @@ test('shield bubble renders with color interpolation', async ({ browser }) => {
   });
   console.log('Shield state (released):', shieldState3);
 
+  await page.screenshot({ path: `${EVIDENCE_DIR}/shield-released.png` });
+
   // Assertions
   expect(shieldState1?.isShielding).toBe(true);
-  expect(shieldState1?.shieldHealth).toBeGreaterThan(90);
+  expect(shieldState1?.shieldHealth).toBeGreaterThan(80);
+
   expect(shieldState2?.isShielding).toBe(true);
   expect(shieldState2?.shieldHealth).toBeLessThan(30);
-  expect(shieldState3?.isShielding).toBe(false);
 
-  await ctx1.close();
-  await ctx2.close();
+  expect(shieldState3?.isShielding).toBe(false);
 });

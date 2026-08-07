@@ -12,6 +12,11 @@ type RenderableFighterState = Pick<
   'x' | 'y' | 'facing' | 'isInvincible' | 'isKnockedOut' | 'isShielding' | 'shieldHealth' | 'state' | 'stateFrame' | 'slotIndex' | 'currentMoveId'
 >;
 
+/** Hit flash: golden-yellow tint on white parts for 4 frames (67ms at 60fps). */
+const HIT_FLASH_FRAMES = 4;
+const HIT_FLASH_TINT = 0xffdd44;
+const DEFAULT_TINT = 0xffffff;
+
 /** Shield bubble visual constants. */
 const SHIELD_BUBBLE_RADIUS = 36;
 const SHIELD_BUBBLE_OFFSET_Y = -8;
@@ -48,6 +53,7 @@ export class FighterRenderer {
   private lastState: string = '';
   private lastFrame: number = -1;
   private wasKnockedOut = false;
+  private hitFlashFrames = 0;
 
   constructor(parentContainer: Container, slotIndex: number) {
     this.slotIndex = slotIndex;
@@ -78,6 +84,9 @@ export class FighterRenderer {
     // KO tumble/star effect
     this.updateKOEffect(player);
 
+    // Hit flash tint (must tick every frame, independent of state change)
+    this.updateHitFlash();
+
     // Shield bubble: show/hide immediately based on isShielding
     this.updateShieldBubble(player);
 
@@ -92,6 +101,24 @@ export class FighterRenderer {
   /** Get the display object for a specific part (for Wave 3 flash effects). */
   getPart(part: FighterPart): Container {
     return this.partRenderer.getDisplayObject(part);
+  }
+
+  /**
+   * Start the hit flash effect. Tints the fighter golden-yellow for HIT_FLASH_FRAMES.
+   * Rapid successive hits restart the timer (no stacking).
+   */
+  startHitFlash(): void {
+    this.hitFlashFrames = HIT_FLASH_FRAMES;
+    this.partRenderer.container.tint = HIT_FLASH_TINT;
+  }
+
+  /** Tick the hit flash countdown. Resets tint when timer expires. */
+  private updateHitFlash(): void {
+    if (this.hitFlashFrames <= 0) return;
+    this.hitFlashFrames--;
+    if (this.hitFlashFrames === 0) {
+      this.partRenderer.container.tint = DEFAULT_TINT;
+    }
   }
 
   private updateKOEffect(player: RenderableFighterState): void {

@@ -13,6 +13,17 @@ const MIN_SCALE = 0.4;
 const MAX_SCALE = 1.0;
 const LERP_SPEED = 0.1;
 
+// Shake tuning — triggered by HitEvents with knockback above SHAKE_KNOCKBACK_THRESHOLD.
+// Skips 0-knockback pummels and weak jabs (~3-5 magnitude). Strong hits (15-40) and
+// kill hits (50+) produce proportionally larger shakes clamped to SHAKE_MAX_OFFSET so
+// the camera never flings off-screen.
+const SHAKE_KNOCKBACK_THRESHOLD = 5;
+const SHAKE_MAX_OFFSET = 20;
+const SHAKE_MIN_DURATION = 8;
+const SHAKE_MAX_DURATION = 15;
+const SHAKE_INTENSITY_SCALE = 0.5;
+const SHAKE_DURATION_SCALE = 0.25;
+
 export interface PlayerPosition {
   x: number;
   y: number;
@@ -24,11 +35,52 @@ export class Camera {
   private currentY = 0;
   private readonly container: Container;
 
+  // Shake state — decaying random offset applied on top of the smooth camera position.
+  private shakeIntensity = 0;
+  private shakeFramesRemaining = 0;
+  private shakeTotalFrames = 0;
+  private shakeOffsetX = 0;
+  private shakeOffsetY = 0;
+
   constructor(container: Container) {
     this.container = container;
   }
 
+  /**
+   * Trigger camera shake proportional to knockback magnitude.
+   * Ignores knockback ≤ SHAKE_KNOCKBACK_THRESHOLD (skips pummels/weak jabs).
+   * Later/stronger shakes replace weaker ongoing shakes — no unbounded stacking.
+   */
+  shake(knockbackMagnitude: number): void {
+    if (knockbackMagnitude <= SHAKE_KNOCKBACK_THRESHOLD) return;
+
+    const intensity = Math.min(
+      knockbackMagnitude * SHAKE_INTENSITY_SCALE,
+      SHAKE_MAX_OFFSET,
+    );
+    const duration = Math.min(
+      SHAKE_MAX_DURATION,
+      Math.max(SHAKE_MIN_DURATION, Math.floor(knockbackMagnitude * SHAKE_DURATION_SCALE)),
+    );
+
+    // Stronger or equal intensity replaces current; weaker shake during active shake is ignored.
+    if (intensity >= this.shakeIntensity || this.shakeFramesRemaining === 0) {
+      this.shakeIntensity = intensity;
+      this.shakeTotalFrames = duration;
+      this.shakeFramesRemaining = duration;
+    }
+  }
+
+  /** Expose current shake offset for testing / external consumers. */
+  getShakeOffset(): { x: number; y: number } {
+    return { x: this.shakeOffsetX, y: this.shakeOffsetY };
+  }
+
   update(positions: PlayerPosition[], viewportWidth: number, viewportHeight: number): void {
+    // Advance shake decay every frame regardless of player count so the effect
+    // doesn't freeze when the position list is momentarily empty.
+    this.advanceShake();
+
     if (positions.length === 0) return;
 
     const minX = Math.min(...positions.map(p => p.x)) - PADDING;
@@ -64,14 +116,37 @@ export class Camera {
     this.currentY += (targetY - this.currentY) * LERP_SPEED;
 
     this.container.scale.set(this.currentScale);
-    this.container.position.set(this.currentX, this.currentY);
+    this.container.position.set(
+      this.currentX + this.shakeOffsetX,
+      this.currentY + this.shakeOffsetY,
+    );
   }
 
   reset(): void {
     this.currentScale = 1.0;
     this.currentX = 0;
     this.currentY = 0;
+    this.shakeIntensity = 0;
+    this.shakeFramesRemaining = 0;
+    this.shakeTotalFrames = 0;
+    this.shakeOffsetX = 0;
+    this.shakeOffsetY = 0;
     this.container.scale.set(1.0);
     this.container.position.set(0, 0);
+  }
+
+  /** Compute next shake offset with linear decay, or zero out when finished. */
+  private advanceShake(): void {
+    if (this.shakeFramesRemaining > 0) {
+      const decay = this.shakeFramesRemaining / this.shakeTotalFrames;
+      const amplitude = this.shakeIntensity * decay;
+      this.shakeOffsetX = (Math.random() * 2 - 1) * amplitude;
+      this.shakeOffsetY = (Math.random() * 2 - 1) * amplitude;
+      this.shakeFramesRemaining--;
+    } else {
+      this.shakeOffsetX = 0;
+      this.shakeOffsetY = 0;
+      this.shakeIntensity = 0;
+    }
   }
 }

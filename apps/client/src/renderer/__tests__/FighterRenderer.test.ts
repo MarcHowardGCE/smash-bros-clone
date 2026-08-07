@@ -125,7 +125,7 @@ describe('FighterRenderer', () => {
       renderer.update({ ...basePlayer, isShielding: true, shieldHealth: 100 });
 
       // Shield bubble is the second child of the fighter container (after partRenderer container)
-      const shieldBubble = renderer.container.children[1];
+      const shieldBubble = renderer.container.children[1]!;
       expect(shieldBubble).toBeDefined();
       expect(shieldBubble.visible).toBe(true);
     });
@@ -136,7 +136,7 @@ describe('FighterRenderer', () => {
 
       // First show it
       renderer.update({ ...basePlayer, isShielding: true, shieldHealth: 100 });
-      const shieldBubble = renderer.container.children[1];
+      const shieldBubble = renderer.container.children[1]!;
       expect(shieldBubble.visible).toBe(true);
 
       // Then hide it
@@ -150,7 +150,7 @@ describe('FighterRenderer', () => {
 
       // Show at low health
       renderer.update({ ...basePlayer, isShielding: true, shieldHealth: 5 });
-      const shieldBubble = renderer.container.children[1];
+      const shieldBubble = renderer.container.children[1]!;
       expect(shieldBubble.visible).toBe(true);
 
       // Shield break — isShielding becomes false
@@ -164,7 +164,7 @@ describe('FighterRenderer', () => {
 
       renderer.update(basePlayer);
 
-      const shieldBubble = renderer.container.children[1];
+      const shieldBubble = renderer.container.children[1]!;
       expect(shieldBubble.visible).toBe(false);
     });
   });

@@ -1,7 +1,7 @@
 import { decode, encode, ExtensionCodec } from '@msgpack/msgpack';
 import type { Socket } from 'socket.io-client';
 import { io } from 'socket.io-client';
-import type { InputEvent, PlayerId, StateSnapshot } from '@smash/shared';
+import type { InputEvent, PlayerId, StateSnapshot, HitEventData } from '@smash/shared';
 import { InputManager } from '../input/InputManager.js';
 import { InterpolationBuffer, type RenderState } from './InterpolationBuffer.js';
 import { LocalPredictor } from './LocalPredictor.js';
@@ -28,6 +28,7 @@ export interface GameClientOptions {
   onMatchPhaseChange: (phase: string, winnerId?: PlayerId | null) => void;
   onRoomCreated: (roomCode: string, playerId: PlayerId) => void;
   onPlayerJoined: (slotIndex: number) => void;
+  onHitEvents?: (hitEvents: HitEventData[]) => void;
 }
 
 export class GameClient {
@@ -158,6 +159,10 @@ export class GameClient {
         this.interpolationBuffer.pushSnapshot(snapshot);
         if (snapshot.tick > 0 && snapshot.tick % 60 === 0) {
           console.log(`[state-hash][client] tick=${snapshot.tick} ${this.getStateHash(snapshot)}`);
+        }
+
+        if (snapshot.hitEvents && snapshot.hitEvents.length > 0) {
+          this.options.onHitEvents?.(snapshot.hitEvents);
         }
 
         if (this.predictor) {

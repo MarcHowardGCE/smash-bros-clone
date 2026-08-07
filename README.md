@@ -159,7 +159,7 @@ Deterministic game simulation. **No Node.js, no browser APIs, no I/O of any kind
 - **Moves** (`src/moves/`): 22 declarative `MoveData` const objects with startup/active/recovery frame data, per-frame hitbox definitions, knockback angles
 
 ```bash
-pnpm test              # run all 113 engine unit tests
+pnpm test              # run all 131 engine unit tests
 ```
 
 ### `apps/server`
@@ -220,7 +220,7 @@ pnpm build         # builds all 4 packages in dependency order
 ### Test
 
 ```bash
-pnpm test          # runs 113 Vitest unit tests in packages/engine
+pnpm test          # runs 131 Vitest unit tests in packages/engine
 just test          # same
 ```
 

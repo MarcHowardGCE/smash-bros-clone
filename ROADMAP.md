@@ -134,8 +134,8 @@ The engine is the strongest part of this repo. These are the remaining gaps — 
 
 ### Down Special (Counter)
 
-- **Status:** Still a stub — `packages/engine/src/moves/special.ts:43-47` shows `activeFrames: 0` and `hitboxPerActiveFrame: []`. No invincibility window, no counter-hit detection.
-- **Hook:** Add `invincible: true` frames to the move data; `hitbox/` already handles invincibility flags.
+- **Status:** ✅ **Implemented** — `packages/engine/src/moves/special.ts` defines the counter move with invincibility frames and counter-hit detection. `GameEngine.ts` handles the counter logic and applies invincibility during the active window.
+- **Hook:** Counter-hit detection is wired; invincibility frames are applied correctly.
 
 ### Landing lag
 

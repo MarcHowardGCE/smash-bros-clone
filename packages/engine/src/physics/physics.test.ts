@@ -442,6 +442,28 @@ describe('Physics Engine - applyMovementInput', () => {
   });
 });
 
+describe('Physics Engine - Stage Geometry Regression Guard', () => {
+  it('validates stage geometry margins and ledge alignment', () => {
+    const stage = makeStage();
+    const mainPlatform = stage.mainPlatform;
+    const ledges = stage.ledges;
+
+    // Right margin ratio: distance from platform right edge to blast zone / half-platform-width
+    const rightMarginRatio = (stage.blastRight - mainPlatform.x - mainPlatform.width) / (mainPlatform.width / 2);
+    expect(rightMarginRatio).toBeGreaterThanOrEqual(1.0);
+
+    // Left margin ratio: distance from blast zone to platform left edge / half-platform-width
+    const leftMarginRatio = (mainPlatform.x - stage.blastLeft) / (mainPlatform.width / 2);
+    expect(leftMarginRatio).toBeGreaterThanOrEqual(1.0);
+
+    // Left ledge x should align with platform left edge
+    expect(ledges[0]!.x).toBe(mainPlatform.x);
+
+    // Right ledge x should align with platform right edge
+    expect(ledges[1]!.x).toBe(mainPlatform.x + mainPlatform.width);
+  });
+});
+
 describe('Physics Engine - checkLedgeGrab', () => {
   it('returns left LedgeData when player is near the left ledge', () => {
     const player = makePlayer({ x: 10, y: 505, isGrounded: false, hitstunFramesRemaining: 0 });

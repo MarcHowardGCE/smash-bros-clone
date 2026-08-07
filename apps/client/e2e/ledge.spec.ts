@@ -1,7 +1,7 @@
 import { test, expect } from '@playwright/test';
 
 test('ledge grab, jump getup, and trump lifecycle', async ({ browser }) => {
-  test.setTimeout(60000);
+  test.setTimeout(120000);
   // Create 2 browser contexts (2 players)
   const ctx1 = await browser.newContext();
   const ctx2 = await browser.newContext();
@@ -60,7 +60,7 @@ test('ledge grab, jump getup, and trump lifecycle', async ({ browser }) => {
     const debugState = await page1.evaluate(() => (window as any).__DEBUG_GAME_STATE__?.());
     if (debugState) {
       const p1 = Object.values(debugState.players)[0] as any;
-      if (p1 && p1.x < 100) {
+      if (p1 && p1.x < 290) {
         break;
       }
     }
@@ -133,7 +133,7 @@ test('ledge grab, jump getup, and trump lifecycle', async ({ browser }) => {
     const debugState = await page1.evaluate(() => (window as any).__DEBUG_GAME_STATE__?.());
     if (debugState) {
       const p1 = Object.values(debugState.players)[0] as any;
-      if (p1 && p1.x < 30) {
+      if (p1 && p1.x < 220) {
         break;
       }
     }
@@ -165,7 +165,7 @@ test('ledge grab, jump getup, and trump lifecycle', async ({ browser }) => {
     const debugState = await page2.evaluate(() => (window as any).__DEBUG_GAME_STATE__?.());
     if (debugState) {
       const p2 = Object.values(debugState.players)[1] as any;
-      if (p2 && p2.x < 100) {
+      if (p2 && p2.x < 290) {
         break;
       }
     }

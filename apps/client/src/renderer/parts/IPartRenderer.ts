@@ -41,6 +41,9 @@ export interface PartTransform {
  * Implementations handle polygon geometry, sprite rendering, or other visual representations.
  */
 export interface IPartRenderer {
+  /** Root container holding all part display objects. Add to scene graph. */
+  readonly container: Container;
+
   /**
    * Draw a fighter part with the given transform and pattern.
    * Called once per frame for each visible part.

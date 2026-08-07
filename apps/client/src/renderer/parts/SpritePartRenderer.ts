@@ -1,4 +1,4 @@
-import type { Container } from 'pixi.js';
+import { Container } from 'pixi.js';
 import { Sprite } from 'pixi.js';
 import type { FighterPart, IPartRenderer, PartTransform, PatternDescriptor } from './IPartRenderer';
 
@@ -14,6 +14,7 @@ import type { FighterPart, IPartRenderer, PartTransform, PatternDescriptor } fro
  * See ROADMAP.md Visuals section for sprite art requirements.
  */
 export class SpritePartRenderer implements IPartRenderer {
+  readonly container: Container;
   private atlasPath: string;
   private displayObjects: Map<FighterPart, Sprite>;
 
@@ -25,6 +26,7 @@ export class SpritePartRenderer implements IPartRenderer {
    */
   constructor(atlasPath: string) {
     this.atlasPath = atlasPath;
+    this.container = new Container();
     this.displayObjects = new Map();
   }
 

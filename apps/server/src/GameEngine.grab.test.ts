@@ -438,4 +438,69 @@ describe('GameEngine grab integration', () => {
 		state = tick(engine, { p1: null });
 		expect(state.players.p1?.state).toBe(PlayerStateEnum.IDLE);
 	});
+
+	it('pummel stale-move accumulation: 4 consecutive pummels decrease damage per stale formula', () => {
+		const engine = createEngine(['p1', 'p2']);
+		primeGrabHoldingPair(engine, 1);
+
+		// Stale formula: Math.max(0.6, 1.05 - staleCount * 0.05)
+		// PUMMEL base damage: 2
+		// Expected damages:
+		// Pummel 1 (staleCount=0): 2 * 1.05 = 2.1 → floor = 2
+		// Pummel 2 (staleCount=1): 2 * 1.00 = 2.0 → floor = 2
+		// Pummel 3 (staleCount=2): 2 * 0.95 = 1.9 → floor = 1
+		// Pummel 4 (staleCount=3): 2 * 0.90 = 1.8 → floor = 1
+
+		const damages: number[] = [];
+		let state = tick(engine, { p1: null, p2: null });
+
+		// Perform 4 pummels
+		for (let i = 0; i < 4; i += 1) {
+			// Record victim damage before pummel
+			const damageBeforePummel = state.players.p2?.percent ?? 0;
+
+			// Press ATTACK to start pummel
+			state = tick(engine, { p1: makeInput('p1', INPUT_BITS.ATTACK), p2: null });
+
+			// Tick until pummel connects (victim takes damage)
+			let damageRecorded = false;
+			for (let j = 0; j < 20; j += 1) {
+				const damageAfter = state.players.p2?.percent ?? 0;
+				if (damageAfter > damageBeforePummel && !damageRecorded) {
+					damages.push(damageAfter - damageBeforePummel);
+					damageRecorded = true;
+				}
+				state = tick(engine, { p1: null, p2: null });
+				// Stop when back in GRAB_HOLDING (pummel recovery complete)
+				if (state.players.p1?.state === PlayerStateEnum.GRAB_HOLDING) {
+					break;
+				}
+			}
+
+			// Verify victim stays in GRAB_HOLDING after pummel
+			expect(state.players.p2?.state).toBe(PlayerStateEnum.GRAB_HOLDING);
+			expect(state.players.p2?.isGrabbing).toBe(true);
+		}
+
+		// Verify 4 pummels connected
+		expect(damages.length).toBe(4);
+
+		// Verify damage decreases per stale formula
+		// Pummel 1: fresh (1.05 multiplier) → 2 * 1.05 = 2.1 → floor = 2
+		expect(damages[0]).toBe(2);
+		// Pummel 2: 1 stale (1.00 multiplier) → 2 * 1.00 = 2.0 → floor = 2
+		expect(damages[1]).toBe(2);
+		// Pummel 3: 2 stale (0.95 multiplier) → 2 * 0.95 = 1.9 → floor = 1
+		expect(damages[2]).toBe(1);
+		// Pummel 4: 3 stale (0.90 multiplier) → 2 * 0.90 = 1.8 → floor = 1
+		expect(damages[3]).toBe(1);
+
+		// Verify total damage accumulation
+		const totalDamage = damages.reduce((a, b) => a + b, 0);
+		expect(totalDamage).toBe(6); // 2 + 2 + 1 + 1
+
+		// Verify attacker's staleMoveQueue has 4 PUMMEL entries
+		expect(state.players.p1?.staleMoveQueue?.length).toBe(4);
+		expect(state.players.p1?.staleMoveQueue?.every((moveId) => moveId === MoveId.PUMMEL)).toBe(true);
+	});
 });

@@ -1558,6 +1558,7 @@ export class GameEngine {
 		players[attacker.id] = {
 			...attacker,
 			hitPlayerIds: trackedHitIds,
+			staleMoveQueue: this.pushStaleMoveToQueue(attacker, MoveId.PUMMEL),
 		};
 
 		return true;

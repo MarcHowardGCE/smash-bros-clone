@@ -23,6 +23,9 @@ export class WalkState extends BaseState {
       return transition(PlayerStateEnum.SHIELD);
     }
 
-    return null;
+    // If direction is still held and no other action taken, auto-escalate to DASH.
+    // This makes WALK a brief 1-frame transitional state that allows tilt attacks
+    // from movement start, but quickly escalates to dash speed for normal movement.
+    return transition(PlayerStateEnum.DASH);
   }
 }

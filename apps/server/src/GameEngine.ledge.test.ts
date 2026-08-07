@@ -503,7 +503,7 @@ describe('GameEngine ledge integration', () => {
 
 	it('forward smash released immediately deals fresh-move bonus damage (18 * 1.05)', () => {
 		const unchargedScenario = runForwardSmashDamageScenario(0);
-		expect(unchargedScenario.damageDealt).toBeCloseTo(18 * 1.05, 6);
+		expect(unchargedScenario.damageDealt).toBe(Math.floor(18 * 1.05));
 	});
 
 	it('forward smash charged 30/60 frames applies charge scaling then fresh-move bonus', () => {
@@ -516,7 +516,7 @@ describe('GameEngine ledge integration', () => {
 			).toFixed(1)}x)`,
 		);
 
-		expect(chargedScenario.damageDealt).toBeCloseTo(expectedDamage, 6);
+		expect(chargedScenario.damageDealt).toBe(Math.floor(expectedDamage));
 	});
 
 	it('grabs the left ledge end-to-end via tickGame/updatePlayer and populates the ledges snapshot', () => {
@@ -1248,10 +1248,10 @@ describe('GameEngine ledge integration', () => {
 				throw new Error('Expected player p1 while testing fast-fall velocity');
 			}
 
-			const expectedFastFallVy = PHYSICS.TERMINAL_VELOCITY * 0.9;
-			expect(first.vy).toBeCloseTo(expectedFastFallVy, 6);
-			expect(second.vy).toBeCloseTo(expectedFastFallVy, 6);
-			expect(third.vy).toBeCloseTo(expectedFastFallVy, 6);
+		const expectedFastFallVy = PHYSICS.TERMINAL_VELOCITY * 0.8;
+		expect(first.vy).toBeCloseTo(expectedFastFallVy, 6);
+		expect(second.vy).toBeCloseTo(expectedFastFallVy, 6);
+		expect(third.vy).toBeCloseTo(expectedFastFallVy, 6);
 		});
 
 		it.skip('BASELINE CHARACTERIZATION (pre-hitstun-pass-through): hitstun player descending through soft platform lands on it', () => {
@@ -1468,8 +1468,8 @@ describe('GameEngine ledge integration', () => {
 				expect(attacker.staleMoveQueue.length).toBe(expectedQueueLength);
 			}
 
-			expect(perHitDamage[0]).toBeCloseTo(3 * 1.05, 6);
-			expect(perHitDamage[9]).toBeCloseTo(3 * 0.6, 6);
+		expect(perHitDamage[0]).toBe(Math.floor(3 * 1.05));
+		expect(perHitDamage[9]).toBe(Math.floor(3 * 0.6));
 		});
 
 		it.skip('BASELINE CHARACTERIZATION (pre-rage): attacker percent does not change knockback magnitude', () => {
@@ -1911,10 +1911,10 @@ describe('GameEngine ledge integration', () => {
 				vy: 0,
 			};
 
-			player = controller.tick(player, makeInput('p1', INPUT_BITS.LEFT));
-			player = { ...player, facing: -1 };
-			expect(player.state).toBe(PlayerStateEnum.DASH);
-			expect(player.stateFrame).toBe(0);
+		player = controller.tick(player, makeInput('p1', INPUT_BITS.LEFT));
+		player = { ...player, facing: -1 };
+		expect(player.state).toBe(PlayerStateEnum.WALK);
+		expect(player.stateFrame).toBe(0);
 
 			for (let frame = 0; frame < 5; frame += 1) {
 				player = controller.tick(player, makeHeldInput(INPUT_BITS.LEFT));

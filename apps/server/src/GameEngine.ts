@@ -6,6 +6,7 @@ import {
 	checkHitboxCollision,
 	checkLedgeGrab,
 	checkPlatformCollision,
+	checkWallCollision,
 	DEFAULT_STAGE,
 	FSMController,
 	getMoveData,
@@ -404,6 +405,7 @@ export class GameEngine {
 		}
 
 		const beforeTick = clonePlayer(player);
+		const hadDoubleJumpBeforeTick = player.hasDoubleJump;
 		let nextPlayer = controller.tick(player, input);
 		nextPlayer = this.applyStateTransitions(beforeTick, nextPlayer, input);
 		nextPlayer = this.applyDirectionalInfluenceOnHitlagEnd(player, nextPlayer, input);
@@ -425,6 +427,7 @@ export class GameEngine {
 			playerId,
 			nextPlayer,
 			input,
+			hadDoubleJumpBeforeTick,
 			droppedFromLedgeThisTick,
 		);
 		nextPlayer = this.applyFacing(nextPlayer, input);
@@ -688,6 +691,7 @@ export class GameEngine {
 		playerId: PlayerId,
 		player: PlayerState,
 		input: InputEvent | null,
+		hadDoubleJumpBeforePhysics: boolean,
 		preventImmediateFastFall = false,
 	): PlayerState {
 		const effectiveInput = input ?? {
@@ -730,7 +734,11 @@ export class GameEngine {
 						applyMovement(applyGravity(nextPlayer), effectiveInput),
 						DEFAULT_STAGE,
 				  )
-				: this.applyMovementPipeline(nextPlayer, effectiveInput);
+				: this.applyMovementPipeline(
+						nextPlayer,
+						effectiveInput,
+						hadDoubleJumpBeforePhysics,
+				  );
 		}
 
 		const landedThisTick = !player.isGrounded && nextPlayer.isGrounded;
@@ -792,6 +800,7 @@ export class GameEngine {
 	private applyMovementPipeline(
 		player: PlayerState,
 		input: InputEvent,
+		hadDoubleJumpBeforePhysics: boolean,
 	): PlayerState {
 		// Drop-through mechanic: when the player holds DOWN, we pass an empty platforms
 		// array to checkPlatformCollision. With no soft platforms registered, the physics
@@ -804,6 +813,38 @@ export class GameEngine {
 					platforms: [],
 				}
 			: DEFAULT_STAGE;
+		const wall = checkWallCollision(player, stage);
+		const jumpPressed = isPressed(input, INPUT_BITS.JUMP);
+		const awayDirectionHeld =
+			wall === "left"
+				? isHeld(input, INPUT_BITS.RIGHT)
+				: wall === "right"
+					? isHeld(input, INPUT_BITS.LEFT)
+					: false;
+
+		if (wall && !player.isGrounded && jumpPressed && awayDirectionHeld) {
+			const decayMultiplier = 1.0;
+			const wallJumped: PlayerState = {
+				...player,
+				vx:
+					PHYSICS.WALL_JUMP_HORIZONTAL_VELOCITY *
+					(wall === "left" ? 1 : -1) *
+					decayMultiplier,
+				vy: PHYSICS.WALL_JUMP_VERTICAL_VELOCITY * decayMultiplier,
+				hasDoubleJump: hadDoubleJumpBeforePhysics
+					? true
+					: player.hasDoubleJump,
+			};
+
+			return checkPlatformCollision(
+				{
+					...wallJumped,
+					x: wallJumped.x + wallJumped.vx,
+					y: wallJumped.y + wallJumped.vy,
+				},
+				stage,
+			);
+		}
 
 		return checkPlatformCollision(
 			applyMovement(applyGravity(applyFastFall(player, input)), input),

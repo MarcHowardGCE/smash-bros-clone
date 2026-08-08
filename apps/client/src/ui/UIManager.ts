@@ -60,18 +60,18 @@ export class UIManager {
     const existingRoom = urlParams.get('room');
 
     this.overlay.innerHTML = `
-      <div class="overlay-center">
-        <div style="background:#fff;padding:20px 32px;margin-bottom:32px;display:inline-block;"><img src="/branding/everybody-throws-hands-logo.png" alt="Everybody Throws Hands" style="max-width:min(700px,80vw);height:auto;display:block;"></div>
+      <div style="position:absolute;top:80px;left:50%;transform:translateX(-50%);text-align:center;color:white;font-family:monospace;pointer-events:all;z-index:10;">
+        <img src="/branding/everybody-throws-hands-logo.png" alt="Everybody Throws Hands" style="max-width:min(700px,80vw);height:auto;display:block;margin:0 auto 48px auto;">
         ${existingRoom
           ? `<div style="font-size:18px;margin-bottom:24px">Room: <span style="font-size:24px">${existingRoom}</span></div>
              <button id="ready-btn" class="ui-btn">Ready</button>`
           : `<button id="create-btn" class="ui-btn" style="margin-bottom:16px">Create Room</button>
-             <div style="display:flex;gap:8px;align-items:center">
+             <div style="display:flex;gap:8px;align-items:center;justify-content:center;margin-bottom:16px">
                <input id="join-code" class="ui-input" placeholder="ROOM CODE" maxlength="6">
                <button id="join-btn" class="ui-btn">Join</button>
              </div>`
         }
-        <button id="local-play-btn" class="ui-btn" style="margin-top:24px">Local Play</button>
+        <button id="local-play-btn" class="ui-btn" style="margin-top:8px">Local Play</button>
         <button id="controls-btn" class="ui-btn" style="margin-top:12px">Controls</button>
       </div>`;
 

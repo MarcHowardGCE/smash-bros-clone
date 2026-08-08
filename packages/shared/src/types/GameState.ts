@@ -64,9 +64,10 @@ export interface PlayerState {
 	activeHitbox: HitboxData | null;
 	currentMoveId: MoveId | null;
 	staleMoveQueue: MoveId[];
-  currentMove?: {
-    landingLag: number;
-  };
+	currentMove?: {
+		landingLag: number;
+		isSpecial: boolean;
+	};
 	hitPlayerIds: Set<string>;
 	chargeFrames: number;
 	asdiDriftAccumulated?: number;

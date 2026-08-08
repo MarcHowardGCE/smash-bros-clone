@@ -633,16 +633,18 @@ export class GameEngine {
 				player.state === PlayerStateEnum.GRAB_HOLDING) &&
 			previous.state !== player.state
 		) {
-			const moveId = this.selectMoveId(player, input);
-			nextPlayer = {
-				...nextPlayer,
-				currentMoveId: moveId,
-				currentMove: {
-					landingLag: getMoveData(moveId).landingLag,
-				},
-				hitPlayerIds: new Set<string>(),
-				chargeFrames: 0,
-			};
+		const moveId = this.selectMoveId(player, input);
+		const moveData = getMoveData(moveId);
+		nextPlayer = {
+			...nextPlayer,
+			currentMoveId: moveId,
+			currentMove: {
+				landingLag: moveData.landingLag,
+				isSpecial: moveData.isSpecial,
+			},
+			hitPlayerIds: new Set<string>(),
+			chargeFrames: 0,
+		};
 		}
 
 		if (
@@ -827,19 +829,20 @@ export class GameEngine {
 			}
 		}
 
-			if (landedThisTick && player.state === PlayerStateEnum.AIR_ATTACK) {
-				const landingLagFrames = player.currentMove?.landingLag ?? 0;
-				nextPlayer = {
-					...nextPlayer,
-					state:
-						landingLagFrames > 0
-							? PlayerStateEnum.LANDING_LAG
-							: PlayerStateEnum.IDLE,
-					stateFrame: 0,
-					landingLagFrames,
-					sdiInputCooldown: 0,
-				};
-			}
+		if (landedThisTick && player.state === PlayerStateEnum.AIR_ATTACK) {
+			const rawLag = player.currentMove?.landingLag ?? 0;
+			const landingLagFrames = (!player.currentMove?.isSpecial && player.lCancelWindowFrames > 0) ? Math.floor(rawLag / 2) : rawLag;
+			nextPlayer = {
+				...nextPlayer,
+				state:
+					landingLagFrames > 0
+						? PlayerStateEnum.LANDING_LAG
+						: PlayerStateEnum.IDLE,
+				stateFrame: 0,
+				landingLagFrames,
+				sdiInputCooldown: 0,
+			};
+		}
 
 			if (landedThisTick && player.state !== PlayerStateEnum.AIR_ATTACK) {
 				nextPlayer = {

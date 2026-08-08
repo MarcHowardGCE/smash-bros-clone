@@ -1,4 +1,4 @@
-import type { InputBitmask, PlayerId } from '@smash/shared';
+import type { InputBitmask, PlayerId, BotDifficulty } from '@smash/shared';
 import type { GamepadInputSource } from '../input/GamepadInputSource.js';
 
 export interface LocalPlayerConfig {
@@ -12,3 +12,5 @@ export interface FighterChoice {
   id: string;
   displayName: string;
 }
+
+export type SeatConfig = { kind: 'cpu'; difficulty: BotDifficulty } | { kind: 'human-gamepad' };

@@ -40,6 +40,7 @@ function makePlayer(overrides: Partial<PlayerState> = {}): PlayerState {
     hitPlayerIds: new Set<string>(),
     chargeFrames: 0,
     respawnTimer: 0,
+    airDodgeDirection: null,
     ...overrides,
   };
 }
@@ -703,5 +704,55 @@ describe('FSM - Air Dodge single-use consumption', () => {
     // Frame 23 should transition to AIRBORNE
     player = controller.tick(player, makeInput());
     expect(player.state).toBe(PlayerStateEnum.AIRBORNE);
+  });
+
+  it('AIR_DODGE enter captures DOWN+RIGHT → { x: 1, y: 1 }', () => {
+    const controller = new FSMController(PlayerStateEnum.AIRBORNE);
+    const player = makePlayer({
+      state: PlayerStateEnum.AIRBORNE,
+      isGrounded: false,
+      hasAirDodge: true,
+    });
+    const result = controller.tick(player, makeInput(INPUT_BITS.SHIELD, INPUT_BITS.SHIELD | INPUT_BITS.DOWN | INPUT_BITS.RIGHT));
+
+    expect(result.state).toBe(PlayerStateEnum.AIR_DODGE);
+    expect(result.airDodgeDirection).toEqual({ x: 1, y: 1 });
+  });
+
+  it('AIR_DODGE enter captures no direction → { x: 0, y: 0 }', () => {
+    const controller = new FSMController(PlayerStateEnum.AIRBORNE);
+    const player = makePlayer({
+      state: PlayerStateEnum.AIRBORNE,
+      isGrounded: false,
+      hasAirDodge: true,
+    });
+    const result = controller.tick(player, makeInput(INPUT_BITS.SHIELD, INPUT_BITS.SHIELD));
+
+    expect(result.state).toBe(PlayerStateEnum.AIR_DODGE);
+    expect(result.airDodgeDirection).toEqual({ x: 0, y: 0 });
+  });
+
+  it('AIR_DODGE exit clears airDodgeDirection to null', () => {
+    const controller = new FSMController(PlayerStateEnum.AIR_DODGE);
+    let player = makePlayer({
+      state: PlayerStateEnum.AIR_DODGE,
+      stateFrame: 0,
+      isGrounded: false,
+      hasAirDodge: false,
+      airDodgeDirection: { x: 1, y: 1 },
+    });
+
+    // Tick through frames 0-22 (should stay in AIR_DODGE with direction set)
+    for (let i = 0; i < 23; i += 1) {
+      player = controller.tick(player, makeInput());
+      if (i < 22) {
+        expect(player.airDodgeDirection).toEqual({ x: 1, y: 1 });
+      }
+    }
+
+    // Frame 23 should transition to AIRBORNE and clear direction
+    player = controller.tick(player, makeInput());
+    expect(player.state).toBe(PlayerStateEnum.AIRBORNE);
+    expect(player.airDodgeDirection).toBeNull();
   });
 });

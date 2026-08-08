@@ -242,11 +242,20 @@ export class FSMController {
 
     // stateFrame resets to 0 so the incoming state always starts its own frame-count
     // from frame 0, regardless of how many frames elapsed in the outgoing state.
-    const nextPlayer: PlayerState = {
+    let nextPlayer: PlayerState = {
       ...player,
       state: nextStateName,
       stateFrame: 0,
     };
+
+    // Apply any field clears from exit() to nextPlayer
+    // (exit() modifies ctx.player, but we need to apply those changes to nextPlayer)
+    if (ctx.player.airDodgeDirection !== player.airDodgeDirection) {
+      nextPlayer = {
+        ...nextPlayer,
+        airDodgeDirection: ctx.player.airDodgeDirection,
+      };
+    }
 
     const nextCtx: FSMContext = {
       player: nextPlayer,

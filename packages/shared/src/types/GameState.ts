@@ -76,6 +76,7 @@ export interface PlayerState {
   pendingKnockbackVx?: number | null;
   pendingKnockbackVy?: number | null;
   respawnTimer: number;
+  airDodgeDirection: { x: number; y: number } | null;
 }
 
 export interface GameState {

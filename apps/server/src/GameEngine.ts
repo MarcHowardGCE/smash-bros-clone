@@ -238,7 +238,7 @@ export class GameEngine {
 			(player) => player.stocks > 0,
 		);
 		const winnerId =
-			alivePlayers.length === 1 ? (alivePlayers[0]?.id ?? null) : null;
+			alivePlayers.length === 1 && Object.values(players).length > 1 ? (alivePlayers[0]?.id ?? null) : null;
 
 		this.state = {
 			tick: this.tick,
@@ -342,6 +342,7 @@ export class GameEngine {
 				isTumbling: false,
 				techWindowFrames: 0,
 				techLockoutFrames: 0,
+				lCancelWindowFrames: 0,
 				landingLagFrames: 0,
 				lastHitByFacing: null,
 				lastHitKnockbackAngle: null,
@@ -489,6 +490,7 @@ export class GameEngine {
 			...player,
 			techWindowFrames: Math.max(0, player.techWindowFrames - 1),
 			techLockoutFrames: Math.max(0, player.techLockoutFrames - 1),
+			lCancelWindowFrames: Math.max(0, player.lCancelWindowFrames - 1),
 		};
 
 		const shouldStartTechWindow =
@@ -498,6 +500,18 @@ export class GameEngine {
 			nextPlayer.techLockoutFrames === 0;
 
 		if (!shouldStartTechWindow) {
+			// Check for L-cancel window: shield pressed during AIR_ATTACK
+			const shouldStartLCancelWindow =
+				isPressed(input, INPUT_BITS.SHIELD) &&
+				nextPlayer.state === PlayerStateEnum.AIR_ATTACK;
+
+			if (shouldStartLCancelWindow) {
+				nextPlayer = {
+					...nextPlayer,
+					lCancelWindowFrames: PHYSICS.L_CANCEL_WINDOW_FRAMES,
+				};
+			}
+
 			return nextPlayer;
 		}
 
@@ -2009,7 +2023,8 @@ export class GameEngine {
 			isTumbling: false,
 			techWindowFrames: 0,
 			techLockoutFrames: 0,
-				landingLagFrames: 0,
+			lCancelWindowFrames: 0,
+			landingLagFrames: 0,
 				sdiInputCooldown: 0,
 				asdiDriftAccumulated: 0,
 				activeHitbox: null,

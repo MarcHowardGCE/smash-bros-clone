@@ -28,22 +28,23 @@ export interface HitboxData {
 }
 
 export interface PlayerState {
-  id: PlayerId;
-  slotIndex: number;
-  x: number;
-  y: number;
-  vx: number;
-  vy: number;
-  facing: 1 | -1;
-  state: string; // PlayerStateEnum value
+	id: PlayerId;
+	slotIndex: number;
+	x: number;
+	y: number;
+	vx: number;
+	vy: number;
+	facing: 1 | -1;
+	state: string; // PlayerStateEnum value
 	stateFrame: number;
 	hitlagFramesRemaining: number;
 	sdiInputCooldown?: number;
 	hitstunFramesRemaining: number;
 	isTumbling: boolean;
-  techWindowFrames: number;
-  techLockoutFrames: number;
-  landingLagFrames: number;
+	techWindowFrames: number;
+	techLockoutFrames: number;
+	lCancelWindowFrames: number;
+	landingLagFrames: number;
   percent: number;
   stocks: number;
   isGrounded: boolean;

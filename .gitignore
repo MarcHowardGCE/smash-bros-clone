@@ -10,3 +10,8 @@ dist/
 BUGS.md
 /test-results
 /test-results
+/playwright-report
+/apps/client/.omo
+/apps/client/.omo
+/apps/client/.omo
+apps/client/.omo/evidence/t25-result-both-buttons.png

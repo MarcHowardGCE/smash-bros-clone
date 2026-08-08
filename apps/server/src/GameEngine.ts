@@ -754,6 +754,25 @@ export class GameEngine {
 			nextPlayer = this.resolveTumbleLanding(playerId, nextPlayer, effectiveInput);
 		}
 
+		const shouldCheckWallTech = player.isTumbling || player.hitstunFramesRemaining > 0;
+		if (shouldCheckWallTech) {
+			const wallSide = checkWallCollision(nextPlayer, DEFAULT_STAGE);
+			if (wallSide && nextPlayer.techWindowFrames > 0) {
+				this.techAttemptBuffered.set(playerId, false);
+				nextPlayer = {
+					...nextPlayer,
+					vx: 0,
+					state: PlayerStateEnum.AIRBORNE,
+					stateFrame: 0,
+					hitstunFramesRemaining: 0,
+					isTumbling: false,
+					isInvincible: true,
+					invincibilityFrames: PHYSICS.WALL_TECH_INTANGIBILITY_FRAMES,
+					techWindowFrames: 0,
+				};
+			}
+		}
+
 			if (landedThisTick && player.state === PlayerStateEnum.AIR_ATTACK) {
 				const landingLagFrames = player.currentMove?.landingLag ?? 0;
 				nextPlayer = {

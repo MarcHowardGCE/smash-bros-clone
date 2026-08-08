@@ -765,6 +765,18 @@ export class GameEngine {
 				  );
 		}
 
+		// Apply friction to grounded players in LANDING_LAG state (wavedash slide decay)
+		if (nextPlayer.state === PlayerStateEnum.LANDING_LAG && nextPlayer.isGrounded) {
+			const movingLeft = isHeld(effectiveInput, INPUT_BITS.LEFT);
+			const movingRight = isHeld(effectiveInput, INPUT_BITS.RIGHT);
+			if (!movingLeft && !movingRight) {
+				nextPlayer = {
+					...nextPlayer,
+					vx: nextPlayer.vx * PHYSICS.GROUND_FRICTION,
+				};
+			}
+		}
+
 		const landedThisTick = !player.isGrounded && nextPlayer.isGrounded;
 		if (landedThisTick && player.isTumbling) {
 			nextPlayer = this.resolveTumbleLanding(playerId, nextPlayer, effectiveInput);
@@ -840,6 +852,38 @@ export class GameEngine {
 						: PlayerStateEnum.IDLE,
 				stateFrame: 0,
 				landingLagFrames,
+				sdiInputCooldown: 0,
+			};
+		}
+
+		// Wavedash landing: AIR_DODGE with downward + horizontal component
+		// Only apply if player hasn't already been processed by resolveTumbleLanding
+		if (
+			landedThisTick &&
+			player.state === PlayerStateEnum.AIR_DODGE &&
+			player.airDodgeDirection &&
+			player.airDodgeDirection.y > 0 &&
+			player.airDodgeDirection.x !== 0
+		) {
+			nextPlayer = {
+				...nextPlayer,
+				vx: PHYSICS.WAVEDASH_INITIAL_SLIDE_VELOCITY * Math.sign(player.airDodgeDirection.x),
+				state: PlayerStateEnum.LANDING_LAG,
+				stateFrame: 0,
+				landingLagFrames: PHYSICS.WAVEDASH_LANDING_LAG_FRAMES,
+				sdiInputCooldown: 0,
+			};
+		} else if (
+			landedThisTick &&
+			player.state === PlayerStateEnum.AIR_DODGE &&
+			!player.isTumbling
+		) {
+			// Default AIR_DODGE landing (neutral or non-wavedash): transition to IDLE
+			// Only apply if player is not tumbling (tumbling players are handled by resolveTumbleLanding)
+			nextPlayer = {
+				...nextPlayer,
+				state: PlayerStateEnum.IDLE,
+				stateFrame: 0,
 				sdiInputCooldown: 0,
 			};
 		}

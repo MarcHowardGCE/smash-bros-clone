@@ -759,16 +759,56 @@ export class GameEngine {
 			const wallSide = checkWallCollision(nextPlayer, DEFAULT_STAGE);
 			if (wallSide && nextPlayer.techWindowFrames > 0) {
 				this.techAttemptBuffered.set(playerId, false);
+				
+				// Check if JUMP is held during tech window
+				const jumpHeld = isHeld(effectiveInput, INPUT_BITS.JUMP);
+				
+				if (jumpHeld) {
+					// Apply wall-jump velocity but keep wall-tech invincibility
+					const decayMultiplier = Math.max(
+						PHYSICS.WALL_JUMP_MIN_VELOCITY_MULTIPLIER,
+						Math.pow(PHYSICS.WALL_JUMP_HEIGHT_DECAY, nextPlayer.wallJumpStreak),
+					);
+					nextPlayer = {
+						...nextPlayer,
+						vx:
+							PHYSICS.WALL_JUMP_HORIZONTAL_VELOCITY *
+							(wallSide === "left" ? 1 : -1) *
+							decayMultiplier,
+						vy: PHYSICS.WALL_JUMP_VERTICAL_VELOCITY * decayMultiplier,
+						state: PlayerStateEnum.AIRBORNE,
+						stateFrame: 0,
+						hitstunFramesRemaining: 0,
+						isTumbling: false,
+						isInvincible: true,
+						invincibilityFrames: PHYSICS.WALL_TECH_INTANGIBILITY_FRAMES,
+						techWindowFrames: 0,
+						wallJumpStreak: nextPlayer.wallJumpStreak + 1,
+						hasDoubleJump: hadDoubleJumpBeforePhysics
+							? true
+							: nextPlayer.hasDoubleJump,
+					};
+				} else {
+					// Plain wall-tech: cancel momentum
+					nextPlayer = {
+						...nextPlayer,
+						vx: 0,
+						state: PlayerStateEnum.AIRBORNE,
+						stateFrame: 0,
+						hitstunFramesRemaining: 0,
+						isTumbling: false,
+						isInvincible: true,
+						invincibilityFrames: PHYSICS.WALL_TECH_INTANGIBILITY_FRAMES,
+						techWindowFrames: 0,
+					};
+				}
+			} else if (wallSide && nextPlayer.techWindowFrames === 0) {
+				// Missed wall tech: wall contact during tumble/hitstun but no buffered tech
+				// Apply tech lockout penalty (same as missed ground tech)
+				this.techAttemptBuffered.set(playerId, false);
 				nextPlayer = {
 					...nextPlayer,
-					vx: 0,
-					state: PlayerStateEnum.AIRBORNE,
-					stateFrame: 0,
-					hitstunFramesRemaining: 0,
-					isTumbling: false,
-					isInvincible: true,
-					invincibilityFrames: PHYSICS.WALL_TECH_INTANGIBILITY_FRAMES,
-					techWindowFrames: 0,
+					techLockoutFrames: PHYSICS.TECH_LOCKOUT_FRAMES,
 				};
 			}
 		}

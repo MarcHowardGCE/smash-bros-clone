@@ -247,29 +247,6 @@ No persistence exists today. This is the lowest priority but required for a publ
 | **Medium** | ~~Smash charge~~ ✅ · ~~Grab victim pinning + pummel/throw~~ ✅ · Stage background art · ~~Shield bubble~~ ✅ | ~~Down Special counter logic~~ ✅ · Reconnection handling · Settings persistence |
 | **High** | Sprite art for fighters · Additional fighter (full move set) · Additional stage · Audio system + BGM | Ranked / matchmaking · Replays · ~~Ledge grab~~ ✅ |
 
-### Recommended first milestone — "It feels like a game"
-
-These changes closed the gap between "working prototype" and "feels like a real game." All six are now shipped:
-
-1. ✅ **Wire short hop** — `JumpsquatState` counts held frames; `resolveJump` produces a short hop when `JUMP` is released before the jumpsquat window ends (`packages/engine/src/physics/index.ts`)
-2. ✅ **Wire landing lag** — reads `currentMove.landingLag` on landing from `AIR_ATTACK`; transitions to `LANDING_LAG` state (`apps/server/src/GameEngine.ts:689-700`)
-3. ✅ **Wire shield break stun** — applies `PHYSICS.SHIELD_BREAK_STUN_FRAMES` when `shieldHealth <= 0`, launches fighter upward, transitions to `HITSTUN` (`apps/server/src/GameEngine.ts:1363`)
-4. **5 hit SFX** — not yet; `AudioManager` does not exist. Zero audio shipped.
-5. ✅ **Damage % color** — `UIManager.interpolateDamageColor()` white → yellow → red (`apps/client/src/ui/UIManager.ts:351-366`)
-6. ✅ **Shield bubble** — `FighterRenderer.updateShieldBubble()` draws a color-cycling semi-transparent circle (`apps/client/src/renderer/FighterRenderer.ts:142-155`)
-
-### After milestone 1
-
-- Sprite art for the existing fighter (highest visual impact)
-- Second stage (low effort once art exists)
-- Reconnection handling (required before sharing publicly)
-
----
-
-*This document reflects the state of the codebase as analyzed — the engine is the hard part and it's done well. Everything else builds on existing hooks.*
-
----
-
 ## Open initiatives — mechanics fidelity closed, three paths forward
 
 **Gap A (mechanics fidelity) is now closed.** After Waves 1–6, the engine, netcode, FSM, physics, all 22 moves, grab/throw, ledge, shield, counters, smash charge, stale-move queue, DI, teching, KO effects, hit flash, pause, result screen, wavedash, L-cancel, wall-jump, and wall-tech are all shipped and green across 144 engine tests, 94 server tests, and 12 Playwright e2e specs.

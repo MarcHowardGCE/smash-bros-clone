@@ -282,7 +282,7 @@ describe('GameEngine wavedash landing', () => {
 
 		// Step 2: Wait for landing lag to finish (tick until state changes to IDLE)
 		let tickCount = 0;
-		while (player.state === PlayerStateEnum.LANDING_LAG && tickCount < 20) {
+		while (player?.state === PlayerStateEnum.LANDING_LAG && tickCount < 20) {
 			state = tick(engine, { p1: null });
 			player = state.players.p1;
 			tickCount++;

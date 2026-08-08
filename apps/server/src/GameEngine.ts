@@ -2215,6 +2215,7 @@ export class GameEngine {
 					pendingKnockbackVx: null,
 					pendingKnockbackVy: null,
 					hasDoubleJump: true,
+					hasAirDodge: true,
 				isFastFalling: false,
 				isInvincible: true,
 				invincibilityFrames: MATCH_CONFIG.RESPAWN_INVINCIBILITY_FRAMES,

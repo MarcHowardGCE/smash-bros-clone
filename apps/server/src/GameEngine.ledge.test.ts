@@ -418,14 +418,14 @@ describe('GameEngine ledge integration', () => {
 			stateFrame: 0,
 			isGrounded: false,
 			currentMoveId: MoveId.NEUTRAL_AIR,
-			currentMove: { landingLag: landingLagFrames },
+			currentMove: { landingLag: landingLagFrames, isSpecial: false },
 		});
 		const mutable = getMutableState(engine);
 		const primed = mutable.players.p1;
 		if (!primed) {
 			throw new Error('Expected player p1 after prime');
 		}
-		primed.currentMove = { landingLag: landingLagFrames };
+		primed.currentMove = { landingLag: landingLagFrames, isSpecial: false };
 
 		const landing = tick(engine, { p1: null });
 		const landed = landing.players.p1;
@@ -482,7 +482,7 @@ describe('GameEngine ledge integration', () => {
 		};
 
 		expect(runLanding(undefined)).toBe(PlayerStateEnum.IDLE);
-		expect(runLanding({ landingLag: 0 })).toBe(PlayerStateEnum.IDLE);
+		expect(runLanding({ landingLag: 0, isSpecial: false })).toBe(PlayerStateEnum.IDLE);
 	});
 
 	it.skip('BASELINE CHARACTERIZATION (pre-smash-charge): holding ATTACK during forward smash dealt identical damage to tap', () => {

@@ -155,6 +155,38 @@ The engine is the strongest part of this repo. These are the remaining gaps — 
 - **What's done:** 5 ledge states (LEDGE_HANG, LEDGE_CLIMB, LEDGE_ATTACK, LEDGE_ROLL, LEDGE_JUMP) are defined, transitioned by `GameEngine.ts` when player is AIRBORNE/DOUBLE_JUMP and in range of a ledge. Invincibility frames applied on grab. Ledge occupancy managed (first player gets ledge, second player is "trumped" and launched). Comprehensive test suite in `GameEngine.ledge.test.ts` covers all getup options and priority system.
 - **Remaining edge mechanics:** Wall bounce, footstool — these are new features, not stubs.
 
+### Advanced tech mechanics (wavedash, L-cancel, wall-jump/wall-tech)
+
+- **Status:** ✅ **Implemented (Waves 1–6)**
+
+**Foundation (Todos 1–5):**
+- Wall geometry added to `STAGE.WALLS` (`packages/shared/src/constants/stage.ts:44-45`): two walls inset 40px from blast zones, `yTop = 400`, `yBottom = 780`
+- `WallData` interface and `walls: WallData[]` field added to `StageData` (`packages/engine/src/physics/types.ts:33`)
+- 10 physics constants added to `packages/shared/src/constants/physics.ts:50-59`: `WALL_CONTACT_TOLERANCE_PX`, `WALL_JUMP_HORIZONTAL_VELOCITY`, `WALL_JUMP_VERTICAL_VELOCITY`, `WALL_JUMP_HEIGHT_DECAY`, `WALL_JUMP_MIN_VELOCITY_MULTIPLIER`, `WALL_JUMP_INTANGIBILITY_FRAMES`, `WALL_TECH_INTANGIBILITY_FRAMES`, `L_CANCEL_WINDOW_FRAMES`, `WAVEDASH_INITIAL_SLIDE_VELOCITY`, `WAVEDASH_LANDING_LAG_FRAMES`
+- `checkWallCollision(player, stage)` pure query function (`packages/engine/src/physics/index.ts:382-405`): returns `'left' | 'right' | null`; guards on `isGrounded`; exported from `packages/engine/src/index.ts:20`
+- `hasAirDodge: boolean` single-use flag added to `PlayerState` (`packages/shared/src/types/GameState.ts:52`); gated in `AirborneState.ts:23`; consumed in `GameEngine.ts:570`; reset in `landOnPlatform` (`packages/engine/src/physics/index.ts:65`); restored by `snapPlayerToLedge` alongside `hasDoubleJump` (`GameEngine.ts:1055-1056`)
+
+**Wall jump (Todos 6–9):**
+- Wall jump detection and velocity application in `GameEngine.ts:845-847`: awards `vx = WALL_JUMP_HORIZONTAL_VELOCITY` (away from wall), `vy = WALL_JUMP_VERTICAL_VELOCITY`, applies `WALL_JUMP_INTANGIBILITY_FRAMES = 10`; streak tracking decays each subsequent wall jump by `WALL_JUMP_HEIGHT_DECAY = 0.75`
+- Wall jump does NOT grant or consume double-jump token (regression tests: `apps/server/src/GameEngine.wallJump.test.ts`, 6 tests passing)
+
+**Wall tech (Todos 10–12):**
+- Wall tech detection in `GameEngine.ts:805-812` (success path): tumbling/hitstun player at wall with `techWindowFrames > 0` cancels `vx`, sets `isInvincible = true`, `invincibilityFrames = WALL_TECH_INTANGIBILITY_FRAMES (12)`, returns to `AIRBORNE`
+- Missed wall-tech penalty (else-if branch, `GameEngine.ts:805-812`): `techWindowFrames === 0` at wall during tumble applies `techLockoutFrames = PHYSICS.TECH_LOCKOUT_FRAMES (40)`, mirroring ground-tech miss at `GameEngine.ts:930-932`
+- Tests: `apps/server/src/GameEngine.wallTech.test.ts` — 6 tests covering success, miss, and lockout-blocks-retry
+
+**L-cancel (Todos 13–14):**
+- L-cancel window detection in `GameEngine.ts`: shield press within `L_CANCEL_WINDOW_FRAMES (7)` of air-attack landing halves `landingLagFrames`
+- Tests: `apps/server/src/GameEngine.lcancel.test.ts` — covers successful cancel, missed window, and neutral L-cancel (no aerial landing)
+
+**Wavedash (Todos 15–17):**
+- Wavedash landing branch in `GameEngine.ts:859-887`: `AIR_DODGE` landing with `airDodgeDirection.y > 0 && airDodgeDirection.x !== 0` transfers momentum to `vx = WAVEDASH_INITIAL_SLIDE_VELOCITY * sign(x)`, transitions to `LANDING_LAG` with `landingLagFrames = WAVEDASH_LANDING_LAG_FRAMES (10)`
+- Friction decay for `LANDING_LAG` applied via `GROUND_FRICTION` multiplier (`GameEngine.ts:769-777`)
+- `hasAirDodge` gating prevents wavedash spam; resets on landing (`packages/engine/src/physics/index.ts:64-65`)
+- Tests: `apps/server/src/GameEngine.wavedash.test.ts` — 7 tests covering directional landing, friction decay, neutral dodge, horizontal-only guard, negative direction, and two `hasAirDodge` regression guards
+
+**Regression baseline (Todo 5, Todo 15 full suite):** 144 engine tests passing (4 files), 94 server tests passing (12 files), 13 skipped.
+
 ---
 
 ## 🌐 Multiplayer / backend hardening
@@ -238,13 +270,15 @@ These changes closed the gap between "working prototype" and "feels like a real 
 
 ---
 
-## Recommended next milestone — "Audio foundation + character sprite sheet"
+## Open initiatives — mechanics fidelity closed, three paths forward
 
-After T1–T26, the two largest remaining gaps are audio and art. The engine, netcode, FSM, physics, all 22 moves, grab/throw, ledge, shield, counters, smash charge, stale-move queue, DI, teching, KO effects, hit flash, pause, and result screen are all shipped and green across 132 engine tests, 69 server tests, and 12 Playwright e2e specs.
+**Gap A (mechanics fidelity) is now closed.** After Waves 1–6, the engine, netcode, FSM, physics, all 22 moves, grab/throw, ledge, shield, counters, smash charge, stale-move queue, DI, teching, KO effects, hit flash, pause, result screen, wavedash, L-cancel, wall-jump, and wall-tech are all shipped and green across 144 engine tests, 94 server tests, and 12 Playwright e2e specs.
 
-**Gap 1 — Audio (highest priority):** No `AudioManager` exists. Zero SFX or BGM ships today. A minimal audio pass (5–8 clips: hit, shield, jump, KO, menu confirm, BGM loop) would close the single largest "feels unfinished" gap. The hook points already exist — hit events fire from the server, UI state transitions are discrete, and PixiJS has no audio opinion.
+Three open initiatives remain — none is blocked on the others, and none is clearly higher priority than the others. Pick the one that fits your next available effort:
 
-**Gap 2 — Sprite art (highest visual impact):** `FighterRenderer` draws a functional polygon fighter, but the art contract is fully pluggable — swapping in a sprite sheet requires only a new render path in `FighterRenderer`. No engine or server changes needed. Even a single hand-drawn sprite sheet for the existing all-rounder would transform first impressions.
+**Option 1 — Audio:** No `AudioManager` exists. Zero SFX or BGM ships today. A minimal audio pass (5–8 clips: hit, shield, jump, KO, menu confirm, BGM loop) would close the single largest "feels unfinished" gap. Hook points are ready: hit events fire from the server, UI state transitions are discrete, and PixiJS has no audio opinion. Estimated effort: medium.
 
-**Suggested milestone scope:** `AudioManager` class with Web Audio API, 5 SFX clips wired to existing hit/KO/shield events, 1 BGM loop, and a sprite sheet import path in `FighterRenderer`. Estimated effort: medium. No architecture changes required.
+**Option 2 — Sprite art:** `FighterRenderer` draws a functional polygon fighter, but the art contract is fully pluggable. Swapping in a sprite sheet requires only a new render path in `FighterRenderer` — no engine or server changes. A `SpritePartRenderer` stub already exists at `apps/client/src/renderer/parts/SpritePartRenderer.ts`. Estimated effort: medium (art) + low (wiring).
+
+**Option 3 — Second fighter / character architecture (Gap B):** Adding a second fighter requires new `MoveData` constants in `packages/engine/src/moves/` and new render assets in `apps/client`. The FSM, physics, hitboxes, and netcode don't change. The interesting work is differentiation: a heavyweight with slow smashes, a fast floaty character with a better recovery. This is also the natural forcing function for a character-select refactor if the single-fighter assumption is baked into any UI paths. Estimated effort: high.
 

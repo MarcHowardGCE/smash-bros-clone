@@ -145,11 +145,12 @@ export class GameEngine {
 				landingLagFrames: 0,
 				percent: 0,
 				stocks: MATCH_CONFIG.STOCKS,
-				isGrounded: false,
-				isKnockedOut: false,
-				hasDoubleJump: true,
-				hasAirDodge: true,
-				isFastFalling: false,
+			isGrounded: false,
+			isKnockedOut: false,
+			hasDoubleJump: true,
+			hasAirDodge: true,
+			wallJumpStreak: 0,
+			isFastFalling: false,
 				isInvincible: false,
 				invincibilityFrames: 0,
 				isShielding: false,
@@ -351,6 +352,10 @@ export class GameEngine {
 			};
 		}
 
+		// Capture state BEFORE ledge grab and other state changes
+		const beforeTick = clonePlayer(player);
+		const hadDoubleJumpBeforeTick = player.hasDoubleJump;
+
 		const ledgeEligibleStates: string[] = [
 			PlayerStateEnum.AIRBORNE,
 			PlayerStateEnum.DOUBLE_JUMP,
@@ -404,16 +409,14 @@ export class GameEngine {
 			return player;
 		}
 
-		const beforeTick = clonePlayer(player);
-		const hadDoubleJumpBeforeTick = player.hasDoubleJump;
 		let nextPlayer = controller.tick(player, input);
 		nextPlayer = this.applyStateTransitions(beforeTick, nextPlayer, input);
 		nextPlayer = this.applyDirectionalInfluenceOnHitlagEnd(player, nextPlayer, input);
 		nextPlayer = this.tickLandingLagCounter(nextPlayer);
 		const gainedInvincibilityThisTick =
-			!current.isInvincible &&
+			!beforeTick.isInvincible &&
 			nextPlayer.isInvincible &&
-			nextPlayer.invincibilityFrames > current.invincibilityFrames;
+			nextPlayer.invincibilityFrames > beforeTick.invincibilityFrames;
 		const droppedFromLedgeThisTick =
 			beforeTick.state === PlayerStateEnum.LEDGE_HANG &&
 			nextPlayer.state === PlayerStateEnum.AIRBORNE &&
@@ -423,6 +426,7 @@ export class GameEngine {
 			return this.withHitboxState(nextPlayer, input);
 		}
 
+		const beforePhysics = clonePlayer(nextPlayer);
 		nextPlayer = this.applyPhysicsToPlayer(
 			playerId,
 			nextPlayer,
@@ -430,8 +434,12 @@ export class GameEngine {
 			hadDoubleJumpBeforeTick,
 			droppedFromLedgeThisTick,
 		);
+		const gainedInvincibilityFromWallJump =
+			!beforePhysics.isInvincible &&
+			nextPlayer.isInvincible &&
+			nextPlayer.invincibilityFrames > beforePhysics.invincibilityFrames;
 		nextPlayer = this.applyFacing(nextPlayer, input);
-		if (!gainedInvincibilityThisTick) {
+		if (!gainedInvincibilityThisTick && !gainedInvincibilityFromWallJump) {
 			nextPlayer = this.updateInvincibility(nextPlayer);
 		}
 		nextPlayer = this.withHitboxState(nextPlayer, input);
@@ -823,7 +831,10 @@ export class GameEngine {
 					: false;
 
 		if (wall && !player.isGrounded && jumpPressed && awayDirectionHeld) {
-			const decayMultiplier = 1.0;
+			const decayMultiplier = Math.max(
+				PHYSICS.WALL_JUMP_MIN_VELOCITY_MULTIPLIER,
+				Math.pow(PHYSICS.WALL_JUMP_HEIGHT_DECAY, player.wallJumpStreak),
+			);
 			const wallJumped: PlayerState = {
 				...player,
 				vx:
@@ -834,6 +845,9 @@ export class GameEngine {
 				hasDoubleJump: hadDoubleJumpBeforePhysics
 					? true
 					: player.hasDoubleJump,
+				wallJumpStreak: player.wallJumpStreak + 1,
+				isInvincible: true,
+				invincibilityFrames: PHYSICS.WALL_JUMP_INTANGIBILITY_FRAMES,
 			};
 
 			return checkPlatformCollision(
@@ -1107,6 +1121,7 @@ export class GameEngine {
 			invincibilityFrames: PHYSICS.LEDGE_HANG_INVINCIBILITY_FRAMES,
 			hasDoubleJump: true,
 			hasAirDodge: true,
+			wallJumpStreak: 0,
 		};
 	}
 

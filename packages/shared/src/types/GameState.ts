@@ -50,6 +50,7 @@ export interface PlayerState {
   isKnockedOut: boolean;
   hasDoubleJump: boolean;
   hasAirDodge: boolean;
+  wallJumpStreak: number;
   isFastFalling: boolean;
   isInvincible: boolean;
   invincibilityFrames: number;

@@ -63,6 +63,7 @@ function landOnPlatform(player: PlayerState, platformY: number): PlayerState {
 		isFastFalling: false,
 		hasDoubleJump: true,
 		hasAirDodge: true,
+		wallJumpStreak: 0,
 	};
 }
 

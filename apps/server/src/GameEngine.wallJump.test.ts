@@ -114,4 +114,81 @@ describe('GameEngine wall jump integration', () => {
 		expect(player.vy).toBe(PHYSICS.DOUBLE_JUMP_VELOCITY + PHYSICS.GRAVITY);
 		expect(player.vy).not.toBe(PHYSICS.WALL_JUMP_VERTICAL_VELOCITY);
 	});
+
+	it('wall jump grants invincibility for WALL_JUMP_INTANGIBILITY_FRAMES', () => {
+		const engine = new GameEngine({ playerIds: ['p1'] });
+		primePlayer(engine, 'p1', {
+			x: -260,
+			y: 450,
+			vx: 0,
+			vy: 0,
+			state: PlayerStateEnum.AIRBORNE,
+			stateFrame: 0,
+			isGrounded: false,
+			hasDoubleJump: true,
+		});
+
+		const state = tick(engine, {
+			p1: makeInput('p1', INPUT_BITS.RIGHT | INPUT_BITS.JUMP),
+		});
+		const player = state.players.p1;
+
+		expect(player).toBeDefined();
+		if (!player) {
+			throw new Error('Expected player p1 after wall-jump tick');
+		}
+
+		expect(player.isInvincible).toBe(true);
+		// Wall jump sets invincibilityFrames to WALL_JUMP_INTANGIBILITY_FRAMES (10)
+		expect(player.invincibilityFrames).toBe(PHYSICS.WALL_JUMP_INTANGIBILITY_FRAMES);
+	});
+
+	it('wall jump invincibility decays to zero over WALL_JUMP_INTANGIBILITY_FRAMES ticks', () => {
+		const engine = new GameEngine({ playerIds: ['p1', 'p2'] });
+		primePlayer(engine, 'p1', {
+			x: -260,
+			y: 450,
+			vx: 0,
+			vy: 0,
+			state: PlayerStateEnum.AIRBORNE,
+			stateFrame: 0,
+			isGrounded: false,
+			hasDoubleJump: true,
+		});
+		primePlayer(engine, 'p2', {
+			x: 100,
+			y: 450,
+			vx: 0,
+			vy: 0,
+			state: PlayerStateEnum.IDLE,
+			stateFrame: 0,
+			isGrounded: true,
+			hasDoubleJump: true,
+		});
+
+		// Perform wall jump
+		tick(engine, {
+			p1: makeInput('p1', INPUT_BITS.RIGHT | INPUT_BITS.JUMP),
+			p2: null,
+		});
+
+		let state = getMutableState(engine);
+		let player = state.players.p1;
+
+		// Advance WALL_JUMP_INTANGIBILITY_FRAMES + 1 more ticks to reach zero
+		// updateInvincibility decrements by 1 each tick, so after 10 ticks it reaches 0
+		for (let i = 0; i < PHYSICS.WALL_JUMP_INTANGIBILITY_FRAMES + 1; i++) {
+			tick(engine, { p1: makeInput('p1', 0), p2: null });
+			state = getMutableState(engine);
+			player = state.players.p1;
+		}
+
+		expect(player).toBeDefined();
+		if (!player) {
+			throw new Error('Expected player p1 after invincibility decay');
+		}
+
+		expect(player.isInvincible).toBe(false);
+		expect(player.invincibilityFrames).toBe(0);
+	});
 });

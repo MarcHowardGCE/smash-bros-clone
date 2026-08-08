@@ -231,5 +231,19 @@ describe('UIManager', () => {
       const status = mockOverlay.querySelector('#p1-status');
       expect(status?.textContent).toBe('✓ Ready!');
     });
+
+    it('should auto-confirm provided non-host slots via autoConfirmSlots', () => {
+      const onSelected = vi.fn();
+      uiManager.showCharacterSelect(fighters, 2, onSelected, [1]);
+
+      const p2Status = mockOverlay.querySelector('#p2-status');
+      expect(p2Status?.textContent).toBe('✓ Ready!');
+
+      // Only host slot remains; one host confirm should complete selection
+      window.dispatchEvent(new KeyboardEvent('keydown', { code: 'Enter' }));
+
+      expect(onSelected).toHaveBeenCalledTimes(1);
+      expect(onSelected.mock.calls[0][0]).toHaveLength(2);
+    });
   });
 });

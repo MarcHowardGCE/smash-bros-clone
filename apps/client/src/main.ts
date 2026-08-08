@@ -15,9 +15,10 @@ import {
 } from "./input/keymaps.js";
 import { ControllerAssignmentManager } from "./input/ControllerAssignmentManager.js";
 import { GamepadInputSource } from "./input/GamepadInputSource.js";
+import { AIPlayerController } from "./local/AIPlayerController.js";
 import { LocalMatch } from "./local/LocalMatch.js";
 import { LocalPlayerController } from "./local/LocalPlayerController.js";
-import type { FighterChoice, LocalPlayerConfig } from "./local/types.js";
+import type { FighterChoice, ITickController, SeatConfig } from "./local/types.js";
 import { GameClient } from "./network/GameClient.js";
 import type {
 	RenderPlayerState,
@@ -44,6 +45,11 @@ const SERVER_URL = import.meta.env.VITE_SERVER_URL ?? getDefaultServerUrl();
 const AVAILABLE_FIGHTERS: FighterChoice[] = [
 	{ id: "all-rounder", displayName: "All-Rounder" },
 ];
+
+let lastLocalSetup: {
+	participantCount: 2 | 3 | 4;
+	seats: SeatConfig[];
+} | null = null;
 
 async function main() {
 	injectStyles();
@@ -294,49 +300,65 @@ async function main() {
 		window.location.href = window.location.pathname;
 	};
 
-	const getLocalPlayerCount = (): number => {
-		return Math.max(
-			2,
-			Math.min(4, 1 + assignmentManager.getAssignments().size),
-		);
+	const keymapForSlotIndex = (slotIndex: number) => {
+		return slotIndex === 0
+			? DEFAULT_KEYMAP_P1
+			: slotIndex === 1
+				? DEFAULT_KEYMAP_P2
+				: slotIndex === 2
+					? DEFAULT_KEYMAP_P3
+					: DEFAULT_KEYMAP_P4;
 	};
 
-	const startLocalMatch = (): void => {
+	const startLocalMatchWithSeats = (setup: {
+		participantCount: 2 | 3 | 4;
+		seats: SeatConfig[];
+	}): void => {
 		cleanupLocalMode();
 
 		if (!camera) {
 			camera = new Camera(layers.game);
 		}
 
-		const playerCount = getLocalPlayerCount();
 		const assignments = assignmentManager.getAssignments();
-		const configs: LocalPlayerConfig[] = [];
-		for (let i = 0; i < playerCount; i += 1) {
-			const assignment = assignments.get(i);
+		const controllers: ITickController[] = [
+			new LocalPlayerController({
+				playerId: "local-p1",
+				keymap: DEFAULT_KEYMAP_P1,
+				slotIndex: 0,
+				gamepadSource: null,
+			}),
+		];
+
+		for (let k = 0; k < setup.seats.length; k += 1) {
+			const seat = setup.seats[k]!;
+			const slotIndex = k + 1;
+			if (seat.kind === "cpu") {
+				controllers.push(
+					new AIPlayerController({
+						playerId: `local-p${slotIndex + 1}`,
+						slotIndex,
+						opponentPlayerId: "local-p1",
+						difficulty: seat.difficulty,
+						seed: slotIndex * 1000 + 1,
+					}),
+				);
+				continue;
+			}
+
+			const assignment = assignments.get(slotIndex);
 			const gamepadSource = assignment
 				? new GamepadInputSource(poller, assignment.gamepadIndex)
 				: undefined;
-
-			const keymap =
-				i === 0
-					? DEFAULT_KEYMAP_P1
-					: i === 1
-						? DEFAULT_KEYMAP_P2
-						: i === 2
-							? DEFAULT_KEYMAP_P3
-							: DEFAULT_KEYMAP_P4;
-
-			configs.push({
-				playerId: `local-p${i + 1}`,
-				keymap,
-				slotIndex: i,
-				gamepadSource,
-			});
+			controllers.push(
+				new LocalPlayerController({
+					playerId: `local-p${slotIndex + 1}`,
+					keymap: keymapForSlotIndex(slotIndex),
+					slotIndex,
+					gamepadSource,
+				}),
+			);
 		}
-
-		const controllers = configs.map((config) =>
-			new LocalPlayerController(config),
-		);
 
 		localMatch = new LocalMatch(controllers);
 		localMatch.onSnapshot = (snapshot) => {
@@ -385,16 +407,29 @@ async function main() {
 		}, 1000);
 	};
 
+	const enterLocalPlayFlow = (): void => {
+		uiManager.showLocalPlaySetup({ assignmentManager }, lastLocalSetup, (result) => {
+			lastLocalSetup = result;
+			const cpuSlotIndices = result.seats
+				.map((seat, index) => (seat.kind === "cpu" ? index + 1 : null))
+				.filter((slotIndex): slotIndex is number => slotIndex !== null);
+			uiManager.showCharacterSelect(
+				AVAILABLE_FIGHTERS,
+				result.participantCount,
+				(_choices) => {
+					startLocalMatchWithSeats(result);
+				},
+				cpuSlotIndices,
+			);
+		});
+	};
+
 	uiManager.onLocalPlay = () => {
 		if (!isLocalMode) {
 			isLocalMode = true;
 			gameClient.disconnect();
 		}
-
-		const playerCount = getLocalPlayerCount();
-		uiManager.showCharacterSelect(AVAILABLE_FIGHTERS, playerCount, (_choices) => {
-			startLocalMatch();
-		});
+		enterLocalPlayFlow();
 	};
 
 	uiManager.onLocalPlayAgain = () => {
@@ -403,10 +438,7 @@ async function main() {
 			renderer.destroy();
 		}
 		fighterRenderers.clear();
-		const playerCount = getLocalPlayerCount();
-		uiManager.showCharacterSelect(AVAILABLE_FIGHTERS, playerCount, (_choices) => {
-			startLocalMatch();
-		});
+		enterLocalPlayFlow();
 	};
 
 	uiManager.onOpenControls = () => {

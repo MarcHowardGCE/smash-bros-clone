@@ -1,7 +1,9 @@
 import type { PlayerId } from '@smash/shared';
 import type { RenderState } from '../network/InterpolationBuffer.js';
-import type { FighterChoice } from '../local/types.js';
+import type { ControllerAssignmentManager } from '../input/ControllerAssignmentManager.js';
+import type { FighterChoice, SeatConfig } from '../local/types.js';
 import { renderControlsScreen } from './ControlsScreen.js';
+import { renderLocalPlaySetupScreen } from './LocalPlaySetupScreen.js';
 
 export type UIPhase = 'connecting' | 'lobby' | 'waiting' | 'countdown' | 'match' | 'result' | 'controls' | 'paused';
 
@@ -105,7 +107,8 @@ export class UIManager {
   showCharacterSelect(
     fighters: FighterChoice[],
     playerCount: number,
-    onSelected: (choices: FighterChoice[]) => void
+    onSelected: (choices: FighterChoice[]) => void,
+    autoConfirmSlots: number[] = [],
   ): void {
     this.hudPanel.style.display = 'none';
 
@@ -210,6 +213,21 @@ export class UIManager {
         rafIds.push(requestAnimationFrame(checkGamepad));
       }
     }
+
+    for (const idx of autoConfirmSlots) {
+      confirmSlot(idx);
+    }
+  }
+
+  showLocalPlaySetup(
+    deps: { assignmentManager: ControllerAssignmentManager },
+    initial: { participantCount: 2 | 3 | 4; seats: SeatConfig[] } | null,
+    onConfirm: (result: { participantCount: 2 | 3 | 4; seats: SeatConfig[] }) => void,
+  ): void {
+    this.hudPanel.style.display = 'none';
+    this.overlay.innerHTML = '';
+
+    renderLocalPlaySetupScreen(this.overlay, deps, initial, onConfirm);
   }
 
   showRoomCreated(code: string): void {

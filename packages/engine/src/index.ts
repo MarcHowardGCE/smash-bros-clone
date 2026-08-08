@@ -24,3 +24,5 @@ export {
 	startJump,
 } from "./physics/index.js";
 export type { StageData } from "./physics/types.js";
+export type { BotMemory } from "./ai/botAI.js";
+export { createBotMemory, decideBotInput } from "./ai/botAI.js";

@@ -1,6 +1,6 @@
-# smash-clone
+# Everybody Throws Hands
 
-A multiplayer browser-based platform fighter built as a production-quality proof of concept. Inspired by Super Smash Bros — percent-based damage, blast-zone knockouts, stocks system, and a full move set. Black and white polygon art. 2–4 players per session over a shared link.
+A multiplayer browser-based platform fighter built as a production-quality proof of concept. Everybody Throws Hands features percent-based damage, blast-zone knockouts, stocks system, and a full move set. Black and white polygon art. 2–4 players per session over a shared link.
 
 ---
 

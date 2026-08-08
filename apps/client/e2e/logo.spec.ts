@@ -1,6 +1,6 @@
 import { expect, test } from '@playwright/test';
 
-test('logo loads without 404 and renders legibly on light card', async ({ page }) => {
+test('logo loads without 404 and renders at top of page', async ({ page }) => {
 	const consoleErrors: string[] = [];
 
 	page.on('console', (msg) => {
@@ -29,11 +29,8 @@ test('logo loads without 404 and renders legibly on light card', async ({ page }
 	expect(boundingBox).not.toBeNull();
 	expect(boundingBox!.width).toBeGreaterThan(0);
 
-	// Assert: wrapping card has light background (not transparent/black)
-	const bg = await logoImg.evaluate((img) => getComputedStyle((img as HTMLElement).parentElement!).backgroundColor);
-	expect(bg).not.toBe('rgba(0, 0, 0, 0)');
-	expect(bg).not.toBe('transparent');
-	expect(bg).not.toBe('rgb(0, 0, 0)');
+	// Assert: logo is positioned at top of page (not vertically centered)
+	expect(boundingBox!.y).toBeLessThan(200); // Should be near top, not center
 
 	// Take screenshot for evidence
 	await page.screenshot({ path: '.omo/evidence/logo-lobby-screen.png' });

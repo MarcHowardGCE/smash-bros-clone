@@ -134,14 +134,16 @@ describe('UIManager', () => {
   });
 
   describe('showLobby', () => {
-    it('should render logo image with light card background', () => {
+    it('should render logo image at top of page', () => {
       uiManager.showLobby();
       const img = mockOverlay.querySelector('img[alt="Everybody Throws Hands"]') as HTMLImageElement;
       expect(img).not.toBeNull();
       expect(img.src).toContain('everybody-throws-hands-logo.png');
-      const card = img.parentElement as HTMLElement;
-      expect(card).not.toBeNull();
-      expect(card.style.background).toBe('rgb(255, 255, 255)');
+      // Logo should be positioned at top (not vertically centered)
+      const container = img.closest('div') as HTMLElement;
+      expect(container).not.toBeNull();
+      expect(container.style.position).toBe('absolute');
+      expect(container.style.top).toBe('80px');
     });
 
     it('should not contain old SMASH CLONE text', () => {

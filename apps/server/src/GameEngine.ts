@@ -88,6 +88,23 @@ function isLedgeLockedState(state: string): boolean {
 	].includes(state as PlayerStateEnum);
 }
 
+function applyWallJumpVelocity(
+	player: PlayerState,
+	wall: "left" | "right",
+): { vx: number; vy: number; wallJumpStreak: number } {
+	const decayMultiplier = Math.max(
+		PHYSICS.WALL_JUMP_MIN_VELOCITY_MULTIPLIER,
+		Math.pow(PHYSICS.WALL_JUMP_HEIGHT_DECAY, player.wallJumpStreak),
+	);
+	const vx =
+		PHYSICS.WALL_JUMP_HORIZONTAL_VELOCITY *
+		(wall === "left" ? 1 : -1) *
+		decayMultiplier;
+	const vy = PHYSICS.WALL_JUMP_VERTICAL_VELOCITY * decayMultiplier;
+	const wallJumpStreak = player.wallJumpStreak + 1;
+	return { vx, vy, wallJumpStreak };
+}
+
 export interface GameEngineOptions {
 	playerIds: PlayerId[];
 }
@@ -845,31 +862,28 @@ export class GameEngine {
 				// Check if JUMP is held during tech window
 				const jumpHeld = isHeld(effectiveInput, INPUT_BITS.JUMP);
 				
-				if (jumpHeld) {
-					// Apply wall-jump velocity but keep wall-tech invincibility
-					const decayMultiplier = Math.max(
-						PHYSICS.WALL_JUMP_MIN_VELOCITY_MULTIPLIER,
-						Math.pow(PHYSICS.WALL_JUMP_HEIGHT_DECAY, nextPlayer.wallJumpStreak),
-					);
-					nextPlayer = {
-						...nextPlayer,
-						vx:
-							PHYSICS.WALL_JUMP_HORIZONTAL_VELOCITY *
-							(wallSide === "left" ? 1 : -1) *
-							decayMultiplier,
-						vy: PHYSICS.WALL_JUMP_VERTICAL_VELOCITY * decayMultiplier,
-						state: PlayerStateEnum.AIRBORNE,
-						stateFrame: 0,
-						hitstunFramesRemaining: 0,
-						isTumbling: false,
-						isInvincible: true,
-						invincibilityFrames: PHYSICS.WALL_TECH_INTANGIBILITY_FRAMES,
-						techWindowFrames: 0,
-						wallJumpStreak: nextPlayer.wallJumpStreak + 1,
-						hasDoubleJump: hadDoubleJumpBeforePhysics
-							? true
-							: nextPlayer.hasDoubleJump,
-					};
+			if (jumpHeld) {
+				// Apply wall-jump velocity but keep wall-tech invincibility
+				const { vx, vy, wallJumpStreak } = applyWallJumpVelocity(
+					nextPlayer,
+					wallSide,
+				);
+				nextPlayer = {
+					...nextPlayer,
+					vx,
+					vy,
+					state: PlayerStateEnum.AIRBORNE,
+					stateFrame: 0,
+					hitstunFramesRemaining: 0,
+					isTumbling: false,
+					isInvincible: true,
+					invincibilityFrames: PHYSICS.WALL_TECH_INTANGIBILITY_FRAMES,
+					techWindowFrames: 0,
+					wallJumpStreak,
+					hasDoubleJump: hadDoubleJumpBeforePhysics
+						? true
+						: nextPlayer.hasDoubleJump,
+				};
 				} else {
 					// Plain wall-tech: cancel momentum
 					nextPlayer = {
@@ -1004,25 +1018,19 @@ export class GameEngine {
 					? isHeld(input, INPUT_BITS.LEFT)
 					: false;
 
-		if (wall && !player.isGrounded && jumpPressed && awayDirectionHeld) {
-			const decayMultiplier = Math.max(
-				PHYSICS.WALL_JUMP_MIN_VELOCITY_MULTIPLIER,
-				Math.pow(PHYSICS.WALL_JUMP_HEIGHT_DECAY, player.wallJumpStreak),
-			);
-			const wallJumped: PlayerState = {
-				...player,
-				vx:
-					PHYSICS.WALL_JUMP_HORIZONTAL_VELOCITY *
-					(wall === "left" ? 1 : -1) *
-					decayMultiplier,
-				vy: PHYSICS.WALL_JUMP_VERTICAL_VELOCITY * decayMultiplier,
-				hasDoubleJump: hadDoubleJumpBeforePhysics
-					? true
-					: player.hasDoubleJump,
-				wallJumpStreak: player.wallJumpStreak + 1,
-				isInvincible: true,
-				invincibilityFrames: PHYSICS.WALL_JUMP_INTANGIBILITY_FRAMES,
-			};
+	if (wall && !player.isGrounded && jumpPressed && awayDirectionHeld) {
+		const { vx, vy, wallJumpStreak } = applyWallJumpVelocity(player, wall);
+		const wallJumped: PlayerState = {
+			...player,
+			vx,
+			vy,
+			hasDoubleJump: hadDoubleJumpBeforePhysics
+				? true
+				: player.hasDoubleJump,
+			wallJumpStreak,
+			isInvincible: true,
+			invincibilityFrames: PHYSICS.WALL_JUMP_INTANGIBILITY_FRAMES,
+		};
 
 			return checkPlatformCollision(
 				{

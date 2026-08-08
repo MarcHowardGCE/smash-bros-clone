@@ -433,8 +433,8 @@ async function main() {
 		if (!isLocalMode) {
 			try {
 				gameClient.disconnect();
-			} catch {
-				// Socket already dead — navigate to lobby gracefully
+			} catch (err) {
+				console.error('Failed to disconnect game client before returning to main menu:', err);
 			}
 		}
 
@@ -550,12 +550,6 @@ async function main() {
 		gameClient.disconnect();
 	});
 
-	if (import.meta.env.DEV) {
-		console.log("[client] initialized. Server:", SERVER_URL);
-		console.log(
-			`[client] Renderer: ${app.renderer.type === 1 ? "WebGL" : "Canvas"}`,
-		);
-	}
 }
 
 main().catch(console.error);

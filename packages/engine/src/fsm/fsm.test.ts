@@ -655,19 +655,19 @@ describe('FSM - Shield-grab transitions', () => {
 });
 
 describe('FSM - Air Dodge single-use consumption', () => {
-  it('Airborne → AIR_DODGE on SHIELD pressed when hasAirDodge=true', () => {
+  it('air dodge transition preserves hasAirDodge (consumed by GameEngine)', () => {
     const controller = new FSMController(PlayerStateEnum.AIRBORNE);
     const player = makePlayer({
       state: PlayerStateEnum.AIRBORNE,
       isGrounded: false,
       hasAirDodge: true,
     });
-	const result = controller.tick(player, makeInput(INPUT_BITS.SHIELD, INPUT_BITS.SHIELD));
+    const result = controller.tick(player, makeInput(INPUT_BITS.SHIELD, INPUT_BITS.SHIELD));
 
-	expect(result.state).toBe(PlayerStateEnum.AIR_DODGE);
-	// FSM returns state with hasAirDodge still true; GameEngine.ts:618-626 consumes it.
-	expect(result.hasAirDodge).toBe(true);
-	});
+    expect(result.state).toBe(PlayerStateEnum.AIR_DODGE);
+    // FSM returns state unchanged; GameEngine.ts:618-626 consumes hasAirDodge on next tick
+    expect(result.hasAirDodge).toBe(true);
+  });
 
   it('Airborne stays Airborne on SHIELD pressed when hasAirDodge=false', () => {
     const controller = new FSMController(PlayerStateEnum.AIRBORNE);

@@ -443,9 +443,6 @@ describe('GameEngine ledge integration', () => {
 				p1: makeInput('p1', INPUT_BITS.ATTACK),
 			});
 			const lockedPlayer = duringLag.players.p1;
-			console.info(
-				`LANDING_LAG(${frame}) -> LANDING_LAG(${lockedPlayer?.landingLagFrames ?? 'undefined'})`,
-			);
 			expect(lockedPlayer?.state).toBe(PlayerStateEnum.LANDING_LAG);
 			expect((lockedPlayer?.landingLagFrames ?? -1) <= previousLag).toBe(true);
 			previousLag = lockedPlayer?.landingLagFrames ?? previousLag;
@@ -455,9 +452,6 @@ describe('GameEngine ledge integration', () => {
 		const releaseTick = tick(engine, {
 			p1: makeInput('p1', INPUT_BITS.ATTACK),
 		});
-		console.info(
-			`AIR_ATTACK -> LANDING_LAG(${landingLagFrames}) -> ... -> LANDING_LAG(1) -> IDLE`,
-		);
 		expect(releaseTick.players.p1?.state).toBe(PlayerStateEnum.IDLE);
 	});
 
@@ -489,14 +483,6 @@ describe('GameEngine ledge integration', () => {
 		const tapScenario = runForwardSmashDamageScenario(0);
 		const holdScenario = runForwardSmashDamageScenario(30);
 
-		console.info('[baseline-fsmash-hold-damage]', {
-			tapDamage: tapScenario.damageDealt,
-			holdDamage: holdScenario.damageDealt,
-			holdFrames: 30,
-			framesToFirstHitTap: tapScenario.framesToFirstHit,
-			framesToFirstHitHold: holdScenario.framesToFirstHit,
-		});
-
 		expect(holdScenario.damageDealt).toBe(tapScenario.damageDealt);
 		expect(tapScenario.damageDealt).toBe(18);
 	});
@@ -509,12 +495,6 @@ describe('GameEngine ledge integration', () => {
 	it('forward smash charged 30/60 frames applies charge scaling then fresh-move bonus', () => {
 		const chargedScenario = runForwardSmashDamageScenario(30);
 		const expectedDamage = 18 * (1 + (30 / 60) * 0.4) * 1.05;
-
-		console.info(
-			`FSMASH charged 30/60 frames -> damage 18 * charge(1.2) * staleFresh(1.05) = ${expectedDamage} (${(
-				expectedDamage / 18
-			).toFixed(1)}x)`,
-		);
 
 		expect(chargedScenario.damageDealt).toBe(Math.floor(expectedDamage));
 	});
@@ -906,9 +886,6 @@ describe('GameEngine ledge integration', () => {
 		const controller = new FSMController(PlayerStateEnum.SHIELD);
 		for (let frame = 1; frame <= 16; frame += 1) {
 			defender = controller.tick(defender, makeInput('p2', 0));
-			console.info(
-				`HIT_SHIELD -> stun=16 -> frame ${frame} (stun=${getShieldStunFrames(defender)}, state=${defender.state})`,
-			);
 			expect(defender.state).toBe(PlayerStateEnum.SHIELD);
 		}
 
@@ -954,12 +931,6 @@ describe('GameEngine ledge integration', () => {
 			attackerFacing: 1,
 		});
 
-		console.info('[baseline-shield-pushback] before/after vx', {
-			attackerFacing: 1,
-			attackerVx: attacker.vx,
-			defenderVx: defender.vx,
-		});
-
 		expect(attacker.vx).toBe(0);
 		expect(defender.vx).toBe(0);
 	});
@@ -971,11 +942,6 @@ describe('GameEngine ledge integration', () => {
 			attackerX: 100,
 			defenderX: 150,
 			attackerFacing: 1,
-		});
-
-		console.info('[shield-pushback-right] vx after shield hit', {
-			attackerVx: attacker.vx,
-			defenderVx: defender.vx,
 		});
 
 		expect(defender.vx).toBeCloseTo(5.4, 6);
@@ -991,11 +957,6 @@ describe('GameEngine ledge integration', () => {
 			attackerFacing: -1,
 		});
 
-		console.info('[shield-pushback-left] vx after shield hit', {
-			attackerVx: attacker.vx,
-			defenderVx: defender.vx,
-		});
-
 		expect(defender.vx).toBeCloseTo(-5.4, 6);
 		expect(attacker.vx).toBeCloseTo(1.8, 6);
 	});
@@ -1007,11 +968,6 @@ describe('GameEngine ledge integration', () => {
 			attackerX: 100,
 			defenderX: 150,
 			attackerFacing: 1,
-		});
-
-		console.info('[shield-pushback-zero] vx after shield hit', {
-			attackerVx: attacker.vx,
-			defenderVx: defender.vx,
 		});
 
 		expect(defender.vx).toBe(0);
@@ -1053,12 +1009,6 @@ describe('GameEngine ledge integration', () => {
 		const angleNoInput = runOnce(0);
 		const anglePerpendicularInput = runOnce(INPUT_BITS.LEFT | INPUT_BITS.JUMP);
 		const angleParallelInput = runOnce(INPUT_BITS.RIGHT | INPUT_BITS.DOWN);
-
-		console.info('baseline hitlag-end launch angles (rad)', {
-			angleNoInput,
-			anglePerpendicularInput,
-			angleParallelInput,
-		});
 
 			expect(anglePerpendicularInput).toBeCloseTo(angleNoInput, 6);
 			expect(angleParallelInput).toBeCloseTo(angleNoInput, 6);
@@ -1188,17 +1138,6 @@ describe('GameEngine ledge integration', () => {
 		const perpendicularShift = angle45Perpendicular - angle45NoInput;
 		const parallelShift = angle45Parallel - angle45NoInput;
 		const diagonalShift = angle0Diagonal - angle0NoInput;
-
-		console.info('DI launch angle deltas (rad)', {
-			angle45NoInput,
-			angle45Perpendicular,
-			angle45Parallel,
-			angle0NoInput,
-			angle0Diagonal,
-			perpendicularShift,
-			parallelShift,
-			diagonalShift,
-		});
 
 	expect(perpendicularShift).toBeCloseTo(0.314159, 2); // ~18° (Melee/Brawl-style, updated in Todo 10)
 	expect(parallelShift).toBeCloseTo(0, 3);
@@ -1591,10 +1530,6 @@ describe('GameEngine ledge integration', () => {
 			throw new Error('Expected p1 in successful-tech scenario');
 		}
 
-		console.info(
-			`[tech-trace] TUMBLE -> SHIELD_PRESSED(window=20) -> LANDING(window=${landed.techWindowFrames}) -> ${landed.state}`,
-		);
-
 		expect(landing.framesElapsed + 1).toBe(15);
 		expect(landed.state).toBe(PlayerStateEnum.TECH_NEUTRAL);
 		expect(landed.isInvincible).toBe(true);
@@ -1751,7 +1686,6 @@ describe('GameEngine ledge integration', () => {
 				hitbox,
 			});
 			defenderPercent = defender.percent;
-			console.info(`Frame ${frame}: HIT -> defender.percent=${defenderPercent}`);
 		}
 
 		expect(defenderPercent).toBe(15);
@@ -1778,7 +1712,6 @@ describe('GameEngine ledge integration', () => {
 			frame: 5,
 			hitbox,
 		});
-		console.info('Frame 5: HIT (hitPlayerIds=[p2])');
 		expect(frame5.defender.percent).toBe(5);
 		expect(frame5.attacker.hitPlayerIds.has('p2')).toBe(true);
 		expect(frame5.attacker.hitPlayerIds.size).toBe(1);
@@ -1789,7 +1722,6 @@ describe('GameEngine ledge integration', () => {
 			frame: 6,
 			hitbox,
 		});
-		console.info('Frame 6: SKIP (p2 already hit)');
 		expect(frame6.defender.percent).toBe(5);
 
 		const frame7 = forceAttackFrameHitbox(engine, {
@@ -1798,7 +1730,6 @@ describe('GameEngine ledge integration', () => {
 			frame: 7,
 			hitbox,
 		});
-		console.info('Frame 7: SKIP (p2 already hit)');
 		expect(frame7.defender.percent).toBe(5);
 	});
 

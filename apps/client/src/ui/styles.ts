@@ -6,6 +6,7 @@ export function injectStyles(): void {
       top: 50%;
       left: 50%;
       transform: translate(-50%, -50%);
+      z-index: 10;
       text-align: center;
       color: white;
       font-family: monospace;
@@ -35,7 +36,7 @@ export function injectStyles(): void {
       text-transform: uppercase;
       width: 140px;
     }
-    #ui-overlay { pointer-events: all; }
+    #ui-overlay { pointer-events: all; z-index: 10; }
   `;
   document.head.appendChild(style);
 }

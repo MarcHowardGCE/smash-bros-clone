@@ -71,6 +71,7 @@ async function main() {
 		app.canvas.style.width = `${STAGE.WIDTH * scale}px`;
 		app.canvas.style.height = `${STAGE.HEIGHT * scale}px`;
 		app.canvas.style.position = "absolute";
+		app.canvas.style.zIndex = "1";
 		app.canvas.style.left = `${(window.innerWidth - STAGE.WIDTH * scale) / 2}px`;
 		app.canvas.style.top = `${(window.innerHeight - STAGE.HEIGHT * scale) / 2}px`;
 	}

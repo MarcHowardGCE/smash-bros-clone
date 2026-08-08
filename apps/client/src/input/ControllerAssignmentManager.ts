@@ -3,7 +3,7 @@
  *
  * Responsibilities:
  * - Wire connect/disconnect callbacks from GamepadPoller
- * - On connect: restore to last slot if free, else assign to first free slot (slot 0 reserved for keyboard)
+ * - On connect: restore to last slot if free, else assign to first free slot (slot 0 preferred)
  * - On disconnect: mark slot as absent (freeze to no-input), do NOT reassign
  * - Persist assignments via GamepadPreferenceStore on every change
  * - Provide read-only getAssignments() and onAssignmentChanged callback
@@ -65,7 +65,7 @@ export class ControllerAssignmentManager {
    * Logic:
    * 1. Check if this gamepad was previously assigned (gamepad.id in saved assignments)
    * 2. If yes and that slot is free, restore to it
-   * 3. Else, assign to first free slot (excluding slot 0, reserved for keyboard)
+   * 3. Else, assign to first free slot (prefers slot 0)
    * 4. If no free slot, do nothing (connected but unassigned)
    * 5. Persist and fire callback
    */
@@ -78,16 +78,16 @@ export class ControllerAssignmentManager {
     let assignedSlot: number | null = null;
 
     // Try to restore to last known slot if it's free
-    if (lastKnownSlot !== null && lastKnownSlot > 0 && lastKnownSlot < this.maxSlots) {
+    if (lastKnownSlot !== null && lastKnownSlot >= 0 && lastKnownSlot < this.maxSlots) {
       if (!this.assignments.has(lastKnownSlot)) {
         assignedSlot = lastKnownSlot;
         console.log(`[ControllerAssignmentManager] restored ${gamepad.id} to slot ${lastKnownSlot}`);
       }
     }
 
-    // If not restored, find first free slot (excluding slot 0)
+    // If not restored, find first free slot (prefer slot 0)
     if (assignedSlot === null) {
-      for (let slot = 1; slot < this.maxSlots; slot++) {
+      for (let slot = 0; slot < this.maxSlots; slot++) {
         if (!this.assignments.has(slot)) {
           assignedSlot = slot;
           console.log(`[ControllerAssignmentManager] assigned ${gamepad.id} to slot ${slot}`);

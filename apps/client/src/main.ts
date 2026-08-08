@@ -1,4 +1,9 @@
-import type { PlayerId, StateSnapshot, HitEventData } from "@smash/shared";
+import type {
+	HitEventData,
+	KOEventData,
+	PlayerId,
+	StateSnapshot,
+} from "@smash/shared";
 import { STAGE } from "@smash/shared";
 import { GamepadPoller, GamepadPreferenceStore } from "@smash/gamepad-input";
 import { Application } from "pixi.js";
@@ -488,6 +493,26 @@ async function main() {
 		return gameClient.getLatestSnapshot();
 	};
 
+	const forceDebugPosition = (
+		playerId: PlayerId,
+		x: number,
+		y: number,
+	): boolean => {
+		if (isLocalMode) {
+			return localMatch?.forcePosition(playerId, x, y) ?? false;
+		}
+
+		return false;
+	};
+
+	const getDebugKOEvents = (): KOEventData[] => {
+		if (isLocalMode) {
+			return localMatch?.getKOEvents() ?? [];
+		}
+
+		return [];
+	};
+
 	(
 		window as Window & {
 			__smashDebug?: {
@@ -497,11 +522,19 @@ async function main() {
 					released: number;
 				}) => void;
 				getSnapshot: () => ReturnType<GameClient["getLatestSnapshot"]>;
+				forcePosition?: (playerId: PlayerId, x: number, y: number) => boolean;
+				getKOEvents?: () => KOEventData[];
 			};
 		}
 	).__smashDebug = {
 		sendInput: (input) => gameClient.debugSendInput(input),
 		getSnapshot: getDebugSnapshot,
+		...(import.meta.env.DEV
+			? {
+				forcePosition: forceDebugPosition,
+				getKOEvents: getDebugKOEvents,
+			}
+			: {}),
 	};
 
 	if (import.meta.env.DEV) {

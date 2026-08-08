@@ -1,5 +1,5 @@
 import { GameEngine, type GameEngineOptions } from "@smash/server/engine";
-import type { PlayerId, StateSnapshot } from "@smash/shared";
+import type { KOEventData, PlayerId, StateSnapshot } from "@smash/shared";
 import type { LocalPlayerController } from "./LocalPlayerController.js";
 
 export type { GameEngineOptions };
@@ -24,6 +24,8 @@ export class LocalMatch {
 
   start(): void {
     this.lastTime = performance.now();
+    this.latestSnapshot = this.engine.getSnapshot(this.lastTime, {});
+    this.onSnapshot?.(this.latestSnapshot);
     this.loop(this.lastTime);
   }
 
@@ -64,6 +66,14 @@ export class LocalMatch {
 
   getLatestSnapshot(): StateSnapshot | null {
     return this.latestSnapshot;
+  }
+
+  forcePosition(playerId: PlayerId, x: number, y: number): boolean {
+    return this.engine.forcePosition(playerId, x, y);
+  }
+
+  getKOEvents(): KOEventData[] {
+    return this.engine.getKOEvents();
   }
 
   private loop = (now: number): void => {

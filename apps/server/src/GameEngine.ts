@@ -22,6 +22,7 @@ import {
 	type GameState,
 	INPUT_BITS,
 	type InputEvent,
+	type KOEventData,
 	MATCH_CONFIG,
 	MoveId,
 	PHYSICS,
@@ -114,6 +115,7 @@ export interface GameEngineOptions {
 export class GameEngine {
 	private state: GameState;
 	private readonly hitEvents: HitEventData[] = [];
+	private readonly koEvents: KOEventData[] = [];
 	private readonly fsmControllers = new Map<PlayerId, FSMController>();
 	private readonly techAttemptBuffered = new Map<PlayerId, boolean>();
 	private ledgeState: Map<
@@ -142,6 +144,7 @@ export class GameEngine {
 				isTumbling: false,
 				techWindowFrames: 0,
 				techLockoutFrames: 0,
+				lCancelWindowFrames: 0,
 				landingLagFrames: 0,
 				percent: 0,
 				stocks: MATCH_CONFIG.STOCKS,
@@ -168,9 +171,10 @@ export class GameEngine {
 					staleMoveQueue: [],
 					lastHitByFacing: null,
 					lastHitKnockbackAngle: null,
-					pendingKnockbackVx: null,
-					pendingKnockbackVy: null,
+				pendingKnockbackVx: null,
+				pendingKnockbackVy: null,
 				respawnTimer: 0,
+				airDodgeDirection: null,
 			};
 
 				this.techAttemptBuffered.set(id, false);
@@ -269,6 +273,56 @@ export class GameEngine {
 
 	clearHitEvents(): void {
 		this.hitEvents.length = 0;
+	}
+
+	getKOEvents(): KOEventData[] {
+		if (this.koEvents.length === 0) {
+			return [];
+		}
+
+		const events = [...this.koEvents];
+		this.koEvents.length = 0;
+		return events;
+	}
+
+	forcePosition(playerId: PlayerId, x: number, y: number): boolean {
+		const player = this.state.players[playerId];
+		if (!player) {
+			return false;
+		}
+
+		this.state.players[playerId] = {
+			...player,
+			x,
+			y,
+			vx: 0,
+			vy: 0,
+			isGrounded: false,
+			isFastFalling: false,
+			isKnockedOut: false,
+			state: PlayerStateEnum.AIRBORNE,
+			stateFrame: 0,
+			hitlagFramesRemaining: 0,
+			hitstunFramesRemaining: 0,
+			isTumbling: false,
+			techWindowFrames: 0,
+			techLockoutFrames: 0,
+			lCancelWindowFrames: 0,
+			landingLagFrames: 0,
+			activeHitbox: null,
+			currentMoveId: null,
+			currentMove: undefined,
+			chargeFrames: 0,
+			isGrabbing: false,
+			grabbedPlayerId: null,
+			airDodgeDirection: null,
+			ledgeId: null,
+		};
+
+		this.techAttemptBuffered.set(playerId, false);
+		this.fsmControllers.set(playerId, new FSMController(PlayerStateEnum.AIRBORNE));
+
+		return true;
 	}
 
 	isMatchOver(): boolean {
@@ -2102,6 +2156,15 @@ export class GameEngine {
 				continue;
 			}
 
+			const boundary = this.getBlastZoneBoundary(player);
+			if (boundary) {
+				this.koEvents.push({
+					playerId: player.id,
+					boundary,
+					tick: this.tick,
+				});
+			}
+
 			if (player.ledgeId) {
 				this.releaseLedge(player.id, player.ledgeId);
 			}
@@ -2172,5 +2235,39 @@ export class GameEngine {
 				new FSMController(PlayerStateEnum.AIRBORNE),
 			);
 		}
+	}
+
+	private getBlastZoneBoundary(
+		player: PlayerState,
+	): KOEventData["boundary"] | null {
+		const boundaryProbe = checkPlatformCollision(
+			{
+				...player,
+				isKnockedOut: false,
+			},
+			DEFAULT_STAGE,
+		);
+
+		if (!boundaryProbe.isKnockedOut) {
+			return null;
+		}
+
+		if (player.x < DEFAULT_STAGE.blastLeft) {
+			return "left";
+		}
+
+		if (player.x > DEFAULT_STAGE.blastRight) {
+			return "right";
+		}
+
+		if (player.y < DEFAULT_STAGE.blastTop) {
+			return "top";
+		}
+
+		if (player.y > DEFAULT_STAGE.blastBottom) {
+			return "bottom";
+		}
+
+		return null;
 	}
 }

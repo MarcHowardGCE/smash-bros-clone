@@ -97,6 +97,12 @@ export interface HitEventData {
 	worldY: number;
 }
 
+export interface KOEventData {
+	playerId: PlayerId;
+	boundary: "left" | "right" | "top" | "bottom";
+	tick: number;
+}
+
 export interface StateSnapshot {
   tick: number;
   timestamp: number;

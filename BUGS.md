@@ -5,13 +5,13 @@
 | Severity | Count |
 |----------|-------|
 | Blocker | 0 |
-| Major (open) | 2 |
+| Major (open) | 0 |
 | Minor (open) | 0 |
-| Cosmetic (open) | 1 |
-| Fixed / Closed | 6 |
+| Cosmetic (open) | 0 |
+| Fixed / Closed | 9 |
 | **Total entries** | **9** |
 
-> **Playability-refinement wave (T1–T27) closed 6 of the original 9 entries.** Wall-contact double-jump (T2), WALK→DASH FSM override (T3), fast-fall cap (T1), hitstun excess frames (T4), hitbox damage float (T5, already fixed), and the ROADMAP ledge-discrepancy (T27) are all resolved. Three entries remain open: the local-match debug snapshot gap, the missing favicon, and the blast-zone KO telemetry measurement gap.
+> **Playability-refinement wave (T1–T27 + Wave 6 follow-ups) has now closed all 9 tracked entries.** Wall-contact double-jump (T2), WALK→DASH FSM override (T3), fast-fall cap (T1), hitstun excess frames (T4), hitbox damage float (T5, already fixed), ROADMAP ledge-discrepancy (T27), missing favicon, local-mode debug snapshot exposure, and blast-zone KO telemetry isolation are all resolved.
 
 | Tier | Rows executed | PASS | FAIL | BLOCKED |
 |------|--------------|------|------|---------|
@@ -78,6 +78,11 @@ Each bug entry follows this template:
 
 ## [Major] No local-match debug snapshot exposed for automated FSM verification
 
+- **Status: FIXED** ✓ (Wave 6 — 2026-08-08)
+- **Final status:** Fixed. Root cause was a race: `getDebugSnapshot()` in `apps/client/src/main.ts:483-489` already branches correctly for local mode and calls `localMatch?.getLatestSnapshot()`, but `LocalMatch.latestSnapshot` was only populated after the first simulation tick. If sampled immediately after HUD/match start, both `window.__smashDebug.getSnapshot()` and `window.__DEBUG_GAME_STATE__()` could still return `null`.
+- **Fix:** `apps/client/src/local/LocalMatch.ts:25-30` now seeds an initial snapshot synchronously in `start()` via `this.engine.getSnapshot(this.lastTime, {})` before the first `requestAnimationFrame` tick.
+- **Evidence:** `.omo/evidence/task-18-advanced-tech-mechanics.html` and `apps/client/e2e/local-debug-snapshot.spec.ts` — Playwright repro starts local play, waits for HUD, calls both debug APIs, asserts non-null snapshot shape (`players`, player `state`, `vx`, `vy`), performs movement input, and re-validates.
+
 - Area: UI
 - Repro steps:
   1. Start local play via lobby -> Local Play.
@@ -86,8 +91,8 @@ Each bug entry follows this template:
      - `window.__DEBUG_GAME_STATE__?.()`
      - `window.__smashDebug?.getSnapshot?.()`
   4. Perform movement inputs (walk tap, dash double-tap, run hold) and sample again.
-- Expected: Existing debug path should expose current local match state (including players, `state`, `vx`, `vy`) so automation can verify `IDLE -> WALK -> DASH -> RUN`.
-- Actual: Both debug paths return `null` in local single-player mode because they are wired to `GameClient` network snapshots; local `LocalMatch`/`GameEngine` state is not exposed.
+ - Expected: Existing debug path should expose current local match state (including players, `state`, `vx`, `vy`) so automation can verify `IDLE -> WALK -> DASH -> RUN`.
+ - Actual (before fix): Immediate post-start samples could return `null` before first local tick populated `latestSnapshot`.
 - Related ROADMAP gap (if any): None
 - Found in: Tier 1 (agent)
 
@@ -194,19 +199,27 @@ Each bug entry follows this template:
 
 ## [Cosmetic] Missing favicon triggers console 404 in dev client
 
+- **Status: FIXED** ✓ (Wave 6 — 2026-08-08)
+- **Final status:** Fixed. Added explicit `<link rel="icon" type="image/x-icon" href="/favicon.ico">` to `<head>` of `apps/client/index.html` (line 7). The favicon file already existed at `apps/client/public/favicon.ico`; Vite serves `public/` at the root by convention. The explicit link tag makes the intent clear and prevents reliance on browser default-request behavior.
+- **Evidence:** `.omo/evidence/task-19-advanced-tech-mechanics.txt` — Playwright test loads dev client, captures console messages, asserts zero 404 errors for favicon.ico.
+
 - Area: UI
 - Repro steps:
-  1. Start client dev server.
-  2. Open game in browser.
-  3. Inspect browser console.
+   1. Start client dev server.
+   2. Open game in browser.
+   3. Inspect browser console.
 - Expected: No resource load errors from static shell assets.
-- Actual: Console logs `Failed to load resource: the server responded with a status of 404 (Not Found)` for `/favicon.ico`.
+- Actual (before fix): Console logs `Failed to load resource: the server responded with a status of 404 (Not Found)` for `/favicon.ico`.
 - Related ROADMAP gap (if any): None
 - Found in: Tier 1 (agent)
 
 ---
 
 ## [Major] Tier-1 blast-zone QA: KO/respawn telemetry not isolatable per boundary in natural-play run
+
+- **Status: FIXED** ✓ (Wave 6 — 2026-08-08)
+- **Final status:** Fixed via deterministic debug instrumentation for local mode. Added dev-only `window.__smashDebug.forcePosition(playerId, x, y)` + `window.__smashDebug.getKOEvents()` in `apps/client/src/main.ts` (gated under `import.meta.env.DEV` and using the same local/network branch as `getSnapshot`). `LocalMatch` forwards both helpers to `GameEngine`; `GameEngine` now buffers minimal KO telemetry events (`{ playerId, boundary, tick }`) from existing blast-zone KO flow without changing KO math.
+- **Evidence:** `.omo/evidence/task-20-advanced-tech-mechanics.html` — deterministic Tier-1 checklist in `apps/client/e2e/blast-zone-boundaries.spec.ts` validates all four blast boundaries with: stock delta exactly 1, respawn delay ≈120 frames (~2s), respawn near center, and respawn invincibility ≈180 frames.
 
 - Area: physics
 - Repro steps:

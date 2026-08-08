@@ -240,17 +240,15 @@ describe('FSM - Hitstun', () => {
     expect(player.state).toBe(PlayerStateEnum.HITSTUN);
     expect(player.hitstunFramesRemaining).toBe(0);
 
-    const noInput = controller.tick(player, makeInput());
-    console.info('[tumble-trace] HITSTUN (tumbling) -> TUMBLE-FALL');
-    expect(noInput.state).toBe(PlayerStateEnum.HITSTUN);
+		const noInput = controller.tick(player, makeInput());
+		expect(noInput.state).toBe(PlayerStateEnum.HITSTUN);
 
-    const withInput = controller.tick(
-      noInput,
-      makeInput(INPUT_BITS.LEFT, INPUT_BITS.LEFT),
-    );
-    console.info('[tumble-trace] TUMBLE-FALL -> AIRBORNE (after input)');
-    expect(withInput.state).toBe(PlayerStateEnum.AIRBORNE);
-  });
+		const withInput = controller.tick(
+			noInput,
+			makeInput(INPUT_BITS.LEFT, INPUT_BITS.LEFT),
+		);
+		expect(withInput.state).toBe(PlayerStateEnum.AIRBORNE);
+	});
 
   it.each([
     { kb: 79.9, expectedTumble: false },
@@ -664,12 +662,12 @@ describe('FSM - Air Dodge single-use consumption', () => {
       isGrounded: false,
       hasAirDodge: true,
     });
-    const result = controller.tick(player, makeInput(INPUT_BITS.SHIELD, INPUT_BITS.SHIELD));
+	const result = controller.tick(player, makeInput(INPUT_BITS.SHIELD, INPUT_BITS.SHIELD));
 
-    expect(result.state).toBe(PlayerStateEnum.AIR_DODGE);
-    // Note: hasAirDodge consumption happens in GameEngine.applyStateTransitions, not in FSM
-    expect(result.hasAirDodge).toBe(true);
-  });
+	expect(result.state).toBe(PlayerStateEnum.AIR_DODGE);
+	// FSM returns state with hasAirDodge still true; GameEngine.ts:618-626 consumes it.
+	expect(result.hasAirDodge).toBe(true);
+	});
 
   it('Airborne stays Airborne on SHIELD pressed when hasAirDodge=false', () => {
     const controller = new FSMController(PlayerStateEnum.AIRBORNE);

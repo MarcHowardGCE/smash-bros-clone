@@ -245,4 +245,120 @@ describe('GameEngine wall jump integration', () => {
 		// Wall jump must preserve double-jump resource (not consume it)
 		expect(player.hasDoubleJump).toBe(true);
 	});
+
+	it('consecutive wall jumps decay height', () => {
+		const engine = new GameEngine({ playerIds: ['p1'] });
+
+		const wallJumpInput = makeInput('p1', INPUT_BITS.RIGHT | INPUT_BITS.JUMP);
+
+		primePlayer(engine, 'p1', {
+			x: -260,
+			y: 450,
+			vx: 0,
+			vy: 0,
+			state: PlayerStateEnum.AIRBORNE,
+			stateFrame: 0,
+			isGrounded: false,
+			hasDoubleJump: true,
+			wallJumpStreak: 0,
+		});
+
+		const first = tick(engine, { p1: wallJumpInput }).players.p1;
+		expect(first).toBeDefined();
+		if (!first) {
+			throw new Error('Expected first wall jump state');
+		}
+
+		primePlayer(engine, 'p1', {
+			...first,
+			x: -260,
+			y: 450,
+			state: PlayerStateEnum.AIRBORNE,
+			isGrounded: false,
+		});
+		const second = tick(engine, { p1: wallJumpInput }).players.p1;
+		expect(second).toBeDefined();
+		if (!second) {
+			throw new Error('Expected second wall jump state');
+		}
+
+		primePlayer(engine, 'p1', {
+			...second,
+			x: -260,
+			y: 450,
+			state: PlayerStateEnum.AIRBORNE,
+			isGrounded: false,
+		});
+		const third = tick(engine, { p1: wallJumpInput }).players.p1;
+		expect(third).toBeDefined();
+		if (!third) {
+			throw new Error('Expected third wall jump state');
+		}
+
+		expect(Math.abs(second.vy)).toBeLessThan(Math.abs(first.vy));
+		expect(Math.abs(third.vy)).toBeLessThan(Math.abs(second.vy));
+	});
+
+	it('landing resets wall jump streak to full strength', () => {
+		const engine = new GameEngine({ playerIds: ['p1'] });
+		const wallJumpInput = makeInput('p1', INPUT_BITS.RIGHT | INPUT_BITS.JUMP);
+
+		primePlayer(engine, 'p1', {
+			x: -260,
+			y: 450,
+			vx: 0,
+			vy: 0,
+			state: PlayerStateEnum.AIRBORNE,
+			stateFrame: 0,
+			isGrounded: false,
+			hasDoubleJump: true,
+			wallJumpStreak: 2,
+		});
+
+		const reducedJump = tick(engine, { p1: wallJumpInput }).players.p1;
+		expect(reducedJump).toBeDefined();
+		if (!reducedJump) {
+			throw new Error('Expected reduced wall jump state');
+		}
+		expect(Math.abs(reducedJump.vy)).toBeLessThan(
+			Math.abs(PHYSICS.WALL_JUMP_VERTICAL_VELOCITY),
+		);
+
+		primePlayer(engine, 'p1', {
+			...reducedJump,
+			x: 640,
+			y: 500 - PHYSICS.HURTBOX_RADIUS - 1,
+			vy: 4,
+			state: PlayerStateEnum.AIRBORNE,
+			isGrounded: false,
+		});
+
+		const landed = tick(engine, { p1: null }).players.p1;
+		expect(landed).toBeDefined();
+		if (!landed) {
+			throw new Error('Expected landed state');
+		}
+		expect(landed.isGrounded).toBe(true);
+		expect(landed.wallJumpStreak).toBe(0);
+
+		primePlayer(engine, 'p1', {
+			...landed,
+			x: -260,
+			y: 450,
+			vx: 0,
+			vy: 0,
+			state: PlayerStateEnum.AIRBORNE,
+			isGrounded: false,
+		});
+
+		const fullStrengthJump = tick(engine, { p1: wallJumpInput }).players.p1;
+		expect(fullStrengthJump).toBeDefined();
+		if (!fullStrengthJump) {
+			throw new Error('Expected full-strength wall jump state');
+		}
+
+		expect(Math.abs(fullStrengthJump.vy)).toBe(
+			Math.abs(PHYSICS.WALL_JUMP_VERTICAL_VELOCITY),
+		);
+	});
 });

@@ -1,6 +1,8 @@
 import { BaseState, PlayerStateEnum, transition, INPUT_BITS, isHeld } from './utils.js';
 import type { FSMContext, FSMTransition } from '../index.js';
 
+const AIR_DODGE_DURATION_FRAMES = 23;
+
 export class AirDodgeState extends BaseState {
   override enter(ctx: FSMContext): void {
     // Capture held LEFT/RIGHT/DOWN bits at entry
@@ -17,7 +19,9 @@ export class AirDodgeState extends BaseState {
   }
 
   update(ctx: FSMContext, frame: number): FSMTransition | null {
-    return frame >= 23 || ctx.isGrounded ? transition(PlayerStateEnum.AIRBORNE) : null;
+    return frame >= AIR_DODGE_DURATION_FRAMES || ctx.isGrounded
+      ? transition(PlayerStateEnum.AIRBORNE)
+      : null;
   }
 
   override exit(ctx: FSMContext): void {

@@ -121,42 +121,34 @@ describe('GameEngine L-cancel window tracking', () => {
 
 		// Tick 1: 7 -> 6
 		let state = tick(engine, { p1: null });
-		console.log('Tick 1:', state.players.p1?.lCancelWindowFrames, 'state:', state.players.p1?.state);
 		expect(state.players.p1?.lCancelWindowFrames).toBe(6);
 
 		// Tick 2: 6 -> 5
 		state = tick(engine, { p1: null });
-		console.log('Tick 2:', state.players.p1?.lCancelWindowFrames, 'state:', state.players.p1?.state);
 		expect(state.players.p1?.lCancelWindowFrames).toBe(5);
 
 		// Tick 3: 5 -> 4
 		state = tick(engine, { p1: null });
-		console.log('Tick 3:', state.players.p1?.lCancelWindowFrames, 'state:', state.players.p1?.state);
 		expect(state.players.p1?.lCancelWindowFrames).toBe(4);
 
 		// Tick 4: 4 -> 3
 		state = tick(engine, { p1: null });
-		console.log('Tick 4:', state.players.p1?.lCancelWindowFrames, 'state:', state.players.p1?.state);
 		expect(state.players.p1?.lCancelWindowFrames).toBe(3);
 
 		// Tick 5: 3 -> 2
 		state = tick(engine, { p1: null });
-		console.log('Tick 5:', state.players.p1?.lCancelWindowFrames, 'state:', state.players.p1?.state);
 		expect(state.players.p1?.lCancelWindowFrames).toBe(2);
 
 		// Tick 6: 2 -> 1
 		state = tick(engine, { p1: null });
-		console.log('Tick 6:', state.players.p1?.lCancelWindowFrames, 'state:', state.players.p1?.state);
 		expect(state.players.p1?.lCancelWindowFrames).toBe(1);
 
 		// Tick 7: 1 -> 0
 		state = tick(engine, { p1: null });
-		console.log('Tick 7:', state.players.p1?.lCancelWindowFrames, 'state:', state.players.p1?.state);
 		expect(state.players.p1?.lCancelWindowFrames).toBe(0);
 
 		// Tick 8: 0 stays 0 (floored)
 		state = tick(engine, { p1: null });
-		console.log('Tick 8:', state.players.p1?.lCancelWindowFrames, 'state:', state.players.p1?.state);
 		expect(state.players.p1?.lCancelWindowFrames).toBe(0);
 	});
 

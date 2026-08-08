@@ -433,12 +433,9 @@ describe('Physics Engine - applyMovementInput', () => {
       };
     }
 
-    // Visual sanity check for decay curve when running tests.
-    console.info('hitstun vx decay curve', vxFrames.map((vx) => Number(vx.toFixed(4))));
-
-    for (let i = 1; i < vxFrames.length; i += 1) {
-      expect(Math.abs(vxFrames[i] ?? 0)).toBeLessThan(Math.abs(vxFrames[i - 1] ?? 0));
-    }
+		for (let i = 1; i < vxFrames.length; i += 1) {
+			expect(Math.abs(vxFrames[i] ?? 0)).toBeLessThan(Math.abs(vxFrames[i - 1] ?? 0));
+		}
 
     expect(vxFrames[10]).toBeCloseTo(5.99, 2);
     expect(vxFrames[30]).toBeCloseTo(2.15, 2);

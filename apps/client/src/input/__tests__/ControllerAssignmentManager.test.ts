@@ -2,11 +2,11 @@
  * Unit tests for ControllerAssignmentManager
  *
  * Scenarios tested:
- * - Happy path: 2 gamepads connect sequentially → slots 1, 2
+ * - Happy path: 2 gamepads connect sequentially → slots 0, 1
  * - Restore: gamepad A saved at slot 3, reconnects → restored to slot 3
- * - Disconnect freeze: gamepad A at slot 1, disconnects → slot 1 becomes absent, new gamepad goes to slot 2, not 1
- * - No-free-slot: 4 gamepads fill slots 1-3, 5th connects → no assignment (logged)
- * - Slot 0 reserved: no gamepad ever assigned to slot 0 by default
+ * - Disconnect freeze: gamepad A at slot 0, disconnects → slot 0 becomes absent, new gamepad goes to slot 1, not 0
+ * - No-free-slot: 4 gamepads fill slots 0-3, 5th connects → no assignment (logged)
+ * - Slot 0 is NOT reserved: gamepads can assign to slot 0 (player 1)
  */
 
 import { describe, it, expect, beforeEach, vi } from 'vitest';
@@ -94,35 +94,38 @@ describe('ControllerAssignmentManager', () => {
   });
 
   describe('basic assignment', () => {
-    it('should not assign to slot 0 by default (reserved for keyboard)', () => {
+    it('should assign first gamepad to slot 0 (player 1)', () => {
       poller.triggerConnect('Gamepad-A', 0);
 
       const assignments = manager.getAssignments();
-      expect(assignments.has(0)).toBe(false);
-      expect(assignments.has(1)).toBe(true);
-    });
-
-    it('should assign first gamepad to slot 1 when connecting', () => {
-      poller.triggerConnect('Gamepad-A', 0);
-
-      const assignments = manager.getAssignments();
-      expect(assignments.get(1)).toEqual({
+      expect(assignments.has(0)).toBe(true);
+      expect(assignments.get(0)).toEqual({
         gamepadId: 'Gamepad-A',
         gamepadIndex: 0,
       });
     });
 
-    it('should assign two gamepads sequentially to slots 1 and 2', () => {
+    it('should assign first gamepad to slot 0 when connecting', () => {
+      poller.triggerConnect('Gamepad-A', 0);
+
+      const assignments = manager.getAssignments();
+      expect(assignments.get(0)).toEqual({
+        gamepadId: 'Gamepad-A',
+        gamepadIndex: 0,
+      });
+    });
+
+    it('should assign two gamepads sequentially to slots 0 and 1', () => {
       poller.triggerConnect('Gamepad-A', 0);
       poller.triggerConnect('Gamepad-B', 1);
 
       const assignments = manager.getAssignments();
-      expect(assignments.get(1)).toEqual({ gamepadId: 'Gamepad-A', gamepadIndex: 0 });
-      expect(assignments.get(2)).toEqual({ gamepadId: 'Gamepad-B', gamepadIndex: 1 });
+      expect(assignments.get(0)).toEqual({ gamepadId: 'Gamepad-A', gamepadIndex: 0 });
+      expect(assignments.get(1)).toEqual({ gamepadId: 'Gamepad-B', gamepadIndex: 1 });
       expect(assignments.size).toBe(2);
     });
 
-    it('should assign four gamepads to slots 1-3 and leave 5th unassigned', () => {
+    it('should assign four gamepads to slots 0-3 and leave 5th unassigned', () => {
       poller.triggerConnect('Gamepad-A', 0);
       poller.triggerConnect('Gamepad-B', 1);
       poller.triggerConnect('Gamepad-C', 2);
@@ -130,7 +133,8 @@ describe('ControllerAssignmentManager', () => {
       poller.triggerConnect('Gamepad-E', 4); // No free slot
 
       const assignments = manager.getAssignments();
-      expect(assignments.size).toBe(3); // Only slots 1-3 filled
+      expect(assignments.size).toBe(4); // Slots 0-3 all filled
+      expect(assignments.has(0)).toBe(true);
       expect(assignments.has(1)).toBe(true);
       expect(assignments.has(2)).toBe(true);
       expect(assignments.has(3)).toBe(true);
@@ -144,7 +148,7 @@ describe('ControllerAssignmentManager', () => {
       poller.triggerConnect('Gamepad-A', 0);
 
       expect(saveSpy).toHaveBeenCalledWith([
-        { gamepadId: 'Gamepad-A', lastSlotIndex: 1 },
+        { gamepadId: 'Gamepad-A', lastSlotIndex: 0 },
       ]);
     });
 
@@ -156,8 +160,8 @@ describe('ControllerAssignmentManager', () => {
 
       // Second call should include both
       expect(saveSpy).toHaveBeenLastCalledWith([
-        { gamepadId: 'Gamepad-A', lastSlotIndex: 1 },
-        { gamepadId: 'Gamepad-B', lastSlotIndex: 2 },
+        { gamepadId: 'Gamepad-A', lastSlotIndex: 0 },
+        { gamepadId: 'Gamepad-B', lastSlotIndex: 1 },
       ]);
     });
   });
@@ -181,14 +185,11 @@ describe('ControllerAssignmentManager', () => {
       // Pre-save: Gamepad-A was in slot 2
       store.presave('Gamepad-A', 2);
 
-      // Gamepad-B occupies slot 2
+      // Gamepad-B occupies slot 0, Gamepad-C occupies slot 1 (sequential fill)
       poller.triggerConnect('Gamepad-B', 0);
-      expect(manager.getAssignments().get(1)).toEqual({
-        gamepadId: 'Gamepad-B',
-        gamepadIndex: 0,
-      });
+      poller.triggerConnect('Gamepad-C', 2);
 
-      // Gamepad-A reconnects but slot 2 is available; should restore to 2
+      // Gamepad-A reconnects; saved slot 2 is still free → restores to slot 2
       poller.triggerConnect('Gamepad-A', 1);
       expect(manager.getAssignments().get(2)).toEqual({
         gamepadId: 'Gamepad-A',
@@ -196,19 +197,18 @@ describe('ControllerAssignmentManager', () => {
       });
     });
 
-    it('should assign to first free slot if last-known slot is slot 0 (invalid)', () => {
-      // Edge case: saved slot is 0 (keyboard-reserved)
+    it('should assign to slot 0 if last-known slot is slot 0 (now valid)', () => {
+      // Slot 0 is no longer reserved — saved slot 0 should be restored normally
       store.presave('Gamepad-A', 0);
 
       poller.triggerConnect('Gamepad-A', 0);
 
-      // Should assign to slot 1 (first valid free slot), not restore to slot 0
+      // Should restore to slot 0 (first valid free slot)
       const assignments = manager.getAssignments();
-      expect(assignments.get(1)).toEqual({
+      expect(assignments.get(0)).toEqual({
         gamepadId: 'Gamepad-A',
         gamepadIndex: 0,
       });
-      expect(assignments.has(0)).toBe(false);
     });
   });
 
@@ -225,17 +225,17 @@ describe('ControllerAssignmentManager', () => {
     });
 
     it('should NOT reassign freed slot to next connecting gamepad', () => {
-      // Connect A to slot 1
+      // Connect A to slot 0
       poller.triggerConnect('Gamepad-A', 0);
-      expect(manager.getAssignments().get(1)?.gamepadId).toBe('Gamepad-A');
+      expect(manager.getAssignments().get(0)?.gamepadId).toBe('Gamepad-A');
 
       // A disconnects
       poller.triggerDisconnect(0);
       expect(manager.getAssignments().size).toBe(0);
 
-      // B connects and should take slot 1 (first free), not skip it
+      // B connects and should take slot 0 (first free), not skip it
       poller.triggerConnect('Gamepad-B', 1);
-      expect(manager.getAssignments().get(1)?.gamepadId).toBe('Gamepad-B');
+      expect(manager.getAssignments().get(0)?.gamepadId).toBe('Gamepad-B');
     });
 
     it('should persist empty assignments after disconnect', () => {
@@ -270,16 +270,17 @@ describe('ControllerAssignmentManager', () => {
     });
 
     it('should not fire callback for unassigned gamepad (no free slot)', () => {
-      // Fill all slots
+      // Fill all slots (0-3)
       poller.triggerConnect('Gamepad-A', 0);
       poller.triggerConnect('Gamepad-B', 1);
       poller.triggerConnect('Gamepad-C', 2);
+      poller.triggerConnect('Gamepad-D', 3);
 
       const callback = vi.fn();
       manager.onAssignmentChanged = callback;
 
-      // 4th gamepad has no slot
-      poller.triggerConnect('Gamepad-D', 3);
+      // 5th gamepad has no slot
+      poller.triggerConnect('Gamepad-E', 4);
 
       expect(callback).not.toHaveBeenCalled();
     });
@@ -311,16 +312,16 @@ describe('ControllerAssignmentManager', () => {
     });
 
     it('should handle re-assign same gamepad id at different index', () => {
-      // Gamepad-A connects at index 0 → slot 1
+      // Gamepad-A connects at index 0 → slot 0
       poller.triggerConnect('Gamepad-A', 0);
-      expect(manager.getAssignments().get(1)?.gamepadIndex).toBe(0);
+      expect(manager.getAssignments().get(0)?.gamepadIndex).toBe(0);
 
       // Disconnect
       poller.triggerDisconnect(0);
 
-      // Reconnect at different index 5 → should restore to slot 1
+      // Reconnect at different index 5 → should restore to slot 0
       poller.triggerConnect('Gamepad-A', 5);
-      expect(manager.getAssignments().get(1)?.gamepadIndex).toBe(5);
+      expect(manager.getAssignments().get(0)?.gamepadIndex).toBe(5);
     });
   });
 });

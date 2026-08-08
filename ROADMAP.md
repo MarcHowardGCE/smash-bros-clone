@@ -36,6 +36,7 @@ The renderer (`apps/client`) has received significant polish through T9-T20. The
 
 **Still missing:**
 - Sprite sheets or vector art — every fighter is still a pentagon + circles + rectangles (the `SpritePartRenderer` contract exists but has no art assets yet)
+- **Sprite specifications:** A comprehensive generation guide exists at [`SPRITE-GENERATION-GUIDE.md`](./SPRITE-GENERATION-GUIDE.md) covering all 22 moves, 4 player-slot color variants, VFX frames, and UI elements with AI-generation prompts ready for artist handoff
 
 **Existing hooks (unchanged):**
 - `FighterRenderer.redraw()` remains the sole draw call — swap `PolygonPartRenderer` for `SpritePartRenderer` via the `createPartRenderer` factory (`apps/client/src/renderer/parts/index.ts`) to sample a sprite atlas, no `FighterRenderer` rewrite needed

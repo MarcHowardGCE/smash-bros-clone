@@ -1,12 +1,13 @@
 import { GameEngine, type GameEngineOptions } from "@smash/server/engine";
 import type { KOEventData, PlayerId, StateSnapshot } from "@smash/shared";
 import type { LocalPlayerController } from "./LocalPlayerController.js";
+import type { ITickController } from "./types.js";
 
 export type { GameEngineOptions };
 
 export class LocalMatch {
   private readonly engine: GameEngine;
-  private readonly controllers: LocalPlayerController[];
+  private readonly controllers: ITickController[];
   private animationFrameId: number | null = null;
   private lastTime = 0;
   private accumulator = 0;
@@ -16,7 +17,7 @@ export class LocalMatch {
 
   onSnapshot: ((snapshot: StateSnapshot) => void) | null = null;
 
-  constructor(controllers: LocalPlayerController[]) {
+  constructor(controllers: ITickController[]) {
     this.controllers = controllers;
     const playerIds = controllers.map((c) => c.playerId as PlayerId);
     this.engine = new GameEngine({ playerIds });
@@ -97,6 +98,10 @@ export class LocalMatch {
       this.controllers.map((c) => [c.playerId as PlayerId, c.pollInput()]),
     );
     const state = this.engine.tickGame(inputs);
+
+    for (const controller of this.controllers) {
+      controller.observe?.(state);
+    }
 
     const snapshot: StateSnapshot = this.engine.getSnapshot(performance.now(), {});
     this.engine.clearHitEvents();

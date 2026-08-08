@@ -4,6 +4,7 @@ import { LocalMatch } from '../LocalMatch.js';
 import { DEFAULT_KEYMAP_P1, DEFAULT_KEYMAP_P2, DEFAULT_KEYMAP_P3, DEFAULT_KEYMAP_P4 } from '../../input/keymaps.js';
 import { INPUT_BITS, MoveId, PlayerStateEnum } from '@smash/shared';
 import type { GamepadInputSource } from '../../input/GamepadInputSource.js';
+import type { ITickController } from '../types.js';
 
 describe('LocalMatch N-player support (up to 4 controllers)', () => {
   it('constructs 4-controller match with keyboard P1/P2 and mocked gamepad P3/P4', () => {
@@ -360,6 +361,91 @@ describe('LocalMatch N-player support (up to 4 controllers)', () => {
     expect(snapshots[0].hitEvents).toHaveLength(1);
     expect(snapshots[1].hitEvents).toEqual([]);
 
+    match.cleanup();
+  });
+});
+
+describe('LocalMatch ITickController.observe() wiring', () => {
+  it('calls observe() on all controllers after each tick (mixed human+AI)', () => {
+    // Create a mock AI controller that implements ITickController with observe
+    const mockAIController: ITickController = {
+      playerId: 'ai-p3',
+      slotIndex: 2,
+      setTick: vi.fn(),
+      pollInput: vi.fn(() => null),
+      destroy: vi.fn(),
+      observe: vi.fn(),
+    };
+
+    // Create a real human controller (LocalPlayerController)
+    const humanController = new LocalPlayerController({
+      playerId: 'local-p1',
+      keymap: DEFAULT_KEYMAP_P1,
+      slotIndex: 0,
+    });
+
+    // Construct LocalMatch with mixed controllers
+    const match = new LocalMatch([humanController, mockAIController]);
+
+    let snapshotCaptured: any = null;
+    match.onSnapshot = (snapshot) => {
+      snapshotCaptured = snapshot;
+    };
+
+    // Tick 3 times
+    match['tick']();
+    match['tick']();
+    match['tick']();
+
+    // Verify observe was called 3 times with GameState
+    expect(mockAIController.observe).toHaveBeenCalledTimes(3);
+
+    // Verify each call received a valid GameState object
+    const calls = (mockAIController.observe as any).mock.calls;
+    for (const [state] of calls) {
+      expect(state).toBeDefined();
+      expect(state.matchPhase).toBeDefined();
+      expect(state.players).toBeDefined();
+    }
+
+    // Cleanup
+    match.cleanup();
+  });
+
+  it('does not throw when human-only controllers have no observe method (regression)', () => {
+    // Create 2 human controllers (LocalPlayerController does not implement observe)
+    const p1Controller = new LocalPlayerController({
+      playerId: 'local-p1',
+      keymap: DEFAULT_KEYMAP_P1,
+      slotIndex: 0,
+    });
+
+    const p2Controller = new LocalPlayerController({
+      playerId: 'local-p2',
+      keymap: DEFAULT_KEYMAP_P2,
+      slotIndex: 1,
+    });
+
+    // Construct LocalMatch with only human controllers
+    const match = new LocalMatch([p1Controller, p2Controller]);
+
+    let snapshotCaptured: any = null;
+    match.onSnapshot = (snapshot) => {
+      snapshotCaptured = snapshot;
+    };
+
+    // Tick multiple times - should not throw
+    expect(() => {
+      for (let i = 0; i < 5; i++) {
+        match['tick']();
+      }
+    }).not.toThrow();
+
+    // Verify snapshots were still captured
+    expect(snapshotCaptured).not.toBeNull();
+    expect(snapshotCaptured.players).toBeDefined();
+
+    // Cleanup
     match.cleanup();
   });
 });

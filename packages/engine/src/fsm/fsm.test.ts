@@ -642,15 +642,66 @@ describe('FSM - Shield-grab transitions', () => {
     expect(result.shieldStunFrames).toBe(4);
   });
 
-  it('Shield → Idle on SHIELD released', () => {
-    const controller = new FSMController(PlayerStateEnum.SHIELD);
-    const player = makePlayer({
-      state: PlayerStateEnum.SHIELD,
-      shieldStunFrames: 0,
-      isShielding: true,
-    });
-    const result = controller.tick(player, makeInput(0, 0));
+   it('Shield → Idle on SHIELD released', () => {
+     const controller = new FSMController(PlayerStateEnum.SHIELD);
+     const player = makePlayer({
+       state: PlayerStateEnum.SHIELD,
+       shieldStunFrames: 0,
+       isShielding: true,
+     });
+     const result = controller.tick(player, makeInput(0, 0));
 
-    expect(result.state).toBe(PlayerStateEnum.IDLE);
+     expect(result.state).toBe(PlayerStateEnum.IDLE);
+   });
+});
+
+describe('FSM - Air Dodge single-use consumption', () => {
+  it('Airborne → AIR_DODGE on SHIELD pressed when hasAirDodge=true', () => {
+    const controller = new FSMController(PlayerStateEnum.AIRBORNE);
+    const player = makePlayer({
+      state: PlayerStateEnum.AIRBORNE,
+      isGrounded: false,
+      hasAirDodge: true,
+    });
+    const result = controller.tick(player, makeInput(INPUT_BITS.SHIELD, INPUT_BITS.SHIELD));
+
+    expect(result.state).toBe(PlayerStateEnum.AIR_DODGE);
+    // Note: hasAirDodge consumption happens in GameEngine.applyStateTransitions, not in FSM
+    expect(result.hasAirDodge).toBe(true);
+  });
+
+  it('Airborne stays Airborne on SHIELD pressed when hasAirDodge=false', () => {
+    const controller = new FSMController(PlayerStateEnum.AIRBORNE);
+    const player = makePlayer({
+      state: PlayerStateEnum.AIRBORNE,
+      isGrounded: false,
+      hasAirDodge: false,
+    });
+    const result = controller.tick(player, makeInput(INPUT_BITS.SHIELD, INPUT_BITS.SHIELD));
+
+    expect(result.state).toBe(PlayerStateEnum.AIRBORNE);
+    expect(result.hasAirDodge).toBe(false);
+  });
+
+  it('AIR_DODGE → AIRBORNE after 23 frames', () => {
+    const controller = new FSMController(PlayerStateEnum.AIR_DODGE);
+    let player = makePlayer({
+      state: PlayerStateEnum.AIR_DODGE,
+      stateFrame: 0,
+      isGrounded: false,
+      hasAirDodge: false,
+    });
+
+    // Tick through frames 0-22 (should stay in AIR_DODGE)
+    for (let i = 0; i < 23; i += 1) {
+      player = controller.tick(player, makeInput());
+      if (i < 22) {
+        expect(player.state).toBe(PlayerStateEnum.AIR_DODGE);
+      }
+    }
+
+    // Frame 23 should transition to AIRBORNE
+    player = controller.tick(player, makeInput());
+    expect(player.state).toBe(PlayerStateEnum.AIRBORNE);
   });
 });

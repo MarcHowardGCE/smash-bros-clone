@@ -40,6 +40,12 @@ export const STAGE = {
     { id: 'left', x: 190, y: 500 },
     { id: 'right', x: 1090, y: 500 },
   ],
+  // Wall x coordinates: left = BLAST_LEFT(-300) + 40 = -260, right = BLAST_RIGHT(1580) - 40 = 1540
+  // Inset 40px from blast zones to give players room to interact with walls before KO
+  WALLS: [
+    { id: 'left', x: -260, yTop: 400, yBottom: 780 },
+    { id: 'right', x: 1540, yTop: 400, yBottom: 780 },
+  ],
 } as const;
 
 export type Stage = typeof STAGE;

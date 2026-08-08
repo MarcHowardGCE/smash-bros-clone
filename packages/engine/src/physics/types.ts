@@ -13,6 +13,13 @@ export interface LedgeData {
   y: number;
 }
 
+export interface WallData {
+  id: string;
+  x: number;
+  yTop: number;
+  yBottom: number;
+}
+
 export interface StageData {
   width: number;
   height: number;
@@ -23,5 +30,6 @@ export interface StageData {
   mainPlatform: PlatformData;
   platforms: PlatformData[];
   ledges: LedgeData[];
+  walls: WallData[];
   spawnPositions: Array<{ x: number; y: number }>;
 }

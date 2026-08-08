@@ -147,6 +147,7 @@ export class GameEngine {
 				isGrounded: false,
 				isKnockedOut: false,
 				hasDoubleJump: true,
+				hasAirDodge: true,
 				isFastFalling: false,
 				isInvincible: false,
 				invincibilityFrames: 0,
@@ -533,6 +534,16 @@ export class GameEngine {
 			previous.state !== PlayerStateEnum.DOUBLE_JUMP
 		) {
 			nextPlayer = startJump(nextPlayer, false);
+		}
+
+		if (
+			player.state === PlayerStateEnum.AIR_DODGE &&
+			previous.state !== PlayerStateEnum.AIR_DODGE
+		) {
+			nextPlayer = {
+				...nextPlayer,
+				hasAirDodge: false,
+			};
 		}
 
 		if (
@@ -1053,6 +1064,8 @@ export class GameEngine {
 			isFastFalling: false,
 			isInvincible: true,
 			invincibilityFrames: PHYSICS.LEDGE_HANG_INVINCIBILITY_FRAMES,
+			hasDoubleJump: true,
+			hasAirDodge: true,
 		};
 	}
 

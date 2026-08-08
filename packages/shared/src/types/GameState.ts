@@ -49,6 +49,7 @@ export interface PlayerState {
   isGrounded: boolean;
   isKnockedOut: boolean;
   hasDoubleJump: boolean;
+  hasAirDodge: boolean;
   isFastFalling: boolean;
   isInvincible: boolean;
   invincibilityFrames: number;

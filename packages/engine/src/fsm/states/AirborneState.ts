@@ -20,7 +20,7 @@ export class AirborneState extends BaseState {
     }
 
     if (isPressed(ctx.input, INPUT_BITS.SHIELD)) {
-      return transition(PlayerStateEnum.AIR_DODGE);
+      return ctx.player.hasAirDodge ? transition(PlayerStateEnum.AIR_DODGE) : null;
     }
 
     return null;

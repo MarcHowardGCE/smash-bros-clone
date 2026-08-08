@@ -5,7 +5,7 @@ import {
 	type PlayerState,
 	STAGE,
 } from "@smash/shared";
-import type { LedgeData, StageData } from "./types.js";
+import type { LedgeData, StageData, WallData } from "./types.js";
 
 export const DEFAULT_STAGE: StageData = {
 	width: STAGE.WIDTH,
@@ -20,6 +20,7 @@ export const DEFAULT_STAGE: StageData = {
 	},
 	platforms: STAGE.PLATFORMS.map((platform) => ({ ...platform })),
 	ledges: STAGE.LEDGES.map((ledge) => ({ ...ledge })),
+	walls: STAGE.WALLS.map((w) => ({ ...w })),
 	spawnPositions: [...STAGE.SPAWN_POSITIONS],
 };
 
@@ -61,6 +62,7 @@ function landOnPlatform(player: PlayerState, platformY: number): PlayerState {
 		isGrounded: true,
 		isFastFalling: false,
 		hasDoubleJump: true,
+		hasAirDodge: true,
 	};
 }
 

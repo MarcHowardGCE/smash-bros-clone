@@ -45,8 +45,18 @@ export const PHYSICS = {
   COUNTER_DAMAGE_MULTIPLIER: 1.3,   // scales reflected damage when Down Special counter window is active
   COUNTER_KNOCKBACK_MULTIPLIER: 1.2, // scales reflected knockback magnitude for successful counters
    COUNTER_ANGLE_DEGREES: 45,        // launch angle used by counter-hit resolution (mirrored by defender facing)
-   ASDI_DRIFT_PX_PER_FRAME: 2,       // px/frame positional drift during post-hitlag hitstun when direction held
-   ASDI_MAX_TOTAL_DRIFT_PX: 30,      // px; cumulative ASDI drift cap per hitstun instance
+    ASDI_DRIFT_PX_PER_FRAME: 2,       // px/frame positional drift during post-hitlag hitstun when direction held
+    ASDI_MAX_TOTAL_DRIFT_PX: 30,      // px; cumulative ASDI drift cap per hitstun instance
+    WALL_CONTACT_TOLERANCE_PX: 6,     // px proximity to a wall's x to count as "touching"
+    WALL_JUMP_HORIZONTAL_VELOCITY: 7, // px/frame away from wall, slightly above RUN_SPEED
+    WALL_JUMP_VERTICAL_VELOCITY: -14, // matches DOUBLE_JUMP_VELOCITY magnitude
+    WALL_JUMP_HEIGHT_DECAY: 0.75,     // multiplier applied to vertical velocity per consecutive wall jump without landing
+    WALL_JUMP_MIN_VELOCITY_MULTIPLIER: 0.4, // floor so decay never reaches ~0
+    WALL_JUMP_INTANGIBILITY_FRAMES: 10,     // frames of invincibility after wall jump
+    WALL_TECH_INTANGIBILITY_FRAMES: 12,     // frames of invincibility after wall tech
+    L_CANCEL_WINDOW_FRAMES: 7,        // Melee spec, SmashWiki/Liquipedia-verified
+    WAVEDASH_INITIAL_SLIDE_VELOCITY: 8,    // px/frame, decays via existing GROUND_FRICTION each frame
+    WAVEDASH_LANDING_LAG_FRAMES: 10,  // Melee spec-verified air-dodge landing lag
 } as const;
 
 export type Physics = typeof PHYSICS;

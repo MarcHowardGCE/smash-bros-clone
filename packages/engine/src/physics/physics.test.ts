@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { INPUT_BITS, PHYSICS, STAGE, type InputEvent, type PlayerState } from '@smash/shared';
-import { applyDI, applyFastFall, applyGravity, applyKnockbackDecay, applyMovement, applyMovementInput, checkLedgeGrab, checkPlatformCollision, startJump } from './index.js';
+import { applyDI, applyFastFall, applyGravity, applyKnockbackDecay, applyMovement, applyMovementInput, checkLedgeGrab, checkPlatformCollision, checkWallCollision, startJump } from './index.js';
 
 function makePlayer(overrides: Partial<PlayerState> = {}): PlayerState {
   return {
@@ -66,6 +66,7 @@ function makeStage() {
     mainPlatform: { ...STAGE.MAIN_PLATFORM, id: 'main' },
     platforms: STAGE.PLATFORMS.map((platform) => ({ ...platform })),
     ledges: STAGE.LEDGES.map((ledge) => ({ ...ledge })),
+    walls: STAGE.WALLS.map((wall) => ({ ...wall })),
     spawnPositions: [...STAGE.SPAWN_POSITIONS],
   };
 }
@@ -614,5 +615,71 @@ describe('Physics Engine - checkLedgeGrab', () => {
     const player = makePlayer({ x: 10, y: 700, isGrounded: false, hitstunFramesRemaining: 0 });
     const stage = makeStage();
     expect(checkLedgeGrab(player, stage)).toBeNull();
+  });
+});
+
+describe('Physics Engine - checkWallCollision', () => {
+  it('returns null when player is grounded', () => {
+    const player = makePlayer({ x: 50, y: 450, isGrounded: true });
+    const stage = makeStage();
+    expect(checkWallCollision(player, stage)).toBeNull();
+  });
+
+  it('detects left wall when player is within contact tolerance and vertical bounds', () => {
+    const leftWall = STAGE.WALLS[0];
+    const player = makePlayer({
+      x: leftWall.x + PHYSICS.WALL_CONTACT_TOLERANCE_PX - 1,
+      y: (leftWall.yTop + leftWall.yBottom) / 2,
+      isGrounded: false,
+    });
+    const stage = makeStage();
+    const result = checkWallCollision(player, stage);
+    expect(result).toBe('left');
+  });
+
+  it('detects right wall when player is within contact tolerance and vertical bounds', () => {
+    const rightWall = STAGE.WALLS[1];
+    const player = makePlayer({
+      x: rightWall.x - PHYSICS.WALL_CONTACT_TOLERANCE_PX + 1,
+      y: (rightWall.yTop + rightWall.yBottom) / 2,
+      isGrounded: false,
+    });
+    const stage = makeStage();
+    const result = checkWallCollision(player, stage);
+    expect(result).toBe('right');
+  });
+
+  it('returns null when player is outside horizontal contact tolerance', () => {
+    const leftWall = STAGE.WALLS[0];
+    const player = makePlayer({
+      x: leftWall.x + PHYSICS.WALL_CONTACT_TOLERANCE_PX + 5,
+      y: (leftWall.yTop + leftWall.yBottom) / 2,
+      isGrounded: false,
+    });
+    const stage = makeStage();
+    expect(checkWallCollision(player, stage)).toBeNull();
+  });
+
+  it('returns null when player is outside vertical bounds of wall', () => {
+    const leftWall = STAGE.WALLS[0];
+    const player = makePlayer({
+      x: leftWall.x,
+      y: leftWall.yTop - 10,
+      isGrounded: false,
+    });
+    const stage = makeStage();
+    expect(checkWallCollision(player, stage)).toBeNull();
+  });
+
+  it('returns first matching wall when multiple walls are in range', () => {
+    const leftWall = STAGE.WALLS[0];
+    const player = makePlayer({
+      x: leftWall.x,
+      y: (leftWall.yTop + leftWall.yBottom) / 2,
+      isGrounded: false,
+    });
+    const stage = makeStage();
+    const result = checkWallCollision(player, stage);
+    expect(result).toBe('left');
   });
 });

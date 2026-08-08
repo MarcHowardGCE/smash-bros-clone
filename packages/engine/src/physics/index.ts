@@ -379,6 +379,32 @@ export function checkLedgeGrab(
 	return null;
 }
 
+// Pure geometric wall collision query used by GameEngine for wall-tech and wall-jump detection.
+// Returns the wall's id ('left' or 'right') on first match, or null if no wall is in contact range.
+// Only checks when airborne — grounded players never wall-detect.
+export function checkWallCollision(
+	player: PlayerState,
+	stage: StageData,
+): 'left' | 'right' | null {
+	if (player.isGrounded) {
+		return null;
+	}
+
+	for (const wall of stage.walls) {
+		const dx = Math.abs(player.x - wall.x);
+
+		if (
+			dx <= PHYSICS.WALL_CONTACT_TOLERANCE_PX &&
+			player.y >= wall.yTop &&
+			player.y <= wall.yBottom
+		) {
+			return wall.id as 'left' | 'right';
+		}
+	}
+
+	return null;
+}
+
 export function applyMovementInput(
 	player: PlayerState,
 	input: InputEvent,

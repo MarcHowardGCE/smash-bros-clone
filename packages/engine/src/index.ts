@@ -18,6 +18,7 @@ export {
 	applyMovementInput,
 	checkLedgeGrab,
 	checkPlatformCollision,
+	checkWallCollision,
 	DEFAULT_STAGE,
 	resolveJump,
 	startJump,

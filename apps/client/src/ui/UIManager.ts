@@ -66,7 +66,7 @@ export class UIManager {
           ? `<div style="font-size:18px;margin-bottom:24px">Room: <span style="font-size:24px">${existingRoom}</span></div>
              <button id="ready-btn" class="ui-btn">Ready</button>`
           : `<button id="create-btn" class="ui-btn" style="margin-bottom:16px">Create Room</button>
-             <div style="display:flex;gap:8px;align-items:center;justify-content:center;margin-bottom:16px">
+             <div style="display:flex;gap:8px;align-items:center;justify-content:center;margin:0 auto 16px auto;max-width:fit-content">
                <input id="join-code" class="ui-input" placeholder="ROOM CODE" maxlength="6">
                <button id="join-btn" class="ui-btn">Join</button>
              </div>`

@@ -89,6 +89,7 @@ export class LocalMatch {
     const state = this.engine.tickGame(inputs);
 
     const snapshot: StateSnapshot = this.engine.getSnapshot(performance.now(), {});
+    this.engine.clearHitEvents();
     this.latestSnapshot = snapshot;
     this.onSnapshot?.(snapshot);
 

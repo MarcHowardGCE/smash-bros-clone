@@ -2,7 +2,7 @@ import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import { LocalPlayerController } from '../LocalPlayerController.js';
 import { LocalMatch } from '../LocalMatch.js';
 import { DEFAULT_KEYMAP_P1, DEFAULT_KEYMAP_P2, DEFAULT_KEYMAP_P3, DEFAULT_KEYMAP_P4 } from '../../input/keymaps.js';
-import { INPUT_BITS } from '@smash/shared';
+import { INPUT_BITS, MoveId, PlayerStateEnum } from '@smash/shared';
 import type { GamepadInputSource } from '../../input/GamepadInputSource.js';
 
 describe('LocalMatch N-player support (up to 4 controllers)', () => {
@@ -286,6 +286,80 @@ describe('LocalMatch N-player support (up to 4 controllers)', () => {
     expect(p4.facing).toBe(1);
 
     // Cleanup
+    match.cleanup();
+  });
+
+  it('clears hitEvents after each local snapshot so flash is not retriggered forever', () => {
+    const p1Controller = new LocalPlayerController({
+      playerId: 'local-p1',
+      keymap: DEFAULT_KEYMAP_P1,
+      slotIndex: 0,
+    });
+
+    const p2Controller = new LocalPlayerController({
+      playerId: 'local-p2',
+      keymap: DEFAULT_KEYMAP_P2,
+      slotIndex: 1,
+    });
+
+    const match = new LocalMatch([p1Controller, p2Controller]);
+    const engine = (match as any).engine;
+    const state = (engine as any).state;
+
+    // Prime deterministic overlap hit setup for one jab hit on next tick.
+    state.players['local-p1'] = {
+      ...state.players['local-p1'],
+      x: 640,
+      y: 300,
+      facing: 1,
+      state: PlayerStateEnum.ATTACK,
+      stateFrame: 2,
+      isGrounded: true,
+      isInvincible: false,
+      invincibilityFrames: 0,
+      hitlagFramesRemaining: 0,
+      hitstunFramesRemaining: 0,
+      currentMoveId: MoveId.JAB,
+      hitPlayerIds: new Set<string>(),
+      activeHitbox: {
+        offsetX: 0,
+        offsetY: 0,
+        radius: 20,
+        damage: 4,
+        baseKnockback: 12,
+        knockbackGrowth: 100,
+        knockbackAngle: 45,
+        hitlagFrames: 3,
+        hitstunFrames: 8,
+        priority: 2,
+      },
+    };
+
+    state.players['local-p2'] = {
+      ...state.players['local-p2'],
+      x: 650,
+      y: 300,
+      state: PlayerStateEnum.IDLE,
+      stateFrame: 0,
+      isGrounded: true,
+      isInvincible: false,
+      invincibilityFrames: 0,
+      hitlagFramesRemaining: 0,
+      hitstunFramesRemaining: 0,
+      activeHitbox: null,
+      currentMoveId: null,
+    };
+
+    const snapshots: any[] = [];
+    match.onSnapshot = (snapshot) => snapshots.push(snapshot);
+
+    match['tick']();
+    match['tick']();
+
+    expect(snapshots.length).toBe(2);
+    expect(snapshots[0].hitEvents).toHaveLength(1);
+    expect(snapshots[1].hitEvents).toEqual([]);
+
     match.cleanup();
   });
 });

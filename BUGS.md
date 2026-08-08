@@ -117,9 +117,9 @@ Each bug entry follows this template:
 ## [Major] Fast fall velocity not capped at TERMINAL_VELOCITY×0.8
 
 - **Status: FIXED** ✓ (T1 — 2026-08-07)
-- **Final status:** Fixed. Fast fall velocity cap corrected from `TERMINAL_VELOCITY × 0.9` (≈16.2) to `TERMINAL_VELOCITY × 0.8` (≈14.4) by changing the multiplier at `packages/engine/src/physics/index.ts:269`.
-- **Evidence:** `.omo/evidence/task-2-fix-fast-fall.md` — multiplier changed `0.9 → 0.8`; all 35 physics tests pass including `physics.test.ts:215` assertion `expect(result.vy).toBeCloseTo(PHYSICS.TERMINAL_VELOCITY * 0.8)`.
-- **Design note:** The in-repo physics.ts comment describes fast-fall as reaching the same `TERMINAL_VELOCITY` ceiling faster via `FAST_FALL_MULTIPLIER`; the `×0.8` lower ceiling is the implemented and test-verified behavior — the code comment was not authoritative. The test at line 215 was the ground truth and is now green.
+- **Final status:** Fixed. Fast-fall pipeline ordering corrected so `isFastFalling` set on activation frame is visible to gravity calculation on the SAME frame (`GameEngine.ts:798` calls `applyFastFall` before `applyGravity`). Design intent confirmed: both normal-fall and fast-fall share one terminal ceiling (`PHYSICS.TERMINAL_VELOCITY = 18`); fast-fall only changes acceleration rate (`GRAVITY × FAST_FALL_MULTIPLIER = 1.0 × 1.8`), not the max speed cap.
+- **Evidence:** `.omo/evidence/task-2-fix-fast-fall.md` — pipeline reordered; `physics/index.ts:80-82` documents shared-ceiling design; `physics.test.ts:248-256` verifies fast-fall caps at `TERMINAL_VELOCITY` (18), not a lower ceiling.
+- **Design note:** The shared-ceiling design (18 for both modes) matches the in-repo comment at `physics/index.ts:80-82` and is verified by test assertion at `physics.test.ts:255`: `expect(result.vy).toBe(PHYSICS.TERMINAL_VELOCITY)`.
 
 - Area: physics
 - Repro steps:

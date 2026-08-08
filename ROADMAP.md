@@ -8,7 +8,7 @@ The engine and netcode here are production-quality: a 15-state FSM per fighter, 
 
 | Area | Current state | Rating |
 |---|---|---|
-| Engine / physics | 15-state FSM, 22 moves, hitlag/hitstun, real knockback formula | ★★★★☆ |
+| Engine / physics | 25-state FSM, 22 moves, hitlag/hitstun, real knockback formula | ★★★★☆ |
 | Netcode | Client prediction, server reconciliation, interpolation buffer | ★★★★☆ |
 | Rendering | Part-based polygon renderer; hit flash, screen shake, impact sparks, shield bubble, damage% color, per-move poses, KO tumble/stars | ★★★★☆ |
 | Audio | Zero — no sound manager, no file references, nothing | ★☆☆☆☆ |

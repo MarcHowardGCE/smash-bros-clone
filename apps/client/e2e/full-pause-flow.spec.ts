@@ -60,8 +60,8 @@ async function assertPauseOverlayHidden(page: import('@playwright/test').Page): 
  */
 async function assertLobbyVisible(page: import('@playwright/test').Page): Promise<void> {
   await page.waitForSelector('#local-play-btn', { timeout: 10000 });
-  const lobbyText = await page.textContent('.overlay-center');
-  expect(lobbyText).toContain('SMASH CLONE');
+  const logoImg = page.locator('img[alt="Everybody Throws Hands"]');
+  await expect(logoImg).toBeVisible();
 }
 
 // ---------------------------------------------------------------------------

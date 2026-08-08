@@ -133,6 +133,23 @@ describe('UIManager', () => {
     });
   });
 
+  describe('showLobby', () => {
+    it('should render logo image with light card background', () => {
+      uiManager.showLobby();
+      const img = mockOverlay.querySelector('img[alt="Everybody Throws Hands"]') as HTMLImageElement;
+      expect(img).not.toBeNull();
+      expect(img.src).toContain('everybody-throws-hands-logo.png');
+      const card = img.parentElement as HTMLElement;
+      expect(card).not.toBeNull();
+      expect(card.style.background).toBe('rgb(255, 255, 255)');
+    });
+
+    it('should not contain old SMASH CLONE text', () => {
+      uiManager.showLobby();
+      expect(mockOverlay.innerHTML).not.toContain('SMASH CLONE');
+    });
+  });
+
   describe('showCharacterSelect', () => {
     const fighters: FighterChoice[] = [{ id: 'fighter1', displayName: 'Fighter One' }];
 

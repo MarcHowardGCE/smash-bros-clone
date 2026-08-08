@@ -61,7 +61,7 @@ export class UIManager {
 
     this.overlay.innerHTML = `
       <div class="overlay-center">
-        <div style="font-size:40px;letter-spacing:4px;margin-bottom:32px">SMASH CLONE</div>
+        <div style="background:#fff;padding:20px 32px;margin-bottom:32px;display:inline-block;"><img src="/branding/everybody-throws-hands-logo.png" alt="Everybody Throws Hands" style="max-width:min(700px,80vw);height:auto;display:block;"></div>
         ${existingRoom
           ? `<div style="font-size:18px;margin-bottom:24px">Room: <span style="font-size:24px">${existingRoom}</span></div>
              <button id="ready-btn" class="ui-btn">Ready</button>`

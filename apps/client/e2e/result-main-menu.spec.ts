@@ -100,8 +100,8 @@ test('result screen shows Main Menu button and navigates to lobby on click', asy
 
   // Assert navigation to lobby — lobby has the Local Play button
   await page.waitForSelector('#local-play-btn', { timeout: 10000 });
-  const lobbyTitle = await page.textContent('.overlay-center');
-  expect(lobbyTitle).toContain('SMASH CLONE');
+  const logoImg = await page.locator('img[alt="Everybody Throws Hands"]');
+  await expect(logoImg).toBeVisible();
 
   await page.screenshot({ path: '.omo/evidence/t25-main-menu-navigated-to-lobby.png' });
 });

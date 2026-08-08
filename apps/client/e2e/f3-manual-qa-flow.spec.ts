@@ -469,8 +469,8 @@ test('F3: Full local match end-to-end experience', async ({ page }) => {
 
   // Wait for lobby to appear
   await page.waitForSelector('#local-play-btn', { timeout: 10_000 });
-  const lobbyText = await page.textContent('.overlay-center');
-  expect(lobbyText).toContain('SMASH CLONE');
+  const logoImg = page.locator('img[alt="Everybody Throws Hands"]');
+  await expect(logoImg).toBeVisible();
 
   await page.screenshot({ path: `${EVIDENCE_DIR}/16-back-to-lobby.png` });
 });

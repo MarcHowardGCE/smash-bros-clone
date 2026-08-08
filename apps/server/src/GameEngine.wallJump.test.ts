@@ -191,4 +191,58 @@ describe('GameEngine wall jump integration', () => {
 		expect(player.isInvincible).toBe(false);
 		expect(player.invincibilityFrames).toBe(0);
 	});
+
+	it('REGRESSION: wall jump does NOT grant double-jump when player has no double-jump', () => {
+		const engine = new GameEngine({ playerIds: ['p1'] });
+		primePlayer(engine, 'p1', {
+			x: -260,
+			y: 450,
+			vx: 0,
+			vy: 0,
+			state: PlayerStateEnum.AIRBORNE,
+			stateFrame: 0,
+			isGrounded: false,
+			hasDoubleJump: false,
+		});
+
+		const state = tick(engine, {
+			p1: makeInput('p1', INPUT_BITS.RIGHT | INPUT_BITS.JUMP),
+		});
+		const player = state.players.p1;
+
+		expect(player).toBeDefined();
+		if (!player) {
+			throw new Error('Expected player p1 after wall-jump tick');
+		}
+
+		// MUST NOT restore double-jump as a side effect of wall jump
+		expect(player.hasDoubleJump).toBe(false);
+	});
+
+	it('REGRESSION: wall jump does NOT consume double-jump when player has double-jump', () => {
+		const engine = new GameEngine({ playerIds: ['p1'] });
+		primePlayer(engine, 'p1', {
+			x: -260,
+			y: 450,
+			vx: 0,
+			vy: 0,
+			state: PlayerStateEnum.AIRBORNE,
+			stateFrame: 0,
+			isGrounded: false,
+			hasDoubleJump: true,
+		});
+
+		const state = tick(engine, {
+			p1: makeInput('p1', INPUT_BITS.RIGHT | INPUT_BITS.JUMP),
+		});
+		const player = state.players.p1;
+
+		expect(player).toBeDefined();
+		if (!player) {
+			throw new Error('Expected player p1 after wall-jump tick');
+		}
+
+		// Wall jump must preserve double-jump resource (not consume it)
+		expect(player.hasDoubleJump).toBe(true);
+	});
 });

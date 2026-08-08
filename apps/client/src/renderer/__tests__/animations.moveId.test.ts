@@ -48,7 +48,7 @@ describe('animations move-id attack differentiation', () => {
     expect(Object.keys(ATTACK_MOVE_ANIMATIONS)).toHaveLength(22);
 
     for (const moveId of REQUIRED_MOVE_IDS) {
-      const animation = ATTACK_MOVE_ANIMATIONS[moveId];
+      const animation = ATTACK_MOVE_ANIMATIONS[moveId as keyof typeof ATTACK_MOVE_ANIMATIONS];
       expect(animation).toBeDefined();
       expect(animation.length).toBeGreaterThanOrEqual(2);
     }
@@ -59,7 +59,7 @@ describe('animations move-id attack differentiation', () => {
     expect(genericAttackPose).toBeDefined();
 
     for (const moveId of REQUIRED_MOVE_IDS) {
-      const movePose = ATTACK_MOVE_ANIMATIONS[moveId][1]!;
+      const movePose = ATTACK_MOVE_ANIMATIONS[moveId as keyof typeof ATTACK_MOVE_ANIMATIONS][1]!;
       expect(maxAngleDelta(movePose, genericAttackPose!)).toBeGreaterThanOrEqual(0.2);
     }
   });
@@ -67,11 +67,11 @@ describe('animations move-id attack differentiation', () => {
   it('enforces >=0.2 rad pairwise separation between all move poses', () => {
     for (let i = 0; i < REQUIRED_MOVE_IDS.length; i += 1) {
       const leftMoveId = REQUIRED_MOVE_IDS[i]!;
-      const leftPose = ATTACK_MOVE_ANIMATIONS[leftMoveId][1]!;
+      const leftPose = ATTACK_MOVE_ANIMATIONS[leftMoveId as keyof typeof ATTACK_MOVE_ANIMATIONS][1]!;
 
       for (let j = i + 1; j < REQUIRED_MOVE_IDS.length; j += 1) {
         const rightMoveId = REQUIRED_MOVE_IDS[j]!;
-        const rightPose = ATTACK_MOVE_ANIMATIONS[rightMoveId][1]!;
+        const rightPose = ATTACK_MOVE_ANIMATIONS[rightMoveId as keyof typeof ATTACK_MOVE_ANIMATIONS][1]!;
         expect(
           maxAngleDelta(leftPose, rightPose),
           `${leftMoveId} vs ${rightMoveId}`,

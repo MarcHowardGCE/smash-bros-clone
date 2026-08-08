@@ -12,6 +12,8 @@ export type { Physics } from './constants/physics.js';
 export { STAGE } from './constants/stage.js';
 export type { Stage } from './constants/stage.js';
 export { MATCH_CONFIG } from './constants/matchConfig.js';
+export { BOT_DIFFICULTY_PRESETS } from './constants/botDifficulty.js';
+export type { BotDifficulty } from './constants/botDifficulty.js';
 
 // Math utilities
 export {

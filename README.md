@@ -47,6 +47,20 @@ This starts both the game server (port 3001) and the client (port 5173), opens y
 4. Everyone clicks **Ready**
 5. Countdown: 3… 2… 1… **GO!**
 
+### Playing vs. CPU
+
+You can play against CPU opponents locally without needing a second human player.
+
+When you open the local-play lobby, the game asks how many human players are joining before it fills remaining slots with CPUs. Pick your participant count first, then choose a difficulty for each CPU slot:
+
+- **Easy** — slow reactions, limited aggression, predictable patterns. Good for learning the controls.
+- **Medium** — reads your position, punishes obvious mistakes, recovers reliably. A decent practice partner.
+- **Hard** — fast reactions, aggressive edgeguarding, consistent combo follow-ups. Expect to lose.
+
+All of this is local only. There's no networked or server-side CPU mode.
+
+**Known limitation:** CPUs currently always target Player 1 and do not fight each other. Full multi-CPU awareness is a planned future improvement.
+
 ### Controls
 
 | Action | Keys |

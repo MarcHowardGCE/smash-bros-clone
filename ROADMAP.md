@@ -241,6 +241,14 @@ No persistence exists today. This is the lowest priority but required for a publ
 | **Medium** | ~~Smash charge~~ ✅ · ~~Grab victim pinning + pummel/throw~~ ✅ · Stage background art · ~~Shield bubble~~ ✅ | ~~Down Special counter logic~~ ✅ · Reconnection handling · Settings persistence |
 | **High** | Sprite art for fighters · Additional fighter (full move set) · Additional stage · Audio system + BGM | Ranked / matchmaking · Replays · ~~Ledge grab~~ ✅ |
 
+### ✅ CPU opponents (Implemented — 2026-08-08)
+
+Local-play CPU opponents are shipped. The lobby's participant-count-first flow lets the host set the number of human players, then assigns a CPU to each remaining slot at Easy, Medium, or Hard difficulty. The CPU runs a reactive targeting loop inside the server's authoritative game tick — no client-side simulation, no networking required.
+
+**Remaining gap:** CPUs currently always target Player 1 and do not fight each other. Full multi-CPU targeting awareness is a planned future improvement.
+
+---
+
 ## Open initiatives — mechanics fidelity closed, three paths forward
 
 **Gap A (mechanics fidelity) is now closed.** After Waves 1–6, the engine, netcode, FSM, physics, all 22 moves, grab/throw, ledge, shield, counters, smash charge, stale-move queue, DI, teching, KO effects, hit flash, pause, result screen, wavedash, L-cancel, wall-jump, and wall-tech are all shipped and green across 144 engine tests, 94 server tests, and 12 Playwright e2e specs.

@@ -103,6 +103,39 @@ All 22 moves use the same fighter. Context determines which move fires:
 
 ---
 
+## Playing as Abe Lincoln
+
+Abe Lincoln is a **reach-based bruiser/zoner** with a comedic historical tone. He's taller and heavier than the All-Rounder — slower on his feet, hits harder, and his long limbs let him poke from ranges that punish opponents who try to play footsies. Think: Honest Abe with a stovepipe hat and an absolute disregard for personal space.
+
+**Archetype at a glance:**
+- Higher weight (118 vs 100) means he survives longer before getting launched
+- Slower run and walk speed than the All-Rounder
+- Lower jump height — he doesn't leap, he *lumbers*
+- 15% taller body, exaggerated walk cycle, top hat and coattails rendered on screen
+- His 7 unique moves trade raw speed for extended reach and punchier damage
+
+### Lincoln move reference
+
+These 7 moves override the shared defaults. All other inputs use the standard All-Rounder moves:
+
+| Input | Move | Notes |
+|---|---|---|
+| Attack (neutral) | **Jab** | +13 px extra reach (offsetX 58 vs 45) — pokes before the opponent expects it |
+| Forward + Attack (hold) | **Forward Smash** | +13 px reach, +2 damage (20 vs 18), chargeable up to 60 frames — his main KO threat |
+| Down + Attack (airborne) | **Down Air** | Adjusted spike angle — hitbox higher on the body (offsetY 30 vs 40) for a tighter meteor zone |
+| Special (neutral) | **Neutral Special** | Burst fires from in front of Lincoln rather than centered (offsetX 90) — pure zoning tool |
+| Forward + Special | **Side Special** | +20 px reach (offsetX 70 vs 50), +6 damage (15 vs 9) — aggressive horizontal chase option |
+| Up + Special | **Up Special (Recovery)** | Stronger vertical launch (offsetY -40 vs -35), double damage (12 vs 6), steeper angle (85° vs 75°) — hits hard on the way up |
+| Down + Special | **Down Special (Counter)** | Identical to the All-Rounder counter — same 6-frame window, same invincibility, same hitbox |
+
+**Tips:**
+- Forward Smash is your bread-and-butter KO move. At high percents, a fully charged Forward Smash from center stage sends opponents off the side blast zone cleanly.
+- Neutral Special punishes predictable approach patterns. The offsetX 90 placement means opponents walking in eat it before they're in range to attack back.
+- Side Special covers more ground than it looks. Use it for edge-guarding or closing distance after a jab poke.
+- His slower speed means he struggles against fast characters who stay mobile. Control the center, use his reach, don't chase.
+
+---
+
 ## Architecture
 
 ```

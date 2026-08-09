@@ -227,6 +227,7 @@ export class UIManager {
     onSelected: (choices: FighterChoice[]) => void,
     autoConfirmSlots: number[] = [],
     onBack?: () => void,
+    gamepadSlotByIndex?: ReadonlyMap<number, number>,
   ): void {
     this.stopMenuNav();
     this.hudPanel.style.display = 'none';
@@ -243,15 +244,24 @@ export class UIManager {
     const confirmed: boolean[] = Array(playerCount).fill(false);
     const selectedFighterIndex: number[] = Array(playerCount).fill(0);
     const rafIds: number[] = [];
+    const autoConfirmSlotSet = new Set(autoConfirmSlots);
 
     // Render N panels dynamically
     const panelsHtml = (() => {
       let html = '';
       for (let i = 0; i < playerCount; i++) {
-        const confirmHint = i === 0 ? 'Enter or Z' : i === 1 ? 'U' : CONFIRM_KEYS[i]?.[0] ?? 'Gamepad A';
+        const isCpuSlot = autoConfirmSlotSet.has(i);
+        const panelRole = i === 0 ? 'You' : isCpuSlot ? 'CPU' : 'Human';
+        const confirmHint = isCpuSlot
+          ? 'CPU auto-confirms'
+          : i === 0
+            ? 'Enter or Z'
+            : i === 1
+              ? 'U'
+              : CONFIRM_KEYS[i]?.[0] ?? 'Gamepad A';
         html += `
         <div id="p${i + 1}-panel" style="text-align:center">
-          <div style="font-size:20px;margin-bottom:16px">P${i + 1} Choose</div>
+          <div style="font-size:20px;margin-bottom:16px">P${i + 1} (${panelRole}) Choose</div>
           ${fighters.map(f => `
             <div class="fighter-option" data-player="${i + 1}" data-id="${f.id}"
                  style="border:2px solid rgba(255,255,255,0.3);padding:12px 24px;margin-bottom:8px;cursor:pointer;font-size:18px">
@@ -380,8 +390,7 @@ export class UIManager {
 
           // D-pad up/down → cycle through fighters
           if (pressed & GenericInputBits.UP) {
-            // Direct mapping: gamepad 0 → slot 0, gamepad 1 → slot 1, etc.
-            const slotIndex = gpIndex;
+            const slotIndex = gamepadSlotByIndex?.get(gpIndex) ?? gpIndex;
             if (slotIndex < playerCount && !confirmed[slotIndex]) {
               // Decrement index, wrap to last fighter if at first
               const currentIndex = selectedFighterIndex[slotIndex] ?? 0;
@@ -406,8 +415,7 @@ export class UIManager {
           }
 
           if (pressed & GenericInputBits.DOWN) {
-            // Direct mapping: gamepad 0 → slot 0, gamepad 1 → slot 1, etc.
-            const slotIndex = gpIndex;
+            const slotIndex = gamepadSlotByIndex?.get(gpIndex) ?? gpIndex;
             if (slotIndex < playerCount && !confirmed[slotIndex]) {
               // Increment index, wrap to first fighter if at last
               const currentIndex = selectedFighterIndex[slotIndex] ?? 0;
@@ -433,8 +441,7 @@ export class UIManager {
 
           // A button → confirm for matching slot
           if (pressed & 0x0010) {
-            // Direct mapping: gamepad 0 → slot 0, gamepad 1 → slot 1, etc.
-            const slotIndex = gpIndex;
+            const slotIndex = gamepadSlotByIndex?.get(gpIndex) ?? gpIndex;
             if (slotIndex < playerCount && !confirmed[slotIndex]) {
               confirmSlot(slotIndex);
             }

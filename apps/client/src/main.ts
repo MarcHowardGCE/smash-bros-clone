@@ -447,9 +447,13 @@ async function main() {
 	const enterLocalPlayFlow = (): void => {
 		uiManager.showLocalPlaySetup({ assignmentManager }, lastLocalSetup, (result) => {
 			lastLocalSetup = result;
-		const cpuSlotIndices = result.seats
-			.map((seat, index) => (seat.kind === "cpu" ? index : null))
-			.filter((slotIndex): slotIndex is number => slotIndex !== null);
+			const cpuSlotIndices = result.seats
+				.map((seat, index) => (seat.kind === "cpu" ? index + 1 : null))
+				.filter((slotIndex): slotIndex is number => slotIndex !== null);
+			const gamepadSlotByIndex = new Map<number, number>();
+			for (const [slotIndex, assignment] of assignmentManager.getAssignments()) {
+				gamepadSlotByIndex.set(assignment.gamepadIndex, slotIndex);
+			}
 			uiManager.showCharacterSelect(
 				AVAILABLE_FIGHTERS,
 				result.participantCount,
@@ -461,6 +465,7 @@ async function main() {
 					// Back from character select → return to setup
 					enterLocalPlayFlow();
 				},
+				gamepadSlotByIndex,
 			);
 		},
 		() => {

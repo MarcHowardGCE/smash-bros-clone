@@ -15,6 +15,7 @@ interface BootResult {
     playerCount: number;
     onSelected: (choices: unknown[]) => void;
     autoConfirmSlots: number[];
+    gamepadSlotByIndex?: ReadonlyMap<number, number>;
   }>;
   localMatchCtorCalls: Array<{ controllers: unknown[]; characterIds?: unknown }>;
   gamepadInputSourceCtorCalls: Array<{ poller: unknown; gamepadIndex: number }>;
@@ -34,6 +35,7 @@ const bootMainWithMocks = async (setupResults: SetupResult[]): Promise<BootResul
     playerCount: number;
     onSelected: (choices: unknown[]) => void;
     autoConfirmSlots: number[];
+    gamepadSlotByIndex?: ReadonlyMap<number, number>;
   }> = [];
   const localMatchCtorCalls: Array<{ controllers: unknown[]; characterIds?: unknown }> = [];
   const gamepadInputSourceCtorCalls: Array<{ poller: unknown; gamepadIndex: number }> = [];
@@ -250,8 +252,10 @@ const bootMainWithMocks = async (setupResults: SetupResult[]): Promise<BootResul
         playerCount: number,
         onSelected: (choices: unknown[]) => void,
         autoConfirmSlots: number[] = [],
+        _onBack?: () => void,
+        gamepadSlotByIndex?: ReadonlyMap<number, number>,
       ): void {
-        showCharacterSelectCalls.push({ playerCount, onSelected, autoConfirmSlots });
+        showCharacterSelectCalls.push({ playerCount, onSelected, autoConfirmSlots, gamepadSlotByIndex });
       }
     },
   }));
@@ -299,6 +303,7 @@ describe('main local play flow wiring', () => {
     expect(runtime.showCharacterSelectCalls[0]?.playerCount).toBe(2);
     expect(runtime.showCharacterSelectCalls[0]?.autoConfirmSlots).toEqual([1]);
     expect(runtime.showCharacterSelectCalls[0]?.autoConfirmSlots).not.toContain(0);
+    expect(runtime.showCharacterSelectCalls[0]?.gamepadSlotByIndex?.get(0)).toBe(1);
 
     runtime.showCharacterSelectCalls[0]?.onSelected([]);
 

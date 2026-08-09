@@ -233,17 +233,24 @@ describe('UIManager', () => {
     });
 
     it('should auto-confirm provided non-host slots via autoConfirmSlots', () => {
-      const onSelected = vi.fn();
-      uiManager.showCharacterSelect(fighters, 2, onSelected, [1]);
+      vi.useFakeTimers();
+      try {
+        const onSelected = vi.fn();
+        uiManager.showCharacterSelect(fighters, 2, onSelected, [1]);
 
-      const p2Status = mockOverlay.querySelector('#p2-status');
-      expect(p2Status?.textContent).toBe('✓ Ready!');
+        vi.advanceTimersByTime(500);
 
-      // Only host slot remains; one host confirm should complete selection
-      window.dispatchEvent(new KeyboardEvent('keydown', { code: 'Enter' }));
+        const p2Status = mockOverlay.querySelector('#p2-status');
+        expect(p2Status?.textContent).toBe('✓ Ready!');
 
-      expect(onSelected).toHaveBeenCalledTimes(1);
-      expect(onSelected.mock.calls[0][0]).toHaveLength(2);
+        // Only host slot remains; one host confirm should complete selection
+        window.dispatchEvent(new KeyboardEvent('keydown', { code: 'Enter' }));
+
+        expect(onSelected).toHaveBeenCalledTimes(1);
+        expect(onSelected.mock.calls[0][0]).toHaveLength(2);
+      } finally {
+        vi.useRealTimers();
+      }
     });
 
     it('should update choice when clicking a fighter option', () => {

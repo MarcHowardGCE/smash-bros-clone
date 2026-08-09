@@ -1,4 +1,4 @@
-import { Graphics, Container, Sprite, Texture } from 'pixi.js';
+import { Assets, Container, Graphics, Sprite } from 'pixi.js';
 import { STAGE } from '@smash/shared';
 
 // B&W colors
@@ -91,15 +91,21 @@ export class StageRenderer {
   }
 
   private drawBackground(): void {
-    try {
-      // Use Sprite.from() with proper error handling for PixiJS v8
-      const bgSprite = Sprite.from('/backgrounds/cityscape.png');
-      bgSprite.position.set(0, 0);
-      bgSprite.width = STAGE.WIDTH;
-      bgSprite.height = STAGE.HEIGHT;
-      this.container.addChildAt(bgSprite, 0);
-    } catch (error) {
-      console.warn('[StageRenderer] Failed to load background image:', error);
-    }
+    const baseUrl = import.meta.env.BASE_URL || '/';
+    const normalizedBaseUrl = baseUrl.endsWith('/') ? baseUrl : `${baseUrl}/`;
+    const backgroundPath = `${normalizedBaseUrl}backgrounds/cityscape.png`;
+
+    void Assets.load(backgroundPath)
+      .then((texture) => {
+        const bgSprite = new Sprite(texture);
+        bgSprite.anchor.set(0.5, 0.5);
+        const scale = Math.max(STAGE.WIDTH / texture.width, STAGE.HEIGHT / texture.height);
+        bgSprite.scale.set(scale, scale);
+        bgSprite.position.set(STAGE.WIDTH / 2, STAGE.HEIGHT / 2);
+        this.container.addChildAt(bgSprite, 0);
+      })
+      .catch((error: unknown) => {
+        console.warn('[StageRenderer] Failed to load background image:', error);
+      });
   }
 }

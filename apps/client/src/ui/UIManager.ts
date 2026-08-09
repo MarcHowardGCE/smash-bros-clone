@@ -214,10 +214,12 @@ export class UIManager {
       }
     }
 
-    for (const idx of autoConfirmSlots) {
-      confirmSlot(idx);
-    }
-  }
+		// autoConfirmSlots contains player slot indices for local mode (P2=1, P3=2, P4=3),
+		// which align with character-select panel indices (panel for Pi uses i-1 index).
+		for (const slotIndex of autoConfirmSlots) {
+			confirmSlot(slotIndex);
+		}
+	}
 
   showLocalPlaySetup(
     deps: { assignmentManager: ControllerAssignmentManager },

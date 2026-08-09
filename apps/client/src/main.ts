@@ -321,14 +321,20 @@ async function main() {
 		}
 
 		const assignments = assignmentManager.getAssignments();
-		const controllers: ITickController[] = [
+		const controllers: ITickController[] = [];
+
+		const p1Assignment = assignments.get(0);
+		const p1GamepadSource = p1Assignment
+			? new GamepadInputSource(poller, p1Assignment.gamepadIndex)
+			: null;
+		controllers.push(
 			new LocalPlayerController({
 				playerId: "local-p1",
 				keymap: DEFAULT_KEYMAP_P1,
 				slotIndex: 0,
-				gamepadSource: null,
+				gamepadSource: p1GamepadSource,
 			}),
-		];
+		);
 
 		for (let k = 0; k < setup.seats.length; k += 1) {
 			const seat = setup.seats[k]!;
@@ -350,7 +356,7 @@ async function main() {
 			const assignment = assignments.get(slotIndex);
 			const gamepadSource = assignment
 				? new GamepadInputSource(poller, assignment.gamepadIndex)
-				: undefined;
+				: null;
 			controllers.push(
 				new LocalPlayerController({
 					playerId,

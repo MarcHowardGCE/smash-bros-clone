@@ -17,6 +17,7 @@ interface BootResult {
     autoConfirmSlots: number[];
   }>;
   localMatchCtorCalls: unknown[][];
+  gamepadInputSourceCtorCalls: Array<{ poller: unknown; gamepadIndex: number }>;
   AIPlayerController: new (config: unknown) => unknown;
 }
 
@@ -35,6 +36,7 @@ const bootMainWithMocks = async (setupResults: SetupResult[]): Promise<BootResul
     autoConfirmSlots: number[];
   }> = [];
   const localMatchCtorCalls: unknown[][] = [];
+  const gamepadInputSourceCtorCalls: Array<{ poller: unknown; gamepadIndex: number }> = [];
 
   let uiInstance: BootResult['uiInstance'] | null = null;
 
@@ -155,7 +157,9 @@ const bootMainWithMocks = async (setupResults: SetupResult[]): Promise<BootResul
 
   vi.doMock('../input/GamepadInputSource.js', () => ({
     GamepadInputSource: class GamepadInputSource {
-      constructor(_poller: unknown, _index: number) {}
+      constructor(poller: unknown, gamepadIndex: number) {
+        gamepadInputSourceCtorCalls.push({ poller, gamepadIndex });
+      }
     },
   }));
 
@@ -261,6 +265,7 @@ const bootMainWithMocks = async (setupResults: SetupResult[]): Promise<BootResul
     showLocalPlaySetupCalls,
     showCharacterSelectCalls,
     localMatchCtorCalls,
+    gamepadInputSourceCtorCalls,
     AIPlayerController: MockAIPlayerController,
   };
 };
@@ -300,6 +305,27 @@ describe('main local play flow wiring', () => {
     expect(aiController).toBeInstanceOf(runtime.AIPlayerController);
     expect(aiController.config.difficulty).toBe('medium');
     expect(aiController.config.seed).toBe(1001);
+    expect(aiController.config).toMatchObject({ playerId: 'local-p2', slotIndex: 1 });
+  });
+
+  it('creates P2 human controller from slot 1 assignment and wires gamepad source', async () => {
+    const setup: SetupResult = {
+      participantCount: 2,
+      seats: [{ kind: 'human-gamepad' }],
+    };
+
+    const runtime = await bootMainWithMocks([setup]);
+
+    runtime.uiInstance.onLocalPlay?.();
+    runtime.showCharacterSelectCalls[0]?.onSelected([]);
+
+    const controllers = runtime.localMatchCtorCalls[0] ?? [];
+    expect(controllers).toHaveLength(2);
+    const p2Controller = controllers[1] as { config: { playerId: string; slotIndex: number; gamepadSource?: unknown } };
+    expect(p2Controller.config).toMatchObject({ playerId: 'local-p2', slotIndex: 1 });
+    expect(p2Controller.config.gamepadSource).toBeDefined();
+    expect(runtime.gamepadInputSourceCtorCalls).toHaveLength(1);
+    expect(runtime.gamepadInputSourceCtorCalls[0]?.gamepadIndex).toBe(0);
   });
 
   it('passes remembered lastLocalSetup as initial on local play again', async () => {

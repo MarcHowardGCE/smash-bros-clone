@@ -333,10 +333,11 @@ async function main() {
 		for (let k = 0; k < setup.seats.length; k += 1) {
 			const seat = setup.seats[k]!;
 			const slotIndex = k + 1;
+			const playerId = `local-p${slotIndex + 1}`;
 			if (seat.kind === "cpu") {
 				controllers.push(
 					new AIPlayerController({
-						playerId: `local-p${slotIndex + 1}`,
+						playerId,
 						slotIndex,
 						opponentPlayerId: "local-p1",
 						difficulty: seat.difficulty,
@@ -352,7 +353,7 @@ async function main() {
 				: undefined;
 			controllers.push(
 				new LocalPlayerController({
-					playerId: `local-p${slotIndex + 1}`,
+					playerId,
 					keymap: keymapForSlotIndex(slotIndex),
 					slotIndex,
 					gamepadSource,

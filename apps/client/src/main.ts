@@ -70,6 +70,8 @@ async function main() {
 
 	app.canvas.id = "game-canvas";
 	document.body.appendChild(app.canvas);
+	// Hide canvas until splash screen is dismissed to prevent game graphics showing behind splash
+	app.canvas.style.visibility = "hidden";
 
 	function resize() {
 		const scaleX = window.innerWidth / STAGE.WIDTH;
@@ -219,6 +221,9 @@ async function main() {
 		serverUrl: SERVER_URL,
 		onConnected: () => {
 			uiManager.showSplash(() => {
+				// Reveal game canvas now that splash is dismissed
+				app.canvas.style.visibility = "visible";
+
 				if (roomCodeFromUrl) {
 					uiManager.setRoomCode(roomCodeFromUrl.toUpperCase());
 					gameClient.joinRoom(roomCodeFromUrl);

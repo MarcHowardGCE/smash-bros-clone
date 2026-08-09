@@ -157,7 +157,7 @@ describe('GameEngine character-aware move resolution', () => {
       // Tick once to compute hitbox
       tick(engine, { [P1]: null });
 
-      const snapshot = engine.getSnapshot();
+      const snapshot = engine.getSnapshot(0, { [P1]: 0 });
       const p1 = snapshot.players[P1]!;
 
       // Hitbox should be Lincoln's FORWARD_SMASH with offsetX: 78

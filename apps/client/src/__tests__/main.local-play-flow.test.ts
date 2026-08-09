@@ -18,7 +18,7 @@ interface BootResult {
   }>;
   localMatchCtorCalls: Array<{ controllers: unknown[]; characterIds?: unknown }>;
   gamepadInputSourceCtorCalls: Array<{ poller: unknown; gamepadIndex: number }>;
-  AIPlayerController: new (config: unknown) => unknown;
+  AIPlayerController: new (config: { playerId: string }) => unknown;
 }
 
 const flush = async (): Promise<void> => {

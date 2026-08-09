@@ -1,4 +1,5 @@
 import type { GamepadPoller, GamepadPreferenceStore } from '@smash/gamepad-input';
+import { GenericInputBits } from '@smash/gamepad-input';
 import type { PlayerId } from '@smash/shared';
 import type { RenderState } from '../network/InterpolationBuffer.js';
 import type { ControllerAssignmentManager } from '../input/ControllerAssignmentManager.js';
@@ -76,18 +77,62 @@ export class UIManager {
     this.overlay.innerHTML = `
       <div class="splash-screen" id="splash-screen">
         <img src="/branding/zanda-logo.png" alt="Zanda Entertainment" class="splash-logo">
-        <div class="splash-continue">Click anywhere to continue</div>
+        <div class="splash-continue">Press any button to continue</div>
       </div>`;
 
     const splashScreen = document.getElementById('splash-screen');
     if (splashScreen) {
-      const handleClick = (): void => {
+      let dismissed = false;
+      let rafId: number | null = null;
+
+      const dismiss = (): void => {
+        if (dismissed) return;
+        dismissed = true;
+        
+        // Cancel gamepad polling
+        if (rafId !== null) {
+          cancelAnimationFrame(rafId);
+        }
+        
         splashScreen.classList.add('fade-out');
         setTimeout(() => {
           onContinue();
         }, 800);
         splashScreen.removeEventListener('click', handleClick);
       };
+
+      const handleClick = (): void => {
+        dismiss();
+      };
+
+      // Gamepad polling for any button press
+      if (typeof requestAnimationFrame !== 'undefined' && this._gamepadPoller) {
+        const poller = this._gamepadPoller;
+        let lastBits = new Map<number, number>();
+        const checkGamepads = (): void => {
+          const states = poller.poll();
+          for (const [gpIndex, state] of states) {
+            const bits = state.bits;
+            const prev = lastBits.get(gpIndex) ?? 0;
+            const pressed = bits & ~prev;
+
+            // Any button press dismisses splash
+            if (pressed !== 0) {
+              dismiss();
+              return;
+            }
+
+            lastBits.set(gpIndex, bits);
+          }
+          
+          // Continue polling if not dismissed
+          if (!dismissed) {
+            rafId = requestAnimationFrame(checkGamepads);
+          }
+        };
+        rafId = requestAnimationFrame(checkGamepads);
+      }
+
       splashScreen.addEventListener('click', handleClick);
     }
   }
@@ -196,6 +241,7 @@ export class UIManager {
 
     const choices: (FighterChoice | null)[] = Array(playerCount).fill(null);
     const confirmed: boolean[] = Array(playerCount).fill(false);
+    const selectedFighterIndex: number[] = Array(playerCount).fill(0);
     const rafIds: number[] = [];
 
     // Render N panels dynamically
@@ -331,6 +377,59 @@ export class UIManager {
             onBack();
             return;
           }
+
+           // D-pad up/down → cycle through fighters
+           if (pressed & GenericInputBits.UP) {
+             // Slot 0 uses keyboard primarily; gamepads 0-2 map to slots 1-3
+             const slotIndex = gpIndex + 1;
+             if (slotIndex < playerCount && !confirmed[slotIndex]) {
+               // Decrement index, wrap to last fighter if at first
+               const currentIndex = selectedFighterIndex[slotIndex] ?? 0;
+               selectedFighterIndex[slotIndex] = (currentIndex - 1 + fighters.length) % fighters.length;
+               const selectedFighter = fighters[selectedFighterIndex[slotIndex]];
+               if (selectedFighter) {
+                 choices[slotIndex] = selectedFighter;
+                 
+                 // Update visual styling: selected option gets white, others dim
+                 const playerElements = document.querySelectorAll(`[data-player="${slotIndex + 1}"]`);
+                 playerElements.forEach(el => {
+                   (el as HTMLElement).style.borderColor = 'rgba(255,255,255,0.3)';
+                 });
+                 const selectedElement = document.querySelector(
+                   `[data-player="${slotIndex + 1}"][data-id="${selectedFighter.id}"]`
+                 );
+                 if (selectedElement) {
+                   (selectedElement as HTMLElement).style.borderColor = 'white';
+                 }
+               }
+             }
+           }
+
+           if (pressed & GenericInputBits.DOWN) {
+             // Slot 0 uses keyboard primarily; gamepads 0-2 map to slots 1-3
+             const slotIndex = gpIndex + 1;
+             if (slotIndex < playerCount && !confirmed[slotIndex]) {
+               // Increment index, wrap to first fighter if at last
+               const currentIndex = selectedFighterIndex[slotIndex] ?? 0;
+               selectedFighterIndex[slotIndex] = (currentIndex + 1) % fighters.length;
+               const selectedFighter = fighters[selectedFighterIndex[slotIndex]];
+               if (selectedFighter) {
+                 choices[slotIndex] = selectedFighter;
+                 
+                 // Update visual styling: selected option gets white, others dim
+                 const playerElements = document.querySelectorAll(`[data-player="${slotIndex + 1}"]`);
+                 playerElements.forEach(el => {
+                   (el as HTMLElement).style.borderColor = 'rgba(255,255,255,0.3)';
+                 });
+                 const selectedElement = document.querySelector(
+                   `[data-player="${slotIndex + 1}"][data-id="${selectedFighter.id}"]`
+                 );
+                 if (selectedElement) {
+                   (selectedElement as HTMLElement).style.borderColor = 'white';
+                 }
+               }
+             }
+           }
 
           // A button → confirm for matching slot
           if (pressed & 0x0010) {

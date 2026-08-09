@@ -77,8 +77,17 @@ export class ControllerAssignmentManager {
 
     let assignedSlot: number | null = null;
 
+    // First active controller should always be slot 0 (P1), even if stale persisted
+    // data points this gamepad to another slot.
+    if (this.assignments.size === 0 && !this.assignments.has(0)) {
+      assignedSlot = 0;
+      console.log(
+        `[ControllerAssignmentManager] first active gamepad forced to slot 0 (saved slot: ${lastKnownSlot ?? 'none'})`,
+      );
+    }
+
     // Try to restore to last known slot if it's free
-    if (lastKnownSlot !== null && lastKnownSlot >= 0 && lastKnownSlot < this.maxSlots) {
+    if (assignedSlot === null && lastKnownSlot !== null && lastKnownSlot >= 0 && lastKnownSlot < this.maxSlots) {
       if (!this.assignments.has(lastKnownSlot)) {
         assignedSlot = lastKnownSlot;
         console.log(`[ControllerAssignmentManager] restored ${gamepad.id} to slot ${lastKnownSlot}`);

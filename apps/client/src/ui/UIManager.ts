@@ -251,6 +251,9 @@ export class UIManager {
     );
     const rafIds: number[] = [];
 
+    console.log('[CharSelect] autoConfirmSlots:', autoConfirmSlots, 'autoConfirmSlotSet:', Array.from(autoConfirmSlotSet));
+    console.log('[CharSelect] gamepadSlotByIndex:', gamepadSlotByIndex ? Array.from(gamepadSlotByIndex.entries()) : 'undefined');
+
     // Render N panels dynamically
     const panelsHtml = (() => {
       let html = '';
@@ -444,6 +447,7 @@ export class UIManager {
             // D-pad up/down → cycle through fighters (visual highlight only, no auto-select)
             if (pressed & GenericInputBits.UP) {
               const slotIndex = gamepadSlotByIndex?.get(gpIndex) ?? gpIndex;
+              console.log('[CharSelect] Gamepad', gpIndex, 'D-pad UP pressed, mapped to slotIndex:', slotIndex);
               if (slotIndex < playerCount && !confirmed[slotIndex]) {
                 // Decrement index, wrap to last fighter if at first
                 const currentIndex = selectedFighterIndex[slotIndex];
@@ -472,6 +476,7 @@ export class UIManager {
 
             if (pressed & GenericInputBits.DOWN) {
               const slotIndex = gamepadSlotByIndex?.get(gpIndex) ?? gpIndex;
+              console.log('[CharSelect] Gamepad', gpIndex, 'D-pad DOWN pressed, mapped to slotIndex:', slotIndex);
               if (slotIndex < playerCount && !confirmed[slotIndex]) {
                 // Increment index, wrap to first fighter if at last
                 const currentIndex = selectedFighterIndex[slotIndex];
@@ -501,6 +506,7 @@ export class UIManager {
            // A button → set choice and confirm for matching slot
            if (pressed & 0x0010) {
              const slotIndex = gamepadSlotByIndex?.get(gpIndex) ?? gpIndex;
+             console.log('[CharSelect] Gamepad', gpIndex, 'A button pressed, mapped to slotIndex:', slotIndex);
              if (slotIndex < playerCount && !confirmed[slotIndex]) {
                // Set the choice to the currently highlighted fighter
                const selectedFighterIdx = selectedFighterIndex[slotIndex] ?? 0;

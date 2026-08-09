@@ -167,7 +167,7 @@ describe('ControllerAssignmentManager', () => {
   });
 
   describe('reconnect restoration', () => {
-    it('should restore gamepad to last known slot if free', () => {
+    it('should prioritize slot 0 for the first active gamepad, even when a non-zero slot was saved', () => {
       // Pre-save: Gamepad-A was in slot 2
       store.presave('Gamepad-A', 2);
 
@@ -175,7 +175,7 @@ describe('ControllerAssignmentManager', () => {
       poller.triggerConnect('Gamepad-A', 5);
 
       const assignments = manager.getAssignments();
-      expect(assignments.get(2)).toEqual({
+      expect(assignments.get(0)).toEqual({
         gamepadId: 'Gamepad-A',
         gamepadIndex: 5, // Index updated to new browser index
       });

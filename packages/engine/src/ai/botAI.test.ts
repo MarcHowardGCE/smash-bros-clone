@@ -270,21 +270,20 @@ describe('decideBotInput', () => {
     expect(result.bits).not.toBe(INPUT_BITS.ATTACK);
   });
 
-  it('returns neutral no-input with unchanged memory when no rule 2-5 matches (rule 6)', () => {
+  it('approaches opponent when no higher-priority rule matches (rule 6)', () => {
     const self = createPlayerFixture({ id: 'bot', x: 640, y: 400 });
-    const opponent = createPlayerFixture({ id: 'opponent', respawnTimer: 60 });
+    const opponent = createPlayerFixture({ id: 'opponent', x: 900, y: 400, respawnTimer: 60 });
     const state = createState(self, opponent);
-    const memory = createBotMemory(10);
 
     const result = decideBotInput(
       state,
       'bot',
       'opponent',
-      BOT_DIFFICULTY_PRESETS.medium,
-      memory
+      { ...BOT_DIFFICULTY_PRESETS.medium, executionErrorRate: 0 },
+      createBotMemory(10)
     );
 
-    expect(result).toEqual({ bits: 0, memory });
+    expect(result.bits).toBe(INPUT_BITS.RIGHT);
   });
 
   it('fumbles to neutral input when executionErrorRate is 1.0', () => {

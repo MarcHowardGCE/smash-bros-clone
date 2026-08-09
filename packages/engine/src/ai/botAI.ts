@@ -30,6 +30,9 @@ interface BotDifficultyConfig {
   executionErrorRate: number;
 }
 
+const APPROACH_DEADZONE_X = 36;
+const ATTACK_PRESSURE_RANGE_X = 90;
+
 function applyExecutionError(
   intendedBits: InputBitmask,
   executionErrorRate: number,
@@ -127,6 +130,34 @@ export function decideBotInput(
     );
   }
 
-  // (6)
+  // (6) neutral pressure: approach opponent and occasionally throw out a button in range.
+  const horizontalDelta = opponent.x - self.x;
+  if (Math.abs(horizontalDelta) > APPROACH_DEADZONE_X) {
+    const towardOpponentBits =
+      horizontalDelta > 0 ? INPUT_BITS.RIGHT : INPUT_BITS.LEFT;
+    return applyExecutionError(
+      towardOpponentBits,
+      difficultyConfig.executionErrorRate,
+      memory
+    );
+  }
+
+  if (
+    Math.abs(horizontalDelta) <= ATTACK_PRESSURE_RANGE_X &&
+    self.isGrounded &&
+    opponent.isInvincible === false
+  ) {
+    const decisionRoll = nextRandom(memory);
+    const attackWeight =
+      difficultyConfig.decisionQuality >= 0.75 ? 0.3 : 0.15;
+    const intendedBits =
+      decisionRoll.value < attackWeight ? INPUT_BITS.ATTACK : 0;
+    return applyExecutionError(
+      intendedBits,
+      difficultyConfig.executionErrorRate,
+      decisionRoll.nextMemory
+    );
+  }
+
   return { bits: 0, memory };
 }

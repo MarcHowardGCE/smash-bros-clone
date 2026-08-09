@@ -383,6 +383,7 @@ export class UIManager {
   }
 
   showMatch(): void {
+    this.stopMenuNav();
     this.phase = 'match';
     this.overlay.innerHTML = '';
     this.hudPanel.style.display = 'flex';

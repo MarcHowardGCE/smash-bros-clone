@@ -317,17 +317,20 @@ export class UIManager {
       });
     }
 
-    // Auto-select the first fighter for each player (since there's only one fighter today)
+    // Auto-select the first fighter only for CPU slots
     if (fighters[0]) {
       for (let i = 0; i < playerCount; i++) {
-        choices[i] = fighters[0];
-        // Only highlight fighters[0] with white border
-        const fighterElement = document.querySelector(
-          `[data-player="${i + 1}"][data-id="${fighters[0].id}"]`
-        );
-        if (fighterElement) {
-          (fighterElement as HTMLElement).style.borderColor = 'white';
+        if (autoConfirmSlotSet.has(i)) {
+          // CPU slot: auto-select first fighter
+          choices[i] = fighters[0];
+          const fighterElement = document.querySelector(
+            `[data-player="${i + 1}"][data-id="${fighters[0].id}"]`
+          );
+          if (fighterElement) {
+            (fighterElement as HTMLElement).style.borderColor = 'white';
+          }
         }
+        // Human slots: leave choices[i] as null (already initialized)
       }
     }
 

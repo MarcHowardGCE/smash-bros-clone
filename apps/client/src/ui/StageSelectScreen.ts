@@ -130,19 +130,29 @@ export function renderStageSelectScreen(
   }
 
   // --- Render HTML ---
+  const baseUrl = import.meta.env.BASE_URL || '/';
+  const normalizedBaseUrl = baseUrl.endsWith('/') ? baseUrl : `${baseUrl}/`;
+
   let gridHtml = '';
   for (let i = 0; i < stages.length; i++) {
     const stage = stages[i]!;
-    gridHtml += `<button class="ui-btn stage-grid-btn" data-stage-idx="${i}" style="padding:16px 12px;font-size:16px;min-width:140px">${stage.displayName}</button>`;
+    const imgPath = `${normalizedBaseUrl}backgrounds/${stage.backgroundImage}`;
+    gridHtml += `<button class="ui-btn stage-grid-btn" data-stage-idx="${i}" style="display:flex;flex-direction:column;align-items:center;padding:10px;min-width:200px;gap:8px;cursor:pointer">
+      <img src="${imgPath}" alt="${stage.displayName}" style="width:180px;height:100px;object-fit:cover;display:block;border-radius:6px;pointer-events:none">
+      <span style="font-size:14px;letter-spacing:1px;opacity:0.9">${stage.displayName}</span>
+    </button>`;
   }
 
   container.innerHTML = `
-    <div class="overlay-center" style="max-width:500px;width:100%;align-items:center">
+    <div class="overlay-center" style="max-width:560px;width:100%;align-items:center">
       <div style="font-size:32px;letter-spacing:2px;margin-bottom:24px">SELECT STAGE</div>
-      <div class="stage-grid" style="display:grid;grid-template-columns:repeat(${GRID_COLS},1fr);gap:12px;margin-bottom:20px;width:100%">
+      <div class="stage-grid" style="display:grid;grid-template-columns:repeat(${GRID_COLS},1fr);gap:16px;margin-bottom:20px;width:100%">
         ${gridHtml}
       </div>
-      <button class="ui-btn stage-grid-btn" data-stage-idx="${randomIndex}" style="padding:16px 24px;font-size:18px;width:100%">Random</button>
+      <button class="ui-btn stage-grid-btn" data-stage-idx="${randomIndex}" style="display:flex;flex-direction:column;align-items:center;padding:10px 24px;min-width:200px;gap:8px;width:100%;cursor:pointer">
+        <div style="width:180px;height:100px;display:flex;align-items:center;justify-content:center;border-radius:6px;background:rgba(255,255,255,0.05);border:2px dashed rgba(255,255,255,0.3);font-size:42px;opacity:0.7">?</div>
+        <span style="font-size:14px;letter-spacing:1px;opacity:0.9">Random</span>
+      </button>
       ${onBack ? '<button id="stage-back-btn" class="ui-btn" style="margin-top:16px;font-size:14px;padding:8px 16px">← Back</button>' : ''}
     </div>
     <div class="menu-hint">↑↓←→ Navigate • Enter/A Select${onBack ? ' • Esc/B Back' : ''}</div>`;

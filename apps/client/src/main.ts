@@ -66,6 +66,7 @@ async function main() {
 	const app = new Application();
 	await app.init({
 		background: 0x000000,
+		backgroundAlpha: 0,
 		width: STAGE.WIDTH,
 		height: STAGE.HEIGHT,
 		antialias: true,

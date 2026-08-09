@@ -131,6 +131,7 @@ async function main() {
 	const uiManager = new UIManager(uiOverlay);
 	uiManager._gamepadPoller = poller;
 	const audioManager = new AudioManager();
+	audioManager.playTrack('main-menu');
 	let myPlayerId: PlayerId | null = null;
 	let isLocalMode = false;
 	let localMatch: LocalMatch | null = null;
@@ -542,6 +543,43 @@ async function main() {
 			gameClient.emitPause();
 		}
 	});
+
+	// Gamepad pause handler - START button only
+	if (typeof requestAnimationFrame !== 'undefined' && poller) {
+		let lastBitsPerGamepad = new Map<number, number>();
+		const checkPauseButton = (): void => {
+			const states = poller.poll();
+			for (const [gpIndex, state] of states) {
+				const bits = state.bits;
+				const prev = lastBitsPerGamepad.get(gpIndex) ?? 0;
+				const pressed = bits & ~prev;
+
+				// START button (0x1000) - pause/unpause
+				if (pressed & 0x1000) {
+					const phase = uiManager.getPhase();
+					
+					// If paused, resume
+					if (phase === 'paused') {
+						uiManager.onResume?.();
+					}
+					// If in match, pause
+					else if (phase === 'match') {
+						if (isLocalMode && localMatch) {
+							localMatch.pause();
+							uiManager.showPauseOverlay();
+						} else if (!isLocalMode) {
+							gameClient.emitPause();
+						}
+					}
+				}
+
+				lastBitsPerGamepad.set(gpIndex, bits);
+			}
+			requestAnimationFrame(checkPauseButton);
+		};
+		requestAnimationFrame(checkPauseButton);
+	}
+
 
 	const getDebugSnapshot = (): StateSnapshot | null => {
 		if (isLocalMode) {

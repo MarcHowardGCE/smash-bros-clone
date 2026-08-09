@@ -50,6 +50,8 @@ export const AVAILABLE_FIGHTERS: FighterChoice[] = [
 	{ id: "abe-lincoln", displayName: "Abe Lincoln" },
 ];
 
+let networkMatchPhase: 'pre-match' | 'countdown' | 'match' | 'result' = 'pre-match';
+
 let lastLocalSetup: {
 	participantCount: 2 | 3 | 4;
 	seats: SeatConfig[];
@@ -252,6 +254,7 @@ async function main() {
 		},
 		onMatchPhaseChange: (phase: string, winnerId?: PlayerId | null) => {
 			if (phase === "countdown") {
+				networkMatchPhase = 'countdown';
 				let count = 3;
 				uiManager.showCountdown(count);
 				audioManager.playTrack(selectedStage.musicTrack.replace('.mp3', ''));
@@ -266,9 +269,11 @@ async function main() {
 					}
 				}, 1000);
 			} else if (phase === "match") {
+				networkMatchPhase = 'match';
 				uiManager.showMatch();
 				audioManager.playTrack(selectedStage.musicTrack.replace('.mp3', ''));
 			} else if (phase === "result") {
+				networkMatchPhase = 'result';
 				uiManager.showResult(winnerId ?? null, myPlayerId);
 				audioManager.playTrack('game-over');
 			}
@@ -291,9 +296,32 @@ async function main() {
 		onResumed: () => {
 			uiManager.hidePauseOverlay();
 		},
+		onCharacterSelectStart: (playerIds) => {
+			if (!myPlayerId) return;
+			uiManager.showNetworkCharacterSelect(
+				AVAILABLE_FIGHTERS,
+				myPlayerId,
+				playerIds,
+				(characterId) => gameClient.selectCharacter(characterId),
+				() => gameClient.confirmCharacter((result) => {
+					if ('error' in result) {
+						uiManager.showNetworkCharacterSelectConfirmError(result.error);
+					}
+				}),
+			);
+		},
+		onCharacterUpdated: (data) => {
+			uiManager.updateNetworkCharacterSelect(data.playerId, data.characterId, data.confirmed);
+		},
+		onPlayerLeft: (playerId) => {
+			if (networkMatchPhase !== 'match' && networkMatchPhase !== 'result') {
+				uiManager.showLobby();
+			}
+		},
 	});
 
 	uiManager.onCreateRoom = () => {
+		networkMatchPhase = 'pre-match';
 		if (isLocalMode) {
 			return;
 		}
@@ -302,6 +330,7 @@ async function main() {
 	};
 
 	uiManager.onJoinRoom = (code: string) => {
+		networkMatchPhase = 'pre-match';
 		if (isLocalMode) {
 			return;
 		}
@@ -344,6 +373,12 @@ async function main() {
 		const assignments = assignmentManager.getAssignments();
 		const controllers: ITickController[] = [];
 
+		// Compute full player ID list before controller loop
+		const allPlayerIds: PlayerId[] = [
+			"local-p1" as PlayerId,
+			...setup.seats.map((_, k) => `local-p${k + 2}` as PlayerId),
+		];
+
 		const p1Assignment = assignments.get(0);
 		const p1GamepadSource = p1Assignment
 			? new GamepadInputSource(poller, p1Assignment.gamepadIndex)
@@ -366,7 +401,7 @@ async function main() {
 					new AIPlayerController({
 						playerId,
 						slotIndex,
-						opponentPlayerId: "local-p1",
+						opponentPlayerIds: allPlayerIds.filter((id) => id !== playerId),
 						difficulty: seat.difficulty,
 						seed: slotIndex * 1000 + 1,
 					}),

@@ -3,10 +3,11 @@ import {
   BOT_DIFFICULTY_PRESETS,
   INPUT_BITS,
   MoveId,
+  PlayerStateEnum,
   type GameState,
   type PlayerState,
 } from '@smash/shared';
-import { createBotMemory, decideBotInput, type BotMemory } from './botAI.js';
+import { createBotMemory, decideBotInput, selectTarget, type BotMemory } from './botAI.js';
 
 function createPlayerFixture(overrides: Partial<PlayerState> = {}): PlayerState {
   return {
@@ -60,6 +61,16 @@ function createState(self: PlayerState, opponent: PlayerState): GameState {
       [self.id]: self,
       [opponent.id]: opponent,
     },
+    matchPhase: 'match',
+    winnerId: null,
+    ledges: {},
+  };
+}
+
+function createStateWithPlayers(players: PlayerState[]): GameState {
+  return {
+    tick: 0,
+    players: Object.fromEntries(players.map((player) => [player.id, player])),
     matchPhase: 'match',
     winnerId: null,
     ledges: {},
@@ -270,6 +281,122 @@ describe('decideBotInput', () => {
     expect(result.bits).not.toBe(INPUT_BITS.ATTACK);
   });
 
+  it('edge-guard offense: high-quality aggressive roll jumps from IDLE with jump-only input', () => {
+    const self = createPlayerFixture({
+      id: 'bot',
+      state: PlayerStateEnum.IDLE,
+      x: 640,
+      y: 500,
+      isGrounded: true,
+    });
+    const opponent = createPlayerFixture({
+      id: 'opponent',
+      x: 100,
+      y: 600,
+      state: PlayerStateEnum.AIRBORNE,
+      isGrounded: false,
+      respawnTimer: 60,
+    });
+    const state = createState(self, opponent);
+
+    const result = decideBotInput(
+      state,
+      'bot',
+      'opponent',
+      { ...BOT_DIFFICULTY_PRESETS.hard, executionErrorRate: 0 },
+      createBotMemory(0)
+    );
+
+    expect(result.bits).toBe(INPUT_BITS.JUMP);
+  });
+
+  it('edge-guard offense: high-quality aggressive roll jumps from RUN with direction|jump input', () => {
+    const self = createPlayerFixture({
+      id: 'bot',
+      state: PlayerStateEnum.RUN,
+      x: 640,
+      y: 500,
+      isGrounded: true,
+    });
+    const opponent = createPlayerFixture({
+      id: 'opponent',
+      x: 100,
+      y: 600,
+      state: PlayerStateEnum.AIRBORNE,
+      isGrounded: false,
+      respawnTimer: 60,
+    });
+    const state = createState(self, opponent);
+
+    const result = decideBotInput(
+      state,
+      'bot',
+      'opponent',
+      { ...BOT_DIFFICULTY_PRESETS.hard, executionErrorRate: 0 },
+      createBotMemory(0)
+    );
+
+    expect(result.bits).toBe(INPUT_BITS.LEFT | INPUT_BITS.JUMP);
+  });
+
+  it('edge-guard offense: passive roll walks to ledge with direction-only input', () => {
+    const self = createPlayerFixture({
+      id: 'bot',
+      state: PlayerStateEnum.RUN,
+      x: 640,
+      y: 500,
+      isGrounded: true,
+    });
+    const opponent = createPlayerFixture({
+      id: 'opponent',
+      x: 100,
+      y: 600,
+      state: PlayerStateEnum.AIRBORNE,
+      isGrounded: false,
+      respawnTimer: 60,
+    });
+    const state = createState(self, opponent);
+
+    const result = decideBotInput(
+      state,
+      'bot',
+      'opponent',
+      { ...BOT_DIFFICULTY_PRESETS.hard, executionErrorRate: 0 },
+      createBotMemory(4)
+    );
+
+    expect(result.bits).toBe(INPUT_BITS.LEFT);
+  });
+
+  it('edge-guard offense safety gate: airborne self does not trigger jump while opponent is off-stage', () => {
+    const self = createPlayerFixture({
+      id: 'bot',
+      state: PlayerStateEnum.AIRBORNE,
+      x: 640,
+      y: 480,
+      isGrounded: false,
+    });
+    const opponent = createPlayerFixture({
+      id: 'opponent',
+      x: 100,
+      y: 600,
+      state: PlayerStateEnum.AIRBORNE,
+      isGrounded: false,
+      respawnTimer: 60,
+    });
+    const state = createState(self, opponent);
+
+    const result = decideBotInput(
+      state,
+      'bot',
+      'opponent',
+      { ...BOT_DIFFICULTY_PRESETS.hard, executionErrorRate: 0 },
+      createBotMemory(0)
+    );
+
+    expect((result.bits & INPUT_BITS.JUMP) !== 0).toBe(false);
+  });
+
   it('approaches opponent when no higher-priority rule matches (rule 6)', () => {
     const self = createPlayerFixture({ id: 'bot', x: 640, y: 400 });
     const opponent = createPlayerFixture({ id: 'opponent', x: 900, y: 400, respawnTimer: 60 });
@@ -281,6 +408,147 @@ describe('decideBotInput', () => {
       'opponent',
       { ...BOT_DIFFICULTY_PRESETS.medium, executionErrorRate: 0 },
       createBotMemory(10)
+    );
+
+    expect(result.bits).toBe(INPUT_BITS.RIGHT);
+    expect((result.bits & INPUT_BITS.JUMP) !== 0).toBe(false);
+  });
+
+  it('platform jump: IDLE state outputs jump only when opponent is 150px above and reachable', () => {
+    const self = createPlayerFixture({
+      id: 'bot',
+      state: PlayerStateEnum.IDLE,
+      x: 640,
+      y: 500,
+      isGrounded: true,
+    });
+    const opponent = createPlayerFixture({
+      id: 'opponent',
+      x: 700,
+      y: 350,
+      isGrounded: true,
+      respawnTimer: 60,
+    });
+    const state = createState(self, opponent);
+
+    const result = decideBotInput(
+      state,
+      'bot',
+      'opponent',
+      { ...BOT_DIFFICULTY_PRESETS.hard, executionErrorRate: 0 },
+      createBotMemory(22)
+    );
+
+    expect(result.bits).toBe(INPUT_BITS.JUMP);
+  });
+
+  it('platform jump: RUN state outputs direction|jump when opponent is 150px above and reachable', () => {
+    const self = createPlayerFixture({
+      id: 'bot',
+      state: PlayerStateEnum.RUN,
+      x: 640,
+      y: 500,
+      isGrounded: true,
+    });
+    const opponent = createPlayerFixture({
+      id: 'opponent',
+      x: 700,
+      y: 350,
+      isGrounded: true,
+      respawnTimer: 60,
+    });
+    const state = createState(self, opponent);
+
+    const result = decideBotInput(
+      state,
+      'bot',
+      'opponent',
+      { ...BOT_DIFFICULTY_PRESETS.hard, executionErrorRate: 0 },
+      createBotMemory(23)
+    );
+
+    expect(result.bits).toBe(INPUT_BITS.RIGHT | INPUT_BITS.JUMP);
+  });
+
+  it('platform jump: flat ground does not jump and keeps normal approach direction', () => {
+    const self = createPlayerFixture({
+      id: 'bot',
+      state: PlayerStateEnum.IDLE,
+      x: 640,
+      y: 500,
+      isGrounded: true,
+    });
+    const opponent = createPlayerFixture({
+      id: 'opponent',
+      x: 900,
+      y: 500,
+      isGrounded: true,
+      respawnTimer: 60,
+    });
+    const state = createState(self, opponent);
+
+    const result = decideBotInput(
+      state,
+      'bot',
+      'opponent',
+      { ...BOT_DIFFICULTY_PRESETS.hard, executionErrorRate: 0 },
+      createBotMemory(24)
+    );
+
+    expect(result.bits).toBe(INPUT_BITS.RIGHT);
+  });
+
+  it('platform jump: airborne opponent above does not trigger jump', () => {
+    const self = createPlayerFixture({
+      id: 'bot',
+      state: PlayerStateEnum.IDLE,
+      x: 640,
+      y: 500,
+      isGrounded: true,
+    });
+    const opponent = createPlayerFixture({
+      id: 'opponent',
+      x: 900,
+      y: 350,
+      isGrounded: false,
+      respawnTimer: 60,
+    });
+    const state = createState(self, opponent);
+
+    const result = decideBotInput(
+      state,
+      'bot',
+      'opponent',
+      { ...BOT_DIFFICULTY_PRESETS.hard, executionErrorRate: 0 },
+      createBotMemory(25)
+    );
+
+    expect(result.bits).toBe(INPUT_BITS.RIGHT);
+  });
+
+  it('platform jump: opponent only 77px above does not trigger jump', () => {
+    const self = createPlayerFixture({
+      id: 'bot',
+      state: PlayerStateEnum.IDLE,
+      x: 640,
+      y: 500,
+      isGrounded: true,
+    });
+    const opponent = createPlayerFixture({
+      id: 'opponent',
+      x: 900,
+      y: 423,
+      isGrounded: true,
+      respawnTimer: 60,
+    });
+    const state = createState(self, opponent);
+
+    const result = decideBotInput(
+      state,
+      'bot',
+      'opponent',
+      { ...BOT_DIFFICULTY_PRESETS.hard, executionErrorRate: 0 },
+      createBotMemory(26)
     );
 
     expect(result.bits).toBe(INPUT_BITS.RIGHT);
@@ -340,5 +608,95 @@ describe('decideBotInput', () => {
     );
 
     expect(resultA).toEqual(resultB);
+  });
+});
+
+describe('selectTarget', () => {
+  it('selects nearest alive candidate when other factors are equal', () => {
+    const bot = createPlayerFixture({ id: 'bot', x: 640, y: 400 });
+    const near = createPlayerFixture({ id: 'p1', x: 660, y: 400, percent: 0, stocks: 3 });
+    const mid = createPlayerFixture({ id: 'p2', x: 760, y: 400, percent: 0, stocks: 3 });
+    const far = createPlayerFixture({ id: 'p3', x: 940, y: 400, percent: 0, stocks: 3 });
+
+    const state = createStateWithPlayers([bot, near, mid, far]);
+
+    expect(selectTarget(state, 'bot', ['p1', 'p2', 'p3'], 3)).toBe('p1');
+  });
+
+  it('prefers threatening candidate over slightly nearer non-threatening candidate', () => {
+    const bot = createPlayerFixture({ id: 'bot', x: 640, y: 400 });
+    const nearNonThreat = createPlayerFixture({
+      id: 'p1',
+      x: 660,
+      y: 400,
+      percent: 10,
+      stocks: 3,
+      currentMoveId: null,
+      activeHitbox: null,
+    });
+    const threat = createPlayerFixture({
+      id: 'p2',
+      x: 700,
+      y: 400,
+      percent: 10,
+      stocks: 3,
+      currentMoveId: MoveId.JAB,
+      stateFrame: 10,
+      activeHitbox: makeHitbox(),
+    });
+
+    const state = createStateWithPlayers([bot, nearNonThreat, threat]);
+
+    expect(selectTarget(state, 'bot', ['p1', 'p2'], 3)).toBe('p2');
+  });
+
+  it('ignores knocked-out or respawning candidates even if they are nearest', () => {
+    const bot = createPlayerFixture({ id: 'bot', x: 640, y: 400 });
+    const nearestRespawning = createPlayerFixture({
+      id: 'p1',
+      x: 645,
+      y: 400,
+      isKnockedOut: false,
+      respawnTimer: 120,
+    });
+    const nearestKnockedOut = createPlayerFixture({
+      id: 'p2',
+      x: 650,
+      y: 400,
+      isKnockedOut: true,
+      respawnTimer: 0,
+    });
+    const aliveFarther = createPlayerFixture({
+      id: 'p3',
+      x: 760,
+      y: 400,
+      isKnockedOut: false,
+      respawnTimer: 0,
+    });
+
+    const state = createStateWithPlayers([bot, nearestRespawning, nearestKnockedOut, aliveFarther]);
+
+    expect(selectTarget(state, 'bot', ['p1', 'p2', 'p3'], 3)).toBe('p3');
+  });
+
+  it('returns null when no alive candidates exist', () => {
+    const bot = createPlayerFixture({ id: 'bot', x: 640, y: 400 });
+    const downed = createPlayerFixture({ id: 'p1', isKnockedOut: true, respawnTimer: 60 });
+    const state = createStateWithPlayers([bot, downed]);
+
+    expect(selectTarget(state, 'bot', [], 3)).toBeNull();
+    expect(selectTarget(state, 'bot', ['p1'], 3)).toBeNull();
+  });
+
+  it('is deterministic for identical input state and candidates', () => {
+    const bot = createPlayerFixture({ id: 'bot', x: 640, y: 400 });
+    const a = createPlayerFixture({ id: 'p1', x: 740, y: 400, percent: 20, stocks: 2 });
+    const b = createPlayerFixture({ id: 'p2', x: 740, y: 400, percent: 20, stocks: 2 });
+    const state = createStateWithPlayers([bot, a, b]);
+
+    const resultA = selectTarget(state, 'bot', ['p1', 'p2'], 3);
+    const resultB = selectTarget(state, 'bot', ['p1', 'p2'], 3);
+
+    expect(resultA).toBe(resultB);
   });
 });

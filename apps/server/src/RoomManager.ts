@@ -1,5 +1,5 @@
 import type { Room, PlayerSlot } from './types.js';
-import type { PlayerId } from '@smash/shared';
+import type { PlayerId, CharacterId } from '@smash/shared';
 
 const ROOM_CODE_CHARS = 'ABCDEFGHIJKLMNPQRSTUVWXYZ123456789';
 const MAX_PLAYERS = 4;
@@ -30,7 +30,7 @@ export class RoomManager {
       code: roomCode,
       phase: 'LOBBY',
       players: new Map([
-        [playerId, { playerId, socketId, slotIndex: 0, isReady: false }]
+        [playerId, { playerId, socketId, slotIndex: 0, isReady: false, characterId: 'all-rounder', characterConfirmed: false }]
       ]),
       createdAt: Date.now(),
     };
@@ -46,7 +46,7 @@ export class RoomManager {
 
     const slotIndex = room.players.size;
     const playerId = generatePlayerId();
-    room.players.set(playerId, { playerId, socketId, slotIndex, isReady: false });
+    room.players.set(playerId, { playerId, socketId, slotIndex, isReady: false, characterId: 'all-rounder', characterConfirmed: false });
     return { playerId, slotIndex };
   }
 
@@ -58,8 +58,53 @@ export class RoomManager {
 
     slot.isReady = true;
     const allReady = room.players.size >= 2 && [...room.players.values()].every(p => p.isReady);
-    if (allReady) room.phase = 'COUNTDOWN';
+    if (allReady) room.phase = 'CHARACTER_SELECT';
     return { allReady };
+  }
+
+  selectCharacter(roomCode: string, playerId: PlayerId, characterId: CharacterId): { ok: true } | { error: string } {
+    const room = this.rooms.get(roomCode);
+    if (!room) return { error: 'Room not found' };
+    if (room.phase !== 'CHARACTER_SELECT') return { error: 'Not in character select phase' };
+
+    const slot = room.players.get(playerId);
+    if (!slot) return { error: 'Player not in room' };
+
+    slot.characterId = characterId;
+    slot.characterConfirmed = false;
+    return { ok: true };
+  }
+
+  confirmCharacter(roomCode: string, playerId: PlayerId): { allConfirmed: boolean } | { error: string } {
+    const room = this.rooms.get(roomCode);
+    if (!room) return { error: 'Room not found' };
+    if (room.phase !== 'CHARACTER_SELECT') return { error: 'Not in character select phase' };
+
+    const slot = room.players.get(playerId);
+    if (!slot) return { error: 'Player not in room' };
+
+    slot.characterConfirmed = true;
+
+    const allConfirmed =
+      room.players.size >= 2 && [...room.players.values()].every((player) => player.characterConfirmed);
+
+    if (allConfirmed) {
+      room.phase = 'COUNTDOWN';
+    }
+
+    return { allConfirmed };
+  }
+
+  getCharacterSelections(roomCode: string): Partial<Record<PlayerId, CharacterId>> {
+    const room = this.rooms.get(roomCode);
+    if (!room) return {};
+
+    const selections: Partial<Record<PlayerId, CharacterId>> = {};
+    for (const [playerId, slot] of room.players.entries()) {
+      selections[playerId] = slot.characterId;
+    }
+
+    return selections;
   }
 
   startMatch(roomCode: string): void {
@@ -78,6 +123,7 @@ export class RoomManager {
     room.phase = 'LOBBY';
     for (const player of room.players.values()) {
       player.isReady = false;
+      player.characterConfirmed = false;
     }
   }
 
@@ -86,6 +132,13 @@ export class RoomManager {
       for (const [playerId, slot] of room.players.entries()) {
         if (slot.socketId === socketId) {
           room.players.delete(playerId);
+          if (room.phase === 'CHARACTER_SELECT' || room.phase === 'COUNTDOWN') {
+            room.phase = 'LOBBY';
+            for (const remainingSlot of room.players.values()) {
+              remainingSlot.isReady = false;
+              remainingSlot.characterConfirmed = false;
+            }
+          }
           if (room.players.size === 0) {
             this.rooms.delete(roomCode);
           }

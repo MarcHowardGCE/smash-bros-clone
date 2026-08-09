@@ -1,12 +1,14 @@
-import type { PlayerId } from '@smash/shared';
+import type { PlayerId, CharacterId } from '@smash/shared';
 
-export type SessionPhase = 'LOBBY' | 'READY_CHECK' | 'COUNTDOWN' | 'MATCH' | 'RESULT';
+export type SessionPhase = 'LOBBY' | 'CHARACTER_SELECT' | 'READY_CHECK' | 'COUNTDOWN' | 'MATCH' | 'RESULT';
 
 export interface PlayerSlot {
   playerId: PlayerId;
   socketId: string;
   slotIndex: number;
   isReady: boolean;
+  characterId: CharacterId;
+  characterConfirmed: boolean;
 }
 
 export interface Room {

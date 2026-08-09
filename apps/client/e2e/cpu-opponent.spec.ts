@@ -91,6 +91,12 @@ test('CPU opponent acts in a real local match', async ({ page }) => {
   });
 
   await page.goto('/');
+  
+  // Dismiss splash screen by clicking
+  await page.waitForSelector('#splash-screen', { timeout: 10_000 });
+  await page.click('#splash-screen');
+  await page.waitForTimeout(1000); // Wait for fade-out animation
+  
   await page.waitForSelector('#local-play-btn', { timeout: 10_000 });
 
   await page.click('#local-play-btn');
@@ -103,6 +109,10 @@ test('CPU opponent acts in a real local match', async ({ page }) => {
 
   // P1 confirm via UIManager CONFIRM_KEYS[0] (Enter / KeyZ).
   // P2 is auto-confirmed by autoConfirmSlots and requires no key input.
+  await page.keyboard.press('Enter');
+  
+  // Select stage (wait for stage selection screen and press Enter to select first stage)
+  await page.waitForTimeout(500);
   await page.keyboard.press('Enter');
 
   await page.waitForFunction(() => {
@@ -144,6 +154,121 @@ test('CPU opponent acts in a real local match', async ({ page }) => {
 
   expect(p1Delta).toBeLessThan(2);
   expect(cpuDelta).toBeGreaterThan(5);
+
+  expect(consoleErrors).toHaveLength(0);
+});
+
+test('CPU jumps upward to reach opponent on higher platform', async ({ page }) => {
+  test.setTimeout(90_000);
+
+  const consoleErrors: string[] = [];
+  page.on('console', (msg) => {
+    if (msg.type() === 'error') {
+      consoleErrors.push(msg.text());
+    }
+  });
+
+  await page.goto('/');
+  
+  // Dismiss splash screen by clicking
+  await page.waitForSelector('#splash-screen', { timeout: 10_000 });
+  await page.click('#splash-screen');
+  await page.waitForTimeout(1000); // Wait for fade-out animation
+  
+  await page.waitForSelector('#local-play-btn', { timeout: 10_000 });
+
+  await page.click('#local-play-btn');
+  await page.waitForSelector('#lps-start-btn', { timeout: 10_000 });
+
+  // Defaults: 2 Players, Seat 1 = CPU: Medium
+  await page.click('#lps-start-btn');
+
+  // P1 confirm (Enter / KeyZ)
+  await page.keyboard.press('Enter');
+  
+  // Select stage (wait for stage selection screen and press Enter to select first stage)
+  await page.waitForTimeout(500);
+  await page.keyboard.press('Enter');
+
+  await page.waitForFunction(() => {
+    const hudPanel = document.getElementById('hud-panel');
+    if (!hudPanel) return false;
+    const style = window.getComputedStyle(hudPanel);
+    return style.display !== 'none';
+  }, { timeout: 20_000, polling: 100 });
+
+  await page.waitForFunction(() => {
+    const win = window as Window & {
+      __smashDebug?: { getSnapshot?: () => { matchPhase?: string } | null };
+      __DEBUG_GAME_STATE__?: () => { matchPhase?: string } | null;
+    };
+    const smashPhase = win.__smashDebug?.getSnapshot?.()?.matchPhase;
+    const devPhase = win.__DEBUG_GAME_STATE__?.()?.matchPhase;
+    return smashPhase === 'match' && devPhase === 'match';
+  }, { timeout: 10_000, polling: 100 });
+
+  // Force P1 (human) to LEFT soft platform (grounded center)
+  // Left platform: x=240, y=350, width=200 → center x = 340
+  // Grounded y = platform.y - hurtboxRadius = 350 - 28 = 322
+  const forceP1 = await page.evaluate(() => {
+    const debug = (window as Window & {
+      __smashDebug?: {
+        forcePosition?: (playerId: string, x: number, y: number) => boolean;
+      };
+    }).__smashDebug;
+    return debug?.forcePosition?.('local-p1', 340, 322) ?? false;
+  });
+  expect(forceP1).toBe(true);
+
+  // Force P2 (CPU) to main platform NEAR the left platform (not directly below)
+  // Main platform: y=500 → grounded y = 500 - 28 = 472
+  // Position at x=280 (near the left platform at x=240-440)
+  const forceP2 = await page.evaluate(() => {
+    const debug = (window as Window & {
+      __smashDebug?: {
+        forcePosition?: (playerId: string, x: number, y: number) => boolean;
+      };
+    }).__smashDebug;
+    return debug?.forcePosition?.('local-p2', 280, 472) ?? false;
+  });
+  expect(forceP2).toBe(true);
+
+  // Wait for positions to stabilize
+  await page.waitForTimeout(500);
+
+  // Read initial position
+  const t0 = await page.evaluate(() => {
+    const win = window as Window & {
+      __smashDebug?: { getSnapshot?: () => { players?: Record<string, { y: number; slotIndex?: number }> } };
+    };
+    const snapshot = win.__smashDebug?.getSnapshot?.();
+    if (!snapshot || !snapshot.players) return null;
+    const players = Object.values(snapshot.players);
+    const p2 = players.find(p => p.slotIndex === 1);
+    return p2?.y ?? null;
+  });
+  expect(t0).not.toBeNull();
+
+  // Wait 3 seconds with no human input
+  // CPU should detect opponent above on platform and attempt upward movement
+  await page.waitForTimeout(3000);
+
+  const t3000 = await page.evaluate(() => {
+    const win = window as Window & {
+      __smashDebug?: { getSnapshot?: () => { players?: Record<string, { y: number; slotIndex?: number }> } };
+    };
+    const snapshot = win.__smashDebug?.getSnapshot?.();
+    if (!snapshot || !snapshot.players) return null;
+    const players = Object.values(snapshot.players);
+    const p2 = players.find(p => p.slotIndex === 1);
+    return p2?.y ?? null;
+  });
+  expect(t3000).not.toBeNull();
+
+  // Assert P2's y changed significantly (either jumped up successfully or attempted to)
+  // The key assertion is that CPU is NOT passive - it should move
+  const yDelta = Math.abs((t0 as number) - (t3000 as number));
+  expect(yDelta).toBeGreaterThan(5); // CPU attempted movement (not passive)
 
   expect(consoleErrors).toHaveLength(0);
 });

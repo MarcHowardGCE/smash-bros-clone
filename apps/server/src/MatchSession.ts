@@ -1,7 +1,7 @@
 import { Buffer } from 'node:buffer';
 import { performance } from 'node:perf_hooks';
 import { decode, encode, ExtensionCodec } from '@msgpack/msgpack';
-import type { InputEvent, PlayerId } from '@smash/shared';
+import type { CharacterId, InputEvent, PlayerId } from '@smash/shared';
 import { GameEngine } from './GameEngine.js';
 
 const TICK_MS = 1000 / 60;
@@ -55,10 +55,19 @@ extensionCodec.register({
  * caller (RoomManager) decides how to route the encoded snapshot — over one socket, a
  * broadcast room, or a test spy — without any changes to this class.
  */
+
+interface MatchSessionConfig {
+	playerIds: PlayerId[];
+	characterIds: Record<PlayerId, CharacterId>;
+	onBroadcast: (data: Uint8Array | Buffer) => void;
+	onMatchOver: (winnerId: PlayerId) => void;
+}
+
 export class MatchSession {
   private readonly engine: GameEngine;
   private readonly inputQueue = new Map<PlayerId, InputEvent[]>();
   private readonly lastConfirmedSeq: Record<PlayerId, number> = {};
+  private readonly characterIds: Record<PlayerId, CharacterId>;
   private readonly onBroadcast: (data: Uint8Array | Buffer) => void;
   private readonly onMatchOver: (winnerId: PlayerId) => void;
   private tickCount = 0;
@@ -68,16 +77,13 @@ export class MatchSession {
   private lastTime = 0;
   private loopHandle: ReturnType<typeof setImmediate> | null = null;
 
-  constructor(
-    playerIds: PlayerId[],
-    onBroadcast: (data: Uint8Array | Buffer) => void,
-    onMatchOver: (winnerId: PlayerId) => void,
-  ) {
-    this.engine = new GameEngine({ playerIds });
-    this.onBroadcast = onBroadcast;
-    this.onMatchOver = onMatchOver;
+  constructor(config: MatchSessionConfig) {
+    this.engine = new GameEngine({ playerIds: config.playerIds });
+    this.characterIds = config.characterIds;
+    this.onBroadcast = config.onBroadcast;
+    this.onMatchOver = config.onMatchOver;
 
-    for (const playerId of playerIds) {
+    for (const playerId of config.playerIds) {
       this.inputQueue.set(playerId, []);
       this.lastConfirmedSeq[playerId] = -1;
     }
@@ -202,6 +208,13 @@ export class MatchSession {
 
   private broadcastState(): void {
     const snapshot = this.engine.getSnapshot(performance.now(), this.lastConfirmedSeq);
+    // Forward character selections to each player in the snapshot
+    for (const playerId in snapshot.players) {
+      const player = snapshot.players[playerId];
+      if (player) {
+        player.characterId = this.characterIds[playerId];
+      }
+    }
     // msgpack binary encoding is ~3× smaller than JSON for PlayerState structs
     // (binary ints vs. string-encoded numbers). At 20 Hz × 4 players this is the
     // hottest network write in the server; every byte saved reduces bandwidth and

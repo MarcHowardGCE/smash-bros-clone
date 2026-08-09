@@ -31,6 +31,9 @@ export interface GameClientOptions {
   onHitEvents?: (hitEvents: HitEventData[]) => void;
   onPaused?: () => void;
   onResumed?: () => void;
+  onCharacterSelectStart?: (playerIds: PlayerId[]) => void;
+  onCharacterUpdated?: (data: { playerId: PlayerId; characterId: string; confirmed: boolean }) => void;
+  onPlayerLeft?: (playerId: PlayerId) => void;
 }
 
 export class GameClient {
@@ -89,6 +92,20 @@ export class GameClient {
     if (this.myRoomCode) {
       this.socket.emit('player:ready', this.myRoomCode);
     }
+  }
+
+  selectCharacter(characterId: string, callback?: (result: { ok: true } | { error: string }) => void): void {
+    if (!this.myRoomCode) {
+      return;
+    }
+    this.socket.emit('character:select', this.myRoomCode, characterId, callback);
+  }
+
+  confirmCharacter(callback?: (result: { ok: true; allConfirmed: boolean } | { error: string }) => void): void {
+    if (!this.myRoomCode) {
+      return;
+    }
+    this.socket.emit('character:confirm', this.myRoomCode, callback);
   }
 
   get isPaused(): boolean {
@@ -216,6 +233,21 @@ export class GameClient {
       this.paused = false;
       this.options.onMatchPhaseChange('result', data.winnerId);
       this.stopRenderLoop();
+    });
+
+    this.socket.on('room:characterSelectStart', (data: { playerIds: PlayerId[] }) => {
+      console.log('[client] character select started, players:', data.playerIds);
+      this.options.onCharacterSelectStart?.(data.playerIds);
+    });
+
+    this.socket.on('character:updated', (data: { playerId: PlayerId; characterId: string; confirmed: boolean }) => {
+      console.log('[client] character updated:', data);
+      this.options.onCharacterUpdated?.(data);
+    });
+
+    this.socket.on('room:playerLeft', (data: { playerId: PlayerId }) => {
+      console.log('[client] player left:', data.playerId);
+      this.options.onPlayerLeft?.(data.playerId);
     });
   }
 

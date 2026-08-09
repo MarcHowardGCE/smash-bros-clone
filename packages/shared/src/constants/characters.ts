@@ -36,6 +36,21 @@ export const CHARACTER_REGISTRY: Record<CharacterId, CharacterStats> = {
 };
 
 /**
+ * Runtime-checkable list of all valid CharacterIds.
+ */
+export const CHARACTER_IDS: readonly CharacterId[] = ['all-rounder', 'abe-lincoln'] as const;
+
+/**
+ * Type guard to check if a value is a valid CharacterId.
+ *
+ * @param value - The value to check
+ * @returns true if value is a valid CharacterId, false otherwise
+ */
+export function isCharacterId(value: unknown): value is CharacterId {
+  return typeof value === 'string' && (CHARACTER_IDS as readonly string[]).includes(value);
+}
+
+/**
  * Resolve character stats by CharacterId.
  * Falls back to All-Rounder if CharacterId is undefined or unknown.
  *

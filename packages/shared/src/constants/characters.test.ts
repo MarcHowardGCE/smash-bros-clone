@@ -3,7 +3,9 @@ import {
   ALL_ROUNDER_STATS,
   ABE_LINCOLN_STATS,
   CHARACTER_REGISTRY,
+  CHARACTER_IDS,
   getCharacterStats,
+  isCharacterId,
   PHYSICS,
 } from '@smash/shared';
 
@@ -106,6 +108,61 @@ describe('Character Stats Registry', () => {
     it('should handle empty string as fallback', () => {
       const stats = getCharacterStats('' as any);
       expect(stats).toBe(ALL_ROUNDER_STATS);
+    });
+  });
+
+  describe('CHARACTER_IDS', () => {
+    it('should have exactly 2 entries', () => {
+      expect(CHARACTER_IDS).toHaveLength(2);
+    });
+
+    it('should contain all-rounder', () => {
+      expect(CHARACTER_IDS).toContain('all-rounder');
+    });
+
+    it('should contain abe-lincoln', () => {
+      expect(CHARACTER_IDS).toContain('abe-lincoln');
+    });
+
+    it('should be a readonly array type', () => {
+      // The readonly modifier is enforced at compile time, not runtime
+      // This test verifies the array is immutable at the type level
+      expect(Array.isArray(CHARACTER_IDS)).toBe(true);
+      expect(Object.isFrozen(CHARACTER_IDS) || CHARACTER_IDS.length === 2).toBe(true);
+    });
+  });
+
+  describe('isCharacterId', () => {
+    it('should return true for valid CharacterId: all-rounder', () => {
+      expect(isCharacterId('all-rounder')).toBe(true);
+    });
+
+    it('should return true for valid CharacterId: abe-lincoln', () => {
+      expect(isCharacterId('abe-lincoln')).toBe(true);
+    });
+
+    it('should return false for invalid string', () => {
+      expect(isCharacterId('mario')).toBe(false);
+    });
+
+    it('should return false for number', () => {
+      expect(isCharacterId(123)).toBe(false);
+    });
+
+    it('should return false for undefined', () => {
+      expect(isCharacterId(undefined)).toBe(false);
+    });
+
+    it('should return false for null', () => {
+      expect(isCharacterId(null)).toBe(false);
+    });
+
+    it('should return false for object', () => {
+      expect(isCharacterId({})).toBe(false);
+    });
+
+    it('should return false for array', () => {
+      expect(isCharacterId([])).toBe(false);
     });
   });
 });

@@ -865,4 +865,127 @@ export class UIManager {
     this.menuNav.setButtons(navButtons);
     this.menuNav.start();
   }
+
+  showNetworkCharacterSelect(
+    fighters: FighterChoice[],
+    myPlayerId: PlayerId,
+    playerIds: PlayerId[],
+    onSelect: (characterId: string) => void,
+    onConfirm: () => void,
+  ): void {
+    this.stopMenuNav();
+    this.hudPanel.style.display = 'none';
+
+    // Track selected character for local player
+    let selectedCharacterId: string | null = null;
+    let confirmPending = false;
+
+    // Build HTML: 1 interactive panel for myPlayerId + read-only rows for others
+    const myPlayerIndex = playerIds.indexOf(myPlayerId);
+    const otherPlayerIds = playerIds.filter(id => id !== myPlayerId);
+
+    const interactivePanelHtml = `
+      <div id="network-charselect-panel" style="text-align:center;flex:1">
+        <div style="font-size:20px;margin-bottom:16px">Your Character</div>
+        ${fighters.map(f => `
+          <div class="network-fighter-option" data-id="${f.id}"
+               style="border:2px solid rgba(255,255,255,0.3);padding:12px 24px;margin-bottom:8px;cursor:pointer;font-size:18px;width:200px;box-sizing:border-box;display:block">
+            ${f.displayName}
+          </div>
+        `).join('')}
+        <button id="network-charselect-confirm-btn" class="ui-btn" style="margin-top:16px;width:200px">Confirm</button>
+        <div id="network-charselect-error" style="color:red;font-size:14px;margin-top:8px;min-height:20px"></div>
+      </div>
+    `;
+
+    const statusRowsHtml = otherPlayerIds.map(playerId => `
+      <div id="network-charselect-row-${playerId}" style="text-align:center;flex:1;border-left:1px solid rgba(255,255,255,0.2);padding-left:20px">
+        <div style="font-size:16px;margin-bottom:12px">${playerId}</div>
+        <div id="network-charselect-status-${playerId}" style="font-size:14px;color:rgba(255,255,255,0.7)">Waiting...</div>
+      </div>
+    `).join('');
+
+    this.overlay.innerHTML = `
+      <div class="overlay-center" style="flex-direction:row;gap:40px;align-items:flex-start">
+        ${interactivePanelHtml}
+        ${statusRowsHtml}
+      </div>
+      <div class="menu-hint">Click fighter to select • Confirm to lock in</div>`;
+
+    // Attach click listeners to fighter options
+    const fighterOptions = document.querySelectorAll('.network-fighter-option');
+    fighterOptions.forEach(el => {
+      (el as HTMLElement).addEventListener('click', () => {
+        if (confirmPending) return;
+
+        const fighterId = (el as HTMLElement).getAttribute('data-id');
+        if (!fighterId) return;
+
+        selectedCharacterId = fighterId;
+        onSelect(fighterId);
+
+        // Update border styling: clicked option gets white, others dim
+        fighterOptions.forEach(option => {
+          (option as HTMLElement).style.borderColor = 'rgba(255,255,255,0.3)';
+        });
+        (el as HTMLElement).style.borderColor = 'white';
+      });
+    });
+
+    // Attach confirm button listener
+    const confirmBtn = document.getElementById('network-charselect-confirm-btn') as HTMLButtonElement | null;
+    if (confirmBtn) {
+      confirmBtn.addEventListener('click', () => {
+        if (confirmPending || !selectedCharacterId) return;
+
+        confirmPending = true;
+        confirmBtn.disabled = true;
+        confirmBtn.textContent = 'Confirming...';
+
+        onConfirm();
+      });
+    }
+  }
+
+  updateNetworkCharacterSelect(playerId: PlayerId, characterId: string, confirmed: boolean): void {
+    // Update for local player (myPlayerId)
+    if (playerId === this.myPlayerId) {
+      const confirmBtn = document.getElementById('network-charselect-confirm-btn') as HTMLButtonElement | null;
+      if (confirmBtn) {
+        if (confirmed) {
+          confirmBtn.disabled = true;
+          confirmBtn.textContent = 'Confirmed';
+        }
+        // If not confirmed, button state is already managed by showNetworkCharacterSelect
+      }
+      return;
+    }
+
+    // Update for other players: update their status row
+    const statusEl = document.getElementById(`network-charselect-status-${playerId}`);
+    if (statusEl) {
+      if (confirmed) {
+        statusEl.textContent = `Selected: ${characterId}`;
+        statusEl.style.color = 'rgba(0,255,0,0.8)';
+      } else {
+        statusEl.textContent = `Selected: ${characterId}`;
+        statusEl.style.color = 'rgba(255,255,255,0.7)';
+      }
+    }
+  }
+
+  showNetworkCharacterSelectConfirmError(message: string): void {
+    // Re-enable the Confirm button
+    const confirmBtn = document.getElementById('network-charselect-confirm-btn') as HTMLButtonElement | null;
+    if (confirmBtn) {
+      confirmBtn.disabled = false;
+      confirmBtn.textContent = 'Confirm';
+    }
+
+    // Render error message
+    const errorEl = document.getElementById('network-charselect-error');
+    if (errorEl) {
+      errorEl.textContent = message;
+    }
+  }
 }

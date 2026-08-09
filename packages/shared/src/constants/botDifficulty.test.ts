@@ -7,9 +7,9 @@ describe('BOT_DIFFICULTY_PRESETS', () => {
   });
 
   it('should have easy preset with correct values', () => {
-    expect(BOT_DIFFICULTY_PRESETS.easy.reactionDelayFrames).toBe(15);
+    expect(BOT_DIFFICULTY_PRESETS.easy.reactionDelayFrames).toBe(18);
     expect(BOT_DIFFICULTY_PRESETS.easy.decisionQuality).toBe(0.5);
-    expect(BOT_DIFFICULTY_PRESETS.easy.executionErrorRate).toBe(0.3);
+    expect(BOT_DIFFICULTY_PRESETS.easy.executionErrorRate).toBe(0.35);
   });
 
   it('should have medium preset with correct values', () => {
@@ -21,6 +21,6 @@ describe('BOT_DIFFICULTY_PRESETS', () => {
   it('should have hard preset with correct values', () => {
     expect(BOT_DIFFICULTY_PRESETS.hard.reactionDelayFrames).toBe(3);
     expect(BOT_DIFFICULTY_PRESETS.hard.decisionQuality).toBe(0.92);
-    expect(BOT_DIFFICULTY_PRESETS.hard.executionErrorRate).toBe(0.05);
+    expect(BOT_DIFFICULTY_PRESETS.hard.executionErrorRate).toBe(0.08);
   });
 });

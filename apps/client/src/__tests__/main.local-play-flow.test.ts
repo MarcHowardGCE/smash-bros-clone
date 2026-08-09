@@ -403,4 +403,63 @@ describe('main local play flow wiring', () => {
       'local-p1': 'abe-lincoln',
     });
   });
+
+  it('in 4-player setup, each CPU has opponentPlayerIds containing all 3 OTHER player IDs', async () => {
+    const setup: SetupResult = {
+      participantCount: 4,
+      seats: [
+        { kind: 'cpu', difficulty: 'medium' },
+        { kind: 'cpu', difficulty: 'hard' },
+        { kind: 'cpu', difficulty: 'easy' },
+      ],
+    };
+
+    const runtime = await bootMainWithMocks([setup]);
+
+    runtime.uiInstance.onLocalPlay?.();
+    runtime.showCharacterSelectCalls[0]?.onSelected([]);
+
+    expect(runtime.localMatchCtorCalls).toHaveLength(1);
+    const controllers = runtime.localMatchCtorCalls[0]?.controllers ?? [];
+    expect(controllers).toHaveLength(4);
+
+    // CPU at slot 1 (local-p2) should have opponentPlayerIds: ['local-p1', 'local-p3', 'local-p4']
+    const cpu1 = controllers[1] as { config: { playerId: string; opponentPlayerIds: string[] } };
+    expect(cpu1).toBeInstanceOf(runtime.AIPlayerController);
+    expect(cpu1.config.playerId).toBe('local-p2');
+    expect(cpu1.config.opponentPlayerIds).toEqual(['local-p1', 'local-p3', 'local-p4']);
+
+    // CPU at slot 2 (local-p3) should have opponentPlayerIds: ['local-p1', 'local-p2', 'local-p4']
+    const cpu2 = controllers[2] as { config: { playerId: string; opponentPlayerIds: string[] } };
+    expect(cpu2).toBeInstanceOf(runtime.AIPlayerController);
+    expect(cpu2.config.playerId).toBe('local-p3');
+    expect(cpu2.config.opponentPlayerIds).toEqual(['local-p1', 'local-p2', 'local-p4']);
+
+    // CPU at slot 3 (local-p4) should have opponentPlayerIds: ['local-p1', 'local-p2', 'local-p3']
+    const cpu3 = controllers[3] as { config: { playerId: string; opponentPlayerIds: string[] } };
+    expect(cpu3).toBeInstanceOf(runtime.AIPlayerController);
+    expect(cpu3.config.playerId).toBe('local-p4');
+    expect(cpu3.config.opponentPlayerIds).toEqual(['local-p1', 'local-p2', 'local-p3']);
+  });
+
+  it('in 2-player setup, single CPU still has opponentPlayerIds: ["local-p1"]', async () => {
+    const setup: SetupResult = {
+      participantCount: 2,
+      seats: [{ kind: 'cpu', difficulty: 'medium' }],
+    };
+
+    const runtime = await bootMainWithMocks([setup]);
+
+    runtime.uiInstance.onLocalPlay?.();
+    runtime.showCharacterSelectCalls[0]?.onSelected([]);
+
+    expect(runtime.localMatchCtorCalls).toHaveLength(1);
+    const controllers = runtime.localMatchCtorCalls[0]?.controllers ?? [];
+    expect(controllers).toHaveLength(2);
+
+    const cpu = controllers[1] as { config: { playerId: string; opponentPlayerIds: string[] } };
+    expect(cpu).toBeInstanceOf(runtime.AIPlayerController);
+    expect(cpu.config.playerId).toBe('local-p2');
+    expect(cpu.config.opponentPlayerIds).toEqual(['local-p1']);
+  });
 });

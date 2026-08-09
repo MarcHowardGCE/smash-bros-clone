@@ -1,5 +1,6 @@
 import {
   INPUT_BITS,
+  PlayerStateEnum,
   STAGE,
   type GameState,
   type InputBitmask,
@@ -44,6 +45,54 @@ function applyExecutionError(
   }
 
   return { bits: intendedBits, memory: executionRoll.nextMemory };
+}
+
+function jumpInputForState(selfState: string, directionBits: InputBitmask): InputBitmask {
+  return selfState === PlayerStateEnum.IDLE
+    ? INPUT_BITS.JUMP
+    : (directionBits | INPUT_BITS.JUMP);
+}
+
+export function selectTarget(
+  state: GameState,
+  botPlayerId: PlayerId,
+  candidateIds: PlayerId[],
+  reactionDelayFrames: number
+): PlayerId | null {
+  const self = state.players[botPlayerId];
+  if (self === undefined) {
+    throw new Error(`Bot player not found in GameState: ${botPlayerId}`);
+  }
+
+  let bestTargetId: PlayerId | null = null;
+  let bestScore = Number.NEGATIVE_INFINITY;
+
+  for (const candidateId of candidateIds) {
+    const candidate = state.players[candidateId];
+    if (
+      candidate === undefined ||
+      candidate.isKnockedOut ||
+      candidate.respawnTimer > 0
+    ) {
+      continue;
+    }
+
+    const score =
+      1000 / (1 + sensors.distanceBetween(self, candidate)) +
+      (sensors.isThreatIncoming(self, candidate, reactionDelayFrames) ? 500 : 0) +
+      candidate.percent * 0.5 -
+      candidate.stocks * 20;
+
+    if (
+      score > bestScore ||
+      (score === bestScore && (bestTargetId === null || candidateId < bestTargetId))
+    ) {
+      bestScore = score;
+      bestTargetId = candidateId;
+    }
+  }
+
+  return bestTargetId;
 }
 
 export function decideBotInput(
@@ -130,8 +179,39 @@ export function decideBotInput(
     );
   }
 
+  // (5.5) edge-guard offense: challenge opponent off-stage or wait at ledge
+  if (
+    sensors.isOffStage(opponent, STAGE) &&
+    !sensors.isOffStage(self, STAGE) &&
+    self.isGrounded
+  ) {
+    const decisionRoll = nextRandom(memory);
+    const aggressiveWeight = difficultyConfig.decisionQuality >= 0.75 ? 0.7 : 0.3;
+    const directionBits = (opponent.x - self.x) > 0 ? INPUT_BITS.RIGHT : INPUT_BITS.LEFT;
+
+    const intendedBits = decisionRoll.value < aggressiveWeight
+      ? jumpInputForState(self.state, directionBits)
+      : directionBits;
+
+    return applyExecutionError(
+      intendedBits,
+      difficultyConfig.executionErrorRate,
+      decisionRoll.nextMemory
+    );
+  }
+
   // (6) neutral pressure: approach opponent and occasionally throw out a button in range.
   const horizontalDelta = opponent.x - self.x;
+
+  if (sensors.platformJumpNeeded(self, opponent) && self.isGrounded) {
+    const directionBits = horizontalDelta > 0 ? INPUT_BITS.RIGHT : INPUT_BITS.LEFT;
+    return applyExecutionError(
+      jumpInputForState(self.state, directionBits),
+      difficultyConfig.executionErrorRate,
+      memory
+    );
+  }
+
   if (Math.abs(horizontalDelta) > APPROACH_DEADZONE_X) {
     const towardOpponentBits =
       horizontalDelta > 0 ? INPUT_BITS.RIGHT : INPUT_BITS.LEFT;

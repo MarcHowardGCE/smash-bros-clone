@@ -77,3 +77,18 @@ export function isPunishWindow(opponent: PlayerState): boolean {
   // Check if stateFrame is within recovery window
   return opponent.stateFrame >= recoveryStart && opponent.stateFrame < recoveryEnd;
 }
+
+/**
+ * Determine whether jumping is needed to reach a grounded opponent on a platform.
+ * Pure function, no side effects.
+ */
+export function platformJumpNeeded(self: PlayerState, opponent: PlayerState): boolean {
+  const verticalDelta = opponent.y - self.y;
+  const horizontalDelta = Math.abs(opponent.x - self.x);
+
+  return (
+    verticalDelta < -90 &&
+    opponent.isGrounded === true &&
+    horizontalDelta <= 260
+  );
+}

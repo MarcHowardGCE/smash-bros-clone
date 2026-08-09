@@ -478,4 +478,271 @@ describe('UIManager', () => {
       expect(choices[0].id).toBe('abe-lincoln');
     });
   });
+
+  describe('showNetworkCharacterSelect', () => {
+    const fighters: FighterChoice[] = [
+      { id: 'fighter1', displayName: 'Fighter One' },
+      { id: 'fighter2', displayName: 'Fighter Two' },
+    ];
+
+    it('should render 1 interactive panel for myPlayerId + read-only rows for other players', () => {
+      const onSelect = vi.fn();
+      const onConfirm = vi.fn();
+      const myPlayerId = 'p1' as any;
+      const playerIds = ['p1', 'p2', 'p3'] as any;
+
+      uiManager.setPlayerId(myPlayerId);
+      uiManager.showNetworkCharacterSelect(fighters, myPlayerId, playerIds, onSelect, onConfirm);
+
+      // Should have 1 interactive panel
+      expect(mockOverlay.innerHTML).toContain('id="network-charselect-panel"');
+      expect(mockOverlay.innerHTML).toContain('Your Character');
+
+      // Should have 2 read-only status rows (for p2 and p3)
+      expect(mockOverlay.innerHTML).toContain('id="network-charselect-row-p2"');
+      expect(mockOverlay.innerHTML).toContain('id="network-charselect-row-p3"');
+      expect(mockOverlay.innerHTML).toContain('id="network-charselect-status-p2"');
+      expect(mockOverlay.innerHTML).toContain('id="network-charselect-status-p3"');
+
+      // Status rows should show "Waiting..."
+      expect(mockOverlay.innerHTML).toContain('Waiting...');
+    });
+
+    it('should render all fighter options in interactive panel', () => {
+      const onSelect = vi.fn();
+      const onConfirm = vi.fn();
+      const myPlayerId = 'p1' as any;
+      const playerIds = ['p1', 'p2'] as any;
+
+      uiManager.setPlayerId(myPlayerId);
+      uiManager.showNetworkCharacterSelect(fighters, myPlayerId, playerIds, onSelect, onConfirm);
+
+      expect(mockOverlay.innerHTML).toContain('Fighter One');
+      expect(mockOverlay.innerHTML).toContain('Fighter Two');
+      expect(mockOverlay.innerHTML).toContain('data-id="fighter1"');
+      expect(mockOverlay.innerHTML).toContain('data-id="fighter2"');
+    });
+
+    it('should call onSelect when fighter option is clicked', () => {
+      const onSelect = vi.fn();
+      const onConfirm = vi.fn();
+      const myPlayerId = 'p1' as any;
+      const playerIds = ['p1', 'p2'] as any;
+
+      uiManager.setPlayerId(myPlayerId);
+      uiManager.showNetworkCharacterSelect(fighters, myPlayerId, playerIds, onSelect, onConfirm);
+
+      const fighter1Option = mockOverlay.querySelector('[data-id="fighter1"]') as HTMLElement;
+      expect(fighter1Option).not.toBeNull();
+      fighter1Option.click();
+
+      expect(onSelect).toHaveBeenCalledTimes(1);
+      expect(onSelect).toHaveBeenCalledWith('fighter1');
+    });
+
+    it('should highlight selected fighter with white border', () => {
+      const onSelect = vi.fn();
+      const onConfirm = vi.fn();
+      const myPlayerId = 'p1' as any;
+      const playerIds = ['p1', 'p2'] as any;
+
+      uiManager.setPlayerId(myPlayerId);
+      uiManager.showNetworkCharacterSelect(fighters, myPlayerId, playerIds, onSelect, onConfirm);
+
+      const fighter1Option = mockOverlay.querySelector('[data-id="fighter1"]') as HTMLElement;
+      fighter1Option.click();
+
+      expect(fighter1Option.style.borderColor).toBe('white');
+
+      // Other options should remain dim (browser normalizes rgba format with spaces)
+      const fighter2Option = mockOverlay.querySelector('[data-id="fighter2"]') as HTMLElement;
+      expect(fighter2Option.style.borderColor).toMatch(/rgba\(255,\s*255,\s*255,\s*0\.3\)/);
+    });
+
+    it('should call onConfirm and disable button with "Confirming..." when Confirm button is clicked', () => {
+      const onSelect = vi.fn();
+      const onConfirm = vi.fn();
+      const myPlayerId = 'p1' as any;
+      const playerIds = ['p1', 'p2'] as any;
+
+      uiManager.setPlayerId(myPlayerId);
+      uiManager.showNetworkCharacterSelect(fighters, myPlayerId, playerIds, onSelect, onConfirm);
+
+      // Select a fighter first
+      const fighter1Option = mockOverlay.querySelector('[data-id="fighter1"]') as HTMLElement;
+      fighter1Option.click();
+
+      const confirmBtn = document.getElementById('network-charselect-confirm-btn') as HTMLButtonElement;
+      expect(confirmBtn).not.toBeNull();
+      expect(confirmBtn.disabled).toBe(false);
+      expect(confirmBtn.textContent).toBe('Confirm');
+
+      confirmBtn.click();
+
+      expect(onConfirm).toHaveBeenCalledTimes(1);
+      expect(confirmBtn.disabled).toBe(true);
+      expect(confirmBtn.textContent).toBe('Confirming...');
+    });
+
+    it('should not allow confirm if no fighter selected', () => {
+      const onSelect = vi.fn();
+      const onConfirm = vi.fn();
+      const myPlayerId = 'p1' as any;
+      const playerIds = ['p1', 'p2'] as any;
+
+      uiManager.setPlayerId(myPlayerId);
+      uiManager.showNetworkCharacterSelect(fighters, myPlayerId, playerIds, onSelect, onConfirm);
+
+      const confirmBtn = document.getElementById('network-charselect-confirm-btn') as HTMLButtonElement;
+      confirmBtn.click();
+
+      expect(onConfirm).not.toHaveBeenCalled();
+    });
+
+    it('should render error element with id="network-charselect-error"', () => {
+      const onSelect = vi.fn();
+      const onConfirm = vi.fn();
+      const myPlayerId = 'p1' as any;
+      const playerIds = ['p1', 'p2'] as any;
+
+      uiManager.setPlayerId(myPlayerId);
+      uiManager.showNetworkCharacterSelect(fighters, myPlayerId, playerIds, onSelect, onConfirm);
+
+      const errorEl = document.getElementById('network-charselect-error');
+      expect(errorEl).not.toBeNull();
+      expect(errorEl?.textContent).toBe('');
+    });
+  });
+
+  describe('updateNetworkCharacterSelect', () => {
+    const fighters: FighterChoice[] = [
+      { id: 'fighter1', displayName: 'Fighter One' },
+      { id: 'fighter2', displayName: 'Fighter Two' },
+    ];
+
+    beforeEach(() => {
+      const onSelect = vi.fn();
+      const onConfirm = vi.fn();
+      const myPlayerId = 'p1' as any;
+      const playerIds = ['p1', 'p2', 'p3'] as any;
+
+      uiManager.setPlayerId(myPlayerId);
+      uiManager.showNetworkCharacterSelect(fighters, myPlayerId, playerIds, onSelect, onConfirm);
+    });
+
+    it('should update status for other player without full re-render', () => {
+      const statusEl = document.getElementById('network-charselect-status-p2') as HTMLElement;
+      expect(statusEl?.textContent).toBe('Waiting...');
+
+      uiManager.updateNetworkCharacterSelect('p2' as any, 'fighter1', false);
+
+      expect(statusEl?.textContent).toBe('Selected: fighter1');
+      // Interactive panel should still exist (not re-rendered)
+      expect(document.getElementById('network-charselect-panel')).not.toBeNull();
+    });
+
+    it('should update status with green color when other player confirms', () => {
+      uiManager.updateNetworkCharacterSelect('p2' as any, 'fighter1', true);
+
+      const statusEl = document.getElementById('network-charselect-status-p2') as HTMLElement;
+      expect(statusEl?.textContent).toBe('Selected: fighter1');
+      expect(statusEl?.style.color).toMatch(/rgba\(0,\s*255,\s*0,\s*0\.8\)/);
+    });
+
+    it('should update Confirm button to "Confirmed" when myPlayerId confirms', () => {
+      const confirmBtn = document.getElementById('network-charselect-confirm-btn') as HTMLButtonElement;
+
+      // First select a fighter and click confirm
+      const fighter1Option = mockOverlay.querySelector('[data-id="fighter1"]') as HTMLElement;
+      fighter1Option.click();
+      confirmBtn.click();
+
+      // Now update with confirmed=true
+      uiManager.updateNetworkCharacterSelect('p1' as any, 'fighter1', true);
+
+      expect(confirmBtn.disabled).toBe(true);
+      expect(confirmBtn.textContent).toBe('Confirmed');
+    });
+
+    it('should be no-op for unknown playerId', () => {
+      const statusEl = document.getElementById('network-charselect-status-p2') as HTMLElement;
+      const initialText = statusEl?.textContent;
+
+      // Should not throw
+      uiManager.updateNetworkCharacterSelect('unknown-player' as any, 'fighter1', false);
+
+      expect(statusEl?.textContent).toBe(initialText);
+    });
+  });
+
+  describe('showNetworkCharacterSelectConfirmError', () => {
+    const fighters: FighterChoice[] = [
+      { id: 'fighter1', displayName: 'Fighter One' },
+    ];
+
+    beforeEach(() => {
+      const onSelect = vi.fn();
+      const onConfirm = vi.fn();
+      const myPlayerId = 'p1' as any;
+      const playerIds = ['p1', 'p2'] as any;
+
+      uiManager.setPlayerId(myPlayerId);
+      uiManager.showNetworkCharacterSelect(fighters, myPlayerId, playerIds, onSelect, onConfirm);
+
+      // Simulate confirm being clicked
+      const fighter1Option = mockOverlay.querySelector('[data-id="fighter1"]') as HTMLElement;
+      fighter1Option.click();
+      const confirmBtn = document.getElementById('network-charselect-confirm-btn') as HTMLButtonElement;
+      confirmBtn.click();
+    });
+
+    it('should re-enable Confirm button and restore label to "Confirm"', () => {
+      const confirmBtn = document.getElementById('network-charselect-confirm-btn') as HTMLButtonElement;
+      expect(confirmBtn.disabled).toBe(true);
+      expect(confirmBtn.textContent).toBe('Confirming...');
+
+      uiManager.showNetworkCharacterSelectConfirmError('room full');
+
+      expect(confirmBtn.disabled).toBe(false);
+      expect(confirmBtn.textContent).toBe('Confirm');
+    });
+
+    it('should render error message in error element', () => {
+      const errorEl = document.getElementById('network-charselect-error') as HTMLElement;
+      expect(errorEl?.textContent).toBe('');
+
+      uiManager.showNetworkCharacterSelectConfirmError('room full');
+
+      expect(errorEl?.textContent).toBe('room full');
+    });
+
+    it('should be no-op if called before showNetworkCharacterSelect', () => {
+      // Create a fresh UIManager without calling showNetworkCharacterSelect
+      const freshOverlay = document.createElement('div');
+      document.body.appendChild(freshOverlay);
+      const freshUI = new UIManager(freshOverlay);
+
+      // Should not throw
+      expect(() => {
+        freshUI.showNetworkCharacterSelectConfirmError('error message');
+      }).not.toThrow();
+
+      document.body.removeChild(freshOverlay);
+    });
+
+    it('should clear error on next showNetworkCharacterSelect call', () => {
+      const errorEl = document.getElementById('network-charselect-error') as HTMLElement;
+
+      uiManager.showNetworkCharacterSelectConfirmError('room full');
+      expect(errorEl?.textContent).toBe('room full');
+
+      // Call showNetworkCharacterSelect again
+      const onSelect = vi.fn();
+      const onConfirm = vi.fn();
+      uiManager.showNetworkCharacterSelect(fighters, 'p1' as any, ['p1', 'p2'] as any, onSelect, onConfirm);
+
+      const newErrorEl = document.getElementById('network-charselect-error') as HTMLElement;
+      expect(newErrorEl?.textContent).toBe('');
+    });
+  });
 });

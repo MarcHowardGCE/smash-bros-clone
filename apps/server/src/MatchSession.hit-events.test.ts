@@ -40,14 +40,15 @@ function primePlayer(
 describe('MatchSession hit event broadcast wiring', () => {
 	it('broadcastState includes hitEvents then clears them for next broadcast', () => {
 		const packets: Uint8Array[] = [];
-		const session = new MatchSession(
-			['p1', 'p2'],
-			(data) => {
+		const session = new MatchSession({
+			playerIds: ['p1', 'p2'],
+			characterIds: { 'p1': 'all-rounder', 'p2': 'all-rounder' },
+			onBroadcast: (data) => {
 				const bytes = data instanceof Buffer ? new Uint8Array(data) : data;
 				packets.push(bytes);
 			},
-			() => {},
-		);
+			onMatchOver: () => {},
+		});
 
 		const sessionEngine = (session as unknown as { engine: GameEngine }).engine;
 		primePlayer(sessionEngine, 'p1', {

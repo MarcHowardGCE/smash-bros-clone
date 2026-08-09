@@ -1,12 +1,12 @@
 import type { InputEvent, PlayerId, GameState, BotDifficulty, InputBitmask } from '@smash/shared';
 import { BOT_DIFFICULTY_PRESETS, INPUT_BITS } from '@smash/shared';
-import { decideBotInput, createBotMemory, type BotMemory } from '@smash/engine';
+import { decideBotInput, createBotMemory, selectTarget, type BotMemory } from '@smash/engine';
 import type { ITickController } from './types.js';
 
 export interface AIPlayerControllerConfig {
   playerId: PlayerId;
   slotIndex: number;
-  opponentPlayerId: PlayerId;
+  opponentPlayerIds: PlayerId[];
   difficulty: BotDifficulty;
   seed: number;
 }
@@ -14,7 +14,7 @@ export interface AIPlayerControllerConfig {
 export class AIPlayerController implements ITickController {
   readonly playerId: PlayerId;
   readonly slotIndex: number;
-  private readonly opponentPlayerId: PlayerId;
+  private readonly opponentPlayerIds: PlayerId[];
   private readonly difficultyConfig: {
     reactionDelayFrames: number;
     decisionQuality: number;
@@ -28,7 +28,7 @@ export class AIPlayerController implements ITickController {
   constructor(config: AIPlayerControllerConfig) {
     this.playerId = config.playerId;
     this.slotIndex = config.slotIndex;
-    this.opponentPlayerId = config.opponentPlayerId;
+    this.opponentPlayerIds = config.opponentPlayerIds;
     this.difficultyConfig = BOT_DIFFICULTY_PRESETS[config.difficulty];
     this.botMemory = createBotMemory(config.seed);
   }
@@ -42,10 +42,21 @@ export class AIPlayerController implements ITickController {
       return null;
     }
 
+    const targetId = selectTarget(
+      this.latestState,
+      this.playerId,
+      this.opponentPlayerIds,
+      this.difficultyConfig.reactionDelayFrames
+    );
+
+    if (targetId === null) {
+      return null;
+    }
+
     const { bits, memory } = decideBotInput(
       this.latestState,
       this.playerId,
-      this.opponentPlayerId,
+      targetId,
       this.difficultyConfig,
       this.botMemory
     );

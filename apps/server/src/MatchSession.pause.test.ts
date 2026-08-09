@@ -14,14 +14,15 @@ import { MatchSession } from './MatchSession.js';
 describe('MatchSession pause/resume', () => {
 	it('pause freezes tick count, resume restarts ticking', async () => {
 		const broadcasts: Uint8Array[] = [];
-		const session = new MatchSession(
-			['p1', 'p2'],
-			(data) => {
+		const session = new MatchSession({
+			playerIds: ['p1', 'p2'],
+			characterIds: { 'p1': 'all-rounder', 'p2': 'all-rounder' },
+			onBroadcast: (data) => {
 				const bytes = data instanceof Buffer ? new Uint8Array(data) : data;
 				broadcasts.push(bytes);
 			},
-			() => {},
-		);
+			onMatchOver: () => {},
+		});
 
 		session.start();
 
@@ -49,14 +50,15 @@ describe('MatchSession pause/resume', () => {
 
 	it('pause broadcasts game:paused event, resume broadcasts game:resumed', async () => {
 		const broadcasts: Uint8Array[] = [];
-		const session = new MatchSession(
-			['p1', 'p2'],
-			(data) => {
+		const session = new MatchSession({
+			playerIds: ['p1', 'p2'],
+			characterIds: { 'p1': 'all-rounder', 'p2': 'all-rounder' },
+			onBroadcast: (data) => {
 				const bytes = data instanceof Buffer ? new Uint8Array(data) : data;
 				broadcasts.push(bytes);
 			},
-			() => {},
-		);
+			onMatchOver: () => {},
+		});
 
 		session.start();
 		await new Promise((resolve) => setTimeout(resolve, 50));
@@ -77,11 +79,12 @@ describe('MatchSession pause/resume', () => {
 	});
 
 	it('queueInput drops inputs when paused', async () => {
-		const session = new MatchSession(
-			['p1', 'p2'],
-			() => {},
-			() => {},
-		);
+		const session = new MatchSession({
+			playerIds: ['p1', 'p2'],
+			characterIds: { 'p1': 'all-rounder', 'p2': 'all-rounder' },
+			onBroadcast: () => {},
+			onMatchOver: () => {},
+		});
 
 		session.start();
 		await new Promise((resolve) => setTimeout(resolve, 30));
@@ -109,11 +112,12 @@ describe('MatchSession pause/resume', () => {
 	});
 
 	it('pause when not running is a no-op', () => {
-		const session = new MatchSession(
-			['p1', 'p2'],
-			() => {},
-			() => {},
-		);
+		const session = new MatchSession({
+			playerIds: ['p1', 'p2'],
+			characterIds: { 'p1': 'all-rounder', 'p2': 'all-rounder' },
+			onBroadcast: () => {},
+			onMatchOver: () => {},
+		});
 
 		// Don't call start()
 		session.pause(); // Should not crash
@@ -123,11 +127,12 @@ describe('MatchSession pause/resume', () => {
 	});
 
 	it('resume when not paused is a no-op', async () => {
-		const session = new MatchSession(
-			['p1', 'p2'],
-			() => {},
-			() => {},
-		);
+		const session = new MatchSession({
+			playerIds: ['p1', 'p2'],
+			characterIds: { 'p1': 'all-rounder', 'p2': 'all-rounder' },
+			onBroadcast: () => {},
+			onMatchOver: () => {},
+		});
 
 		session.start();
 		await new Promise((resolve) => setTimeout(resolve, 30));
@@ -143,14 +148,15 @@ describe('MatchSession pause/resume', () => {
 
 	it('double pause is idempotent', async () => {
 		const broadcasts: Uint8Array[] = [];
-		const session = new MatchSession(
-			['p1', 'p2'],
-			(data) => {
+		const session = new MatchSession({
+			playerIds: ['p1', 'p2'],
+			characterIds: { 'p1': 'all-rounder', 'p2': 'all-rounder' },
+			onBroadcast: (data) => {
 				const bytes = data instanceof Buffer ? new Uint8Array(data) : data;
 				broadcasts.push(bytes);
 			},
-			() => {},
-		);
+			onMatchOver: () => {},
+		});
 
 		session.start();
 		await new Promise((resolve) => setTimeout(resolve, 30));

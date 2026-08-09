@@ -4,6 +4,7 @@ export type { InputBitmask, InputEvent } from './types/InputEvent.js';
 export { INPUT_BITS } from './types/InputEvent.js';
 export type { MoveData } from './types/MoveData.js';
 export { MoveId } from './types/MoveData.js';
+export type { CharacterId, CharacterStats } from './types/Character.js';
 export { PlayerStateEnum } from './types/PlayerFSMState.js';
 
 // Constants
@@ -14,6 +15,7 @@ export type { Stage } from './constants/stage.js';
 export { MATCH_CONFIG } from './constants/matchConfig.js';
 export { BOT_DIFFICULTY_PRESETS } from './constants/botDifficulty.js';
 export type { BotDifficulty } from './constants/botDifficulty.js';
+export { ALL_ROUNDER_STATS, ABE_LINCOLN_STATS, CHARACTER_REGISTRY, getCharacterStats } from './constants/characters.js';
 
 // Math utilities
 export {

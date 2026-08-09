@@ -245,5 +245,62 @@ describe('UIManager', () => {
       expect(onSelected).toHaveBeenCalledTimes(1);
       expect(onSelected.mock.calls[0][0]).toHaveLength(2);
     });
+
+    it('should update choice when clicking a fighter option', () => {
+      const fighters2: FighterChoice[] = [
+        { id: 'abe-lincoln', displayName: 'Abe Lincoln' },
+        { id: 'fighter2', displayName: 'Fighter Two' },
+      ];
+      const onSelected = vi.fn();
+      uiManager.showCharacterSelect(fighters2, 2, onSelected);
+
+      // Click on "Abe Lincoln" option for P1
+      const abeOption = mockOverlay.querySelector('[data-player="1"][data-id="abe-lincoln"]') as HTMLElement;
+      expect(abeOption).not.toBeNull();
+      abeOption.click();
+
+      // Verify border is white (selected)
+      expect(abeOption.style.borderColor).toBe('white');
+
+      // Verify other option has dim border (browser normalizes to rgba with spaces)
+      const fighter2Option = mockOverlay.querySelector('[data-player="1"][data-id="fighter2"]') as HTMLElement;
+      expect(fighter2Option.style.borderColor).toMatch(/rgba\(255,\s*255,\s*255,\s*0\.3\)/);
+
+      // Confirm P1 and P2 to complete selection
+      window.dispatchEvent(new KeyboardEvent('keydown', { code: 'Enter' }));
+      window.dispatchEvent(new KeyboardEvent('keydown', { code: 'KeyU' }));
+
+      expect(onSelected).toHaveBeenCalledTimes(1);
+      const choices = onSelected.mock.calls[0][0];
+      expect(choices[0].id).toBe('abe-lincoln');
+    });
+
+    it('should not allow selection when slot is confirmed', () => {
+      const fighters2: FighterChoice[] = [
+        { id: 'abe-lincoln', displayName: 'Abe Lincoln' },
+        { id: 'fighter2', displayName: 'Fighter Two' },
+      ];
+      const onSelected = vi.fn();
+      uiManager.showCharacterSelect(fighters2, 2, onSelected);
+
+      // First, click on "Abe Lincoln" for P1
+      const abeOption = mockOverlay.querySelector('[data-player="1"][data-id="abe-lincoln"]') as HTMLElement;
+      abeOption.click();
+
+      // Confirm P1 first
+      window.dispatchEvent(new KeyboardEvent('keydown', { code: 'Enter' }));
+
+      // Try to click on a different fighter for P1 (should be no-op)
+      const fighter2Option = mockOverlay.querySelector('[data-player="1"][data-id="fighter2"]') as HTMLElement;
+      fighter2Option.click();
+
+      // Confirm P2
+      window.dispatchEvent(new KeyboardEvent('keydown', { code: 'KeyU' }));
+
+      expect(onSelected).toHaveBeenCalledTimes(1);
+      const choices = onSelected.mock.calls[0][0];
+      // Should still be abe-lincoln (clicked before confirm), not fighter2
+      expect(choices[0].id).toBe('abe-lincoln');
+    });
   });
 });

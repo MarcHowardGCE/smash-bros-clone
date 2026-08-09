@@ -10,6 +10,7 @@ import {
 	DEFAULT_STAGE,
 	FSMController,
 	getMoveData,
+	getMoveDataForCharacter,
 	NO_HIT,
 	resolveHit,
 	resolveHitTrade,
@@ -19,6 +20,7 @@ import {
 } from "@smash/engine";
 import {
 	knockbackAngleToVelocity,
+	type CharacterId,
 	type GameState,
 	INPUT_BITS,
 	type InputEvent,
@@ -107,6 +109,7 @@ function applyWallJumpVelocity(
 
 export interface GameEngineOptions {
 	playerIds: PlayerId[];
+	characterIds?: Partial<Record<PlayerId, CharacterId>>;
 }
 
 /**
@@ -192,6 +195,7 @@ export class GameEngine {
 				pendingKnockbackVy: null,
 				respawnTimer: 0,
 				airDodgeDirection: null,
+				characterId: options.characterIds?.[id] ?? 'all-rounder',
 			};
 
 				this.techAttemptBuffered.set(id, false);
@@ -705,7 +709,7 @@ export class GameEngine {
 			previous.state !== player.state
 		) {
 		const moveId = this.selectMoveId(player, input);
-		const moveData = getMoveData(moveId);
+		const moveData = getMoveDataForCharacter(player.characterId, moveId);
 		nextPlayer = {
 			...nextPlayer,
 			currentMoveId: moveId,
@@ -1215,7 +1219,7 @@ export class GameEngine {
 		// assigned in applyStateTransitions which runs before this). Falling back to
 		// selectMoveId ensures the hitbox is never stale for one frame.
 		const moveId = (player.currentMoveId ?? this.selectMoveId(player, input)) as MoveId;
-		const move = getMoveData(moveId);
+		const move = getMoveDataForCharacter(player.characterId, moveId);
 		const isSmashMove =
 			move.id === MoveId.FORWARD_SMASH ||
 			move.id === MoveId.UP_SMASH ||

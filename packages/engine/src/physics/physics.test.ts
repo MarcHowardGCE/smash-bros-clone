@@ -680,3 +680,74 @@ describe('Physics Engine - checkWallCollision', () => {
     expect(result).toBe('left');
   });
 });
+
+describe('Physics Engine - Character-Specific Stats', () => {
+  it('Lincoln jump sets vy to -15.2 immediately', () => {
+    const player = makePlayer({ isGrounded: true, characterId: 'abe-lincoln' });
+    const result = startJump(player, false);
+
+    expect(result.vy).toBe(-15.2);
+    expect(result.isGrounded).toBe(false);
+  });
+
+  it('Lincoln short hop sets vy to -9.5 immediately', () => {
+    const player = makePlayer({ isGrounded: true, characterId: 'abe-lincoln' });
+    const result = startJump(player, true);
+
+    expect(result.vy).toBe(-9.5);
+    expect(result.isGrounded).toBe(false);
+  });
+
+  it('Lincoln run speed clamps at 5.8 after acceleration', () => {
+    let player = makePlayer({ isGrounded: true, vx: 0, characterId: 'abe-lincoln' });
+    const input = makeInput({ held: INPUT_BITS.RIGHT });
+
+    // Accelerate over multiple frames until we hit the clamp
+    for (let i = 0; i < 100; i += 1) {
+      player = applyMovement(player, input);
+    }
+
+    expect(player.vx).toBeCloseTo(5.8, 1);
+  });
+
+  it('Lincoln walk speed clamps at -5.8 when moving left after acceleration', () => {
+    let player = makePlayer({ isGrounded: true, vx: 0, characterId: 'abe-lincoln' });
+    const input = makeInput({ held: INPUT_BITS.LEFT });
+
+    // Accelerate over multiple frames until we hit the clamp
+    for (let i = 0; i < 100; i += 1) {
+      player = applyMovement(player, input);
+    }
+
+    expect(player.vx).toBeCloseTo(-5.8, 1);
+  });
+
+  it('All-Rounder maintains original behavior - jump sets vy to -16', () => {
+    const player = makePlayer({ isGrounded: true, characterId: 'all-rounder' });
+    const result = startJump(player, false);
+
+    expect(result.vy).toBe(PHYSICS.JUMP_VELOCITY);
+    expect(result.vy).toBe(-16);
+  });
+
+  it('All-Rounder maintains original behavior - run speed clamps at 6.5', () => {
+    let player = makePlayer({ isGrounded: true, vx: 0, characterId: 'all-rounder' });
+    const input = makeInput({ held: INPUT_BITS.RIGHT });
+
+    // Accelerate over multiple frames until we hit the clamp
+    for (let i = 0; i < 100; i += 1) {
+      player = applyMovement(player, input);
+    }
+
+    expect(player.vx).toBeCloseTo(PHYSICS.RUN_SPEED, 1);
+    expect(player.vx).toBeCloseTo(6.5, 1);
+  });
+
+  it('Undefined characterId falls back to All-Rounder stats', () => {
+    const player = makePlayer({ isGrounded: true, characterId: undefined });
+    const result = startJump(player, false);
+
+    expect(result.vy).toBe(PHYSICS.JUMP_VELOCITY);
+    expect(result.vy).toBe(-16);
+  });
+});

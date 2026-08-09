@@ -130,6 +130,11 @@ export class PolygonPartRenderer implements IPartRenderer {
     }
     g.closePath();
     g.stroke({ color: COLOR_BLACK, width: OUTLINE_WIDTH });
+
+    // Lincoln coattail flares at bottom vertices
+    if (this.characterId === 'abe-lincoln') {
+      this.drawLincolnCoattails(g, bw, bh, startAngle);
+    }
   }
 
   /**
@@ -195,6 +200,90 @@ export class PolygonPartRenderer implements IPartRenderer {
     // Eyes (two small dots) — same offsets as original (+4, -3) relative to center
     g.circle(4, -3, 2.5);
     g.fill({ color: COLOR_BLACK });
+
+    // Lincoln accessories: stovepipe hat + beard
+    if (this.characterId === 'abe-lincoln') {
+      this.drawLincolnHat(g);
+      this.drawLincolnBeard(g);
+    }
+  }
+
+  /** Stovepipe hat: tall rectangle crown + wider trapezoid brim. */
+  private drawLincolnHat(g: Graphics): void {
+    const hatBottom = -HEAD_RADIUS; // top of head circle
+    const hatTop = hatBottom - 20; // tall stovepipe
+    const crownHalfW = 8;
+    const brimHalfW = 13;
+    const brimHeight = 3;
+
+    // Crown (rectangle)
+    g.moveTo(-crownHalfW, hatBottom);
+    g.lineTo(-crownHalfW, hatTop);
+    g.lineTo(crownHalfW, hatTop);
+    g.lineTo(crownHalfW, hatBottom);
+    g.closePath();
+    g.fill({ color: COLOR_BLACK });
+    g.stroke({ color: COLOR_BLACK, width: OUTLINE_WIDTH });
+
+    // Brim (wider trapezoid at crown base)
+    g.moveTo(-brimHalfW, hatBottom);
+    g.lineTo(-crownHalfW, hatBottom - brimHeight);
+    g.lineTo(crownHalfW, hatBottom - brimHeight);
+    g.lineTo(brimHalfW, hatBottom);
+    g.closePath();
+    g.fill({ color: COLOR_BLACK });
+    g.stroke({ color: COLOR_BLACK, width: OUTLINE_WIDTH });
+  }
+
+  /** Beard: dark trapezoid beneath chin. */
+  private drawLincolnBeard(g: Graphics): void {
+    const chinY = HEAD_RADIUS; // bottom of head circle
+    const beardBottom = chinY + 10;
+    const topHalfW = 9;
+    const bottomHalfW = 5;
+
+    g.moveTo(-topHalfW, chinY);
+    g.lineTo(topHalfW, chinY);
+    g.lineTo(bottomHalfW, beardBottom);
+    g.lineTo(-bottomHalfW, beardBottom);
+    g.closePath();
+    g.fill({ color: COLOR_BLACK });
+    g.stroke({ color: COLOR_BLACK, width: OUTLINE_WIDTH });
+  }
+
+  /** Two triangular coattail flares extending from bottom pentagon vertices. */
+  private drawLincolnCoattails(
+    g: Graphics,
+    bw: number,
+    bh: number,
+    startAngle: number
+  ): void {
+    const flareLength = 12;
+    const flareWidth = 6;
+
+    // Bottom-right vertex (pentagon index 2)
+    const brAngle = startAngle + (2 * Math.PI * 2) / 5;
+    const brX = Math.cos(brAngle) * bw;
+    const brY = Math.sin(brAngle) * bh;
+
+    g.moveTo(brX, brY);
+    g.lineTo(brX + flareWidth, brY + flareLength);
+    g.lineTo(brX - flareWidth * 0.3, brY + flareLength * 0.8);
+    g.closePath();
+    g.fill({ color: COLOR_BLACK });
+    g.stroke({ color: COLOR_BLACK, width: OUTLINE_WIDTH });
+
+    // Bottom-left vertex (pentagon index 3)
+    const blAngle = startAngle + (3 * Math.PI * 2) / 5;
+    const blX = Math.cos(blAngle) * bw;
+    const blY = Math.sin(blAngle) * bh;
+
+    g.moveTo(blX, blY);
+    g.lineTo(blX - flareWidth, blY + flareLength);
+    g.lineTo(blX + flareWidth * 0.3, blY + flareLength * 0.8);
+    g.closePath();
+    g.fill({ color: COLOR_BLACK });
+    g.stroke({ color: COLOR_BLACK, width: OUTLINE_WIDTH });
   }
 
   /**

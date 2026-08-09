@@ -1,4 +1,4 @@
-import { circleOverlap, INPUT_BITS, knockbackAngleToVelocity, PHYSICS } from '@smash/shared';
+import { circleOverlap, INPUT_BITS, knockbackAngleToVelocity, PHYSICS, getCharacterStats } from '@smash/shared';
 import type { PlayerState, HitboxData, Circle, InputEvent } from '@smash/shared';
 
 export interface HitResult {
@@ -55,7 +55,7 @@ export function getHurtbox(player: PlayerState): Circle {
   return {
     x: player.x,
     y: player.y,
-    radius: PHYSICS.HURTBOX_RADIUS,
+    radius: getCharacterStats(player.characterId).hurtboxRadius,
   };
 }
 
@@ -87,7 +87,7 @@ export function resolveHit(
 		scaledDamage,
 		hitbox.baseKnockback,
 		hitbox.knockbackGrowth,
-		PHYSICS.FIGHTER_WEIGHT
+		getCharacterStats(defender.characterId).fighterWeight
 	);
 		const crouchAdjustedKnockbackMagnitude =
 			defender.isGrounded && isDownHeld(defenderInput)

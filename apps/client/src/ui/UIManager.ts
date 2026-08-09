@@ -235,13 +235,41 @@ export class UIManager {
       });
     }
 
+    // Click-to-select: attach listeners to fighter options
+    for (let i = 0; i < playerCount; i++) {
+      const playerElements = document.querySelectorAll(`[data-player="${i + 1}"]`);
+      playerElements.forEach(el => {
+        (el as HTMLElement).addEventListener('click', () => {
+          // Only allow selection if slot not confirmed
+          if (confirmed[i]) return;
+          
+          const fighterId = (el as HTMLElement).getAttribute('data-id');
+          const selectedFighter = fighters.find(f => f.id === fighterId);
+          
+          if (selectedFighter) {
+            choices[i] = selectedFighter;
+            
+            // Update border styling: clicked option gets white, others dim
+            playerElements.forEach(option => {
+              (option as HTMLElement).style.borderColor = 'rgba(255,255,255,0.3)';
+            });
+            (el as HTMLElement).style.borderColor = 'white';
+          }
+        });
+      });
+    }
+
     // Auto-select the first fighter for each player (since there's only one fighter today)
     if (fighters[0]) {
       for (let i = 0; i < playerCount; i++) {
         choices[i] = fighters[0];
-        document.querySelectorAll(`[data-player="${i + 1}"]`).forEach(el => {
-          (el as HTMLElement).style.borderColor = 'white';
-        });
+        // Only highlight fighters[0] (All-Rounder) with white border
+        const fighterElement = document.querySelector(
+          `[data-player="${i + 1}"][data-fighter-index="0"]`
+        );
+        if (fighterElement) {
+          (fighterElement as HTMLElement).style.borderColor = 'white';
+        }
       }
     }
 

@@ -158,7 +158,7 @@ export class FighterRenderer {
   }
 
   private redraw(player: RenderableFighterState): void {
-    const pose = getAnimationPose(player.state, player.stateFrame, player.currentMoveId);
+    const pose = getAnimationPose(player.state, player.stateFrame, player.currentMoveId, this.characterId);
     const transforms = getPartTransforms(pose, this.slotIndex);
 
     for (const part of PART_DRAW_ORDER) {

@@ -1,5 +1,5 @@
 import { GameEngine, type GameEngineOptions } from "@smash/server/engine";
-import type { KOEventData, PlayerId, StateSnapshot } from "@smash/shared";
+import type { CharacterId, KOEventData, PlayerId, StateSnapshot } from "@smash/shared";
 import type { LocalPlayerController } from "./LocalPlayerController.js";
 import type { ITickController } from "./types.js";
 
@@ -17,10 +17,10 @@ export class LocalMatch {
 
   onSnapshot: ((snapshot: StateSnapshot) => void) | null = null;
 
-  constructor(controllers: ITickController[]) {
+  constructor(controllers: ITickController[], characterIds?: Partial<Record<PlayerId, CharacterId>>) {
     this.controllers = controllers;
     const playerIds = controllers.map((c) => c.playerId as PlayerId);
-    this.engine = new GameEngine({ playerIds });
+    this.engine = new GameEngine({ playerIds, characterIds });
   }
 
   start(): void {

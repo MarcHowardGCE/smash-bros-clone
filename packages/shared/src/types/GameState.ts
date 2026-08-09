@@ -1,4 +1,5 @@
 import type { MoveId } from './MoveData.js';
+import type { CharacterId } from './Character.js';
 
 export type PlayerId = string;
 
@@ -77,6 +78,7 @@ export interface PlayerState {
   pendingKnockbackVy?: number | null;
   respawnTimer: number;
   airDodgeDirection: { x: number; y: number } | null;
+  characterId?: CharacterId;
 }
 
 export interface GameState {

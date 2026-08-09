@@ -16,7 +16,7 @@ interface BootResult {
     onSelected: (choices: unknown[]) => void;
     autoConfirmSlots: number[];
   }>;
-  localMatchCtorCalls: unknown[][];
+  localMatchCtorCalls: Array<{ controllers: unknown[]; characterIds?: unknown }>;
   gamepadInputSourceCtorCalls: Array<{ poller: unknown; gamepadIndex: number }>;
   AIPlayerController: new (config: unknown) => unknown;
 }
@@ -35,15 +35,17 @@ const bootMainWithMocks = async (setupResults: SetupResult[]): Promise<BootResul
     onSelected: (choices: unknown[]) => void;
     autoConfirmSlots: number[];
   }> = [];
-  const localMatchCtorCalls: unknown[][] = [];
+  const localMatchCtorCalls: Array<{ controllers: unknown[]; characterIds?: unknown }> = [];
   const gamepadInputSourceCtorCalls: Array<{ poller: unknown; gamepadIndex: number }> = [];
 
   let uiInstance: BootResult['uiInstance'] | null = null;
 
   class MockAIPlayerController {
     readonly config: unknown;
-    constructor(config: unknown) {
+    readonly playerId: string;
+    constructor(config: { playerId: string }) {
       this.config = config;
+      this.playerId = config.playerId;
     }
     setTick(): void {}
     pollInput(): null {
@@ -54,8 +56,10 @@ const bootMainWithMocks = async (setupResults: SetupResult[]): Promise<BootResul
 
   class MockLocalPlayerController {
     readonly config: unknown;
-    constructor(config: unknown) {
+    readonly playerId: string;
+    constructor(config: { playerId: string }) {
       this.config = config;
+      this.playerId = config.playerId;
     }
     setTick(): void {}
     pollInput(): null {
@@ -170,8 +174,8 @@ const bootMainWithMocks = async (setupResults: SetupResult[]): Promise<BootResul
     LocalMatch: class LocalMatch {
       onSnapshot: ((snapshot: unknown) => void) | null = null;
       paused = false;
-      constructor(controllers: unknown[]) {
-        localMatchCtorCalls.push(controllers);
+      constructor(controllers: unknown[], characterIds?: unknown) {
+        localMatchCtorCalls.push({ controllers, characterIds });
       }
       cleanup(): void {}
       start(): void {}
@@ -223,6 +227,7 @@ const bootMainWithMocks = async (setupResults: SetupResult[]): Promise<BootResul
       showMatch(): void {}
       showLocalResult(): void {}
       updateHUD(): void {}
+      showSplash(): void {}
       getPhase(): 'lobby' {
         return 'lobby';
       }
@@ -298,7 +303,7 @@ describe('main local play flow wiring', () => {
     runtime.showCharacterSelectCalls[0]?.onSelected([]);
 
     expect(runtime.localMatchCtorCalls).toHaveLength(1);
-    const controllers = runtime.localMatchCtorCalls[0] ?? [];
+    const controllers = runtime.localMatchCtorCalls[0]?.controllers ?? [];
     expect(controllers).toHaveLength(2);
 
     const aiController = controllers[1] as { config: { difficulty: string; seed: number } };
@@ -319,7 +324,7 @@ describe('main local play flow wiring', () => {
     runtime.uiInstance.onLocalPlay?.();
     runtime.showCharacterSelectCalls[0]?.onSelected([]);
 
-    const controllers = runtime.localMatchCtorCalls[0] ?? [];
+    const controllers = runtime.localMatchCtorCalls[0]?.controllers ?? [];
     expect(controllers).toHaveLength(2);
     const p2Controller = controllers[1] as { config: { playerId: string; slotIndex: number; gamepadSource?: unknown } };
     expect(p2Controller.config).toMatchObject({ playerId: 'local-p2', slotIndex: 1 });
@@ -342,5 +347,48 @@ describe('main local play flow wiring', () => {
     expect(runtime.showLocalPlaySetupCalls).toHaveLength(2);
     expect(runtime.showLocalPlaySetupCalls[0]?.initial).toBeNull();
     expect(runtime.showLocalPlaySetupCalls[1]?.initial).toEqual(setup);
+  });
+
+  it('passes characterIds to LocalMatch when character is selected', async () => {
+    const setup: SetupResult = {
+      participantCount: 2,
+      seats: [{ kind: 'cpu', difficulty: 'medium' }],
+    };
+
+    const runtime = await bootMainWithMocks([setup]);
+
+    runtime.uiInstance.onLocalPlay?.();
+    runtime.showCharacterSelectCalls[0]?.onSelected([
+      { id: 'abe-lincoln', displayName: 'Abe Lincoln' },
+      { id: 'all-rounder', displayName: 'All-Rounder' },
+    ]);
+
+    expect(runtime.localMatchCtorCalls).toHaveLength(1);
+    const call = runtime.localMatchCtorCalls[0];
+    expect(call?.characterIds).toBeDefined();
+    expect(call?.characterIds).toEqual({
+      'local-p1': 'abe-lincoln',
+      'local-p2': 'all-rounder',
+    });
+  });
+
+  it('passes characterIds with only defined choices', async () => {
+    const setup: SetupResult = {
+      participantCount: 2,
+      seats: [{ kind: 'cpu', difficulty: 'easy' }],
+    };
+
+    const runtime = await bootMainWithMocks([setup]);
+
+    runtime.uiInstance.onLocalPlay?.();
+    runtime.showCharacterSelectCalls[0]?.onSelected([
+      { id: 'abe-lincoln', displayName: 'Abe Lincoln' },
+    ]);
+
+    expect(runtime.localMatchCtorCalls).toHaveLength(1);
+    const call = runtime.localMatchCtorCalls[0];
+    expect(call?.characterIds).toEqual({
+      'local-p1': 'abe-lincoln',
+    });
   });
 });

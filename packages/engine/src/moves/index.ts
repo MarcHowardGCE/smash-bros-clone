@@ -1,4 +1,4 @@
-import type { MoveData } from '@smash/shared';
+import type { MoveData, CharacterId } from '@smash/shared';
 import { MoveId } from '@smash/shared';
 
 import {
@@ -16,6 +16,10 @@ import {
   MOVE_FORWARD_THROW, MOVE_BACK_THROW, MOVE_UP_THROW, MOVE_DOWN_THROW,
 } from './grab.js';
 import { MOVE_LEDGE_ATTACK } from './ledge.js';
+import {
+  LINCOLN_JAB, LINCOLN_FORWARD_SMASH, LINCOLN_DOWN_AIR,
+  LINCOLN_NEUTRAL_SPECIAL, LINCOLN_SIDE_SPECIAL, LINCOLN_UP_SPECIAL, LINCOLN_DOWN_SPECIAL,
+} from './lincoln.js';
 
 const MOVE_REGISTRY: ReadonlyMap<MoveId, MoveData> = new Map([
   [MoveId.JAB, MOVE_JAB],
@@ -43,10 +47,37 @@ const MOVE_REGISTRY: ReadonlyMap<MoveId, MoveData> = new Map([
   [MoveId.LEDGE_ATTACK, MOVE_LEDGE_ATTACK],
 ]);
 
+const LINCOLN_MOVE_OVERRIDES: ReadonlyMap<MoveId, MoveData> = new Map([
+  [MoveId.JAB, LINCOLN_JAB],
+  [MoveId.FORWARD_SMASH, LINCOLN_FORWARD_SMASH],
+  [MoveId.DOWN_AIR, LINCOLN_DOWN_AIR],
+  [MoveId.NEUTRAL_SPECIAL, LINCOLN_NEUTRAL_SPECIAL],
+  [MoveId.SIDE_SPECIAL, LINCOLN_SIDE_SPECIAL],
+  [MoveId.UP_SPECIAL, LINCOLN_UP_SPECIAL],
+  [MoveId.DOWN_SPECIAL, LINCOLN_DOWN_SPECIAL],
+]);
+
 export function getMoveData(id: MoveId): MoveData {
   const move = MOVE_REGISTRY.get(id);
   if (!move) throw new Error(`Unknown MoveId: ${id}`);
   return move;
+}
+
+/**
+ * Get character-aware move data. Checks character-specific overrides first,
+ * then falls back to shared MOVE_REGISTRY.
+ * 
+ * @param characterId - Character identifier ('abe-lincoln', 'all-rounder', etc.)
+ * @param id - Move identifier
+ * @returns MoveData with character-specific hitbox stats and default frame timing
+ */
+export function getMoveDataForCharacter(characterId: CharacterId | undefined, id: MoveId): MoveData {
+  if (characterId === 'abe-lincoln') {
+    const override = LINCOLN_MOVE_OVERRIDES.get(id);
+    if (override) return override;
+  }
+  
+  return getMoveData(id);
 }
 
 export { MoveId };

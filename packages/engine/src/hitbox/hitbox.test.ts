@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { PHYSICS, circleOverlap } from '@smash/shared';
+import { PHYSICS, circleOverlap, getCharacterStats } from '@smash/shared';
 import {
   calculateKnockback,
   resolveHit,
@@ -405,6 +405,30 @@ describe('resolveHit', () => {
     const hitbox = makeHitbox({ offsetX: 40, radius: 20 });
     const result = resolveHit(attacker, defender, hitbox);
     expect(result).toEqual(NO_HIT);
+  });
+
+  it('character weight affects knockback: Lincoln (118) takes less knockback than default (100) for identical hit', () => {
+    const attacker = makePlayer({ x: 0, y: 0, facing: 1 });
+    const defenderDefault = makePlayer({ x: 50, y: 0, percent: 100, characterId: 'all-rounder' });
+    const defenderLincoln = makePlayer({ x: 50, y: 0, percent: 100, characterId: 'abe-lincoln' });
+    const hitbox = makeHitbox({ offsetX: 40, radius: 30, damage: 10, baseKnockback: 5, knockbackGrowth: 50 });
+
+    const resultDefault = resolveHit(attacker, defenderDefault, hitbox);
+    const resultLincoln = resolveHit(attacker, defenderLincoln, hitbox);
+
+    const kbDefault = Math.hypot(resultDefault.knockbackVx, resultDefault.knockbackVy);
+    const kbLincoln = Math.hypot(resultLincoln.knockbackVx, resultLincoln.knockbackVy);
+
+    // Verify weights are different
+    const defaultWeight = getCharacterStats('all-rounder').fighterWeight;
+    const lincolnWeight = getCharacterStats('abe-lincoln').fighterWeight;
+    expect(lincolnWeight).toBeGreaterThan(defaultWeight);
+    expect(lincolnWeight).toBe(118);
+    expect(defaultWeight).toBe(100);
+
+    // Heavier fighter (Lincoln) should take less knockback
+    expect(kbLincoln).toBeLessThan(kbDefault);
+    console.info(`[character-weight] KB_default=${kbDefault.toFixed(4)} KB_lincoln=${kbLincoln.toFixed(4)} ratio=${(kbLincoln/kbDefault).toFixed(4)}`);
   });
 });
 

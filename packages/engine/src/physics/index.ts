@@ -4,6 +4,7 @@ import {
 	PHYSICS,
 	type PlayerState,
 	STAGE,
+	getCharacterStats,
 } from "@smash/shared";
 import type { LedgeData, StageData, WallData } from "./types.js";
 
@@ -57,7 +58,7 @@ function isWithinLandingBounds(
 function landOnPlatform(player: PlayerState, platformY: number): PlayerState {
 	return {
 		...player,
-		y: platformY - PHYSICS.HURTBOX_RADIUS,
+		y: platformY - getCharacterStats(player.characterId).hurtboxRadius,
 		vy: 0,
 		isGrounded: true,
 		isFastFalling: false,
@@ -72,7 +73,7 @@ function landOnPlatform(player: PlayerState, platformY: number): PlayerState {
 // position. Without this, a fast-moving player (high vy) can pass entirely through a
 // thin platform in a single tick and never trigger the landing check.
 function crossesPlatformTop(player: PlayerState, platformY: number): boolean {
-	const playerBottom = player.y + PHYSICS.HURTBOX_RADIUS;
+	const playerBottom = player.y + getCharacterStats(player.characterId).hurtboxRadius;
 	const previousBottom = playerBottom - player.vy;
 
 	return previousBottom <= platformY && playerBottom >= platformY;
@@ -118,17 +119,17 @@ export function applyMovement(
 	if (player.isGrounded) {
 		if (movingLeft) {
 			vx = clamp(
-				vx - PHYSICS.WALK_SPEED * 0.2,
-				-PHYSICS.RUN_SPEED,
-				PHYSICS.RUN_SPEED,
+				vx - getCharacterStats(player.characterId).walkSpeed * 0.2,
+				-getCharacterStats(player.characterId).runSpeed,
+				getCharacterStats(player.characterId).runSpeed,
 			);
 		}
 
 		if (movingRight) {
 			vx = clamp(
-				vx + PHYSICS.WALK_SPEED * 0.2,
-				-PHYSICS.RUN_SPEED,
-				PHYSICS.RUN_SPEED,
+				vx + getCharacterStats(player.characterId).walkSpeed * 0.2,
+				-getCharacterStats(player.characterId).runSpeed,
+				getCharacterStats(player.characterId).runSpeed,
 			);
 		}
 
@@ -231,7 +232,7 @@ export function startJump(
 	if (player.isGrounded) {
 		return {
 			...player,
-			vy: isShortHop ? PHYSICS.SHORT_HOP_VELOCITY : PHYSICS.JUMP_VELOCITY,
+			vy: isShortHop ? getCharacterStats(player.characterId).shortHopVelocity : getCharacterStats(player.characterId).jumpVelocity,
 			isGrounded: false,
 			isFastFalling: false,
 		};
@@ -310,12 +311,12 @@ export function checkPlatformCollision(
 	if (player.isGrounded) {
 		const onMain =
 			isWithinPlatformBounds(player.x, stage.mainPlatform) &&
-			Math.abs(player.y - (stage.mainPlatform.y - PHYSICS.HURTBOX_RADIUS)) <= 1;
+			Math.abs(player.y - (stage.mainPlatform.y - getCharacterStats(player.characterId).hurtboxRadius)) <= 1;
 
 		const onSoft = stage.platforms.some(
 			(p) =>
 				isWithinPlatformBounds(player.x, p) &&
-				Math.abs(player.y - (p.y - PHYSICS.HURTBOX_RADIUS)) <= 1,
+				Math.abs(player.y - (p.y - getCharacterStats(player.characterId).hurtboxRadius)) <= 1,
 		);
 
 		if (!onMain && !onSoft) {

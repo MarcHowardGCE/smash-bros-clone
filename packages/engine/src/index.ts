@@ -8,7 +8,7 @@ export {
 	resolveHit,
 	resolveHitTrade,
 } from "./hitbox/index.js";
-export { getMoveData } from "./moves/index.js";
+export { getMoveData, getMoveDataForCharacter } from "./moves/index.js";
 export {
 	applyFastFall,
 	applyGravity,

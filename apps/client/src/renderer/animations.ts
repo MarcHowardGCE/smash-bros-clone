@@ -1,4 +1,6 @@
 import { MoveId } from '@smash/shared';
+import type { CharacterId } from '@smash/shared';
+import { LINCOLN_ANIMATIONS, LINCOLN_ATTACK_ANIMATIONS } from './lincolnAnimations.js';
 
 export interface JointPose {
   leftArmAngle: number;    // radians
@@ -174,13 +176,19 @@ export const ANIMATIONS: Record<string, Animation> = {
   ],
 };
 
-export function getAnimationPose(stateName: string, stateFrame: number, currentMoveId?: MoveId | null): JointPose {
+export function getAnimationPose(stateName: string, stateFrame: number, currentMoveId?: MoveId | null, characterId?: CharacterId): JointPose {
   const moveId = currentMoveId as AttackMoveId | null | undefined;
+
+  // Character-specific tables checked FIRST, then fall back to shared
+  const isLincoln = characterId === 'abe-lincoln';
+
   const moveSpecificAnim =
     (stateName === 'ATTACK' || stateName === 'AIR_ATTACK') && moveId
-      ? ATTACK_MOVE_ANIMATIONS[moveId]
+      ? (isLincoln ? LINCOLN_ATTACK_ANIMATIONS[moveId] : undefined) ?? ATTACK_MOVE_ANIMATIONS[moveId]
       : undefined;
-  const anim = moveSpecificAnim ?? (stateName === 'AIR_ATTACK' ? ANIMATIONS['ATTACK'] : ANIMATIONS[stateName]) ?? ANIMATIONS['IDLE']!;
+
+  const characterAnim = isLincoln ? LINCOLN_ANIMATIONS[stateName] : undefined;
+  const anim = moveSpecificAnim ?? characterAnim ?? (stateName === 'AIR_ATTACK' ? ANIMATIONS['ATTACK'] : ANIMATIONS[stateName]) ?? ANIMATIONS['IDLE']!;
   if (anim.length === 0) return DEFAULT_POSE;
   if (anim.length === 1) return anim[0]!;
   

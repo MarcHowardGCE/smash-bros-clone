@@ -1,4 +1,4 @@
-import { Graphics, Container } from 'pixi.js';
+import { Graphics, Container, Sprite, Texture } from 'pixi.js';
 import { STAGE } from '@smash/shared';
 
 // B&W colors
@@ -16,6 +16,9 @@ export class StageRenderer {
   }
 
   private drawStage(): void {
+    // Background image — cityscape behind everything
+    this.drawBackground();
+
     // Main platform — solid white rectangle, black border
     const mainPlatform = new Graphics();
     mainPlatform.rect(
@@ -85,5 +88,17 @@ export class StageRenderer {
     }
     grid.stroke({ color: gridColor, width: 1, alpha: gridAlpha });
     this.container.addChildAt(grid, 0); // Behind platforms
+  }
+
+  private drawBackground(): void {
+    try {
+      const bgTexture = Texture.from('/backgrounds/cityscape.png');
+      const bgSprite = new Sprite(bgTexture);
+      bgSprite.width = STAGE.WIDTH;
+      bgSprite.height = STAGE.HEIGHT;
+      this.container.addChildAt(bgSprite, 0);
+    } catch (error) {
+      console.warn('[StageRenderer] Failed to load background image:', error);
+    }
   }
 }

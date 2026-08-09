@@ -450,7 +450,7 @@ async function main() {
 		uiManager.showLocalPlaySetup({ assignmentManager }, lastLocalSetup, (result) => {
 			lastLocalSetup = result;
 		const cpuSlotIndices = result.seats
-			.map((seat, index) => (seat.kind === "cpu" ? index : null))
+			.map((seat, index) => (seat.kind === "cpu" ? index + 1 : null))
 			.filter((slotIndex): slotIndex is number => slotIndex !== null);
 			const gamepadSlotByIndex = new Map<number, number>();
 			for (const [slotIndex, assignment] of assignmentManager.getAssignments()) {

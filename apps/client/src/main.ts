@@ -284,6 +284,7 @@ async function main() {
 		if (isLocalMode) {
 			return;
 		}
+		audioManager.playTrack('main-menu');
 		gameClient.createRoom();
 	};
 
@@ -291,6 +292,7 @@ async function main() {
 		if (isLocalMode) {
 			return;
 		}
+		audioManager.playTrack('main-menu');
 		uiManager.setRoomCode(code);
 		gameClient.joinRoom(code);
 	};
@@ -449,6 +451,7 @@ async function main() {
 	};
 
 	uiManager.onLocalPlay = () => {
+		audioManager.playTrack('main-menu');
 		if (!isLocalMode) {
 			isLocalMode = true;
 			gameClient.disconnect();
@@ -570,6 +573,11 @@ async function main() {
 							gameClient.emitPause();
 						}
 					}
+				}
+
+				if (pressed & 0x0020) {
+					const phase = uiManager.getPhase();
+					console.log('[DEBUG] B button pressed during match, phase:', phase);
 				}
 
 				lastBitsPerGamepad.set(gpIndex, bits);

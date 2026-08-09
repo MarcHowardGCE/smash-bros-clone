@@ -1,4 +1,4 @@
-import { Assets, Container, Graphics, Sprite } from 'pixi.js';
+import { Container, Graphics } from 'pixi.js';
 import { STAGE } from '@smash/shared';
 
 // B&W colors
@@ -8,19 +8,14 @@ const STROKE_WIDTH = 2;
 
 export class StageRenderer {
   private container: Container;
-  private backgroundImage: string;
 
-  constructor(parentContainer: Container, backgroundImage: string) {
+  constructor(parentContainer: Container) {
     this.container = new Container();
-    this.backgroundImage = backgroundImage;
     parentContainer.addChild(this.container);
     this.drawStage();
   }
 
   private drawStage(): void {
-    // Background image — cityscape behind everything
-    this.drawBackground();
-
     // Main platform — solid white rectangle, black border
     const mainPlatform = new Graphics();
     mainPlatform.rect(
@@ -89,25 +84,6 @@ export class StageRenderer {
       grid.lineTo(STAGE.WIDTH, y);
     }
     grid.stroke({ color: gridColor, width: 1, alpha: gridAlpha });
-    this.container.addChildAt(grid, 1); // Above background (0), behind platforms (2+)
-  }
-
-  private drawBackground(): void {
-    const baseUrl = import.meta.env.BASE_URL || '/';
-    const normalizedBaseUrl = baseUrl.endsWith('/') ? baseUrl : `${baseUrl}/`;
-    const backgroundPath = `${normalizedBaseUrl}backgrounds/${this.backgroundImage}`;
-
-    void Assets.load(backgroundPath)
-      .then((texture) => {
-        const bgSprite = new Sprite(texture);
-        bgSprite.anchor.set(0.5, 0.5);
-        const scale = Math.max(STAGE.WIDTH / texture.width, STAGE.HEIGHT / texture.height);
-        bgSprite.scale.set(scale, scale);
-        bgSprite.position.set(STAGE.WIDTH / 2, STAGE.HEIGHT / 2);
-        this.container.addChildAt(bgSprite, 0);
-      })
-      .catch((error: unknown) => {
-        console.warn('[StageRenderer] Failed to load background image:', error);
-      });
+    this.container.addChildAt(grid, 0); // Behind platforms
   }
 }

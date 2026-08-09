@@ -97,7 +97,20 @@ async function main() {
 	app.stage.addChild(layers.game);
 	app.stage.addChild(layers.ui);
 
-	let stageRenderer: StageRenderer | null = new StageRenderer(layers.background, STAGES[0]!.backgroundImage);
+	let stageRenderer: StageRenderer | null = new StageRenderer(layers.background);
+
+	function setStageBackground(backgroundImage: string): void {
+		const baseUrl = import.meta.env.BASE_URL || '/';
+		const normalizedBaseUrl = baseUrl.endsWith('/') ? baseUrl : `${baseUrl}/`;
+		const backgroundPath = `${normalizedBaseUrl}backgrounds/${backgroundImage}`;
+		const bgLayer = document.getElementById('background-layer');
+		if (bgLayer) {
+			bgLayer.style.backgroundImage = `url('${backgroundPath}')`;
+		}
+	}
+
+	// Set initial background
+	setStageBackground(STAGES[0]!.backgroundImage);
 
 	const fighterRenderers = new Map<PlayerId, FighterRenderer>();
 	const activeSparks: ImpactSpark[] = [];
@@ -500,9 +513,11 @@ async function main() {
 						STAGES,
 						(chosenStage) => {
 							selectedStage = chosenStage;
-							// Destroy old background and recreate with new stage
+							// Update CSS background with new stage
+							setStageBackground(chosenStage.backgroundImage);
+							// Destroy old stage graphics and recreate
 							layers.background.removeChildren();
-							stageRenderer = new StageRenderer(layers.background, chosenStage.backgroundImage);
+							stageRenderer = new StageRenderer(layers.background);
 							startLocalMatchWithSeats(result, choices);
 						},
 						() => {

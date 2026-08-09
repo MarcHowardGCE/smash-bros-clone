@@ -420,6 +420,7 @@ export class UIManager {
 
   hidePauseOverlay(): void {
     if (this.phase !== 'paused') return;
+    this.stopMenuNav();
     this.phase = 'match';
     this.overlay.innerHTML = '';
     this.hudPanel.style.display = 'flex';

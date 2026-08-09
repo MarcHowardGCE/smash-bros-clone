@@ -131,7 +131,6 @@ async function main() {
 	const uiManager = new UIManager(uiOverlay);
 	uiManager._gamepadPoller = poller;
 	const audioManager = new AudioManager();
-	audioManager.playTrack('main-menu');
 	let myPlayerId: PlayerId | null = null;
 	let isLocalMode = false;
 	let localMatch: LocalMatch | null = null;

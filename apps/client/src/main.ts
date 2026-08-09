@@ -218,15 +218,17 @@ async function main() {
 	const gameClient = new GameClient({
 		serverUrl: SERVER_URL,
 		onConnected: () => {
-			if (roomCodeFromUrl) {
-				uiManager.setRoomCode(roomCodeFromUrl.toUpperCase());
-				gameClient.joinRoom(roomCodeFromUrl);
+			uiManager.showSplash(() => {
+				if (roomCodeFromUrl) {
+					uiManager.setRoomCode(roomCodeFromUrl.toUpperCase());
+					gameClient.joinRoom(roomCodeFromUrl);
+					uiManager.showLobby();
+					audioManager.playTrack('main-menu');
+					return;
+				}
 				uiManager.showLobby();
 				audioManager.playTrack('main-menu');
-				return;
-			}
-			uiManager.showLobby();
-			audioManager.playTrack('main-menu');
+			});
 		},
 		onPlayerAssigned: (playerId, roomCode) => {
 			myPlayerId = playerId;

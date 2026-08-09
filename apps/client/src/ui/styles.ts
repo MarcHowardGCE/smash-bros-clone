@@ -48,6 +48,52 @@ export function injectStyles(): void {
       width: 140px;
     }
     #ui-overlay { pointer-events: all; z-index: 10; }
+
+    /* Splash screen */
+    .splash-screen {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: #000;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      z-index: 9999;
+      opacity: 1;
+      transition: opacity 0.8s ease-out;
+    }
+    .splash-screen.fade-out {
+      opacity: 0;
+      pointer-events: none;
+    }
+    .splash-logo {
+      max-width: 400px;
+      width: 80vw;
+      height: auto;
+      animation: fadeInLogo 1.5s ease-in;
+    }
+    .splash-continue {
+      margin-top: 60px;
+      font-family: monospace;
+      font-size: 18px;
+      color: rgba(255, 255, 255, 0.6);
+      animation: fadeInContinue 1s ease-in 1.5s both;
+      cursor: pointer;
+    }
+    .splash-continue:hover {
+      color: rgba(255, 255, 255, 0.9);
+    }
+    @keyframes fadeInLogo {
+      from { opacity: 0; transform: scale(0.9); }
+      to { opacity: 1; transform: scale(1); }
+    }
+    @keyframes fadeInContinue {
+      from { opacity: 0; }
+      to { opacity: 0.6; }
+    }
   `;
   document.head.appendChild(style);
 }

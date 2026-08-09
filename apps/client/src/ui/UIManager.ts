@@ -68,6 +68,30 @@ export class UIManager {
       </div>`;
   }
 
+  showSplash(onContinue: () => void): void {
+    this.stopMenuNav();
+    this.phase = 'connecting';
+    this.hudPanel.style.display = 'none';
+
+    this.overlay.innerHTML = `
+      <div class="splash-screen" id="splash-screen">
+        <img src="/branding/zanda-logo.png" alt="Zanda Entertainment" class="splash-logo">
+        <div class="splash-continue">Click anywhere to continue</div>
+      </div>`;
+
+    const splashScreen = document.getElementById('splash-screen');
+    if (splashScreen) {
+      const handleClick = (): void => {
+        splashScreen.classList.add('fade-out');
+        setTimeout(() => {
+          onContinue();
+        }, 800);
+        splashScreen.removeEventListener('click', handleClick);
+      };
+      splashScreen.addEventListener('click', handleClick);
+    }
+  }
+
   showLobby(): void {
     this.stopMenuNav();
     this.phase = 'lobby';

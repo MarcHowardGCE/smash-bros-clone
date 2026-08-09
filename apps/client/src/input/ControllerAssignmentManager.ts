@@ -72,6 +72,17 @@ export class ControllerAssignmentManager {
   private handleConnect = (gamepad: Gamepad): void => {
     console.log('[ControllerAssignmentManager] connect:', gamepad.id, 'index:', gamepad.index);
 
+    // Idempotency guard: ignore duplicate connect events for an already-tracked
+    // physical gamepad index (Chrome can emit both start() sweep + event).
+    for (const [slotIndex, assignment] of this.assignments) {
+      if (assignment.gamepadIndex === gamepad.index) {
+        console.log(
+          `[ControllerAssignmentManager] duplicate connect ignored for gamepad index ${gamepad.index} (already assigned to slot ${slotIndex})`,
+        );
+        return;
+      }
+    }
+
     // Check if this gamepad was previously saved to a slot
     const lastKnownSlot = this.store.findSlotForGamepadId(gamepad.id);
 

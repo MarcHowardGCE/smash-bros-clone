@@ -253,6 +253,25 @@ describe('UIManager', () => {
       }
     });
 
+    it('should not auto-confirm host slot 0 when autoConfirmSlots only includes slot 1', () => {
+      vi.useFakeTimers();
+      try {
+        const onSelected = vi.fn();
+        uiManager.showCharacterSelect(fighters, 2, onSelected, [1]);
+
+        vi.advanceTimersByTime(500);
+
+        const p1Status = mockOverlay.querySelector('#p1-status');
+        const p2Status = mockOverlay.querySelector('#p2-status');
+
+        expect(p1Status?.textContent).not.toBe('✓ Ready!');
+        expect(p2Status?.textContent).toBe('✓ Ready!');
+        expect(onSelected).not.toHaveBeenCalled();
+      } finally {
+        vi.useRealTimers();
+      }
+    });
+
     it('should update choice when clicking a fighter option', () => {
       const fighters2: FighterChoice[] = [
         { id: 'abe-lincoln', displayName: 'Abe Lincoln' },

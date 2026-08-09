@@ -242,6 +242,29 @@ describe('GamepadPoller', () => {
   });
 
   describe('connect/disconnect callbacks', () => {
+    it('fires onConnect only once when duplicate gamepadconnected event arrives for swept index', () => {
+      const mockGamepad = createMockGamepad(0, 'Xbox360', [], [0, 0, 0, 0]);
+
+      // start() sweep sees this as already-connected
+      Object.defineProperty(globalThis.navigator, 'getGamepads', {
+        value: vi.fn(() => [mockGamepad]),
+        configurable: true,
+      });
+
+      const connectCallback = vi.fn();
+      poller.onConnect = connectCallback;
+
+      poller.start();
+
+      // Browser emits a duplicate event for same index after sweep
+      const duplicateEvent = new Event('gamepadconnected') as any;
+      duplicateEvent.gamepad = mockGamepad;
+      window.dispatchEvent(duplicateEvent);
+
+      expect(connectCallback).toHaveBeenCalledTimes(1);
+      expect(connectCallback).toHaveBeenCalledWith(mockGamepad);
+    });
+
     it('fires onConnect callback when gamepadconnected event dispatched', () => {
       const mockGamepad = createMockGamepad(0, 'Xbox360', [], [0, 0, 0, 0]);
 

@@ -298,6 +298,16 @@ describe('ControllerAssignmentManager', () => {
   });
 
   describe('edge cases', () => {
+    it('ignores duplicate connect events for the same gamepad index', () => {
+      poller.triggerConnect('Gamepad-A', 0);
+      poller.triggerConnect('Gamepad-A', 0);
+
+      const assignments = manager.getAssignments();
+      expect(assignments.size).toBe(1);
+      expect(assignments.get(0)).toEqual({ gamepadId: 'Gamepad-A', gamepadIndex: 0 });
+      expect(assignments.get(1)).toBeUndefined();
+    });
+
     it('should handle disconnect of unknown gamepad index silently', () => {
       poller.triggerConnect('Gamepad-A', 0);
 

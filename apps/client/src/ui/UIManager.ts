@@ -366,6 +366,35 @@ export class UIManager {
       checkAllConfirmed();
     };
 
+    const applySelectedChoiceForSlot = (slotIndex: number): boolean => {
+      const currentIndex = selectedFighterIndex[slotIndex];
+      const resolvedIndex =
+        currentIndex !== undefined && currentIndex >= 0 && currentIndex < fighters.length
+          ? currentIndex
+          : 0;
+      const selectedFighter = fighters[resolvedIndex];
+      if (!selectedFighter) {
+        return false;
+      }
+
+      selectedFighterIndex[slotIndex] = resolvedIndex;
+      choices[slotIndex] = selectedFighter;
+
+      // Keep visual highlight in sync when confirm is used before directional navigation/click.
+      const playerElements = document.querySelectorAll(`[data-player="${slotIndex + 1}"]`);
+      playerElements.forEach(el => {
+        (el as HTMLElement).style.borderColor = 'rgba(255,255,255,0.3)';
+      });
+      const selectedElement = document.querySelector(
+        `[data-player="${slotIndex + 1}"][data-id="${selectedFighter.id}"]`
+      );
+      if (selectedElement) {
+        (selectedElement as HTMLElement).style.borderColor = 'white';
+      }
+
+      return true;
+    };
+
     const onKey = (e: KeyboardEvent) => {
       // Back navigation via Escape
       if (e.key === 'Escape' && onBack) {
@@ -410,15 +439,9 @@ export class UIManager {
 
       for (let i = 0; i < playerCount; i++) {
         if (!confirmed[i] && CONFIRM_KEYS[i]?.includes(e.code)) {
-          // Set the choice to the currently highlighted fighter before confirming
-          const selectedFighterIdx = selectedFighterIndex[i];
-          if (selectedFighterIdx !== undefined && selectedFighterIdx >= 0 && selectedFighterIdx < fighters.length) {
-            const selectedFighter = fighters[selectedFighterIdx];
-            if (selectedFighter) {
-              choices[i] = selectedFighter;
-            }
+          if (applySelectedChoiceForSlot(i)) {
+            confirmSlot(i);
           }
-          confirmSlot(i);
           break;
         }
       }
@@ -504,21 +527,15 @@ export class UIManager {
             }
 
            // A button → set choice and confirm for matching slot
-           if (pressed & 0x0010) {
-             const slotIndex = gamepadSlotByIndex?.get(gpIndex) ?? gpIndex;
-             console.log('[CharSelect] Gamepad', gpIndex, 'A button pressed, mapped to slotIndex:', slotIndex);
-             if (slotIndex < playerCount && !confirmed[slotIndex]) {
-               // Set the choice to the currently highlighted fighter
-               const selectedFighterIdx = selectedFighterIndex[slotIndex] ?? 0;
-               if (selectedFighterIdx >= 0 && selectedFighterIdx < fighters.length) {
-                 const selectedFighter = fighters[selectedFighterIdx];
-                 if (selectedFighter) {
-                   choices[slotIndex] = selectedFighter;
-                 }
-               }
-               confirmSlot(slotIndex);
-             }
-           }
+            if (pressed & 0x0010) {
+              const slotIndex = gamepadSlotByIndex?.get(gpIndex) ?? gpIndex;
+              console.log('[CharSelect] Gamepad', gpIndex, 'A button pressed, mapped to slotIndex:', slotIndex);
+              if (slotIndex < playerCount && !confirmed[slotIndex]) {
+                if (applySelectedChoiceForSlot(slotIndex)) {
+                  confirmSlot(slotIndex);
+                }
+              }
+            }
 
           lastBits.set(gpIndex, bits);
         }

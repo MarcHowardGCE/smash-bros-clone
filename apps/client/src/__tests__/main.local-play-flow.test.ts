@@ -81,7 +81,7 @@ const bootMainWithMocks = async (setupResults: SetupResult[]): Promise<BootResul
 
   vi.doMock('../renderer/layers.js', () => ({
     createLayers: () => ({
-      background: { addChild: () => {} },
+      background: { addChild: () => {}, removeChildren: () => {} },
       game: { addChild: () => {}, removeChild: () => {} },
       ui: { addChild: () => {} },
     }),
@@ -256,6 +256,13 @@ const bootMainWithMocks = async (setupResults: SetupResult[]): Promise<BootResul
         gamepadSlotByIndex?: ReadonlyMap<number, number>,
       ): void {
         showCharacterSelectCalls.push({ playerCount, onSelected, autoConfirmSlots, gamepadSlotByIndex });
+      }
+
+      showStageSelect(
+        stages: Array<{ id?: string }>,
+        onSelected: (stage: { id?: string }) => void,
+      ): void {
+        onSelected(stages[0] ?? { id: 'default' });
       }
     },
   }));

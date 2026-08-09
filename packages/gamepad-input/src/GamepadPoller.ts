@@ -114,6 +114,12 @@ export class GamepadPoller {
       return;
     }
 
+    // Ignore duplicate browser connect events for an index we already track
+    // (can happen after initial start() sweep in some browser flows).
+    if (this.connectedGamepads.has(gamepad.index)) {
+      return;
+    }
+
     // Track this gamepad
     this.connectedGamepads.set(gamepad.index, gamepad);
 

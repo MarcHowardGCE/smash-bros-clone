@@ -33,7 +33,7 @@ export class AudioManager {
       this.clearPendingRetry();
     };
 
-    const events: Array<keyof WindowEventMap> = ["pointerdown", "keydown", "touchstart"];
+    const events: Array<keyof WindowEventMap> = ["pointerdown", "keydown", "touchstart", "mousemove"];
     for (const eventName of events) {
       window.addEventListener(eventName, retryPlayback, { once: true, passive: true, capture: true });
     }

@@ -24,6 +24,7 @@ interface BootResult {
   gamepadInputSourceCtorCalls: Array<{ poller: unknown; gamepadIndex: number }>;
   getGameClientConnectCalls: () => number;
   getGameClientDisconnectCalls: () => number;
+  getShowSplashCalls: () => number;
   AIPlayerController: new (config: { playerId: string }) => unknown;
 }
 
@@ -47,6 +48,8 @@ const bootMainWithMocks = async (setupResults: SetupResult[]): Promise<BootResul
   const gamepadInputSourceCtorCalls: Array<{ poller: unknown; gamepadIndex: number }> = [];
   let gameClientConnectCalls = 0;
   let gameClientDisconnectCalls = 0;
+  let showSplashCalls = 0;
+  let gameClientOnConnected: (() => void) | undefined;
   let localPlaySetupBack: (() => void) | null = null;
 
   let uiInstance: BootResult['uiInstance'] | null = null;
@@ -125,6 +128,7 @@ const bootMainWithMocks = async (setupResults: SetupResult[]): Promise<BootResul
     GameClient: class GameClient {
       isPaused = false;
       constructor(opts: { onConnected?: () => void }) {
+        gameClientOnConnected = opts.onConnected;
         opts.onConnected?.();
       }
       createRoom(): void {}
@@ -135,6 +139,7 @@ const bootMainWithMocks = async (setupResults: SetupResult[]): Promise<BootResul
       }
       connect(): void {
         gameClientConnectCalls += 1;
+        gameClientOnConnected?.();
       }
       emitResume(): void {}
       emitPause(): void {}
@@ -245,7 +250,10 @@ const bootMainWithMocks = async (setupResults: SetupResult[]): Promise<BootResul
       showMatch(): void {}
       showLocalResult(): void {}
       updateHUD(): void {}
-      showSplash(): void {}
+      showSplash(onContinue?: () => void): void {
+        showSplashCalls += 1;
+        onContinue?.();
+      }
       getPhase(): 'lobby' {
         return 'lobby';
       }
@@ -309,6 +317,7 @@ const bootMainWithMocks = async (setupResults: SetupResult[]): Promise<BootResul
     gamepadInputSourceCtorCalls,
     getGameClientConnectCalls: () => gameClientConnectCalls,
     getGameClientDisconnectCalls: () => gameClientDisconnectCalls,
+    getShowSplashCalls: () => showSplashCalls,
     AIPlayerController: MockAIPlayerController,
   };
 };
@@ -422,6 +431,27 @@ describe('main local play flow wiring', () => {
 
     expect(runtime.getGameClientDisconnectCalls()).toBe(1);
     expect(runtime.getGameClientConnectCalls()).toBe(1);
+    expect(runtime.getShowLobbyCalls()).toBeGreaterThan(0);
+  });
+
+  it('does not re-show splash when returning to main menu after a local match reconnect', async () => {
+    const setup: SetupResult = {
+      participantCount: 2,
+      seats: [{ kind: 'cpu', difficulty: 'medium' }],
+    };
+
+    const runtime = await bootMainWithMocks([setup]);
+
+    // Initial connect shows splash once.
+    expect(runtime.getShowSplashCalls()).toBe(1);
+
+    // Enter local mode (disconnect), then return to main menu (reconnect).
+    runtime.uiInstance.onLocalPlay?.();
+    runtime.uiInstance.onMainMenu?.();
+
+    // Reconnect should go straight to lobby without splash replay.
+    expect(runtime.getGameClientConnectCalls()).toBe(1);
+    expect(runtime.getShowSplashCalls()).toBe(1);
     expect(runtime.getShowLobbyCalls()).toBeGreaterThan(0);
   });
 

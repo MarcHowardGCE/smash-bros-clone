@@ -159,6 +159,7 @@ async function main() {
 	let localCountdownInterval: number | null = null;
 	let localCountdownTimeout: number | null = null;
 	let selectedStage: StageConfig = STAGES[0]!;
+	let hasShownSplashOnThisPageLoad = false;
 
 	const clearLocalCountdown = (): void => {
 		if (localCountdownInterval !== null) {
@@ -242,10 +243,7 @@ async function main() {
 	const gameClient = new GameClient({
 		serverUrl: SERVER_URL,
 		onConnected: () => {
-			uiManager.showSplash(() => {
-				// Reveal game canvas now that splash is dismissed
-				app.canvas.style.visibility = "visible";
-
+			const enterLobby = (): void => {
 				if (roomCodeFromUrl) {
 					uiManager.setRoomCode(roomCodeFromUrl.toUpperCase());
 					gameClient.joinRoom(roomCodeFromUrl);
@@ -255,6 +253,19 @@ async function main() {
 				}
 				uiManager.showLobby();
 				audioManager.playTrack('main-menu');
+			};
+
+			if (hasShownSplashOnThisPageLoad) {
+				app.canvas.style.visibility = "visible";
+				enterLobby();
+				return;
+			}
+
+			uiManager.showSplash(() => {
+				hasShownSplashOnThisPageLoad = true;
+				// Reveal game canvas now that splash is dismissed
+				app.canvas.style.visibility = "visible";
+				enterLobby();
 			});
 		},
 		onPlayerAssigned: (playerId, roomCode) => {

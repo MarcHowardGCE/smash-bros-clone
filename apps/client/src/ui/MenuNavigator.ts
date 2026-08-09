@@ -103,11 +103,14 @@ export class MenuNavigator {
             onBack();
           }
 
-          this.lastBitsPerGamepad.set(gpIndex, bits);
-        }
+           this.lastBitsPerGamepad.set(gpIndex, bits);
+         }
 
-        this.rafId = requestAnimationFrame(pollGamepad);
-      };
+         // Check if stopped before scheduling next frame
+         if (this.rafId === null) return;
+
+         this.rafId = requestAnimationFrame(pollGamepad);
+       };
       this.rafId = requestAnimationFrame(pollGamepad);
     }
   }

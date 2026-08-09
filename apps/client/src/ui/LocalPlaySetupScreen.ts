@@ -5,8 +5,11 @@
  * Seat 0 is always the local human host and is never configurable here.
  */
 
+import type { GamepadPoller } from '@smash/gamepad-input';
 import type { ControllerAssignmentManager } from '../input/ControllerAssignmentManager';
 import type { SeatConfig } from '../local/types';
+import { MenuNavigator } from './MenuNavigator.js';
+import type { MenuButton } from './MenuNavigator.js';
 
 type ParticipantCount = 2 | 3 | 4;
 
@@ -71,17 +74,29 @@ export function renderLocalPlaySetupScreen(
   deps: SetupDeps,
   initial: SetupResult | null,
   onConfirm: (result: SetupResult) => void,
+  onBack?: () => void,
+  gamepadPoller?: GamepadPoller | null,
 ): void {
   let participantCount: ParticipantCount = initial?.participantCount ?? 2;
   let seats: SeatConfig[] = initial
     ? revalidateSeats(initial.seats.slice(0, participantCount - 1), deps)
     : buildDefaultSeats(participantCount);
+  let menuNav: MenuNavigator | null = null;
 
   function buildDefaultSeats(count: ParticipantCount): SeatConfig[] {
     return Array.from({ length: count - 1 }, () => ({ kind: 'cpu' as const, difficulty: 'medium' as const }));
   }
 
+  function stopNav(): void {
+    if (menuNav) {
+      menuNav.stop();
+      menuNav = null;
+    }
+  }
+
   function render(): void {
+    stopNav();
+
     let html = `
       <div class="overlay-center" style="max-width:600px;width:100%;align-items:stretch">
         <div style="font-size:32px;letter-spacing:2px;margin-bottom:24px">LOCAL PLAY SETUP</div>
@@ -107,10 +122,13 @@ export function renderLocalPlaySetupScreen(
 
     html += `</div>
         <button id="lps-start-btn" class="ui-btn" style="font-size:20px;padding:14px 36px">Start</button>
-      </div>`;
+        ${onBack ? '<button id="lps-back-btn" class="ui-btn" style="margin-top:12px;font-size:14px;padding:8px 16px">← Back</button>' : ''}
+      </div>
+      <div class="menu-hint">↑↓ Navigate • Enter/A Select${onBack ? ' • Esc/B Back' : ''}</div>`;
 
     container.innerHTML = html;
     wireListeners();
+    wireNav();
   }
 
   function wireListeners(): void {
@@ -147,9 +165,74 @@ export function renderLocalPlaySetupScreen(
     const startBtn = document.getElementById('lps-start-btn');
     if (startBtn) {
       startBtn.addEventListener('click', () => {
+        stopNav();
         onConfirm({ participantCount, seats: [...seats] });
       });
     }
+
+    // Back button
+    if (onBack) {
+      const backBtn = document.getElementById('lps-back-btn');
+      if (backBtn) {
+        backBtn.addEventListener('click', () => {
+          stopNav();
+          onBack();
+        });
+      }
+    }
+  }
+
+  function wireNav(): void {
+    menuNav = new MenuNavigator(gamepadPoller);
+    const navButtons: MenuButton[] = [];
+
+    // Player count buttons
+    const countBtns = container.querySelectorAll('.lps-count-btn');
+    countBtns.forEach(btn => {
+      const el = btn as HTMLElement;
+      navButtons.push({
+        id: `count-${el.dataset['count']}`,
+        element: el,
+        onActivate: () => el.click(),
+      });
+    });
+
+    // Seat cycle buttons
+    for (let i = 0; i < seats.length; i++) {
+      const cycleBtn = document.getElementById(`lps-cycle-${i}`);
+      if (cycleBtn) {
+        navButtons.push({
+          id: `cycle-${i}`,
+          element: cycleBtn,
+          onActivate: () => cycleBtn.click(),
+        });
+      }
+    }
+
+    // Start button
+    const startBtn = document.getElementById('lps-start-btn');
+    if (startBtn) {
+      navButtons.push({
+        id: 'start',
+        element: startBtn,
+        onActivate: () => startBtn.click(),
+      });
+    }
+
+    // Back button
+    if (onBack) {
+      const backBtn = document.getElementById('lps-back-btn');
+      if (backBtn) {
+        navButtons.push({
+          id: 'back',
+          element: backBtn,
+          onActivate: () => backBtn.click(),
+        });
+      }
+    }
+
+    menuNav.setButtons(navButtons);
+    menuNav.start(onBack ? () => { stopNav(); onBack(); } : undefined);
   }
 
   render();

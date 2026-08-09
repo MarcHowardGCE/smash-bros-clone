@@ -1,9 +1,12 @@
+import type { GamepadPoller } from '@smash/gamepad-input';
 import type { PlayerId } from '@smash/shared';
 import type { RenderState } from '../network/InterpolationBuffer.js';
 import type { ControllerAssignmentManager } from '../input/ControllerAssignmentManager.js';
 import type { FighterChoice, SeatConfig } from '../local/types.js';
 import { renderControlsScreen } from './ControlsScreen.js';
 import { renderLocalPlaySetupScreen } from './LocalPlaySetupScreen.js';
+import { MenuNavigator } from './MenuNavigator.js';
+import type { MenuButton } from './MenuNavigator.js';
 
 export type UIPhase = 'connecting' | 'lobby' | 'waiting' | 'countdown' | 'match' | 'result' | 'controls' | 'paused';
 
@@ -14,6 +17,8 @@ export class UIManager {
   private myPlayerId: PlayerId | null = null;
   private roomCode: string | null = null;
   private playerCount: number = 0;
+  private menuNav: MenuNavigator | null = null;
+  _gamepadPoller: GamepadPoller | null = null;
 
   onCreateRoom: (() => void) | null = null;
   onJoinRoom: ((code: string) => void) | null = null;
@@ -46,7 +51,15 @@ export class UIManager {
     this.roomCode = code;
   }
 
+  private stopMenuNav(): void {
+    if (this.menuNav) {
+      this.menuNav.stop();
+      this.menuNav = null;
+    }
+  }
+
   showConnecting(): void {
+    this.stopMenuNav();
     this.phase = 'connecting';
     this.hudPanel.style.display = 'none';
     this.overlay.innerHTML = `
@@ -56,6 +69,7 @@ export class UIManager {
   }
 
   showLobby(): void {
+    this.stopMenuNav();
     this.phase = 'lobby';
     this.hudPanel.style.display = 'none';
     const urlParams = new URLSearchParams(window.location.search);
@@ -75,7 +89,8 @@ export class UIManager {
         }
         <button id="local-play-btn" class="ui-btn" style="margin-top:8px">Local Play</button>
         <button id="controls-btn" class="ui-btn" style="margin-top:12px">Controls</button>
-      </div>`;
+      </div>
+      <div class="menu-hint">↑↓ Navigate • Enter/A Select</div>`;
 
     document.getElementById('create-btn')?.addEventListener('click', () => this.onCreateRoom?.());
     document.getElementById('join-btn')?.addEventListener('click', () => {
@@ -91,9 +106,42 @@ export class UIManager {
     document.getElementById('join-code')?.addEventListener('keydown', (e) => {
       if (e.key === 'Enter') document.getElementById('join-btn')?.click();
     });
+
+    // Menu navigation
+    this.menuNav = new MenuNavigator(this._gamepadPoller);
+    const navButtons: MenuButton[] = [];
+    if (existingRoom) {
+      const readyEl = document.getElementById('ready-btn');
+      if (readyEl) {
+        navButtons.push({ id: 'ready-btn', element: readyEl, onActivate: () => { this.onReady?.(); this.showWaiting(); } });
+      }
+    } else {
+      const createEl = document.getElementById('create-btn');
+      if (createEl) {
+        navButtons.push({ id: 'create-btn', element: createEl, onActivate: () => this.onCreateRoom?.() });
+      }
+      const joinEl = document.getElementById('join-btn');
+      if (joinEl) {
+        navButtons.push({ id: 'join-btn', element: joinEl, onActivate: () => {
+          const code = (document.getElementById('join-code') as HTMLInputElement)?.value?.trim().toUpperCase();
+          if (code?.length === 6) this.onJoinRoom?.(code);
+        } });
+      }
+    }
+    const localEl = document.getElementById('local-play-btn');
+    if (localEl) {
+      navButtons.push({ id: 'local-play-btn', element: localEl, onActivate: () => this.onLocalPlay?.() });
+    }
+    const controlsEl = document.getElementById('controls-btn');
+    if (controlsEl) {
+      navButtons.push({ id: 'controls-btn', element: controlsEl, onActivate: () => this.onOpenControls?.() });
+    }
+    this.menuNav.setButtons(navButtons);
+    this.menuNav.start();
   }
 
   showControls(deps: { assignmentManager: any; preferenceStore: any }): void {
+    this.stopMenuNav();
     this.phase = 'controls';
     this.hudPanel.style.display = 'none';
     this.overlay.innerHTML = '';
@@ -109,7 +157,9 @@ export class UIManager {
     playerCount: number,
     onSelected: (choices: FighterChoice[]) => void,
     autoConfirmSlots: number[] = [],
+    onBack?: () => void,
   ): void {
+    this.stopMenuNav();
     this.hudPanel.style.display = 'none';
 
     // Keyboard confirm keys per slot (slot 0: Enter/Z, slot 1: U, slots 2-3: fallback keys)
@@ -149,7 +199,17 @@ export class UIManager {
     this.overlay.innerHTML = `
       <div class="overlay-center" style="flex-direction:row;gap:60px">
         ${panelsHtml}
-      </div>`;
+      </div>
+      ${onBack ? '<button id="charsel-back-btn" class="ui-btn" style="position:absolute;top:24px;left:24px;font-size:14px;padding:8px 16px">← Back</button>' : ''}
+      <div class="menu-hint">${onBack ? 'Esc/B Back • ' : ''}Confirm to start</div>`;
+
+    // Back button click
+    if (onBack) {
+      document.getElementById('charsel-back-btn')?.addEventListener('click', () => {
+        cleanup();
+        onBack();
+      });
+    }
 
     // Auto-select the first fighter for each player (since there's only one fighter today)
     if (fighters[0]) {
@@ -185,6 +245,13 @@ export class UIManager {
     };
 
     const onKey = (e: KeyboardEvent) => {
+      // Back navigation via Escape
+      if (e.key === 'Escape' && onBack) {
+        e.preventDefault();
+        cleanup();
+        onBack();
+        return;
+      }
       for (let i = 0; i < playerCount; i++) {
         if (!confirmed[i] && CONFIRM_KEYS[i]?.includes(e.code)) {
           confirmSlot(i);
@@ -195,23 +262,41 @@ export class UIManager {
 
     window.addEventListener('keydown', onKey);
 
-    // Gamepad A-button polling for slots 1-3 (if gamepad-input available)
-    if (typeof requestAnimationFrame !== 'undefined' && (this as any)._gamepadPoller) {
-      const poller = (this as any)._gamepadPoller;
-      for (let i = 1; i < playerCount; i++) {
-        const slotIndex = i;
-        const gamepadIndex = i - 1; // gamepads assigned to slots 1-3 map to gamepad indices 0-2
-        const checkGamepad = () => {
-          if (confirmed[slotIndex]) return;
-          const state = poller.poll().get(gamepadIndex);
-          if (state?.bits & 0x0010) { // GenericInputBits.A
-            confirmSlot(slotIndex);
-          } else {
-            rafIds.push(requestAnimationFrame(checkGamepad));
+    // Gamepad polling for confirm (A) and back (B)
+    if (typeof requestAnimationFrame !== 'undefined' && this._gamepadPoller) {
+      const poller = this._gamepadPoller;
+      let lastBits = new Map<number, number>();
+      const checkGamepads = (): void => {
+        const states = poller.poll();
+        for (const [gpIndex, state] of states) {
+          const bits = state.bits;
+          const prev = lastBits.get(gpIndex) ?? 0;
+          const pressed = bits & ~prev;
+
+          // B button → back
+          if ((pressed & 0x0020) && onBack) {
+            cleanup();
+            onBack();
+            return;
           }
-        };
-        rafIds.push(requestAnimationFrame(checkGamepad));
-      }
+
+          // A button → confirm for matching slot
+          if (pressed & 0x0010) {
+            // Slot 0 uses keyboard primarily; gamepads 0-2 map to slots 1-3
+            const slotIndex = gpIndex + 1;
+            if (slotIndex < playerCount && !confirmed[slotIndex]) {
+              confirmSlot(slotIndex);
+            } else if (!confirmed[0]) {
+              // If slot 0 isn't confirmed yet, any gamepad A confirms it
+              confirmSlot(0);
+            }
+          }
+
+          lastBits.set(gpIndex, bits);
+        }
+        rafIds.push(requestAnimationFrame(checkGamepads));
+      };
+      rafIds.push(requestAnimationFrame(checkGamepads));
     }
 
 		// autoConfirmSlots contains player slot indices for local mode (P2=1, P3=2, P4=3),
@@ -225,11 +310,13 @@ export class UIManager {
     deps: { assignmentManager: ControllerAssignmentManager },
     initial: { participantCount: 2 | 3 | 4; seats: SeatConfig[] } | null,
     onConfirm: (result: { participantCount: 2 | 3 | 4; seats: SeatConfig[] }) => void,
+    onBack?: () => void,
   ): void {
+    this.stopMenuNav();
     this.hudPanel.style.display = 'none';
     this.overlay.innerHTML = '';
 
-    renderLocalPlaySetupScreen(this.overlay, deps, initial, onConfirm);
+    renderLocalPlaySetupScreen(this.overlay, deps, initial, onConfirm, onBack, this._gamepadPoller);
   }
 
   showRoomCreated(code: string): void {
@@ -286,6 +373,7 @@ export class UIManager {
   }
 
   showCountdown(count: number): void {
+    this.stopMenuNav();
     this.phase = 'countdown';
     this.hudPanel.style.display = 'none';
     this.overlay.innerHTML = `
@@ -301,16 +389,32 @@ export class UIManager {
   }
 
   showPauseOverlay(): void {
+    this.stopMenuNav();
     this.phase = 'paused';
     this.overlay.innerHTML = `
       <div class="overlay-center">
         <div style="font-size:48px;letter-spacing:4px;margin-bottom:40px">PAUSED</div>
         <button id="resume-btn" class="ui-btn" style="margin-bottom:16px">Resume</button>
         <button id="main-menu-btn" class="ui-btn">Main Menu</button>
-      </div>`;
+      </div>
+      <div class="menu-hint">↑↓ Navigate • Enter/A Select</div>`;
 
     document.getElementById('resume-btn')?.addEventListener('click', () => this.onResume?.());
     document.getElementById('main-menu-btn')?.addEventListener('click', () => this.onMainMenu?.());
+
+    // Menu navigation for pause screen
+    this.menuNav = new MenuNavigator(this._gamepadPoller);
+    const navButtons: MenuButton[] = [];
+    const resumeEl = document.getElementById('resume-btn');
+    if (resumeEl) {
+      navButtons.push({ id: 'resume-btn', element: resumeEl, onActivate: () => this.onResume?.() });
+    }
+    const menuEl = document.getElementById('main-menu-btn');
+    if (menuEl) {
+      navButtons.push({ id: 'main-menu-btn', element: menuEl, onActivate: () => this.onMainMenu?.() });
+    }
+    this.menuNav.setButtons(navButtons);
+    this.menuNav.start(() => this.onResume?.());
   }
 
   hidePauseOverlay(): void {
@@ -325,6 +429,7 @@ export class UIManager {
   }
 
   showResult(winnerId: PlayerId | null, myPlayerId: PlayerId | null): void {
+    this.stopMenuNav();
     this.phase = 'result';
     this.hudPanel.style.display = 'none';
     const isMe = winnerId === myPlayerId;
@@ -337,7 +442,8 @@ export class UIManager {
         <div style="font-size:64px;margin-bottom:32px">${msg}</div>
         <button id="play-again-btn" class="ui-btn">Play Again</button>
         <button id="main-menu-btn" class="ui-btn" style="margin-top:12px">Main Menu</button>
-      </div>`;
+      </div>
+      <div class="menu-hint">↑↓ Navigate • Enter/A Select</div>`;
 
     document.getElementById('play-again-btn')?.addEventListener('click', () => {
       this.onPlayAgain?.();
@@ -345,6 +451,20 @@ export class UIManager {
     document.getElementById('main-menu-btn')?.addEventListener('click', () => {
       this.onMainMenu?.();
     });
+
+    // Menu navigation for result screen
+    this.menuNav = new MenuNavigator(this._gamepadPoller);
+    const navButtons: MenuButton[] = [];
+    const playAgainEl = document.getElementById('play-again-btn');
+    if (playAgainEl) {
+      navButtons.push({ id: 'play-again-btn', element: playAgainEl, onActivate: () => this.onPlayAgain?.() });
+    }
+    const menuEl = document.getElementById('main-menu-btn');
+    if (menuEl) {
+      navButtons.push({ id: 'main-menu-btn', element: menuEl, onActivate: () => this.onMainMenu?.() });
+    }
+    this.menuNav.setButtons(navButtons);
+    this.menuNav.start();
   }
 
   private interpolateDamageColor(percent: number): string {
@@ -410,6 +530,7 @@ export class UIManager {
   }
 
   showLocalResult(winnerId: PlayerId | null): void {
+    this.stopMenuNav();
     this.phase = 'result';
     this.hudPanel.style.display = 'none';
     this.hideRoomCode();
@@ -432,7 +553,8 @@ export class UIManager {
         <div style="font-size:64px;margin-bottom:32px">${msg}</div>
         <button id="local-play-again-btn" class="ui-btn">Play Again</button>
         <button id="main-menu-btn" class="ui-btn" style="margin-top:12px">Main Menu</button>
-      </div>`;
+      </div>
+      <div class="menu-hint">↑↓ Navigate • Enter/A Select</div>`;
 
     document.getElementById('local-play-again-btn')?.addEventListener('click', () => {
       this.onLocalPlayAgain?.();
@@ -440,5 +562,19 @@ export class UIManager {
     document.getElementById('main-menu-btn')?.addEventListener('click', () => {
       this.onMainMenu?.();
     });
+
+    // Menu navigation for local result screen
+    this.menuNav = new MenuNavigator(this._gamepadPoller);
+    const navButtons: MenuButton[] = [];
+    const playAgainEl = document.getElementById('local-play-again-btn');
+    if (playAgainEl) {
+      navButtons.push({ id: 'local-play-again-btn', element: playAgainEl, onActivate: () => this.onLocalPlayAgain?.() });
+    }
+    const menuEl = document.getElementById('main-menu-btn');
+    if (menuEl) {
+      navButtons.push({ id: 'main-menu-btn', element: menuEl, onActivate: () => this.onMainMenu?.() });
+    }
+    this.menuNav.setButtons(navButtons);
+    this.menuNav.start();
   }
 }

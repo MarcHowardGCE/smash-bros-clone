@@ -128,8 +128,7 @@ async function main() {
 	}
 
 	const uiManager = new UIManager(uiOverlay);
-	(uiManager as UIManager & { _gamepadPoller?: GamepadPoller })._gamepadPoller =
-		poller;
+	uiManager._gamepadPoller = poller;
 	let myPlayerId: PlayerId | null = null;
 	let isLocalMode = false;
 	let localMatch: LocalMatch | null = null;
@@ -427,7 +426,15 @@ async function main() {
 					startLocalMatchWithSeats(result);
 				},
 				cpuSlotIndices,
+				() => {
+					// Back from character select → return to setup
+					enterLocalPlayFlow();
+				},
 			);
+		},
+		() => {
+			// Back from setup → return to lobby
+			uiManager.showLobby();
 		});
 	};
 

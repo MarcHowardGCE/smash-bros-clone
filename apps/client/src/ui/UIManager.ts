@@ -379,9 +379,9 @@ export class UIManager {
           }
 
            // D-pad up/down → cycle through fighters
-           if (pressed & GenericInputBits.UP) {
-             // Slot 0 uses keyboard primarily; gamepads 0-2 map to slots 1-3
-             const slotIndex = gpIndex + 1;
+            if (pressed & GenericInputBits.UP) {
+              // Direct mapping: gamepad 0 → slot 0, gamepad 1 → slot 1, etc.
+              const slotIndex = gpIndex;
              if (slotIndex < playerCount && !confirmed[slotIndex]) {
                // Decrement index, wrap to last fighter if at first
                const currentIndex = selectedFighterIndex[slotIndex] ?? 0;
@@ -405,9 +405,9 @@ export class UIManager {
              }
            }
 
-           if (pressed & GenericInputBits.DOWN) {
-             // Slot 0 uses keyboard primarily; gamepads 0-2 map to slots 1-3
-             const slotIndex = gpIndex + 1;
+            if (pressed & GenericInputBits.DOWN) {
+              // Direct mapping: gamepad 0 → slot 0, gamepad 1 → slot 1, etc.
+              const slotIndex = gpIndex;
              if (slotIndex < playerCount && !confirmed[slotIndex]) {
                // Increment index, wrap to first fighter if at last
                const currentIndex = selectedFighterIndex[slotIndex] ?? 0;
@@ -431,17 +431,14 @@ export class UIManager {
              }
            }
 
-          // A button → confirm for matching slot
-          if (pressed & 0x0010) {
-            // Slot 0 uses keyboard primarily; gamepads 0-2 map to slots 1-3
-            const slotIndex = gpIndex + 1;
-            if (slotIndex < playerCount && !confirmed[slotIndex]) {
-              confirmSlot(slotIndex);
-            } else if (!confirmed[0]) {
-              // If slot 0 isn't confirmed yet, any gamepad A confirms it
-              confirmSlot(0);
-            }
-          }
+           // A button → confirm for matching slot
+           if (pressed & 0x0010) {
+             // Direct mapping: gamepad 0 → slot 0, gamepad 1 → slot 1, etc.
+             const slotIndex = gpIndex;
+             if (slotIndex < playerCount && !confirmed[slotIndex]) {
+               confirmSlot(slotIndex);
+             }
+           }
 
           lastBits.set(gpIndex, bits);
         }

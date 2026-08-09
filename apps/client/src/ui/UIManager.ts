@@ -451,10 +451,6 @@ export class UIManager {
       rafIds.push(requestAnimationFrame(checkGamepads));
     }
 
-    // Auto-confirm CPU slots (passed via autoConfirmSlots parameter)
-    for (const slotIndex of autoConfirmSlots) {
-      confirmSlot(slotIndex);
-    }
 	}
 
   showLocalPlaySetup(

@@ -30,6 +30,7 @@ import { createLayers } from "./renderer/layers.js";
 import { StageRenderer } from "./renderer/StageRenderer.js";
 import { ImpactSpark } from "./renderer/effects/ImpactSpark.js";
 import { injectStyles, UIManager } from "./ui/index.js";
+import { AudioManager } from "./audio/AudioManager.js";
 
 // In production on Render, use the same domain. In dev, use localhost.
 const getDefaultServerUrl = () => {
@@ -129,6 +130,7 @@ async function main() {
 
 	const uiManager = new UIManager(uiOverlay);
 	uiManager._gamepadPoller = poller;
+	const audioManager = new AudioManager();
 	let myPlayerId: PlayerId | null = null;
 	let isLocalMode = false;
 	let localMatch: LocalMatch | null = null;
@@ -220,9 +222,11 @@ async function main() {
 				uiManager.setRoomCode(roomCodeFromUrl.toUpperCase());
 				gameClient.joinRoom(roomCodeFromUrl);
 				uiManager.showLobby();
+				audioManager.playTrack('main-menu');
 				return;
 			}
 			uiManager.showLobby();
+			audioManager.playTrack('main-menu');
 		},
 		onPlayerAssigned: (playerId, roomCode) => {
 			myPlayerId = playerId;
@@ -237,6 +241,7 @@ async function main() {
 			if (phase === "countdown") {
 				let count = 3;
 				uiManager.showCountdown(count);
+				audioManager.playTrack('gameplay');
 				const interval = setInterval(() => {
 					count--;
 					if (count > 0) {
@@ -249,8 +254,10 @@ async function main() {
 				}, 1000);
 			} else if (phase === "match") {
 				uiManager.showMatch();
+				audioManager.playTrack('gameplay');
 			} else if (phase === "result") {
 				uiManager.showResult(winnerId ?? null, myPlayerId);
+				audioManager.playTrack('game-over');
 			}
 		},
 		onRoomCreated: (roomCode: string) => {
@@ -390,12 +397,14 @@ async function main() {
 			if (snapshot.matchPhase === "result") {
 				clearLocalCountdown();
 				uiManager.showLocalResult(snapshot.winnerId);
+				audioManager.playTrack('game-over');
 			}
 		};
 
 		uiManager.hideRoomCode();
 		let count = 3;
 		uiManager.showCountdown(count);
+		audioManager.playTrack('gameplay');
 		localCountdownInterval = window.setInterval(() => {
 			count -= 1;
 			if (count > 0) {
@@ -435,6 +444,7 @@ async function main() {
 		() => {
 			// Back from setup → return to lobby
 			uiManager.showLobby();
+			audioManager.playTrack('main-menu');
 		});
 	};
 
@@ -506,6 +516,7 @@ async function main() {
 		window.history.replaceState({}, '', window.location.pathname);
 
 		uiManager.showLobby();
+		audioManager.playTrack('main-menu');
 	};
 
 	window.addEventListener('keydown', (e: KeyboardEvent) => {

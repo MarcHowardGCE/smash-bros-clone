@@ -59,17 +59,22 @@ export class AudioManager {
     audio.loop = true;
 
     console.log(`[AudioManager] Attempting to play: ${track}`);
-    void audio.play()
-      .then(() => {
-        console.log(`[AudioManager] Successfully playing: ${track}`);
-        this.clearPendingRetry();
-      })
-      .catch((err: unknown) => {
-        const message = err instanceof Error ? err.message : String(err);
-        console.warn(`[AudioManager] Failed to play ${track}:`, message);
-        // Browser autoplay policy may block initial playback until user interaction.
-        this.setupUserInteractionRetry(track, audio);
-      });
+    const playPromise = audio.play();
+    if (playPromise) {
+      playPromise
+        .then(() => {
+          console.log(`[AudioManager] Successfully playing: ${track}`);
+          this.clearPendingRetry();
+        })
+        .catch((err: unknown) => {
+          const message = err instanceof Error ? err.message : String(err);
+          console.warn(`[AudioManager] Failed to play ${track}:`, message);
+          // Browser autoplay policy may block initial playback until user interaction.
+          this.setupUserInteractionRetry(track, audio);
+        });
+    } else {
+      console.log(`[AudioManager] play() returned undefined (jsdom environment), skipping promise chain`);
+    }
 
     this.currentTrack = audio;
     this.currentTrackName = track;

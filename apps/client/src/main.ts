@@ -595,10 +595,9 @@ async function main() {
 					}
 				}
 
-				if (pressed & 0x0020) {
-					const phase = uiManager.getPhase();
-					console.log('[DEBUG] B button pressed during match, phase:', phase);
-				}
+			if (pressed & 0x0020) {
+				const phase = uiManager.getPhase();
+			}
 
 				lastBitsPerGamepad.set(gpIndex, bits);
 			}

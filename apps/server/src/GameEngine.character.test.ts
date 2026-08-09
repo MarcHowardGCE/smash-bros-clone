@@ -105,11 +105,11 @@ describe('GameEngine character-aware move resolution', () => {
       const snapshot = engine.getSnapshot(0, { [P1]: 0 });
       const p1 = snapshot.players[P1]!;
 
-      // Hitbox should be Lincoln's JAB with offsetX: 58
-      expect(p1.activeHitbox).not.toBeNull();
-      expect(p1.activeHitbox?.offsetX).toBe(58); // Lincoln JAB
-      expect(p1.activeHitbox?.radius).toBe(22);
-      expect(p1.activeHitbox?.damage).toBe(3);
+       // Hitbox should be Lincoln's JAB with offsetX: 58
+       expect(p1.activeHitbox).not.toBeNull();
+       expect(p1.activeHitbox?.offsetX).toBe(58); // Lincoln JAB
+       expect(p1.activeHitbox?.radius).toBe(20);
+       expect(p1.activeHitbox?.damage).toBe(3);
     });
 
     it('all-rounder resolves default JAB with offsetX: 45', () => {

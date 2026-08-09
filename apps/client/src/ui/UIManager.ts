@@ -1,4 +1,4 @@
-import type { GamepadPoller } from '@smash/gamepad-input';
+import type { GamepadPoller, GamepadPreferenceStore } from '@smash/gamepad-input';
 import type { PlayerId } from '@smash/shared';
 import type { RenderState } from '../network/InterpolationBuffer.js';
 import type { ControllerAssignmentManager } from '../input/ControllerAssignmentManager.js';
@@ -164,7 +164,7 @@ export class UIManager {
     this.menuNav.start();
   }
 
-  showControls(deps: { assignmentManager: any; preferenceStore: any }): void {
+  showControls(deps: { assignmentManager: ControllerAssignmentManager; preferenceStore: GamepadPreferenceStore }): void {
     this.stopMenuNav();
     this.phase = 'controls';
     this.hudPanel.style.display = 'none';
@@ -263,9 +263,9 @@ export class UIManager {
     if (fighters[0]) {
       for (let i = 0; i < playerCount; i++) {
         choices[i] = fighters[0];
-        // Only highlight fighters[0] (All-Rounder) with white border
+        // Only highlight fighters[0] with white border
         const fighterElement = document.querySelector(
-          `[data-player="${i + 1}"][data-fighter-index="0"]`
+          `[data-player="${i + 1}"][data-id="${fighters[0].id}"]`
         );
         if (fighterElement) {
           (fighterElement as HTMLElement).style.borderColor = 'white';

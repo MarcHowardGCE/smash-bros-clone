@@ -294,6 +294,10 @@ export class UIManager {
 
           lastBits.set(gpIndex, bits);
         }
+        
+        // Check if cleanup was called before scheduling next frame
+        if (rafIds.length === 0) return;
+        
         rafIds.push(requestAnimationFrame(checkGamepads));
       };
       rafIds.push(requestAnimationFrame(checkGamepads));

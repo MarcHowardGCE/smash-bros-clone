@@ -244,9 +244,12 @@ export class UIManager {
 
     const choices: (FighterChoice | null)[] = Array(playerCount).fill(null);
     const confirmed: boolean[] = Array(playerCount).fill(false);
-    const selectedFighterIndex: number[] = Array(playerCount).fill(0);
-    const rafIds: number[] = [];
     const autoConfirmSlotSet = new Set(autoConfirmSlots);
+    // Initialize selectedFighterIndex: -1 for human slots (no selection), 0 for CPU slots
+    const selectedFighterIndex: number[] = Array(playerCount).fill(0).map((_, i) => 
+      autoConfirmSlotSet.has(i) ? 0 : -1
+    );
+    const rafIds: number[] = [];
 
     // Render N panels dynamically
     const panelsHtml = (() => {
@@ -266,7 +269,7 @@ export class UIManager {
           <div style="font-size:20px;margin-bottom:16px">P${i + 1} (${panelRole}) Choose</div>
           ${fighters.map(f => `
             <div class="fighter-option" data-player="${i + 1}" data-id="${f.id}"
-                 style="border:2px solid rgba(255,255,255,0.3);padding:12px 24px;margin-bottom:8px;cursor:pointer;font-size:18px">
+                 style="border:2px solid rgba(255,255,255,0.3);padding:12px 24px;margin-bottom:8px;cursor:pointer;font-size:18px;width:200px;box-sizing:border-box;display:block">
               ${f.displayName}
             </div>
           `).join('')}
@@ -395,64 +398,68 @@ export class UIManager {
             return;
           }
 
-          // D-pad up/down → cycle through fighters
-          if (pressed & GenericInputBits.UP) {
-            const slotIndex = gamepadSlotByIndex?.get(gpIndex) ?? gpIndex;
-            if (slotIndex < playerCount && !confirmed[slotIndex]) {
-              // Decrement index, wrap to last fighter if at first
-              const currentIndex = selectedFighterIndex[slotIndex] ?? 0;
-              selectedFighterIndex[slotIndex] = (currentIndex - 1 + fighters.length) % fighters.length;
-              const selectedFighter = fighters[selectedFighterIndex[slotIndex]];
-              if (selectedFighter) {
-                choices[slotIndex] = selectedFighter;
-                
-                // Update visual styling: selected option gets white, others dim
-                const playerElements = document.querySelectorAll(`[data-player="${slotIndex + 1}"]`);
-                playerElements.forEach(el => {
-                  (el as HTMLElement).style.borderColor = 'rgba(255,255,255,0.3)';
-                });
-                const selectedElement = document.querySelector(
-                  `[data-player="${slotIndex + 1}"][data-id="${selectedFighter.id}"]`
-                );
-                if (selectedElement) {
-                  (selectedElement as HTMLElement).style.borderColor = 'white';
-                }
-              }
-            }
-          }
+           // D-pad up/down → cycle through fighters (visual highlight only, no auto-select)
+           if (pressed & GenericInputBits.UP) {
+             const slotIndex = gamepadSlotByIndex?.get(gpIndex) ?? gpIndex;
+             if (slotIndex < playerCount && !confirmed[slotIndex]) {
+               // Decrement index, wrap to last fighter if at first
+               const currentIndex = selectedFighterIndex[slotIndex] ?? 0;
+               selectedFighterIndex[slotIndex] = (currentIndex - 1 + fighters.length) % fighters.length;
+               const selectedFighter = fighters[selectedFighterIndex[slotIndex]];
+               if (selectedFighter) {
+                 // Update visual styling: selected option gets white, others dim
+                 const playerElements = document.querySelectorAll(`[data-player="${slotIndex + 1}"]`);
+                 playerElements.forEach(el => {
+                   (el as HTMLElement).style.borderColor = 'rgba(255,255,255,0.3)';
+                 });
+                 const selectedElement = document.querySelector(
+                   `[data-player="${slotIndex + 1}"][data-id="${selectedFighter.id}"]`
+                 );
+                 if (selectedElement) {
+                   (selectedElement as HTMLElement).style.borderColor = 'white';
+                 }
+               }
+             }
+           }
 
-          if (pressed & GenericInputBits.DOWN) {
-            const slotIndex = gamepadSlotByIndex?.get(gpIndex) ?? gpIndex;
-            if (slotIndex < playerCount && !confirmed[slotIndex]) {
-              // Increment index, wrap to first fighter if at last
-              const currentIndex = selectedFighterIndex[slotIndex] ?? 0;
-              selectedFighterIndex[slotIndex] = (currentIndex + 1) % fighters.length;
-              const selectedFighter = fighters[selectedFighterIndex[slotIndex]];
-              if (selectedFighter) {
-                choices[slotIndex] = selectedFighter;
-                
-                // Update visual styling: selected option gets white, others dim
-                const playerElements = document.querySelectorAll(`[data-player="${slotIndex + 1}"]`);
-                playerElements.forEach(el => {
-                  (el as HTMLElement).style.borderColor = 'rgba(255,255,255,0.3)';
-                });
-                const selectedElement = document.querySelector(
-                  `[data-player="${slotIndex + 1}"][data-id="${selectedFighter.id}"]`
-                );
-                if (selectedElement) {
-                  (selectedElement as HTMLElement).style.borderColor = 'white';
-                }
-              }
-            }
-          }
+           if (pressed & GenericInputBits.DOWN) {
+             const slotIndex = gamepadSlotByIndex?.get(gpIndex) ?? gpIndex;
+             if (slotIndex < playerCount && !confirmed[slotIndex]) {
+               // Increment index, wrap to first fighter if at last
+               const currentIndex = selectedFighterIndex[slotIndex] ?? 0;
+               selectedFighterIndex[slotIndex] = (currentIndex + 1) % fighters.length;
+               const selectedFighter = fighters[selectedFighterIndex[slotIndex]];
+               if (selectedFighter) {
+                 // Update visual styling: selected option gets white, others dim
+                 const playerElements = document.querySelectorAll(`[data-player="${slotIndex + 1}"]`);
+                 playerElements.forEach(el => {
+                   (el as HTMLElement).style.borderColor = 'rgba(255,255,255,0.3)';
+                 });
+                 const selectedElement = document.querySelector(
+                   `[data-player="${slotIndex + 1}"][data-id="${selectedFighter.id}"]`
+                 );
+                 if (selectedElement) {
+                   (selectedElement as HTMLElement).style.borderColor = 'white';
+                 }
+               }
+             }
+           }
 
-          // A button → confirm for matching slot
-          if (pressed & 0x0010) {
-            const slotIndex = gamepadSlotByIndex?.get(gpIndex) ?? gpIndex;
-            if (slotIndex < playerCount && !confirmed[slotIndex]) {
-              confirmSlot(slotIndex);
-            }
-          }
+           // A button → set choice and confirm for matching slot
+           if (pressed & 0x0010) {
+             const slotIndex = gamepadSlotByIndex?.get(gpIndex) ?? gpIndex;
+             if (slotIndex < playerCount && !confirmed[slotIndex]) {
+               // Set the choice to the currently highlighted fighter
+               const selectedFighterIdx = selectedFighterIndex[slotIndex] ?? 0;
+               if (selectedFighterIdx >= 0 && selectedFighterIdx < fighters.length) {
+                 const selectedFighter = fighters[selectedFighterIdx];
+                 if (selectedFighter) {
+                   choices[slotIndex] = selectedFighter;
+                 }
+               }
+               confirmSlot(slotIndex);
+             }
+           }
 
           lastBits.set(gpIndex, bits);
         }

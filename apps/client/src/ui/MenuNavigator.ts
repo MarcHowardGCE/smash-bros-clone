@@ -42,6 +42,10 @@ export class MenuNavigator {
     this.updateVisuals();
 
     this.keyHandler = (e: KeyboardEvent) => {
+      if (e.repeat) {
+        return;
+      }
+
       // Don't intercept when an input field is focused
       if (
         document.activeElement instanceof HTMLInputElement ||
@@ -80,6 +84,12 @@ export class MenuNavigator {
 
     if (this.poller) {
       this.lastBitsPerGamepad.clear();
+
+      // Prime with current state so already-held buttons are not treated as fresh presses.
+      for (const [gpIndex, state] of this.poller.poll()) {
+        this.lastBitsPerGamepad.set(gpIndex, state.bits);
+      }
+
       const pollGamepad = (): void => {
         const states: ReadonlyMap<number, GamepadState> = this.poller!.poll();
 

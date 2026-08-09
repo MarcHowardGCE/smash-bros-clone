@@ -111,6 +111,12 @@ export class UIManager {
       if (typeof requestAnimationFrame !== 'undefined' && this._gamepadPoller) {
         const poller = this._gamepadPoller;
         let lastBits = new Map<number, number>();
+
+        // Prime with current state so already-held buttons are not treated as fresh presses.
+        for (const [gpIndex, state] of poller.poll()) {
+          lastBits.set(gpIndex, state.bits);
+        }
+
         const checkGamepads = (): void => {
           const states = poller.poll();
           for (const [gpIndex, state] of states) {
@@ -175,6 +181,9 @@ export class UIManager {
     document.getElementById('local-play-btn')?.addEventListener('click', () => this.onLocalPlay?.());
     document.getElementById('controls-btn')?.addEventListener('click', () => this.onOpenControls?.());
     document.getElementById('join-code')?.addEventListener('keydown', (e) => {
+      if (e.repeat) {
+        return;
+      }
       if (e.key === 'Enter') document.getElementById('join-btn')?.click();
     });
 
@@ -396,6 +405,10 @@ export class UIManager {
     };
 
     const onKey = (e: KeyboardEvent) => {
+      if (e.repeat) {
+        return;
+      }
+
       // Back navigation via Escape
       if (e.key === 'Escape' && onBack) {
         e.preventDefault();
@@ -453,6 +466,12 @@ export class UIManager {
     if (typeof requestAnimationFrame !== 'undefined' && this._gamepadPoller) {
       const poller = this._gamepadPoller;
       let lastBits = new Map<number, number>();
+
+      // Prime with current state so already-held buttons are not treated as fresh presses.
+      for (const [gpIndex, state] of poller.poll()) {
+        lastBits.set(gpIndex, state.bits);
+      }
+
       const checkGamepads = (): void => {
         const states = poller.poll();
         for (const [gpIndex, state] of states) {

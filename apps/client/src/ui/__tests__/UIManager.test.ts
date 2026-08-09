@@ -1,6 +1,8 @@
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import { UIManager } from '../UIManager';
 import type { FighterChoice } from '../../local/types';
+import { GenericInputBits } from '@smash/gamepad-input';
+import type { StageConfig } from '../../stages/stageConfig';
 
 describe('UIManager', () => {
   let mockOverlay: HTMLElement;
@@ -154,6 +156,153 @@ describe('UIManager', () => {
 
   describe('showCharacterSelect', () => {
     const fighters: FighterChoice[] = [{ id: 'fighter1', displayName: 'Fighter One' }];
+
+    it('does not skip Stage Select when Character Select confirms with held A after CPU auto-confirm', () => {
+      vi.useFakeTimers();
+      const stageOnSelected = vi.fn();
+      const stages: StageConfig[] = [
+        {
+          id: 'stage-1',
+          displayName: 'Stage 1',
+          backgroundImage: 'stage1.png',
+          musicTrack: 'stage1.mp3',
+        },
+      ];
+
+      let nextRafId = 1;
+      const rafOrder: number[] = [];
+      const rafCallbacks = new Map<number, FrameRequestCallback>();
+
+      const runNextFrame = (): void => {
+        while (rafOrder.length > 0) {
+          const id = rafOrder.shift()!;
+          const callback = rafCallbacks.get(id);
+          if (!callback) {
+            continue;
+          }
+          rafCallbacks.delete(id);
+          callback(0);
+          return;
+        }
+        throw new Error('No requestAnimationFrame callback available');
+      };
+
+      const sharedPoller = {
+        poll: vi
+          .fn()
+          // Character Select prime (equivalent to keyboard-start path: no held gamepad input).
+          .mockReturnValueOnce(new Map([[0, { bits: 0 }]]))
+          // Character Select frame 1: still idle.
+          .mockReturnValueOnce(new Map([[0, { bits: 0 }]]))
+          // Character Select frame 2: fresh A press confirms P1 while CPU already confirmed.
+          .mockReturnValueOnce(new Map([[0, { bits: GenericInputBits.A }]]))
+          // Stage Select prime runs synchronously in the same call stack; A still physically held.
+          .mockReturnValueOnce(new Map([[0, { bits: GenericInputBits.A }]]))
+          // Stage Select first real frame: A still held should NOT select stage.
+          .mockReturnValueOnce(new Map([[0, { bits: GenericInputBits.A }]]))
+          // Release.
+          .mockReturnValueOnce(new Map([[0, { bits: 0 }]]))
+          // Fresh re-press: now Stage Select should select.
+          .mockReturnValueOnce(new Map([[0, { bits: GenericInputBits.A }]])),
+      };
+
+      vi.stubGlobal('requestAnimationFrame', ((cb: FrameRequestCallback): number => {
+        const id = nextRafId++;
+        rafCallbacks.set(id, cb);
+        rafOrder.push(id);
+        return id;
+      }) as typeof requestAnimationFrame);
+
+      vi.stubGlobal('cancelAnimationFrame', ((id: number): void => {
+        rafCallbacks.delete(id);
+      }) as typeof cancelAnimationFrame);
+
+      try {
+        (uiManager as { _gamepadPoller: unknown })._gamepadPoller = sharedPoller;
+
+        uiManager.showCharacterSelect(
+          fighters,
+          2,
+          () => {
+            uiManager.showStageSelect(stages, stageOnSelected, vi.fn());
+          },
+          [1],
+        );
+
+        // Initial character-select frame to establish prev=0 baseline.
+        runNextFrame();
+
+        // CPU slot auto-confirms before player presses A.
+        vi.advanceTimersByTime(500);
+        expect(mockOverlay.querySelector('#p2-status')?.textContent).toBe('✓ Ready!');
+
+        // This frame confirms P1 via A and synchronously cascades into Stage Select.
+        runNextFrame();
+        expect(mockOverlay.innerHTML).toContain('SELECT STAGE');
+        expect(document.getElementById('stage-back-btn')).not.toBeNull();
+
+        // First Stage Select frame sees held A baseline from priming; must NOT auto-select.
+        runNextFrame();
+        expect(stageOnSelected).not.toHaveBeenCalled();
+
+        // Release then fresh press should select stage.
+        runNextFrame();
+        runNextFrame();
+        expect(stageOnSelected).toHaveBeenCalledTimes(1);
+        expect(stageOnSelected).toHaveBeenCalledWith(stages[0]);
+      } finally {
+        vi.useRealTimers();
+        vi.unstubAllGlobals();
+      }
+    });
+
+    it('primes gamepad lastBits so an already-held A button does not instantly confirm P1', () => {
+      const onSelected = vi.fn();
+      const rafCallbacks: FrameRequestCallback[] = [];
+      const mockPoller = {
+        poll: vi
+          .fn()
+          // Priming snapshot: A already held from previous screen.
+          .mockReturnValueOnce(new Map([[0, { bits: GenericInputBits.A }]]))
+          // First loop frame still held -> must NOT confirm.
+          .mockReturnValueOnce(new Map([[0, { bits: GenericInputBits.A }]]))
+          // Release.
+          .mockReturnValueOnce(new Map([[0, { bits: 0 }]]))
+          // Fresh new press -> should confirm.
+          .mockReturnValueOnce(new Map([[0, { bits: GenericInputBits.A }]])),
+      };
+
+      vi.stubGlobal('requestAnimationFrame', ((cb: FrameRequestCallback): number => {
+        rafCallbacks.push(cb);
+        return rafCallbacks.length;
+      }) as typeof requestAnimationFrame);
+      vi.stubGlobal('cancelAnimationFrame', vi.fn());
+
+      try {
+        (uiManager as { _gamepadPoller: unknown })._gamepadPoller = mockPoller;
+        uiManager.showCharacterSelect(fighters, 1, onSelected);
+
+        const runNextFrame = (): void => {
+          const callback = rafCallbacks.shift();
+          expect(callback).toBeDefined();
+          callback!(0);
+        };
+
+        // First frame: still-held A is ignored due to primed snapshot.
+        runNextFrame();
+        expect(onSelected).not.toHaveBeenCalled();
+        expect(mockOverlay.querySelector('#p1-status')?.textContent).not.toBe('✓ Ready!');
+
+        // Release then press again to create a true rising edge.
+        runNextFrame();
+        runNextFrame();
+
+        expect(onSelected).toHaveBeenCalledTimes(1);
+        expect(onSelected.mock.calls[0]?.[0]?.[0]).toEqual(fighters[0]);
+      } finally {
+        vi.unstubAllGlobals();
+      }
+    });
 
     it('should render 4 panels when playerCount=4', () => {
       const onSelected = vi.fn();

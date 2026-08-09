@@ -241,6 +241,10 @@ export function renderLocalPlaySetupScreen(
 
     // Keyboard handler for left/right seat cycling
     keyHandler = (e: KeyboardEvent) => {
+      if (e.repeat) {
+        return;
+      }
+
       // Don't intercept when an input field is focused
       if (
         document.activeElement instanceof HTMLInputElement ||
@@ -318,6 +322,12 @@ export function renderLocalPlaySetupScreen(
     // Gamepad polling for left/right seat cycling
     if (gamepadPoller) {
       lastBitsPerGamepad.clear();
+
+      // Prime with current state so already-held buttons are not treated as fresh presses.
+      for (const [gpIndex, state] of gamepadPoller.poll()) {
+        lastBitsPerGamepad.set(gpIndex, state.bits);
+      }
+
       const pollGamepad = (): void => {
         const states = gamepadPoller.poll();
 

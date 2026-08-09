@@ -175,6 +175,10 @@ export function renderStageSelectScreen(
 
   // --- Keyboard navigation ---
   keyHandler = (e: KeyboardEvent) => {
+    if (e.repeat) {
+      return;
+    }
+
     if (
       document.activeElement instanceof HTMLInputElement ||
       document.activeElement instanceof HTMLTextAreaElement
@@ -215,6 +219,12 @@ export function renderStageSelectScreen(
   // --- Gamepad polling ---
   if (gamepadPoller) {
     lastBitsPerGamepad.clear();
+
+    // Prime with current state so already-held buttons are not treated as fresh presses.
+    for (const [gpIndex, state] of gamepadPoller.poll()) {
+      lastBitsPerGamepad.set(gpIndex, state.bits);
+    }
+
     const pollGamepad = (): void => {
       if (disposed) return;
 

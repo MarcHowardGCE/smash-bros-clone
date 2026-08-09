@@ -52,7 +52,8 @@ test('local mode exposes non-null debug snapshots via both debug APIs', async ({
   await page.waitForSelector('#local-play-btn', { timeout: 10_000 });
 
   await page.click('#local-play-btn');
-  await page.waitForTimeout(500);
+  await page.waitForSelector('#lps-start-btn', { timeout: 10_000 });
+  await page.click('#lps-start-btn');
   await page.keyboard.press('Enter');
   await page.keyboard.press('KeyU');
 

@@ -14,9 +14,10 @@ test('KO effect renders stars and tumble on knockout', async ({ page }) => {
 
   // Start local play
   await page.click('#local-play-btn');
+  await page.waitForSelector('#lps-start-btn', { timeout: 10_000 });
+  await page.click('#lps-start-btn');
 
   // Confirm character select: P1 = Enter, P2 = U
-  await page.waitForTimeout(500);
   await page.keyboard.press('Enter');
   await page.keyboard.press('KeyU');
 
@@ -85,9 +86,10 @@ test('Double-KO: both effects render independently', async ({ page }) => {
 
   // Start local play
   await page.click('#local-play-btn');
+  await page.waitForSelector('#lps-start-btn', { timeout: 10_000 });
+  await page.click('#lps-start-btn');
 
   // Confirm character select
-  await page.waitForTimeout(500);
   await page.keyboard.press('Enter');
   await page.keyboard.press('KeyU');
 

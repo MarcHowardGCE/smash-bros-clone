@@ -15,9 +15,10 @@ test('result screen shows Main Menu button and navigates to lobby on click', asy
 
   // Start local play
   await page.click('#local-play-btn');
+  await page.waitForSelector('#lps-start-btn', { timeout: 10_000 });
+  await page.click('#lps-start-btn');
 
   // Confirm character select: P1 = Enter, P2 = U
-  await page.waitForTimeout(500);
   await page.keyboard.press('Enter');
   await page.keyboard.press('KeyU');
 

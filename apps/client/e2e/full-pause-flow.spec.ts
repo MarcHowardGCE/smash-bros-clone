@@ -15,9 +15,10 @@ async function startLocalMatch(page: import('@playwright/test').Page): Promise<v
   await page.goto('http://localhost:5173');
   await page.waitForSelector('#local-play-btn', { timeout: 5000 });
   await page.click('#local-play-btn');
+  await page.waitForSelector('#lps-start-btn', { timeout: 10_000 });
+  await page.click('#lps-start-btn');
 
   // Confirm character select: P1 = Enter, P2 = U
-  await page.waitForTimeout(500);
   await page.keyboard.press('Enter');
   await page.keyboard.press('KeyU');
 

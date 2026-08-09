@@ -62,7 +62,8 @@ async function startLocalMatch(page: Page): Promise<void> {
 	await page.goto("/");
 	await page.waitForSelector("#local-play-btn", { timeout: 10_000 });
 	await page.click("#local-play-btn");
-	await page.waitForTimeout(300);
+	await page.waitForSelector("#lps-start-btn", { timeout: 10_000 });
+	await page.click("#lps-start-btn");
 	await page.keyboard.press("Enter");
 	await page.keyboard.press("KeyU");
 	await page.waitForFunction(

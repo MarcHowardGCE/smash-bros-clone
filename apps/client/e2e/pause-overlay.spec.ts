@@ -15,9 +15,10 @@ test('pause freezes fighters and resume restores movement', async ({ page }) => 
 
   // Start local play
   await page.click('#local-play-btn');
+  await page.waitForSelector('#lps-start-btn', { timeout: 10_000 });
+  await page.click('#lps-start-btn');
 
   // Confirm character select: P1 = Enter, P2 = U
-  await page.waitForTimeout(500);
   await page.keyboard.press('Enter');
   await page.keyboard.press('KeyU');
 
@@ -113,9 +114,10 @@ test('pause during countdown is a no-op', async ({ page }) => {
 
   // Start local play
   await page.click('#local-play-btn');
+  await page.waitForSelector('#lps-start-btn', { timeout: 10_000 });
+  await page.click('#lps-start-btn');
 
   // Confirm character select
-  await page.waitForTimeout(500);
   await page.keyboard.press('Enter');
   await page.keyboard.press('KeyU');
 

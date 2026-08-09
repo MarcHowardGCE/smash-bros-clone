@@ -29,7 +29,8 @@ test('F3: Full local match end-to-end experience', async ({ page }) => {
   // STEP 2: Start local match
   // =========================================================================
   await page.click('#local-play-btn');
-  await page.waitForTimeout(500);
+  await page.waitForSelector('#lps-start-btn', { timeout: 10_000 });
+  await page.click('#lps-start-btn');
 
   // Confirm character select: P1 = Enter, P2 = U (KeyU)
   await page.keyboard.press('Enter');

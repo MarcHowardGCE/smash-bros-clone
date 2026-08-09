@@ -309,6 +309,7 @@ export class UIManager {
           
           if (selectedFighter) {
             choices[i] = selectedFighter;
+            selectedFighterIndex[i] = fighters.indexOf(selectedFighter);
             
             // Update border styling: clicked option gets white, others dim
             playerElements.forEach(option => {
@@ -370,8 +371,50 @@ export class UIManager {
         onBack();
         return;
       }
+
+      // Keyboard arrow key navigation for human slot 0 only
+      if (e.key === 'ArrowUp' || e.key === 'ArrowDown') {
+        const slotIndex = 0; // Only human player (slot 0)
+        if (!confirmed[slotIndex]) {
+          const currentIndex = selectedFighterIndex[slotIndex];
+          if (currentIndex === undefined || currentIndex < 0) {
+            // Initialize to first fighter if not yet selected
+            selectedFighterIndex[slotIndex] = 0;
+          } else {
+            if (e.key === 'ArrowUp') {
+              selectedFighterIndex[slotIndex] = (currentIndex - 1 + fighters.length) % fighters.length;
+            } else {
+              selectedFighterIndex[slotIndex] = (currentIndex + 1) % fighters.length;
+            }
+          }
+          const selectedFighter = fighters[selectedFighterIndex[slotIndex]];
+          if (selectedFighter) {
+            // Update visual styling: selected option gets white, others dim
+            const playerElements = document.querySelectorAll(`[data-player="${slotIndex + 1}"]`);
+            playerElements.forEach(el => {
+              (el as HTMLElement).style.borderColor = 'rgba(255,255,255,0.3)';
+            });
+            const selectedElement = document.querySelector(
+              `[data-player="${slotIndex + 1}"][data-id="${selectedFighter.id}"]`
+            );
+            if (selectedElement) {
+              (selectedElement as HTMLElement).style.borderColor = 'white';
+            }
+          }
+        }
+        return;
+      }
+
       for (let i = 0; i < playerCount; i++) {
         if (!confirmed[i] && CONFIRM_KEYS[i]?.includes(e.code)) {
+          // Set the choice to the currently highlighted fighter before confirming
+          const selectedFighterIdx = selectedFighterIndex[i];
+          if (selectedFighterIdx !== undefined && selectedFighterIdx >= 0 && selectedFighterIdx < fighters.length) {
+            const selectedFighter = fighters[selectedFighterIdx];
+            if (selectedFighter) {
+              choices[i] = selectedFighter;
+            }
+          }
           confirmSlot(i);
           break;
         }
@@ -398,52 +441,62 @@ export class UIManager {
             return;
           }
 
-           // D-pad up/down → cycle through fighters (visual highlight only, no auto-select)
-           if (pressed & GenericInputBits.UP) {
-             const slotIndex = gamepadSlotByIndex?.get(gpIndex) ?? gpIndex;
-             if (slotIndex < playerCount && !confirmed[slotIndex]) {
-               // Decrement index, wrap to last fighter if at first
-               const currentIndex = selectedFighterIndex[slotIndex] ?? 0;
-               selectedFighterIndex[slotIndex] = (currentIndex - 1 + fighters.length) % fighters.length;
-               const selectedFighter = fighters[selectedFighterIndex[slotIndex]];
-               if (selectedFighter) {
-                 // Update visual styling: selected option gets white, others dim
-                 const playerElements = document.querySelectorAll(`[data-player="${slotIndex + 1}"]`);
-                 playerElements.forEach(el => {
-                   (el as HTMLElement).style.borderColor = 'rgba(255,255,255,0.3)';
-                 });
-                 const selectedElement = document.querySelector(
-                   `[data-player="${slotIndex + 1}"][data-id="${selectedFighter.id}"]`
-                 );
-                 if (selectedElement) {
-                   (selectedElement as HTMLElement).style.borderColor = 'white';
-                 }
-               }
-             }
-           }
+            // D-pad up/down → cycle through fighters (visual highlight only, no auto-select)
+            if (pressed & GenericInputBits.UP) {
+              const slotIndex = gamepadSlotByIndex?.get(gpIndex) ?? gpIndex;
+              if (slotIndex < playerCount && !confirmed[slotIndex]) {
+                // Decrement index, wrap to last fighter if at first
+                const currentIndex = selectedFighterIndex[slotIndex];
+                if (currentIndex === undefined || currentIndex < 0) {
+                  // Initialize to first fighter if not yet selected
+                  selectedFighterIndex[slotIndex] = 0;
+                } else {
+                  selectedFighterIndex[slotIndex] = (currentIndex - 1 + fighters.length) % fighters.length;
+                }
+                const selectedFighter = fighters[selectedFighterIndex[slotIndex]];
+                if (selectedFighter) {
+                  // Update visual styling: selected option gets white, others dim
+                  const playerElements = document.querySelectorAll(`[data-player="${slotIndex + 1}"]`);
+                  playerElements.forEach(el => {
+                    (el as HTMLElement).style.borderColor = 'rgba(255,255,255,0.3)';
+                  });
+                  const selectedElement = document.querySelector(
+                    `[data-player="${slotIndex + 1}"][data-id="${selectedFighter.id}"]`
+                  );
+                  if (selectedElement) {
+                    (selectedElement as HTMLElement).style.borderColor = 'white';
+                  }
+                }
+              }
+            }
 
-           if (pressed & GenericInputBits.DOWN) {
-             const slotIndex = gamepadSlotByIndex?.get(gpIndex) ?? gpIndex;
-             if (slotIndex < playerCount && !confirmed[slotIndex]) {
-               // Increment index, wrap to first fighter if at last
-               const currentIndex = selectedFighterIndex[slotIndex] ?? 0;
-               selectedFighterIndex[slotIndex] = (currentIndex + 1) % fighters.length;
-               const selectedFighter = fighters[selectedFighterIndex[slotIndex]];
-               if (selectedFighter) {
-                 // Update visual styling: selected option gets white, others dim
-                 const playerElements = document.querySelectorAll(`[data-player="${slotIndex + 1}"]`);
-                 playerElements.forEach(el => {
-                   (el as HTMLElement).style.borderColor = 'rgba(255,255,255,0.3)';
-                 });
-                 const selectedElement = document.querySelector(
-                   `[data-player="${slotIndex + 1}"][data-id="${selectedFighter.id}"]`
-                 );
-                 if (selectedElement) {
-                   (selectedElement as HTMLElement).style.borderColor = 'white';
-                 }
-               }
-             }
-           }
+            if (pressed & GenericInputBits.DOWN) {
+              const slotIndex = gamepadSlotByIndex?.get(gpIndex) ?? gpIndex;
+              if (slotIndex < playerCount && !confirmed[slotIndex]) {
+                // Increment index, wrap to first fighter if at last
+                const currentIndex = selectedFighterIndex[slotIndex];
+                if (currentIndex === undefined || currentIndex < 0) {
+                  // Initialize to first fighter if not yet selected
+                  selectedFighterIndex[slotIndex] = 0;
+                } else {
+                  selectedFighterIndex[slotIndex] = (currentIndex + 1) % fighters.length;
+                }
+                const selectedFighter = fighters[selectedFighterIndex[slotIndex]];
+                if (selectedFighter) {
+                  // Update visual styling: selected option gets white, others dim
+                  const playerElements = document.querySelectorAll(`[data-player="${slotIndex + 1}"]`);
+                  playerElements.forEach(el => {
+                    (el as HTMLElement).style.borderColor = 'rgba(255,255,255,0.3)';
+                  });
+                  const selectedElement = document.querySelector(
+                    `[data-player="${slotIndex + 1}"][data-id="${selectedFighter.id}"]`
+                  );
+                  if (selectedElement) {
+                    (selectedElement as HTMLElement).style.borderColor = 'white';
+                  }
+                }
+              }
+            }
 
            // A button → set choice and confirm for matching slot
            if (pressed & 0x0010) {

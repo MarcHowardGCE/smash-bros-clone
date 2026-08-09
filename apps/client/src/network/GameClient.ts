@@ -128,6 +128,13 @@ export class GameClient {
     this.socket.disconnect();
   }
 
+  connect(): void {
+    if (this.socket.connected) {
+      return;
+    }
+    this.socket.connect();
+  }
+
 	debugSendInput(input: Pick<InputEvent, 'held' | 'pressed' | 'released'>): void {
 		if (!this.myPlayerId) {
 			return;

@@ -9,8 +9,11 @@ interface BootResult {
   uiInstance: {
     onLocalPlay: (() => void) | null;
     onLocalPlayAgain: (() => void) | null;
+    onMainMenu: (() => void) | null;
   };
+  triggerLocalPlaySetupBack: () => void;
   showLocalPlaySetupCalls: Array<{ initial: SetupResult | null }>;
+  getShowLobbyCalls: () => number;
   showCharacterSelectCalls: Array<{
     playerCount: number;
     onSelected: (choices: unknown[]) => void;
@@ -19,6 +22,8 @@ interface BootResult {
   }>;
   localMatchCtorCalls: Array<{ controllers: unknown[]; characterIds?: unknown }>;
   gamepadInputSourceCtorCalls: Array<{ poller: unknown; gamepadIndex: number }>;
+  getGameClientConnectCalls: () => number;
+  getGameClientDisconnectCalls: () => number;
   AIPlayerController: new (config: { playerId: string }) => unknown;
 }
 
@@ -31,6 +36,7 @@ const bootMainWithMocks = async (setupResults: SetupResult[]): Promise<BootResul
   vi.resetModules();
 
   const showLocalPlaySetupCalls: Array<{ initial: SetupResult | null }> = [];
+  let showLobbyCalls = 0;
   const showCharacterSelectCalls: Array<{
     playerCount: number;
     onSelected: (choices: unknown[]) => void;
@@ -39,6 +45,9 @@ const bootMainWithMocks = async (setupResults: SetupResult[]): Promise<BootResul
   }> = [];
   const localMatchCtorCalls: Array<{ controllers: unknown[]; characterIds?: unknown }> = [];
   const gamepadInputSourceCtorCalls: Array<{ poller: unknown; gamepadIndex: number }> = [];
+  let gameClientConnectCalls = 0;
+  let gameClientDisconnectCalls = 0;
+  let localPlaySetupBack: (() => void) | null = null;
 
   let uiInstance: BootResult['uiInstance'] | null = null;
 
@@ -121,7 +130,12 @@ const bootMainWithMocks = async (setupResults: SetupResult[]): Promise<BootResul
       createRoom(): void {}
       joinRoom(): void {}
       markReady(): void {}
-      disconnect(): void {}
+      disconnect(): void {
+        gameClientDisconnectCalls += 1;
+      }
+      connect(): void {
+        gameClientConnectCalls += 1;
+      }
       emitResume(): void {}
       emitPause(): void {}
       getLatestSnapshot(): null {
@@ -218,7 +232,9 @@ const bootMainWithMocks = async (setupResults: SetupResult[]): Promise<BootResul
 
       setRoomCode(): void {}
       setPlayerId(): void {}
-      showLobby(): void {}
+      showLobby(): void {
+        showLobbyCalls += 1;
+      }
       showRoomCreated(): void {}
       showPlayerJoined(): void {}
       showResult(): void {}
@@ -239,8 +255,10 @@ const bootMainWithMocks = async (setupResults: SetupResult[]): Promise<BootResul
         _deps: unknown,
         initial: SetupResult | null,
         onConfirm: (result: SetupResult) => void,
+        onBack?: () => void,
       ): void {
         showLocalPlaySetupCalls.push({ initial });
+        localPlaySetupBack = onBack ?? null;
         const next = setupResults.shift();
         if (next) {
           onConfirm(next);
@@ -278,10 +296,19 @@ const bootMainWithMocks = async (setupResults: SetupResult[]): Promise<BootResul
 
   return {
     uiInstance,
+    triggerLocalPlaySetupBack: () => {
+      if (!localPlaySetupBack) {
+        throw new Error('Local play setup back callback was not captured');
+      }
+      localPlaySetupBack();
+    },
     showLocalPlaySetupCalls,
+    getShowLobbyCalls: () => showLobbyCalls,
     showCharacterSelectCalls,
     localMatchCtorCalls,
     gamepadInputSourceCtorCalls,
+    getGameClientConnectCalls: () => gameClientConnectCalls,
+    getGameClientDisconnectCalls: () => gameClientDisconnectCalls,
     AIPlayerController: MockAIPlayerController,
   };
 };
@@ -359,6 +386,43 @@ describe('main local play flow wiring', () => {
     expect(runtime.showLocalPlaySetupCalls).toHaveLength(2);
     expect(runtime.showLocalPlaySetupCalls[0]?.initial).toBeNull();
     expect(runtime.showLocalPlaySetupCalls[1]?.initial).toEqual(setup);
+  });
+
+  it('reconnects network client when backing out of local play setup to lobby', async () => {
+    const setup: SetupResult = {
+      participantCount: 2,
+      seats: [{ kind: 'cpu', difficulty: 'medium' }],
+    };
+
+    const runtime = await bootMainWithMocks([setup]);
+
+    runtime.uiInstance.onLocalPlay?.();
+    expect(runtime.getGameClientDisconnectCalls()).toBe(1);
+    expect(runtime.getGameClientConnectCalls()).toBe(0);
+
+    runtime.triggerLocalPlaySetupBack();
+
+    expect(runtime.getGameClientConnectCalls()).toBe(1);
+    expect(runtime.getShowLobbyCalls()).toBeGreaterThan(0);
+  });
+
+  it('reconnects network client when returning to main menu from local mode', async () => {
+    const setup: SetupResult = {
+      participantCount: 2,
+      seats: [{ kind: 'cpu', difficulty: 'medium' }],
+    };
+
+    const runtime = await bootMainWithMocks([setup]);
+
+    runtime.uiInstance.onLocalPlay?.();
+    expect(runtime.getGameClientDisconnectCalls()).toBe(1);
+    expect(runtime.getGameClientConnectCalls()).toBe(0);
+
+    runtime.uiInstance.onMainMenu?.();
+
+    expect(runtime.getGameClientDisconnectCalls()).toBe(1);
+    expect(runtime.getGameClientConnectCalls()).toBe(1);
+    expect(runtime.getShowLobbyCalls()).toBeGreaterThan(0);
   });
 
   it('passes characterIds to LocalMatch when character is selected', async () => {

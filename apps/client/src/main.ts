@@ -536,6 +536,10 @@ async function main() {
 		},
 		() => {
 			// Back from setup → return to lobby
+			if (isLocalMode) {
+				isLocalMode = false;
+				gameClient.connect();
+			}
 			uiManager.showLobby();
 			audioManager.playTrack('main-menu');
 		});
@@ -577,6 +581,8 @@ async function main() {
 	};
 
 	uiManager.onMainMenu = () => {
+		const wasLocalMode = isLocalMode;
+
 		// Clean up local match if active (safe no-op when not in local mode)
 		cleanupLocalMode();
 
@@ -587,6 +593,10 @@ async function main() {
 			} catch (err) {
 				console.error('Failed to disconnect game client before returning to main menu:', err);
 			}
+		}
+
+		if (wasLocalMode) {
+			gameClient.connect();
 		}
 
 		// Destroy all fighter renderers

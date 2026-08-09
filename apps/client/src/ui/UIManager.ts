@@ -451,7 +451,17 @@ export class UIManager {
       rafIds.push(requestAnimationFrame(checkGamepads));
     }
 
-	}
+    // Auto-confirm CPU slots after a brief delay to allow UI to render
+    if (autoConfirmSlots.length > 0) {
+      setTimeout(() => {
+        for (const slotIndex of autoConfirmSlots) {
+          if (slotIndex < playerCount && !confirmed[slotIndex]) {
+            confirmSlot(slotIndex);
+          }
+        }
+      }, 500);
+    }
+  }
 
   showLocalPlaySetup(
     deps: { assignmentManager: ControllerAssignmentManager },

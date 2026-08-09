@@ -1,4 +1,4 @@
-import { Graphics, Container, Sprite } from 'pixi.js';
+import { Graphics, Container, Sprite, Texture } from 'pixi.js';
 import { STAGE } from '@smash/shared';
 
 // B&W colors
@@ -92,22 +92,12 @@ export class StageRenderer {
 
   private drawBackground(): void {
     try {
+      // Use Sprite.from() with proper error handling for PixiJS v8
       const bgSprite = Sprite.from('/backgrounds/cityscape.png');
       bgSprite.position.set(0, 0);
+      bgSprite.width = STAGE.WIDTH;
+      bgSprite.height = STAGE.HEIGHT;
       this.container.addChildAt(bgSprite, 0);
-
-      const resizeToStage = (): void => {
-        bgSprite.width = STAGE.WIDTH;
-        bgSprite.height = STAGE.HEIGHT;
-      };
-
-      // Texture may already be cached — check source dimensions
-      if (bgSprite.texture.source.width > 1 && bgSprite.texture.source.height > 1) {
-        resizeToStage();
-      } else {
-        // Set dimensions once the image actually loads
-        bgSprite.texture.source.on('update', resizeToStage);
-      }
     } catch (error) {
       console.warn('[StageRenderer] Failed to load background image:', error);
     }

@@ -447,9 +447,9 @@ async function main() {
 	const enterLocalPlayFlow = (): void => {
 		uiManager.showLocalPlaySetup({ assignmentManager }, lastLocalSetup, (result) => {
 			lastLocalSetup = result;
-			const cpuSlotIndices = result.seats
-				.map((seat, index) => (seat.kind === "cpu" ? index + 1 : null))
-				.filter((slotIndex): slotIndex is number => slotIndex !== null);
+		const cpuSlotIndices = result.seats
+			.map((seat, index) => (seat.kind === "cpu" ? index : null))
+			.filter((slotIndex): slotIndex is number => slotIndex !== null);
 			uiManager.showCharacterSelect(
 				AVAILABLE_FIGHTERS,
 				result.participantCount,

@@ -378,67 +378,67 @@ export class UIManager {
             return;
           }
 
-           // D-pad up/down → cycle through fighters
-            if (pressed & GenericInputBits.UP) {
-              // Direct mapping: gamepad 0 → slot 0, gamepad 1 → slot 1, etc.
-              const slotIndex = gpIndex;
-             if (slotIndex < playerCount && !confirmed[slotIndex]) {
-               // Decrement index, wrap to last fighter if at first
-               const currentIndex = selectedFighterIndex[slotIndex] ?? 0;
-               selectedFighterIndex[slotIndex] = (currentIndex - 1 + fighters.length) % fighters.length;
-               const selectedFighter = fighters[selectedFighterIndex[slotIndex]];
-               if (selectedFighter) {
-                 choices[slotIndex] = selectedFighter;
-                 
-                 // Update visual styling: selected option gets white, others dim
-                 const playerElements = document.querySelectorAll(`[data-player="${slotIndex + 1}"]`);
-                 playerElements.forEach(el => {
-                   (el as HTMLElement).style.borderColor = 'rgba(255,255,255,0.3)';
-                 });
-                 const selectedElement = document.querySelector(
-                   `[data-player="${slotIndex + 1}"][data-id="${selectedFighter.id}"]`
-                 );
-                 if (selectedElement) {
-                   (selectedElement as HTMLElement).style.borderColor = 'white';
-                 }
-               }
-             }
-           }
+          // D-pad up/down → cycle through fighters
+          if (pressed & GenericInputBits.UP) {
+            // Direct mapping: gamepad 0 → slot 0, gamepad 1 → slot 1, etc.
+            const slotIndex = gpIndex;
+            if (slotIndex < playerCount && !confirmed[slotIndex]) {
+              // Decrement index, wrap to last fighter if at first
+              const currentIndex = selectedFighterIndex[slotIndex] ?? 0;
+              selectedFighterIndex[slotIndex] = (currentIndex - 1 + fighters.length) % fighters.length;
+              const selectedFighter = fighters[selectedFighterIndex[slotIndex]];
+              if (selectedFighter) {
+                choices[slotIndex] = selectedFighter;
+                
+                // Update visual styling: selected option gets white, others dim
+                const playerElements = document.querySelectorAll(`[data-player="${slotIndex + 1}"]`);
+                playerElements.forEach(el => {
+                  (el as HTMLElement).style.borderColor = 'rgba(255,255,255,0.3)';
+                });
+                const selectedElement = document.querySelector(
+                  `[data-player="${slotIndex + 1}"][data-id="${selectedFighter.id}"]`
+                );
+                if (selectedElement) {
+                  (selectedElement as HTMLElement).style.borderColor = 'white';
+                }
+              }
+            }
+          }
 
-            if (pressed & GenericInputBits.DOWN) {
-              // Direct mapping: gamepad 0 → slot 0, gamepad 1 → slot 1, etc.
-              const slotIndex = gpIndex;
-             if (slotIndex < playerCount && !confirmed[slotIndex]) {
-               // Increment index, wrap to first fighter if at last
-               const currentIndex = selectedFighterIndex[slotIndex] ?? 0;
-               selectedFighterIndex[slotIndex] = (currentIndex + 1) % fighters.length;
-               const selectedFighter = fighters[selectedFighterIndex[slotIndex]];
-               if (selectedFighter) {
-                 choices[slotIndex] = selectedFighter;
-                 
-                 // Update visual styling: selected option gets white, others dim
-                 const playerElements = document.querySelectorAll(`[data-player="${slotIndex + 1}"]`);
-                 playerElements.forEach(el => {
-                   (el as HTMLElement).style.borderColor = 'rgba(255,255,255,0.3)';
-                 });
-                 const selectedElement = document.querySelector(
-                   `[data-player="${slotIndex + 1}"][data-id="${selectedFighter.id}"]`
-                 );
-                 if (selectedElement) {
-                   (selectedElement as HTMLElement).style.borderColor = 'white';
-                 }
-               }
-             }
-           }
+          if (pressed & GenericInputBits.DOWN) {
+            // Direct mapping: gamepad 0 → slot 0, gamepad 1 → slot 1, etc.
+            const slotIndex = gpIndex;
+            if (slotIndex < playerCount && !confirmed[slotIndex]) {
+              // Increment index, wrap to first fighter if at last
+              const currentIndex = selectedFighterIndex[slotIndex] ?? 0;
+              selectedFighterIndex[slotIndex] = (currentIndex + 1) % fighters.length;
+              const selectedFighter = fighters[selectedFighterIndex[slotIndex]];
+              if (selectedFighter) {
+                choices[slotIndex] = selectedFighter;
+                
+                // Update visual styling: selected option gets white, others dim
+                const playerElements = document.querySelectorAll(`[data-player="${slotIndex + 1}"]`);
+                playerElements.forEach(el => {
+                  (el as HTMLElement).style.borderColor = 'rgba(255,255,255,0.3)';
+                });
+                const selectedElement = document.querySelector(
+                  `[data-player="${slotIndex + 1}"][data-id="${selectedFighter.id}"]`
+                );
+                if (selectedElement) {
+                  (selectedElement as HTMLElement).style.borderColor = 'white';
+                }
+              }
+            }
+          }
 
-           // A button → confirm for matching slot
-           if (pressed & 0x0010) {
-             // Direct mapping: gamepad 0 → slot 0, gamepad 1 → slot 1, etc.
-             const slotIndex = gpIndex;
-             if (slotIndex < playerCount && !confirmed[slotIndex]) {
-               confirmSlot(slotIndex);
-             }
-           }
+          // A button → confirm for matching slot
+          if (pressed & 0x0010) {
+            // Direct mapping: gamepad 0 → slot 0, gamepad 1 → slot 1, etc.
+            const slotIndex = gpIndex;
+            if (slotIndex < playerCount && !confirmed[slotIndex]) {
+              confirmSlot(slotIndex);
+            }
+          }
 
           lastBits.set(gpIndex, bits);
         }
@@ -449,6 +449,11 @@ export class UIManager {
         rafIds.push(requestAnimationFrame(checkGamepads));
       };
       rafIds.push(requestAnimationFrame(checkGamepads));
+    }
+
+    // Auto-confirm CPU slots (passed via autoConfirmSlots parameter)
+    for (const slotIndex of autoConfirmSlots) {
+      confirmSlot(slotIndex);
     }
 	}
 

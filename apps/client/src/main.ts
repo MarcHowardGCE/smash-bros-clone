@@ -95,7 +95,7 @@ async function main() {
 	app.stage.addChild(layers.game);
 	app.stage.addChild(layers.ui);
 
-	new StageRenderer(layers.background, STAGES[0]!.backgroundImage);
+	let stageRenderer: StageRenderer | null = new StageRenderer(layers.background, STAGES[0]!.backgroundImage);
 
 	const fighterRenderers = new Map<PlayerId, FighterRenderer>();
 	const activeSparks: ImpactSpark[] = [];
@@ -465,6 +465,9 @@ async function main() {
 						STAGES,
 						(chosenStage) => {
 							selectedStage = chosenStage;
+							// Destroy old background and recreate with new stage
+							layers.background.removeChildren();
+							stageRenderer = new StageRenderer(layers.background, chosenStage.backgroundImage);
 							startLocalMatchWithSeats(result, choices);
 						},
 						() => {

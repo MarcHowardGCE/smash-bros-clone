@@ -340,7 +340,9 @@ export class UIManager {
     };
 
     const checkAllConfirmed = () => {
-      if (confirmed.every(c => c) && choices.every(c => c !== null)) {
+      // Only advance if all slots confirmed AND at least one human slot is confirmed
+      const humanSlotsConfirmed = confirmed.some((c, i) => c && !autoConfirmSlotSet.has(i));
+      if (confirmed.every(c => c) && choices.every(c => c !== null) && humanSlotsConfirmed) {
         cleanup();
         onSelected(choices as FighterChoice[]);
       }

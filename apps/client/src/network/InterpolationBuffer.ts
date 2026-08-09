@@ -1,5 +1,5 @@
 import { lerp } from '@smash/shared';
-import type { StateSnapshot, PlayerState, PlayerId, MoveId } from '@smash/shared';
+import type { StateSnapshot, PlayerState, PlayerId, MoveId, CharacterId } from '@smash/shared';
 
 export interface RenderPlayerState {
   id: PlayerId;
@@ -18,6 +18,7 @@ export interface RenderPlayerState {
   isShielding: boolean;
   shieldHealth: number;
   currentMoveId: MoveId | null;
+  characterId?: CharacterId;
 }
 
 export interface RenderState {
@@ -128,6 +129,7 @@ export class InterpolationBuffer {
         isShielding: p1.isShielding,
         shieldHealth: p1.shieldHealth,
         currentMoveId: p1.currentMoveId,
+        characterId: p1.characterId,
       };
 
       players.set(id as PlayerId, interpolated);
@@ -178,6 +180,7 @@ export class InterpolationBuffer {
       isShielding: p.isShielding,
       shieldHealth: p.shieldHealth,
       currentMoveId: p.currentMoveId,
+      characterId: p.characterId,
     };
   }
 }

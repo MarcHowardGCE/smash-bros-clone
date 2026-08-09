@@ -1,3 +1,4 @@
+import type { CharacterId } from '@smash/shared';
 import type { IPartRenderer } from './IPartRenderer';
 import { PolygonPartRenderer } from './PolygonPartRenderer';
 import { SpritePartRenderer } from './SpritePartRenderer';
@@ -17,16 +18,18 @@ import { SpritePartRenderer } from './SpritePartRenderer';
  * 
  * @param mode - Renderer mode: 'polygon' (default) or 'sprite'
  * @param slotIndex - Fighter slot index (0-3) for pattern/color selection
+ * @param characterId - Optional character ID for character-specific rendering
  * @returns An IPartRenderer implementation
  * @throws Error if mode is unknown
  */
 export function createPartRenderer(
   mode: 'polygon' | 'sprite' = 'polygon',
-  slotIndex: number
+  slotIndex: number,
+  characterId?: CharacterId
 ): IPartRenderer {
   switch (mode) {
     case 'polygon':
-      return new PolygonPartRenderer();
+      return new PolygonPartRenderer(slotIndex, characterId);
 
     case 'sprite':
       // Sprite renderer is available but not yet functional (no art assets)

@@ -1,5 +1,5 @@
 import { Container, Graphics } from 'pixi.js';
-import type { PlayerState } from '@smash/shared';
+import type { PlayerState, CharacterId } from '@smash/shared';
 import { PHYSICS, lerp } from '@smash/shared';
 import { getAnimationPose } from './animations.js';
 import { KOEffect } from './KOEffect.js';
@@ -50,15 +50,17 @@ export class FighterRenderer {
   private readonly shieldBubble: Graphics;
   private readonly koEffect: KOEffect;
   private slotIndex: number;
+  private characterId?: CharacterId;
   private lastState: string = '';
   private lastFrame: number = -1;
   private wasKnockedOut = false;
   private hitFlashFrames = 0;
 
-  constructor(parentContainer: Container, slotIndex: number) {
+  constructor(parentContainer: Container, slotIndex: number, characterId?: CharacterId) {
     this.slotIndex = slotIndex;
+    this.characterId = characterId;
     this.container = new Container();
-    this.partRenderer = createPartRenderer('polygon', slotIndex);
+    this.partRenderer = createPartRenderer('polygon', slotIndex, characterId);
     this.pattern = slotToPattern(slotIndex);
     this.container.addChild(this.partRenderer.container);
 

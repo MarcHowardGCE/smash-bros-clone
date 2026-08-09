@@ -1,4 +1,5 @@
 import { Container, Graphics } from 'pixi.js';
+import type { CharacterId } from '@smash/shared';
 import type {
   FighterPart,
   IPartRenderer,
@@ -28,11 +29,15 @@ const LEG_WIDTH = 8;
  */
 export class PolygonPartRenderer implements IPartRenderer {
   private readonly parts: Record<FighterPart, Graphics>;
+  private readonly slotIndex: number;
+  private readonly characterId?: CharacterId;
 
   /** Root container holding all 6 part Graphics in z-order. */
   readonly container: Container;
 
-  constructor() {
+  constructor(slotIndex: number, characterId?: CharacterId) {
+    this.slotIndex = slotIndex;
+    this.characterId = characterId;
     this.container = new Container();
 
     // Create 6 Graphics children — one per FighterPart.

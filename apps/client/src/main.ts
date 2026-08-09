@@ -1,4 +1,5 @@
 import type {
+	CharacterId,
 	HitEventData,
 	KOEventData,
 	PlayerId,
@@ -43,8 +44,9 @@ const getDefaultServerUrl = () => {
 };
 
 const SERVER_URL = import.meta.env.VITE_SERVER_URL ?? getDefaultServerUrl();
-const AVAILABLE_FIGHTERS: FighterChoice[] = [
+export const AVAILABLE_FIGHTERS: FighterChoice[] = [
 	{ id: "all-rounder", displayName: "All-Rounder" },
+	{ id: "abe-lincoln", displayName: "Abe Lincoln" },
 ];
 
 let lastLocalSetup: {
@@ -179,6 +181,7 @@ async function main() {
 					isShielding: playerState.isShielding,
 					shieldHealth: playerState.shieldHealth,
 					currentMoveId: playerState.currentMoveId,
+					characterId: playerState.characterId,
 				},
 			]),
 		);
@@ -197,6 +200,7 @@ async function main() {
 				fighterRenderer = new FighterRenderer(
 					layers.game,
 					playerState.slotIndex,
+					playerState.characterId,
 				);
 				fighterRenderers.set(id, fighterRenderer);
 			}
@@ -328,7 +332,7 @@ async function main() {
 	const startLocalMatchWithSeats = (setup: {
 		participantCount: 2 | 3 | 4;
 		seats: SeatConfig[];
-	}): void => {
+	}, choices: FighterChoice[]): void => {
 		cleanupLocalMode();
 
 		if (!camera) {
@@ -382,7 +386,16 @@ async function main() {
 			);
 		}
 
-		localMatch = new LocalMatch(controllers);
+		const characterIds: Partial<Record<PlayerId, CharacterId>> = {};
+		for (let i = 0; i < controllers.length; i += 1) {
+			const controller = controllers[i]!;
+			const choice = choices[i];
+			if (choice?.id) {
+				characterIds[controller.playerId as PlayerId] = choice.id as CharacterId;
+			}
+		}
+
+		localMatch = new LocalMatch(controllers, characterIds);
 		localMatch.onSnapshot = (snapshot) => {
 			const renderState = snapshotToRenderState(snapshot);
 			updateRenderers(renderState);
@@ -440,8 +453,8 @@ async function main() {
 			uiManager.showCharacterSelect(
 				AVAILABLE_FIGHTERS,
 				result.participantCount,
-				(_choices) => {
-					startLocalMatchWithSeats(result);
+				(choices) => {
+					startLocalMatchWithSeats(result, choices);
 				},
 				cpuSlotIndices,
 				() => {

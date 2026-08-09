@@ -24,7 +24,7 @@ export function injectStyles(): void {
       display: block;
       margin: 0 auto;
     }
-    .ui-btn:hover, .ui-btn.menu-selected { background: #222; outline: 3px solid white; outline-offset: 3px; }
+    .ui-btn:hover, .ui-btn.menu-selected, .ui-btn.seat-focused { background: #222; outline: 3px solid white; outline-offset: 3px; }
     .ui-btn:disabled { opacity: 0.5; cursor: not-allowed; }
     .menu-hint {
       position: absolute;

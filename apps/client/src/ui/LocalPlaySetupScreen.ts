@@ -6,6 +6,7 @@
  */
 
 import type { GamepadPoller } from '@smash/gamepad-input';
+import { GenericInputBits } from '@smash/gamepad-input';
 import type { ControllerAssignmentManager } from '../input/ControllerAssignmentManager';
 import type { SeatConfig } from '../local/types';
 import { MenuNavigator } from './MenuNavigator.js';
@@ -66,6 +67,14 @@ function nextCycleOption(current: SeatConfig, slotIndex: number, deps: SetupDeps
   return options[nextIdx]!;
 }
 
+function prevCycleOption(current: SeatConfig, slotIndex: number, deps: SetupDeps): SeatConfig {
+  const options = buildCycleOptions(slotIndex, deps);
+  const currentLabel = seatLabel(current);
+  const currentIdx = options.findIndex(o => seatLabel(o) === currentLabel);
+  const prevIdx = (currentIdx - 1 + options.length) % options.length;
+  return options[prevIdx]!;
+}
+
 /**
  * Render the Local Play Setup screen into the given container.
  */
@@ -82,6 +91,10 @@ export function renderLocalPlaySetupScreen(
     ? revalidateSeats(initial.seats.slice(0, participantCount - 1), deps)
     : buildDefaultSeats(participantCount);
   let menuNav: MenuNavigator | null = null;
+  let focusedSeatIndex = 0;
+  let keyHandler: ((e: KeyboardEvent) => void) | null = null;
+  let rafId: number | null = null;
+  let lastBitsPerGamepad = new Map<number, number>();
 
   function buildDefaultSeats(count: ParticipantCount): SeatConfig[] {
     return Array.from({ length: count - 1 }, () => ({ kind: 'cpu' as const, difficulty: 'medium' as const }));
@@ -91,6 +104,50 @@ export function renderLocalPlaySetupScreen(
     if (menuNav) {
       menuNav.stop();
       menuNav = null;
+    }
+    if (keyHandler) {
+      window.removeEventListener('keydown', keyHandler);
+      keyHandler = null;
+    }
+    if (rafId !== null) {
+      cancelAnimationFrame(rafId);
+      rafId = null;
+    }
+    lastBitsPerGamepad.clear();
+  }
+
+  function updateSeatFocus(): void {
+    for (let i = 0; i < seats.length; i++) {
+      const cycleBtn = document.getElementById(`lps-cycle-${i}`);
+      if (cycleBtn) {
+        if (i === focusedSeatIndex) {
+          cycleBtn.classList.add('seat-focused');
+        } else {
+          cycleBtn.classList.remove('seat-focused');
+        }
+      }
+    }
+  }
+
+  function cycleSeatRight(seatIdx: number): void {
+    if (seatIdx >= 0 && seatIdx < seats.length) {
+      const slotIndex = seatIdx + 1;
+      seats[seatIdx] = nextCycleOption(seats[seatIdx]!, slotIndex, deps);
+      const cycleBtn = document.getElementById(`lps-cycle-${seatIdx}`);
+      if (cycleBtn) {
+        cycleBtn.textContent = seatLabel(seats[seatIdx]!);
+      }
+    }
+  }
+
+  function cycleSeatLeft(seatIdx: number): void {
+    if (seatIdx >= 0 && seatIdx < seats.length) {
+      const slotIndex = seatIdx + 1;
+      seats[seatIdx] = prevCycleOption(seats[seatIdx]!, slotIndex, deps);
+      const cycleBtn = document.getElementById(`lps-cycle-${seatIdx}`);
+      if (cycleBtn) {
+        cycleBtn.textContent = seatLabel(seats[seatIdx]!);
+      }
     }
   }
 
@@ -113,10 +170,11 @@ export function renderLocalPlaySetupScreen(
     for (let i = 0; i < seats.length; i++) {
       const seatNum = i + 1;
       const config = seats[i]!;
+      const focusClass = i === focusedSeatIndex ? ' seat-focused' : '';
       html += `
         <div style="display:flex;align-items:center;justify-content:space-between;padding:12px;border:1px solid rgba(255,255,255,0.2);border-radius:4px;margin-bottom:8px">
           <span style="font-size:16px">Seat ${seatNum + 1}:</span>
-          <button id="lps-cycle-${i}" class="ui-btn" style="font-size:14px;padding:8px 16px">${seatLabel(config)}</button>
+          <button id="lps-cycle-${i}" class="ui-btn${focusClass}" style="font-size:14px;padding:8px 16px">${seatLabel(config)}</button>
         </div>`;
     }
 
@@ -124,7 +182,7 @@ export function renderLocalPlaySetupScreen(
         <button id="lps-start-btn" class="ui-btn" style="font-size:20px;padding:14px 36px">Start</button>
         ${onBack ? '<button id="lps-back-btn" class="ui-btn" style="margin-top:12px;font-size:14px;padding:8px 16px">← Back</button>' : ''}
       </div>
-      <div class="menu-hint">↑↓ Navigate • Enter/A Select${onBack ? ' • Esc/B Back' : ''}</div>`;
+      <div class="menu-hint">↑↓ Navigate • ←→ Cycle Seat • Enter/A Select${onBack ? ' • Esc/B Back' : ''}</div>`;
 
     container.innerHTML = html;
     wireListeners();
@@ -180,6 +238,29 @@ export function renderLocalPlaySetupScreen(
         });
       }
     }
+
+    // Keyboard handler for left/right seat cycling
+    keyHandler = (e: KeyboardEvent) => {
+      // Don't intercept when an input field is focused
+      if (
+        document.activeElement instanceof HTMLInputElement ||
+        document.activeElement instanceof HTMLTextAreaElement
+      ) {
+        return;
+      }
+
+      switch (e.key) {
+        case 'ArrowLeft':
+          e.preventDefault();
+          cycleSeatLeft(focusedSeatIndex);
+          break;
+        case 'ArrowRight':
+          e.preventDefault();
+          cycleSeatRight(focusedSeatIndex);
+          break;
+      }
+    };
+    window.addEventListener('keydown', keyHandler);
   }
 
   function wireNav(): void {
@@ -233,6 +314,37 @@ export function renderLocalPlaySetupScreen(
 
     menuNav.setButtons(navButtons);
     menuNav.start(onBack ? () => { stopNav(); onBack(); } : undefined);
+
+    // Gamepad polling for left/right seat cycling
+    if (gamepadPoller) {
+      lastBitsPerGamepad.clear();
+      const pollGamepad = (): void => {
+        const states = gamepadPoller.poll();
+
+        for (const [gpIndex, state] of states) {
+          const bits = state.bits;
+          const lastBits = lastBitsPerGamepad.get(gpIndex) ?? 0;
+
+          // Edge-detect: fire only on rising edge
+          const pressed = bits & ~lastBits;
+
+          if (pressed & GenericInputBits.LEFT) {
+            cycleSeatLeft(focusedSeatIndex);
+          }
+          if (pressed & GenericInputBits.RIGHT) {
+            cycleSeatRight(focusedSeatIndex);
+          }
+
+          lastBitsPerGamepad.set(gpIndex, bits);
+        }
+
+        // Check if stopped before scheduling next frame
+        if (rafId === null) return;
+
+        rafId = requestAnimationFrame(pollGamepad);
+      };
+      rafId = requestAnimationFrame(pollGamepad);
+    }
   }
 
   render();

@@ -6,6 +6,7 @@ import type {
 	StateSnapshot,
 } from "@smash/shared";
 import { STAGE } from "@smash/shared";
+import { STAGES, type StageConfig } from "./stages/stageConfig.js";
 import { GamepadPoller, GamepadPreferenceStore } from "@smash/gamepad-input";
 import { Application } from "pixi.js";
 import {
@@ -94,7 +95,7 @@ async function main() {
 	app.stage.addChild(layers.game);
 	app.stage.addChild(layers.ui);
 
-	new StageRenderer(layers.background);
+	new StageRenderer(layers.background, STAGES[0]!.backgroundImage);
 
 	const fighterRenderers = new Map<PlayerId, FighterRenderer>();
 	const activeSparks: ImpactSpark[] = [];
@@ -141,6 +142,7 @@ async function main() {
 	let camera: Camera | null = null;
 	let localCountdownInterval: number | null = null;
 	let localCountdownTimeout: number | null = null;
+	let selectedStage: StageConfig = STAGES[0]!;
 
 	const clearLocalCountdown = (): void => {
 		if (localCountdownInterval !== null) {
@@ -252,7 +254,7 @@ async function main() {
 			if (phase === "countdown") {
 				let count = 3;
 				uiManager.showCountdown(count);
-				audioManager.playTrack('gameplay');
+				audioManager.playTrack(selectedStage.musicTrack.replace('.mp3', ''));
 				const interval = setInterval(() => {
 					count--;
 					if (count > 0) {
@@ -265,7 +267,7 @@ async function main() {
 				}, 1000);
 			} else if (phase === "match") {
 				uiManager.showMatch();
-				audioManager.playTrack('gameplay');
+				audioManager.playTrack(selectedStage.musicTrack.replace('.mp3', ''));
 			} else if (phase === "result") {
 				uiManager.showResult(winnerId ?? null, myPlayerId);
 				audioManager.playTrack('game-over');
@@ -426,7 +428,7 @@ async function main() {
 		uiManager.hideRoomCode();
 		let count = 3;
 		uiManager.showCountdown(count);
-		audioManager.playTrack('gameplay');
+		audioManager.playTrack(selectedStage.musicTrack.replace('.mp3', ''));
 		localCountdownInterval = window.setInterval(() => {
 			count -= 1;
 			if (count > 0) {
@@ -458,7 +460,18 @@ async function main() {
 				AVAILABLE_FIGHTERS,
 				result.participantCount,
 				(choices) => {
-					startLocalMatchWithSeats(result, choices);
+					// After character select, show stage select
+					uiManager.showStageSelect(
+						STAGES,
+						(chosenStage) => {
+							selectedStage = chosenStage;
+							startLocalMatchWithSeats(result, choices);
+						},
+						() => {
+							// Back from stage select → return to character select
+							enterLocalPlayFlow();
+						}
+					);
 				},
 				cpuSlotIndices,
 				() => {

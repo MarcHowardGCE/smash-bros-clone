@@ -4,8 +4,10 @@ import type { PlayerId } from '@smash/shared';
 import type { RenderState } from '../network/InterpolationBuffer.js';
 import type { ControllerAssignmentManager } from '../input/ControllerAssignmentManager.js';
 import type { FighterChoice, SeatConfig } from '../local/types.js';
+import type { StageConfig } from '../stages/stageConfig.js';
 import { renderControlsScreen } from './ControlsScreen.js';
 import { renderLocalPlaySetupScreen } from './LocalPlaySetupScreen.js';
+import { renderStageSelectScreen } from './StageSelectScreen.js';
 import { MenuNavigator } from './MenuNavigator.js';
 import type { MenuButton } from './MenuNavigator.js';
 
@@ -481,6 +483,19 @@ export class UIManager {
     this.overlay.innerHTML = '';
 
     renderLocalPlaySetupScreen(this.overlay, deps, initial, onConfirm, onBack, this._gamepadPoller);
+  }
+
+  showStageSelect(
+    stages: StageConfig[],
+    onSelected: (stage: StageConfig) => void,
+    onBack?: () => void,
+  ): void {
+    this.stopMenuNav();
+    this.phase = 'lobby';
+    this.hudPanel.style.display = 'none';
+    this.overlay.innerHTML = '';
+
+    renderStageSelectScreen(this.overlay, stages, onSelected, onBack, this._gamepadPoller);
   }
 
   showRoomCreated(code: string): void {

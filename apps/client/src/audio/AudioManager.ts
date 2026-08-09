@@ -1,8 +1,8 @@
-export type MusicTrack = 'main-menu' | 'gameplay' | 'game-over';
+export type MusicTrack = string;
 
 export class AudioManager {
   private currentTrack: HTMLAudioElement | null = null;
-  private currentTrackName: MusicTrack | null = null;
+  private currentTrackName: string | null = null;
   private volume: number = 0.3;
   private pendingRetryCleanup: (() => void) | null = null;
 
@@ -11,7 +11,7 @@ export class AudioManager {
     this.pendingRetryCleanup = null;
   }
 
-  private setupUserInteractionRetry(track: MusicTrack, audio: HTMLAudioElement): void {
+  private setupUserInteractionRetry(track: string, audio: HTMLAudioElement): void {
     this.clearPendingRetry();
 
     const retryPlayback = (): void => {
@@ -47,7 +47,7 @@ export class AudioManager {
     console.log(`[AudioManager] Waiting for user interaction retry: ${track}`);
   }
 
-  playTrack(track: MusicTrack): void {
+  playTrack(track: string): void {
     if (this.currentTrackName === track && this.currentTrack && !this.currentTrack.paused) {
       return;
     }

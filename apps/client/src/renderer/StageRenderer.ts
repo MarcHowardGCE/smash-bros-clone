@@ -8,9 +8,11 @@ const STROKE_WIDTH = 2;
 
 export class StageRenderer {
   private container: Container;
+  private backgroundImage: string;
 
-  constructor(parentContainer: Container) {
+  constructor(parentContainer: Container, backgroundImage: string) {
     this.container = new Container();
+    this.backgroundImage = backgroundImage;
     parentContainer.addChild(this.container);
     this.drawStage();
   }
@@ -93,7 +95,7 @@ export class StageRenderer {
   private drawBackground(): void {
     const baseUrl = import.meta.env.BASE_URL || '/';
     const normalizedBaseUrl = baseUrl.endsWith('/') ? baseUrl : `${baseUrl}/`;
-    const backgroundPath = `${normalizedBaseUrl}backgrounds/cityscape.png`;
+    const backgroundPath = `${normalizedBaseUrl}backgrounds/${this.backgroundImage}`;
 
     void Assets.load(backgroundPath)
       .then((texture) => {

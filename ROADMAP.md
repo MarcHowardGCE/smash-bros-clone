@@ -1,6 +1,6 @@
 # ROADMAP — smash-clone
 
-The engine and netcode here are production-quality: a 15-state FSM per fighter, 22 declarative moves, real knockback math, hitlag/hitstun, and a full client-prediction + server-reconciliation netcode stack. The gaps are almost entirely in the **presentation layer and content breadth** — not in the simulation underneath. Most additions below slot into existing hooks without restructuring what's already there.
+The engine and netcode here are production-quality: a 25-state FSM per fighter, 22 declarative moves, real knockback math, hitlag/hitstun, and a full client-prediction + server-reconciliation netcode stack. The gaps are almost entirely in the **presentation layer and content breadth** — not in the simulation underneath. Most additions below slot into existing hooks without restructuring what's already there.
 
 ---
 
@@ -11,10 +11,10 @@ The engine and netcode here are production-quality: a 15-state FSM per fighter, 
 | Engine / physics | 25-state FSM, 22 moves, hitlag/hitstun, real knockback formula | ★★★★☆ |
 | Netcode | Client prediction, server reconciliation, interpolation buffer | ★★★★☆ |
 | Rendering | Part-based polygon renderer; hit flash, screen shake, impact sparks, shield bubble, damage% color, per-move poses, KO tumble/stars | ★★★★☆ |
-| Audio | Zero — no sound manager, no file references, nothing | ★☆☆☆☆ |
-| Input | Solid bitmask foundation; no gamepad, no remapping | ★★★☆☆ |
-| UI/UX | Functional prototype; raw `innerHTML`, text stock icons | ★★☆☆☆ |
-| Content | One fighter, one stage, stock match only | ★★☆☆☆ |
+| Audio | AudioManager with `playTrack`/`stopCurrentTrack`/`setVolume`; 6 stage BGM tracks + main-menu + game-over loaded; autoplay-policy retry | ★★★★☆ |
+| Input | Solid bitmask foundation; gamepad support shipped; no remapping UI | ★★★☆☆ |
+| UI/UX | Functional prototype; raw `innerHTML`, text stock icons; stage-select UI present | ★★★☆☆ |
+| Content | 2 fighters (All-Rounder + Abe Lincoln), 6 stages with backgrounds and music, stock match only | ★★★★☆ |
 | Meta / persistence | None — no accounts, no replays, no settings | ★☆☆☆☆ |
 
 ---
@@ -45,29 +45,29 @@ The renderer (`apps/client`) has received significant polish through T9-T20. The
 
 ### Stage
 
-**What's missing:**
-- Background art — `StageRenderer` draws a white rectangle on a dark grid, nothing else
+**What's shipped:**
+- 6 stages (`stage1`–`stage6`) defined in `apps/client/src/stages/stageConfig.ts`, each with a background image and a music track
+- Background images (`stage1.png`–`stage6.png`) served from `/public/backgrounds/`
+- Stage-select UI routes through `getStageById` and `getRandomStage`
+
+**Still missing:**
 - Blast-zone indicators — players have no visual cue for kill boundaries
-- Only one stage exists
+- Moving soft platforms on any stage (all current stages use the static shared geometry)
 
 **Existing hooks:**
-- `STAGE` constants in `packages/shared` are the full stage definition — adding a stage is adding a data object
-- `BackgroundLayer` is drawn once at startup — the right place for background art and blast-zone glows
-
-**Approach:**
-- Even a simple gradient background per stage is a significant step up from the grid
-- Render a subtle edge glow at the `STAGE.blastZones` coordinates
-- Add stage configs to `packages/shared/src/constants/` — `StageRenderer` already reads from `STAGE`
+- `STAGE` constants in `packages/shared` are the full stage definition — adding a stage is adding a data object plus a background image
+- `BackgroundLayer` is drawn once at startup — the right place for blast-zone edge glows
 
 ### UI
 
 **What's shipped (T18):**
 - Damage % color progression — `UIManager.interpolateDamageColor()` interpolates white (0%) → yellow (~50-100%) → red (150%+), applied every `updateHUD` call (`apps/client/src/ui/UIManager.ts:351-366`)
+- Stage-select screen present and wired
 
 **Still missing:**
 - Stock icons are `■□` text characters — needs fighter portrait thumbnails
 - No countdown animation — the number just appears
-- Character select exists (`showCharacterSelect()` in `UIManager`) but has one fighter and placeholder text
+- Character select has placeholder text; no fighter preview art
 
 **Existing hooks:**
 - `UIManager` in `apps/client` — all UI phases flow through here
@@ -77,23 +77,20 @@ The renderer (`apps/client`) has received significant polish through T9-T20. The
 
 ## 🎵 Audio
 
-**What's missing:** Everything. No sound manager, no file references, no Web Audio context, nothing.
+**What's shipped:**
+- `AudioManager` (`apps/client/src/audio/AudioManager.ts`) — HTML Audio wrapper with `playTrack`, `stopCurrentTrack`, `setVolume`, and `getVolume`
+- Autoplay-policy retry — if the browser blocks the initial `play()` call, `AudioManager` waits for the next user interaction (`pointerdown`, `keydown`, `touchstart`, or `mousemove`) and retries automatically
+- 6 stage music tracks (`/public/audio/stage1.mp3`–`stage6.mp3`) served and wired through `stageConfig.ts`'s `musicTrack` field
+- `main-menu.mp3` and `game-over.mp3` also present in `/public/audio/`
 
-**Why it matters:** Sound is disproportionately impactful for a feel-driven game. A pitched hit SFX does more for "game feel" than most visual polish.
+**Still missing:**
+- SFX — no hit, jump, land, shield, or KO sounds. Music exists; sound effects do not.
 
-**Existing hooks — the right event sources:**
+**Hook points for SFX:**
 - `applyHit` — emit hit SFX here, pitched by `knockbackMagnitude`
 - `FSMController` state transitions — `Jump`, `Land`, `Dash`, `Shield` SFX fire here
 - `shieldHealth <= 0` — shield break SFX
-- `RoomManager` state machine (`COUNTDOWN → MATCH`) — music start/stop
-
-**Approach:**
-1. Create `apps/client/src/audio/AudioManager.ts` — wraps Web Audio API, loads and caches clips
-2. Add an `onHit(magnitude: number)` callback from `applyHit` → `AudioManager.playHit(magnitude)`
-3. Add state-transition hooks in `FSMController` for movement SFX
-4. BGM: one looped track per stage, start on `MATCH` state, stop on `RESULT`
-
-**Minimal first step:** 5 SFX (hit, jump, land, shield-on, KO) does most of the work. Music can come after.
+- `HitEventData` in `StateSnapshot.hitEvents` — the client-side source for all combat events
 
 ---
 
@@ -200,17 +197,23 @@ The netcode architecture (client prediction + server reconciliation + interpolat
 
 ## 🗂️ Content
 
-One fighter, one stage, one game mode. The engine is fully content-agnostic — adding content is adding data.
+Two fighters, six stages, one game mode. The engine is fully content-agnostic — adding content is adding data.
 
 ### Additional fighters
 
-**What's needed:** New `MoveData` constants in `packages/engine/src/moves/` and new art in `apps/client`. The FSM, physics, hitboxes, and netcode don't change.
+**What's shipped:** All-Rounder (baseline stats) and Abe Lincoln (heavier, slower, longer reach — 7 move overrides).
 
-**Approach:** Clone the existing move set as a starting point. The interesting work is differentiation — a heavyweight with slow smashes and high weight, a fast floaty character with a better recovery.
+**What's needed for a third fighter:** New `MoveData` constants in `packages/engine/src/moves/` and new art in `apps/client`. The FSM, physics, hitboxes, and netcode don't change.
+
+**Approach:** Clone the existing move set as a starting point. The interesting work is differentiation — a lightweight floaty character (low weight ~75, high air speed, multi-jump, weaker knockback) creates meaningful character-select decisions against Lincoln's heavyweight bruiser style.
 
 ### Additional stages
 
-**What's needed:** A new object in the `STAGE` config shape (`packages/shared`) and a corresponding branch in `StageRenderer`. The server reads stage config at room creation.
+**What's shipped:** 6 stages (`stage1`–`stage6`) with backgrounds and music tracks.
+
+**What's needed for a seventh:** A new `StageConfig` entry in `apps/client/src/stages/stageConfig.ts`, a background image in `/public/backgrounds/`, and a music track in `/public/audio/`. The server reads stage config at room creation; the client's `AudioManager` and `BackgroundLayer` pick it up automatically.
+
+**Moving platforms:** None of the current 6 stages have moving soft platforms. Adding them requires server-authoritative position updates each tick so the deterministic engine drives platform state.
 
 ### Game modes
 
@@ -238,8 +241,8 @@ No persistence exists today. This is the lowest priority but required for a publ
 | Effort | High impact | Lower impact |
 |---|---|---|
 | **Low** | ~~Short hop (wire `JumpsquatState`)~~ ✅ · ~~Landing lag~~ ✅ · ~~Shield break stun~~ ✅ · Hit SFX (5 clips) | ~~Damage % color progression~~ ✅ · Blast-zone edge glow |
-| **Medium** | ~~Smash charge~~ ✅ · ~~Grab victim pinning + pummel/throw~~ ✅ · Stage background art · ~~Shield bubble~~ ✅ | ~~Down Special counter logic~~ ✅ · Reconnection handling · Settings persistence |
-| **High** | Sprite art for fighters · Additional fighter (full move set) · Additional stage · Audio system + BGM | Ranked / matchmaking · Replays · ~~Ledge grab~~ ✅ |
+| **Medium** | ~~Smash charge~~ ✅ · ~~Grab victim pinning + pummel/throw~~ ✅ · ~~Stage background art~~ ✅ · ~~Shield bubble~~ ✅ | ~~Down Special counter logic~~ ✅ · Reconnection handling · Settings persistence |
+| **High** | Sprite art for fighters · Additional fighter (full move set) · Additional stage | Ranked / matchmaking · Replays · ~~Ledge grab~~ ✅ · ~~Audio system + BGM~~ ✅ |
 
 ### ✅ CPU opponents (Implemented — 2026-08-08)
 
@@ -253,15 +256,15 @@ Local-play CPU opponents are shipped. The lobby's participant-count-first flow l
 
 Ordered by impact-to-effort ratio. None of these require touching the engine's determinism invariants or the server-authority model.
 
-- **Audio system (5–8 SFX + 1 BGM loop).** The single largest "feels unfinished" gap. Create `apps/client/src/audio/AudioManager.ts` wrapping the Web Audio API. Wire hit SFX to `applyHit` (pitch by knockback magnitude), movement SFX to FSM transitions, and one looped BGM track per stage that starts on `MATCH` and stops on `RESULT`. Five clips (hit, jump, land, shield-on, KO) closes most of the gap before adding music.
-
-- **Second fighter: a fast floaty archetype.** The FSM, physics, and netcode don't change — this is purely new `MoveData` constants in `packages/engine/src/moves/` and new render assets in `apps/client`. A lightweight floaty character (low weight ~75, high air speed, multi-jump, weaker knockback) creates meaningful character-select decisions against Lincoln's heavyweight bruiser style.
-
-- **Second stage: a moving-platform arena.** Add a new `StageConfig` in `apps/client/src/stages/stageConfig.ts` with a center platform and one or two moving soft platforms. Wire platform-position ticks through `GameEngine` (server-authoritative position update each tick) so the deterministic engine drives platform state. Gradient background in `StageRenderer` closes the "white rectangle on a dark grid" problem at the same time.
+- **SFX (5 clips: hit, jump, land, shield, KO).** Music tracks and the `AudioManager` infrastructure are already shipping. What's missing is sound effects. Wire hit SFX to `applyHit` (pitch by knockback magnitude), movement SFX to FSM state transitions, and a KO sound to the `isKnockedOut` flag. Five short clips closes most of the "feels silent" gap.
 
 - **Blast-zone edge glow.** A subtle red glow at the `STAGE.blastZones` coordinates drawn in `BackgroundLayer` — low effort, immediately improves spatial awareness. Players currently have zero visual cue for kill boundaries.
 
 - **Smash input distinction (double-tap detector).** `SHIELD + ATTACK` for smash is non-standard. Add a double-tap detection layer to `InputManager`: track time between two directional inputs and set a `SMASH_DIRECTIONAL` bit when under the threshold. `AttackState` already reads `currentMoveId` — this just changes which move gets selected.
+
+- **Third fighter: a fast floaty archetype.** The FSM, physics, and netcode don't change — this is purely new `MoveData` constants in `packages/engine/src/moves/` and new render assets in `apps/client`. A lightweight floaty character (low weight ~75, high air speed, multi-jump, weaker knockback) creates meaningful character-select decisions against Lincoln's heavyweight bruiser style.
+
+- **Moving-platform stage.** Add a seventh `StageConfig` with a center platform and one or two moving soft platforms. Wire platform-position ticks through `GameEngine` (server-authoritative position update each tick) so the deterministic engine drives platform state.
 
 - **Reconnection and session rejoin.** `socket.io` is initialized with `reconnection: false` — one dropped packet kills the match. Set `reconnection: true`, store `playerId` in `RoomManager` on disconnect, and re-slot the player on reconnect. No engine changes needed; the server's `GameState` is already the authoritative record.
 
@@ -269,11 +272,11 @@ Ordered by impact-to-effort ratio. None of these require touching the engine's d
 
 - **Replay system.** The deterministic engine makes this straightforward: store the full input stream per match (sequence of `InputEvent[]` per tick), then replay it by feeding those inputs back into a fresh `GameEngine` instance. No video encoding needed. Ship as a "watch last match" button on the result screen; persist to `localStorage` for the most recent match.
 
-- **Training mode with frame-data display.** A local-play mode where: stocks are infinite, percent resets on a button press, and the HUD shows the current FSM state name and frame count for both fighters. Hooks into `UIManager`'s phase system; the server runs a normal match loop with a `TRAINING` flag that skips KO stock-loss.
+- **Training mode with frame-data display.** A local-play mode where stocks are infinite, percent resets on a button press, and the HUD shows the current FSM state name and frame count for both fighters. Hooks into `UIManager`'s phase system; the server runs a normal match loop with a `TRAINING` flag that skips KO stock-loss.
 
 - **Multi-CPU targeting awareness.** CPUs currently always target Player 1 and ignore each other. Update `botAI.ts` to select the nearest opponent by position (or lowest-stock opponent) rather than hardcoding index 0. Affects `apps/server/src/GameEngine.ts` where bot inputs are generated.
 
-- **Settings persistence (keybinds + volume).** Move the keymap from a static `const` in `InputManager` to a `localStorage`-backed config object. Add a settings screen in `UIManager` that writes volume and keybind changes. No server work needed. Pairs naturally with the audio system addition.
+- **Settings persistence (keybinds + volume).** Move the keymap from a static `const` in `InputManager` to a `localStorage`-backed config object. Add a settings screen in `UIManager` that writes volume and keybind changes. No server work needed.
 
 - **Time mode (timed stock match).** `MATCH_CONFIG` already has the constants structure for it. Add a `timeLimit` field, a countdown clock to the HUD in `UIManager`, and a win-condition branch in `MatchSession` that checks elapsed ticks against `timeLimit × 60`. Tiebreak by stocks remaining, then by current percent (lower wins).
 
@@ -285,9 +288,8 @@ Ordered by impact-to-effort ratio. None of these require touching the engine's d
 
 Three open initiatives remain — none is blocked on the others, and none is clearly higher priority than the others. Pick the one that fits your next available effort:
 
-**Option 1 — Audio:** No `AudioManager` exists. Zero SFX or BGM ships today. A minimal audio pass (5–8 clips: hit, shield, jump, KO, menu confirm, BGM loop) would close the single largest "feels unfinished" gap. Hook points are ready: hit events fire from the server, UI state transitions are discrete, and PixiJS has no audio opinion. Estimated effort: medium.
+**Option 1 — SFX:** `AudioManager` and all BGM tracks ship today. What's missing is sound effects: hit, shield, jump, KO, menu confirm. Hook points are ready — hit events fire from the server, UI state transitions are discrete, and PixiJS has no audio opinion. Estimated effort: low.
 
 **Option 2 — Sprite art:** `FighterRenderer` draws a functional polygon fighter, but the art contract is fully pluggable. Swapping in a sprite sheet requires only a new render path in `FighterRenderer` — no engine or server changes. A `SpritePartRenderer` stub already exists at `apps/client/src/renderer/parts/SpritePartRenderer.ts`. Estimated effort: medium (art) + low (wiring).
 
-**Option 3 — Second fighter / character architecture (Gap B):** Adding a second fighter requires new `MoveData` constants in `packages/engine/src/moves/` and new render assets in `apps/client`. The FSM, physics, hitboxes, and netcode don't change. The interesting work is differentiation: a heavyweight with slow smashes, a fast floaty character with a better recovery. This is also the natural forcing function for a character-select refactor if the single-fighter assumption is baked into any UI paths. Estimated effort: high.
-
+**Option 3 — Third fighter / character architecture (Gap B):** Adding a third fighter requires new `MoveData` constants in `packages/engine/src/moves/` and new render assets in `apps/client`. The FSM, physics, hitboxes, and netcode don't change. The interesting work is differentiation: a fast floaty character with multi-jump and a long recovery creates a meaningful third archetype alongside the All-Rounder and Lincoln. Estimated effort: high.

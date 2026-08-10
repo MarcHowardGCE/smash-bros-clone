@@ -338,6 +338,7 @@ export class GameEngine {
 	 *   when no input arrived (e.g. network lag). Missing players receive `EMPTY_INPUT`.
 	 * @returns The fully updated `GameState` after this tick.
 	 */
+	// ─── TICK ENTRY POINT ──────────────────────────────────────────────────────
 	tickGame(inputs: Map<PlayerId, InputEvent | null>): GameState {
 		if (this.state.winnerId) {
 			return this.state;
@@ -365,8 +366,10 @@ export class GameEngine {
 			);
 		}
 
+		// ─── HIT DETECTION PASS ────────────────────────────────────────────────────
 		this.applyHitDetection(players, inputs);
 		this.syncGrabState(players);
+		// ─── KO CHECK + BLAST ZONE DETECTION ───────────────────────────────────────
 		this.applyKnockouts(players);
 		this.tickLedgeCooldowns();
 
@@ -375,6 +378,7 @@ export class GameEngine {
 			ledgesSnapshot[id] = data.occupantId;
 		}
 
+		// ─── WIN CONDITION CHECK ────────────────────────────────────────────────────
 		const alivePlayers = Object.values(players).filter(
 			(player) => player.stocks > 0,
 		);
@@ -644,6 +648,7 @@ export class GameEngine {
 		const beforeTick = clonePlayer(player);
 		const hadDoubleJumpBeforeTick = player.hasDoubleJump;
 
+		// ─── LEDGE GRAB DETECTION ────────────────────────────────────────────────────
 		const ledgeEligibleStates: string[] = [
 			PlayerStateEnum.AIRBORNE,
 			PlayerStateEnum.DOUBLE_JUMP,
@@ -697,6 +702,7 @@ export class GameEngine {
 			return player;
 		}
 
+		// ─── FSM TICK PASS ───────────────────────────────────────────────────────────
 		let nextPlayer = controller.tick(player, input);
 		nextPlayer = this.applyStateTransitions(beforeTick, nextPlayer, input);
 		nextPlayer = this.applyDirectionalInfluenceOnHitlagEnd(player, nextPlayer, input);
@@ -714,6 +720,7 @@ export class GameEngine {
 			return this.withHitboxState(nextPlayer, input);
 		}
 
+		// ─── PHYSICS PASS (gravity, movement, fast fall, DI application) ─────────────
 		const beforePhysics = clonePlayer(nextPlayer);
 		nextPlayer = this.applyPhysicsToPlayer(
 			playerId,
@@ -802,7 +809,12 @@ export class GameEngine {
 			nextPlayer.techLockoutFrames === 0;
 
 		if (!shouldStartTechWindow) {
-			// Check for L-cancel window: shield pressed during AIR_ATTACK
+			// ─── L-CANCEL WINDOW ─────────────────────────────────────────────────────────
+			// L-cancel algorithm: pressing SHIELD within PHYSICS.L_CANCEL_WINDOW_FRAMES frames
+			// before landing while in AIR_ATTACK opens a window stored on the player. When
+			// the landing frame fires (landedThisTick && AIR_ATTACK), the raw landingLag from
+			// the move data is halved (floor division). The window only applies to non-special
+			// aerial moves — specials that land always take full lag regardless of L-cancel.
 			const shouldStartLCancelWindow =
 				isPressed(input, INPUT_BITS.SHIELD) &&
 				nextPlayer.state === PlayerStateEnum.AIR_ATTACK;
@@ -1110,6 +1122,16 @@ export class GameEngine {
 
 		const shouldCheckWallTech = player.isTumbling || player.hitstunFramesRemaining > 0;
 		if (shouldCheckWallTech) {
+			// ─── ADVANCED TECH: WALL-TECH DETECTION ─────────────────────────────────────
+			// Wall-tech algorithm: a player in tumble or hitstun who makes contact with a
+			// stage wall triggers a tech attempt if techWindowFrames > 0 (buffered within
+			// PHYSICS.TECH_WINDOW_FRAMES of pressing SHIELD). Two outcomes:
+			//   * JUMP held during tech window  -> wall-jump tech: apply applyWallJumpVelocity()
+			//     with WALL_TECH_INTANGIBILITY_FRAMES invincibility, restore double jump.
+			//   * JUMP not held                 -> plain wall-tech: cancel momentum (vx=0),
+			//     AIRBORNE state, same intangibility frames.
+			// If techWindowFrames === 0 and no tech was buffered, a lockout is applied
+			// (PHYSICS.TECH_LOCKOUT_FRAMES) to punish the missed attempt.
 			const wallSide = checkWallCollision(nextPlayer, DEFAULT_STAGE);
 			if (wallSide && nextPlayer.techWindowFrames > 0) {
 				this.techAttemptBuffered.set(playerId, false);
@@ -1179,6 +1201,13 @@ export class GameEngine {
 			};
 		}
 
+		// ─── ADVANCED TECH: WAVEDASH LANDING ────────────────────────────────────────
+		// Wavedash algorithm: an AIR_DODGE that lands with a downward + horizontal
+		// airDodgeDirection vector converts into a LANDING_LAG slide. On the landing
+		// frame vx is set to PHYSICS.WAVEDASH_INITIAL_SLIDE_VELOCITY * direction sign
+		// and the player enters LANDING_LAG for PHYSICS.WAVEDASH_LANDING_LAG_FRAMES.
+		// Each subsequent LANDING_LAG tick applies PHYSICS.GROUND_FRICTION to vx so the
+		// slide decays naturally. A neutral or upward dodge landing falls through to IDLE.
 		// Wavedash landing: AIR_DODGE with downward + horizontal component
 		// Only apply if player hasn't already been processed by resolveTumbleLanding
 		if (
@@ -1300,6 +1329,13 @@ export class GameEngine {
 					: false;
 
 	if (wall && !player.isGrounded && jumpPressed && awayDirectionHeld) {
+		// ─── ADVANCED TECH: WALL-JUMP ────────────────────────────────────────────────
+		// Wall-jump: airborne player touching a wall presses JUMP while holding the away
+		// direction. applyWallJumpVelocity() scales speed by WALL_JUMP_HEIGHT_DECAY raised
+		// to wallJumpStreak, clamped at WALL_JUMP_MIN_VELOCITY_MULTIPLIER, so each
+		// successive wall jump in the same aerial phase is weaker. Grants
+		// PHYSICS.WALL_JUMP_INTANGIBILITY_FRAMES of invincibility and restores the double
+		// jump if it was available at the start of this tick.
 		const { vx, vy, wallJumpStreak } = applyWallJumpVelocity(player, wall);
 		const wallJumped: PlayerState = {
 			...player,
@@ -1583,6 +1619,13 @@ export class GameEngine {
 			move.id === MoveId.UP_SMASH ||
 			move.id === MoveId.DOWN_SMASH;
 
+		// ─── SMASH CHARGE TRACKING ───────────────────────────────────────────────────
+		// Smash charge algorithm: while stateFrame < (startupFrames + chargeFrames) and
+		// the attack button is held (but not freshly pressed), chargeFrames increments
+		// each tick up to SMASH_CHARGE_MAX_FRAMES. The active window is delayed by
+		// exactly chargeFrames ticks; releasing early releases into the active window.
+		// Charge scales damage: smashChargeMultiplier = 1 + (chargeFrames / max) * 0.4
+		// i.e. a fully charged smash deals 1.4x base damage and 1.4x base knockback.
 		const safeChargeFrames = Number.isFinite(player.chargeFrames)
 			? player.chargeFrames
 			: 0;
@@ -1987,10 +2030,17 @@ export class GameEngine {
 				const playerBAlreadyHitByA =
 					!playerB.id || playerAHitPlayerIds.has(playerB.id);
 
-				// When both players have active hitboxes we run trade resolution first.
-				// resolveHitTrade uses hitbox priority to determine whether both hits land,
-				// only one, or neither. The direct collision results are used as fallback
-				// for whichever side the trade ruled out.
+				// ─── HIT-TRADE RESOLUTION ────────────────────────────────────────────────────
+			// Hit trading algorithm: when both players have an active hitbox on the same
+			// frame, resolveHitTrade() compares hitbox priority values. If priorities
+			// differ, only the higher-priority hit lands (clank). If equal, both hits land
+			// simultaneously (trade). The direct collision path is the fallback for the
+			// side the trade resolution ruled out, ensuring exactly one of [trade, direct]
+			// is used per side rather than double-applying the same hit.
+			// When both players have active hitboxes we run trade resolution first.
+			// resolveHitTrade uses hitbox priority to determine whether both hits land,
+			// only one, or neither. The direct collision results are used as fallback
+			// for whichever side the trade ruled out.
 					if (playerA.activeHitbox && playerB.activeHitbox) {
 						const [tradeA, tradeB] = resolveHitTrade(
 							playerA,
@@ -2122,6 +2172,7 @@ export class GameEngine {
 	 * @param victimInput - Victim's input this tick (passed to `checkHitboxCollision`).
 	 * @returns `true` if the grab connected; `false` otherwise.
 	 */
+	// ─── GRAB / THROW LOGIC ─────────────────────────────────────────────────────
 	private tryApplyGrabConnect(
 		players: Record<PlayerId, PlayerState>,
 		attackerId: PlayerId,
@@ -2657,6 +2708,15 @@ export class GameEngine {
 			this.releaseLedge(player.id, player.ledgeId);
 		}
 
+		// ─── HIT RESOLUTION (applyHit) ──────────────────────────────────────────────
+		// Smash Bros knockback formula (from README "Knockback formula"):
+		//   magnitude = ((percent/10 + (percent * baseDmg)/20) * (200/(weight+100)) * 1.4 + 18)
+		//               * (growth/100) + baseKnockback
+		// Heavier fighters (higher weight) receive reduced knockback. Magnitude is
+		// pre-computed by calculateKnockback() in packages/engine and arrives here
+		// as (knockbackVx, knockbackVy) already converted to a velocity vector via
+		// knockbackAngleToVelocity(). isTumbling is set when the magnitude exceeds
+		// PHYSICS.TUMBLE_THRESHOLD, enabling techs and the DI window.
 		const knockbackMagnitude = Math.hypot(hit.knockbackVx, hit.knockbackVy);
 		const knockbackAngleRadians =
 			((Math.atan2(-hit.knockbackVy, hit.knockbackVx) % (Math.PI * 2)) + Math.PI * 2) %
@@ -2806,6 +2866,16 @@ export class GameEngine {
 			}
 
 			const spawn = STAGE.SPAWN_POSITIONS[player.slotIndex] ?? DEFAULT_SPAWN;
+			// ─── RESPAWN TIMER COUNTDOWN ─────────────────────────────────────────────────
+			// Respawn invincibility algorithm: on KO the player is placed at the stage spawn
+			// point (MATCH_CONFIG.RESPAWN_PLATFORM_Y) in AIRBORNE state with
+			// MATCH_CONFIG.RESPAWN_DELAY_FRAMES ticks on respawnTimer. Each tick the
+			// updatePlayer early-exit fires (respawnTimer > 0) and decrements the counter
+			// without running physics or hitbox detection. When it reaches zero the player
+			// re-enters normal processing. They start with MATCH_CONFIG.RESPAWN_INVINCIBILITY_FRAMES
+			// of invincibility (indicated to clients by the isInvincible flag) so they
+			// cannot be hit during the drop-down animation. A fresh FSMController is created
+			// to discard any stale animation state from the KO sequence.
 			players[playerId as PlayerId] = {
 				...player,
 				stocks: remainingStocks,

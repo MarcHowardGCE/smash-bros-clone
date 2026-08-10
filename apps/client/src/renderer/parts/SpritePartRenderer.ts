@@ -1,3 +1,11 @@
+/**
+ * @fileoverview Sprite-based fighter part renderer (stub).
+ *
+ * Implements {@link IPartRenderer} using PixiJS {@link Sprite} instances.
+ * Currently a stub — no art assets exist yet. When sprite art ships, this
+ * class will load a texture atlas and select frames per animation state.
+ * See ROADMAP.md "Visuals" section for sprite art requirements.
+ */
 import { Container } from 'pixi.js';
 import { Sprite } from 'pixi.js';
 import type { FighterPart, IPartRenderer, PartTransform, PatternDescriptor } from './IPartRenderer';

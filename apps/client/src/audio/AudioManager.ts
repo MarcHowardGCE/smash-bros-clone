@@ -1,5 +1,20 @@
+/**
+ * @fileoverview HTML Audio-based music track manager.
+ *
+ * Plays looping background music tracks loaded from `/audio/<track>.mp3`.
+ * Handles the browser autoplay policy by deferring playback to the first
+ * user interaction when the initial `play()` call is blocked. Only one
+ * track plays at a time; calling {@link AudioManager.playTrack} with the
+ * currently-playing track name is a no-op.
+ */
 export type MusicTrack = string;
 
+/**
+ * Manages a single looping HTML audio track with autoplay-policy retry.
+ *
+ * Call {@link playTrack} to start a track, {@link stopCurrentTrack} to stop it,
+ * and {@link setVolume} to adjust the level at any time.
+ */
 export class AudioManager {
   private currentTrack: HTMLAudioElement | null = null;
   private currentTrackName: string | null = null;
@@ -47,6 +62,15 @@ export class AudioManager {
     console.log(`[AudioManager] Waiting for user interaction retry: ${track}`);
   }
 
+  /**
+   * Start playing a looping music track.
+   *
+   * If the track is already playing, this is a no-op. If browser autoplay
+   * policy blocks the initial play, the manager waits for the next user
+   * interaction and retries automatically.
+   *
+   * @param track - Track name without extension (e.g. `'stage1'` → `/audio/stage1.mp3`)
+   */
   playTrack(track: string): void {
     if (this.currentTrackName === track && this.currentTrack && !this.currentTrack.paused) {
       return;
@@ -80,6 +104,7 @@ export class AudioManager {
     this.currentTrackName = track;
   }
 
+  /** Stop the current track and clear any pending autoplay-retry listener. */
   stopCurrentTrack(): void {
     this.clearPendingRetry();
 
@@ -91,6 +116,11 @@ export class AudioManager {
     }
   }
 
+  /**
+   * Set the playback volume, clamped to [0, 1].
+   *
+   * @param volume - Volume level between 0.0 (silent) and 1.0 (full)
+   */
   setVolume(volume: number): void {
     this.volume = Math.max(0, Math.min(1, volume));
     if (this.currentTrack) {
@@ -98,6 +128,7 @@ export class AudioManager {
     }
   }
 
+  /** Return the current volume level (0.0–1.0). */
   getVolume(): number {
     return this.volume;
   }

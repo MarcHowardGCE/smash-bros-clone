@@ -1,3 +1,14 @@
+/**
+ * @fileoverview Polygon-based fighter part renderer.
+ *
+ * Implements {@link IPartRenderer} using PixiJS {@link Graphics} primitives.
+ * Each of the six body parts (head, torso, 4 limbs) gets its own Graphics
+ * child inside a shared Container. Parts are drawn in back-to-front z-order
+ * on every call to {@link PolygonPartRenderer.draw}.
+ *
+ * Character-specific geometry (Lincoln's hat, beard, coattails) is branched
+ * on `characterId` inside the private draw helpers.
+ */
 import { Container, Graphics } from 'pixi.js';
 import type { CharacterId } from '@smash/shared';
 import type {
@@ -35,6 +46,12 @@ export class PolygonPartRenderer implements IPartRenderer {
   /** Root container holding all 6 part Graphics in z-order. */
   readonly container: Container;
 
+/**
+ * Create a polygon renderer for a fighter slot.
+ *
+ * @param slotIndex - Player slot (0-3), determines fill pattern via {@link slotToPattern}
+ * @param characterId - Optional character override for Lincoln-specific geometry
+ */
   constructor(slotIndex: number, characterId?: CharacterId) {
     this.slotIndex = slotIndex;
     this.characterId = characterId;

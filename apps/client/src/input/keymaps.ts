@@ -1,3 +1,11 @@
+/**
+ * @fileoverview Default keyboard layouts for all four player slots.
+ *
+ * Each keymap maps a `KeyboardEvent.code` string to an {@link InputBitmask}
+ * bit. P1 uses arrow keys + WASD; P2 uses IJKL; P3 uses the numpad;
+ * P4 uses FGHTYV. All four are loaded by {@link ControlsScreen} for display
+ * and rebinding, and P1 is the default for {@link InputManager}.
+ */
 import { INPUT_BITS } from '@smash/shared';
 import type { InputBitmask } from '@smash/shared';
 

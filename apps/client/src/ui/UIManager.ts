@@ -1,3 +1,15 @@
+/**
+ * @fileoverview HTML overlay UI manager for all game phases.
+ *
+ * Owns the full-screen overlay `<div>` and the HUD panel. Each game phase has
+ * a dedicated `show*` method that injects HTML and wires event handlers.
+ * Phases: connecting → splash → lobby → waiting → countdown → match →
+ * paused → result. Local-play adds its own variants (local result, local
+ * play setup, stage select, character select).
+ *
+ * Gamepad navigation is delegated to {@link MenuNavigator}; the active
+ * navigator is stopped and replaced on every phase transition.
+ */
 import type { GamepadPoller, GamepadPreferenceStore } from '@smash/gamepad-input';
 import { GenericInputBits } from '@smash/gamepad-input';
 import type { PlayerId } from '@smash/shared';
@@ -11,8 +23,16 @@ import { renderStageSelectScreen } from './StageSelectScreen.js';
 import { MenuNavigator } from './MenuNavigator.js';
 import type { MenuButton } from './MenuNavigator.js';
 
+/** All phases the UI can be in at any given time. */
 export type UIPhase = 'connecting' | 'lobby' | 'waiting' | 'countdown' | 'match' | 'result' | 'controls' | 'paused';
 
+/**
+ * Manages the HTML overlay and HUD for every UI phase of the game.
+ *
+ * Each `show*` method tears down the current phase, injects fresh HTML into
+ * the overlay element, wires click/keyboard handlers, and (where applicable)
+ * starts a {@link MenuNavigator} for gamepad/keyboard navigation.
+ */
 export class UIManager {
   private overlay: HTMLElement;
   private hudPanel: HTMLElement;
@@ -33,6 +53,12 @@ export class UIManager {
   onResume: (() => void) | null = null;
   onMainMenu: (() => void) | null = null;
 
+  /**
+   * Create the UIManager and attach the HUD panel to the document body.
+   * Immediately shows the connecting phase.
+   *
+   * @param overlayElement - Full-screen overlay element for phase HTML
+   */
   constructor(overlayElement: HTMLElement) {
     this.overlay = overlayElement;
     this.hudPanel = document.createElement('div');
@@ -46,10 +72,12 @@ export class UIManager {
     this.showConnecting();
   }
 
+  /** Set the local player ID for result screen win/loss display. */
   setPlayerId(id: PlayerId): void {
     this.myPlayerId = id;
   }
 
+  /** Store the room code for display in the in-match HUD. */
   setRoomCode(code: string): void {
     this.roomCode = code;
   }
@@ -61,6 +89,7 @@ export class UIManager {
     }
   }
 
+  /** Show the "Connecting to server…" phase. */
   showConnecting(): void {
     this.stopMenuNav();
     this.phase = 'connecting';
@@ -71,6 +100,12 @@ export class UIManager {
       </div>`;
   }
 
+  /**
+   * Show the Zanda Entertainment splash screen.
+   * Dismissed on any click or gamepad button press; calls `onContinue` after fade.
+   *
+   * @param onContinue - Called after the splash fade completes
+   */
   showSplash(onContinue: () => void): void {
     this.stopMenuNav();
     this.phase = 'connecting';
@@ -145,6 +180,7 @@ export class UIManager {
     }
   }
 
+  /** Show the main lobby with Create Room / Join Room / Local Play / Controls buttons. */
   showLobby(): void {
     this.stopMenuNav();
     this.phase = 'lobby';
@@ -220,6 +256,11 @@ export class UIManager {
     this.menuNav.start();
   }
 
+  /**
+   * Show the Controls screen (device bindings + rebind UI).
+   *
+   * @param deps - Assignment manager and gamepad preference store needed by the controls screen
+   */
   showControls(deps: { assignmentManager: ControllerAssignmentManager; preferenceStore: GamepadPreferenceStore }): void {
     this.stopMenuNav();
     this.phase = 'controls';
@@ -605,6 +646,7 @@ export class UIManager {
     renderStageSelectScreen(this.overlay, stages, onSelected, onBack, this._gamepadPoller);
   }
 
+  /** Show the room-created screen with the 6-character code and a Ready button. */
   showRoomCreated(code: string): void {
     this.phase = 'lobby';
     this.roomCode = code;
@@ -637,6 +679,7 @@ export class UIManager {
     });
   }
 
+  /** Add a joined-player row to the room-created waiting screen. */
   showPlayerJoined(slotIndex: number): void {
     this.playerCount = Math.max(this.playerCount, slotIndex + 1);
     const playerList = document.getElementById('player-list');
@@ -648,6 +691,7 @@ export class UIManager {
     }
   }
 
+  /** Disable the Ready button and show "Waiting for others…" text. */
   showWaiting(): void {
     this.phase = 'waiting';
     const readyBtn = document.getElementById('ready-btn') as HTMLButtonElement | null;
@@ -658,6 +702,11 @@ export class UIManager {
     }
   }
 
+  /**
+   * Show the countdown overlay (3, 2, 1, GO!).
+   *
+   * @param count - Countdown value; 0 renders "GO!"
+   */
   showCountdown(count: number): void {
     this.stopMenuNav();
     this.phase = 'countdown';
@@ -668,6 +717,7 @@ export class UIManager {
       </div>`;
   }
 
+  /** Clear the overlay and show the in-match HUD panel. */
   showMatch(): void {
     this.stopMenuNav();
     this.phase = 'match';
@@ -675,6 +725,7 @@ export class UIManager {
     this.hudPanel.style.display = 'flex';
   }
 
+  /** Show the pause overlay with Resume and Main Menu buttons. */
   showPauseOverlay(): void {
     this.stopMenuNav();
     this.phase = 'paused';
@@ -704,6 +755,7 @@ export class UIManager {
     this.menuNav.start(() => this.onResume?.());
   }
 
+  /** Hide the pause overlay and restore the match HUD. No-op if not paused. */
   hidePauseOverlay(): void {
     if (this.phase !== 'paused') return;
     this.stopMenuNav();
@@ -712,10 +764,17 @@ export class UIManager {
     this.hudPanel.style.display = 'flex';
   }
 
+  /** Return the current UI phase. */
   getPhase(): UIPhase {
     return this.phase;
   }
 
+  /**
+   * Show the networked match result screen.
+   *
+   * @param winnerId - Player ID of the winner, or null for a draw
+   * @param myPlayerId - Local player's ID for win/loss display
+   */
   showResult(winnerId: PlayerId | null, myPlayerId: PlayerId | null): void {
     this.stopMenuNav();
     this.phase = 'result';
@@ -776,6 +835,13 @@ export class UIManager {
     return `rgb(${r},${g},${b})`;
   }
 
+  /**
+   * Update the in-match HUD with current damage percentages and stock counts.
+   * No-op if the current phase is not `'match'`.
+   *
+   * @param state - Latest render state containing all player data
+   * @param myPlayerId - Local player's ID for the highlight star indicator
+   */
   updateHUD(state: RenderState, myPlayerId: PlayerId | null): void {
     if (this.phase !== 'match') return;
 
@@ -812,11 +878,17 @@ export class UIManager {
     }
   }
 
+  /** Hide the room code display element. */
   hideRoomCode(): void {
     const el = document.getElementById('room-code-display');
     if (el) el.style.display = 'none';
   }
 
+  /**
+   * Show the local-play result screen.
+   *
+   * @param winnerId - Player ID of the winner (`'local-p1'`, etc.), or null for a draw
+   */
   showLocalResult(winnerId: PlayerId | null): void {
     this.stopMenuNav();
     this.phase = 'result';

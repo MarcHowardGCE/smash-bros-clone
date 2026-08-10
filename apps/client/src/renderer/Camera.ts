@@ -1,3 +1,11 @@
+/**
+ * @fileoverview Dynamic camera that follows all fighters and applies screen shake.
+ *
+ * Each frame, {@link Camera.update} computes a target scale and position that
+ * keeps every player in view with padding, lerps toward that target for smooth
+ * easing, and overlays a decaying random shake offset for hit feedback.
+ * Call {@link Camera.shake} from a HitEvent handler to trigger the effect.
+ */
 import type { Container } from 'pixi.js';
 import { STAGE } from '@smash/shared';
 
@@ -24,11 +32,19 @@ const SHAKE_MAX_DURATION = 15;
 const SHAKE_INTENSITY_SCALE = 0.5;
 const SHAKE_DURATION_SCALE = 0.25;
 
+/** A world-space position used to compute camera framing. */
 export interface PlayerPosition {
   x: number;
   y: number;
 }
 
+/**
+ * Smooth-follow camera with proportional screen shake.
+ *
+ * Wraps a PixiJS Container and adjusts its `scale` and `position` each frame
+ * to keep all fighters in view. Shake is triggered by {@link shake} and decays
+ * linearly over several frames.
+ */
 export class Camera {
   private currentScale = 1.0;
   private currentX = 0;
@@ -42,6 +58,11 @@ export class Camera {
   private shakeOffsetX = 0;
   private shakeOffsetY = 0;
 
+  /**
+   * Create a camera wrapping the given PixiJS container.
+   *
+   * @param container - The PixiJS Container whose scale and position this camera controls
+   */
   constructor(container: Container) {
     this.container = container;
   }
@@ -76,6 +97,14 @@ export class Camera {
     return { x: this.shakeOffsetX, y: this.shakeOffsetY };
   }
 
+  /**
+   * Update camera position and scale to frame all players.
+   * Call once per render frame.
+   *
+   * @param positions - Current world positions of all active fighters
+   * @param viewportWidth - Canvas width in pixels
+   * @param viewportHeight - Canvas height in pixels
+   */
   update(positions: PlayerPosition[], viewportWidth: number, viewportHeight: number): void {
     // Advance shake decay every frame regardless of player count so the effect
     // doesn't freeze when the position list is momentarily empty.
@@ -122,6 +151,7 @@ export class Camera {
     );
   }
 
+  /** Reset camera to default scale and position, clearing any active shake. */
   reset(): void {
     this.currentScale = 1.0;
     this.currentX = 0;

@@ -1,3 +1,12 @@
+/**
+ * @fileoverview Part-based fighter renderer.
+ *
+ * Composes the six fighter body parts (head, torso, 4 limbs) into a single
+ * PixiJS Container. Each frame, {@link FighterRenderer.update} drives position,
+ * direction, invincibility flicker, hit-flash tint, shield bubble, and the
+ * KO tumble + star-burst effect. Geometry is delegated to an {@link IPartRenderer}
+ * implementation (currently {@link PolygonPartRenderer}).
+ */
 import { Container, Graphics } from 'pixi.js';
 import type { PlayerState, CharacterId } from '@smash/shared';
 import { PHYSICS, lerp } from '@smash/shared';
@@ -43,6 +52,13 @@ function lerpColor(a: number, b: number, t: number): number {
   return (r << 16) | (g << 8) | blue;
 }
 
+/**
+ * Renders a single fighter as a part-based polygon figure.
+ *
+ * Owns the fighter's PixiJS Container hierarchy: part geometry, shield bubble,
+ * and KO effect. Call {@link update} once per render frame with the latest
+ * {@link PlayerState} slice to keep visuals in sync.
+ */
 export class FighterRenderer {
   readonly container: Container;
   private readonly partRenderer: IPartRenderer;
@@ -56,6 +72,13 @@ export class FighterRenderer {
   private wasKnockedOut = false;
   private hitFlashFrames = 0;
 
+  /**
+   * Create a fighter renderer and attach it to the parent container.
+   *
+   * @param parentContainer - PixiJS Container to add this fighter's root to
+   * @param slotIndex - Player slot (0-3), determines fill pattern
+   * @param characterId - Optional character override for custom geometry/animations
+   */
   constructor(parentContainer: Container, slotIndex: number, characterId?: CharacterId) {
     this.slotIndex = slotIndex;
     this.characterId = characterId;
@@ -75,6 +98,12 @@ export class FighterRenderer {
     parentContainer.addChild(this.container);
   }
 
+  /**
+   * Sync all visuals to the latest player state.
+   * Call once per render frame.
+   *
+   * @param player - Minimal player state slice needed for rendering
+   */
   update(player: RenderableFighterState): void {
     this.container.x = player.x;
     this.container.y = player.y;
@@ -166,6 +195,7 @@ export class FighterRenderer {
     }
   }
 
+  /** Release PixiJS resources. Call when the fighter leaves the scene. */
   destroy(): void {
     this.container.destroy({ children: true });
   }

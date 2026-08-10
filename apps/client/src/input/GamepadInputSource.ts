@@ -1,3 +1,11 @@
+/**
+ * @fileoverview Gamepad-to-InputBitmask adapter.
+ *
+ * Bridges the `@smash/gamepad-input` package's {@link GenericInputBits}
+ * enumeration to the `@smash/shared` {@link INPUT_BITS} bitmask used by the
+ * engine. Consumed by {@link InputManager} as an optional second input source
+ * that is OR-merged with keyboard bits each frame.
+ */
 import type { GamepadPoller, GenericInputBitmask } from '@smash/gamepad-input';
 import { GenericInputBits } from '@smash/gamepad-input';
 import { INPUT_BITS, type InputBitmask } from '@smash/shared';

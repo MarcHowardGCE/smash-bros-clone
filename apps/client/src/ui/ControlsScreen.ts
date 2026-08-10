@@ -1,8 +1,14 @@
 /**
- * ControlsScreen - Per-slot device bindings with rebind functionality and persistence.
+ * @fileoverview Controls screen: per-slot device bindings with live rebind.
  *
- * Renders up to 4 slot rows showing device label, 8 action bindings, rebind buttons,
- * and reset-to-default. Follows UIManager inline innerHTML + getElementById pattern.
+ * Renders 4 slot rows showing the assigned device, 8 action bindings, Rebind
+ * buttons for keyboard slots, and a Reset-to-Default button per slot. Rebind
+ * mode listens for the next keydown and reassigns that key. Gamepad slots
+ * show button names but are not rebindable (gamepad mapping is fixed). Custom
+ * keymaps persist to `localStorage` under the `smash:keymap:N` key.
+ *
+ * Follows the external-render-function pattern: {@link renderControlsScreen}
+ * returns a `{ destroy }` handle so callers can clean up event listeners.
  */
 
 import { INPUT_BITS } from '@smash/shared';

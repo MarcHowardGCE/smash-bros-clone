@@ -1,8 +1,20 @@
+/**
+ * @fileoverview CPU/AI player controller for local offline matches.
+ *
+ * Implements {@link ITickController} using the engine's `decideBotInput` /
+ * `selectTarget` functions. Each frame, {@link AIPlayerController.pollInput}
+ * runs the bot decision loop against the last observed {@link GameState} and
+ * returns an {@link InputEvent} that {@link LocalMatch} feeds to the engine.
+ *
+ * Difficulty is parameterized via {@link BotDifficulty}: Easy reacts slowly
+ * with high execution error; Hard reacts quickly with near-perfect execution.
+ */
 import type { InputEvent, PlayerId, GameState, BotDifficulty, InputBitmask } from '@smash/shared';
 import { BOT_DIFFICULTY_PRESETS, INPUT_BITS } from '@smash/shared';
 import { decideBotInput, createBotMemory, selectTarget, type BotMemory } from '@smash/engine';
 import type { ITickController } from './types.js';
 
+/** Configuration for an AI-controlled player slot. */
 export interface AIPlayerControllerConfig {
   playerId: PlayerId;
   slotIndex: number;
@@ -11,6 +23,12 @@ export interface AIPlayerControllerConfig {
   seed: number;
 }
 
+/**
+ * CPU player controller driven by the engine's bot AI.
+ *
+ * Observe game state each tick via {@link observe}, then call
+ * {@link pollInput} to get the bot's next input decision.
+ */
 export class AIPlayerController implements ITickController {
   readonly playerId: PlayerId;
   readonly slotIndex: number;
@@ -25,6 +43,11 @@ export class AIPlayerController implements ITickController {
   private seqCounter = 0;
   private latestState: GameState | null = null;
 
+  /**
+   * Create an AI player controller.
+   *
+   * @param config - Bot configuration including player ID, slot, opponents, difficulty, and RNG seed
+   */
   constructor(config: AIPlayerControllerConfig) {
     this.playerId = config.playerId;
     this.slotIndex = config.slotIndex;
@@ -33,6 +56,11 @@ export class AIPlayerController implements ITickController {
     this.botMemory = createBotMemory(config.seed);
   }
 
+  /**
+   * Feed the latest game state to the bot. Called by {@link LocalMatch} after each engine tick.
+   *
+   * @param state - Full game state from the engine tick
+   */
   observe(state: GameState): void {
     this.latestState = state;
   }

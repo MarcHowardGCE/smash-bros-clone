@@ -1,3 +1,12 @@
+/**
+ * @fileoverview Procedural impact spark effect.
+ *
+ * A radial burst of small white circles that radiate outward from a hit
+ * position and fade over {@link SPARK_DURATION} frames. The caller manages
+ * the lifecycle: create once, call {@link ImpactSpark.start} on each hit,
+ * call {@link ImpactSpark.tick} every render frame, and check
+ * {@link ImpactSpark.done} to know when to remove the container from the scene.
+ */
 import { Container, Graphics } from 'pixi.js';
 
 /** Number of particles in the radial burst. */

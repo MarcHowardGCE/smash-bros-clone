@@ -1,3 +1,10 @@
+/**
+ * @fileoverview Abe Lincoln character-specific animations.
+ *
+ * Overrides for idle/walk cycles and 7 attack moves that maintain Lincoln's
+ * taller body scale (bodyScaleY ≥ 1.15) and exaggerated limb reach.
+ * Consumed by {@link getAnimationPose} when `characterId === 'abe-lincoln'`.
+ */
 import { MoveId } from '@smash/shared';
 import type { JointPose } from './animations.js';
 

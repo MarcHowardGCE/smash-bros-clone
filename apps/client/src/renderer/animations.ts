@@ -1,7 +1,22 @@
+/**
+ * @fileoverview Fighter animation system: keyframe poses and interpolation.
+ *
+ * Defines {@link JointPose} (the six joint angles + body/head offsets used by
+ * the renderer), a library of per-state {@link Animation} keyframe arrays, and
+ * {@link getAnimationPose} — the single entry point called each frame to obtain
+ * the interpolated pose for a given FSM state and frame counter.
+ *
+ * Character-specific overrides (e.g. Lincoln) are stored in separate modules and
+ * consulted first; shared animations serve as the fallback.
+ */
 import { MoveId } from '@smash/shared';
 import type { CharacterId } from '@smash/shared';
 import { LINCOLN_ANIMATIONS, LINCOLN_ATTACK_ANIMATIONS } from './lincolnAnimations.js';
 
+/**
+ * All six joint angles plus body squash/stretch and head offset for one animation frame.
+ * Angles are in radians; scales are multipliers (1.0 = normal).
+ */
 export interface JointPose {
   leftArmAngle: number;    // radians
   rightArmAngle: number;
@@ -20,8 +35,10 @@ export const DEFAULT_POSE: JointPose = {
   headOffsetX: 0, headOffsetY: 0,
 };
 
-// Each animation is an array of up to 6 keyframes
-// Lerp between them based on stateFrame progress
+/**
+ * Ordered array of keyframe poses for one animation state.
+ * Two or more frames are lerped; a single frame holds constant.
+ */
 export type Animation = JointPose[];
 
 type AttackMoveId =
@@ -176,6 +193,19 @@ export const ANIMATIONS: Record<string, Animation> = {
   ],
 };
 
+/**
+ * Interpolate between keyframes to produce the pose for the current frame.
+ *
+ * Checks character-specific overrides first (Lincoln), then move-specific
+ * attack animations, then the shared state table. Falls back to IDLE if no
+ * match is found.
+ *
+ * @param stateName - FSM state name (e.g. `'IDLE'`, `'ATTACK'`)
+ * @param stateFrame - Frame counter within the current state (drives cycle position)
+ * @param currentMoveId - Active move ID when `stateName` is `'ATTACK'` or `'AIR_ATTACK'`
+ * @param characterId - Optional character override for custom animations
+ * @returns Interpolated {@link JointPose} for this frame
+ */
 export function getAnimationPose(stateName: string, stateFrame: number, currentMoveId?: MoveId | null, characterId?: CharacterId): JointPose {
   const moveId = currentMoveId as AttackMoveId | null | undefined;
 

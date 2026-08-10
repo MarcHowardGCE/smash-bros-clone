@@ -1,25 +1,33 @@
 /**
- * MenuNavigator - Unified keyboard + gamepad navigation for all menu screens.
+ * @fileoverview Unified keyboard + gamepad menu navigation.
  *
- * Supports:
- * - Arrow keys (Up/Down) + W/S for vertical navigation
- * - Enter/Space to activate selected button
- * - Escape to trigger back/cancel
- * - Gamepad D-pad/stick for navigation
- * - Gamepad A to activate, B to back
- *
- * Edge-triggers only (no repeat on held buttons) for gamepad inputs.
+ * {@link MenuNavigator} manages a list of focusable {@link MenuButton} items
+ * and handles arrow keys, Enter/Space, Escape, and gamepad D-pad/A/B with
+ * edge-triggered detection (no repeat on held buttons). Used by every menu
+ * screen to provide consistent navigation without duplicating input logic.
  */
 
 import type { GamepadPoller, GamepadState } from '@smash/gamepad-input';
 import { GenericInputBits } from '@smash/gamepad-input';
 
+/** A navigable button entry in a menu screen. */
 export interface MenuButton {
   id: string;
   element: HTMLElement;
   onActivate: () => void;
 }
 
+/**
+ * Unified keyboard + gamepad navigation controller for menu screens.
+ *
+ * Supports:
+ * - Arrow keys (Up/Down) + W/S for vertical navigation
+ * - Enter/Space to activate the selected button
+ * - Escape to trigger back/cancel
+ * - Gamepad D-pad for navigation, A to activate, B to back
+ *
+ * Edge-triggered only — no repeat fires on held gamepad buttons.
+ */
 export class MenuNavigator {
   private buttons: MenuButton[] = [];
   private selectedIndex = 0;
@@ -28,16 +36,31 @@ export class MenuNavigator {
   private keyHandler: ((e: KeyboardEvent) => void) | null = null;
   private lastBitsPerGamepad = new Map<number, number>();
 
+  /**
+   * Create a navigator, optionally backed by a gamepad poller.
+   *
+   * @param poller - GamepadPoller for gamepad navigation; pass null/undefined for keyboard only
+   */
   constructor(poller?: GamepadPoller | null) {
     this.poller = poller ?? null;
   }
 
+  /**
+   * Set the list of navigable buttons. Resets selection to index 0.
+   *
+   * @param buttons - Ordered list of menu buttons (top to bottom)
+   */
   setButtons(buttons: MenuButton[]): void {
     this.buttons = buttons;
     this.selectedIndex = 0;
     this.updateVisuals();
   }
 
+  /**
+   * Start listening for keyboard and gamepad input.
+   *
+   * @param onBack - Optional callback fired when Escape or gamepad B is pressed
+   */
   start(onBack?: () => void): void {
     this.updateVisuals();
 
@@ -125,6 +148,7 @@ export class MenuNavigator {
     }
   }
 
+  /** Stop listening for input and cancel any active gamepad polling. */
   stop(): void {
     if (this.keyHandler) {
       window.removeEventListener('keydown', this.keyHandler);

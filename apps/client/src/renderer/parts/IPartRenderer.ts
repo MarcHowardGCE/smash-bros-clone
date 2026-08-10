@@ -1,3 +1,10 @@
+/**
+ * @fileoverview Fighter part renderer interface and shared types.
+ *
+ * Defines the {@link IPartRenderer} contract that all part-rendering strategies
+ * must satisfy, plus the {@link FighterPart}, {@link PatternDescriptor}, and
+ * {@link PartTransform} types shared across the rendering pipeline.
+ */
 import type { Container } from 'pixi.js';
 
 /**

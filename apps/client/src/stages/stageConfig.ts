@@ -1,7 +1,19 @@
+/**
+ * @fileoverview Stage configuration registry.
+ *
+ * Defines the {@link StageConfig} interface and the static {@link STAGES} array
+ * of all six selectable stages. Helper functions {@link getRandomStage} and
+ * {@link getStageById} are used by the stage-select UI and match initialization.
+ */
+
+/** Configuration for a single selectable stage. */
 export interface StageConfig {
   id: string;
+/** Display name shown in the stage-select UI. */
   displayName: string;
+  /** Filename of the background image under `/public/backgrounds/`. */
   backgroundImage: string;
+  /** Music track name without extension; played by {@link AudioManager}. */
   musicTrack: string;
 }
 
@@ -44,11 +56,22 @@ export const STAGES: StageConfig[] = [
   },
 ];
 
+/**
+ * Pick a random stage from the registry with equal probability.
+ *
+ * @returns A randomly selected {@link StageConfig}
+ */
 export function getRandomStage(): StageConfig {
   const randomIndex = Math.floor(Math.random() * STAGES.length);
   return STAGES[randomIndex]!;
 }
 
+/**
+ * Look up a stage by its unique ID.
+ *
+ * @param id - Stage ID (e.g. `'stage1'`)
+ * @returns The matching {@link StageConfig}, or `undefined` if not found
+ */
 export function getStageById(id: string): StageConfig | undefined {
   return STAGES.find((stage) => stage.id === id);
 }

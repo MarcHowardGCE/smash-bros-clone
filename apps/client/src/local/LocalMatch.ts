@@ -1,3 +1,15 @@
+/**
+ * @fileoverview Local (offline) match runner.
+ *
+ * Drives a deterministic {@link GameEngine} at 60 Hz using
+ * `requestAnimationFrame` + a fixed-timestep accumulator. Each tick, all
+ * registered {@link ITickController} instances are polled for input, the
+ * engine steps forward, and the resulting {@link StateSnapshot} is broadcast
+ * to the `onSnapshot` callback so the renderer can update.
+ *
+ * Supports pause/resume and exposes `getLatestSnapshot` for immediate reads
+ * (e.g. on first render before the first tick fires).
+ */
 import { GameEngine, type GameEngineOptions } from "@smash/server/engine";
 import type { CharacterId, KOEventData, PlayerId, StateSnapshot } from "@smash/shared";
 import type { LocalPlayerController } from "./LocalPlayerController.js";
@@ -5,6 +17,12 @@ import type { ITickController } from "./types.js";
 
 export type { GameEngineOptions };
 
+/**
+ * Runs a local offline match at 60 Hz using a fixed-timestep rAF loop.
+ *
+ * Register frame callbacks via `onSnapshot`. Call {@link start} to begin,
+ * {@link stop} to cancel the loop, and {@link cleanup} to also destroy all controllers.
+ */
 export class LocalMatch {
   private readonly engine: GameEngine;
   private readonly controllers: ITickController[];
@@ -17,12 +35,19 @@ export class LocalMatch {
 
   onSnapshot: ((snapshot: StateSnapshot) => void) | null = null;
 
+  /**
+   * Create a local match with the given controllers and optional character overrides.
+   *
+   * @param controllers - One controller per player (human or AI)
+   * @param characterIds - Optional map of playerId to characterId for custom fighters
+   */
   constructor(controllers: ITickController[], characterIds?: Partial<Record<PlayerId, CharacterId>>) {
     this.controllers = controllers;
     const playerIds = controllers.map((c) => c.playerId as PlayerId);
     this.engine = new GameEngine({ playerIds, characterIds });
   }
 
+  /** Begin the rAF loop and emit the first snapshot. */
   start(): void {
     this.lastTime = performance.now();
     this.latestSnapshot = this.engine.getSnapshot(this.lastTime, {});
@@ -30,6 +55,7 @@ export class LocalMatch {
     this.loop(this.lastTime);
   }
 
+  /** Cancel the rAF loop without destroying controllers. */
   stop(): void {
     if (this.animationFrameId !== null) {
       cancelAnimationFrame(this.animationFrameId);
@@ -37,6 +63,7 @@ export class LocalMatch {
     }
   }
 
+  /** Stop the loop and call `destroy()` on all controllers. */
   cleanup(): void {
     this.stop();
     for (const controller of this.controllers) {
@@ -48,6 +75,7 @@ export class LocalMatch {
     return this._paused;
   }
 
+  /** Pause the match loop. No-op if already paused. */
   pause(): void {
     if (this._paused) return;
     this._paused = true;
@@ -57,6 +85,7 @@ export class LocalMatch {
     }
   }
 
+  /** Resume a paused match. No-op if not paused. Resets the accumulator to avoid a frame spike. */
   resume(): void {
     if (!this._paused) return;
     this._paused = false;
@@ -65,6 +94,7 @@ export class LocalMatch {
     this.loop(this.lastTime);
   }
 
+  /** Return the most recent snapshot, or null before the first tick. */
   getLatestSnapshot(): StateSnapshot | null {
     return this.latestSnapshot;
   }
@@ -73,6 +103,7 @@ export class LocalMatch {
     return this.engine.forcePosition(playerId, x, y);
   }
 
+  /** Return all KO events since the last {@link GameEngine.clearHitEvents} call. */
   getKOEvents(): KOEventData[] {
     return this.engine.getKOEvents();
   }

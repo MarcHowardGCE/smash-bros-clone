@@ -1,7 +1,12 @@
 /**
- * LocalPlaySetupScreen - Pick participant count, then per-seat CPU difficulty or 2nd-human.
+ * @fileoverview Local Play Setup screen.
  *
- * Follows the external-render-function pattern from ControlsScreen.ts.
+ * Renders the participant-count picker (2/3/4 players) and per-seat CPU
+ * difficulty / second-human-gamepad selectors. Follows the
+ * external-render-function pattern: {@link renderLocalPlaySetupScreen} writes
+ * HTML into the provided container and manages its own keyboard + gamepad
+ * navigation lifecycle, tearing down cleanly when the screen is dismissed.
+ *
  * Seat 0 is always the local human host and is never configurable here.
  */
 

@@ -1,3 +1,11 @@
+/**
+ * @fileoverview Converts a JointPose into per-part PixiJS transforms.
+ *
+ * Extracts the positional math that was previously embedded in
+ * `FighterRenderer.redraw()` and exposes it as pure functions so that any
+ * {@link IPartRenderer} implementation can position parts correctly without
+ * duplicating geometry constants.
+ */
 import type { JointPose } from '../animations.js';
 import type { FighterPart, PartTransform } from './IPartRenderer.js';
 

@@ -1,8 +1,11 @@
 /**
- * StageSelectScreen - Grid-based stage selection with keyboard + gamepad navigation.
+ * @fileoverview Stage Select screen with grid navigation.
  *
- * Follows the external-render-function pattern from LocalPlaySetupScreen.ts.
- * 6 stages in a 3×2 grid plus a Random button below.
+ * Renders a grid of stage thumbnails plus a Random button. Supports keyboard
+ * arrow navigation, Enter/Space to confirm, Escape to go back, and gamepad
+ * D-pad/A/B equivalents. Follows the external-render-function pattern:
+ * {@link renderStageSelectScreen} writes HTML into the provided container and
+ * manages its own input lifecycle, cleaning up on selection or back.
  */
 
 import type { GamepadPoller } from '@smash/gamepad-input';

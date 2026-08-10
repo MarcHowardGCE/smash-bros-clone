@@ -1,3 +1,11 @@
+/**
+ * @fileoverview Static stage geometry renderer.
+ *
+ * Draws the main platform, soft pass-through platforms, ledge markers, and a
+ * subtle background grid into a single PixiJS Container. Everything is drawn
+ * once in the constructor — no per-frame updates are needed because the stage
+ * geometry never changes at runtime.
+ */
 import { Container, Graphics } from 'pixi.js';
 import { STAGE } from '@smash/shared';
 
@@ -6,9 +14,18 @@ const COLOR_WHITE = 0xFFFFFF;
 const COLOR_BLACK = 0x000000;
 const STROKE_WIDTH = 2;
 
+/**
+ * Renders static stage geometry: main platform, soft platforms, ledge markers,
+ * and background grid. Geometry is drawn once at construction time.
+ */
 export class StageRenderer {
   private container: Container;
 
+  /**
+   * Create the stage renderer and immediately draw all geometry.
+   *
+   * @param parentContainer - PixiJS Container to attach stage graphics to
+   */
   constructor(parentContainer: Container) {
     this.container = new Container();
     parentContainer.addChild(this.container);

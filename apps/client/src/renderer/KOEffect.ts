@@ -1,3 +1,11 @@
+/**
+ * @fileoverview KO tumble and star-burst visual effect.
+ *
+ * Plays a 40-frame animation when a fighter is knocked out: the fighter
+ * container spins two full rotations while 8 star particles radiate outward
+ * and fade. The caller drives the effect by calling {@link KOEffect.tick}
+ * each frame and applying the returned rotation value to the fighter container.
+ */
 import { Container, Graphics } from 'pixi.js';
 
 /** Duration of the KO effect in frames. */
@@ -35,6 +43,18 @@ export class KOEffect {
   private frame = 0;
   private _active = false;
 
+/**
+ * Attach the KO effect container to a parent and control it via {@link start},
+ * {@link tick}, and {@link stop}.
+ *
+ * @param parentContainer - Fighter's root Container; the effect container is added as a child
+ */
+  /**
+   * Attach the KO effect container to a parent and control it via {@link start},
+   * {@link tick}, and {@link stop}.
+   *
+   * @param parentContainer - Fighter's root Container; the effect container is added as a child
+   */
   constructor(parentContainer: Container) {
     this.container = new Container();
     parentContainer.addChild(this.container);

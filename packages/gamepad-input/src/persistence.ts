@@ -1,11 +1,13 @@
 /**
- * Persistence layer for gamepad slot assignments.
+ * @fileoverview Persistence layer for gamepad slot assignments.
  *
- * Uses gamepad.id (device name string) as the stable key, not gamepad.index
- * (which is reassigned across reconnects and browser restarts).
+ * Stores and retrieves gamepad-to-slot mappings using an injected
+ * {@link StorageAdapter} (compatible with `localStorage` / `sessionStorage`).
+ * Uses `Gamepad.id` (the device name string) as the stable key rather than
+ * `Gamepad.index`, which is reassigned across reconnects and browser restarts.
  *
- * Storage is injectable to allow for localStorage (browser), sessionStorage,
- * or test fakes without direct platform API dependencies.
+ * Designed for graceful degradation: corrupt or missing storage data always
+ * returns an empty array rather than throwing.
  */
 
 /**

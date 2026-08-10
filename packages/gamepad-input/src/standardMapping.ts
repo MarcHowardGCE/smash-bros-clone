@@ -1,6 +1,12 @@
 /**
- * W3C Standard Gamepad mapping for Xbox-style controllers.
- * Provides button index constants, deadzone handling, and input bit sampling.
+ * @fileoverview W3C Standard Gamepad mapping constants and input sampling utilities.
+ *
+ * Provides the button/axis index constants for the W3C "standard" gamepad layout
+ * (Xbox One, PS4, and any controller that reports `mapping === "standard"`), a
+ * uint16 bitmask definition for generic directional and action inputs, radial
+ * deadzone handling for analog sticks, and {@link sampleGamepadBits} which
+ * combines all of the above into a single {@link GenericInputBitmask} value per
+ * tick-driven poll call.
  */
 
 /**
@@ -48,6 +54,10 @@ export const GenericInputBits = {
   BACK:    0x2000,
 } as const;
 
+/**
+ * A uint16 bitmask representing the current input state of a gamepad.
+ * Individual bits are defined by {@link GenericInputBits}.
+ */
 export type GenericInputBitmask = number;
 
 /**

@@ -1,3 +1,10 @@
+/**
+ * @fileoverview Unit tests for {@link GamepadPreferenceStore}.
+ *
+ * Covers: save/load round-trips, corrupt and missing JSON graceful degradation,
+ * findSlotForGamepadId lookups, duplicate-entry handling, and storage key isolation.
+ */
+
 import { describe, it, expect } from 'vitest';
 import {
   GamepadPreferenceStore,

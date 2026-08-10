@@ -1,3 +1,11 @@
+/**
+ * @fileoverview Unit tests for standardMapping utilities.
+ *
+ * Covers: STANDARD_BUTTON_INDEX constants, GenericInputBits uniqueness and
+ * uint16 range, applyRadialDeadzone deadzone math, and sampleGamepadBits
+ * button/axis/D-pad/deadzone sampling edge cases.
+ */
+
 import { describe, it, expect } from 'vitest';
 import {
   STANDARD_BUTTON_INDEX,

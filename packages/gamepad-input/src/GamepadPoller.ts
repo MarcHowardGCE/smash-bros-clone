@@ -1,11 +1,15 @@
 /**
- * GamepadPoller - tick-driven gamepad polling with connect/disconnect detection
- * 
- * Follows the same pattern as InputManager: event-driven connection detection,
- * tick-driven polling via external caller (NOT internal setInterval).
- * 
- * Handles Chrome late-connect quirk: performs immediate navigator.getGamepads()
- * sweep on start() before listener attachment.
+ * @fileoverview Tick-driven gamepad polling for up to 4 simultaneous controllers.
+ *
+ * Polls connected gamepads on each external tick (rAF or game-loop call) using the
+ * W3C Gamepad API. Maps standard-mapping axes and buttons to {@link GenericInputBitmask}
+ * bit flags via {@link sampleGamepadBits}. Handles connect/disconnect lifecycle through
+ * browser events, with a Chrome late-connect workaround that sweeps already-connected
+ * controllers on {@link GamepadPoller.start}.
+ *
+ * Follows the same event-driven + tick-driven pattern as the keyboard InputManager:
+ * connection detection is event-driven; input sampling is caller-driven (no internal
+ * setInterval).
  */
 
 import { sampleGamepadBits, type GenericInputBitmask } from './standardMapping.js';
@@ -29,8 +33,18 @@ export class GamepadPoller {
   private isStarted = false;
   private connectedGamepads = new Map<number, Gamepad>();
 
-  // Public callbacks - fire from browser events (not from poll())
+  /**
+   * Called when a standard-mapping gamepad connects (or is found during the
+   * initial start-up sweep). Receives the connected {@link Gamepad} object.
+   * Set to `null` to ignore connect events.
+   */
   onConnect: ((gamepad: Gamepad) => void) | null = null;
+
+  /**
+   * Called when a connected gamepad disconnects. Receives the gamepad's
+   * numeric index. Silent no-op if the index was never tracked.
+   * Set to `null` to ignore disconnect events.
+   */
   onDisconnect: ((gamepadIndex: number) => void) | null = null;
 
   /**

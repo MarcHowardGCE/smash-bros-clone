@@ -1,8 +1,9 @@
 /**
- * GamepadPoller unit tests
- * 
- * Tests: event-driven connect/disconnect, tick-driven poll(),
- * Chrome late-connect workaround, callback firing
+ * @fileoverview Unit tests for {@link GamepadPoller}.
+ *
+ * Covers: event-driven connect/disconnect lifecycle, tick-driven poll(),
+ * the Chrome late-connect sweep on start(), duplicate-event deduplication,
+ * non-standard-mapping gamepad filtering, and button/axis bit sampling.
  */
 
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';

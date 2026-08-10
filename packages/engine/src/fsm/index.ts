@@ -1,3 +1,13 @@
+/**
+ * @fileoverview Public barrel for the FSM subsystem.
+ *
+ * Exports the `FSMController` class, all 25 concrete state implementations,
+ * the shared interfaces (`FSMContext`, `FSMTransition`, `IFSMState`), and the
+ * convenience helpers `createFSM` / `tickFSM` used by `GameEngine`.
+ *
+ * Import order within this file deliberately places interface definitions before
+ * class exports so consumers can import types and implementations from one path.
+ */
 import type { InputEvent, PlayerState } from '@smash/shared';
 import { PlayerStateEnum } from '@smash/shared';
 import { FSMController } from './FSMController.js';

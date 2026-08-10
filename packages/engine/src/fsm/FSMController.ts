@@ -1,3 +1,13 @@
+/**
+ * @fileoverview Per-fighter finite state machine driver.
+ *
+ * `FSMController` owns the active state object for one fighter and routes every
+ * game-tick through the correct `IFSMState` implementation. It handles hitlag
+ * freezing (SDI/ASDI included), external server state overrides, edge-fall
+ * detection, and the enter → update → exit lifecycle across all 25 states.
+ *
+ * One `FSMController` instance per fighter. Never share instances.
+ */
 import type { InputEvent, PlayerState } from '@smash/shared';
 import { PlayerStateEnum } from '@smash/shared';
 import { INPUT_BITS, PHYSICS } from '@smash/shared';
@@ -64,6 +74,10 @@ export class FSMController {
   private stateName: PlayerStateEnum;
   private readonly stateRegistry: Map<PlayerStateEnum, IFSMState>;
 
+  /**
+   * @param initialState - The `PlayerStateEnum` to start the fighter in.
+   *   Defaults to `IDLE`. Must have a corresponding entry in the state registry.
+   */
   constructor(initialState: PlayerStateEnum = PlayerStateEnum.IDLE) {
     this.stateRegistry = new Map([
       [PlayerStateEnum.IDLE, new IdleState()],
@@ -97,7 +111,23 @@ export class FSMController {
     this.currentState = this.getState(initialState);
   }
 
-	  tick(player: PlayerState, input: InputEvent | null): PlayerState {
+  /**
+   * Advances the FSM by one game tick (one 60 Hz frame).
+   *
+   * Order of operations:
+   * 1. Re-sync active state object if the server overrode `player.state`.
+   * 2. If hitlag is active, apply SDI drift and return early — no state progress.
+   * 3. Apply ASDI positional drift while in hitstun (post-hitlag).
+   * 4. Delegate to `currentState.update()` to get a transition (or `null`).
+   * 5. Force AIRBORNE transition if a grounded state detects loss of ground.
+   * 6. Advance `stateFrame`; decrement `hitstunFramesRemaining`.
+   * 7. If a transition was produced, call `applyTransition()` and return.
+   *
+   * @param player - Immutable snapshot of the fighter's current state.
+   * @param input - Bitmask input event for this tick, or `null` if no input.
+   * @returns A new `PlayerState` snapshot reflecting the tick outcome.
+   */
+  tick(player: PlayerState, input: InputEvent | null): PlayerState {
     if (player.state !== this.stateName) {
       this.stateName = player.state as PlayerStateEnum;
       this.currentState = this.getState(this.stateName);
@@ -223,10 +253,28 @@ export class FSMController {
     return nextPlayer;
   }
 
+  /**
+   * Returns the current state enum value without running any logic.
+   *
+   * Useful for external systems (e.g. `GameEngine`) that need to read the
+   * active state label without triggering a tick.
+   */
   getCurrentStateName(): PlayerStateEnum {
     return this.stateName;
   }
 
+  /**
+   * Fires the exit hook on the outgoing state, switches the active state object
+   * to the incoming one, resets `stateFrame` to 0, propagates any field mutations
+   * made by `exit()` (e.g. `airDodgeDirection` clearing), then fires `enter()` on
+   * the incoming state.
+   *
+   * @param transition - Descriptor returned by the outgoing state's `update()`.
+   * @param ctx - FSM context for the outgoing state's `exit()` call.
+   * @param player - Player snapshot with `stateFrame` already incremented.
+   * @param input - Raw input event forwarded to the incoming state's `enter()`.
+   * @returns A new `PlayerState` with `state` and `stateFrame` updated.
+   */
   private applyTransition(
     transition: FSMTransition,
     ctx: FSMContext,
@@ -267,6 +315,16 @@ export class FSMController {
     return nextPlayer;
   }
 
+  /**
+   * Looks up a pre-instantiated state object from the registry.
+   *
+   * Throws if the requested enum value has no registered implementation,
+   * which would indicate a programming error (a new `PlayerStateEnum` value
+   * was added without a corresponding state class entry).
+   *
+   * @param state - The `PlayerStateEnum` to resolve.
+   * @returns The singleton `IFSMState` instance for that state.
+   */
   private getState(state: PlayerStateEnum): IFSMState {
     const resolved = this.stateRegistry.get(state);
 

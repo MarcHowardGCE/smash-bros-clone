@@ -1,3 +1,17 @@
+/**
+ * @fileoverview DASH state — initial directional movement with a commit window.
+ *
+ * Dash lasts `DASH_FRAMES` (15) frames. During this window the fighter moves at
+ * dash speed. A direction reversal mid-dash restarts the state from frame 0
+ * (dash-dancing). After 15 frames without interruption the fighter escalates to
+ * RUN.
+ *
+ * Entered from: WALK (direction still held after 1-frame walk window).
+ *
+ * Transitions out to: ATTACK (attack/special/grab pressed), IDLE (direction
+ * released), JUMPSQUAT (jump pressed), SHIELD (shield held),
+ * DASH (direction reversed — dash-dance), RUN (frame >= DASH_FRAMES - 1).
+ */
 import {
 	BaseState,
 	INPUT_BITS,
@@ -11,6 +25,11 @@ import type { FSMContext, FSMTransition } from '../index.js';
 
 const DASH_FRAMES = 15;
 
+/**
+ * Initial directional movement state. Lasts `DASH_FRAMES` (15) frames at dash speed.
+ * Direction reversal mid-dash restarts the state (dash-dancing). Escalates to RUN
+ * after the commit window expires.
+ */
 export class DashState extends BaseState {
 	update(ctx: FSMContext, frame: number): FSMTransition | null {
 		if (

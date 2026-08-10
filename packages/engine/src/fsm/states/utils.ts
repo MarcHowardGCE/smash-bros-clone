@@ -1,3 +1,19 @@
+/**
+ * @fileoverview Shared utilities for FSM state implementations.
+ *
+ * Contains:
+ * - `BaseState` — abstract base class satisfying `IFSMState` with no-op
+ *   `enter`/`exit` hooks so concrete states only override what they need.
+ * - `transition()` — factory for `FSMTransition` objects.
+ * - Input helpers: `isHeld`, `isPressed`, `isDirectionHeld`.
+ * - Frame-count tables for every `MoveId` (`MOVE_TOTAL_FRAMES`,
+ *   `MOVE_STARTUP_FRAMES`) and the resolver functions that read them.
+ * - `isSmashMoveId()` — distinguishes chargeable smash attacks from tilts.
+ *
+ * The frame-count tables are intentionally duplicated from
+ * `packages/engine/src/moves/` to avoid a circular import between the FSM
+ * and moves subsystems. Keep them in sync when adding or adjusting moves.
+ */
 import type { InputEvent } from '@smash/shared';
 import { INPUT_BITS, MoveId, PHYSICS, PlayerStateEnum } from '@smash/shared';
 import type { FSMContext, FSMTransition, IFSMState } from '../index.js';

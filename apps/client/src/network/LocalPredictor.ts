@@ -1,3 +1,15 @@
+/**
+ * @fileoverview LocalPredictor - client-side prediction and server reconciliation
+ * for the local player in the smash-bros-clone netcode stack.
+ *
+ * Without prediction every keystroke would feel delayed by the full network
+ * round-trip (~50-200 ms). This module applies the local player's inputs
+ * immediately in the browser so movement feels instant, while the server
+ * remains authoritative for everything that matters competitively (damage,
+ * knockback, stocks, hit detection).
+ *
+ * See the class-level JSDoc for the full reconciliation algorithm.
+ */
 import { applyMovementInput, startJump } from '@smash/engine';
 import { INPUT_BITS, PlayerStateEnum, type InputEvent, type PlayerId, type PlayerState, type StateSnapshot } from '@smash/shared';
 
@@ -54,6 +66,12 @@ export class LocalPredictor {
     this.playerId = playerId;
   }
 
+  /**
+   * Registers a new input event, applies it to the predicted state immediately,
+   * and queues it in `pendingInputs` for later reconciliation.
+   *
+   * @param input - The seq-stamped input event from `InputManager`.
+   */
   onInput(input: InputEvent): void {
     if (!this.predictedState) {
       return;
@@ -63,6 +81,18 @@ export class LocalPredictor {
     this.predictedState = this.applyLocalMovement(this.predictedState, input);
   }
 
+  /**
+   * Reconciles local prediction against the authoritative server snapshot.
+   *
+   * Client-side prediction + reconciliation:
+   * 1. Apply input immediately to local state (no wait for server)
+   * 2. On server snapshot: find the matching seq number in the pending-input buffer
+   * 3. Prune all inputs <= confirmed seq
+   * 4. Replay remaining unconfirmed inputs forward from the confirmed server state
+   * 5. This ensures movement feels instant while the server remains authoritative for combat
+   *
+   * @param snapshot - The latest authoritative state broadcast by the server.
+   */
   onServerSnapshot(snapshot: StateSnapshot): void {
     const serverPlayerState = snapshot.players[this.playerId];
     if (!serverPlayerState) {
@@ -80,12 +110,22 @@ export class LocalPredictor {
     this.predictedState = this.replayFromConfirmed();
   }
 
+  /**
+   * Seeds the predictor with an initial authoritative player state on first
+   * snapshot receipt. Must be called before `onInput` or `onServerSnapshot`.
+   *
+   * @param playerState - The first authoritative state for this player from the server.
+   */
   initialize(playerState: PlayerState): void {
     this.confirmedState = clonePlayerState(playerState);
     this.predictedState = clonePlayerState(playerState);
     this.pendingInputs = [];
   }
 
+  /**
+   * Returns a defensive clone of the current predicted state for the renderer.
+   * Returns `null` if the predictor has not yet been initialized.
+   */
   getPredictedState(): PlayerState | null {
     return this.predictedState ? clonePlayerState(this.predictedState) : null;
   }

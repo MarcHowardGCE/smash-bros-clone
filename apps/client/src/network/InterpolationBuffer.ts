@@ -1,3 +1,16 @@
+/**
+ * @fileoverview InterpolationBuffer - snapshot interpolation for remote players
+ * in the smash-bros-clone netcode stack.
+ *
+ * The server broadcasts authoritative game state at ~20 Hz, but the renderer
+ * runs at 60 fps via requestAnimationFrame. This buffer bridges that gap by
+ * storing the last N snapshots and lerping remote player positions between
+ * them, producing fluid 60 fps visuals from a 20 Hz data stream.
+ *
+ * The local player is NOT interpolated here; that role belongs to
+ * `LocalPredictor` (client-side prediction), which applies inputs immediately
+ * without waiting for a server snapshot.
+ */
 import { lerp } from '@smash/shared';
 import type { StateSnapshot, PlayerState, PlayerId, MoveId, CharacterId } from '@smash/shared';
 
@@ -50,6 +63,17 @@ export class InterpolationBuffer {
   private snapshots: StateSnapshot[] = [];
   private readonly bufferSize = 3;
 
+  /**
+   * Queues an authoritative server snapshot, keeping only the last `bufferSize` entries.
+   *
+   * Snapshot interpolation for remote players:
+   * Snapshots arrive at ~20Hz (every 3 render frames at 60fps).
+   * The buffer holds 3 snapshots. At render time, lerp between snapshot[n] and snapshot[n+1]
+   * using elapsed time / snapshot interval as t. This eliminates the jitter of rendering
+   * the raw 20Hz positions and gives the appearance of 60fps smooth movement.
+   *
+   * @param snapshot - The latest authoritative `StateSnapshot` from the server.
+   */
   pushSnapshot(snapshot: StateSnapshot): void {
     this.snapshots.push(snapshot);
     // Keep last 3 snapshots
@@ -59,8 +83,16 @@ export class InterpolationBuffer {
   }
 
   /**
-   * Get interpolated state at the given timestamp.
-   * Uses the two most recent snapshots and lerps between them.
+   * Computes an interpolated `RenderState` for the given timestamp.
+   *
+   * Lerps remote player positions between the two most recent snapshots.
+   * The local player's entry is snapped to the latest snapshot value as a
+   * fallback; `GameClient.renderTick` immediately overwrites it with the
+   * predicted state from `LocalPredictor`.
+   *
+   * @param now - Current timestamp in ms (typically `performance.now()`).
+   * @param localPlayerId - ID of the local player, excluded from interpolation.
+   * @returns Interpolated render state, or `null` if fewer than one snapshot exists.
    */
   getInterpolatedState(now: number, localPlayerId: PlayerId): RenderState | null {
     if (this.snapshots.length < 2) {
@@ -142,14 +174,17 @@ export class InterpolationBuffer {
     };
   }
 
+  /** Returns the most recent authoritative snapshot, or `null` if the buffer is empty. */
   getLatestSnapshot(): StateSnapshot | null {
     return this.snapshots[this.snapshots.length - 1] ?? null;
   }
 
+  /** Returns `true` if at least one snapshot has been received. */
   hasData(): boolean {
     return this.snapshots.length > 0;
   }
 
+  /** Clears all buffered snapshots. Called on disconnect and match restart. */
   clear(): void {
     this.snapshots = [];
   }

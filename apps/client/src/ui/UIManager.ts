@@ -12,6 +12,7 @@
  */
 import type { GamepadPoller, GamepadPreferenceStore } from '@smash/gamepad-input';
 import { GenericInputBits } from '@smash/gamepad-input';
+import { VERSION } from '@smash/shared';
 import type { PlayerId } from '@smash/shared';
 import type { RenderState } from '../network/InterpolationBuffer.js';
 import type { ControllerAssignmentManager } from '../input/ControllerAssignmentManager.js';
@@ -87,6 +88,11 @@ export class UIManager {
       this.menuNav.stop();
       this.menuNav = null;
     }
+  }
+
+  /** Return an HTML snippet for the version badge (fixed bottom-right). */
+  private versionTag(): string {
+    return `<div style="position:fixed;bottom:10px;right:10px;font-family:monospace;font-size:12px;color:rgba(255,255,255,0.6);z-index:100;pointer-events:none">v${VERSION}</div>`;
   }
 
   /** Show the "Connecting to server…" phase. */
@@ -203,7 +209,8 @@ export class UIManager {
         <button id="local-play-btn" class="ui-btn" style="margin-top:8px">Local Play</button>
         <button id="controls-btn" class="ui-btn" style="margin-top:12px">Controls</button>
       </div>
-      <div class="menu-hint">↑↓ Navigate • Enter/A Select</div>`;
+      <div class="menu-hint">↑↓ Navigate • Enter/A Select</div>
+      ${this.versionTag()}`;
 
     document.getElementById('create-btn')?.addEventListener('click', () => this.onCreateRoom?.());
     document.getElementById('join-btn')?.addEventListener('click', () => {
@@ -735,7 +742,8 @@ export class UIManager {
         <button id="resume-btn" class="ui-btn" style="margin-bottom:16px">Resume</button>
         <button id="main-menu-btn" class="ui-btn">Main Menu</button>
       </div>
-      <div class="menu-hint">↑↓ Navigate • Enter/A Select</div>`;
+      <div class="menu-hint">↑↓ Navigate • Enter/A Select</div>
+      ${this.versionTag()}`;
 
     document.getElementById('resume-btn')?.addEventListener('click', () => this.onResume?.());
     document.getElementById('main-menu-btn')?.addEventListener('click', () => this.onMainMenu?.());
@@ -790,7 +798,8 @@ export class UIManager {
         <button id="play-again-btn" class="ui-btn">Play Again</button>
         <button id="main-menu-btn" class="ui-btn" style="margin-top:12px">Main Menu</button>
       </div>
-      <div class="menu-hint">↑↓ Navigate • Enter/A Select</div>`;
+      <div class="menu-hint">↑↓ Navigate • Enter/A Select</div>
+      ${this.versionTag()}`;
 
     document.getElementById('play-again-btn')?.addEventListener('click', () => {
       this.onPlayAgain?.();
@@ -914,7 +923,8 @@ export class UIManager {
         <button id="local-play-again-btn" class="ui-btn">Play Again</button>
         <button id="main-menu-btn" class="ui-btn" style="margin-top:12px">Main Menu</button>
       </div>
-      <div class="menu-hint">↑↓ Navigate • Enter/A Select</div>`;
+      <div class="menu-hint">↑↓ Navigate • Enter/A Select</div>
+      ${this.versionTag()}`;
 
     document.getElementById('local-play-again-btn')?.addEventListener('click', () => {
       this.onLocalPlayAgain?.();

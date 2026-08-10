@@ -225,3 +225,125 @@ Remote players don't get prediction. Their positions come only from server snaps
 | `apps/client/src/main.test.ts` | Top-level app bootstrap |
 | `apps/client/src/main.local-play-flow.test.ts` | Full local-play flow integration |
 | `apps/client/src/main.network-character-select-flow.test.ts` | Full network character-select flow integration |
+
+---
+
+## Versioning Workflow
+
+`packages/shared/src/version.ts` is the single source of truth for the project version. Nothing else owns the version number. All `package.json` files across the monorepo are downstream — they get updated by a script, not by hand.
+
+### The 3-step process
+
+**Step 1 — Edit `version.ts`**
+
+Open `packages/shared/src/version.ts` and update the version string:
+
+```ts
+// packages/shared/src/version.ts
+export const VERSION = "0.1.2";
+```
+
+Bump according to semantic versioning: patch for bug fixes, minor for new features, major for breaking changes.
+
+**Step 2 — Run the sync script**
+
+```bash
+node scripts/sync-version.js
+```
+
+This reads `VERSION` from `version.ts` and writes it into every `package.json` in the monorepo. Expected output:
+
+```
+Synced version 0.1.2 to:
+  packages/shared/package.json
+  packages/engine/package.json
+  packages/gamepad-input/package.json
+  apps/server/package.json
+  apps/client/package.json
+```
+
+Commit both `version.ts` and the updated `package.json` files together in a single commit:
+
+```bash
+git add packages/shared/src/version.ts packages/*/package.json apps/*/package.json
+git commit -m "chore: bump version to 0.1.2"
+```
+
+**Step 3 — Tag the release**
+
+```bash
+bash scripts/tag-release.sh
+```
+
+The script reads the current version from `version.ts`, creates an annotated git tag (`v0.1.2`), and pushes the tag to origin. Expected output:
+
+```
+Tagging v0.1.2...
+To github.com:you/smash-bros-clone.git
+ * [new tag]         v0.1.2 -> v0.1.2
+Done.
+```
+
+If the tag already exists (you ran the script twice by accident), the script exits with an error rather than overwriting. Fix by deleting the tag locally and on origin, then re-running:
+
+```bash
+git tag -d v0.1.2
+git push origin :refs/tags/v0.1.2
+bash scripts/tag-release.sh
+```
+
+### GitHub release (optional)
+
+After the tag is pushed, create a GitHub release to attach release notes and make the version visible on the repo's Releases page:
+
+1. Go to your repo on GitHub → **Releases** → **Draft a new release**
+2. Select the tag you just pushed (`v0.1.2`)
+3. Set the title to `v0.1.2`
+4. Write release notes (what changed, what's fixed)
+5. Click **Publish release**
+
+Alternatively, use the GitHub CLI:
+
+```bash
+gh release create v0.1.2 --title "v0.1.2" --notes "Describe what changed here"
+```
+
+This step is optional but recommended for any version you deploy to production.
+
+---
+
+## Pre-Push Checklist
+
+Run through this before pushing to `main` or opening a PR against it.
+
+```
+[ ] pnpm test passes (zero failures)
+[ ] pnpm build passes (no TypeScript errors)
+[ ] packages/engine has no Date.now() or Math.random() (see Critical Invariants)
+[ ] Version bumped in packages/shared/src/version.ts if this is a stable release
+[ ] scripts/sync-version.js run and all package.json files committed alongside version.ts
+[ ] Git tag created with scripts/tag-release.sh if this is a release commit
+[ ] No console.log left in hot-path code (GameEngine.ts, physics/index.ts, hitbox/index.ts)
+[ ] No JSON.stringify on game state (binary msgpack only on hot path)
+```
+
+### Version verification
+
+To confirm the version is consistent across the monorepo before pushing:
+
+```bash
+node -e "
+const { VERSION } = require('./packages/shared/src/version.ts');
+const pkgs = [
+  'packages/shared/package.json',
+  'packages/engine/package.json',
+  'packages/gamepad-input/package.json',
+  'apps/server/package.json',
+  'apps/client/package.json',
+].map(p => require('./' + p).version);
+const allMatch = pkgs.every(v => v === VERSION);
+console.log(allMatch ? 'OK — all versions match ' + VERSION : 'MISMATCH: ' + pkgs.join(', '));
+"
+```
+
+If any package is out of sync, re-run `node scripts/sync-version.js` and commit the changes before pushing.

@@ -1,3 +1,14 @@
+/**
+ * @fileoverview Express + socket.io application factory.
+ *
+ * Wires together the HTTP server, socket.io server, CORS configuration, and
+ * static file serving. In production (`NODE_ENV=production`) the built client
+ * `dist/` is served as static files from the same process, making this a
+ * single deployable unit. All game event routing (room lifecycle, input
+ * forwarding, match coordination) lives inside the `io.on('connection', ...)`
+ * handler returned by this factory.
+ */
+
 import type * as http from "node:http";
 import express from "express";
 import { createServer } from "node:http";
@@ -8,6 +19,42 @@ import { Server } from "socket.io";
 import { MatchSession } from "./MatchSession.js";
 import { RoomManager } from "./RoomManager.js";
 
+/**
+ * Creates and configures the Express + socket.io application.
+ *
+ * @remarks
+ * **What this wires up:**
+ *
+ * - An Express app with optional static file serving in production
+ * - A socket.io `Server` bound to the HTTP server with WebSocket-only
+ *   transport (`["websocket"]`), a 5 s ping interval, and 10 s ping timeout
+ * - CORS origin controlled by the `CLIENT_ORIGIN` environment variable
+ *   (defaults to `http://localhost:5173`)
+ * - A single {@link RoomManager} instance shared across all connections
+ * - A `matchSessions` map keyed by room code holding active {@link MatchSession}
+ *   instances
+ * - A `countdownTimers` map keyed by room code holding in-flight `setTimeout`
+ *   handles so they can be cancelled on early disconnect
+ *
+ * **Socket events handled:**
+ *
+ * | Event | Direction | Description |
+ * |---|---|---|
+ * | `room:create` | client → server | Create a new room; returns `{ roomCode, playerId, slotIndex }` |
+ * | `room:join` | client → server | Join an existing room by code |
+ * | `player:ready` | client → server | Mark self as ready; triggers character select when all ready |
+ * | `character:select` | client → server | Set character choice (unconfirmed) |
+ * | `character:confirm` | client → server | Lock in character; triggers 3 s countdown when all confirmed |
+ * | `game:input` | client → server | Binary msgpack `InputEvent`; forwarded to the active session |
+ * | `game:pause` | client → server | Pause the active match session |
+ * | `game:resume` | client → server | Resume a paused match session |
+ * | `room:leave` | client → server | Explicit leave (treated identically to disconnect) |
+ * | `disconnect` | socket.io | Handles cleanup for any phase |
+ *
+ * @returns An object containing the raw `httpServer`, the socket.io `io`
+ *   instance, and the `roomManager` — all three are exposed so tests can
+ *   inspect internal state without going through the socket layer.
+ */
 export function createApp(): {
 	httpServer: http.Server;
 	io: Server;

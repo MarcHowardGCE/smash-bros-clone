@@ -2,12 +2,13 @@
  * @fileoverview AIR_DODGE state — aerial invincible dodge with wavedash support.
  *
  * Lasts `AIR_DODGE_DURATION_FRAMES` (23) frames. On `enter()`, the held
- * directional input is captured into `airDodgeDirection`. The physics layer
- * reads this vector each tick to apply the dodge's directional velocity.
+ * directional input is captured into `airDodgeDirection` for wavedash-landing
+ * detection. The server's GameEngine checks this vector when the fighter lands
+ * to determine if a wavedash should occur.
  *
  * Wavedash: if the player holds DOWN (optionally with LEFT/RIGHT), the
  * dodge angle points into the ground. When the fighter lands during the
- * dodge window the physics layer converts the diagonal momentum into a
+ * dodge window the server converts the diagonal momentum into a
  * grounded slide — the wavedash.
  *
  * `airDodgeDirection` is cleared in `exit()` so it doesn't bleed into
@@ -24,9 +25,9 @@ import type { FSMContext, FSMTransition } from '../index.js';
 const AIR_DODGE_DURATION_FRAMES = 23;
 
 /**
- * Aerial invincible dodge. Captures directional input on entry for the physics
- * layer to apply dodge velocity. DOWN-angled dodges that land produce a wavedash.
- * Clears `airDodgeDirection` on exit to prevent state bleed.
+ * Aerial invincible dodge. Captures directional input on entry for wavedash-landing
+ * detection. DOWN-angled dodges that land produce a wavedash. Clears `airDodgeDirection`
+ * on exit to prevent state bleed.
  */
 export class AirDodgeState extends BaseState {
   override enter(ctx: FSMContext): void {

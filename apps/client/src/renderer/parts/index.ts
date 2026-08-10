@@ -1,3 +1,5 @@
+/** @fileoverview Factory for creating part renderers with support for polygon and sprite rendering modes. */
+
 import type { CharacterId } from '@smash/shared';
 import type { IPartRenderer } from './IPartRenderer';
 import { PolygonPartRenderer } from './PolygonPartRenderer';

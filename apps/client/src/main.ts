@@ -1,3 +1,5 @@
+/** @fileoverview Main entry point for the Smash Bros clone client application. */
+
 import type {
 	CharacterId,
 	HitEventData,

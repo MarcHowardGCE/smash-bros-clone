@@ -1,3 +1,5 @@
+/** @fileoverview Type definitions for local play mode controllers and seat configuration. */
+
 import type { InputBitmask, PlayerId, BotDifficulty, InputEvent, GameState } from '@smash/shared';
 import type { GamepadInputSource } from '../input/GamepadInputSource.js';
 

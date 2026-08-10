@@ -1,3 +1,5 @@
+/** @fileoverview Injects global CSS styles for UI overlays, buttons, inputs, and splash screen. */
+
 export function injectStyles(): void {
   const style = document.createElement('style');
   style.textContent = `

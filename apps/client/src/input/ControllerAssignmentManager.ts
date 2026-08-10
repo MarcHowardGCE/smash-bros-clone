@@ -1,3 +1,5 @@
+/** @fileoverview Auto-assigns connected gamepads to input slots with persistence and restoration. */
+
 /**
  * ControllerAssignmentManager - Auto-assigns connected gamepads to slots with persistence
  *

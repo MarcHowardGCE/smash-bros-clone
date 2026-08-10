@@ -249,6 +249,36 @@ Local-play CPU opponents are shipped. The lobby's participant-count-first flow l
 
 ---
 
+## Next Steps
+
+Ordered by impact-to-effort ratio. None of these require touching the engine's determinism invariants or the server-authority model.
+
+- **Audio system (5–8 SFX + 1 BGM loop).** The single largest "feels unfinished" gap. Create `apps/client/src/audio/AudioManager.ts` wrapping the Web Audio API. Wire hit SFX to `applyHit` (pitch by knockback magnitude), movement SFX to FSM transitions, and one looped BGM track per stage that starts on `MATCH` and stops on `RESULT`. Five clips (hit, jump, land, shield-on, KO) closes most of the gap before adding music.
+
+- **Second fighter: a fast floaty archetype.** The FSM, physics, and netcode don't change — this is purely new `MoveData` constants in `packages/engine/src/moves/` and new render assets in `apps/client`. A lightweight floaty character (low weight ~75, high air speed, multi-jump, weaker knockback) creates meaningful character-select decisions against Lincoln's heavyweight bruiser style.
+
+- **Second stage: a moving-platform arena.** Add a new `StageConfig` in `apps/client/src/stages/stageConfig.ts` with a center platform and one or two moving soft platforms. Wire platform-position ticks through `GameEngine` (server-authoritative position update each tick) so the deterministic engine drives platform state. Gradient background in `StageRenderer` closes the "white rectangle on a dark grid" problem at the same time.
+
+- **Blast-zone edge glow.** A subtle red glow at the `STAGE.blastZones` coordinates drawn in `BackgroundLayer` — low effort, immediately improves spatial awareness. Players currently have zero visual cue for kill boundaries.
+
+- **Smash input distinction (double-tap detector).** `SHIELD + ATTACK` for smash is non-standard. Add a double-tap detection layer to `InputManager`: track time between two directional inputs and set a `SMASH_DIRECTIONAL` bit when under the threshold. `AttackState` already reads `currentMoveId` — this just changes which move gets selected.
+
+- **Reconnection and session rejoin.** `socket.io` is initialized with `reconnection: false` — one dropped packet kills the match. Set `reconnection: true`, store `playerId` in `RoomManager` on disconnect, and re-slot the player on reconnect. No engine changes needed; the server's `GameState` is already the authoritative record.
+
+- **Spectator mode.** The 20 Hz `StateSnapshot` broadcast already supports extra connected clients that never send inputs. Add a `SPECTATE` join path in `RoomManager` that skips slot assignment. The client renders the game state normally; `LocalPredictor` just never fires.
+
+- **Replay system.** The deterministic engine makes this straightforward: store the full input stream per match (sequence of `InputEvent[]` per tick), then replay it by feeding those inputs back into a fresh `GameEngine` instance. No video encoding needed. Ship as a "watch last match" button on the result screen; persist to `localStorage` for the most recent match.
+
+- **Training mode with frame-data display.** A local-play mode where: stocks are infinite, percent resets on a button press, and the HUD shows the current FSM state name and frame count for both fighters. Hooks into `UIManager`'s phase system; the server runs a normal match loop with a `TRAINING` flag that skips KO stock-loss.
+
+- **Multi-CPU targeting awareness.** CPUs currently always target Player 1 and ignore each other. Update `botAI.ts` to select the nearest opponent by position (or lowest-stock opponent) rather than hardcoding index 0. Affects `apps/server/src/GameEngine.ts` where bot inputs are generated.
+
+- **Settings persistence (keybinds + volume).** Move the keymap from a static `const` in `InputManager` to a `localStorage`-backed config object. Add a settings screen in `UIManager` that writes volume and keybind changes. No server work needed. Pairs naturally with the audio system addition.
+
+- **Time mode (timed stock match).** `MATCH_CONFIG` already has the constants structure for it. Add a `timeLimit` field, a countdown clock to the HUD in `UIManager`, and a win-condition branch in `MatchSession` that checks elapsed ticks against `timeLimit × 60`. Tiebreak by stocks remaining, then by current percent (lower wins).
+
+---
+
 ## Open initiatives — mechanics fidelity closed, three paths forward
 
 **Gap A (mechanics fidelity) is now closed.** After Waves 1–6, the engine, netcode, FSM, physics, all 22 moves, grab/throw, ledge, shield, counters, smash charge, stale-move queue, DI, teching, KO effects, hit flash, pause, result screen, wavedash, L-cancel, wall-jump, and wall-tech are all shipped and green across 144 engine tests, 94 server tests, and 12 Playwright e2e specs.

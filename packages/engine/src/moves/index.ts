@@ -1,3 +1,11 @@
+/**
+ * @fileoverview Move registry and character-aware move data lookup.
+ *
+ * MOVE_REGISTRY holds the canonical MoveData for every MoveId. Character-specific
+ * overrides (currently only Abe Lincoln) are stored in separate maps and checked
+ * first by getMoveDataForCharacter before falling back to the shared registry.
+ */
+
 import type { MoveData, CharacterId } from '@smash/shared';
 import { MoveId } from '@smash/shared';
 
@@ -57,6 +65,13 @@ const LINCOLN_MOVE_OVERRIDES: ReadonlyMap<MoveId, MoveData> = new Map([
   [MoveId.DOWN_SPECIAL, LINCOLN_DOWN_SPECIAL],
 ]);
 
+/**
+ * Look up canonical move data from the shared registry.
+ *
+ * @param id - The move to retrieve.
+ * @returns The {@link MoveData} for that move.
+ * @throws {Error} If `id` is not registered in MOVE_REGISTRY.
+ */
 export function getMoveData(id: MoveId): MoveData {
   const move = MOVE_REGISTRY.get(id);
   if (!move) throw new Error(`Unknown MoveId: ${id}`);

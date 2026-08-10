@@ -1,3 +1,15 @@
+/**
+ * @fileoverview Ground move frame data for the default roster.
+ *
+ * Each exported const is a declarative {@link MoveData} object describing one
+ * grounded attack: startup frames (before the hitbox appears), active frames
+ * (hitbox live), and recovery frames (after the hitbox expires). Smash attacks
+ * also carry a `chargeMax` field controlling the maximum charge window.
+ *
+ * Frame counts here MUST stay in sync with the FSM timing tables in
+ * `fsm/states/utils.ts`. Do not alter them without updating those tables too.
+ */
+
 import type { MoveData, HitboxData } from '@smash/shared';
 import { MoveId } from '@smash/shared';
 
@@ -7,6 +19,7 @@ const jabHitbox: HitboxData = {
   hitlagFrames: 3, hitstunFrames: 8, priority: 1,
 };
 
+/** Quick jab — 3 startup, 2 active, 10 recovery. Low damage, fast get-out option. */
 export const MOVE_JAB: MoveData = {
   id: MoveId.JAB,
   startupFrames: 3, activeFrames: 2, recoveryFrames: 10,
@@ -20,6 +33,7 @@ const forwardTiltHitbox: HitboxData = {
   hitlagFrames: 5, hitstunFrames: 16, priority: 1,
 };
 
+/** Forward tilt — 7 startup, 3 active, 12 recovery. Mid-range poke at knockback angle 20°. */
 export const MOVE_FORWARD_TILT: MoveData = {
   id: MoveId.FORWARD_TILT,
   startupFrames: 7, activeFrames: 3, recoveryFrames: 12,
@@ -33,6 +47,7 @@ const upTiltHitbox: HitboxData = {
   hitlagFrames: 4, hitstunFrames: 14, priority: 1,
 };
 
+/** Up tilt — 6 startup, 4 active, 14 recovery. Launches opponents upward at 85°, good juggle starter. */
 export const MOVE_UP_TILT: MoveData = {
   id: MoveId.UP_TILT,
   startupFrames: 6, activeFrames: 4, recoveryFrames: 14,
@@ -46,6 +61,7 @@ const downTiltHitbox: HitboxData = {
   hitlagFrames: 3, hitstunFrames: 11, priority: 1,
 };
 
+/** Down tilt — 5 startup, 2 active, 11 recovery. Low-profile poke at 25°, trips at higher percents. */
 export const MOVE_DOWN_TILT: MoveData = {
   id: MoveId.DOWN_TILT,
   startupFrames: 5, activeFrames: 2, recoveryFrames: 11,
@@ -59,6 +75,7 @@ const forwardSmashHitbox: HitboxData = {
   hitlagFrames: 8, hitstunFrames: 30, priority: 2,
 };
 
+/** Forward smash — 15 startup, 3 active, 25 recovery. High damage (18), long range, chargeable up to 60 frames. */
 export const MOVE_FORWARD_SMASH: MoveData = {
   id: MoveId.FORWARD_SMASH,
   startupFrames: 15, activeFrames: 3, recoveryFrames: 25,
@@ -73,6 +90,7 @@ const upSmashHitbox: HitboxData = {
   hitlagFrames: 7, hitstunFrames: 28, priority: 2,
 };
 
+/** Up smash — 12 startup, 5 active, 22 recovery. Anti-air with 80° launch angle, chargeable up to 60 frames. */
 export const MOVE_UP_SMASH: MoveData = {
   id: MoveId.UP_SMASH,
   startupFrames: 12, activeFrames: 5, recoveryFrames: 22,
@@ -93,6 +111,7 @@ const downSmashHitboxBack: HitboxData = {
   hitlagFrames: 6, hitstunFrames: 24, priority: 2,
 };
 
+/** Down smash — 10 startup, 6 active, 20 recovery. Hits both sides: front hitbox at 40°, back hitbox at 140°. Chargeable up to 60 frames. */
 export const MOVE_DOWN_SMASH: MoveData = {
   id: MoveId.DOWN_SMASH,
   startupFrames: 10, activeFrames: 6, recoveryFrames: 20,

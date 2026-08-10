@@ -1,3 +1,18 @@
+/**
+ * @fileoverview Pure sensor functions used by the bot AI decision loop.
+ *
+ * Each function takes immutable game-state snapshots and returns a boolean or
+ * numeric reading. No state is mutated. Sensors are kept separate from botAI.ts
+ * so they can be unit-tested in isolation and reused by future AI variants.
+ *
+ * Return ranges:
+ *   - {@link distanceBetween} — pixels, [0, ∞)
+ *   - {@link isOffStage} — boolean
+ *   - {@link isThreatIncoming} — boolean
+ *   - {@link isPunishWindow} — boolean
+ *   - {@link platformJumpNeeded} — boolean
+ */
+
 import type { PlayerState, Stage } from '@smash/shared';
 import { MoveId } from '@smash/shared';
 import { getMoveData } from '../moves/index.js';

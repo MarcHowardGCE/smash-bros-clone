@@ -1,3 +1,28 @@
+/**
+ * @fileoverview Reactive bot AI — frame-by-frame input decision engine.
+ *
+ * The bot runs a priority-ordered decision loop each game tick:
+ *   1. Hitstun / respawn — output no input.
+ *   2. Off-stage — recover toward center, use double-jump or up-special.
+ *   3. On ledge — probabilistically choose climb, roll, or ledge attack.
+ *   4. Threat incoming — shield (reaction gated by `reactionDelayFrames`).
+ *   5. Opponent in punish window — attack or grab.
+ *   5.5. Edge-guard offense — challenge opponent off-stage or wait at ledge.
+ *   6. Neutral — approach, platform-jump if needed, occasionally press attack.
+ *
+ * Difficulty tiers are controlled via {@link BotDifficultyConfig}:
+ *   - `reactionDelayFrames` — how many frames after a hitbox becomes active
+ *     before the bot reacts (higher = slower).
+ *   - `decisionQuality` — 0–1 float; values >= 0.75 unlock better weighted
+ *     decision branches (shield more, punish more reliably, edge-guard more
+ *     aggressively).
+ *   - `executionErrorRate` — probability per decision that the intended input
+ *     is dropped entirely, simulating human execution mistakes.
+ *
+ * All randomness flows through a deterministic LCG ({@link nextRandom}) seeded
+ * per-bot via {@link createBotMemory}, so replays are reproducible.
+ */
+
 import {
   INPUT_BITS,
   PlayerStateEnum,
@@ -8,10 +33,18 @@ import {
 } from '@smash/shared';
 import * as sensors from './sensors.js';
 
+/** Persistent per-bot memory carrying the LCG RNG state across ticks. */
 export interface BotMemory {
   rngState: number;
 }
 
+/**
+ * Create initial bot memory seeded with a deterministic value.
+ *
+ * @param seed - Integer seed; use a stable per-player value (e.g. player index)
+ *   so replays reproduce the same bot behaviour.
+ * @returns A fresh {@link BotMemory} ready for the first tick.
+ */
 export function createBotMemory(seed: number): BotMemory {
   return { rngState: seed };
 }
@@ -53,6 +86,21 @@ function jumpInputForState(selfState: string, directionBits: InputBitmask): Inpu
     : (directionBits | INPUT_BITS.JUMP);
 }
 
+/**
+ * Select the highest-priority target for the bot to pursue.
+ *
+ * Scores each candidate by proximity, incoming threat status, current damage
+ * percent, and remaining stocks. Ties are broken by ascending player ID so
+ * the choice is deterministic.
+ *
+ * @param state - Current full game state.
+ * @param botPlayerId - The ID of the bot making the decision.
+ * @param candidateIds - Pool of player IDs to evaluate (typically all opponents).
+ * @param reactionDelayFrames - Frames of reaction latency forwarded to the
+ *   threat sensor; matches the difficulty config value.
+ * @returns The chosen target's {@link PlayerId}, or `null` if no valid
+ *   target exists (all knocked out or respawning).
+ */
 export function selectTarget(
   state: GameState,
   botPlayerId: PlayerId,
@@ -95,6 +143,23 @@ export function selectTarget(
   return bestTargetId;
 }
 
+/**
+ * Compute the bot's input bitmask for one game tick.
+ *
+ * Runs the priority-ordered decision loop described in the file overview and
+ * returns both the chosen input bits and an updated {@link BotMemory} (RNG
+ * state advanced by however many random rolls were consumed this tick).
+ *
+ * @param state - Current full game state snapshot.
+ * @param botPlayerId - The ID of the bot player.
+ * @param opponentPlayerId - The target opponent selected by {@link selectTarget}.
+ * @param difficultyConfig - Reaction delay, decision quality, and execution
+ *   error rate for this bot's difficulty tier.
+ * @param memory - Bot's current RNG memory; pass the value returned by the
+ *   previous tick (or {@link createBotMemory} on the first tick).
+ * @returns `{ bits, memory }` — the input bitmask to inject this tick and the
+ *   updated memory to thread into the next tick.
+ */
 export function decideBotInput(
   state: GameState,
   botPlayerId: PlayerId,

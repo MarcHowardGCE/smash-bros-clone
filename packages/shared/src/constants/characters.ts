@@ -1,3 +1,11 @@
+/**
+ * @fileoverview Character stat definitions and registry.
+ * Exports concrete `CharacterStats` objects for every playable fighter,
+ * the `CHARACTER_REGISTRY` map for engine lookups, the `CHARACTER_IDS`
+ * list for runtime validation, and two helper functions (`isCharacterId`,
+ * `getCharacterStats`) used by both the server and the client.
+ */
+
 import { PHYSICS } from './physics.js';
 import type { CharacterId, CharacterStats } from '../types/Character.js';
 

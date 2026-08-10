@@ -1,3 +1,9 @@
+/**
+ * @fileoverview Barrel export for the `@smash/shared` package.
+ * Re-exports every public type, enum, constant, and math utility so consumers
+ * can import from a single entry point rather than individual module paths.
+ */
+
 // Types
 export type { Vec2, Circle, HitboxData, PlayerState, GameState, StateSnapshot, PlayerId, HitEventData, KOEventData } from './types/GameState.js';
 export type { InputBitmask, InputEvent } from './types/InputEvent.js';

@@ -4,6 +4,13 @@ A multiplayer browser platform fighter with percent-based damage, blast-zone KOs
 
 ---
 
+## 🤖 Model Routing (inherit from root AGENTS.md)
+See `C:\Github\AGENTS.md` for the full model selection table.
+**This repo's palace wing:** `smash-bros` — use `wing="smash-bros"` in mempalace_search calls.
+Quick tasks → `github-copilot/claude-haiku-4-5`. Default → `github-copilot/claude-sonnet-4.6`.
+
+---
+
 ## Monorepo Structure
 
 ```

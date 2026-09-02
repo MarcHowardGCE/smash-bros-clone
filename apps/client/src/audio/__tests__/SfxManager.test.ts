@@ -8,7 +8,7 @@
  * - global SFX volume multiplier is respected
  * - music playback (AudioManager) is not affected
  */
-import { describe, it, expect, beforeEach, vi } from 'vitest';
+import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import { SfxManager } from '../SfxManager';
 
 describe('SfxManager', () => {
@@ -16,35 +16,46 @@ describe('SfxManager', () => {
 
   // Mock the HTML Audio API
   let mockAudioElements: Map<string, HTMLAudioElement>;
-  let audioConstructorSpy: ReturnType<typeof vi.spyOn>;
+  let audioConstructorSpy: any;
+  let playPrototypeSpy: any;
 
   beforeEach(() => {
     manager = new SfxManager();
     mockAudioElements = new Map();
 
     // Mock Audio constructor to return a fake element with controllable play() behavior
-    audioConstructorSpy = vi.spyOn(global as any, 'Audio').mockImplementation((src: string) => {
-      const mockAudio: Partial<HTMLAudioElement> = {
-        src,
-        volume: 0.5,
-        playbackRate: 1.0,
-        currentTime: 0,
-        paused: true,
-        addEventListener: vi.fn(),
-        removeEventListener: vi.fn(),
-        play: vi.fn(() => Promise.resolve()),
-      };
+    audioConstructorSpy = vi
+      .spyOn(globalThis as any, 'Audio')
+      .mockImplementation(((src: string) => {
+        const mockAudio: Partial<HTMLAudioElement> = {
+          src,
+          volume: 0.5,
+          playbackRate: 1.0,
+          currentTime: 0,
+          paused: true,
+          addEventListener: vi.fn(),
+          removeEventListener: vi.fn(),
+          play: vi.fn(() => Promise.resolve()),
+        };
 
-      mockAudioElements.set(src, mockAudio as HTMLAudioElement);
-      return mockAudio as HTMLAudioElement;
-    });
+        mockAudioElements.set(src, mockAudio as HTMLAudioElement);
+        return mockAudio as HTMLAudioElement;
+      }) as any);
+
+    // Mock HTMLMediaElement.prototype.play to resolve by default
+    playPrototypeSpy = vi
+      .spyOn(HTMLMediaElement.prototype, 'play')
+      .mockResolvedValue(undefined);
+  });
+
+  afterEach(() => {
+    audioConstructorSpy.mockRestore();
+    playPrototypeSpy.mockRestore();
   });
 
   it('playSfx does not throw when Audio.play() rejects (file missing)', async () => {
-    const manager = new SfxManager();
-
     // Mock play() to reject (simulates 404 or blocked autoplay)
-    vi.spyOn(HTMLMediaElement.prototype, 'play').mockRejectedValue(new Error('File not found'));
+    playPrototypeSpy.mockRejectedValueOnce(new Error('File not found'));
 
     // Should not throw
     expect(() => {

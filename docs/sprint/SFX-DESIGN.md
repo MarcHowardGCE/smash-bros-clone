@@ -1,8 +1,35 @@
 # SFX Design: Sound Effects & Playback Architecture
 
-**Status:** Design document for Sprint A Track A (Wave 1)  
+**Status:** Implemented
 **Baseline Commit:** 5b38f9aa64768126bcfa0f28e908ca33966f56e0  
 **Created:** 2026-09-02
+
+## Implementation Update
+
+The original proposal below is retained as the team's design record. The shipped
+implementation supersedes it in these areas:
+
+- `SfxManager` composes with `AudioManager`, so the existing persisted master
+  mute and volume controls govern music and effects together.
+- Each cue uses a four-voice HTML Audio pool, allowing repeated or simultaneous
+  hits without unbounded element creation. Hit voices alternate between the two
+  supplied hit variants.
+- `GameplaySfxRouter` observes render-state edges shared by local and network
+  play. It uses the uppercase `PlayerStateEnum` values and seeds its first frame
+  silently to prevent sounds on initial render.
+- Jump cues fire on jump-state entry, with a grounded-to-rising fallback for
+  snapshots that skip `JUMPSQUAT`. Landing and shield cues fire only on their
+  corresponding edges.
+- KO cues use stock decrements, because ordinary KOs clear `isKnockedOut` during
+  same-tick respawn processing. Result events cover a final network KO and are
+  deduplicated against the stock edge.
+- Six authored stereo PCM clips ship under `public/audio/sfx/*.wav`: two hit
+  variants plus jump, land, shield, and KO cues.
+- Missing assets and synchronous or asynchronous playback errors remain silent
+  and never interrupt gameplay.
+
+The original MP3-stub, singleton, independent-volume, and `isKnockedOut` sections
+below describe the initial proposal rather than the final API.
 
 ---
 
@@ -10,13 +37,13 @@
 
 The game emits five core sound-effect events. Each routes to a specific audio clip with deterministic playback parameters:
 
-| Event | Trigger | Clip Path | Playback Rate | Volume | Duration (est.) | Priority |
-|-------|---------|-----------|---------------|--------|-----------------|----------|
-| **Hit** | `applyHit()` via `HitEventData.knockbackMagnitude` | `sfx/hit.mp3` | Pitched by knockback (formula below) | 0.8 | 200–300 ms | HIGH |
-| **Jump** | FSM transition to `Jumpsquat` or `DoubleJump` state | `sfx/jump.mp3` | 1.0 (fixed) | 0.7 | ~150 ms | MEDIUM |
-| **Land** | FSM transition to `Idle`, `Walk`, `Run` from airborne | `sfx/land.mp3` | 1.0 (fixed) | 0.6 | ~100 ms | MEDIUM |
-| **Shield** | FSM transition to `Shield` state | `sfx/shield.mp3` | 1.0 (fixed) | 0.7 | ~80 ms | MEDIUM |
-| **KO** | `isKnockedOut` flag set to `true` in `PlayerState` | `sfx/ko.mp3` | 1.0 (fixed) | 1.0 | ~400 ms | HIGHEST |
+| Event      | Trigger                                               | Clip Path        | Playback Rate                        | Volume | Duration (est.) | Priority |
+| ---------- | ----------------------------------------------------- | ---------------- | ------------------------------------ | ------ | --------------- | -------- |
+| **Hit**    | `applyHit()` via `HitEventData.knockbackMagnitude`    | `sfx/hit.mp3`    | Pitched by knockback (formula below) | 0.8    | 200–300 ms      | HIGH     |
+| **Jump**   | FSM transition to `Jumpsquat` or `DoubleJump` state   | `sfx/jump.mp3`   | 1.0 (fixed)                          | 0.7    | ~150 ms         | MEDIUM   |
+| **Land**   | FSM transition to `Idle`, `Walk`, `Run` from airborne | `sfx/land.mp3`   | 1.0 (fixed)                          | 0.6    | ~100 ms         | MEDIUM   |
+| **Shield** | FSM transition to `Shield` state                      | `sfx/shield.mp3` | 1.0 (fixed)                          | 0.7    | ~80 ms          | MEDIUM   |
+| **KO**     | `isKnockedOut` flag set to `true` in `PlayerState`    | `sfx/ko.mp3`     | 1.0 (fixed)                          | 1.0    | ~400 ms         | HIGHEST  |
 
 ### Hit Playback Rate Formula
 
@@ -27,6 +54,7 @@ playbackRate = 0.8 + (knockbackMagnitude / 100) * 0.6
 ```
 
 **Bounds:**
+
 - Minimum rate: 0.8× (0 knockback — very weak hit, already below normal pitch)
 - Maximum rate: 1.4× (100+ knockback — powerful hit, noticeably higher pitch)
 - Typical range: 0.9–1.2× for most gameplay situations
@@ -50,9 +78,9 @@ This creates immediate audio feedback: weak jabs sound dull and low, powerful sm
 // Client-side reception (network/GameClient.ts):
 // StateSnapshot.hitEvents is an array of HitEventData
 // Delivered every 20 Hz (3 server ticks)
-// Client iterates hitEvents and calls playSfx('hit', { 
-//   volume: 0.8, 
-//   playbackRate: 0.8 + (knockbackMagnitude / 100) * 0.6 
+// Client iterates hitEvents and calls playSfx('hit', {
+//   volume: 0.8,
+//   playbackRate: 0.8 + (knockbackMagnitude / 100) * 0.6
 // })
 ```
 
@@ -64,12 +92,12 @@ This creates immediate audio feedback: weak jabs sound dull and low, powerful sm
 
 **Source:** `packages/engine/src/fsm/FSMController.ts` → `update()` method
 
-| FSM State Entry | Event | Audio Hook |
-|---|---|---|
-| `Jumpsquat` | Player initiates jump | **Jump SFX** plays (rate 1.0, volume 0.7) |
-| `DoubleJump` | Second jump input mid-air | **Jump SFX** plays again |
-| `Idle` / `Walk` / `Run` | Transition FROM airborne state | **Land SFX** plays (rate 1.0, volume 0.6) |
-| `Shield` | Player raises shield | **Shield SFX** plays (rate 1.0, volume 0.7) |
+| FSM State Entry         | Event                          | Audio Hook                                  |
+| ----------------------- | ------------------------------ | ------------------------------------------- |
+| `Jumpsquat`             | Player initiates jump          | **Jump SFX** plays (rate 1.0, volume 0.7)   |
+| `DoubleJump`            | Second jump input mid-air      | **Jump SFX** plays again                    |
+| `Idle` / `Walk` / `Run` | Transition FROM airborne state | **Land SFX** plays (rate 1.0, volume 0.6)   |
+| `Shield`                | Player raises shield           | **Shield SFX** plays (rate 1.0, volume 0.7) |
 
 **Implementation location:** `apps/client/src/audio/SfxManager.ts` (TBD — not yet created)
 
@@ -131,6 +159,7 @@ apps/client/public/audio/sfx/
 ```
 
 **File Format & Specs:**
+
 - Format: MP3 (MPEG-1 Audio Layer III) or WAVE PCM
 - Channels: Mono or Stereo (client side will mix to mono if needed)
 - Sample rate: 44.1 kHz or 48 kHz
@@ -138,6 +167,7 @@ apps/client/public/audio/sfx/
 - Encoding: Silence or near-silence for stubs
 
 **Build & Deployment:**
+
 - Vite will copy these files from `public/audio/sfx/` to the built client's `dist/audio/sfx/` during `pnpm build`
 - In production, the server (in `apps/server/src/index.ts`) serves static files from `dist/` → files are accessible at `/audio/sfx/hit.mp3`, etc.
 - No changes to build config required — Vite's public directory is already wired.
@@ -160,8 +190,8 @@ apps/client/public/audio/sfx/
 // Location: apps/client/src/audio/SfxManager.ts (to be created)
 
 export interface SfxPlayOptions {
-  volume?: number;        // 0.0–1.0, default 0.7
-  playbackRate?: number;  // 0.5–2.0, default 1.0
+  volume?: number; // 0.0–1.0, default 0.7
+  playbackRate?: number; // 0.5–2.0, default 1.0
 }
 
 export class SfxManager {
@@ -182,18 +212,18 @@ export class SfxManager {
     // Create or reuse audio element
     if (!this.audioCache.has(sfxName)) {
       const audio = new Audio(`/audio/sfx/${sfxName}.mp3`);
-      audio.addEventListener('ended', () => {
+      audio.addEventListener("ended", () => {
         audio.currentTime = 0;
       });
       this.audioCache.set(sfxName, audio);
     }
 
     const audio = this.audioCache.get(sfxName)!;
-    
+
     // Apply independent SFX volume (does not affect music)
     audio.volume = volume * this.globalSfxVolume;
     audio.playbackRate = Math.max(0.5, Math.min(2.0, playbackRate));
-    
+
     // Reset to start, play
     audio.currentTime = 0;
     void audio.play().catch((err: unknown) => {
@@ -221,31 +251,36 @@ export const sfxManager = new SfxManager();
 ### Integration Points
 
 **1. Hit event handling** (`apps/client/src/network/GameClient.ts`):
+
 ```typescript
 // On StateSnapshot.hitEvents received:
 for (const hitEvent of snapshot.hitEvents) {
   const playbackRate = 0.8 + (hitEvent.knockbackMagnitude / 100) * 0.6;
-  sfxManager.playSfx('hit', { volume: 0.8, playbackRate });
+  sfxManager.playSfx("hit", { volume: 0.8, playbackRate });
 }
 ```
 
 **2. FSM state transitions** (`apps/client/src/network/LocalPredictor.ts`):
+
 ```typescript
 // When local player FSM state changes:
-if (newState === 'Jumpsquat') {
-  sfxManager.playSfx('jump', { volume: 0.7 });
+if (newState === "Jumpsquat") {
+  sfxManager.playSfx("jump", { volume: 0.7 });
 }
-if (wasAirborne && newState === 'Idle') {
-  sfxManager.playSfx('land', { volume: 0.6 });
+if (wasAirborne && newState === "Idle") {
+  sfxManager.playSfx("land", { volume: 0.6 });
 }
 ```
 
 **3. KO flag detection** (`apps/client/src/network/GameClient.ts`):
+
 ```typescript
 // Compare previous and current snapshots:
-if (!prevSnapshot.fighters[i].isKnockedOut && 
-    currentSnapshot.fighters[i].isKnockedOut) {
-  sfxManager.playSfx('ko', { volume: 1.0 });
+if (
+  !prevSnapshot.fighters[i].isKnockedOut &&
+  currentSnapshot.fighters[i].isKnockedOut
+) {
+  sfxManager.playSfx("ko", { volume: 1.0 });
 }
 ```
 
@@ -254,6 +289,7 @@ if (!prevSnapshot.fighters[i].isKnockedOut &&
 ## 5. Summary & Next Steps
 
 ### What's Decided
+
 - ✅ Five SFX events with clip → hook-point mapping
 - ✅ Hit SFX pitch scales dynamically by knockback magnitude
 - ✅ FSM state transitions emit jump, land, shield SFX locally (latency-free)
@@ -262,23 +298,27 @@ if (!prevSnapshot.fighters[i].isKnockedOut &&
 - ✅ Standalone SfxManager API: `playSfx(name, { volume, playbackRate })`
 
 ### What's Not Yet Built
-- Actual audio-clip artwork (asset team — currently silence-tolerant stubs)
+
+- Additional menu, shield-impact, shield-break, and character-specific cues
 - Settings UI for SFX volume control
 - Shield break SFX (future mechanic)
 
 ### Testing Strategy (Wave 2)
+
 - Unit test: SfxManager volume/rate clamping, audio element reuse
 - Integration test: Play a full local-play match, verify all SFX fire on expected events
 - Network test: Multiplayer match, confirm KO and hit SFX sync across clients
 
 ### Implementation Status (Wave 2, Commit: sprint/sfx)
-- [x] Create `apps/client/src/audio/SfxManager.ts` following pseudocode above
-- [x] Wire SfxManager into main render loop for hit events and KO detection
-- [x] Wire SfxManager into main render loop for FSM state transitions (jump, land, shield)
-- [x] Silence-tolerant stub MP3 files in `public/audio/sfx/` (ready for incremental replacement)
-- [ ] Replace stub MP3 files in `public/audio/sfx/` with real audio recordings (asset team)
-- [ ] Add SFX volume slider to settings/audio panel (UI task)
-- [ ] Run full test suite: `pnpm test` passes, local-play flow produces SFX
+
+- [x] Add pooled `SfxManager` playback composed with `AudioManager`
+- [x] Route authoritative hit events with knockback-scaled pitch
+- [x] Route jump, land, shield, and stock-loss KO state edges once per event
+- [x] Ship six authored WAV clips, including two alternating hit variants
+- [x] Cover playback failures, pooling, preferences, state edges, and local/network wiring
+- [x] Run the full test suite and production build
+- [ ] Add independent BGM/SFX sliders if separate mixing is desired
+- [ ] Add menu, shield-impact, shield-break, and character-specific cues
 
 ---
 

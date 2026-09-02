@@ -1,123 +1,175 @@
-/**
- * @fileoverview SfxManager — minimal sound-effects playback via HTML Audio API.
- *
- * Provides fire-and-forget SFX playback with dynamic pitch/volume control.
- * Gracefully swallows missing assets (404 → silence, never throws). Intentionally
- * separate from AudioManager (music) so both can coexist without interference.
- */
+import type { AudioManager } from "./AudioManager.js";
 
-/**
- * SFX clip name union — the canonical list of available sound effects.
- */
-export type SfxName = 'hit' | 'jump' | 'land' | 'shield' | 'ko';
+export const SFX_IDS = ["hit", "jump", "land", "shield", "ko"] as const;
 
-/**
- * Options for playSfx().
- */
-export interface SfxPlayOptions {
-  /**
-   * Playback rate (speed/pitch): 0.5–2.0. Default: 1.0.
-   * Values < 1.0 lower the pitch, > 1.0 raise it.
-   */
+export type SfxId = (typeof SFX_IDS)[number];
+
+const SFX_VARIANTS: Record<SfxId, readonly string[]> = {
+  hit: ["hit-1", "hit-2"],
+  jump: ["jump"],
+  land: ["land"],
+  shield: ["shield"],
+  ko: ["ko"],
+};
+
+export interface SfxPlaybackOptions {
+  gain?: number;
   playbackRate?: number;
-
-  /**
-   * Volume multiplier: 0.0–1.0. Applied on top of global SFX volume.
-   * Final volume = volume * globalSfxVolume. Default: 0.7.
-   */
-  volume?: number;
 }
 
-/**
- * Manages sound-effects playback for game events (hits, jumps, KOs, etc).
- *
- * Design:
- * - One HTML Audio element per clip (cached to avoid repeated DOM churn).
- * - Fire-and-forget: playSfx() returns immediately; missing assets fail silently.
- * - Separate from AudioManager (music): SFX volume is independent of music volume.
- * - No external library dependencies: raw HTML Audio API.
- *
- * Limitations:
- * - No parallel playback of same clip (new play resets old one).
- * - No pitch-shift beyond playbackRate (browser implementation dependent).
- * - Load errors are swallowed; missing files produce silence.
- */
+interface SfxManagerOptions {
+  basePath?: string;
+  poolSize?: number;
+  createAudio?: (src: string) => HTMLAudioElement;
+}
+
+interface SfxVoice {
+  audio: HTMLAudioElement;
+  gain: number;
+}
+
+const DEFAULT_POOL_SIZE = 4;
+const MIN_PLAYBACK_RATE = 0.5;
+const MAX_PLAYBACK_RATE = 2;
+const MAX_HIT_KNOCKBACK = 40;
+
+function clampFinite(
+  value: number,
+  min: number,
+  max: number,
+  fallback: number,
+): number {
+  if (!Number.isFinite(value)) {
+    return fallback;
+  }
+  return Math.max(min, Math.min(max, value));
+}
+
+export function getHitPlaybackRate(knockbackMagnitude: number): number {
+  const magnitude = clampFinite(knockbackMagnitude, 0, MAX_HIT_KNOCKBACK, 0);
+  return 0.9 + (magnitude / MAX_HIT_KNOCKBACK) * 0.3;
+}
+
+/** Plays short, overlapping sound effects while sharing music mute and volume settings. */
 export class SfxManager {
-  /** Global SFX volume multiplier (0.0–1.0). Applied to all playSfx() calls. */
-  private globalSfxVolume: number = 0.8;
+  private readonly pools = new Map<SfxId, SfxVoice[]>();
+  private readonly nextVoiceIndex = new Map<SfxId, number>();
+  private readonly disabled = new Set<SfxId>();
+  private readonly audioManager: Pick<AudioManager, "getVolume" | "isMuted">;
 
-  /** Cache of HTML Audio elements, keyed by SFX name. */
-  private audioCache: Map<SfxName, HTMLAudioElement> = new Map();
+  constructor(
+    audioManager: Pick<AudioManager, "getVolume" | "isMuted">,
+    options: SfxManagerOptions = {},
+  ) {
+    this.audioManager = audioManager;
+    const basePath = (options.basePath ?? "/audio/sfx").replace(/\/+$/, "");
+    const poolSize = Math.max(
+      1,
+      Math.floor(options.poolSize ?? DEFAULT_POOL_SIZE),
+    );
+    const createAudio =
+      options.createAudio ?? ((src: string) => new Audio(src));
 
-  /**
-   * Play a named SFX clip with optional pitch/volume adjustments.
-   *
-   * @param sfxName - Clip name ('hit', 'jump', 'land', 'shield', 'ko')
-   * @param options - Playback options (volume, playbackRate)
-   *
-   * If the clip file is missing (404) or fails to load, play() rejection is swallowed
-   * and the call returns silently (no thrown error). Volume and playbackRate are always
-   * applied before attempting play.
-   */
-  playSfx(sfxName: SfxName, options: SfxPlayOptions = {}): void {
-    const { volume = 0.7, playbackRate = 1.0 } = options;
+    for (const id of SFX_IDS) {
+      const voices: SfxVoice[] = [];
+      const variants = SFX_VARIANTS[id];
+      for (let index = 0; index < poolSize; index += 1) {
+        try {
+          const variant = variants[index % variants.length]!;
+          const audio = createAudio(`${basePath}/${variant}.wav`);
+          audio.preload = "auto";
+          audio.addEventListener("error", () => this.disabled.add(id), {
+            once: true,
+          });
+          voices.push({ audio, gain: 1 });
+        } catch {
+          this.disabled.add(id);
+          break;
+        }
+      }
+      this.pools.set(id, voices);
+      this.nextVoiceIndex.set(id, 0);
+    }
+  }
 
-    // Get or create audio element for this clip
-    if (!this.audioCache.has(sfxName)) {
-      const audio = new Audio(`/audio/sfx/${sfxName}.mp3`);
-
-      // Reset to start when clip ends naturally
-      audio.addEventListener('ended', () => {
-        audio.currentTime = 0;
-      });
-
-      this.audioCache.set(sfxName, audio);
+  play(id: SfxId, options: SfxPlaybackOptions = {}): void {
+    if (this.audioManager.isMuted() || this.disabled.has(id)) {
+      return;
     }
 
-    const audio = this.audioCache.get(sfxName)!;
+    const voices = this.pools.get(id);
+    if (!voices || voices.length === 0) {
+      return;
+    }
 
-    // Apply independent SFX volume (does not affect music)
-    audio.volume = Math.max(0, Math.min(1, volume * this.globalSfxVolume));
+    const startIndex = (this.nextVoiceIndex.get(id) ?? 0) % voices.length;
+    let voiceIndex = startIndex;
+    for (let offset = 0; offset < voices.length; offset += 1) {
+      const candidateIndex = (startIndex + offset) % voices.length;
+      const candidate = voices[candidateIndex]!;
+      if (candidate.audio.paused || candidate.audio.ended) {
+        voiceIndex = candidateIndex;
+        break;
+      }
+    }
+    const voice = voices[voiceIndex]!;
+    this.nextVoiceIndex.set(id, (voiceIndex + 1) % voices.length);
 
-    // Clamp playback rate to safe range
-    audio.playbackRate = Math.max(0.5, Math.min(2.0, playbackRate));
+    voice.gain = clampFinite(options.gain ?? 1, 0, 1, 1);
 
-    // Reset to start and play. Swallow any rejection (file missing, play blocked, etc)
-    audio.currentTime = 0;
-    void audio
-      .play()
-      .catch((err: unknown) => {
-        // Silently fail if:
-        // - File not found (404)
-        // - Browser autoplay policy blocks it
-        // - Any other playback error
-        // Console is intentionally empty — missing SFX is not an error condition.
-      });
+    try {
+      voice.audio.currentTime = 0;
+      voice.audio.playbackRate = clampFinite(
+        options.playbackRate ?? 1,
+        MIN_PLAYBACK_RATE,
+        MAX_PLAYBACK_RATE,
+        1,
+      );
+      voice.audio.volume = this.getEffectiveVolume(voice.gain);
+      const playback = voice.audio.play();
+      if (playback) {
+        void playback.catch(() => {});
+      }
+    } catch {
+      // Missing or unsupported assets must never interrupt gameplay.
+    }
   }
 
-  /**
-   * Set the global SFX volume multiplier (0.0–1.0).
-   *
-   * This is applied to all SFX clips via their `volume` parameter.
-   * Does not affect music playback (AudioManager).
-   *
-   * @param volume - Global SFX volume (0.0 = silent, 1.0 = full)
-   */
-  setVolume(volume: number): void {
-    this.globalSfxVolume = Math.max(0, Math.min(1, volume));
+  playHit(knockbackMagnitude: number): void {
+    this.play("hit", { playbackRate: getHitPlaybackRate(knockbackMagnitude) });
   }
 
-  /**
-   * Get the current global SFX volume multiplier.
-   *
-   * @returns Global SFX volume (0.0–1.0)
-   */
-  getVolume(): number {
-    return this.globalSfxVolume;
+  /** Apply current master settings to effects that are already playing. */
+  syncVolume(): void {
+    for (const voices of this.pools.values()) {
+      for (const voice of voices) {
+        try {
+          voice.audio.volume = this.getEffectiveVolume(voice.gain);
+        } catch {
+          // Ignore detached or unsupported audio elements.
+        }
+      }
+    }
+  }
+
+  stopAll(): void {
+    for (const voices of this.pools.values()) {
+      for (const { audio } of voices) {
+        try {
+          audio.pause();
+          audio.currentTime = 0;
+        } catch {
+          // Ignore detached or unsupported audio elements.
+        }
+      }
+    }
+  }
+
+  private getEffectiveVolume(gain: number): number {
+    if (this.audioManager.isMuted()) {
+      return 0;
+    }
+    const masterVolume = clampFinite(this.audioManager.getVolume(), 0, 1, 0.3);
+    return masterVolume * gain;
   }
 }
-
-/**
- * Singleton instance of SfxManager for global access.
- */
-export const sfxManager = new SfxManager();

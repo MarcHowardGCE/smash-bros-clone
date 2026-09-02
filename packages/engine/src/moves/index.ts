@@ -28,6 +28,10 @@ import {
   LINCOLN_JAB, LINCOLN_FORWARD_SMASH, LINCOLN_DOWN_AIR,
   LINCOLN_NEUTRAL_SPECIAL, LINCOLN_SIDE_SPECIAL, LINCOLN_UP_SPECIAL, LINCOLN_DOWN_SPECIAL,
 } from './lincoln.js';
+import {
+  SWIFT_JAB, SWIFT_NEUTRAL_AIR, SWIFT_FORWARD_AIR, SWIFT_DOWN_AIR,
+  SWIFT_FORWARD_SMASH, SWIFT_NEUTRAL_SPECIAL, SWIFT_UP_SPECIAL, SWIFT_DOWN_SPECIAL,
+} from './swift.js';
 
 const MOVE_REGISTRY: ReadonlyMap<MoveId, MoveData> = new Map([
   [MoveId.JAB, MOVE_JAB],
@@ -65,6 +69,17 @@ const LINCOLN_MOVE_OVERRIDES: ReadonlyMap<MoveId, MoveData> = new Map([
   [MoveId.DOWN_SPECIAL, LINCOLN_DOWN_SPECIAL],
 ]);
 
+const SWIFT_MOVE_OVERRIDES: ReadonlyMap<MoveId, MoveData> = new Map([
+  [MoveId.JAB, SWIFT_JAB],
+  [MoveId.NEUTRAL_AIR, SWIFT_NEUTRAL_AIR],
+  [MoveId.FORWARD_AIR, SWIFT_FORWARD_AIR],
+  [MoveId.DOWN_AIR, SWIFT_DOWN_AIR],
+  [MoveId.FORWARD_SMASH, SWIFT_FORWARD_SMASH],
+  [MoveId.NEUTRAL_SPECIAL, SWIFT_NEUTRAL_SPECIAL],
+  [MoveId.UP_SPECIAL, SWIFT_UP_SPECIAL],
+  [MoveId.DOWN_SPECIAL, SWIFT_DOWN_SPECIAL],
+]);
+
 /**
  * Look up canonical move data from the shared registry.
  *
@@ -82,13 +97,18 @@ export function getMoveData(id: MoveId): MoveData {
  * Get character-aware move data. Checks character-specific overrides first,
  * then falls back to shared MOVE_REGISTRY.
  * 
- * @param characterId - Character identifier ('abe-lincoln', 'all-rounder', etc.)
+ * @param characterId - Character identifier ('abe-lincoln', 'swift', 'all-rounder', etc.)
  * @param id - Move identifier
  * @returns MoveData with character-specific hitbox stats and default frame timing
  */
 export function getMoveDataForCharacter(characterId: CharacterId | undefined, id: MoveId): MoveData {
   if (characterId === 'abe-lincoln') {
     const override = LINCOLN_MOVE_OVERRIDES.get(id);
+    if (override) return override;
+  }
+  
+  if (characterId === 'swift') {
+    const override = SWIFT_MOVE_OVERRIDES.get(id);
     if (override) return override;
   }
   

@@ -25,21 +25,22 @@ Shared scaffold values now tracked for this archetype:
 
 Reasoning: `swift` matches existing lowercase kebab-safe ID conventions and keeps registry + move-routing naming simple for Todo 8.
 
-## 3) Planned override targets (Lincoln-style 7 override model)
+## 3) Move overrides (Lincoln-style 8 override model)
 
-Following Lincoln's established 7-override approach, Swift will also target 7 overrides while inheriting all other moves from the base move map.
+Swift implements 8 move overrides following the Lincoln pattern, inheriting all other moves from the base move map.
 
-| MoveId | Override? | Differentiation rationale |
-|---|---:|---|
-| `JAB` | Yes | Core pressure starter for fast archetype: quicker poke identity, lighter conversion than bruiser power-jab. |
-| `FORWARD_SMASH` | Yes | Keeps a KO route while preserving weaker launch profile than heavyweight archetypes. |
-| `DOWN_AIR` | Yes | Air-control/spike identity move for floaty offstage play and combo routing. |
-| `NEUTRAL_SPECIAL` | Yes | Utility special tuned for movement/control rather than raw burst knockout. |
-| `SIDE_SPECIAL` | Yes | Horizontal approach/chase signature to reinforce speed archetype. |
-| `UP_SPECIAL` | Yes | Long recovery axis that supports floaty + multi-jump game plan. |
-| `DOWN_SPECIAL` | Yes | Defensive reset option tuned around evasion/counterplay instead of heavy punish lethality. |
+| MoveId | Override | Rationale | Startup/Active/Recovery | Key Stats |
+|---|---|---|---|---|
+| `JAB` | Yes | Floaty combo starter: lower damage (2 vs 3), weaker knockback (KB growth 25 vs 30) | 3/2/10 | offsetX: 40, damage: 2, KB growth: 25 |
+| `NEUTRAL_AIR` | Yes | Air control tool: slightly lower damage (7 vs 8), smaller radius (32 vs 34) | 5/6/16 | damage: 7, radius: 32, KB growth: 45 |
+| `FORWARD_AIR` | Yes | Offstage edge-guard: higher damage (13 vs 12), aggressive hitbox | 8/4/18 | offsetX: 52, damage: 13, KB growth: 72 |
+| `DOWN_AIR` | Yes | Floaty spike: lower damage (12 vs 14), tighter hitbox (offsetY: 28 vs 40) for combo routing | 10/2/20 | offsetY: 28, damage: 12, KB growth: 55 |
+| `FORWARD_SMASH` | Yes | KO tool tuned for floaty: lower damage (16 vs 18), shorter reach (offsetX 62 vs 65) | 15/3/25 | offsetX: 62, damage: 16, KB growth: 95 |
+| `NEUTRAL_SPECIAL` | Yes | Rushdown neutral: same damage (9), tighter radius (34 vs 36) for precision zoning | 8/0/20 | radius: 34, damage: 9, KB growth: 50 |
+| `UP_SPECIAL` | Yes | Recovery tuned for floaty: lower KB growth (40 vs 45) to support multi-jump game plan | 4/3/30 | offsetY: -35, damage: 6, KB growth: 40 |
+| `DOWN_SPECIAL` | Yes (identical) | Counter move, mechanics unchanged from default. Invincibility window: stateFrame < 6 | 6/0/16 | (counter logic in GameEngine.ts) |
 
-Note: Todo 4 records scope decisions only. Concrete frame/hitbox numbers are intentionally deferred to Todo 8.
+All overrides maintain identical frame timing to base moves to keep FSM timing tables and engine thresholds in sync.
 
 ## 4) Renderer plan (plan only this sprint)
 

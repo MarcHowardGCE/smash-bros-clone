@@ -39,6 +39,7 @@ import {
 	loadAudioPreferences,
 	saveAudioPreferences,
 } from "./audio/audioPreferences.js";
+import { sfxManager } from "./audio/SfxManager.js";
 
 // In production on Render, use the same domain. In dev, use localhost.
 const getDefaultServerUrl = () => {
@@ -121,8 +122,10 @@ async function main() {
 
 	const fighterRenderers = new Map<PlayerId, FighterRenderer>();
 	const activeSparks: ImpactSpark[] = [];
+	const prevKOState = new Map<PlayerId, boolean>(); // Track previous KO state for transitions
+	const prevFSMState = new Map<PlayerId, string>(); // Track previous FSM state for transitions
 
-	/** Process hit events: flash defender + spawn impact spark at hit position. */
+	/** Process hit events: flash defender + spawn impact spark at hit position + play hit SFX. */
 	const processHitEvents = (events: HitEventData[]): void => {
 		for (const event of events) {
 			const defenderRenderer = fighterRenderers.get(event.defenderId);
@@ -134,6 +137,10 @@ async function main() {
 			spark.start(event.worldX, event.worldY);
 			layers.game.addChild(spark.container);
 			activeSparks.push(spark);
+
+			// Play hit SFX with pitch scaled by knockback magnitude
+			const playbackRate = 0.8 + (event.knockbackMagnitude / 100) * 0.6;
+			sfxManager.playSfx('hit', { playbackRate, volume: 0.8 });
 		}
 	};
 
@@ -233,6 +240,35 @@ async function main() {
 				);
 				fighterRenderers.set(id, fighterRenderer);
 			}
+
+			// Detect KO transition (false → true) and play SFX
+			const wasKnockedOut = prevKOState.get(id) ?? false;
+			if (!wasKnockedOut && playerState.isKnockedOut) {
+				sfxManager.playSfx('ko', { volume: 1.0 });
+			}
+			prevKOState.set(id, playerState.isKnockedOut);
+
+			// Detect FSM state transitions and play SFX for jump/land/shield
+			const prevState = prevFSMState.get(id);
+			if (prevState !== playerState.state) {
+				// Jump: entry to Jumpsquat or DoubleJump
+				if (playerState.state === 'Jumpsquat' || playerState.state === 'DoubleJump') {
+					sfxManager.playSfx('jump', { volume: 0.7 });
+				}
+				// Land: entry to Idle, Walk, or Run FROM airborne state
+				if (
+					(playerState.state === 'Idle' || playerState.state === 'Walk' || playerState.state === 'Run') &&
+					(prevState === 'Airborne' || prevState === 'DoubleJump' || prevState === 'AirDodge' || prevState === 'AirAttack')
+				) {
+					sfxManager.playSfx('land', { volume: 0.6 });
+				}
+				// Shield: entry to Shield state
+				if (playerState.state === 'Shield') {
+					sfxManager.playSfx('shield', { volume: 0.7 });
+				}
+			}
+			prevFSMState.set(id, playerState.state);
+
 			fighterRenderer.update(playerState);
 		}
 
@@ -240,6 +276,8 @@ async function main() {
 			if (!state.players.has(id)) {
 				fighterRenderer.destroy();
 				fighterRenderers.delete(id);
+				prevKOState.delete(id);
+				prevFSMState.delete(id);
 			}
 		}
 

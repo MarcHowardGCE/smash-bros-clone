@@ -262,8 +262,7 @@ if (!prevSnapshot.fighters[i].isKnockedOut &&
 - ✅ Standalone SfxManager API: `playSfx(name, { volume, playbackRate })`
 
 ### What's Not Yet Built
-- Implementation of `SfxManager.ts` (Wave 2 or later)
-- Actual audio-clip artwork (asset team)
+- Actual audio-clip artwork (asset team — currently silence-tolerant stubs)
 - Settings UI for SFX volume control
 - Shield break SFX (future mechanic)
 
@@ -272,11 +271,12 @@ if (!prevSnapshot.fighters[i].isKnockedOut &&
 - Integration test: Play a full local-play match, verify all SFX fire on expected events
 - Network test: Multiplayer match, confirm KO and hit SFX sync across clients
 
-### Integration Checklist for Implementation
-- [ ] Create `apps/client/src/audio/SfxManager.ts` following pseudocode above
-- [ ] Wire SfxManager into `GameClient.ts` for hit and KO events
-- [ ] Wire SfxManager into `LocalPredictor.ts` for FSM state transitions
-- [ ] Replace stub MP3 files in `public/audio/sfx/` with real recordings
+### Implementation Status (Wave 2, Commit: sprint/sfx)
+- [x] Create `apps/client/src/audio/SfxManager.ts` following pseudocode above
+- [x] Wire SfxManager into main render loop for hit events and KO detection
+- [x] Wire SfxManager into main render loop for FSM state transitions (jump, land, shield)
+- [x] Silence-tolerant stub MP3 files in `public/audio/sfx/` (ready for incremental replacement)
+- [ ] Replace stub MP3 files in `public/audio/sfx/` with real audio recordings (asset team)
 - [ ] Add SFX volume slider to settings/audio panel (UI task)
 - [ ] Run full test suite: `pnpm test` passes, local-play flow produces SFX
 

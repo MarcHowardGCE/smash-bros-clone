@@ -22,6 +22,8 @@ import type { Socket } from 'socket.io-client';
 import { io } from 'socket.io-client';
 import type { InputEvent, PlayerId, StateSnapshot, HitEventData } from '@smash/shared';
 import { InputManager } from '../input/InputManager.js';
+import { DEFAULT_KEYMAP_P1, convertPersistedKeymap } from '../input/keymaps.js';
+import { SettingsStore } from '../settings/SettingsStore.js';
 import { InterpolationBuffer, type RenderState } from './InterpolationBuffer.js';
 import { LocalPredictor } from './LocalPredictor.js';
 
@@ -77,7 +79,7 @@ export interface GameClientOptions {
 export class GameClient {
   private readonly socket: Socket;
   private readonly interpolationBuffer = new InterpolationBuffer();
-  private readonly inputManager = new InputManager();
+  private readonly inputManager: InputManager;
   private predictor: LocalPredictor | null = null;
   private myPlayerId: PlayerId | null = null;
   private myRoomCode: string | null = null;
@@ -93,6 +95,21 @@ export class GameClient {
       reconnection: false,
     });
 
+    // Load keymap from SettingsStore; fall back to DEFAULT_KEYMAP_P1
+    let keymap = DEFAULT_KEYMAP_P1;
+    try {
+      const settings = new SettingsStore();
+      settings.load();
+      const persistedKeymap = settings.get('keymapP1');
+      if (persistedKeymap && Object.keys(persistedKeymap).length > 0) {
+        keymap = convertPersistedKeymap(persistedKeymap);
+      }
+    } catch (error) {
+      // SettingsStore load failed; gracefully fall back to DEFAULT_KEYMAP_P1
+      console.warn('Failed to load keymap from SettingsStore, using default:', error);
+    }
+
+    this.inputManager = new InputManager(keymap);
     this.setupSocketHandlers();
   }
 

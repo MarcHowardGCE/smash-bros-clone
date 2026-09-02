@@ -215,7 +215,22 @@ const bootMainWithMocks = async (setupResults: SetupResult[]): Promise<BootResul
       resume(): void {
         this.paused = false;
       }
+     },
+   }));
+
+  vi.doMock('../audio/AudioManager.js', () => ({
+    AudioManager: class AudioManager {
+      constructor(_init?: { volume?: number; muted?: boolean }) {}
+      playTrack(): void {}
+      getPreferences(): { volume: number; muted: boolean } {
+        return { volume: 0.3, muted: false };
+      }
     },
+  }));
+
+  vi.doMock('../audio/audioPreferences.js', () => ({
+    loadAudioPreferences: () => ({ volume: 0.3, muted: false }),
+    saveAudioPreferences: () => {},
   }));
 
   vi.doMock('../ui/index.js', () => ({
@@ -235,9 +250,10 @@ const bootMainWithMocks = async (setupResults: SetupResult[]): Promise<BootResul
         uiInstance = this;
       }
 
-      setRoomCode(): void {}
-      setPlayerId(): void {}
-      showLobby(): void {
+       setRoomCode(): void {}
+       setPlayerId(): void {}
+       setAudioManager(): void {}
+       showLobby(): void {
         showLobbyCalls += 1;
       }
       showRoomCreated(): void {}

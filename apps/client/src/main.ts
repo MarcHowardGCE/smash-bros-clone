@@ -35,6 +35,10 @@ import { StageRenderer } from "./renderer/StageRenderer.js";
 import { ImpactSpark } from "./renderer/effects/ImpactSpark.js";
 import { injectStyles, UIManager } from "./ui/index.js";
 import { AudioManager } from "./audio/AudioManager.js";
+import {
+	loadAudioPreferences,
+	saveAudioPreferences,
+} from "./audio/audioPreferences.js";
 
 // In production on Render, use the same domain. In dev, use localhost.
 const getDefaultServerUrl = () => {
@@ -153,7 +157,11 @@ async function main() {
 
 	const uiManager = new UIManager(uiOverlay);
 	uiManager._gamepadPoller = poller;
-	const audioManager = new AudioManager();
+	const audioPrefs = loadAudioPreferences(localStorage);
+	const audioManager = new AudioManager(audioPrefs);
+	uiManager.setAudioManager(audioManager, () => {
+		saveAudioPreferences(localStorage, audioManager.getPreferences());
+	});
 	let myPlayerId: PlayerId | null = null;
 	let isLocalMode = false;
 	let localMatch: LocalMatch | null = null;

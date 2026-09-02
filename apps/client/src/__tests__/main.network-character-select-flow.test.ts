@@ -249,9 +249,10 @@ const bootMainWithMocks = async (): Promise<BootResult> => {
         uiManagerInstance = this;
       }
 
-      setRoomCode(): void {}
-      setPlayerId(): void {}
-      showLobby(): void {
+       setRoomCode(): void {}
+       setPlayerId(): void {}
+       setAudioManager(): void {}
+       showLobby(): void {
         uiManagerCalls.showLobby++;
       }
       showRoomCreated(): void {}
@@ -301,8 +302,17 @@ const bootMainWithMocks = async (): Promise<BootResult> => {
 
   vi.doMock('../audio/AudioManager.js', () => ({
     AudioManager: class AudioManager {
+      constructor(_init?: { volume?: number; muted?: boolean }) {}
       playTrack(): void {}
+      getPreferences(): { volume: number; muted: boolean } {
+        return { volume: 0.3, muted: false };
+      }
     },
+  }));
+
+  vi.doMock('../audio/audioPreferences.js', () => ({
+    loadAudioPreferences: () => ({ volume: 0.3, muted: false }),
+    saveAudioPreferences: () => {},
   }));
 
   document.body.innerHTML = '<div id="ui-overlay"></div>';

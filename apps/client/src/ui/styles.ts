@@ -28,6 +28,29 @@ export function injectStyles(): void {
     }
     .ui-btn:hover, .ui-btn.menu-selected, .ui-btn.seat-focused { background: #222; outline: 3px solid white; outline-offset: 3px; }
     .ui-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+    .audio-volume-row {
+      padding: 12px 28px;
+      font-family: monospace;
+      font-size: 18px;
+      background: #000;
+      color: #fff;
+      border: 2px solid #fff;
+      cursor: ew-resize;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      width: fit-content;
+      user-select: none;
+    }
+    .audio-volume-row:hover, .audio-volume-row.menu-selected { background: #222; outline: 3px solid white; outline-offset: 3px; }
+    #audio-settings {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 16px;
+    }
     .menu-hint {
       position: absolute;
       bottom: 24px;

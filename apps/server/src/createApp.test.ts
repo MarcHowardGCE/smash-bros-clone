@@ -388,4 +388,190 @@ describe("createApp socket integration", () => {
 		expect(joinThird.error).toBeUndefined();
 		expect(typeof joinThird.playerId).toBe("string");
 	});
+
+	it("keeps session alive during MATCH phase disconnect and allows rejoin within grace window", async () => {
+		const connected = await bootAndConnect(2);
+		const clientA = requireSocket(connected[0], "clientA");
+		const clientB = requireSocket(connected[1], "clientB");
+
+		// Create room and join
+		const roomCreated = await emitWithAck<AckResponse>(clientA, "room:create");
+		roomCode = String(roomCreated.roomCode);
+		const playerAId = String(roomCreated.playerId);
+
+		const playerBJoin = await emitWithAck<AckResponse>(
+			clientB,
+			"room:join",
+			roomCode,
+		);
+		const playerBId = String(playerBJoin.playerId);
+
+		// Ready up and start character select
+		const characterSelectStart = waitForEvent<unknown>(
+			clientA,
+			"room:characterSelectStart",
+		);
+		clientA.emit("player:ready", roomCode);
+		clientB.emit("player:ready", roomCode);
+		await characterSelectStart;
+
+		// Confirm characters and countdown
+		const countdownA = waitForEvent<{ readonly seconds: number }>(
+			clientA,
+			"game:countdown",
+		);
+		await emitWithAck<AckResponse>(
+			clientA,
+			"character:confirm",
+			roomCode,
+		);
+		await emitWithAck<AckResponse>(
+			clientB,
+			"character:confirm",
+			roomCode,
+		);
+		await countdownA;
+
+		// Wait for game to start
+		const gameStartA = waitForEvent<{ readonly playerIds: readonly string[] }>(
+			clientA,
+			"game:start",
+		);
+		const gameStartB = waitForEvent<{ readonly playerIds: readonly string[] }>(
+			clientB,
+			"game:start",
+		);
+		await Promise.all([gameStartA, gameStartB]);
+
+		// Verify match is in progress
+		const room = roomManager.getRoom(roomCode);
+		expect(room?.phase).toBe("MATCH");
+
+		// Disconnect player B (simulating network drop)
+		const playerDisconnected = waitForEvent<{ readonly playerId: string; readonly graceSeconds: number }>(
+			clientA,
+			"room:playerDisconnected",
+		);
+		clientB.disconnect();
+
+		const disconnectPayload = await playerDisconnected;
+		expect(disconnectPayload.playerId).toBe(playerBId);
+		expect(disconnectPayload.graceSeconds).toBe(30);
+
+		// Verify session is still alive
+		const roomAfterDisconnect = roomManager.getRoom(roomCode);
+		expect(roomAfterDisconnect?.phase).toBe("MATCH");
+
+		// Verify player B slot is marked as disconnected
+		const playerBSlot = roomAfterDisconnect?.players.get(playerBId);
+		expect(playerBSlot).toBeDefined();
+		expect(playerBSlot?.socketId).toBeDefined(); // Original socket still bound until rejoin
+
+		// Reconnect player B with new socket ID
+		const addr = httpServer.address();
+		const port = typeof addr === 'object' && addr !== null ? addr.port : 3001;
+		const clientBReconnected = createClient(`http://localhost:${port}`, {
+			transports: ["websocket"],
+		});
+		await waitForConnect(clientBReconnected);
+
+		const rejoinResult = await emitWithAck<{ readonly ok: boolean; readonly error?: string }>(
+			clientBReconnected,
+			"room:rejoin",
+			{ roomCode, playerId: playerBId },
+		);
+		expect(rejoinResult.ok).toBe(true);
+		expect(rejoinResult.error).toBeUndefined();
+
+		// Verify player is re-joined
+		const playerRejoined = waitForEvent<{ readonly playerId: string }>(
+			clientA,
+			"room:playerRejoined",
+		);
+		await playerRejoined;
+
+		const roomAfterRejoin = roomManager.getRoom(roomCode);
+		expect(roomAfterRejoin?.phase).toBe("MATCH");
+
+		const playerBSlotAfterRejoin = roomAfterRejoin?.players.get(playerBId);
+		expect(playerBSlotAfterRejoin?.socketId).toBe(clientBReconnected.id);
+
+		sockets.push(clientBReconnected);
+	});
+
+	it("rejects rejoin after grace window expires", async () => {
+		const connected = await bootAndConnect(2);
+		const clientA = requireSocket(connected[0], "clientA");
+		const clientB = requireSocket(connected[1], "clientB");
+
+		// Create room and start match (abbreviated flow)
+		const roomCreated = await emitWithAck<AckResponse>(clientA, "room:create");
+		roomCode = String(roomCreated.roomCode);
+		const playerAId = String(roomCreated.playerId);
+
+		const playerBJoin = await emitWithAck<AckResponse>(
+			clientB,
+			"room:join",
+			roomCode,
+		);
+		const playerBId = String(playerBJoin.playerId);
+
+		// Ready up
+		const characterSelectStart = waitForEvent<unknown>(
+			clientA,
+			"room:characterSelectStart",
+		);
+		clientA.emit("player:ready", roomCode);
+		clientB.emit("player:ready", roomCode);
+		await characterSelectStart;
+
+		// Confirm characters
+		const countdownA = waitForEvent<{ readonly seconds: number }>(
+			clientA,
+			"game:countdown",
+		);
+		await emitWithAck<AckResponse>(clientA, "character:confirm", roomCode);
+		await emitWithAck<AckResponse>(clientB, "character:confirm", roomCode);
+		await countdownA;
+
+		// Wait for game start
+		const gameStartA = waitForEvent<{ readonly playerIds: readonly string[] }>(
+			clientA,
+			"game:start",
+		);
+		const gameStartB = waitForEvent<{ readonly playerIds: readonly string[] }>(
+			clientB,
+			"game:start",
+		);
+		await Promise.all([gameStartA, gameStartB]);
+
+		// Disconnect player B
+		const playerDisconnected = waitForEvent<{ readonly playerId: string; readonly graceSeconds: number }>(
+			clientA,
+			"room:playerDisconnected",
+		);
+		clientB.disconnect();
+		await playerDisconnected;
+
+		// Wait for grace window to expire (31 seconds) — need extended timeout for this test
+		await wait(31000);
+
+		// Try to rejoin after grace window expired
+		const addr = httpServer.address();
+		const port = typeof addr === 'object' && addr !== null ? addr.port : 3001;
+		const clientBReconnected = createClient(`http://localhost:${port}`, {
+			transports: ["websocket"],
+		});
+		await waitForConnect(clientBReconnected);
+
+		const rejoinResult = await emitWithAck<{ readonly ok: boolean; readonly error?: string }>(
+			clientBReconnected,
+			"room:rejoin",
+			{ roomCode, playerId: playerBId },
+		);
+		expect(rejoinResult.ok).toBe(false);
+		expect(rejoinResult.error).toBe("Rejoin grace window expired");
+
+		sockets.push(clientBReconnected);
+	}, 40000); // Extended timeout for grace window expiry test
 });

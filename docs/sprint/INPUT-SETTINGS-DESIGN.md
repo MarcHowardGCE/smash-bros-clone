@@ -147,3 +147,37 @@ Backwards-compatibility handling for future schema/format changes is explicitly 
 - Confirm final double-tap threshold after play-testing (350 ms is provisional, not locked).
 - Update Section 2 to describe the SHIELD-bit-reuse mechanism instead of the `currentMoveId`-selection description currently written there.
 - Scope the export/import UI (button placement, file format — likely JSON download/upload) for the settings screen described in Section 4.
+
+---
+
+## Team Discussion — Round 3 (Section 4: Settings Screen Integration)
+
+The team led a focused discussion on Section 4 to resolve internal contradictions and lock scope. Decisions below supersede the relevant parts of Section 4.
+
+### 1. Save model
+
+**Decision: Live-persist, no Cancel/Apply.**
+
+Section 4 as originally drafted contradicted itself: "Cancel/Apply buttons to save or discard changes" vs. "Volume slider changes... auto-persist" / "no commit button needed." Resolved in favor of live-persist — every change calls `SettingsStore.set()` immediately and is saved as it happens. The Cancel/Apply buttons described in Section 4's "Content scope" are removed from scope; a single Close (or equivalent) control simply exits the screen. Nothing is staged, nothing can be discarded.
+
+### 2. Double-tap toggle placement
+
+**Decision: In scope this sprint.** A "Double-Tap Smash" toggle ships on the settings screen alongside volume and keymap display, consistent with Round 2's decision that double-tap-to-smash is opt-in via settings. Section 4's "Content scope" list should be updated to include this toggle.
+
+### 3. Export/import keybind UI
+
+**Decision: Full UI ships this sprint, not backend-only.** "Export Keybinds" and "Import Keybinds" buttons live directly in the settings screen next to the keymap display — not deferred to a future sprint as a store-methods-only change. Import must validate the incoming schema version and run through the same migration path as `SettingsStore.load()` (per Round 2 §4) rather than assuming the imported file matches the current version.
+
+### 4. Settings screen entry points
+
+**Decision: Lobby + in-match pause menu, both now.** Originally scoped as lobby-only; the group decided to also wire a Settings entry point into the in-match pause menu this sprint.
+
+**⚠️ Cross-team flag:** the in-match pause menu is the same UI surface **Team D (Netcode Hardening)** is modifying this sprint for the disconnect/rejoin grace-window flow. Two groups touching pause-menu code in the same sprint risks merge conflicts and behavioral collisions (e.g., can Settings be opened during a netcode-triggered pause? does opening Settings block/interfere with resume?). **Action before implementation:** sync with Team D to either (a) agree on ownership of the pause-menu file/component this sprint, or (b) scope Team B's change as "wire the button only" and hold off on any shared pause-state logic until Team D's rejoin flow lands, per the documented merge order (`D → C → A → B`).
+
+---
+
+## Open Items for Next Sync (Round 3 additions)
+
+- Confirm with Team D how Settings-during-pause interacts with the disconnect/rejoin grace window before touching pause-menu code.
+- Update Section 4's "Content scope" bullet list to add the double-tap toggle and remove Cancel/Apply language.
+- Define the export/import file format precisely (e.g., `{ version, keymapP1 }` JSON) and where the "Export"/"Import" buttons sit relative to the keymap display.

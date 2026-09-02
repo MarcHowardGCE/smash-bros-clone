@@ -15,6 +15,12 @@ import type { PlayerId, CharacterId } from '@smash/shared';
 
 const ROOM_CODE_CHARS = 'ABCDEFGHIJKLMNPQRSTUVWXYZ123456789';
 const MAX_PLAYERS = 4;
+const REJOIN_GRACE_MS = 30_000;
+
+type DisconnectedPlayerRecord = {
+  readonly roomCode: string;
+  readonly disconnectedAt: number;
+};
 
 function generateRoomCode(): string {
   let code = '';
@@ -52,6 +58,7 @@ function generatePlayerId(): PlayerId {
  */
 export class RoomManager {
   private rooms = new Map<string, Room>();
+  private disconnectedPlayers = new Map<PlayerId, DisconnectedPlayerRecord>();
 
   /**
    * Creates a new room with a unique 6-character code and places the calling
@@ -196,6 +203,58 @@ export class RoomManager {
   }
 
   /**
+   * Marks a player as temporarily disconnected without removing their room slot.
+   *
+   * @param playerId - Player that disconnected mid-session.
+   * @returns `{ ok: true }` when tracked, or `{ error }` if the player isn't present.
+   */
+  markDisconnected(playerId: PlayerId): { ok: true } | { error: string } {
+    for (const [roomCode, room] of this.rooms.entries()) {
+      const slot = room.players.get(playerId);
+      if (slot) {
+        this.disconnectedPlayers.set(playerId, {
+          roomCode,
+          disconnectedAt: Date.now(),
+        });
+        return { ok: true };
+      }
+    }
+    return { error: 'Player not in room' };
+  }
+
+  /**
+   * Rebinds a disconnected player to a new socket ID when they reconnect.
+   *
+   * @param roomCode - 6-character room code.
+   * @param playerId - Rejoining player ID.
+   * @param newSocketId - New socket.io socket ID after reconnect.
+   * @returns `{ ok: true, slotIndex }` on success, or `{ error }` when rejoin fails.
+   */
+  rejoinRoom(roomCode: string, playerId: PlayerId, newSocketId: string): { ok: true; slotIndex: number } | { error: string } {
+    const normalizedRoomCode = roomCode.toUpperCase();
+    const room = this.rooms.get(normalizedRoomCode);
+    if (!room) return { error: 'Room not found' };
+
+    const slot = room.players.get(playerId);
+    if (!slot) return { error: 'Player not in room' };
+
+    const disconnected = this.disconnectedPlayers.get(playerId);
+    if (!disconnected || disconnected.roomCode !== normalizedRoomCode) {
+      return { error: 'Player is not disconnected' };
+    }
+
+    const elapsedMs = Date.now() - disconnected.disconnectedAt;
+    if (elapsedMs > REJOIN_GRACE_MS) {
+      this.disconnectedPlayers.delete(playerId);
+      return { error: 'Rejoin grace window expired' };
+    }
+
+    slot.socketId = newSocketId;
+    this.disconnectedPlayers.delete(playerId);
+    return { ok: true, slotIndex: slot.slotIndex };
+  }
+
+  /**
    * Advances the room phase to `MATCH`. Called by `createApp.ts` when the
    * countdown timer elapses and the {@link MatchSession} is about to start.
    *
@@ -246,6 +305,7 @@ export class RoomManager {
     for (const [roomCode, room] of this.rooms.entries()) {
       for (const [playerId, slot] of room.players.entries()) {
         if (slot.socketId === socketId) {
+          this.disconnectedPlayers.delete(playerId);
           room.players.delete(playerId);
           if (room.phase === 'CHARACTER_SELECT' || room.phase === 'COUNTDOWN') {
             room.phase = 'LOBBY';

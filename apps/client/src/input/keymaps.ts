@@ -9,6 +9,18 @@
 import { INPUT_BITS } from '@smash/shared';
 import type { InputBitmask } from '@smash/shared';
 
+/** Map from action name (string) to bitmask value for conversion from persisted keymaps. */
+const ACTION_NAME_TO_BITMASK: Record<string, InputBitmask> = {
+  LEFT: INPUT_BITS.LEFT,
+  RIGHT: INPUT_BITS.RIGHT,
+  JUMP: INPUT_BITS.JUMP,
+  DOWN: INPUT_BITS.DOWN,
+  ATTACK: INPUT_BITS.ATTACK,
+  SPECIAL: INPUT_BITS.SPECIAL,
+  SHIELD: INPUT_BITS.SHIELD,
+  GRAB: INPUT_BITS.GRAB,
+};
+
 export const DEFAULT_KEYMAP_P1: Record<string, InputBitmask> = {
   ArrowLeft: INPUT_BITS.LEFT,
   KeyA: INPUT_BITS.LEFT,
@@ -57,3 +69,26 @@ export const DEFAULT_KEYMAP_P4: Record<string, InputBitmask> = {
   KeyV: INPUT_BITS.SHIELD,
   KeyB: INPUT_BITS.GRAB,
 };
+
+/**
+ * Convert a persisted keymap (with string action names) to InputManager format (bitmasks).
+ * Used to load keymaps from SettingsStore, which stores action names as strings.
+ *
+ * @param persistedKeymap - Keymap with string values like { ArrowLeft: 'LEFT', KeyZ: 'ATTACK' }
+ * @returns Keymap with numeric bitmask values like { ArrowLeft: 0x0001, KeyZ: 0x0010 }
+ */
+export function convertPersistedKeymap(
+  persistedKeymap: Record<string, string>
+): Record<string, InputBitmask> {
+  const result: Record<string, InputBitmask> = {};
+
+  for (const [keyCode, actionName] of Object.entries(persistedKeymap)) {
+    const bitmask = ACTION_NAME_TO_BITMASK[actionName];
+    if (bitmask !== undefined) {
+      result[keyCode] = bitmask;
+    }
+    // Silently skip unknown action names (graceful degradation)
+  }
+
+  return result;
+}

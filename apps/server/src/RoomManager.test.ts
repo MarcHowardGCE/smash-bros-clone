@@ -1,4 +1,4 @@
-import { describe, expect, it } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { RoomManager } from './RoomManager.js';
 
 function createTwoPlayerRoom(manager: RoomManager): {
@@ -192,5 +192,51 @@ describe('RoomManager character select flow', () => {
     expect(guestSlot?.isReady).toBe(false);
     expect(guestSlot?.characterConfirmed).toBe(false);
     expect(guestSlot?.characterId).toBe('all-rounder');
+  });
+});
+
+describe('RoomManager rejoin spike', () => {
+  beforeEach(() => {
+    vi.useFakeTimers();
+    vi.setSystemTime(new Date('2026-01-01T00:00:00.000Z'));
+  });
+
+  afterEach(() => {
+    vi.useRealTimers();
+  });
+
+  it('rejoinRoom succeeds within grace window and rebinds socketId', () => {
+    const manager = new RoomManager();
+    const created = manager.createRoom('socket-host');
+
+    const marked = manager.markDisconnected(created.playerId);
+    expect(marked).toEqual({ ok: true });
+
+    const rejoin = manager.rejoinRoom(created.roomCode, created.playerId, 'socket-host-rejoin');
+    expect(rejoin).toEqual({ ok: true, slotIndex: 0 });
+
+    const room = manager.getRoom(created.roomCode);
+    expect(room?.players.get(created.playerId)?.socketId).toBe('socket-host-rejoin');
+  });
+
+  it('rejoinRoom returns error for unknown playerId', () => {
+    const manager = new RoomManager();
+    const created = manager.createRoom('socket-host');
+
+    const rejoin = manager.rejoinRoom(created.roomCode, 'player_unknown', 'socket-new');
+    expect(rejoin).toEqual({ error: 'Player not in room' });
+  });
+
+  it('rejoinRoom returns error after grace window expires', () => {
+    const manager = new RoomManager();
+    const created = manager.createRoom('socket-host');
+
+    const marked = manager.markDisconnected(created.playerId);
+    expect(marked).toEqual({ ok: true });
+
+    vi.advanceTimersByTime(30_001);
+
+    const rejoin = manager.rejoinRoom(created.roomCode, created.playerId, 'socket-host-rejoin');
+    expect(rejoin).toEqual({ error: 'Rejoin grace window expired' });
   });
 });

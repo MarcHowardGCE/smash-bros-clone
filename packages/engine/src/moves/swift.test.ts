@@ -2,209 +2,156 @@ import { describe, it, expect } from 'vitest';
 import { MoveId } from '@smash/shared';
 import { getMoveData, getMoveDataForCharacter } from './index.js';
 import {
-  SWIFT_JAB, SWIFT_NEUTRAL_AIR, SWIFT_FORWARD_AIR, SWIFT_DOWN_AIR,
-  SWIFT_FORWARD_SMASH, SWIFT_NEUTRAL_SPECIAL, SWIFT_UP_SPECIAL, SWIFT_DOWN_SPECIAL,
+  SWIFT_JAB, SWIFT_FORWARD_TILT, SWIFT_NEUTRAL_AIR, SWIFT_FORWARD_AIR,
+  SWIFT_UP_AIR, SWIFT_NEUTRAL_SPECIAL, SWIFT_UP_SPECIAL,
 } from './swift.js';
 
 describe('Swift Move Overrides', () => {
   describe('Frame timing matches defaults', () => {
-    it('JAB has identical frame timing to default', () => {
-      const def = getMoveData(MoveId.JAB);
-      expect(SWIFT_JAB.startupFrames).toBe(def.startupFrames);
-      expect(SWIFT_JAB.activeFrames).toBe(def.activeFrames);
-      expect(SWIFT_JAB.recoveryFrames).toBe(def.recoveryFrames);
-      expect(SWIFT_JAB.landingLag).toBe(def.landingLag);
-      expect(SWIFT_JAB.isAerial).toBe(def.isAerial);
-      expect(SWIFT_JAB.isGrab).toBe(def.isGrab);
-      expect(SWIFT_JAB.isSpecial).toBe(def.isSpecial);
-      expect(SWIFT_JAB.chargeMax).toBe(def.chargeMax);
-    });
+    const cases: Array<[string, MoveId, typeof SWIFT_JAB]> = [
+      ['JAB', MoveId.JAB, SWIFT_JAB],
+      ['FORWARD_TILT', MoveId.FORWARD_TILT, SWIFT_FORWARD_TILT],
+      ['NEUTRAL_AIR', MoveId.NEUTRAL_AIR, SWIFT_NEUTRAL_AIR],
+      ['FORWARD_AIR', MoveId.FORWARD_AIR, SWIFT_FORWARD_AIR],
+      ['UP_AIR', MoveId.UP_AIR, SWIFT_UP_AIR],
+      ['NEUTRAL_SPECIAL', MoveId.NEUTRAL_SPECIAL, SWIFT_NEUTRAL_SPECIAL],
+      ['UP_SPECIAL', MoveId.UP_SPECIAL, SWIFT_UP_SPECIAL],
+    ];
 
-    it('NEUTRAL_AIR has identical frame timing to default', () => {
-      const def = getMoveData(MoveId.NEUTRAL_AIR);
-      expect(SWIFT_NEUTRAL_AIR.startupFrames).toBe(def.startupFrames);
-      expect(SWIFT_NEUTRAL_AIR.activeFrames).toBe(def.activeFrames);
-      expect(SWIFT_NEUTRAL_AIR.recoveryFrames).toBe(def.recoveryFrames);
-      expect(SWIFT_NEUTRAL_AIR.landingLag).toBe(def.landingLag);
-      expect(SWIFT_NEUTRAL_AIR.isAerial).toBe(def.isAerial);
-      expect(SWIFT_NEUTRAL_AIR.isGrab).toBe(def.isGrab);
-      expect(SWIFT_NEUTRAL_AIR.isSpecial).toBe(def.isSpecial);
-      expect(SWIFT_NEUTRAL_AIR.chargeMax).toBe(def.chargeMax);
-    });
-
-    it('FORWARD_AIR has identical frame timing to default', () => {
-      const def = getMoveData(MoveId.FORWARD_AIR);
-      expect(SWIFT_FORWARD_AIR.startupFrames).toBe(def.startupFrames);
-      expect(SWIFT_FORWARD_AIR.activeFrames).toBe(def.activeFrames);
-      expect(SWIFT_FORWARD_AIR.recoveryFrames).toBe(def.recoveryFrames);
-      expect(SWIFT_FORWARD_AIR.landingLag).toBe(def.landingLag);
-      expect(SWIFT_FORWARD_AIR.isAerial).toBe(def.isAerial);
-      expect(SWIFT_FORWARD_AIR.isGrab).toBe(def.isGrab);
-      expect(SWIFT_FORWARD_AIR.isSpecial).toBe(def.isSpecial);
-      expect(SWIFT_FORWARD_AIR.chargeMax).toBe(def.chargeMax);
-    });
-
-    it('DOWN_AIR has identical frame timing to default', () => {
-      const def = getMoveData(MoveId.DOWN_AIR);
-      expect(SWIFT_DOWN_AIR.startupFrames).toBe(def.startupFrames);
-      expect(SWIFT_DOWN_AIR.activeFrames).toBe(def.activeFrames);
-      expect(SWIFT_DOWN_AIR.recoveryFrames).toBe(def.recoveryFrames);
-      expect(SWIFT_DOWN_AIR.landingLag).toBe(def.landingLag);
-      expect(SWIFT_DOWN_AIR.isAerial).toBe(def.isAerial);
-      expect(SWIFT_DOWN_AIR.isGrab).toBe(def.isGrab);
-      expect(SWIFT_DOWN_AIR.isSpecial).toBe(def.isSpecial);
-      expect(SWIFT_DOWN_AIR.chargeMax).toBe(def.chargeMax);
-    });
-
-    it('FORWARD_SMASH has identical frame timing to default', () => {
-      const def = getMoveData(MoveId.FORWARD_SMASH);
-      expect(SWIFT_FORWARD_SMASH.startupFrames).toBe(def.startupFrames);
-      expect(SWIFT_FORWARD_SMASH.activeFrames).toBe(def.activeFrames);
-      expect(SWIFT_FORWARD_SMASH.recoveryFrames).toBe(def.recoveryFrames);
-      expect(SWIFT_FORWARD_SMASH.landingLag).toBe(def.landingLag);
-      expect(SWIFT_FORWARD_SMASH.isAerial).toBe(def.isAerial);
-      expect(SWIFT_FORWARD_SMASH.isGrab).toBe(def.isGrab);
-      expect(SWIFT_FORWARD_SMASH.isSpecial).toBe(def.isSpecial);
-      expect(SWIFT_FORWARD_SMASH.chargeMax).toBe(def.chargeMax);
-    });
-
-    it('NEUTRAL_SPECIAL has identical frame timing to default', () => {
-      const def = getMoveData(MoveId.NEUTRAL_SPECIAL);
-      expect(SWIFT_NEUTRAL_SPECIAL.startupFrames).toBe(def.startupFrames);
-      expect(SWIFT_NEUTRAL_SPECIAL.activeFrames).toBe(def.activeFrames);
-      expect(SWIFT_NEUTRAL_SPECIAL.recoveryFrames).toBe(def.recoveryFrames);
-      expect(SWIFT_NEUTRAL_SPECIAL.landingLag).toBe(def.landingLag);
-      expect(SWIFT_NEUTRAL_SPECIAL.isAerial).toBe(def.isAerial);
-      expect(SWIFT_NEUTRAL_SPECIAL.isGrab).toBe(def.isGrab);
-      expect(SWIFT_NEUTRAL_SPECIAL.isSpecial).toBe(def.isSpecial);
-      expect(SWIFT_NEUTRAL_SPECIAL.chargeMax).toBe(def.chargeMax);
-    });
-
-    it('UP_SPECIAL has identical frame timing to default', () => {
-      const def = getMoveData(MoveId.UP_SPECIAL);
-      expect(SWIFT_UP_SPECIAL.startupFrames).toBe(def.startupFrames);
-      expect(SWIFT_UP_SPECIAL.activeFrames).toBe(def.activeFrames);
-      expect(SWIFT_UP_SPECIAL.recoveryFrames).toBe(def.recoveryFrames);
-      expect(SWIFT_UP_SPECIAL.landingLag).toBe(def.landingLag);
-      expect(SWIFT_UP_SPECIAL.isAerial).toBe(def.isAerial);
-      expect(SWIFT_UP_SPECIAL.isGrab).toBe(def.isGrab);
-      expect(SWIFT_UP_SPECIAL.isSpecial).toBe(def.isSpecial);
-      expect(SWIFT_UP_SPECIAL.chargeMax).toBe(def.chargeMax);
-    });
-
-    it('DOWN_SPECIAL has identical frame timing to default', () => {
-      const def = getMoveData(MoveId.DOWN_SPECIAL);
-      expect(SWIFT_DOWN_SPECIAL.startupFrames).toBe(def.startupFrames);
-      expect(SWIFT_DOWN_SPECIAL.activeFrames).toBe(def.activeFrames);
-      expect(SWIFT_DOWN_SPECIAL.recoveryFrames).toBe(def.recoveryFrames);
-      expect(SWIFT_DOWN_SPECIAL.landingLag).toBe(def.landingLag);
-      expect(SWIFT_DOWN_SPECIAL.isAerial).toBe(def.isAerial);
-      expect(SWIFT_DOWN_SPECIAL.isGrab).toBe(def.isGrab);
-      expect(SWIFT_DOWN_SPECIAL.isSpecial).toBe(def.isSpecial);
-      expect(SWIFT_DOWN_SPECIAL.chargeMax).toBe(def.chargeMax);
-    });
+    for (const [name, id, override] of cases) {
+      it(`${name} has identical frame timing to default`, () => {
+        const def = getMoveData(id);
+        expect(override.startupFrames).toBe(def.startupFrames);
+        expect(override.activeFrames).toBe(def.activeFrames);
+        expect(override.recoveryFrames).toBe(def.recoveryFrames);
+        expect(override.landingLag).toBe(def.landingLag);
+        expect(override.isAerial).toBe(def.isAerial);
+        expect(override.isGrab).toBe(def.isGrab);
+        expect(override.isSpecial).toBe(def.isSpecial);
+        expect(override.chargeMax).toBe(def.chargeMax);
+      });
+    }
   });
 
-  describe('Swift hitbox stats match spec', () => {
-    it('JAB has Swift hitbox stats (offsetX: 40, damage: 2)', () => {
-      const hitbox = SWIFT_JAB.hitboxPerActiveFrame[0];
-      expect(hitbox.offsetX).toBe(40);
-      expect(hitbox.damage).toBe(2);
-      expect(hitbox.knockbackGrowth).toBe(25);
+  describe('Swift hitbox stats: extended reach, lower damage', () => {
+    it('JAB: offsetX 50 (extended from default 45), damage 2, kbGrowth 22', () => {
+      const h = SWIFT_JAB.hitboxPerActiveFrame[0];
+      expect(h.offsetX).toBe(50);
+      expect(h.damage).toBe(2);
+      expect(h.knockbackGrowth).toBe(22);
     });
 
-    it('NEUTRAL_AIR has Swift hitbox stats (damage: 7, radius: 32)', () => {
-      const hitbox = SWIFT_NEUTRAL_AIR.hitboxPerActiveFrame[0];
-      expect(hitbox.damage).toBe(7);
-      expect(hitbox.radius).toBe(32);
-      expect(hitbox.knockbackGrowth).toBe(45);
+    it('FORWARD_TILT: offsetX 60 (extended from default 55), damage 5', () => {
+      const h = SWIFT_FORWARD_TILT.hitboxPerActiveFrame[0];
+      expect(h.offsetX).toBe(60);
+      expect(h.damage).toBe(5);
     });
 
-    it('FORWARD_AIR has Swift hitbox stats (offsetX: 52, damage: 13)', () => {
-      const hitbox = SWIFT_FORWARD_AIR.hitboxPerActiveFrame[0];
-      expect(hitbox.offsetX).toBe(52);
-      expect(hitbox.damage).toBe(13);
-      expect(hitbox.knockbackGrowth).toBe(72);
+    it('NEUTRAL_AIR: radius 36 (extended from default 34), damage 6', () => {
+      const h = SWIFT_NEUTRAL_AIR.hitboxPerActiveFrame[0];
+      expect(h.radius).toBe(36);
+      expect(h.damage).toBe(6);
     });
 
-    it('DOWN_AIR has Swift hitbox stats (offsetY: 28, damage: 12, angle: 270)', () => {
-      const hitbox = SWIFT_DOWN_AIR.hitboxPerActiveFrame[0];
-      expect(hitbox.offsetY).toBe(28);
-      expect(hitbox.damage).toBe(12);
-      expect(hitbox.knockbackAngle).toBe(270);
-      expect(hitbox.knockbackGrowth).toBe(55);
+    it('FORWARD_AIR: offsetX 60 (extended from default 55), damage 9', () => {
+      const h = SWIFT_FORWARD_AIR.hitboxPerActiveFrame[0];
+      expect(h.offsetX).toBe(60);
+      expect(h.damage).toBe(9);
     });
 
-    it('FORWARD_SMASH has Swift hitbox stats (offsetX: 62, damage: 16)', () => {
-      const hitbox = SWIFT_FORWARD_SMASH.hitboxPerActiveFrame[0];
-      expect(hitbox.offsetX).toBe(62);
-      expect(hitbox.damage).toBe(16);
-      expect(hitbox.knockbackGrowth).toBe(95);
+    it('UP_AIR: offsetY -50 (extended from -40), radius 30 (extended from 28), damage 7, kbGrowth 48', () => {
+      const h = SWIFT_UP_AIR.hitboxPerActiveFrame[0];
+      expect(h.offsetY).toBe(-50);
+      expect(h.radius).toBe(30);
+      expect(h.damage).toBe(7);
+      expect(h.knockbackGrowth).toBe(48);
     });
 
-    it('NEUTRAL_SPECIAL has Swift hitbox stats (radius: 34, damage: 9)', () => {
-      const hitbox = SWIFT_NEUTRAL_SPECIAL.hitboxPerActiveFrame[0];
-      expect(hitbox.radius).toBe(34);
-      expect(hitbox.damage).toBe(9);
-      expect(hitbox.knockbackGrowth).toBe(50);
+    it('NEUTRAL_SPECIAL: radius 38 (extended from default 36), damage 6', () => {
+      const h = SWIFT_NEUTRAL_SPECIAL.hitboxPerActiveFrame[0];
+      expect(h.radius).toBe(38);
+      expect(h.damage).toBe(6);
     });
 
-    it('UP_SPECIAL has Swift hitbox stats (offsetY: -35, damage: 6, knockbackGrowth: 40)', () => {
-      const hitbox = SWIFT_UP_SPECIAL.hitboxPerActiveFrame[0];
-      expect(hitbox.offsetY).toBe(-35);
-      expect(hitbox.damage).toBe(6);
-      expect(hitbox.knockbackGrowth).toBe(40);
-      expect(hitbox.knockbackAngle).toBe(75);
+    it('UP_SPECIAL: radius 28 (extended from default 26), vertical launch 90°, damage 4', () => {
+      const h = SWIFT_UP_SPECIAL.hitboxPerActiveFrame[0];
+      expect(h.radius).toBe(28);
+      expect(h.knockbackAngle).toBe(90);
+      expect(h.damage).toBe(4);
     });
 
-    it('DOWN_SPECIAL has empty hitboxPerActiveFrame (counter mechanism)', () => {
-      expect(SWIFT_DOWN_SPECIAL.hitboxPerActiveFrame).toEqual([]);
-      expect(SWIFT_DOWN_SPECIAL.startupFrames).toBe(6);
+    it('all Swift moves have hitboxPerActiveFrame.length matching activeFrames', () => {
+      const cases = [SWIFT_JAB, SWIFT_FORWARD_TILT, SWIFT_NEUTRAL_AIR, SWIFT_FORWARD_AIR, SWIFT_UP_AIR, SWIFT_UP_SPECIAL];
+      for (const m of cases) {
+        expect(m.hitboxPerActiveFrame.length).toBe(m.activeFrames);
+      }
+      // NEUTRAL_SPECIAL has activeFrames: 0 but carries 1 burst hitbox (matches default pattern)
+      expect(SWIFT_NEUTRAL_SPECIAL.activeFrames).toBe(0);
+      expect(SWIFT_NEUTRAL_SPECIAL.hitboxPerActiveFrame.length).toBe(1);
+    });
+
+    it('Swift hits are weaker than defaults across the board', () => {
+      const pairs: Array<[typeof SWIFT_JAB, MoveId]> = [
+        [SWIFT_JAB, MoveId.JAB],
+        [SWIFT_FORWARD_TILT, MoveId.FORWARD_TILT],
+        [SWIFT_NEUTRAL_AIR, MoveId.NEUTRAL_AIR],
+        [SWIFT_FORWARD_AIR, MoveId.FORWARD_AIR],
+        [SWIFT_UP_AIR, MoveId.UP_AIR],
+        [SWIFT_NEUTRAL_SPECIAL, MoveId.NEUTRAL_SPECIAL],
+        [SWIFT_UP_SPECIAL, MoveId.UP_SPECIAL],
+      ];
+      for (const [override, id] of pairs) {
+        const def = getMoveData(id);
+        const swiftDmg = override.hitboxPerActiveFrame[0]?.damage ?? 0;
+        const defDmg = def.hitboxPerActiveFrame[0]?.damage ?? 0;
+        expect(swiftDmg).toBeLessThan(defDmg);
+      }
+    });
+
+    it('Swift reach meets or exceeds defaults on all reach-extended moves', () => {
+      // JAB, FORWARD_TILT, FORWARD_AIR use offsetX for reach
+      expect(SWIFT_JAB.hitboxPerActiveFrame[0].offsetX).toBeGreaterThan(getMoveData(MoveId.JAB).hitboxPerActiveFrame[0].offsetX);
+      expect(SWIFT_FORWARD_TILT.hitboxPerActiveFrame[0].offsetX).toBeGreaterThan(getMoveData(MoveId.FORWARD_TILT).hitboxPerActiveFrame[0].offsetX);
+      expect(SWIFT_FORWARD_AIR.hitboxPerActiveFrame[0].offsetX).toBeGreaterThan(getMoveData(MoveId.FORWARD_AIR).hitboxPerActiveFrame[0].offsetX);
+      // NEUTRAL_AIR, NEUTRAL_SPECIAL, UP_SPECIAL use radius for reach
+      expect(SWIFT_NEUTRAL_AIR.hitboxPerActiveFrame[0].radius).toBeGreaterThan(getMoveData(MoveId.NEUTRAL_AIR).hitboxPerActiveFrame[0].radius);
+      expect(SWIFT_NEUTRAL_SPECIAL.hitboxPerActiveFrame[0].radius).toBeGreaterThan(getMoveData(MoveId.NEUTRAL_SPECIAL).hitboxPerActiveFrame[0].radius);
+      expect(SWIFT_UP_SPECIAL.hitboxPerActiveFrame[0].radius).toBeGreaterThan(getMoveData(MoveId.UP_SPECIAL).hitboxPerActiveFrame[0].radius);
+      // UP_AIR uses both offsetY magnitude and radius
+      expect(Math.abs(SWIFT_UP_AIR.hitboxPerActiveFrame[0].offsetY)).toBeGreaterThan(Math.abs(getMoveData(MoveId.UP_AIR).hitboxPerActiveFrame[0].offsetY));
+      expect(SWIFT_UP_AIR.hitboxPerActiveFrame[0].radius).toBeGreaterThan(getMoveData(MoveId.UP_AIR).hitboxPerActiveFrame[0].radius);
     });
   });
 
   describe('getMoveDataForCharacter', () => {
     it('returns Swift overrides for swift', () => {
       const move = getMoveDataForCharacter('swift', MoveId.JAB);
-      expect(move.hitboxPerActiveFrame[0].offsetX).toBe(40);
+      expect(move.hitboxPerActiveFrame[0].offsetX).toBe(50);
       expect(move.hitboxPerActiveFrame[0].damage).toBe(2);
     });
 
-    it('returns default for all-rounder', () => {
-      const move = getMoveDataForCharacter('all-rounder', MoveId.JAB);
-      expect(move.hitboxPerActiveFrame[0].offsetX).toBe(45);
-      expect(move.hitboxPerActiveFrame[0].damage).toBe(3);
+    it('returns defaults for swift on unmapped MoveIds (e.g. DOWN_TILT)', () => {
+      const swiftMove = getMoveDataForCharacter('swift', MoveId.DOWN_TILT);
+      const defMove = getMoveDataForCharacter('all-rounder', MoveId.DOWN_TILT);
+      expect(swiftMove).toBe(defMove);
     });
 
-    it('returns default for undefined characterId', () => {
-      const move = getMoveDataForCharacter(undefined, MoveId.JAB);
-      expect(move.hitboxPerActiveFrame[0].offsetX).toBe(45);
-      expect(move.hitboxPerActiveFrame[0].damage).toBe(3);
+    it('swift and abe-lincoln overrides do not collide', () => {
+      const swiftJab = getMoveDataForCharacter('swift', MoveId.JAB);
+      const lincolnJab = getMoveDataForCharacter('abe-lincoln', MoveId.JAB);
+      expect(swiftJab.hitboxPerActiveFrame[0].offsetX).toBe(50);
+      expect(lincolnJab.hitboxPerActiveFrame[0].offsetX).toBe(58);
     });
 
-    it('falls back to default for unmapped MoveIds', () => {
-      const move = getMoveDataForCharacter('swift', MoveId.FORWARD_TILT);
-      expect(move.hitboxPerActiveFrame[0].offsetX).toBe(55);
-      expect(move.hitboxPerActiveFrame[0].damage).toBe(7);
-    });
-
-    it('all 8 Swift moves resolve via getMoveDataForCharacter', () => {
+    it('all 7 Swift moves resolve with default frame timing preserved', () => {
       const moves = [
-        MoveId.JAB,
-        MoveId.NEUTRAL_AIR,
-        MoveId.FORWARD_AIR,
-        MoveId.DOWN_AIR,
-        MoveId.FORWARD_SMASH,
-        MoveId.NEUTRAL_SPECIAL,
-        MoveId.UP_SPECIAL,
-        MoveId.DOWN_SPECIAL,
+        MoveId.JAB, MoveId.FORWARD_TILT, MoveId.NEUTRAL_AIR, MoveId.FORWARD_AIR,
+        MoveId.UP_AIR, MoveId.NEUTRAL_SPECIAL, MoveId.UP_SPECIAL,
       ];
-
-      for (const moveId of moves) {
-        const move = getMoveDataForCharacter('swift', moveId);
-        expect(move.id).toBe(moveId);
-        // Verify frame timing still matches default
-        const def = getMoveData(moveId);
+      for (const id of moves) {
+        const move = getMoveDataForCharacter('swift', id);
+        const def = getMoveData(id);
+        expect(move.id).toBe(id);
         expect(move.startupFrames).toBe(def.startupFrames);
         expect(move.activeFrames).toBe(def.activeFrames);
         expect(move.recoveryFrames).toBe(def.recoveryFrames);

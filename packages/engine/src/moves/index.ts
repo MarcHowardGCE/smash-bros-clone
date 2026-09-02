@@ -29,8 +29,8 @@ import {
   LINCOLN_NEUTRAL_SPECIAL, LINCOLN_SIDE_SPECIAL, LINCOLN_UP_SPECIAL, LINCOLN_DOWN_SPECIAL,
 } from './lincoln.js';
 import {
-  SWIFT_JAB, SWIFT_NEUTRAL_AIR, SWIFT_FORWARD_AIR, SWIFT_DOWN_AIR,
-  SWIFT_FORWARD_SMASH, SWIFT_NEUTRAL_SPECIAL, SWIFT_UP_SPECIAL, SWIFT_DOWN_SPECIAL,
+  SWIFT_JAB, SWIFT_FORWARD_TILT, SWIFT_NEUTRAL_AIR, SWIFT_FORWARD_AIR,
+  SWIFT_UP_AIR, SWIFT_NEUTRAL_SPECIAL, SWIFT_UP_SPECIAL,
 } from './swift.js';
 
 const MOVE_REGISTRY: ReadonlyMap<MoveId, MoveData> = new Map([
@@ -71,13 +71,12 @@ const LINCOLN_MOVE_OVERRIDES: ReadonlyMap<MoveId, MoveData> = new Map([
 
 const SWIFT_MOVE_OVERRIDES: ReadonlyMap<MoveId, MoveData> = new Map([
   [MoveId.JAB, SWIFT_JAB],
+  [MoveId.FORWARD_TILT, SWIFT_FORWARD_TILT],
   [MoveId.NEUTRAL_AIR, SWIFT_NEUTRAL_AIR],
   [MoveId.FORWARD_AIR, SWIFT_FORWARD_AIR],
-  [MoveId.DOWN_AIR, SWIFT_DOWN_AIR],
-  [MoveId.FORWARD_SMASH, SWIFT_FORWARD_SMASH],
+  [MoveId.UP_AIR, SWIFT_UP_AIR],
   [MoveId.NEUTRAL_SPECIAL, SWIFT_NEUTRAL_SPECIAL],
   [MoveId.UP_SPECIAL, SWIFT_UP_SPECIAL],
-  [MoveId.DOWN_SPECIAL, SWIFT_DOWN_SPECIAL],
 ]);
 
 /**
@@ -104,6 +103,10 @@ export function getMoveData(id: MoveId): MoveData {
 export function getMoveDataForCharacter(characterId: CharacterId | undefined, id: MoveId): MoveData {
   if (characterId === 'abe-lincoln') {
     const override = LINCOLN_MOVE_OVERRIDES.get(id);
+    if (override) return override;
+  }
+  if (characterId === 'swift') {
+    const override = SWIFT_MOVE_OVERRIDES.get(id);
     if (override) return override;
   }
   

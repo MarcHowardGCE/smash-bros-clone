@@ -21,7 +21,7 @@ export type { Stage } from './constants/stage.js';
 export { MATCH_CONFIG } from './constants/matchConfig.js';
 export { BOT_DIFFICULTY_PRESETS } from './constants/botDifficulty.js';
 export type { BotDifficulty } from './constants/botDifficulty.js';
-export { ALL_ROUNDER_STATS, ABE_LINCOLN_STATS, CHARACTER_REGISTRY, CHARACTER_IDS, getCharacterStats, isCharacterId } from './constants/characters.js';
+export { ALL_ROUNDER_STATS, ABE_LINCOLN_STATS, SWIFT_STATS, CHARACTER_REGISTRY, CHARACTER_IDS, getCharacterStats, isCharacterId } from './constants/characters.js';
 export { VERSION } from './version.js';
 
 // Math utilities

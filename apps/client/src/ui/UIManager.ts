@@ -23,6 +23,8 @@ import { renderLocalPlaySetupScreen } from './LocalPlaySetupScreen.js';
 import { renderStageSelectScreen } from './StageSelectScreen.js';
 import { MenuNavigator } from './MenuNavigator.js';
 import type { MenuButton } from './MenuNavigator.js';
+import { createAudioSettingsRows } from './AudioSettingsRow.js';
+import type { AudioManager } from '../audio/AudioManager.js';
 
 /** All phases the UI can be in at any given time. */
 export type UIPhase = 'connecting' | 'lobby' | 'waiting' | 'countdown' | 'match' | 'result' | 'controls' | 'paused';
@@ -43,6 +45,8 @@ export class UIManager {
   private playerCount: number = 0;
   private menuNav: MenuNavigator | null = null;
   _gamepadPoller: GamepadPoller | null = null;
+  private audioManager: AudioManager | null = null;
+  private onAudioChanged: (() => void) | null = null;
 
   onCreateRoom: (() => void) | null = null;
   onJoinRoom: ((code: string) => void) | null = null;
@@ -81,6 +85,12 @@ export class UIManager {
   /** Store the room code for display in the in-match HUD. */
   setRoomCode(code: string): void {
     this.roomCode = code;
+  }
+
+  /** Set the AudioManager for rendering audio controls in menus. */
+  setAudioManager(am: AudioManager, onChanged: () => void): void {
+    this.audioManager = am;
+    this.onAudioChanged = onChanged;
   }
 
   private stopMenuNav(): void {
@@ -197,6 +207,7 @@ export class UIManager {
     this.overlay.innerHTML = `
       <div style="position:absolute;top:80px;left:50%;transform:translateX(-50%);text-align:center;color:white;font-family:monospace;pointer-events:all;z-index:10;">
         <img src="/branding/everybody-throws-hands-logo.png" alt="Everybody Throws Hands" style="max-width:min(700px,80vw);height:auto;display:block;margin:0 auto 48px auto;">
+        <div id="audio-settings-container"></div>
         ${existingRoom
           ? `<div style="font-size:18px;margin-bottom:24px">Room: <span style="font-size:24px">${existingRoom}</span></div>
              <button id="ready-btn" class="ui-btn">Ready</button>`
@@ -209,7 +220,7 @@ export class UIManager {
         <button id="local-play-btn" class="ui-btn" style="margin-top:8px">Local Play</button>
         <button id="controls-btn" class="ui-btn" style="margin-top:12px">Controls</button>
       </div>
-      <div class="menu-hint">↑↓ Navigate • Enter/A Select</div>
+      <div class="menu-hint">↑↓ Navigate • ←→ Adjust • Enter/A Select</div>
       ${this.versionTag()}`;
 
     document.getElementById('create-btn')?.addEventListener('click', () => this.onCreateRoom?.());
@@ -233,6 +244,20 @@ export class UIManager {
     // Menu navigation
     this.menuNav = new MenuNavigator(this._gamepadPoller);
     const navButtons: MenuButton[] = [];
+
+    // Add audio settings rows if audioManager is set
+    if (this.audioManager) {
+      const { container: audioContainer, buttons: audioButtons } = createAudioSettingsRows({
+        audioManager: this.audioManager,
+        onChanged: () => this.onAudioChanged?.(),
+      });
+      const audioSettingsContainer = document.getElementById('audio-settings-container');
+      if (audioSettingsContainer) {
+        audioSettingsContainer.appendChild(audioContainer);
+      }
+      navButtons.push(...audioButtons);
+    }
+
     if (existingRoom) {
       const readyEl = document.getElementById('ready-btn');
       if (readyEl) {
@@ -739,10 +764,11 @@ export class UIManager {
     this.overlay.innerHTML = `
       <div class="overlay-center">
         <div style="font-size:48px;letter-spacing:4px;margin-bottom:40px">PAUSED</div>
+        <div id="audio-settings-container"></div>
         <button id="resume-btn" class="ui-btn" style="margin-bottom:16px">Resume</button>
         <button id="main-menu-btn" class="ui-btn">Main Menu</button>
       </div>
-      <div class="menu-hint">↑↓ Navigate • Enter/A Select</div>
+      <div class="menu-hint">↑↓ Navigate • ←→ Adjust • Enter/A Select</div>
       ${this.versionTag()}`;
 
     document.getElementById('resume-btn')?.addEventListener('click', () => this.onResume?.());
@@ -751,6 +777,20 @@ export class UIManager {
     // Menu navigation for pause screen
     this.menuNav = new MenuNavigator(this._gamepadPoller);
     const navButtons: MenuButton[] = [];
+
+    // Add audio settings rows if audioManager is set
+    if (this.audioManager) {
+      const { container: audioContainer, buttons: audioButtons } = createAudioSettingsRows({
+        audioManager: this.audioManager,
+        onChanged: () => this.onAudioChanged?.(),
+      });
+      const audioSettingsContainer = document.getElementById('audio-settings-container');
+      if (audioSettingsContainer) {
+        audioSettingsContainer.appendChild(audioContainer);
+      }
+      navButtons.push(...audioButtons);
+    }
+
     const resumeEl = document.getElementById('resume-btn');
     if (resumeEl) {
       navButtons.push({ id: 'resume-btn', element: resumeEl, onActivate: () => this.onResume?.() });

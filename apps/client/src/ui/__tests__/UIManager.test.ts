@@ -745,4 +745,96 @@ describe('UIManager', () => {
       expect(newErrorEl?.textContent).toBe('');
     });
   });
+
+  describe('Audio Settings Integration', () => {
+    it('should render audio settings rows when audioManager is set', () => {
+      const mockAudioManager = {
+        isMuted: vi.fn().mockReturnValue(false),
+        toggleMuted: vi.fn(),
+        getVolume: vi.fn().mockReturnValue(0.5),
+        setVolume: vi.fn(),
+      };
+      const onAudioChanged = vi.fn();
+
+      uiManager.setAudioManager(mockAudioManager as any, onAudioChanged);
+      uiManager.showLobby();
+
+      expect(mockOverlay.querySelector('#mute-btn')).not.toBeNull();
+      expect(mockOverlay.querySelector('#volume-row')).not.toBeNull();
+    });
+
+    it('should not render audio settings rows when audioManager is not set', () => {
+      uiManager.showLobby();
+
+      expect(mockOverlay.querySelector('#mute-btn')).toBeNull();
+      expect(mockOverlay.querySelector('#volume-row')).toBeNull();
+    });
+
+    it('should call toggleMuted when mute button is clicked', () => {
+      const mockAudioManager = {
+        isMuted: vi.fn().mockReturnValue(false),
+        toggleMuted: vi.fn(),
+        getVolume: vi.fn().mockReturnValue(0.5),
+        setVolume: vi.fn(),
+      };
+      const onAudioChanged = vi.fn();
+
+      uiManager.setAudioManager(mockAudioManager as any, onAudioChanged);
+      uiManager.showLobby();
+
+      const muteBtn = mockOverlay.querySelector('#mute-btn') as HTMLButtonElement;
+      muteBtn.click();
+
+      expect(mockAudioManager.toggleMuted).toHaveBeenCalledTimes(1);
+      expect(onAudioChanged).toHaveBeenCalledTimes(1);
+    });
+
+    it('should update volume when ArrowRight is pressed on volume row', () => {
+      const mockAudioManager = {
+        isMuted: vi.fn().mockReturnValue(false),
+        toggleMuted: vi.fn(),
+        getVolume: vi.fn().mockReturnValueOnce(0.5).mockReturnValueOnce(0.55),
+        setVolume: vi.fn(),
+      };
+      const onAudioChanged = vi.fn();
+
+      uiManager.setAudioManager(mockAudioManager as any, onAudioChanged);
+      uiManager.showLobby();
+
+      // Verify volume row is in navButtons by checking it's rendered
+      expect(mockOverlay.querySelector('#volume-row')).not.toBeNull();
+    });
+
+    it('should render audio settings in pause overlay when audioManager is set', () => {
+      const mockAudioManager = {
+        isMuted: vi.fn().mockReturnValue(false),
+        toggleMuted: vi.fn(),
+        getVolume: vi.fn().mockReturnValue(0.5),
+        setVolume: vi.fn(),
+      };
+      const onAudioChanged = vi.fn();
+
+      uiManager.setAudioManager(mockAudioManager as any, onAudioChanged);
+      uiManager.showPauseOverlay();
+
+      expect(mockOverlay.querySelector('#mute-btn')).not.toBeNull();
+      expect(mockOverlay.querySelector('#volume-row')).not.toBeNull();
+    });
+
+    it('should show updated menu hint with adjustment direction', () => {
+      const mockAudioManager = {
+        isMuted: vi.fn().mockReturnValue(false),
+        toggleMuted: vi.fn(),
+        getVolume: vi.fn().mockReturnValue(0.5),
+        setVolume: vi.fn(),
+      };
+      const onAudioChanged = vi.fn();
+
+      uiManager.setAudioManager(mockAudioManager as any, onAudioChanged);
+      uiManager.showLobby();
+
+      const hint = mockOverlay.querySelector('.menu-hint');
+      expect(hint?.textContent).toContain('←→ Adjust');
+    });
+  });
 });

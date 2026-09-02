@@ -15,6 +15,8 @@ export interface MenuButton {
   id: string;
   element: HTMLElement;
   onActivate: () => void;
+  /** Optional callback for left/right adjustment (e.g., volume slider). Called with -1 for left, +1 for right. */
+  onAdjust?: (delta: -1 | 1) => void;
 }
 
 /**
@@ -22,9 +24,11 @@ export interface MenuButton {
  *
  * Supports:
  * - Arrow keys (Up/Down) + W/S for vertical navigation
+ * - Arrow keys (Left/Right) for item adjustment (e.g., volume slider)
  * - Enter/Space to activate the selected button
  * - Escape to trigger back/cancel
  * - Gamepad D-pad for navigation, A to activate, B to back
+ * - Gamepad D-pad Left/Right for item adjustment
  *
  * Edge-triggered only — no repeat fires on held gamepad buttons.
  */
@@ -90,6 +94,22 @@ export class MenuNavigator {
           e.preventDefault();
           this.moveSelection(-1);
           break;
+        case 'ArrowLeft': {
+          const btn = this.buttons[this.selectedIndex];
+          if (btn?.onAdjust) {
+            e.preventDefault();
+            btn.onAdjust(-1);
+          }
+          break;
+        }
+        case 'ArrowRight': {
+          const btn = this.buttons[this.selectedIndex];
+          if (btn?.onAdjust) {
+            e.preventDefault();
+            btn.onAdjust(1);
+          }
+          break;
+        }
         case 'Enter':
         case ' ':
           e.preventDefault();
@@ -120,21 +140,27 @@ export class MenuNavigator {
           const bits = state.bits;
           const lastBits = this.lastBitsPerGamepad.get(gpIndex) ?? 0;
 
-          // Edge-detect: fire only on rising edge
-          const pressed = bits & ~lastBits;
+           // Edge-detect: fire only on rising edge
+           const pressed = bits & ~lastBits;
 
-          if (pressed & GenericInputBits.DOWN) {
-            this.moveSelection(1);
-          }
-          if (pressed & GenericInputBits.UP) {
-            this.moveSelection(-1);
-          }
-          if (pressed & GenericInputBits.A) {
-            this.activateSelected();
-          }
-          if ((pressed & GenericInputBits.B) && onBack) {
-            onBack();
-          }
+           if (pressed & GenericInputBits.DOWN) {
+             this.moveSelection(1);
+           }
+           if (pressed & GenericInputBits.UP) {
+             this.moveSelection(-1);
+           }
+           if (pressed & GenericInputBits.LEFT) {
+             this.buttons[this.selectedIndex]?.onAdjust?.(-1);
+           }
+           if (pressed & GenericInputBits.RIGHT) {
+             this.buttons[this.selectedIndex]?.onAdjust?.(1);
+           }
+           if (pressed & GenericInputBits.A) {
+             this.activateSelected();
+           }
+           if ((pressed & GenericInputBits.B) && onBack) {
+             onBack();
+           }
 
            this.lastBitsPerGamepad.set(gpIndex, bits);
          }

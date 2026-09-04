@@ -1,8 +1,11 @@
-import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 type SetupResult = {
   participantCount: 2 | 3 | 4;
-  seats: Array<{ kind: 'cpu'; difficulty: 'easy' | 'medium' | 'hard' } | { kind: 'human-gamepad' }>;
+  seats: Array<
+    | { kind: "cpu"; difficulty: "easy" | "medium" | "hard" }
+    | { kind: "human-gamepad" }
+  >;
 };
 
 interface BootResult {
@@ -20,7 +23,10 @@ interface BootResult {
     autoConfirmSlots: number[];
     gamepadSlotByIndex?: ReadonlyMap<number, number>;
   }>;
-  localMatchCtorCalls: Array<{ controllers: unknown[]; characterIds?: unknown }>;
+  localMatchCtorCalls: Array<{
+    controllers: unknown[];
+    characterIds?: unknown;
+  }>;
   gamepadInputSourceCtorCalls: Array<{ poller: unknown; gamepadIndex: number }>;
   getGameClientConnectCalls: () => number;
   getGameClientDisconnectCalls: () => number;
@@ -33,7 +39,9 @@ const flush = async (): Promise<void> => {
   await Promise.resolve();
 };
 
-const bootMainWithMocks = async (setupResults: SetupResult[]): Promise<BootResult> => {
+const bootMainWithMocks = async (
+  setupResults: SetupResult[],
+): Promise<BootResult> => {
   vi.resetModules();
 
   const showLocalPlaySetupCalls: Array<{ initial: SetupResult | null }> = [];
@@ -44,15 +52,21 @@ const bootMainWithMocks = async (setupResults: SetupResult[]): Promise<BootResul
     autoConfirmSlots: number[];
     gamepadSlotByIndex?: ReadonlyMap<number, number>;
   }> = [];
-  const localMatchCtorCalls: Array<{ controllers: unknown[]; characterIds?: unknown }> = [];
-  const gamepadInputSourceCtorCalls: Array<{ poller: unknown; gamepadIndex: number }> = [];
+  const localMatchCtorCalls: Array<{
+    controllers: unknown[];
+    characterIds?: unknown;
+  }> = [];
+  const gamepadInputSourceCtorCalls: Array<{
+    poller: unknown;
+    gamepadIndex: number;
+  }> = [];
   let gameClientConnectCalls = 0;
   let gameClientDisconnectCalls = 0;
   let showSplashCalls = 0;
   let gameClientOnConnected: (() => void) | undefined;
   let localPlaySetupBack: (() => void) | null = null;
 
-  let uiInstance: BootResult['uiInstance'] | null = null;
+  let uiInstance: BootResult["uiInstance"] | null = null;
 
   class MockAIPlayerController {
     readonly config: unknown;
@@ -82,16 +96,16 @@ const bootMainWithMocks = async (setupResults: SetupResult[]): Promise<BootResul
     destroy(): void {}
   }
 
-  vi.doMock('pixi.js', () => {
+  vi.doMock("pixi.js", () => {
     class Application {
       stage = { addChild: () => {} };
-      canvas = document.createElement('canvas');
+      canvas = document.createElement("canvas");
       async init(): Promise<void> {}
     }
     return { Application };
   });
 
-  vi.doMock('../renderer/layers.js', () => ({
+  vi.doMock("../renderer/layers.js", () => ({
     createLayers: () => ({
       background: { addChild: () => {}, removeChildren: () => {} },
       game: { addChild: () => {}, removeChild: () => {} },
@@ -99,22 +113,24 @@ const bootMainWithMocks = async (setupResults: SetupResult[]): Promise<BootResul
     }),
   }));
 
-  vi.doMock('../renderer/StageRenderer.js', () => ({ StageRenderer: class StageRenderer {} }));
-  vi.doMock('../renderer/FighterRenderer.js', () => ({
+  vi.doMock("../renderer/StageRenderer.js", () => ({
+    StageRenderer: class StageRenderer {},
+  }));
+  vi.doMock("../renderer/FighterRenderer.js", () => ({
     FighterRenderer: class FighterRenderer {
       update(): void {}
       destroy(): void {}
       startHitFlash(): void {}
     },
   }));
-  vi.doMock('../renderer/Camera.js', () => ({
+  vi.doMock("../renderer/Camera.js", () => ({
     Camera: class Camera {
       update(): void {}
       shake(): void {}
       reset(): void {}
     },
   }));
-  vi.doMock('../renderer/effects/ImpactSpark.js', () => ({
+  vi.doMock("../renderer/effects/ImpactSpark.js", () => ({
     ImpactSpark: class ImpactSpark {
       container = {};
       done = false;
@@ -124,7 +140,7 @@ const bootMainWithMocks = async (setupResults: SetupResult[]): Promise<BootResul
     },
   }));
 
-  vi.doMock('../network/GameClient.js', () => ({
+  vi.doMock("../network/GameClient.js", () => ({
     GameClient: class GameClient {
       isPaused = false;
       constructor(opts: { onConnected?: () => void }) {
@@ -150,7 +166,7 @@ const bootMainWithMocks = async (setupResults: SetupResult[]): Promise<BootResul
     },
   }));
 
-  vi.doMock('@smash/gamepad-input', () => ({
+  vi.doMock("@smash/gamepad-input", () => ({
     GamepadPoller: class GamepadPoller {
       onConnect: ((gamepad: Gamepad) => void) | null = null;
       onDisconnect: ((index: number) => void) | null = null;
@@ -171,16 +187,19 @@ const bootMainWithMocks = async (setupResults: SetupResult[]): Promise<BootResul
     },
   }));
 
-  vi.doMock('../input/ControllerAssignmentManager.js', () => ({
+  vi.doMock("../input/ControllerAssignmentManager.js", () => ({
     ControllerAssignmentManager: class ControllerAssignmentManager {
       constructor() {}
-      getAssignments(): ReadonlyMap<number, { gamepadIndex: number; gamepadId: string }> {
-        return new Map([[1, { gamepadIndex: 0, gamepadId: 'Pad-1' }]]);
+      getAssignments(): ReadonlyMap<
+        number,
+        { gamepadIndex: number; gamepadId: string }
+      > {
+        return new Map([[1, { gamepadIndex: 0, gamepadId: "Pad-1" }]]);
       }
     },
   }));
 
-  vi.doMock('../input/GamepadInputSource.js', () => ({
+  vi.doMock("../input/GamepadInputSource.js", () => ({
     GamepadInputSource: class GamepadInputSource {
       constructor(poller: unknown, gamepadIndex: number) {
         gamepadInputSourceCtorCalls.push({ poller, gamepadIndex });
@@ -188,10 +207,14 @@ const bootMainWithMocks = async (setupResults: SetupResult[]): Promise<BootResul
     },
   }));
 
-  vi.doMock('../local/AIPlayerController.js', () => ({ AIPlayerController: MockAIPlayerController }));
-  vi.doMock('../local/LocalPlayerController.js', () => ({ LocalPlayerController: MockLocalPlayerController }));
+  vi.doMock("../local/AIPlayerController.js", () => ({
+    AIPlayerController: MockAIPlayerController,
+  }));
+  vi.doMock("../local/LocalPlayerController.js", () => ({
+    LocalPlayerController: MockLocalPlayerController,
+  }));
 
-  vi.doMock('../local/LocalMatch.js', () => ({
+  vi.doMock("../local/LocalMatch.js", () => ({
     LocalMatch: class LocalMatch {
       onSnapshot: ((snapshot: unknown) => void) | null = null;
       paused = false;
@@ -215,10 +238,10 @@ const bootMainWithMocks = async (setupResults: SetupResult[]): Promise<BootResul
       resume(): void {
         this.paused = false;
       }
-     },
-   }));
+    },
+  }));
 
-  vi.doMock('../audio/AudioManager.js', () => ({
+  vi.doMock("../audio/AudioManager.js", () => ({
     AudioManager: class AudioManager {
       constructor(_init?: { volume?: number; muted?: boolean }) {}
       playTrack(): void {}
@@ -228,12 +251,21 @@ const bootMainWithMocks = async (setupResults: SetupResult[]): Promise<BootResul
     },
   }));
 
-  vi.doMock('../audio/audioPreferences.js', () => ({
+  vi.doMock("../audio/SfxManager.js", () => ({
+    SfxManager: class SfxManager {
+      play(): void {}
+      playHit(): void {}
+      syncVolume(): void {}
+      stopAll(): void {}
+    },
+  }));
+
+  vi.doMock("../audio/audioPreferences.js", () => ({
     loadAudioPreferences: () => ({ volume: 0.3, muted: false }),
     saveAudioPreferences: () => {},
   }));
 
-  vi.doMock('../ui/index.js', () => ({
+  vi.doMock("../ui/index.js", () => ({
     injectStyles: () => {},
     UIManager: class UIManager {
       onCreateRoom: (() => void) | null = null;
@@ -250,10 +282,10 @@ const bootMainWithMocks = async (setupResults: SetupResult[]): Promise<BootResul
         uiInstance = this;
       }
 
-       setRoomCode(): void {}
-       setPlayerId(): void {}
-       setAudioManager(): void {}
-       showLobby(): void {
+      setRoomCode(): void {}
+      setPlayerId(): void {}
+      setAudioManager(): void {}
+      showLobby(): void {
         showLobbyCalls += 1;
       }
       showRoomCreated(): void {}
@@ -270,8 +302,8 @@ const bootMainWithMocks = async (setupResults: SetupResult[]): Promise<BootResul
         showSplashCalls += 1;
         onContinue?.();
       }
-      getPhase(): 'lobby' {
-        return 'lobby';
+      getPhase(): "lobby" {
+        return "lobby";
       }
       showControls(): void {}
 
@@ -297,32 +329,37 @@ const bootMainWithMocks = async (setupResults: SetupResult[]): Promise<BootResul
         _onBack?: () => void,
         gamepadSlotByIndex?: ReadonlyMap<number, number>,
       ): void {
-        showCharacterSelectCalls.push({ playerCount, onSelected, autoConfirmSlots, gamepadSlotByIndex });
+        showCharacterSelectCalls.push({
+          playerCount,
+          onSelected,
+          autoConfirmSlots,
+          gamepadSlotByIndex,
+        });
       }
 
       showStageSelect(
         stages: Array<{ id?: string }>,
         onSelected: (stage: { id?: string }) => void,
       ): void {
-        onSelected(stages[0] ?? { id: 'default' });
+        onSelected(stages[0] ?? { id: "default" });
       }
     },
   }));
 
   document.body.innerHTML = '<div id="ui-overlay"></div>';
 
-  await import('../main');
+  await import("../main");
   await flush();
 
   if (uiInstance === null) {
-    throw new Error('UIManager was not instantiated');
+    throw new Error("UIManager was not instantiated");
   }
 
   return {
     uiInstance,
     triggerLocalPlaySetupBack: () => {
       if (!localPlaySetupBack) {
-        throw new Error('Local play setup back callback was not captured');
+        throw new Error("Local play setup back callback was not captured");
       }
       localPlaySetupBack();
     },
@@ -338,20 +375,20 @@ const bootMainWithMocks = async (setupResults: SetupResult[]): Promise<BootResul
   };
 };
 
-describe('main local play flow wiring', () => {
+describe("main local play flow wiring", () => {
   beforeEach(() => {
-    document.body.innerHTML = '';
+    document.body.innerHTML = "";
   });
 
   afterEach(() => {
     vi.restoreAllMocks();
-    document.body.innerHTML = '';
+    document.body.innerHTML = "";
   });
 
-  it('routes local play setup to character select with cpu autoConfirmSlots and creates AI controller', async () => {
+  it("routes local play setup to character select with cpu autoConfirmSlots and creates AI controller", async () => {
     const setup: SetupResult = {
       participantCount: 2,
-      seats: [{ kind: 'cpu', difficulty: 'medium' }],
+      seats: [{ kind: "cpu", difficulty: "medium" }],
     };
 
     const runtime = await bootMainWithMocks([setup]);
@@ -361,8 +398,12 @@ describe('main local play flow wiring', () => {
     expect(runtime.showCharacterSelectCalls).toHaveLength(1);
     expect(runtime.showCharacterSelectCalls[0]?.playerCount).toBe(2);
     expect(runtime.showCharacterSelectCalls[0]?.autoConfirmSlots).toEqual([1]);
-    expect(runtime.showCharacterSelectCalls[0]?.autoConfirmSlots).not.toContain(0);
-    expect(runtime.showCharacterSelectCalls[0]?.gamepadSlotByIndex?.get(0)).toBe(1);
+    expect(runtime.showCharacterSelectCalls[0]?.autoConfirmSlots).not.toContain(
+      0,
+    );
+    expect(
+      runtime.showCharacterSelectCalls[0]?.gamepadSlotByIndex?.get(0),
+    ).toBe(1);
 
     runtime.showCharacterSelectCalls[0]?.onSelected([]);
 
@@ -370,17 +411,22 @@ describe('main local play flow wiring', () => {
     const controllers = runtime.localMatchCtorCalls[0]?.controllers ?? [];
     expect(controllers).toHaveLength(2);
 
-    const aiController = controllers[1] as { config: { difficulty: string; seed: number } };
+    const aiController = controllers[1] as {
+      config: { difficulty: string; seed: number };
+    };
     expect(aiController).toBeInstanceOf(runtime.AIPlayerController);
-    expect(aiController.config.difficulty).toBe('medium');
+    expect(aiController.config.difficulty).toBe("medium");
     expect(aiController.config.seed).toBe(1001);
-    expect(aiController.config).toMatchObject({ playerId: 'local-p2', slotIndex: 1 });
+    expect(aiController.config).toMatchObject({
+      playerId: "local-p2",
+      slotIndex: 1,
+    });
   });
 
-  it('creates P2 human controller from slot 1 assignment and wires gamepad source', async () => {
+  it("creates P2 human controller from slot 1 assignment and wires gamepad source", async () => {
     const setup: SetupResult = {
       participantCount: 2,
-      seats: [{ kind: 'human-gamepad' }],
+      seats: [{ kind: "human-gamepad" }],
     };
 
     const runtime = await bootMainWithMocks([setup]);
@@ -390,17 +436,22 @@ describe('main local play flow wiring', () => {
 
     const controllers = runtime.localMatchCtorCalls[0]?.controllers ?? [];
     expect(controllers).toHaveLength(2);
-    const p2Controller = controllers[1] as { config: { playerId: string; slotIndex: number; gamepadSource?: unknown } };
-    expect(p2Controller.config).toMatchObject({ playerId: 'local-p2', slotIndex: 1 });
+    const p2Controller = controllers[1] as {
+      config: { playerId: string; slotIndex: number; gamepadSource?: unknown };
+    };
+    expect(p2Controller.config).toMatchObject({
+      playerId: "local-p2",
+      slotIndex: 1,
+    });
     expect(p2Controller.config.gamepadSource).toBeDefined();
     expect(runtime.gamepadInputSourceCtorCalls).toHaveLength(1);
     expect(runtime.gamepadInputSourceCtorCalls[0]?.gamepadIndex).toBe(0);
   });
 
-  it('passes remembered lastLocalSetup as initial on local play again', async () => {
+  it("passes remembered lastLocalSetup as initial on local play again", async () => {
     const setup: SetupResult = {
       participantCount: 2,
-      seats: [{ kind: 'cpu', difficulty: 'medium' }],
+      seats: [{ kind: "cpu", difficulty: "medium" }],
     };
 
     const runtime = await bootMainWithMocks([setup, setup]);
@@ -413,10 +464,10 @@ describe('main local play flow wiring', () => {
     expect(runtime.showLocalPlaySetupCalls[1]?.initial).toEqual(setup);
   });
 
-  it('reconnects network client when backing out of local play setup to lobby', async () => {
+  it("reconnects network client when backing out of local play setup to lobby", async () => {
     const setup: SetupResult = {
       participantCount: 2,
-      seats: [{ kind: 'cpu', difficulty: 'medium' }],
+      seats: [{ kind: "cpu", difficulty: "medium" }],
     };
 
     const runtime = await bootMainWithMocks([setup]);
@@ -431,10 +482,10 @@ describe('main local play flow wiring', () => {
     expect(runtime.getShowLobbyCalls()).toBeGreaterThan(0);
   });
 
-  it('reconnects network client when returning to main menu from local mode', async () => {
+  it("reconnects network client when returning to main menu from local mode", async () => {
     const setup: SetupResult = {
       participantCount: 2,
-      seats: [{ kind: 'cpu', difficulty: 'medium' }],
+      seats: [{ kind: "cpu", difficulty: "medium" }],
     };
 
     const runtime = await bootMainWithMocks([setup]);
@@ -450,10 +501,10 @@ describe('main local play flow wiring', () => {
     expect(runtime.getShowLobbyCalls()).toBeGreaterThan(0);
   });
 
-  it('does not re-show splash when returning to main menu after a local match reconnect', async () => {
+  it("does not re-show splash when returning to main menu after a local match reconnect", async () => {
     const setup: SetupResult = {
       participantCount: 2,
-      seats: [{ kind: 'cpu', difficulty: 'medium' }],
+      seats: [{ kind: "cpu", difficulty: "medium" }],
     };
 
     const runtime = await bootMainWithMocks([setup]);
@@ -471,56 +522,56 @@ describe('main local play flow wiring', () => {
     expect(runtime.getShowLobbyCalls()).toBeGreaterThan(0);
   });
 
-  it('passes characterIds to LocalMatch when character is selected', async () => {
+  it("passes characterIds to LocalMatch when character is selected", async () => {
     const setup: SetupResult = {
       participantCount: 2,
-      seats: [{ kind: 'cpu', difficulty: 'medium' }],
+      seats: [{ kind: "cpu", difficulty: "medium" }],
     };
 
     const runtime = await bootMainWithMocks([setup]);
 
     runtime.uiInstance.onLocalPlay?.();
     runtime.showCharacterSelectCalls[0]?.onSelected([
-      { id: 'abe-lincoln', displayName: 'Abe Lincoln' },
-      { id: 'all-rounder', displayName: 'All-Rounder' },
+      { id: "abe-lincoln", displayName: "Abe Lincoln" },
+      { id: "all-rounder", displayName: "All-Rounder" },
     ]);
 
     expect(runtime.localMatchCtorCalls).toHaveLength(1);
     const call = runtime.localMatchCtorCalls[0];
     expect(call?.characterIds).toBeDefined();
     expect(call?.characterIds).toEqual({
-      'local-p1': 'abe-lincoln',
-      'local-p2': 'all-rounder',
+      "local-p1": "abe-lincoln",
+      "local-p2": "all-rounder",
     });
   });
 
-  it('passes characterIds with only defined choices', async () => {
+  it("passes characterIds with only defined choices", async () => {
     const setup: SetupResult = {
       participantCount: 2,
-      seats: [{ kind: 'cpu', difficulty: 'easy' }],
+      seats: [{ kind: "cpu", difficulty: "easy" }],
     };
 
     const runtime = await bootMainWithMocks([setup]);
 
     runtime.uiInstance.onLocalPlay?.();
     runtime.showCharacterSelectCalls[0]?.onSelected([
-      { id: 'abe-lincoln', displayName: 'Abe Lincoln' },
+      { id: "abe-lincoln", displayName: "Abe Lincoln" },
     ]);
 
     expect(runtime.localMatchCtorCalls).toHaveLength(1);
     const call = runtime.localMatchCtorCalls[0];
     expect(call?.characterIds).toEqual({
-      'local-p1': 'abe-lincoln',
+      "local-p1": "abe-lincoln",
     });
   });
 
-  it('in 4-player setup, each CPU has opponentPlayerIds containing all 3 OTHER player IDs', async () => {
+  it("in 4-player setup, each CPU has opponentPlayerIds containing all 3 OTHER player IDs", async () => {
     const setup: SetupResult = {
       participantCount: 4,
       seats: [
-        { kind: 'cpu', difficulty: 'medium' },
-        { kind: 'cpu', difficulty: 'hard' },
-        { kind: 'cpu', difficulty: 'easy' },
+        { kind: "cpu", difficulty: "medium" },
+        { kind: "cpu", difficulty: "hard" },
+        { kind: "cpu", difficulty: "easy" },
       ],
     };
 
@@ -534,28 +585,46 @@ describe('main local play flow wiring', () => {
     expect(controllers).toHaveLength(4);
 
     // CPU at slot 1 (local-p2) should have opponentPlayerIds: ['local-p1', 'local-p3', 'local-p4']
-    const cpu1 = controllers[1] as { config: { playerId: string; opponentPlayerIds: string[] } };
+    const cpu1 = controllers[1] as {
+      config: { playerId: string; opponentPlayerIds: string[] };
+    };
     expect(cpu1).toBeInstanceOf(runtime.AIPlayerController);
-    expect(cpu1.config.playerId).toBe('local-p2');
-    expect(cpu1.config.opponentPlayerIds).toEqual(['local-p1', 'local-p3', 'local-p4']);
+    expect(cpu1.config.playerId).toBe("local-p2");
+    expect(cpu1.config.opponentPlayerIds).toEqual([
+      "local-p1",
+      "local-p3",
+      "local-p4",
+    ]);
 
     // CPU at slot 2 (local-p3) should have opponentPlayerIds: ['local-p1', 'local-p2', 'local-p4']
-    const cpu2 = controllers[2] as { config: { playerId: string; opponentPlayerIds: string[] } };
+    const cpu2 = controllers[2] as {
+      config: { playerId: string; opponentPlayerIds: string[] };
+    };
     expect(cpu2).toBeInstanceOf(runtime.AIPlayerController);
-    expect(cpu2.config.playerId).toBe('local-p3');
-    expect(cpu2.config.opponentPlayerIds).toEqual(['local-p1', 'local-p2', 'local-p4']);
+    expect(cpu2.config.playerId).toBe("local-p3");
+    expect(cpu2.config.opponentPlayerIds).toEqual([
+      "local-p1",
+      "local-p2",
+      "local-p4",
+    ]);
 
     // CPU at slot 3 (local-p4) should have opponentPlayerIds: ['local-p1', 'local-p2', 'local-p3']
-    const cpu3 = controllers[3] as { config: { playerId: string; opponentPlayerIds: string[] } };
+    const cpu3 = controllers[3] as {
+      config: { playerId: string; opponentPlayerIds: string[] };
+    };
     expect(cpu3).toBeInstanceOf(runtime.AIPlayerController);
-    expect(cpu3.config.playerId).toBe('local-p4');
-    expect(cpu3.config.opponentPlayerIds).toEqual(['local-p1', 'local-p2', 'local-p3']);
+    expect(cpu3.config.playerId).toBe("local-p4");
+    expect(cpu3.config.opponentPlayerIds).toEqual([
+      "local-p1",
+      "local-p2",
+      "local-p3",
+    ]);
   });
 
   it('in 2-player setup, single CPU still has opponentPlayerIds: ["local-p1"]', async () => {
     const setup: SetupResult = {
       participantCount: 2,
-      seats: [{ kind: 'cpu', difficulty: 'medium' }],
+      seats: [{ kind: "cpu", difficulty: "medium" }],
     };
 
     const runtime = await bootMainWithMocks([setup]);
@@ -567,9 +636,11 @@ describe('main local play flow wiring', () => {
     const controllers = runtime.localMatchCtorCalls[0]?.controllers ?? [];
     expect(controllers).toHaveLength(2);
 
-    const cpu = controllers[1] as { config: { playerId: string; opponentPlayerIds: string[] } };
+    const cpu = controllers[1] as {
+      config: { playerId: string; opponentPlayerIds: string[] };
+    };
     expect(cpu).toBeInstanceOf(runtime.AIPlayerController);
-    expect(cpu.config.playerId).toBe('local-p2');
-    expect(cpu.config.opponentPlayerIds).toEqual(['local-p1']);
+    expect(cpu.config.playerId).toBe("local-p2");
+    expect(cpu.config.opponentPlayerIds).toEqual(["local-p1"]);
   });
 });

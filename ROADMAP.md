@@ -6,16 +6,16 @@ The engine and netcode here are production-quality: a 25-state FSM per fighter, 
 
 ## Scorecard
 
-| Area | Current state | Rating |
-|---|---|---|
-| Engine / physics | 25-state FSM, 22 moves, hitlag/hitstun, real knockback formula | ★★★★☆ |
-| Netcode | Client prediction, server reconciliation, interpolation buffer | ★★★★☆ |
-| Rendering | Part-based polygon renderer; hit flash, screen shake, impact sparks, shield bubble, damage% color, per-move poses, KO tumble/stars | ★★★★☆ |
-| Audio | AudioManager with `playTrack`/`stopCurrentTrack`/`setVolume`; 6 stage BGM tracks + main-menu + game-over loaded; autoplay-policy retry | ★★★★☆ |
-| Input | Solid bitmask foundation; gamepad support shipped; no remapping UI | ★★★☆☆ |
-| UI/UX | Functional prototype; raw `innerHTML`, text stock icons; stage-select UI present | ★★★☆☆ |
-| Content | 2 fighters (All-Rounder + Abe Lincoln), 6 stages with backgrounds and music, stock match only | ★★★★☆ |
-| Meta / persistence | None — no accounts, no replays, no settings | ★☆☆☆☆ |
+| Area               | Current state                                                                                                                          | Rating |
+| ------------------ | -------------------------------------------------------------------------------------------------------------------------------------- | ------ |
+| Engine / physics   | 25-state FSM, 22 moves, hitlag/hitstun, real knockback formula                                                                         | ★★★★☆  |
+| Netcode            | Client prediction, server reconciliation, interpolation buffer                                                                         | ★★★★☆  |
+| Rendering          | Part-based polygon renderer; hit flash, screen shake, impact sparks, shield bubble, damage% color, per-move poses, KO tumble/stars     | ★★★★☆  |
+| Audio              | AudioManager with `playTrack`/`stopCurrentTrack`/`setVolume`; 6 stage BGM tracks + main-menu + game-over loaded; autoplay-policy retry | ★★★★☆  |
+| Input              | Solid bitmask foundation; gamepad support shipped; no remapping UI                                                                     | ★★★☆☆  |
+| UI/UX              | Functional prototype; raw `innerHTML`, text stock icons; stage-select UI present                                                       | ★★★☆☆  |
+| Content            | 2 fighters (All-Rounder + Abe Lincoln), 6 stages with backgrounds and music, stock match only                                          | ★★★★☆  |
+| Meta / persistence | None — no accounts, no replays, no settings                                                                                            | ★☆☆☆☆  |
 
 ---
 
@@ -26,6 +26,7 @@ The renderer (`apps/client`) has received significant polish through T9-T20. The
 ### Characters
 
 **What's shipped (T9-T20):**
+
 - Part-based renderer abstraction — `FighterRenderer` delegates to `PolygonPartRenderer` via `IPartRenderer` contract; a `SpritePartRenderer` stub exists for future sprite atlas work (`apps/client/src/renderer/parts/SpritePartRenderer.ts`)
 - Per-move poses — `getAnimationPose` now accepts `currentMoveId`; all 22 `MoveId` values have distinct keyframe entries differing by ≥0.2 radians on at least one limb angle (`apps/client/src/renderer/animations.ts`)
 - Hit flash — `FighterRenderer.startHitFlash()` applies a golden-yellow tint (`0xFFDD44`) to the part renderer container for 4 frames on every connecting hit (`apps/client/src/renderer/FighterRenderer.ts:110-121`)
@@ -35,10 +36,12 @@ The renderer (`apps/client`) has received significant polish through T9-T20. The
 - KO tumble/star effect — `KOEffect` rotates the fighter container 18°/frame for 40 frames and spawns 8 star particles at 45° spacing that fade to alpha 0; wired via `updateKOEffect()` on `isKnockedOut` transitions (`apps/client/src/renderer/FighterRenderer.ts:124-137`, `apps/client/src/renderer/KOEffect.ts`)
 
 **Still missing:**
+
 - Sprite sheets or vector art — every fighter is still a pentagon + circles + rectangles (the `SpritePartRenderer` contract exists but has no art assets yet)
 - **Sprite specifications:** A comprehensive generation guide exists at [`SPRITE-GENERATION-GUIDE.md`](./SPRITE-GENERATION-GUIDE.md) covering all 22 moves, 4 player-slot color variants, VFX frames, and UI elements with AI-generation prompts ready for artist handoff
 
 **Existing hooks (unchanged):**
+
 - `FighterRenderer.redraw()` remains the sole draw call — swap `PolygonPartRenderer` for `SpritePartRenderer` via the `createPartRenderer` factory (`apps/client/src/renderer/parts/index.ts`) to sample a sprite atlas, no `FighterRenderer` rewrite needed
 - `PlayerState.currentMoveId` is tracked and passed to the renderer — per-move art now keys off it
 - `HitEventData` in `StateSnapshot.hitEvents` is the event source for all client-side hit effects
@@ -46,30 +49,36 @@ The renderer (`apps/client`) has received significant polish through T9-T20. The
 ### Stage
 
 **What's shipped:**
+
 - 6 stages (`stage1`–`stage6`) defined in `apps/client/src/stages/stageConfig.ts`, each with a background image and a music track
 - Background images (`stage1.png`–`stage6.png`) served from `/public/backgrounds/`
 - Stage-select UI routes through `getStageById` and `getRandomStage`
 
 **Still missing:**
+
 - Blast-zone indicators — players have no visual cue for kill boundaries
 - Moving soft platforms on any stage (all current stages use the static shared geometry)
 
 **Existing hooks:**
+
 - `STAGE` constants in `packages/shared` are the full stage definition — adding a stage is adding a data object plus a background image
 - `BackgroundLayer` is drawn once at startup — the right place for blast-zone edge glows
 
 ### UI
 
 **What's shipped (T18):**
+
 - Damage % color progression — `UIManager.interpolateDamageColor()` interpolates white (0%) → yellow (~50-100%) → red (150%+), applied every `updateHUD` call (`apps/client/src/ui/UIManager.ts:351-366`)
 - Stage-select screen present and wired
 
 **Still missing:**
+
 - Stock icons are `■□` text characters — needs fighter portrait thumbnails
 - No countdown animation — the number just appears
 - Character select has placeholder text; no fighter preview art
 
 **Existing hooks:**
+
 - `UIManager` in `apps/client` — all UI phases flow through here
 - `UILayer` (PixiJS) is separate from the HTML overlay — move HUD elements there for GPU rendering and animation
 
@@ -78,19 +87,18 @@ The renderer (`apps/client`) has received significant polish through T9-T20. The
 ## 🎵 Audio
 
 **What's shipped:**
+
 - `AudioManager` (`apps/client/src/audio/AudioManager.ts`) — HTML Audio wrapper with `playTrack`, `stopCurrentTrack`, `setVolume`, and `getVolume`
 - Autoplay-policy retry — if the browser blocks the initial `play()` call, `AudioManager` waits for the next user interaction (`pointerdown`, `keydown`, `touchstart`, or `mousemove`) and retries automatically
 - 6 stage music tracks (`/public/audio/stage1.mp3`–`stage6.mp3`) served and wired through `stageConfig.ts`'s `musicTrack` field
 - `main-menu.mp3` and `game-over.mp3` also present in `/public/audio/`
+- `SfxManager` — pooled HTML Audio playback for overlapping hit, jump, land, shield, and KO cues, sharing the persisted master mute and volume settings
+- `GameplaySfxRouter` — deduplicated render-state edge detection shared by local and network play; hit pitch scales with authoritative `knockbackMagnitude`
+- Six authored clips under `/public/audio/sfx/`, including two alternating hit variants
 
 **Still missing:**
-- SFX — no hit, jump, land, shield, or KO sounds. Music exists; sound effects do not.
 
-**Hook points for SFX:**
-- `applyHit` — emit hit SFX here, pitched by `knockbackMagnitude`
-- `FSMController` state transitions — `Jump`, `Land`, `Dash`, `Shield` SFX fire here
-- `shieldHealth <= 0` — shield break SFX
-- `HitEventData` in `StateSnapshot.hitEvents` — the client-side source for all combat events
+- Independent music/SFX level controls, menu cues, shield-impact/break cues, and character-specific voice or move sounds
 
 ---
 
@@ -158,6 +166,7 @@ The engine is the strongest part of this repo. These are the remaining gaps — 
 - **Status:** ✅ **Implemented (Waves 1–6)**
 
 **Implementation evidence by todo (1–17):**
+
 - Todo 1: `packages/shared/src/constants/stage.ts:43-48`, `packages/engine/src/physics/types.ts:16-34`, `packages/engine/src/physics/index.ts:10-25` — wall geometry and stage/type wiring (`WALLS`, `WallData`, `StageData.walls`).
 - Todo 2: `packages/shared/src/constants/physics.ts:50-59` — wall-jump / wall-tech / L-cancel / wavedash constants.
 - Todo 3: `packages/engine/src/physics/index.ts:386-407`, `packages/engine/src/index.ts:21` — pure `checkWallCollision` and package export.
@@ -184,14 +193,14 @@ The engine is the strongest part of this repo. These are the remaining gaps — 
 
 The netcode architecture (client prediction + server reconciliation + interpolation) is the most impressive part of this repo. For a shipped product, several gaps need addressing:
 
-| Gap | Current state | Fix |
-|---|---|---|
-| **Reconnection** | `socket.io` initialized with `reconnection: false` — a dropped packet kills the session | Set `reconnection: true`, implement session rejoin by `playerId` in `RoomManager` |
-| **Room persistence** | Rooms live in-memory — a server restart destroys all active sessions | Redis layer or graceful shutdown handler that serializes `RoomManager` state |
-| **Authentication** | `generatePlayerId()` is a random string — spoofable | Session tokens / signed cookies; fine to skip for casual play, required for rankings |
-| **Spectator mode** | Not implemented | The 20 Hz `StateSnapshot` broadcast already supports it — connect a client that doesn't send inputs |
-| **Matchmaking** | Manual room codes only | A simple queue: emit `FIND_MATCH`, server pairs waiting players, creates room, redirects both |
-| **Determinism verification** | `getStateHash()` mismatch is `console.log` only | On mismatch: send corrective full-state snapshot to the desynced client and alert in the HUD |
+| Gap                          | Current state                                                                           | Fix                                                                                                 |
+| ---------------------------- | --------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------- |
+| **Reconnection**             | `socket.io` initialized with `reconnection: false` — a dropped packet kills the session | Set `reconnection: true`, implement session rejoin by `playerId` in `RoomManager`                   |
+| **Room persistence**         | Rooms live in-memory — a server restart destroys all active sessions                    | Redis layer or graceful shutdown handler that serializes `RoomManager` state                        |
+| **Authentication**           | `generatePlayerId()` is a random string — spoofable                                     | Session tokens / signed cookies; fine to skip for casual play, required for rankings                |
+| **Spectator mode**           | Not implemented                                                                         | The 20 Hz `StateSnapshot` broadcast already supports it — connect a client that doesn't send inputs |
+| **Matchmaking**              | Manual room codes only                                                                  | A simple queue: emit `FIND_MATCH`, server pairs waiting players, creates room, redirects both       |
+| **Determinism verification** | `getStateHash()` mismatch is `console.log` only                                         | On mismatch: send corrective full-state snapshot to the desynced client and alert in the HUD        |
 
 ---
 
@@ -225,12 +234,12 @@ Two fighters, six stages, one game mode. The engine is fully content-agnostic �
 
 No persistence exists today. This is the lowest priority but required for a public game.
 
-| Feature | Notes |
-|---|---|
-| **Win/loss record** | Requires accounts — server-side only, `playerId` as key |
-| **Settings persistence** | Volume, keybinds → `localStorage` on the client; no server needed |
-| **Replays** | The deterministic engine makes this feasible: store the input stream per match, replay it locally. Same architecture as netcode |
-| **Ranked mode** | Requires matchmaking + auth first |
+| Feature                  | Notes                                                                                                                           |
+| ------------------------ | ------------------------------------------------------------------------------------------------------------------------------- |
+| **Win/loss record**      | Requires accounts — server-side only, `playerId` as key                                                                         |
+| **Settings persistence** | Volume, keybinds → `localStorage` on the client; no server needed                                                               |
+| **Replays**              | The deterministic engine makes this feasible: store the input stream per match, replay it locally. Same architecture as netcode |
+| **Ranked mode**          | Requires matchmaking + auth first                                                                                               |
 
 ---
 
@@ -238,11 +247,11 @@ No persistence exists today. This is the lowest priority but required for a publ
 
 ### Impact vs. effort matrix
 
-| Effort | High impact | Lower impact |
-|---|---|---|
-| **Low** | ~~Short hop (wire `JumpsquatState`)~~ ✅ · ~~Landing lag~~ ✅ · ~~Shield break stun~~ ✅ · Hit SFX (5 clips) | ~~Damage % color progression~~ ✅ · Blast-zone edge glow |
+| Effort     | High impact                                                                                                          | Lower impact                                                                     |
+| ---------- | -------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------- |
+| **Low**    | ~~Short hop (wire `JumpsquatState`)~~ ✅ · ~~Landing lag~~ ✅ · ~~Shield break stun~~ ✅ · ~~SFX (5 clips)~~ ✅      | ~~Damage % color progression~~ ✅ · Blast-zone edge glow                         |
 | **Medium** | ~~Smash charge~~ ✅ · ~~Grab victim pinning + pummel/throw~~ ✅ · ~~Stage background art~~ ✅ · ~~Shield bubble~~ ✅ | ~~Down Special counter logic~~ ✅ · Reconnection handling · Settings persistence |
-| **High** | Sprite art for fighters · Additional fighter (full move set) · Additional stage | Ranked / matchmaking · Replays · ~~Ledge grab~~ ✅ · ~~Audio system + BGM~~ ✅ |
+| **High**   | Sprite art for fighters · Additional fighter (full move set) · Additional stage                                      | Ranked / matchmaking · Replays · ~~Ledge grab~~ ✅ · ~~Audio system + BGM~~ ✅   |
 
 ### ✅ CPU opponents (Implemented — 2026-08-08)
 
@@ -256,7 +265,7 @@ Local-play CPU opponents are shipped. The lobby's participant-count-first flow l
 
 Ordered by impact-to-effort ratio. None of these require touching the engine's determinism invariants or the server-authority model.
 
-- **SFX (5 clips: hit, jump, land, shield, KO).** Music tracks and the `AudioManager` infrastructure are already shipping. What's missing is sound effects. Wire hit SFX to `applyHit` (pitch by knockback magnitude), movement SFX to FSM state transitions, and a KO sound to the `isKnockedOut` flag. Five short clips closes most of the "feels silent" gap.
+- **Audio polish.** Add independent BGM/SFX levels, menu navigation/confirm cues, distinct shield impact and shield-break sounds, and character-specific move audio on top of the shipped five-cue gameplay layer.
 
 - **Blast-zone edge glow.** A subtle red glow at the `STAGE.blastZones` coordinates drawn in `BackgroundLayer` — low effort, immediately improves spatial awareness. Players currently have zero visual cue for kill boundaries.
 
@@ -288,7 +297,7 @@ Ordered by impact-to-effort ratio. None of these require touching the engine's d
 
 Three open initiatives remain — none is blocked on the others, and none is clearly higher priority than the others. Pick the one that fits your next available effort:
 
-**Option 1 — SFX:** `AudioManager` and all BGM tracks ship today. What's missing is sound effects: hit, shield, jump, KO, menu confirm. Hook points are ready — hit events fire from the server, UI state transitions are discrete, and PixiJS has no audio opinion. Estimated effort: low.
+**Option 1 — Audio polish:** `AudioManager`, BGM, and the five core gameplay cues now ship. The next audio pass is independent BGM/SFX levels, menu navigation/confirm cues, shield impact/break variants, and character-specific move audio. Estimated effort: low to medium.
 
 **Option 2 — Sprite art:** `FighterRenderer` draws a functional polygon fighter, but the art contract is fully pluggable. Swapping in a sprite sheet requires only a new render path in `FighterRenderer` — no engine or server changes. A `SpritePartRenderer` stub already exists at `apps/client/src/renderer/parts/SpritePartRenderer.ts`. Estimated effort: medium (art) + low (wiring).
 

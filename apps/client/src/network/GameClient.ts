@@ -102,7 +102,7 @@ export class GameClient {
     this.options = options;
     this.socket = io(options.serverUrl, {
       transports: ["websocket"],
-      reconnection: false,
+      reconnection: true,
     });
 
     this.setupSocketHandlers();
@@ -123,6 +123,11 @@ export class GameClient {
         this.myPlayerId = data.playerId;
         this.myRoomCode = data.roomCode;
         this.inputManager.setPlayerId(data.playerId);
+        // Persist session identity for rejoin on reconnect
+        sessionStorage.setItem(
+          "smash:rejoin",
+          JSON.stringify({ roomCode: data.roomCode, playerId: data.playerId }),
+        );
         this.options.onPlayerAssigned?.(data.playerId, data.roomCode);
         this.options.onRoomCreated(data.roomCode, data.playerId);
         this.options.onPlayerJoined(data.slotIndex);
@@ -154,6 +159,8 @@ export class GameClient {
         this.myPlayerId = data.playerId;
         this.myRoomCode = roomCode.toUpperCase();
         this.inputManager.setPlayerId(data.playerId);
+        // Persist session identity for rejoin on reconnect
+        sessionStorage.setItem('smash:rejoin', JSON.stringify({ roomCode: this.myRoomCode, playerId: data.playerId }));
         this.options.onPlayerAssigned?.(data.playerId, this.myRoomCode);
         this.options.onPlayerJoined(data.slotIndex);
       },
@@ -271,6 +278,33 @@ export class GameClient {
   private setupSocketHandlers(): void {
     this.socket.on("connect", () => {
       console.log("[client] connected to server:", this.socket.id);
+
+      // Attempt rejoin if we have persisted session identity
+      const rejoinData = sessionStorage.getItem("smash:rejoin");
+      if (rejoinData) {
+        try {
+          const { roomCode, playerId } = JSON.parse(rejoinData);
+          if (roomCode && playerId) {
+            console.log("[client] attempting rejoin:", { roomCode, playerId });
+            this.socket.emit(
+              "room:rejoin",
+              { roomCode, playerId },
+              (response: { ok: boolean; error?: string }) => {
+                if (response.ok) {
+                  console.log("[client] rejoin successful");
+                } else {
+                  console.log("[client] rejoin failed:", response.error);
+                  // Clear persisted session if rejoin fails (grace window expired, etc.)
+                  sessionStorage.removeItem("smash:rejoin");
+                }
+              },
+            );
+          }
+        } catch (e) {
+          console.error("[client] failed to parse rejoin data:", e);
+          sessionStorage.removeItem("smash:rejoin");
+        }
+      }
       this.options.onConnected?.();
     });
 
@@ -392,6 +426,16 @@ export class GameClient {
     this.socket.on("room:playerLeft", (data: { playerId: PlayerId }) => {
       console.log("[client] player left:", data.playerId);
       this.options.onPlayerLeft?.(data.playerId);
+    });
+
+    this.socket.on('room:playerDisconnected', (data: { playerId: PlayerId; graceSeconds: number }) => {
+      console.log('[client] player disconnected (grace window:', data.graceSeconds + 's):', data.playerId);
+      // Optionally display UI notification for grace window
+    });
+
+    this.socket.on('room:playerRejoined', (data: { playerId: PlayerId }) => {
+      console.log('[client] player rejoined:', data.playerId);
+      // Optionally clear UI notification
     });
   }
 

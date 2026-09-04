@@ -36,17 +36,33 @@ export const ABE_LINCOLN_STATS: CharacterStats = {
 };
 
 /**
+ * Swift character stats — fast/floaty archetype copied from All-Rounder and mobility-tuned.
+ * Exact values: weight 75 (-25%), hurtbox 26 (-7%), run 6.8 (+5%), walk 3.5 (parity), jump -16.5 (+3%), shortHop -10.3 (+3%)
+ * Lightweight profile means weaker survival and lower raw KO pressure than heavyweight archetypes.
+ */
+export const SWIFT_STATS: CharacterStats = {
+  ...ALL_ROUNDER_STATS,
+  fighterWeight: 75,
+  hurtboxRadius: 26,
+  runSpeed: 6.8,
+  walkSpeed: 3.5,
+  jumpVelocity: -16.5,
+  shortHopVelocity: -10.3,
+};
+
+/**
  * Character registry mapping CharacterId to CharacterStats.
  */
 export const CHARACTER_REGISTRY: Record<CharacterId, CharacterStats> = {
   'all-rounder': ALL_ROUNDER_STATS,
   'abe-lincoln': ABE_LINCOLN_STATS,
+  'swift': SWIFT_STATS,
 };
 
 /**
  * Runtime-checkable list of all valid CharacterIds.
  */
-export const CHARACTER_IDS: readonly CharacterId[] = ['all-rounder', 'abe-lincoln'] as const;
+export const CHARACTER_IDS: readonly CharacterId[] = ['all-rounder', 'abe-lincoln', 'swift'] as const;
 
 /**
  * Type guard to check if a value is a valid CharacterId.

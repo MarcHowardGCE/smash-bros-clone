@@ -31,6 +31,18 @@
 
 **Guardrails:** client-only; no new audio dependency (repo uses raw HTML Audio); never throw on a missing asset.
 
+### ✅ Status — MERGED (PR #6, `sprint/sfx` → `main`)
+
+**What shipped:**
+- **`SfxManager.ts`** — voice-pooled SFX player composing with `AudioManager`. Supports 5 SFX IDs (`hit`, `jump`, `land`, `shield`, `ko`) with variant files (`hit-1`, `hit-2`). Per-play `gain` and `playbackRate` options. Never throws on missing assets.
+- **`GameplaySfxRouter.ts`** — converts rendered player-state edges into one-shot SFX. Detects FSM transitions: `JUMPSQUAT`/`DOUBLE_JUMP`/`LEDGE_JUMP` → jump, landing states → land, shield states → shield. KO detection with 250 ms deduplication.
+- **6 audio files** in `public/audio/sfx/`: `hit-1.wav`, `hit-2.wav`, `jump.wav`, `land.wav`, `shield.wav`, `ko.wav`.
+- **Wired into `main.ts`** — `SfxManager` + `GameplaySfxRouter` instantiated alongside `AudioManager`; `processFrame()` called every render tick; `playHit()` fires on `HitEventData` with knockback-scaled gain; `processMatchResult()` on game end; `stopAll()` on cleanup.
+- **Tests:** `SfxManager.test.ts` (9 tests), `GameplaySfxRouter.test.ts` (7 tests).
+- **Design doc:** `docs/sprint/SFX-DESIGN.md`.
+
+**Discussion outcomes:** Hit events arrive via `StateSnapshot.hitEvents` (same path as hit-flash/camera shake). Pitch scaling with knockback implemented via `playbackRate` option. Jump/land/shield observed from FSM state transitions in the render loop — no added latency. Real clips sourced and shipped.
+
 ---
 
 ## Team B — Input & Settings (client-only)
@@ -48,6 +60,18 @@
 **Skeleton to start from:** `SettingsStore.ts` + `InputManager.doubleTap` scaffolding exist on the `sprint/input-settings` branch with tests. Treat the threshold and the opt-in flag as *open questions*, not settled.
 
 **Guardrails:** client-only; don't change `INPUT_BITS` or any shared type; don't change shield+attack (keep it as a fallback).
+
+### ✅ Status — MERGED (PR #7, `sprint/input-settings` → `main`)
+
+**What shipped:**
+- **`SettingsStore.ts`** — `localStorage`-backed settings with in-memory fallback for private-mode browsers. Schema `smash:settings:v1` covers `volume` (0–1, default 0.7) and `keymapP1` (key-code → action-string map). `load()`, `save()`, `get()`, `set()` API.
+- **Double-tap smash detection in `InputManager.ts`** — 250 ms threshold (`DOUBLE_TAP_THRESHOLD_MS`), opt-in via `InputManagerOptions.doubleTapSmash` (defaults `false` for backward compatibility). Tracks `lastDirectionalKeydown` direction + timestamp; sets `smashIntent` flag consumed by `AttackState` for move selection. Shield+attack remains as fallback.
+- **Keymap persistence** — `GameClient.ts` constructor loads persisted keymap from `SettingsStore` on startup; falls back to `DEFAULT_KEYMAP_P1` on failure. `convertPersistedKeymap()` in `keymaps.ts` converts stored string map back to `Record<string, InputBitmask>`.
+- **Default keymaps for P1–P4** in `keymaps.ts`.
+- **Tests:** `SettingsStore.test.ts` (14 tests), `InputManager.doubleTap.test.ts` (17 tests).
+- **Design docs:** `docs/sprint/INPUT-SETTINGS-DESIGN.md`, `docs/sprint/DESIGN-DECISIONS.md`.
+
+**Discussion outcomes:** 250 ms threshold kept. Double-tap is opt-in (not default-on) to preserve existing behavior. Smash intent confirmed as client-side selection hint — no protocol change. Settings schema versioned as `v1` for future migration.
 
 ---
 
@@ -67,6 +91,19 @@
 
 **Guardrails:** data-only — **no** FSM/physics/hitbox changes; reuse existing `MoveId`s (no new enum values); determinism scan must return 0.
 
+### ✅ Status — MERGED (PR #4, `sprint/fighter-3` → `main`)
+
+**What shipped:**
+- **Stats:** `SWIFT_STATS` in `packages/shared/src/constants/characters.ts` — weight 75 (-25%), hurtbox 26 (-7%), run 6.8 (+5%), walk 3.5 (parity), jump -16.5 (+3%), shortHop -10.3 (+3%). Fast/floaty "safe poker" archetype.
+- **Type + registry:** `'swift'` added to `CharacterId` union, `CHARACTER_REGISTRY`, and `CHARACTER_IDS`.
+- **7 move overrides** in `packages/engine/src/moves/swift.ts`: Jab, Forward Tilt, Neutral Air, Forward Air, Up Air, Neutral Special, Up Special. All frame timing identical to defaults; differentiated via damage (lower), knockback (weaker growth), and reach (extended offsets).
+- **Move routing** in `packages/engine/src/moves/index.ts` — `SWIFT_MOVE_OVERRIDES` map checked before falling back to `MOVE_REGISTRY`.
+- **Character select** — Swift listed in `AVAILABLE_FIGHTERS` in `main.ts`.
+- **Tests:** `swift.test.ts` (21 tests) — frame-data validity for all 7 overrides.
+- **Design doc:** `docs/sprint/FIGHTER-3-DESIGN.md`.
+
+**Discussion outcomes:** Name "Swift" kept. 7 overrides chosen (same count as Lincoln). Frame-timing identity rule accepted — differentiation via damage/knockback/reach only. Renderer accessory/animation files deferred to follow-up.
+
 ---
 
 ## Team D — Netcode Hardening (server + client)
@@ -85,11 +122,37 @@
 
 **Guardrails:** don't change the 60 Hz tick or `BROADCAST_EVERY`; keep the existing lobby-phase disconnect behavior; no new msgpack-`Set` event without the type-1 codec; spectator stays design-only.
 
+### ✅ Status — MERGED (PR #5, `sprint/netcode-rejoin` → `main`)
+
+**What shipped:**
+
+*Server-side:*
+- **30-second grace window** — `RoomManager.markDisconnected()` records `disconnectedAt` timestamp without removing the player's slot. `RoomManager.rejoinRoom()` rebinds the player to a new socket ID within the window. Lobby-phase disconnect behavior unchanged (immediate removal).
+- **`room:rejoin` socket handler** in `createApp.ts` — validates `{ roomCode, playerId }`, calls `rejoinRoom()`, emits `room:playerRejoined` to other players on success.
+- **Disconnect notification** — other players receive `room:playerDisconnected` with `graceSeconds: 30`.
+- **Grace expiry** — falls back to the existing destroy-match behavior.
+
+*Client-side:*
+- **`reconnection: true`** in `GameClient.ts` socket options.
+- **Session persistence** — `{ roomCode, playerId }` stored in `sessionStorage` under `smash:rejoin` on `room:create` and `room:join` callbacks.
+- **Automatic rejoin** — on `connect` event, reads persisted session and emits `room:rejoin`. Clears stored session on failure (grace expired, etc.).
+- **New event handlers** — `room:playerDisconnected` (logs grace window info), `room:playerRejoined` (clears notification).
+
+*Tests:* `RoomManager.test.ts` — rejoin within grace, unknown player, expired grace. `createApp.test.ts` — full socket integration for disconnect/rejoin flow.
+
+*Docs:* `docs/sprint/NETCODE-HARDENING-DESIGN.md`, `docs/sprint/plans/netcode-disconnect-layers.md`.
+
+**Discussion outcomes:** 30 s grace window kept. Keep-ticking with `EMPTY_INPUT` chosen over pausing (consistent with network lag, non-exploitable). Grace expiry falls back to match destruction. Spectator mode remains design-only.
+
 ---
 
 ## Quick win (any group, ~10 min)
 
 The README's *"Known limitation: CPUs currently always target Player 1"* is **stale** — `selectTarget` in `packages/engine/src/ai/botAI.ts:104` already scores across all opponents and `main.ts:431` passes all opponent IDs. Correct `README.md` + `ROADMAP.md` and add a regression test proving multi-opponent targeting. Good warm-up for whichever group finishes discussion early.
+
+### ⏳ Status — NOT STARTED
+
+README.md and ROADMAP.md still contain the stale "Known limitation" text. No regression test for multi-opponent targeting was added.
 
 ---
 
@@ -101,3 +164,32 @@ Each group answers, from their design doc:
 3. Is your skeleton green (`pnpm test` passes on your branch)?
 
 **Merge order after the sprint:** D → C → A → B (server-affecting first, client-only last). The one shared file, `main.ts`, is wired in marked regions in the order A → B → C so branches merge cleanly.
+
+---
+
+## Post-Sprint Summary
+
+**Date merged:** 2026-09-04
+
+**Merge order executed:** D → C → A → B (as specified). PRs #5, #4, #6, #7.
+
+**Merge conflicts:** 2 branches required conflict resolution in shared files (`main.ts`, `GameClient.ts`, `main.network-character-select-flow.test.ts`). All conflicts were formatting differences (tabs vs. spaces, quote style) plus semantic additions from both sides. Resolved by taking the union of both changes with consistent formatting.
+
+**Post-merge verification:**
+- `pnpm build` — all 5 packages compile clean
+- `pnpm test` — **854 tests pass** (engine: 271, server: 128, client: 455), 0 failures
+- Engine determinism scan — 0 hits for `Date.now` / `Math.random` in `packages/engine`
+
+| Team | Branch | PR | Status | Tests Added |
+|------|--------|----|--------|-------------|
+| **D** — Netcode Hardening | `sprint/netcode-rejoin` | #5 | ✅ Merged | RoomManager rejoin tests, createApp integration tests |
+| **C** — Third Fighter (Swift) | `sprint/fighter-3` | #4 | ✅ Merged | 21 frame-data tests in `swift.test.ts` |
+| **A** — Sound Effects | `sprint/sfx` | #6 | ✅ Merged | 9 SfxManager + 7 GameplaySfxRouter tests |
+| **B** — Input & Settings | `sprint/input-settings` | #7 | ✅ Merged | 14 SettingsStore + 17 double-tap tests |
+| Quick win — README fix | — | — | ⏳ Not started | — |
+
+**Follow-up items:**
+1. **Swift renderer** — accessory + animation files (mirroring `lincolnAccessories.ts` / `lincolnAnimations.ts`) planned but not started. Character is playable but renders with default polygon visuals.
+2. **Quick win** — README/ROADMAP stale CPU targeting text + regression test still outstanding.
+3. **Spectator mode** — design-only in Team D's doc; no implementation started.
+4. **SFX pitch scaling** — `playbackRate` option exists in `SfxManager` but the formula for knockback-scaled pitch was not fine-tuned.

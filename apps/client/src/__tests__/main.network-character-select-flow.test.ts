@@ -359,7 +359,7 @@ describe('main network character-select flow wiring', () => {
     const call = runtime.uiManagerCalls.showNetworkCharacterSelect[0];
     expect(call?.myPlayerId).toBe('player-1');
     expect(call?.playerIds).toEqual(playerIds);
-    expect(call?.fighters).toHaveLength(2);
+    expect(call?.fighters).toHaveLength(3);
     expect(typeof call?.onSelect).toBe('function');
     expect(typeof call?.onConfirm).toBe('function');
   });

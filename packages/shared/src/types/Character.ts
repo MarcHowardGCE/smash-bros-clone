@@ -6,7 +6,7 @@
  */
 
 /** String union of all playable character identifiers. */
-export type CharacterId = 'all-rounder' | 'abe-lincoln';
+export type CharacterId = 'all-rounder' | 'abe-lincoln' | 'swift';
 
 /**
  * Per-character physics overrides applied by the engine in place of global

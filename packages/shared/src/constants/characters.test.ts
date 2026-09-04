@@ -2,6 +2,7 @@ import { describe, it, expect } from 'vitest';
 import {
   ALL_ROUNDER_STATS,
   ABE_LINCOLN_STATS,
+  SWIFT_STATS,
   CHARACTER_REGISTRY,
   CHARACTER_IDS,
   getCharacterStats,
@@ -76,8 +77,12 @@ describe('Character Stats Registry', () => {
       expect(CHARACTER_REGISTRY['abe-lincoln']).toBe(ABE_LINCOLN_STATS);
     });
 
-    it('should have exactly 2 entries', () => {
-      expect(Object.keys(CHARACTER_REGISTRY)).toHaveLength(2);
+    it('should map swift to SWIFT_STATS', () => {
+      expect(CHARACTER_REGISTRY['swift']).toBe(SWIFT_STATS);
+    });
+
+    it('should have exactly 3 entries', () => {
+      expect(Object.keys(CHARACTER_REGISTRY)).toHaveLength(3);
     });
   });
 
@@ -112,8 +117,8 @@ describe('Character Stats Registry', () => {
   });
 
   describe('CHARACTER_IDS', () => {
-    it('should have exactly 2 entries', () => {
-      expect(CHARACTER_IDS).toHaveLength(2);
+    it('should have exactly 3 entries', () => {
+      expect(CHARACTER_IDS).toHaveLength(3);
     });
 
     it('should contain all-rounder', () => {
@@ -124,11 +129,15 @@ describe('Character Stats Registry', () => {
       expect(CHARACTER_IDS).toContain('abe-lincoln');
     });
 
+    it('should contain swift', () => {
+      expect(CHARACTER_IDS).toContain('swift');
+    });
+
     it('should be a readonly array type', () => {
       // The readonly modifier is enforced at compile time, not runtime
       // This test verifies the array is immutable at the type level
       expect(Array.isArray(CHARACTER_IDS)).toBe(true);
-      expect(Object.isFrozen(CHARACTER_IDS) || CHARACTER_IDS.length === 2).toBe(true);
+      expect(Object.isFrozen(CHARACTER_IDS) || CHARACTER_IDS.length === 3).toBe(true);
     });
   });
 
@@ -139,6 +148,10 @@ describe('Character Stats Registry', () => {
 
     it('should return true for valid CharacterId: abe-lincoln', () => {
       expect(isCharacterId('abe-lincoln')).toBe(true);
+    });
+
+    it('should return true for valid CharacterId: swift', () => {
+      expect(isCharacterId('swift')).toBe(true);
     });
 
     it('should return false for invalid string', () => {

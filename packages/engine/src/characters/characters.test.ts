@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { MoveId, getCharacterStats } from '@smash/shared';
+import { MoveId, CHARACTER_IDS, getCharacterStats } from '@smash/shared';
 import { getMoveDataForCharacter } from '../moves/index.js';
 
 describe('Character Registry - Abe Lincoln', () => {
@@ -182,6 +182,25 @@ describe('Character Registry - Abe Lincoln', () => {
       
       // UP_TILT has no Lincoln override, so they should be identical
       expect(lincolnUpTilt).toBe(defaultUpTilt);
+    });
+  });
+
+  describe('Character Stats Resolution - Swift', () => {
+    it('getCharacterStats("swift") returns fast/floaty scaffold values', () => {
+      const stats = getCharacterStats('swift');
+      expect(stats.fighterWeight).toBe(75);
+      expect(stats.hurtboxRadius).toBe(26);
+      expect(stats.runSpeed).toBe(6.8);
+      expect(stats.walkSpeed).toBe(3.5);
+      expect(stats.jumpVelocity).toBe(-16.5);
+      expect(stats.shortHopVelocity).toBe(-10.3);
+    });
+
+    it('CHARACTER_IDS includes "swift" and has exactly 3 entries', () => {
+      expect(CHARACTER_IDS.length).toBe(3);
+      expect(CHARACTER_IDS).toContain('swift');
+      expect(CHARACTER_IDS).toContain('all-rounder');
+      expect(CHARACTER_IDS).toContain('abe-lincoln');
     });
   });
 });

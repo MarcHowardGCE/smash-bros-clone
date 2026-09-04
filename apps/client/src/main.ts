@@ -54,6 +54,7 @@ const SERVER_URL = import.meta.env.VITE_SERVER_URL ?? getDefaultServerUrl();
 export const AVAILABLE_FIGHTERS: FighterChoice[] = [
 	{ id: "all-rounder", displayName: "All-Rounder" },
 	{ id: "abe-lincoln", displayName: "Abe Lincoln" },
+	{ id: "swift", displayName: "Swift" },
 ];
 
 let networkMatchPhase: 'pre-match' | 'countdown' | 'match' | 'result' = 'pre-match';

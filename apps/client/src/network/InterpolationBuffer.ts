@@ -11,8 +11,14 @@
  * `LocalPredictor` (client-side prediction), which applies inputs immediately
  * without waiting for a server snapshot.
  */
-import { lerp } from '@smash/shared';
-import type { StateSnapshot, PlayerState, PlayerId, MoveId, CharacterId } from '@smash/shared';
+import { lerp } from "@smash/shared";
+import type {
+  StateSnapshot,
+  PlayerState,
+  PlayerId,
+  MoveId,
+  CharacterId,
+} from "@smash/shared";
 
 export interface RenderPlayerState {
   id: PlayerId;
@@ -21,6 +27,7 @@ export interface RenderPlayerState {
   y: number;
   vx: number;
   vy: number;
+  isGrounded: boolean;
   facing: 1 | -1;
   state: string;
   stateFrame: number;
@@ -94,7 +101,10 @@ export class InterpolationBuffer {
    * @param localPlayerId - ID of the local player, excluded from interpolation.
    * @returns Interpolated render state, or `null` if fewer than one snapshot exists.
    */
-  getInterpolatedState(now: number, localPlayerId: PlayerId): RenderState | null {
+  getInterpolatedState(
+    now: number,
+    localPlayerId: PlayerId,
+  ): RenderState | null {
     if (this.snapshots.length < 2) {
       // Not enough snapshots yet — return latest if available
       if (this.snapshots.length === 1) {
@@ -146,16 +156,17 @@ export class InterpolationBuffer {
         y: lerp(p0.y, p1.y, alpha),
         vx: lerp(p0.vx, p1.vx, alpha),
         vy: lerp(p0.vy, p1.vy, alpha),
+        isGrounded: p1.isGrounded,
         // WHY facing/state/stateFrame/percent/stocks snap rather than lerp: These are discrete
         // values where interpolation produces nonsense. Lerping `facing` between -1 and 1 yields
         // 0 (no direction). Lerping `state` (a string enum) is impossible. Lerping `percent`
         // would display fractional damage like "12.4%" between two integer server states. All
         // are snapped to the authoritative latest value from the most recent snapshot.
-        facing: p1.facing,        // snap to latest (no lerp)
-        state: p1.state,          // snap to latest
+        facing: p1.facing, // snap to latest (no lerp)
+        state: p1.state, // snap to latest
         stateFrame: p1.stateFrame, // snap to latest
-        percent: p1.percent,      // snap to latest (avoid fractional damage display)
-        stocks: p1.stocks,        // snap to latest
+        percent: p1.percent, // snap to latest (avoid fractional damage display)
+        stocks: p1.stocks, // snap to latest
         isInvincible: p1.isInvincible,
         isKnockedOut: p1.isKnockedOut,
         isShielding: p1.isShielding,
@@ -205,6 +216,7 @@ export class InterpolationBuffer {
       y: p.y,
       vx: p.vx,
       vy: p.vy,
+      isGrounded: p.isGrounded,
       facing: p.facing,
       state: p.state,
       stateFrame: p.stateFrame,

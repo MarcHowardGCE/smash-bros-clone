@@ -1,11 +1,18 @@
-import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 type PlayerId = string;
 
 interface BootResult {
   gameClientInstance: {
-    selectCharacter: (characterId: string, callback?: (result: { ok: true } | { error: string }) => void) => void;
-    confirmCharacter: (callback?: (result: { ok: true; allConfirmed: boolean } | { error: string }) => void) => void;
+    selectCharacter: (
+      characterId: string,
+      callback?: (result: { ok: true } | { error: string }) => void,
+    ) => void;
+    confirmCharacter: (
+      callback?: (
+        result: { ok: true; allConfirmed: boolean } | { error: string },
+      ) => void,
+    ) => void;
   };
   uiManagerInstance: {
     showNetworkCharacterSelect: (
@@ -15,7 +22,11 @@ interface BootResult {
       onSelect: (characterId: string) => void,
       onConfirm: () => void,
     ) => void;
-    updateNetworkCharacterSelect: (playerId: PlayerId, characterId: string, confirmed: boolean) => void;
+    updateNetworkCharacterSelect: (
+      playerId: PlayerId,
+      characterId: string,
+      confirmed: boolean,
+    ) => void;
     showNetworkCharacterSelectConfirmError: (message: string) => void;
     showLobby: () => void;
   };
@@ -30,7 +41,11 @@ interface BootResult {
     onPaused?: () => void;
     onResumed?: () => void;
     onCharacterSelectStart?: (playerIds: PlayerId[]) => void;
-    onCharacterUpdated?: (data: { playerId: PlayerId; characterId: string; confirmed: boolean }) => void;
+    onCharacterUpdated?: (data: {
+      playerId: PlayerId;
+      characterId: string;
+      confirmed: boolean;
+    }) => void;
     onPlayerLeft?: (playerId: PlayerId) => void;
   };
   uiManagerCalls: {
@@ -41,7 +56,11 @@ interface BootResult {
       onSelect: (characterId: string) => void;
       onConfirm: () => void;
     }>;
-    updateNetworkCharacterSelect: Array<{ playerId: PlayerId; characterId: string; confirmed: boolean }>;
+    updateNetworkCharacterSelect: Array<{
+      playerId: PlayerId;
+      characterId: string;
+      confirmed: boolean;
+    }>;
     showNetworkCharacterSelectConfirmError: Array<{ message: string }>;
     showLobby: number;
   };
@@ -67,7 +86,11 @@ const bootMainWithMocks = async (): Promise<BootResult> => {
       onSelect: (characterId: string) => void;
       onConfirm: () => void;
     }>,
-    updateNetworkCharacterSelect: [] as Array<{ playerId: PlayerId; characterId: string; confirmed: boolean }>,
+    updateNetworkCharacterSelect: [] as Array<{
+      playerId: PlayerId;
+      characterId: string;
+      confirmed: boolean;
+    }>,
     showNetworkCharacterSelectConfirmError: [] as Array<{ message: string }>,
     showLobby: 0,
   };
@@ -77,20 +100,20 @@ const bootMainWithMocks = async (): Promise<BootResult> => {
     confirmCharacter: 0,
   };
 
-  let gameClientOptions: BootResult['gameClientOptions'] = {};
-  let gameClientInstance: BootResult['gameClientInstance'] | null = null;
-  let uiManagerInstance: BootResult['uiManagerInstance'] | null = null;
+  let gameClientOptions: BootResult["gameClientOptions"] = {};
+  let gameClientInstance: BootResult["gameClientInstance"] | null = null;
+  let uiManagerInstance: BootResult["uiManagerInstance"] | null = null;
 
-  vi.doMock('pixi.js', () => {
+  vi.doMock("pixi.js", () => {
     class Application {
       stage = { addChild: () => {} };
-      canvas = document.createElement('canvas');
+      canvas = document.createElement("canvas");
       async init(): Promise<void> {}
     }
     return { Application };
   });
 
-  vi.doMock('../renderer/layers.js', () => ({
+  vi.doMock("../renderer/layers.js", () => ({
     createLayers: () => ({
       background: { addChild: () => {}, removeChildren: () => {} },
       game: { addChild: () => {}, removeChild: () => {} },
@@ -98,22 +121,24 @@ const bootMainWithMocks = async (): Promise<BootResult> => {
     }),
   }));
 
-  vi.doMock('../renderer/StageRenderer.js', () => ({ StageRenderer: class StageRenderer {} }));
-  vi.doMock('../renderer/FighterRenderer.js', () => ({
+  vi.doMock("../renderer/StageRenderer.js", () => ({
+    StageRenderer: class StageRenderer {},
+  }));
+  vi.doMock("../renderer/FighterRenderer.js", () => ({
     FighterRenderer: class FighterRenderer {
       update(): void {}
       destroy(): void {}
       startHitFlash(): void {}
     },
   }));
-  vi.doMock('../renderer/Camera.js', () => ({
+  vi.doMock("../renderer/Camera.js", () => ({
     Camera: class Camera {
       update(): void {}
       shake(): void {}
       reset(): void {}
     },
   }));
-  vi.doMock('../renderer/effects/ImpactSpark.js', () => ({
+  vi.doMock("../renderer/effects/ImpactSpark.js", () => ({
     ImpactSpark: class ImpactSpark {
       container = {};
       done = false;
@@ -123,10 +148,10 @@ const bootMainWithMocks = async (): Promise<BootResult> => {
     },
   }));
 
-  vi.doMock('../network/GameClient.js', () => ({
+  vi.doMock("../network/GameClient.js", () => ({
     GameClient: class GameClient {
       isPaused = false;
-      constructor(opts: BootResult['gameClientOptions']) {
+      constructor(opts: BootResult["gameClientOptions"]) {
         gameClientOptions = opts;
         gameClientInstance = this;
         opts.onConnected?.();
@@ -141,16 +166,23 @@ const bootMainWithMocks = async (): Promise<BootResult> => {
         return null;
       }
       debugSendInput(): void {}
-      selectCharacter(characterId: string, callback?: (result: { ok: true } | { error: string }) => void): void {
+      selectCharacter(
+        characterId: string,
+        callback?: (result: { ok: true } | { error: string }) => void,
+      ): void {
         gameClientCalls.selectCharacter.push({ characterId });
       }
-      confirmCharacter(callback?: (result: { ok: true; allConfirmed: boolean } | { error: string }) => void): void {
+      confirmCharacter(
+        callback?: (
+          result: { ok: true; allConfirmed: boolean } | { error: string },
+        ) => void,
+      ): void {
         gameClientCalls.confirmCharacter++;
       }
     },
   }));
 
-  vi.doMock('@smash/gamepad-input', () => ({
+  vi.doMock("@smash/gamepad-input", () => ({
     GamepadPoller: class GamepadPoller {
       onConnect: ((gamepad: Gamepad) => void) | null = null;
       onDisconnect: ((index: number) => void) | null = null;
@@ -171,22 +203,25 @@ const bootMainWithMocks = async (): Promise<BootResult> => {
     },
   }));
 
-  vi.doMock('../input/ControllerAssignmentManager.js', () => ({
+  vi.doMock("../input/ControllerAssignmentManager.js", () => ({
     ControllerAssignmentManager: class ControllerAssignmentManager {
       constructor() {}
-      getAssignments(): ReadonlyMap<number, { gamepadIndex: number; gamepadId: string }> {
+      getAssignments(): ReadonlyMap<
+        number,
+        { gamepadIndex: number; gamepadId: string }
+      > {
         return new Map();
       }
     },
   }));
 
-  vi.doMock('../input/GamepadInputSource.js', () => ({
+  vi.doMock("../input/GamepadInputSource.js", () => ({
     GamepadInputSource: class GamepadInputSource {
       constructor(poller: unknown, gamepadIndex: number) {}
     },
   }));
 
-  vi.doMock('../local/AIPlayerController.js', () => ({
+  vi.doMock("../local/AIPlayerController.js", () => ({
     AIPlayerController: class AIPlayerController {
       constructor(config: unknown) {}
       setTick(): void {}
@@ -196,7 +231,7 @@ const bootMainWithMocks = async (): Promise<BootResult> => {
       destroy(): void {}
     },
   }));
-  vi.doMock('../local/LocalPlayerController.js', () => ({
+  vi.doMock("../local/LocalPlayerController.js", () => ({
     LocalPlayerController: class LocalPlayerController {
       constructor(config: unknown) {}
       setTick(): void {}
@@ -207,7 +242,7 @@ const bootMainWithMocks = async (): Promise<BootResult> => {
     },
   }));
 
-  vi.doMock('../local/LocalMatch.js', () => ({
+  vi.doMock("../local/LocalMatch.js", () => ({
     LocalMatch: class LocalMatch {
       onSnapshot: ((snapshot: unknown) => void) | null = null;
       paused = false;
@@ -232,7 +267,7 @@ const bootMainWithMocks = async (): Promise<BootResult> => {
     },
   }));
 
-  vi.doMock('../ui/index.js', () => ({
+  vi.doMock("../ui/index.js", () => ({
     injectStyles: () => {},
     UIManager: class UIManager {
       onCreateRoom: (() => void) | null = null;
@@ -249,10 +284,10 @@ const bootMainWithMocks = async (): Promise<BootResult> => {
         uiManagerInstance = this;
       }
 
-       setRoomCode(): void {}
-       setPlayerId(): void {}
-       setAudioManager(): void {}
-       showLobby(): void {
+      setRoomCode(): void {}
+      setPlayerId(): void {}
+      setAudioManager(): void {}
+      showLobby(): void {
         uiManagerCalls.showLobby++;
       }
       showRoomCreated(): void {}
@@ -266,8 +301,8 @@ const bootMainWithMocks = async (): Promise<BootResult> => {
       showLocalResult(): void {}
       updateHUD(): void {}
       showSplash(): void {}
-      getPhase(): 'lobby' {
-        return 'lobby';
+      getPhase(): "lobby" {
+        return "lobby";
       }
       showControls(): void {}
       showLocalPlaySetup(): void {}
@@ -290,8 +325,16 @@ const bootMainWithMocks = async (): Promise<BootResult> => {
         });
       }
 
-      updateNetworkCharacterSelect(playerId: PlayerId, characterId: string, confirmed: boolean): void {
-        uiManagerCalls.updateNetworkCharacterSelect.push({ playerId, characterId, confirmed });
+      updateNetworkCharacterSelect(
+        playerId: PlayerId,
+        characterId: string,
+        confirmed: boolean,
+      ): void {
+        uiManagerCalls.updateNetworkCharacterSelect.push({
+          playerId,
+          characterId,
+          confirmed,
+        });
       }
 
       showNetworkCharacterSelectConfirmError(message: string): void {
@@ -300,7 +343,7 @@ const bootMainWithMocks = async (): Promise<BootResult> => {
     },
   }));
 
-  vi.doMock('../audio/AudioManager.js', () => ({
+  vi.doMock("../audio/AudioManager.js", () => ({
     AudioManager: class AudioManager {
       constructor(_init?: { volume?: number; muted?: boolean }) {}
       playTrack(): void {}
@@ -310,21 +353,30 @@ const bootMainWithMocks = async (): Promise<BootResult> => {
     },
   }));
 
-  vi.doMock('../audio/audioPreferences.js', () => ({
+  vi.doMock("../audio/SfxManager.js", () => ({
+    SfxManager: class SfxManager {
+      play(): void {}
+      playHit(): void {}
+      syncVolume(): void {}
+      stopAll(): void {}
+    },
+  }));
+
+  vi.doMock("../audio/audioPreferences.js", () => ({
     loadAudioPreferences: () => ({ volume: 0.3, muted: false }),
     saveAudioPreferences: () => {},
   }));
 
   document.body.innerHTML = '<div id="ui-overlay"></div>';
 
-  await import('../main');
+  await import("../main");
   await flush();
 
   if (gameClientInstance === null) {
-    throw new Error('GameClient was not instantiated');
+    throw new Error("GameClient was not instantiated");
   }
   if (uiManagerInstance === null) {
-    throw new Error('UIManager was not instantiated');
+    throw new Error("UIManager was not instantiated");
   }
 
   return {
@@ -336,123 +388,149 @@ const bootMainWithMocks = async (): Promise<BootResult> => {
   };
 };
 
-describe('main network character-select flow wiring', () => {
+describe("main network character-select flow wiring", () => {
   beforeEach(() => {
-    document.body.innerHTML = '';
+    document.body.innerHTML = "";
   });
 
   afterEach(() => {
     vi.restoreAllMocks();
-    document.body.innerHTML = '';
+    document.body.innerHTML = "";
   });
 
-  it('onCharacterSelectStart triggers uiManager.showNetworkCharacterSelect with correct wiring', async () => {
+  it("onCharacterSelectStart triggers uiManager.showNetworkCharacterSelect with correct wiring", async () => {
     const runtime = await bootMainWithMocks();
 
     // First, simulate player assignment to set myPlayerId
-    runtime.gameClientOptions.onPlayerAssigned?.('player-1' as PlayerId, 'ROOM01');
+    runtime.gameClientOptions.onPlayerAssigned?.(
+      "player-1" as PlayerId,
+      "ROOM01",
+    );
 
-    const playerIds: PlayerId[] = ['player-1', 'player-2'];
+    const playerIds: PlayerId[] = ["player-1", "player-2"];
     runtime.gameClientOptions.onCharacterSelectStart?.(playerIds);
 
     expect(runtime.uiManagerCalls.showNetworkCharacterSelect).toHaveLength(1);
     const call = runtime.uiManagerCalls.showNetworkCharacterSelect[0];
-    expect(call?.myPlayerId).toBe('player-1');
+    expect(call?.myPlayerId).toBe("player-1");
     expect(call?.playerIds).toEqual(playerIds);
     expect(call?.fighters).toHaveLength(3);
-    expect(typeof call?.onSelect).toBe('function');
-    expect(typeof call?.onConfirm).toBe('function');
+    expect(typeof call?.onSelect).toBe("function");
+    expect(typeof call?.onConfirm).toBe("function");
   });
 
-  it('onCharacterUpdated triggers uiManager.updateNetworkCharacterSelect', async () => {
+  it("onCharacterUpdated triggers uiManager.updateNetworkCharacterSelect", async () => {
     const runtime = await bootMainWithMocks();
 
-    const data = { playerId: 'player-2' as PlayerId, characterId: 'abe-lincoln', confirmed: false };
+    const data = {
+      playerId: "player-2" as PlayerId,
+      characterId: "abe-lincoln",
+      confirmed: false,
+    };
     runtime.gameClientOptions.onCharacterUpdated?.(data);
 
     expect(runtime.uiManagerCalls.updateNetworkCharacterSelect).toHaveLength(1);
-    expect(runtime.uiManagerCalls.updateNetworkCharacterSelect[0]).toEqual(data);
+    expect(runtime.uiManagerCalls.updateNetworkCharacterSelect[0]).toEqual(
+      data,
+    );
   });
 
-  it('fighter selection callback calls gameClient.selectCharacter', async () => {
+  it("fighter selection callback calls gameClient.selectCharacter", async () => {
     const runtime = await bootMainWithMocks();
 
     // First, simulate player assignment to set myPlayerId
-    runtime.gameClientOptions.onPlayerAssigned?.('player-1' as PlayerId, 'ROOM01');
+    runtime.gameClientOptions.onPlayerAssigned?.(
+      "player-1" as PlayerId,
+      "ROOM01",
+    );
 
-    const playerIds: PlayerId[] = ['player-1', 'player-2'];
+    const playerIds: PlayerId[] = ["player-1", "player-2"];
     runtime.gameClientOptions.onCharacterSelectStart?.(playerIds);
 
     const call = runtime.uiManagerCalls.showNetworkCharacterSelect[0];
-    call?.onSelect('abe-lincoln');
+    call?.onSelect("abe-lincoln");
 
     expect(runtime.gameClientCalls.selectCharacter).toHaveLength(1);
-    expect(runtime.gameClientCalls.selectCharacter[0]?.characterId).toBe('abe-lincoln');
+    expect(runtime.gameClientCalls.selectCharacter[0]?.characterId).toBe(
+      "abe-lincoln",
+    );
   });
 
-  it('confirmCharacter error result triggers uiManager.showNetworkCharacterSelectConfirmError', async () => {
+  it("confirmCharacter error result triggers uiManager.showNetworkCharacterSelectConfirmError", async () => {
     const runtime = await bootMainWithMocks();
 
     // First, simulate player assignment to set myPlayerId
-    runtime.gameClientOptions.onPlayerAssigned?.('player-1' as PlayerId, 'ROOM01');
+    runtime.gameClientOptions.onPlayerAssigned?.(
+      "player-1" as PlayerId,
+      "ROOM01",
+    );
 
-    const playerIds: PlayerId[] = ['player-1', 'player-2'];
+    const playerIds: PlayerId[] = ["player-1", "player-2"];
     runtime.gameClientOptions.onCharacterSelectStart?.(playerIds);
 
     const call = runtime.uiManagerCalls.showNetworkCharacterSelect[0];
-    
+
     // Mock confirmCharacter to immediately invoke callback with error
-    vi.spyOn(runtime.gameClientInstance, 'confirmCharacter').mockImplementation((callback) => {
-      callback?.({ error: 'You must select a character first' });
-    });
+    vi.spyOn(runtime.gameClientInstance, "confirmCharacter").mockImplementation(
+      (callback) => {
+        callback?.({ error: "You must select a character first" });
+      },
+    );
 
     call?.onConfirm();
 
-    expect(runtime.uiManagerCalls.showNetworkCharacterSelectConfirmError).toHaveLength(1);
-    expect(runtime.uiManagerCalls.showNetworkCharacterSelectConfirmError[0]?.message).toBe('You must select a character first');
+    expect(
+      runtime.uiManagerCalls.showNetworkCharacterSelectConfirmError,
+    ).toHaveLength(1);
+    expect(
+      runtime.uiManagerCalls.showNetworkCharacterSelectConfirmError[0]?.message,
+    ).toBe("You must select a character first");
   });
 
-  it('onPlayerLeft during pre-match phase calls uiManager.showLobby', async () => {
+  it("onPlayerLeft during pre-match phase calls uiManager.showLobby", async () => {
     const runtime = await bootMainWithMocks();
 
     // networkMatchPhase defaults to 'pre-match'
-    runtime.gameClientOptions.onPlayerLeft?.('player-2' as PlayerId);
+    runtime.gameClientOptions.onPlayerLeft?.("player-2" as PlayerId);
 
     expect(runtime.uiManagerCalls.showLobby).toBe(1);
   });
 
-  it('onPlayerLeft during match phase does NOT call uiManager.showLobby (regression guard)', async () => {
+  it("onPlayerLeft during match phase does NOT call uiManager.showLobby (regression guard)", async () => {
     const runtime = await bootMainWithMocks();
 
     // Transition to 'match' phase
-    runtime.gameClientOptions.onMatchPhaseChange?.('match');
+    runtime.gameClientOptions.onMatchPhaseChange?.("match");
 
     // Now disconnect during match
-    runtime.gameClientOptions.onPlayerLeft?.('player-2' as PlayerId);
+    runtime.gameClientOptions.onPlayerLeft?.("player-2" as PlayerId);
 
     expect(runtime.uiManagerCalls.showLobby).toBe(0);
   });
 
-  it('onPlayerLeft during countdown phase calls uiManager.showLobby', async () => {
+  it("onPlayerLeft during countdown phase calls uiManager.showLobby", async () => {
     const runtime = await bootMainWithMocks();
 
     // Transition to 'countdown' phase
-    runtime.gameClientOptions.onMatchPhaseChange?.('countdown');
+    runtime.gameClientOptions.onMatchPhaseChange?.("countdown");
 
     // Disconnect during countdown
-    runtime.gameClientOptions.onPlayerLeft?.('player-2' as PlayerId);
+    runtime.gameClientOptions.onPlayerLeft?.("player-2" as PlayerId);
 
     expect(runtime.uiManagerCalls.showLobby).toBe(1);
   });
 
-  it('onPlayerLeft during result phase does NOT call uiManager.showLobby', async () => {
+  it("onPlayerLeft during result phase does NOT call uiManager.showLobby", async () => {
     const runtime = await bootMainWithMocks();
 
     // Transition to 'result' phase
-    runtime.gameClientOptions.onMatchPhaseChange?.('result', 'player-1' as PlayerId);
+    runtime.gameClientOptions.onMatchPhaseChange?.(
+      "result",
+      "player-1" as PlayerId,
+    );
 
     // Disconnect during result
-    runtime.gameClientOptions.onPlayerLeft?.('player-2' as PlayerId);
+    runtime.gameClientOptions.onPlayerLeft?.("player-2" as PlayerId);
 
     expect(runtime.uiManagerCalls.showLobby).toBe(0);
   });

@@ -17,26 +17,34 @@
  *          → LocalPredictor.getPredictedState() overrides the local player entry
  *          → onRenderState() callback hands the merged RenderState to PixiJS
  */
-import { decode, encode, ExtensionCodec } from '@msgpack/msgpack';
-import type { Socket } from 'socket.io-client';
-import { io } from 'socket.io-client';
-import type { InputEvent, PlayerId, StateSnapshot, HitEventData } from '@smash/shared';
-import { InputManager } from '../input/InputManager.js';
-import { InterpolationBuffer, type RenderState } from './InterpolationBuffer.js';
-import { LocalPredictor } from './LocalPredictor.js';
+import { decode, encode, ExtensionCodec } from "@msgpack/msgpack";
+import type { Socket } from "socket.io-client";
+import { io } from "socket.io-client";
+import type {
+  InputEvent,
+  PlayerId,
+  StateSnapshot,
+  HitEventData,
+} from "@smash/shared";
+import { InputManager } from "../input/InputManager.js";
+import {
+  InterpolationBuffer,
+  type RenderState,
+} from "./InterpolationBuffer.js";
+import { LocalPredictor } from "./LocalPredictor.js";
 
 const extensionCodec = new ExtensionCodec();
 extensionCodec.register({
-	type: 1,
-	encode: (input: unknown): Uint8Array | null => {
-		if (!(input instanceof Set)) {
-			return null;
-		}
+  type: 1,
+  encode: (input: unknown): Uint8Array | null => {
+    if (!(input instanceof Set)) {
+      return null;
+    }
 
-		return encode(Array.from(input), { extensionCodec });
-	},
-	decode: (data: Uint8Array): Set<string> =>
-		new Set<string>(decode(data, { extensionCodec }) as string[]),
+    return encode(Array.from(input), { extensionCodec });
+  },
+  decode: (data: Uint8Array): Set<string> =>
+    new Set<string>(decode(data, { extensionCodec }) as string[]),
 });
 
 export interface GameClientOptions {
@@ -51,7 +59,11 @@ export interface GameClientOptions {
   onPaused?: () => void;
   onResumed?: () => void;
   onCharacterSelectStart?: (playerIds: PlayerId[]) => void;
-  onCharacterUpdated?: (data: { playerId: PlayerId; characterId: string; confirmed: boolean }) => void;
+  onCharacterUpdated?: (data: {
+    playerId: PlayerId;
+    characterId: string;
+    confirmed: boolean;
+  }) => void;
   onPlayerLeft?: (playerId: PlayerId) => void;
 }
 
@@ -89,7 +101,7 @@ export class GameClient {
   constructor(options: GameClientOptions) {
     this.options = options;
     this.socket = io(options.serverUrl, {
-      transports: ['websocket'],
+      transports: ["websocket"],
       reconnection: true,
     });
 
@@ -105,16 +117,22 @@ export class GameClient {
    * all subsequent input events and snapshot lookups are keyed to the right slot.
    */
   createRoom(): void {
-    this.socket.emit('room:create', (data: { roomCode: string; playerId: PlayerId; slotIndex: number }) => {
-      this.myPlayerId = data.playerId;
-      this.myRoomCode = data.roomCode;
-      this.inputManager.setPlayerId(data.playerId);
-      // Persist session identity for rejoin on reconnect
-      sessionStorage.setItem('smash:rejoin', JSON.stringify({ roomCode: data.roomCode, playerId: data.playerId }));
-      this.options.onPlayerAssigned?.(data.playerId, data.roomCode);
-      this.options.onRoomCreated(data.roomCode, data.playerId);
-      this.options.onPlayerJoined(data.slotIndex);
-    });
+    this.socket.emit(
+      "room:create",
+      (data: { roomCode: string; playerId: PlayerId; slotIndex: number }) => {
+        this.myPlayerId = data.playerId;
+        this.myRoomCode = data.roomCode;
+        this.inputManager.setPlayerId(data.playerId);
+        // Persist session identity for rejoin on reconnect
+        sessionStorage.setItem(
+          "smash:rejoin",
+          JSON.stringify({ roomCode: data.roomCode, playerId: data.playerId }),
+        );
+        this.options.onPlayerAssigned?.(data.playerId, data.roomCode);
+        this.options.onRoomCreated(data.roomCode, data.playerId);
+        this.options.onPlayerJoined(data.slotIndex);
+      },
+    );
   }
 
   /**
@@ -130,11 +148,11 @@ export class GameClient {
    */
   joinRoom(roomCode: string): void {
     this.socket.emit(
-      'room:join',
+      "room:join",
       roomCode,
       (data: { playerId: PlayerId; slotIndex: number } | { error: string }) => {
-        if ('error' in data) {
-          console.error('[client] join error:', data.error);
+        if ("error" in data) {
+          console.error("[client] join error:", data.error);
           return;
         }
 
@@ -152,7 +170,7 @@ export class GameClient {
   /** Signals to the server that this player is ready to start the match. */
   markReady(): void {
     if (this.myRoomCode) {
-      this.socket.emit('player:ready', this.myRoomCode);
+      this.socket.emit("player:ready", this.myRoomCode);
     }
   }
 
@@ -162,11 +180,19 @@ export class GameClient {
    * @param characterId - The identifier of the chosen character.
    * @param callback - Optional acknowledgement from the server.
    */
-  selectCharacter(characterId: string, callback?: (result: { ok: true } | { error: string }) => void): void {
+  selectCharacter(
+    characterId: string,
+    callback?: (result: { ok: true } | { error: string }) => void,
+  ): void {
     if (!this.myRoomCode) {
       return;
     }
-    this.socket.emit('character:select', this.myRoomCode, characterId, callback);
+    this.socket.emit(
+      "character:select",
+      this.myRoomCode,
+      characterId,
+      callback,
+    );
   }
 
   /**
@@ -175,11 +201,15 @@ export class GameClient {
    * @param callback - Optional acknowledgement; `allConfirmed` is true when every
    *   player in the room has confirmed, which triggers match start on the server.
    */
-  confirmCharacter(callback?: (result: { ok: true; allConfirmed: boolean } | { error: string }) => void): void {
+  confirmCharacter(
+    callback?: (
+      result: { ok: true; allConfirmed: boolean } | { error: string },
+    ) => void,
+  ): void {
     if (!this.myRoomCode) {
       return;
     }
-    this.socket.emit('character:confirm', this.myRoomCode, callback);
+    this.socket.emit("character:confirm", this.myRoomCode, callback);
   }
 
   /** Whether the game is currently paused. */
@@ -191,13 +221,13 @@ export class GameClient {
   emitPause(): void {
     if (this.paused) return;
     this.paused = true;
-    this.socket.emit('game:pause');
+    this.socket.emit("game:pause");
   }
 
   /** Requests a resume from the server. No-op if not currently paused. */
   emitResume(): void {
     if (!this.paused) return;
-    this.socket.emit('game:resume');
+    this.socket.emit("game:resume");
   }
 
   /** Stops the render loop and closes the socket connection. */
@@ -214,91 +244,99 @@ export class GameClient {
     this.socket.connect();
   }
 
-	/**
-	 * Injects a synthetic input event, bypassing `InputManager`. Used in tests and
-	 * debug tooling to drive the game without real keyboard events.
-	 *
-	 * @param input - Partial input with only the held/pressed/released bitmasks required.
-	 */
-	debugSendInput(input: Pick<InputEvent, 'held' | 'pressed' | 'released'>): void {
-		if (!this.myPlayerId) {
-			return;
-		}
+  /**
+   * Injects a synthetic input event, bypassing `InputManager`. Used in tests and
+   * debug tooling to drive the game without real keyboard events.
+   *
+   * @param input - Partial input with only the held/pressed/released bitmasks required.
+   */
+  debugSendInput(
+    input: Pick<InputEvent, "held" | "pressed" | "released">,
+  ): void {
+    if (!this.myPlayerId) {
+      return;
+    }
 
-		const event: InputEvent = {
-			tick: this.currentTick,
-			seq: Date.now(),
-			playerId: this.myPlayerId,
-			held: input.held,
-			pressed: input.pressed,
-			released: input.released,
-		};
+    const event: InputEvent = {
+      tick: this.currentTick,
+      seq: Date.now(),
+      playerId: this.myPlayerId,
+      held: input.held,
+      pressed: input.pressed,
+      released: input.released,
+    };
 
-		this.predictor?.onInput(event);
-		this.sendInput(event);
-	}
+    this.predictor?.onInput(event);
+    this.sendInput(event);
+  }
 
-	/** Returns the most recent authoritative snapshot from the server, or `null` if none has arrived yet. */
-	getLatestSnapshot(): StateSnapshot | null {
-		return this.interpolationBuffer.getLatestSnapshot();
-	}
+  /** Returns the most recent authoritative snapshot from the server, or `null` if none has arrived yet. */
+  getLatestSnapshot(): StateSnapshot | null {
+    return this.interpolationBuffer.getLatestSnapshot();
+  }
 
   private setupSocketHandlers(): void {
-    this.socket.on('connect', () => {
-      console.log('[client] connected to server:', this.socket.id);
-      
+    this.socket.on("connect", () => {
+      console.log("[client] connected to server:", this.socket.id);
+
       // Attempt rejoin if we have persisted session identity
-      const rejoinData = sessionStorage.getItem('smash:rejoin');
+      const rejoinData = sessionStorage.getItem("smash:rejoin");
       if (rejoinData) {
         try {
           const { roomCode, playerId } = JSON.parse(rejoinData);
           if (roomCode && playerId) {
-            console.log('[client] attempting rejoin:', { roomCode, playerId });
-            this.socket.emit('room:rejoin', { roomCode, playerId }, (response: { ok: boolean; error?: string }) => {
-              if (response.ok) {
-                console.log('[client] rejoin successful');
-              } else {
-                console.log('[client] rejoin failed:', response.error);
-                // Clear persisted session if rejoin fails (grace window expired, etc.)
-                sessionStorage.removeItem('smash:rejoin');
-              }
-            });
+            console.log("[client] attempting rejoin:", { roomCode, playerId });
+            this.socket.emit(
+              "room:rejoin",
+              { roomCode, playerId },
+              (response: { ok: boolean; error?: string }) => {
+                if (response.ok) {
+                  console.log("[client] rejoin successful");
+                } else {
+                  console.log("[client] rejoin failed:", response.error);
+                  // Clear persisted session if rejoin fails (grace window expired, etc.)
+                  sessionStorage.removeItem("smash:rejoin");
+                }
+              },
+            );
           }
         } catch (e) {
-          console.error('[client] failed to parse rejoin data:', e);
-          sessionStorage.removeItem('smash:rejoin');
+          console.error("[client] failed to parse rejoin data:", e);
+          sessionStorage.removeItem("smash:rejoin");
         }
       }
-      
       this.options.onConnected?.();
     });
 
-    this.socket.on('connect_error', (error) => {
-      console.error('[client] connect error:', error.message);
+    this.socket.on("connect_error", (error) => {
+      console.error("[client] connect error:", error.message);
     });
 
-    this.socket.on('disconnect', (reason) => {
-      console.log('[client] disconnected:', reason);
+    this.socket.on("disconnect", (reason) => {
+      console.log("[client] disconnected:", reason);
       this.stopRenderLoop();
       this.interpolationBuffer.clear();
       this.predictor = null;
     });
 
-    this.socket.on('room:playerJoined', (data: { playerId: PlayerId; slotIndex: number }) => {
-      console.log('[client] player joined:', data);
-      this.options.onPlayerJoined(data.slotIndex);
+    this.socket.on(
+      "room:playerJoined",
+      (data: { playerId: PlayerId; slotIndex: number }) => {
+        console.log("[client] player joined:", data);
+        this.options.onPlayerJoined(data.slotIndex);
+      },
+    );
+
+    this.socket.on("game:countdown", (data: { seconds: number }) => {
+      console.log("[client] countdown:", data.seconds);
+      this.options.onMatchPhaseChange("countdown");
     });
 
-    this.socket.on('game:countdown', (data: { seconds: number }) => {
-      console.log('[client] countdown:', data.seconds);
-      this.options.onMatchPhaseChange('countdown');
-    });
-
-    this.socket.on('game:start', (data: { playerIds: PlayerId[] }) => {
-      console.log('[client] match started, players:', data.playerIds);
+    this.socket.on("game:start", (data: { playerIds: PlayerId[] }) => {
+      console.log("[client] match started, players:", data.playerIds);
       this.interpolationBuffer.clear();
       this.predictor = null;
-      this.options.onMatchPhaseChange('match');
+      this.options.onMatchPhaseChange("match");
       this.startRenderLoop();
     });
 
@@ -307,15 +345,20 @@ export class GameClient {
     //   (prune confirmed inputs, replay unconfirmed on top of the authoritative state).
     // Remote players: the snapshot is queued in InterpolationBuffer; getInterpolatedState()
     //   lerps between the two most recent snapshots each rAF tick for smooth 60 fps visuals.
-    this.socket.on('game:state', (binaryData: ArrayBuffer | Uint8Array) => {
+    this.socket.on("game:state", (binaryData: ArrayBuffer | Uint8Array) => {
       try {
-        const data = binaryData instanceof Uint8Array ? binaryData : new Uint8Array(binaryData);
-			const snapshot = decode(data, { extensionCodec }) as StateSnapshot;
+        const data =
+          binaryData instanceof Uint8Array
+            ? binaryData
+            : new Uint8Array(binaryData);
+        const snapshot = decode(data, { extensionCodec }) as StateSnapshot;
         this.currentTick = snapshot.tick;
         this.inputManager.setCurrentTick(this.currentTick);
         this.interpolationBuffer.pushSnapshot(snapshot);
         if (snapshot.tick > 0 && snapshot.tick % 60 === 0) {
-          console.log(`[state-hash][client] tick=${snapshot.tick} ${this.getStateHash(snapshot)}`);
+          console.log(
+            `[state-hash][client] tick=${snapshot.tick} ${this.getStateHash(snapshot)}`,
+          );
         }
 
         if (snapshot.hitEvents && snapshot.hitEvents.length > 0) {
@@ -334,41 +377,54 @@ export class GameClient {
           this.predictor.initialize(playerState);
         }
       } catch (error) {
-        console.error('[client] failed to decode game state:', error);
+        console.error("[client] failed to decode game state:", error);
       }
     });
 
-    this.socket.on('game:paused', () => {
-      console.log('[client] game paused by server');
+    this.socket.on("game:paused", () => {
+      console.log("[client] game paused by server");
       this.paused = true;
       this.options.onPaused?.();
     });
 
-    this.socket.on('game:resumed', () => {
-      console.log('[client] game resumed by server');
+    this.socket.on("game:resumed", () => {
+      console.log("[client] game resumed by server");
       this.paused = false;
       this.options.onResumed?.();
     });
 
-    this.socket.on('game:over', (data: { winnerId: PlayerId }) => {
-      console.log('[client] match over, winner:', data.winnerId);
+    this.socket.on("game:over", (data: { winnerId: PlayerId }) => {
+      console.log("[client] match over, winner:", data.winnerId);
       this.paused = false;
-      this.options.onMatchPhaseChange('result', data.winnerId);
+      this.options.onMatchPhaseChange("result", data.winnerId);
       this.stopRenderLoop();
     });
 
-    this.socket.on('room:characterSelectStart', (data: { playerIds: PlayerId[] }) => {
-      console.log('[client] character select started, players:', data.playerIds);
-      this.options.onCharacterSelectStart?.(data.playerIds);
-    });
+    this.socket.on(
+      "room:characterSelectStart",
+      (data: { playerIds: PlayerId[] }) => {
+        console.log(
+          "[client] character select started, players:",
+          data.playerIds,
+        );
+        this.options.onCharacterSelectStart?.(data.playerIds);
+      },
+    );
 
-    this.socket.on('character:updated', (data: { playerId: PlayerId; characterId: string; confirmed: boolean }) => {
-      console.log('[client] character updated:', data);
-      this.options.onCharacterUpdated?.(data);
-    });
+    this.socket.on(
+      "character:updated",
+      (data: {
+        playerId: PlayerId;
+        characterId: string;
+        confirmed: boolean;
+      }) => {
+        console.log("[client] character updated:", data);
+        this.options.onCharacterUpdated?.(data);
+      },
+    );
 
-    this.socket.on('room:playerLeft', (data: { playerId: PlayerId }) => {
-      console.log('[client] player left:', data.playerId);
+    this.socket.on("room:playerLeft", (data: { playerId: PlayerId }) => {
+      console.log("[client] player left:", data.playerId);
       this.options.onPlayerLeft?.(data.playerId);
     });
 
@@ -416,7 +472,10 @@ export class GameClient {
       }
     }
 
-    const interpolated = this.interpolationBuffer.getInterpolatedState(performance.now(), this.myPlayerId);
+    const interpolated = this.interpolationBuffer.getInterpolatedState(
+      performance.now(),
+      this.myPlayerId,
+    );
     if (!interpolated) {
       return;
     }
@@ -430,6 +489,7 @@ export class GameClient {
         y: predictedLocal.y,
         vx: predictedLocal.vx,
         vy: predictedLocal.vy,
+        isGrounded: predictedLocal.isGrounded,
         facing: predictedLocal.facing,
         state: predictedLocal.state,
         stateFrame: predictedLocal.stateFrame,
@@ -448,18 +508,18 @@ export class GameClient {
 
   private sendInput(inputEvent: InputEvent): void {
     const encoded = encode(inputEvent);
-    this.socket.emit('game:input', encoded);
+    this.socket.emit("game:input", encoded);
   }
 
-	private getStateHash(snapshot: StateSnapshot): string {
-		return Object.values(snapshot.players)
-			.sort((left, right) => left.slotIndex - right.slotIndex)
-			.map(
-				(player) =>
-					`${player.slotIndex}:${Math.round(player.x)},${Math.round(player.y)},${Math.round(
-						player.vx,
-					)},${Math.round(player.vy)},${Math.round(player.percent)},${player.stocks},${player.state}`,
-			)
-			.join('|');
-	}
+  private getStateHash(snapshot: StateSnapshot): string {
+    return Object.values(snapshot.players)
+      .sort((left, right) => left.slotIndex - right.slotIndex)
+      .map(
+        (player) =>
+          `${player.slotIndex}:${Math.round(player.x)},${Math.round(player.y)},${Math.round(
+            player.vx,
+          )},${Math.round(player.vy)},${Math.round(player.percent)},${player.stocks},${player.state}`,
+      )
+      .join("|");
+  }
 }

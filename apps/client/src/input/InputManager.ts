@@ -8,8 +8,17 @@
  * and/or the network layer.
  */
 import type { InputBitmask, InputEvent, PlayerId } from '@smash/shared';
+import { INPUT_BITS } from '@smash/shared';
 import { DEFAULT_KEYMAP_P1 } from './keymaps.js';
 import type { GamepadInputSource } from './GamepadInputSource.js';
+
+/**
+ * Options for InputManager initialization.
+ */
+export interface InputManagerOptions {
+  /** Enable double-tap smash detection (defaults to false for backward compatibility) */
+  doubleTapSmash?: boolean;
+}
 
 /**
  * Polls keyboard and gamepad input, emitting {@link InputEvent} objects on state change.
@@ -27,6 +36,15 @@ export class InputManager {
   private readonly keymap: Record<string, InputBitmask>;
   private gamepadSource: GamepadInputSource | null = null;
 
+  // Double-tap smash detection
+  private doubleTapSmashEnabled: boolean = false;
+  private lastDirectionalKeydown: { direction: 'left' | 'right' | null; at: number } = {
+    direction: null,
+    at: 0,
+  };
+  private smashIntent: boolean = false;
+  private readonly DOUBLE_TAP_THRESHOLD_MS = 250;
+
   // Pending inputs for T14 (LocalPredictor) — stored here, used there
   readonly pendingInputs: InputEvent[] = [];
 
@@ -35,16 +53,33 @@ export class InputManager {
    *
    * @param keymap - Key-code to bitmask mapping (defaults to P1 layout)
    * @param playerId - Player ID stamped on emitted events
-   * @param gamepadSource - Optional gamepad source merged with keyboard bits each frame
+   * @param gamepadSourceOrOptions - Optional gamepad source merged with keyboard bits each frame,
+   *                                  or options object for backward compatibility
+   * @param options - Optional configuration (ignored if gamepadSourceOrOptions is already options)
    */
   constructor(
     keymap: Record<string, InputBitmask> = DEFAULT_KEYMAP_P1,
     playerId: PlayerId = '',
-    gamepadSource?: GamepadInputSource | null
+    gamepadSourceOrOptions?: GamepadInputSource | null | InputManagerOptions,
+    options?: InputManagerOptions
   ) {
     this.keymap = keymap;
     this.playerId = playerId;
+
+    // Handle overloaded constructor: if gamepadSourceOrOptions is an options object, use it
+    let gamepadSource: GamepadInputSource | null = null;
+    let opts: InputManagerOptions = options ?? {};
+
+    if (gamepadSourceOrOptions && typeof gamepadSourceOrOptions === 'object' && !('getHeldBits' in gamepadSourceOrOptions)) {
+      // It's an options object, not a GamepadInputSource
+      opts = gamepadSourceOrOptions as InputManagerOptions;
+    } else if (gamepadSourceOrOptions && 'getHeldBits' in gamepadSourceOrOptions) {
+      // It's a GamepadInputSource
+      gamepadSource = gamepadSourceOrOptions as GamepadInputSource;
+    }
+
     this.gamepadSource = gamepadSource ?? null;
+    this.doubleTapSmashEnabled = opts.doubleTapSmash ?? false;
     this.setupListeners();
   }
 
@@ -79,6 +114,11 @@ export class InputManager {
     if (bit !== 0) {
       e.preventDefault();
       this.currentHeld |= bit;
+
+      // Track double-tap smash detection
+      if (this.doubleTapSmashEnabled) {
+        this.updateDoubleTapSmash(bit);
+      }
     }
   };
 
@@ -88,6 +128,61 @@ export class InputManager {
       this.currentHeld &= ~bit;
     }
   };
+
+  /**
+   * Track double-tap smash detection for directional inputs.
+   * When the same direction is pressed twice within 250 ms, set smashIntent.
+   */
+  private updateDoubleTapSmash(bit: InputBitmask): void {
+    const now = this.getCurrentTime();
+
+    // Check if this is a directional key
+    if (bit === INPUT_BITS.LEFT) {
+      if (
+        this.lastDirectionalKeydown.direction === 'left' &&
+        now - this.lastDirectionalKeydown.at < this.DOUBLE_TAP_THRESHOLD_MS
+      ) {
+        // Double-tap detected
+        this.smashIntent = true;
+      }
+      this.lastDirectionalKeydown = { direction: 'left', at: now };
+    } else if (bit === INPUT_BITS.RIGHT) {
+      if (
+        this.lastDirectionalKeydown.direction === 'right' &&
+        now - this.lastDirectionalKeydown.at < this.DOUBLE_TAP_THRESHOLD_MS
+      ) {
+        // Double-tap detected
+        this.smashIntent = true;
+      }
+      this.lastDirectionalKeydown = { direction: 'right', at: now };
+    }
+  }
+
+  /**
+   * Get current time in milliseconds. Mockable for testing.
+   * @internal
+   */
+  protected getCurrentTime(): number {
+    return performance.now();
+  }
+
+  /**
+   * Check if a smash intent is active and consume it (clear the flag).
+   * Called by attack input handlers to determine tilt vs smash.
+   */
+  consumeSmashIntent(): boolean {
+    const intent = this.smashIntent;
+    this.smashIntent = false;
+    return intent;
+  }
+
+  /**
+   * Get the current smash intent state without consuming it.
+   * Used primarily for testing.
+   */
+  getSmashIntent(): boolean {
+    return this.smashIntent;
+  }
 
   private keyToBit(code: string): InputBitmask {
     return this.keymap[code] ?? 0;

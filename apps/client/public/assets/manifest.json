@@ -1,0 +1,54 @@
+{
+  "bundles": [
+    {
+      "name": "fighters",
+      "assets": [
+        {
+          "alias": "fighters/all-rounder",
+          "src": [
+            "/assets/fighters/all-rounder@2x.webp.json",
+            "/assets/fighters/all-rounder@2x.png.json",
+            "/assets/fighters/all-rounder.webp.json",
+            "/assets/fighters/all-rounder.png.json"
+          ],
+          "data": {
+            "tags": {
+              "m": true,
+              "tps": true
+            }
+          }
+        },
+        {
+          "alias": "fighters/abe-lincoln",
+          "src": [
+            "/assets/fighters/abe-lincoln@2x.webp.json",
+            "/assets/fighters/abe-lincoln@2x.png.json",
+            "/assets/fighters/abe-lincoln.webp.json",
+            "/assets/fighters/abe-lincoln.png.json"
+          ],
+          "data": {
+            "tags": {
+              "m": true,
+              "tps": true
+            }
+          }
+        },
+        {
+          "alias": "fighters/swift",
+          "src": [
+            "/assets/fighters/swift@2x.webp.json",
+            "/assets/fighters/swift@2x.png.json",
+            "/assets/fighters/swift.webp.json",
+            "/assets/fighters/swift.png.json"
+          ],
+          "data": {
+            "tags": {
+              "m": true,
+              "tps": true
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

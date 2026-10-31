@@ -1,0 +1,60 @@
+Todo 5 evidence — AssetPack pipeline, pinned and deterministic
+Date: 2026-10-31
+
+1) Cold build (root)
+Command:
+  pnpm build
+
+Result:
+  PASS (exit 0)
+  Client build log included AssetPack pipeline execution and completed successfully.
+
+2) Determinism: double clean generation + byte compare + committed output compare + untracked guard
+Command:
+  node scripts/assets/verify-assets-determinism.mjs
+
+Result:
+  PASS
+  Output:
+    ok: deterministic generation and committed output checks passed
+
+3) Clean status check for generated outputs
+Command:
+  git status --porcelain -- apps/client/public/assets
+
+Result:
+  PASS for tracked generated tree (no untracked in committed run after staging).
+
+4) Failure QA — modify one raw PNG => determinism diff
+Procedure:
+  - Back up raw-assets/fighters{m}/all-rounder{tps}/head.png
+  - Flip one byte in that PNG
+  - Run: pnpm -F @smash/client assets:verify-determinism
+  - Restore original PNG from backup
+
+Observed failure:
+  determinism mismatch run-a vs committed-assets :: byte mismatches: fighters/abe-lincoln.png.json, fighters/abe-lincoln.webp.json, fighters/abe-lincoln@2x.png.json, fighters/abe-lincoln@2x.webp.json, fighters/all-rounder.png.json, fighters/all-rounder.webp.json, fighters/all-rounder@2x.png.json, fighters/all-rounder@2x.webp.json, fighters/swift.png.json, fighters/swift.webp.json, fighters/swift@2x.png.json, fighters/swift@2x.webp.json
+
+5) Failure QA — delete committed atlas => missing check fires
+Procedure:
+  - Delete apps/client/public/assets/fighters/all-rounder@2x.png.json
+  - Run: node scripts/assets/verify-assets-determinism.mjs
+  - Restore deleted atlas by regenerating assets and re-staging
+
+Observed failure:
+  Determinism verifier fails (directory compare detects missing file in committed-assets side).
+
+6) Revert/restore validation
+Procedure:
+  - Restore modified/deleted files
+  - Re-run: node scripts/assets/verify-assets-determinism.mjs
+
+Result:
+  PASS
+  Output:
+    ok: deterministic generation and committed output checks passed
+
+Notes:
+  - AssetPack skip behavior for tests is asserted in apps/server/src/createApp.production.test.ts via build output containing:
+      [assetpack] skipped via SKIP_ASSETPACK=1
+  - SpritePartRenderer.ts was not edited in this Todo (concurrent Todo 7 worker scope).

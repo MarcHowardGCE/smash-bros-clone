@@ -1,0 +1,136 @@
+{
+  "frames": {
+    "leg_r.png": {
+      "frame": {
+        "x": 4,
+        "y": 4,
+        "w": 14,
+        "h": 36
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 9,
+        "y": 2,
+        "w": 14,
+        "h": 36
+      },
+      "sourceSize": {
+        "w": 32,
+        "h": 64
+      }
+    },
+    "leg_l.png": {
+      "frame": {
+        "x": 22,
+        "y": 4,
+        "w": 14,
+        "h": 36
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 9,
+        "y": 2,
+        "w": 14,
+        "h": 36
+      },
+      "sourceSize": {
+        "w": 32,
+        "h": 64
+      }
+    },
+    "head.png": {
+      "frame": {
+        "x": 40,
+        "y": 4,
+        "w": 34,
+        "h": 32
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 23,
+        "y": 24,
+        "w": 34,
+        "h": 32
+      },
+      "sourceSize": {
+        "w": 80,
+        "h": 80
+      }
+    },
+    "body.png": {
+      "frame": {
+        "x": 4,
+        "y": 44,
+        "w": 48,
+        "h": 53
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 16,
+        "y": 15,
+        "w": 48,
+        "h": 53
+      },
+      "sourceSize": {
+        "w": 80,
+        "h": 80
+      }
+    },
+    "arm_r.png": {
+      "frame": {
+        "x": 56,
+        "y": 40,
+        "w": 10,
+        "h": 32
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 11,
+        "y": 2,
+        "w": 10,
+        "h": 32
+      },
+      "sourceSize": {
+        "w": 32,
+        "h": 64
+      }
+    },
+    "arm_l.png": {
+      "frame": {
+        "x": 78,
+        "y": 4,
+        "w": 10,
+        "h": 32
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 11,
+        "y": 2,
+        "w": 10,
+        "h": 32
+      },
+      "sourceSize": {
+        "w": 32,
+        "h": 64
+      }
+    }
+  },
+  "meta": {
+    "app": "http://github.com/pixijs/assetpack",
+    "version": "1.0",
+    "image": "/assets/fighters/all-rounder.png",
+    "format": "RGBA8888",
+    "size": {
+      "w": 92,
+      "h": 101
+    },
+    "scale": 1,
+    "related_multi_packs": []
+  }
+}

@@ -1,0 +1,136 @@
+{
+  "frames": {
+    "leg_r.png": {
+      "frame": {
+        "x": 4,
+        "y": 4,
+        "w": 26,
+        "h": 68
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 19,
+        "y": 8,
+        "w": 26,
+        "h": 68
+      },
+      "sourceSize": {
+        "w": 64,
+        "h": 128
+      }
+    },
+    "leg_l.png": {
+      "frame": {
+        "x": 34,
+        "y": 4,
+        "w": 26,
+        "h": 68
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 19,
+        "y": 8,
+        "w": 26,
+        "h": 68
+      },
+      "sourceSize": {
+        "w": 64,
+        "h": 128
+      }
+    },
+    "head.png": {
+      "frame": {
+        "x": 64,
+        "y": 4,
+        "w": 64,
+        "h": 110
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 48,
+        "y": 12,
+        "w": 64,
+        "h": 110
+      },
+      "sourceSize": {
+        "w": 160,
+        "h": 160
+      }
+    },
+    "body.png": {
+      "frame": {
+        "x": 4,
+        "y": 118,
+        "w": 88,
+        "h": 122
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 36,
+        "y": 30,
+        "w": 88,
+        "h": 122
+      },
+      "sourceSize": {
+        "w": 160,
+        "h": 160
+      }
+    },
+    "arm_r.png": {
+      "frame": {
+        "x": 96,
+        "y": 118,
+        "w": 18,
+        "h": 60
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 23,
+        "y": 8,
+        "w": 18,
+        "h": 60
+      },
+      "sourceSize": {
+        "w": 64,
+        "h": 128
+      }
+    },
+    "arm_l.png": {
+      "frame": {
+        "x": 132,
+        "y": 4,
+        "w": 18,
+        "h": 60
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 23,
+        "y": 8,
+        "w": 18,
+        "h": 60
+      },
+      "sourceSize": {
+        "w": 64,
+        "h": 128
+      }
+    }
+  },
+  "meta": {
+    "app": "http://github.com/pixijs/assetpack",
+    "version": "1.0",
+    "image": "/assets/fighters/abe-lincoln@2x.webp",
+    "format": "RGBA8888",
+    "size": {
+      "w": 154,
+      "h": 244
+    },
+    "scale": 2,
+    "related_multi_packs": []
+  }
+}

@@ -5,6 +5,7 @@
   "type": "module",
   "scripts": {
     "assets:validate": "tsx src/renderer/parts/validateFighterAssets.cli.ts",
+    "assets:verify-determinism": "node ../../scripts/assets/verify-assets-determinism.mjs",
     "dev": "vite --port 5173",
     "build": "tsc -p tsconfig.json && vite build",
     "lint": "echo 'lint ok'",
@@ -20,6 +21,7 @@
     "socket.io-client": "^4.8.3"
   },
   "devDependencies": {
+    "@assetpack/core": "1.7.0",
     "@types/pngjs": "^6.0.5",
     "@vitest/coverage-v8": "^4.1.10",
     "jsdom": "^30.0.1",

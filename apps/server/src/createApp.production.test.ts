@@ -14,10 +14,18 @@ const START_TIMEOUT_MS = 30_000;
 	describe("production entrypoint preservation", () => {
 	let serverProcess: ChildProcess | null = null;
 	let port = 0;
+	let buildOutput = "";
 
 	beforeAll(async () => {
 		const repoRoot = path.resolve(__dirname, "../../..");
-		execSync("pnpm build", { cwd: repoRoot, stdio: "inherit" });
+		buildOutput = execSync("pnpm build", {
+			cwd: repoRoot,
+			env: {
+				...process.env,
+				SKIP_ASSETPACK: "1",
+			},
+			encoding: "utf8",
+		});
 
 		serverProcess = spawn("node", ["apps/server/dist/index.js"], {
 			cwd: repoRoot,
@@ -87,6 +95,7 @@ const START_TIMEOUT_MS = 30_000;
 
 	it("boots dist index and accepts websocket room:create ack", async () => {
 		expect(port).toBeGreaterThanOrEqual(0);
+		expect(buildOutput).toContain("[assetpack] skipped via SKIP_ASSETPACK=1");
 
 		const socket = createClient(`http://127.0.0.1:${port}`, {
 			transports: ["websocket"],

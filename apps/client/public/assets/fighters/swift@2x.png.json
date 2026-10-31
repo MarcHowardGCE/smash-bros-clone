@@ -1,0 +1,136 @@
+{
+  "frames": {
+    "leg_r.png": {
+      "frame": {
+        "x": 4,
+        "y": 4,
+        "w": 22,
+        "h": 62
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 21,
+        "y": 8,
+        "w": 22,
+        "h": 62
+      },
+      "sourceSize": {
+        "w": 64,
+        "h": 128
+      }
+    },
+    "leg_l.png": {
+      "frame": {
+        "x": 30,
+        "y": 4,
+        "w": 22,
+        "h": 62
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 21,
+        "y": 8,
+        "w": 22,
+        "h": 62
+      },
+      "sourceSize": {
+        "w": 64,
+        "h": 128
+      }
+    },
+    "head.png": {
+      "frame": {
+        "x": 56,
+        "y": 4,
+        "w": 64,
+        "h": 53
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 52,
+        "y": 54,
+        "w": 64,
+        "h": 53
+      },
+      "sourceSize": {
+        "w": 160,
+        "h": 160
+      }
+    },
+    "body.png": {
+      "frame": {
+        "x": 4,
+        "y": 70,
+        "w": 88,
+        "h": 96
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 36,
+        "y": 32,
+        "w": 88,
+        "h": 96
+      },
+      "sourceSize": {
+        "w": 160,
+        "h": 160
+      }
+    },
+    "arm_r.png": {
+      "frame": {
+        "x": 96,
+        "y": 61,
+        "w": 14,
+        "h": 54
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 25,
+        "y": 8,
+        "w": 14,
+        "h": 54
+      },
+      "sourceSize": {
+        "w": 64,
+        "h": 128
+      }
+    },
+    "arm_l.png": {
+      "frame": {
+        "x": 124,
+        "y": 4,
+        "w": 14,
+        "h": 54
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 25,
+        "y": 8,
+        "w": 14,
+        "h": 54
+      },
+      "sourceSize": {
+        "w": 64,
+        "h": 128
+      }
+    }
+  },
+  "meta": {
+    "app": "http://github.com/pixijs/assetpack",
+    "version": "1.0",
+    "image": "/assets/fighters/swift@2x.png",
+    "format": "RGBA8888",
+    "size": {
+      "w": 142,
+      "h": 170
+    },
+    "scale": 2,
+    "related_multi_packs": []
+  }
+}

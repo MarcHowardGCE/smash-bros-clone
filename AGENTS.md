@@ -5,9 +5,9 @@ A multiplayer browser platform fighter with percent-based damage, blast-zone KOs
 ---
 
 ## 🤖 Model Routing (inherit from root AGENTS.md)
-See `C:\Github\AGENTS.md` for the full model selection table.
+Model routing is configured centrally in `C:\Users\misac\.omo\omo.jsonc`. Do not duplicate model IDs in documentation.
 **This repo's palace wing:** `smash-bros` — use `wing="smash-bros"` in mempalace_search calls.
-Quick tasks → `github-copilot/gpt-5.4-nano`. Default → `github-copilot/kimi-k3`.
+Always pass `category=` when spawning subagents; never pass a raw model ID.
 
 ---
 

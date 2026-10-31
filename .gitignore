@@ -1,30 +1,24 @@
-node_modules/
+﻿node_modules/
 dist/
 .env
 .env.local
 *.tsbuildinfo
+BUGS.md
+
+# Agent / tooling state
 /.sisyphus
 /.omo
+/apps/client/.omo
 /.playwright-mcp
-/apps/client/test-results
-BUGS.md
-/test-results
-/test-results
-/playwright-report
-/apps/client/.omo
-/apps/client/.omo
-/apps/client/.omo
-apps/client/.omo/evidence/t25-result-both-buttons.png
-test-results.json
-lincoln-live-manual2.png
-character-select-after-down.png
-character-select-fixed-v2.png
-character-select-fixed.png
-character-select-initial.png
-character-select-now.png
-version-gameover.png
-version-lobby.png
-version-pause.png
-/.omo
-
 /.worktrees/
+
+# Test output
+/test-results
+/apps/client/test-results
+/playwright-report
+test-results.json
+
+# Stray QA screenshots
+/lincoln-live-manual2.png
+/character-select-*.png
+/version-*.png

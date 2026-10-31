@@ -1,0 +1,79 @@
+Todo 11 — Migrate coupled tests and verify lifecycle
+
+Date: 2026-10-31
+
+Scope
+- Target file audited: `apps/client/src/renderer/__tests__/FighterRenderer.test.ts`
+- Bootstrap wiring test added: `apps/client/src/__tests__/main.renderer-bootstrap.test.ts`
+
+Implementation-coupled test inventory and migration
+
+1) Child ordering / implicit child index coupling
+- Prior coupling:
+  - `destroy()` and shield-bubble tests relied on `renderer.container.children[0]` (part container) and `children[1]` (shield bubble).
+- Migration:
+  - Destroy assertions now target the public lifecycle contract (`container.destroy({ children: true })`) and parent containment removal only.
+  - Shield-bubble tests now find the Graphics overlay by type (`instanceof Graphics`) instead of fixed child index.
+- New assertion intent preserved:
+  - Shield bubble visible toggling behavior is unchanged.
+  - Renderer removal from parent after destroy remains required.
+
+2) Graphics.clear spies (polygon internals)
+- Prior coupling:
+  - Dirty-check test spied on `Graphics.clear` of `LEG_L` display object (`partContainer.children[0]`) which only exists in polygon implementation.
+- Migration:
+  - Dirty-check now spies on `IPartRenderer.draw` call counts via `getPartRenderer(renderer)`.
+  - Parameterized over BOTH implementations:
+    - polygon mode (default)
+    - sprite mode with injected Texture.WHITE-based provider fixture
+- New assertion:
+  - First update draws 6 parts exactly once each.
+  - Two subsequent updates with unchanged `state` + `stateFrame` do not increase draw count.
+
+3) getPart consumer assumptions
+- Prior coupling:
+  - Test implicitly expected Container-backed polygon parts (`toBeInstanceOf(Container)`).
+- Status:
+  - Kept, not migrated in Todo 11. This test does not probe Pixi internals that diverge across modes in current codepath because `getPart` returns Pixi DisplayObject from `IPartRenderer` and both current implementations satisfy the expectation.
+
+Contract parity matrix added (polygon + sprite)
+- Fixture strategy:
+  - Added renderer-case matrix for `{ name: 'polygon' | 'sprite' }`.
+  - Sprite case injects Texture.WHITE-based `TextureProvider` with sized `orig/frame` rectangles (HEAD/BODY: 160x160; limbs: 64x128), matching fixture style used in `parts/__tests__/SpritePartRenderer.test.ts`.
+
+Behavior parity assertions now executed in both modes
+- Dirty-check: draw count remains flat when state/stateFrame unchanged.
+- Shield bubble:
+  - shows when shielding
+  - hides when shielding stops
+  - hides immediately on shield break
+  - starts hidden
+- KO effect lifecycle:
+  - KO rising edge leads to positive part container rotation
+  - KO clear/reset restores rotation to 0
+- Invincibility alpha:
+  - with `Date.now()` controlled to even-phase, `container.alpha === 0.4` in both modes
+
+Destroy lifecycle + shared texture safety
+- Added sprite-only lifecycle test:
+  - after `renderer.destroy()`, all fixture textures remain alive (`texture.destroyed === false`) for all six parts.
+
+Bootstrap wiring evidence (`main.ts` creation site)
+- Added `apps/client/src/__tests__/main.renderer-bootstrap.test.ts`.
+- Test setup:
+  - `preloadFighterAssets` mocked to return `{ mode: 'sprite', provider }`.
+  - `GameClient` mock emits one `onRenderState` frame with a player to trigger FighterRenderer construction in `main.ts` update loop.
+  - `FighterRenderer` mocked to capture constructor args.
+- Assertion:
+  - 4th constructor arg equals `{ mode: 'sprite', textureProvider: provider }`.
+
+Failure QA (required)
+- Scenario: call `renderer.update` with unchanged `state` and `stateFrame` twice after initial draw.
+- Result observed:
+  - polygon mode: draw count remains 6.
+  - sprite mode: draw count remains 6.
+- This proves the dirty-check guard is active in both render modes.
+
+Notes
+- No production source behavior changes were made; updates are test-only.
+- Existing Todo 10 failure guard (`sprite mode without provider throws clear error`) remains intact.

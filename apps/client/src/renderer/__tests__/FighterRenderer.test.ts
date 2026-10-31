@@ -1,7 +1,8 @@
 import { describe, it, expect, vi } from 'vitest';
-import { Container, Texture } from 'pixi.js';
+import { Container, Graphics, Rectangle, Texture } from 'pixi.js';
 import { FighterRenderer } from '../FighterRenderer';
-import type { IPartRenderer } from '../parts/IPartRenderer';
+import type { FighterPart, IPartRenderer } from '../parts/IPartRenderer';
+import type { TextureProvider } from '../parts/SpritePartRenderer';
 import * as partsFactory from '../parts/index';
 
 type RenderableState = {
@@ -36,7 +37,94 @@ function makePlayerState(overrides: Partial<RenderableState> = {}): RenderableSt
 }
 
 function getPartRenderer(renderer: FighterRenderer): IPartRenderer {
-  return (renderer as unknown as Record<string, unknown>)['partRenderer'] as IPartRenderer;
+  return (renderer as unknown as { partRenderer: IPartRenderer }).partRenderer;
+}
+
+const PART_DRAW_ORDER: readonly FighterPart[] = ['LEG_L', 'LEG_R', 'BODY', 'ARM_L', 'ARM_R', 'HEAD'] as const;
+
+function buildTexture(origWidth: number, origHeight: number): Texture {
+  return new Texture({
+    source: Texture.WHITE.source,
+    frame: new Rectangle(0, 0, origWidth, origHeight),
+    orig: new Rectangle(0, 0, origWidth, origHeight),
+  });
+}
+
+function createSpriteFixture(): {
+  readonly options: { readonly mode: 'sprite'; readonly textureProvider: TextureProvider };
+  readonly textures: Record<FighterPart, Texture>;
+} {
+  const textures: Record<FighterPart, Texture> = {
+    HEAD: buildTexture(160, 160),
+    BODY: buildTexture(160, 160),
+    ARM_L: buildTexture(64, 128),
+    ARM_R: buildTexture(64, 128),
+    LEG_L: buildTexture(64, 128),
+    LEG_R: buildTexture(64, 128),
+  };
+
+  const textureProvider: TextureProvider = {
+    getTexture(_characterId, part) {
+      return textures[part];
+    },
+  };
+
+  return {
+    options: {
+      mode: 'sprite',
+      textureProvider,
+    },
+    textures,
+  };
+}
+
+type RendererCase = {
+  readonly name: 'polygon' | 'sprite';
+  readonly createOptions: () => {
+    readonly options?: { readonly mode: 'sprite'; readonly textureProvider: TextureProvider };
+    readonly textures?: Record<FighterPart, Texture>;
+  };
+};
+
+const RENDERER_CASES: readonly RendererCase[] = [
+  {
+    name: 'polygon',
+    createOptions: () => ({}),
+  },
+  {
+    name: 'sprite',
+    createOptions: () => {
+      const fixture = createSpriteFixture();
+      return {
+        options: fixture.options,
+        textures: fixture.textures,
+      };
+    },
+  },
+] as const;
+
+const SPRITE_RENDERER_CASE = RENDERER_CASES.find(
+  (caseDef) => caseDef.name === 'sprite',
+);
+
+function createRendererForCase(caseDef: RendererCase): {
+  readonly parent: Container;
+  readonly renderer: FighterRenderer;
+  readonly textures?: Record<FighterPart, Texture>;
+} {
+  const parent = new Container();
+  const { options, textures } = caseDef.createOptions();
+  const renderer = new FighterRenderer(parent, 0, 'all-rounder', options);
+
+  return { parent, renderer, textures };
+}
+
+function getShieldBubble(renderer: FighterRenderer): Graphics {
+  const shieldBubble = renderer.container.children.find((child) => child instanceof Graphics);
+  if (!(shieldBubble instanceof Graphics)) {
+    throw new Error('Shield bubble Graphics child not found.');
+  }
+  return shieldBubble;
 }
 
 describe('FighterRenderer', () => {
@@ -66,33 +154,42 @@ describe('FighterRenderer', () => {
   });
 
   describe('destroy()', () => {
-    it('should destroy the container and all children (6 part Graphics)', () => {
-      const parent = new Container();
-      const renderer = new FighterRenderer(parent, 0);
+    for (const caseDef of RENDERER_CASES) {
+      it(`calls container.destroy({ children: true }) in ${caseDef.name} mode`, () => {
+        const { renderer } = createRendererForCase(caseDef);
+        const destroySpy = vi.spyOn(renderer.container, 'destroy');
 
-      // Container should have been added to parent
-      expect(parent.children).toContain(renderer.container);
+        renderer.destroy();
 
-      // The partRenderer container (with 6 Graphics children) is a child
-      const partContainer = renderer.container.children[0] as Container;
-      expect(partContainer.children.length).toBe(6);
+        expect(destroySpy).toHaveBeenCalledWith({ children: true });
+      });
 
-      // Spy on container.destroy
-      const destroySpy = vi.spyOn(renderer.container, 'destroy');
+      it(`removes renderer container from parent in ${caseDef.name} mode`, () => {
+        const { parent, renderer } = createRendererForCase(caseDef);
+
+        expect(parent.children).toContain(renderer.container);
+
+        renderer.destroy();
+
+        expect(parent.children).not.toContain(renderer.container);
+      });
+    }
+
+    it('keeps shared sprite textures alive after destroy() in sprite mode', () => {
+      if (!SPRITE_RENDERER_CASE) {
+        throw new Error('Sprite renderer case not found.');
+      }
+
+      const { renderer, textures } = createRendererForCase(SPRITE_RENDERER_CASE);
+      if (!textures) {
+        throw new Error('Sprite textures fixture missing.');
+      }
 
       renderer.destroy();
 
-      // destroy({ children: true }) should have been called
-      expect(destroySpy).toHaveBeenCalledWith({ children: true });
-    });
-
-    it('should remove the container from parent after destroy', () => {
-      const parent = new Container();
-      const renderer = new FighterRenderer(parent, 0);
-
-      expect(parent.children.length).toBe(1);
-      renderer.destroy();
-      expect(parent.children.length).toBe(0);
+      for (const part of PART_DRAW_ORDER) {
+        expect(textures[part].destroyed).toBe(false);
+      }
     });
   });
 
@@ -121,37 +218,58 @@ describe('FighterRenderer', () => {
       expect(renderer.container.alpha).toBe(1.0);
     });
 
-    it('should skip redraw when state and frame unchanged (dirty-check)', () => {
-      const parent = new Container();
-      const renderer = new FighterRenderer(parent, 0);
+    for (const caseDef of RENDERER_CASES) {
+      it(`dirty-check keeps draw call count flat when state/stateFrame unchanged in ${caseDef.name} mode`, () => {
+        const { renderer } = createRendererForCase(caseDef);
+        const partRenderer = getPartRenderer(renderer);
+        const drawSpy = vi.spyOn(partRenderer, 'draw');
 
-      const player = {
-        x: 50,
-        y: 50,
-        facing: 1 as const,
-        isInvincible: false,
-        isKnockedOut: false,
-        isShielding: false,
-        shieldHealth: 100,
-        state: 'IDLE',
-        stateFrame: 5,
-        slotIndex: 0,
-        currentMoveId: null,
-      };
+        const player = makePlayerState({
+          x: 50,
+          y: 50,
+          state: 'IDLE',
+          stateFrame: 5,
+        });
 
-      // First call triggers redraw
-      renderer.update(player);
+        renderer.update(player);
+        expect(drawSpy).toHaveBeenCalledTimes(6);
 
-      // Get the part container's first child (LEG_L Graphics)
-      const partContainer = renderer.container.children[0] as Container;
-      const legGraphics = partContainer.children[0]!;
-      const clearSpy = vi.spyOn(legGraphics as unknown as { clear: () => void }, 'clear');
+        renderer.update({ ...player, x: 60 });
+        renderer.update({ ...player, x: 70 });
 
-      // Second call with same state/frame - should NOT redraw
-      renderer.update({ ...player, x: 60 });
+        expect(drawSpy).toHaveBeenCalledTimes(6);
+      });
+    }
 
-      expect(clearSpy).not.toHaveBeenCalled();
-    });
+    for (const caseDef of RENDERER_CASES) {
+      it(`applies invincibility alpha 0.4 in ${caseDef.name} mode`, () => {
+        const nowSpy = vi.spyOn(Date, 'now').mockReturnValue(200);
+        try {
+          const { renderer } = createRendererForCase(caseDef);
+
+          renderer.update(makePlayerState({ isInvincible: true }));
+
+          expect(renderer.container.alpha).toBe(0.4);
+        } finally {
+          nowSpy.mockRestore();
+        }
+      });
+    }
+
+    for (const caseDef of RENDERER_CASES) {
+      it(`drives KO effect rotation and reset identically in ${caseDef.name} mode`, () => {
+        const { renderer } = createRendererForCase(caseDef);
+        const partRenderer = getPartRenderer(renderer);
+
+        renderer.update(makePlayerState({ isKnockedOut: true, stateFrame: 1 }));
+
+        expect(partRenderer.container.rotation).toBeGreaterThan(0);
+
+        renderer.update(makePlayerState({ isKnockedOut: false, stateFrame: 2 }));
+
+        expect(partRenderer.container.rotation).toBe(0);
+      });
+    }
   });
 
   describe('getPart()', () => {
@@ -166,69 +284,48 @@ describe('FighterRenderer', () => {
   });
 
   describe('shield bubble', () => {
-    const basePlayer = {
-      x: 100,
-      y: 200,
-      facing: 1 as const,
-      isInvincible: false,
-      isKnockedOut: false,
-      isShielding: false,
-      shieldHealth: 100,
-      state: 'SHIELD',
-      stateFrame: 0,
-      slotIndex: 0,
-      currentMoveId: null,
-    };
+    for (const caseDef of RENDERER_CASES) {
+      it(`shows shield bubble when shielding in ${caseDef.name} mode`, () => {
+        const { renderer } = createRendererForCase(caseDef);
 
-    it('should show shield bubble when isShielding=true', () => {
-      const parent = new Container();
-      const renderer = new FighterRenderer(parent, 0);
+        renderer.update(makePlayerState({ isShielding: true, shieldHealth: 100, state: 'SHIELD' }));
 
-      renderer.update({ ...basePlayer, isShielding: true, shieldHealth: 100 });
+        expect(getShieldBubble(renderer).visible).toBe(true);
+      });
 
-      // Shield bubble is the second child of the fighter container (after partRenderer container)
-      const shieldBubble = renderer.container.children[1]!;
-      expect(shieldBubble).toBeDefined();
-      expect(shieldBubble.visible).toBe(true);
-    });
+      it(`hides shield bubble when shielding stops in ${caseDef.name} mode`, () => {
+        const { renderer } = createRendererForCase(caseDef);
+        renderer.update(makePlayerState({ isShielding: true, shieldHealth: 100, state: 'SHIELD' }));
 
-    it('should hide shield bubble when isShielding=false', () => {
-      const parent = new Container();
-      const renderer = new FighterRenderer(parent, 0);
+        const shieldBubble = getShieldBubble(renderer);
+        expect(shieldBubble.visible).toBe(true);
 
-      // First show it
-      renderer.update({ ...basePlayer, isShielding: true, shieldHealth: 100 });
-      const shieldBubble = renderer.container.children[1]!;
-      expect(shieldBubble.visible).toBe(true);
+        renderer.update(makePlayerState({ isShielding: false, shieldHealth: 100, state: 'SHIELD', stateFrame: 1 }));
 
-      // Then hide it
-      renderer.update({ ...basePlayer, isShielding: false, shieldHealth: 100, stateFrame: 1 });
-      expect(shieldBubble.visible).toBe(false);
-    });
+        expect(shieldBubble.visible).toBe(false);
+      });
 
-    it('should hide shield bubble immediately on shield break (shieldHealth=0)', () => {
-      const parent = new Container();
-      const renderer = new FighterRenderer(parent, 0);
+      it(`hides shield bubble immediately on shield break in ${caseDef.name} mode`, () => {
+        const { renderer } = createRendererForCase(caseDef);
 
-      // Show at low health
-      renderer.update({ ...basePlayer, isShielding: true, shieldHealth: 5 });
-      const shieldBubble = renderer.container.children[1]!;
-      expect(shieldBubble.visible).toBe(true);
+        renderer.update(makePlayerState({ isShielding: true, shieldHealth: 5, state: 'SHIELD' }));
 
-      // Shield break — isShielding becomes false
-      renderer.update({ ...basePlayer, isShielding: false, shieldHealth: 0, state: 'IDLE', stateFrame: 1 });
-      expect(shieldBubble.visible).toBe(false);
-    });
+        const shieldBubble = getShieldBubble(renderer);
+        expect(shieldBubble.visible).toBe(true);
 
-    it('should start hidden before any shielding occurs', () => {
-      const parent = new Container();
-      const renderer = new FighterRenderer(parent, 0);
+        renderer.update(makePlayerState({ isShielding: false, shieldHealth: 0, state: 'IDLE', stateFrame: 1 }));
 
-      renderer.update(basePlayer);
+        expect(shieldBubble.visible).toBe(false);
+      });
 
-      const shieldBubble = renderer.container.children[1]!;
-      expect(shieldBubble.visible).toBe(false);
-    });
+      it(`starts with shield bubble hidden in ${caseDef.name} mode`, () => {
+        const { renderer } = createRendererForCase(caseDef);
+
+        renderer.update(makePlayerState());
+
+        expect(getShieldBubble(renderer).visible).toBe(false);
+      });
+    }
   });
 
   describe('hit flash', () => {

@@ -15,6 +15,7 @@ import { KOEffect } from './KOEffect.js';
 import { createPartRenderer, slotToPattern } from './parts/index.js';
 import { getPartTransforms } from './parts/poseAdapter.js';
 import type { FighterPart, IPartRenderer, PatternDescriptor } from './parts/IPartRenderer.js';
+import type { TextureProvider } from './parts/SpritePartRenderer.js';
 
 type RenderableFighterState = Pick<
   PlayerState,
@@ -37,6 +38,13 @@ const SHIELD_COLOR_CRITICAL = 0xff2222;
 const PART_DRAW_ORDER: readonly FighterPart[] = [
   'LEG_L', 'LEG_R', 'BODY', 'ARM_L', 'ARM_R', 'HEAD',
 ] as const;
+
+type FighterRendererMode = 'polygon' | 'sprite';
+
+interface FighterRendererOptions {
+  readonly mode?: FighterRendererMode;
+  readonly textureProvider?: TextureProvider;
+}
 
 /** Linearly interpolate between two RGB hex colors. */
 function lerpColor(a: number, b: number, t: number): number {
@@ -78,12 +86,23 @@ export class FighterRenderer {
    * @param parentContainer - PixiJS Container to add this fighter's root to
    * @param slotIndex - Player slot (0-3), determines fill pattern
    * @param characterId - Optional character override for custom geometry/animations
+   * @param options - Optional renderer mode + texture provider for sprite mode
    */
-  constructor(parentContainer: Container, slotIndex: number, characterId?: CharacterId) {
+  constructor(
+    parentContainer: Container,
+    slotIndex: number,
+    characterId?: CharacterId,
+    options: FighterRendererOptions = {},
+  ) {
     this.slotIndex = slotIndex;
     this.characterId = characterId;
     this.container = new Container();
-    this.partRenderer = createPartRenderer('polygon', slotIndex, characterId);
+    this.partRenderer = createPartRenderer(
+      options.mode,
+      slotIndex,
+      characterId,
+      options.textureProvider,
+    );
     this.pattern = slotToPattern(slotIndex);
     this.container.addChild(this.partRenderer.container);
 

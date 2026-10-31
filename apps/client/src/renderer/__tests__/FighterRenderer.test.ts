@@ -1,7 +1,8 @@
 import { describe, it, expect, vi } from 'vitest';
-import { Container } from 'pixi.js';
+import { Container, Texture } from 'pixi.js';
 import { FighterRenderer } from '../FighterRenderer';
 import type { IPartRenderer } from '../parts/IPartRenderer';
+import * as partsFactory from '../parts/index';
 
 type RenderableState = {
   x: number;
@@ -39,6 +40,31 @@ function getPartRenderer(renderer: FighterRenderer): IPartRenderer {
 }
 
 describe('FighterRenderer', () => {
+  describe('constructor wiring', () => {
+    it('threads mode and provider into createPartRenderer', () => {
+      const parent = new Container();
+      const provider = {
+        getTexture: () => Texture.EMPTY,
+      };
+      const createPartRendererSpy = vi.spyOn(partsFactory, 'createPartRenderer');
+
+      new FighterRenderer(parent, 2, 'abe-lincoln', {
+        mode: 'sprite',
+        textureProvider: provider,
+      });
+
+      expect(createPartRendererSpy).toHaveBeenCalledWith('sprite', 2, 'abe-lincoln', provider);
+    });
+
+    it('throws a clear error when sprite mode is provided without a texture provider', () => {
+      const parent = new Container();
+
+      expect(() => {
+        new FighterRenderer(parent, 0, undefined, { mode: 'sprite' });
+      }).toThrowError('Sprite renderer mode requires a TextureProvider.');
+    });
+  });
+
   describe('destroy()', () => {
     it('should destroy the container and all children (6 part Graphics)', () => {
       const parent = new Container();
@@ -119,7 +145,7 @@ describe('FighterRenderer', () => {
       // Get the part container's first child (LEG_L Graphics)
       const partContainer = renderer.container.children[0] as Container;
       const legGraphics = partContainer.children[0]!;
-      const clearSpy = vi.spyOn(legGraphics as any, 'clear');
+      const clearSpy = vi.spyOn(legGraphics as unknown as { clear: () => void }, 'clear');
 
       // Second call with same state/frame - should NOT redraw
       renderer.update({ ...player, x: 60 });

@@ -1,0 +1,20 @@
+Todo 10 — Wire FighterRenderer to resolved renderer mode
+
+Date: 2026-10-31
+
+Happy path evidence
+- `pnpm test` passed after wiring mode/provider through FighterRenderer + main bootstrap preload.
+- Relevant test coverage in `apps/client/src/renderer/__tests__/FighterRenderer.test.ts`:
+  - constructor threads mode + provider to `createPartRenderer`
+  - hit flash fallback tint path (no `setHitFlash`)
+  - hit flash delegation path (`setHitFlash(true/false)`) without container tint mutation
+
+Failure path evidence
+- Added explicit failure test:
+  - `new FighterRenderer(parent, 0, undefined, { mode: 'sprite' })`
+  - expected error: `Sprite renderer mode requires a TextureProvider.`
+  - assertion: `toThrowError('Sprite renderer mode requires a TextureProvider.')`
+
+Notes
+- `main.ts` now preloads fighter assets immediately after Pixi app init and before any `FighterRenderer` creation.
+- `main.ts` passes resolved `mode` and conditional `textureProvider` into every new `FighterRenderer` instance.

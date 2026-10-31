@@ -124,6 +124,9 @@ const bootMainWithMocks = async (): Promise<BootResult> => {
   vi.doMock("../renderer/StageRenderer.js", () => ({
     StageRenderer: class StageRenderer {},
   }));
+  vi.doMock("../renderer/fighterAssets.js", () => ({
+    preloadFighterAssets: async () => ({ mode: "polygon" as const }),
+  }));
   vi.doMock("../renderer/FighterRenderer.js", () => ({
     FighterRenderer: class FighterRenderer {
       update(): void {}

@@ -34,6 +34,7 @@ import type {
 } from "./network/InterpolationBuffer.js";
 import { Camera } from "./renderer/Camera.js";
 import { FighterRenderer } from "./renderer/FighterRenderer.js";
+import { preloadFighterAssets } from "./renderer/fighterAssets.js";
 import { createLayers } from "./renderer/layers.js";
 import { StageRenderer } from "./renderer/StageRenderer.js";
 import { ImpactSpark } from "./renderer/effects/ImpactSpark.js";
@@ -87,6 +88,8 @@ async function main() {
     resolution: window.devicePixelRatio || 1,
     autoDensity: true,
   });
+
+  const fighterAssets = await preloadFighterAssets();
 
   app.canvas.id = "game-canvas";
   document.body.appendChild(app.canvas);
@@ -246,6 +249,11 @@ async function main() {
           layers.game,
           playerState.slotIndex,
           playerState.characterId,
+          {
+            mode: fighterAssets.mode,
+            textureProvider:
+              fighterAssets.mode === "sprite" ? fighterAssets.provider : undefined,
+          },
         );
         fighterRenderers.set(id, fighterRenderer);
       }

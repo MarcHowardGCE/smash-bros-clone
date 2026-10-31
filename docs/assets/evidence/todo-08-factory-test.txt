@@ -1,0 +1,25 @@
+Todo 8 — createPartRenderer forwarding factory test evidence
+Date: 2026-10-31
+
+Command:
+pnpm -F @smash/client test -- src/renderer/parts/__tests__/factory.test.ts
+
+Observed:
+- Test file passed: src/renderer/parts/__tests__/factory.test.ts
+- Tests passed: 5/5
+
+Covered assertions in this run:
+1) Happy path: forwards characterId + slotIndex for all combinations
+   - 3 CharacterId values: all-rounder, abe-lincoln, swift
+   - 4 slot indices: 0, 1, 2, 3
+   - 2 modes: polygon + sprite
+   - Each renderer exposes readonly `characterId` and `slotIndex` accessors used by assertions
+
+2) Defaulting path:
+   - undefined characterId resolves to all-rounder (both polygon and sprite)
+
+3) Failure path:
+   - invalid mode cast through unknown throws: "Unknown renderer mode"
+
+4) Sprite provider contract guard:
+   - sprite mode without TextureProvider throws: "Sprite renderer mode requires a TextureProvider."

@@ -40,11 +40,19 @@ const LEG_WIDTH = 8;
  */
 export class PolygonPartRenderer implements IPartRenderer {
   private readonly parts: Record<FighterPart, Graphics>;
-  private readonly slotIndex: number;
-  private readonly characterId?: CharacterId;
+  private readonly fighterSlotIndex: number;
+  private readonly fighterCharacterId: CharacterId;
 
   /** Root container holding all 6 part Graphics in z-order. */
   readonly container: Container;
+
+  get characterId(): CharacterId {
+    return this.fighterCharacterId;
+  }
+
+  get slotIndex(): number {
+    return this.fighterSlotIndex;
+  }
 
 /**
  * Create a polygon renderer for a fighter slot.
@@ -53,8 +61,8 @@ export class PolygonPartRenderer implements IPartRenderer {
  * @param characterId - Optional character override for Lincoln-specific geometry
  */
   constructor(slotIndex: number, characterId?: CharacterId) {
-    this.slotIndex = slotIndex;
-    this.characterId = characterId;
+    this.fighterSlotIndex = slotIndex;
+    this.fighterCharacterId = characterId ?? 'all-rounder';
     this.container = new Container();
 
     // Create 6 Graphics children — one per FighterPart.
@@ -149,7 +157,7 @@ export class PolygonPartRenderer implements IPartRenderer {
     g.stroke({ color: COLOR_BLACK, width: OUTLINE_WIDTH });
 
     // Lincoln coattail flares at bottom vertices
-    if (this.characterId === 'abe-lincoln') {
+    if (this.fighterCharacterId === 'abe-lincoln') {
       this.drawLincolnCoattails(g, bw, bh, startAngle);
     }
   }
@@ -219,7 +227,7 @@ export class PolygonPartRenderer implements IPartRenderer {
     g.fill({ color: COLOR_BLACK });
 
     // Lincoln accessories: stovepipe hat + beard
-    if (this.characterId === 'abe-lincoln') {
+    if (this.fighterCharacterId === 'abe-lincoln') {
       this.drawLincolnHat(g);
       this.drawLincolnBeard(g);
     }

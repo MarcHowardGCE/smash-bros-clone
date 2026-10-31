@@ -1,40 +1,11 @@
 /** @fileoverview Factory for creating part renderers with support for polygon and sprite rendering modes. */
 
 import type { CharacterId } from '@smash/shared';
-import { Rectangle, Texture } from 'pixi.js';
 import type { IPartRenderer } from './IPartRenderer';
-import type { FighterPart } from './IPartRenderer';
 import { PolygonPartRenderer } from './PolygonPartRenderer';
-import { FIGHTER_VISUAL_CONTRACTS } from './assetContract.js';
 import { SpritePartRenderer, type TextureProvider } from './SpritePartRenderer';
 
 const DEFAULT_CHARACTER_ID: CharacterId = 'all-rounder';
-
-function createFallbackTextureProvider(): TextureProvider {
-  const cache = new Map<string, Texture>();
-
-  return {
-    getTexture(characterId: CharacterId, part: FighterPart): Texture {
-      const key = `${characterId}:${part}`;
-      const cachedTexture = cache.get(key);
-      if (cachedTexture) {
-        return cachedTexture;
-      }
-
-      const logicalCanvas = FIGHTER_VISUAL_CONTRACTS[characterId].parts[part].logicalCanvas;
-      const texture = new Texture({
-        source: Texture.WHITE.source,
-        frame: new Rectangle(0, 0, logicalCanvas.width, logicalCanvas.height),
-        orig: new Rectangle(0, 0, logicalCanvas.width, logicalCanvas.height),
-      });
-
-      cache.set(key, texture);
-      return texture;
-    },
-  };
-}
-
-const FALLBACK_TEXTURE_PROVIDER = createFallbackTextureProvider();
 
 /**
  * Factory for creating part renderers.
@@ -58,7 +29,8 @@ const FALLBACK_TEXTURE_PROVIDER = createFallbackTextureProvider();
 export function createPartRenderer(
   mode: 'polygon' | 'sprite' = 'polygon',
   slotIndex: number,
-  characterId?: CharacterId
+  characterId?: CharacterId,
+  textureProvider?: TextureProvider,
 ): IPartRenderer {
   const resolvedCharacterId = characterId ?? DEFAULT_CHARACTER_ID;
 
@@ -67,7 +39,11 @@ export function createPartRenderer(
       return new PolygonPartRenderer(slotIndex, resolvedCharacterId);
 
     case 'sprite':
-      return new SpritePartRenderer(resolvedCharacterId, slotIndex, FALLBACK_TEXTURE_PROVIDER);
+      if (!textureProvider) {
+        throw new Error('Sprite renderer mode requires a TextureProvider.');
+      }
+
+      return new SpritePartRenderer(resolvedCharacterId, slotIndex, textureProvider);
 
     default:
       const _exhaustive: never = mode;

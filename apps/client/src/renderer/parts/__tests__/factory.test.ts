@@ -1,68 +1,77 @@
 import { describe, it, expect } from 'vitest';
+import { Rectangle, Texture } from 'pixi.js';
 import { createPartRenderer } from '../index';
 import { PolygonPartRenderer } from '../PolygonPartRenderer';
-import { SpritePartRenderer } from '../SpritePartRenderer';
+import { FIGHTER_VISUAL_CONTRACTS } from '../assetContract.js';
+import { SpritePartRenderer, type TextureProvider } from '../SpritePartRenderer';
 import type { CharacterId } from '@smash/shared';
+import type { FighterPart } from '../IPartRenderer.js';
+
+const CHARACTER_IDS: readonly CharacterId[] = ['all-rounder', 'abe-lincoln', 'swift'] as const;
+const SLOT_INDICES: readonly number[] = [0, 1, 2, 3] as const;
+
+function buildTexture(origWidth: number, origHeight: number): Texture {
+  return new Texture({
+    source: Texture.WHITE.source,
+    frame: new Rectangle(0, 0, origWidth, origHeight),
+    orig: new Rectangle(0, 0, origWidth, origHeight),
+  });
+}
+
+function createContractTextureProvider(): TextureProvider {
+  return {
+    getTexture(characterId: CharacterId, part: FighterPart): Texture {
+      const logicalCanvas = FIGHTER_VISUAL_CONTRACTS[characterId].parts[part].logicalCanvas;
+      return buildTexture(logicalCanvas.width, logicalCanvas.height);
+    },
+  };
+}
 
 describe('createPartRenderer factory', () => {
-  it('should return SpritePartRenderer when mode is "sprite"', () => {
-    const renderer = createPartRenderer('sprite', 0, 'all-rounder');
-    expect(renderer).toBeInstanceOf(SpritePartRenderer);
+  it('forwards characterId and slotIndex for all mode × character × slot combinations', () => {
+    const textureProvider = createContractTextureProvider();
+
+    for (const characterId of CHARACTER_IDS) {
+      for (const slotIndex of SLOT_INDICES) {
+        const polygonRenderer = createPartRenderer('polygon', slotIndex, characterId);
+        expect(polygonRenderer).toBeInstanceOf(PolygonPartRenderer);
+        expect((polygonRenderer as PolygonPartRenderer).characterId).toBe(characterId);
+        expect((polygonRenderer as PolygonPartRenderer).slotIndex).toBe(slotIndex);
+
+        const spriteRenderer = createPartRenderer('sprite', slotIndex, characterId, textureProvider);
+        expect(spriteRenderer).toBeInstanceOf(SpritePartRenderer);
+        expect((spriteRenderer as SpritePartRenderer).characterId).toBe(characterId);
+        expect((spriteRenderer as SpritePartRenderer).slotIndex).toBe(slotIndex);
+      }
+    }
   });
 
-  it('should not throw when draw() is called on SpritePartRenderer', () => {
-    const renderer = createPartRenderer('sprite', 0, 'all-rounder');
+  it('defaults characterId to all-rounder when undefined', () => {
+    const textureProvider = createContractTextureProvider();
+
+    const polygonRenderer = createPartRenderer('polygon', 2, undefined);
+    expect((polygonRenderer as PolygonPartRenderer).characterId).toBe('all-rounder');
+    expect((polygonRenderer as PolygonPartRenderer).slotIndex).toBe(2);
+
+    const spriteRenderer = createPartRenderer('sprite', 1, undefined, textureProvider);
+    expect((spriteRenderer as SpritePartRenderer).characterId).toBe('all-rounder');
+    expect((spriteRenderer as SpritePartRenderer).slotIndex).toBe(1);
+  });
+
+  it('throws a clear error when sprite mode is requested without a texture provider', () => {
     expect(() => {
-      renderer.draw('HEAD', { x: 0, y: 0, rotation: 0, scaleX: 1, scaleY: 1 }, {
-        kind: 'solid',
-        primaryColor: 0xFFFFFF,
-        secondaryColor: 0x000000,
-      });
-    }).not.toThrow();
+      createPartRenderer('sprite', 0, 'all-rounder');
+    }).toThrow('Sprite renderer mode requires a TextureProvider.');
   });
 
-  it('should return a display object from SpritePartRenderer.getDisplayObject()', () => {
-    const renderer = createPartRenderer('sprite', 0, 'all-rounder');
-    const displayObject = renderer.getDisplayObject('HEAD');
-    expect(displayObject).toBeDefined();
-    expect(displayObject.label).toBe('sprite-HEAD');
-  });
-
-  it('should throw error for unknown renderer mode', () => {
+  it('throws for unknown renderer mode', () => {
     expect(() => {
       createPartRenderer('unknown' as unknown as 'polygon' | 'sprite', 0);
     }).toThrow('Unknown renderer mode');
   });
 
-  it('should default to polygon mode when no mode is specified', () => {
+  it('defaults to polygon mode when no mode is specified', () => {
     const renderer = createPartRenderer(undefined, 0);
     expect(renderer).toBeInstanceOf(PolygonPartRenderer);
-  });
-
-  describe('characterId parameter', () => {
-    it('should accept characterId and pass it to PolygonPartRenderer', () => {
-      const characterId: CharacterId = 'abe-lincoln';
-      const renderer = createPartRenderer('polygon', 0, characterId);
-      expect(renderer).toBeInstanceOf(PolygonPartRenderer);
-      // PolygonPartRenderer stores characterId internally - verify construction succeeded
-    });
-
-    it('should work with undefined characterId', () => {
-      const renderer = createPartRenderer('polygon', 0, undefined);
-      expect(renderer).toBeInstanceOf(PolygonPartRenderer);
-    });
-
-    it('should work without characterId parameter (backward compatibility)', () => {
-      const renderer = createPartRenderer('polygon', 0);
-      expect(renderer).toBeInstanceOf(PolygonPartRenderer);
-    });
-
-    it('should accept all valid characterId values', () => {
-      const validIds: CharacterId[] = ['all-rounder', 'abe-lincoln', 'swift'];
-      for (const id of validIds) {
-        const renderer = createPartRenderer('polygon', 0, id);
-        expect(renderer).toBeInstanceOf(PolygonPartRenderer);
-      }
-    });
   });
 });

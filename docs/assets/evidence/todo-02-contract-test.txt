@@ -1,0 +1,48 @@
+Todo 02 — Asset contract test evidence
+
+Luminance model
+- SLOT_COLORS = [0xFFFFFF, 0xFFC400, 0xE02020, 0x081442]
+- clothing base multiply color = #F5F5F5
+- WCAG relative luminance:
+  c_linear = c_srgb <= 0.03928 ? c/12.92 : ((c+0.055)/1.055)^2.4
+  L = 0.2126*R + 0.7152*G + 0.0722*B
+
+Post-multiply luminance values
+- slot0 (0xFFFFFF): 0.913098651793
+- slot1 (0xFFC400): 0.555131084101
+- slot2 (0xE02020): 0.155440487944
+- slot3 (0x081442): 0.008861809290
+
+4x4 absolute luminance-delta matrix
+           slot0          slot1          slot2          slot3
+slot0  0.000000000000  0.357967567693  0.757658163849  0.904236842504
+slot1  0.357967567693  0.000000000000  0.399690596156  0.546269274811
+slot2  0.757658163849  0.399690596156  0.000000000000  0.146578678654
+slot3  0.904236842504  0.546269274811  0.146578678654  0.000000000000
+
+Pairwise minimum delta check
+- min pairwise delta = slot2-slot3 = 0.146578678654 >= 0.12 (PASS)
+
+Headroom/bodyroom arithmetic
+- HEAD rawCanvas = 160x160, logicalCanvas = 80x80, jointPx = (80,80), anchor=(0.5,0.5)
+- HEAD above joint = 80 * 0.5 = 40
+- HEAD below joint = 80 * (1 - 0.5) = 40
+- Required above = HEAD_RADIUS(14) + hat extra(20) = 34 => 40 >= 34 (PASS)
+- Required below = HEAD_RADIUS(14) + beard extra(10) = 24 => 40 >= 24 (PASS)
+
+- BODY rawCanvas = 160x160, logicalCanvas = 80x80, jointPx = (80,80), anchor=(0.5,0.5)
+- BODY below joint = 80 * (1 - 0.5) = 40
+- Required below = BODY_RADIUS(22) + coattail extra(12) = 34 => 40 >= 34 (PASS)
+
+Failure-QA run (intentional perturbation, then restore)
+Applied perturbation:
+1) ARM_L anchor.y = 1.5
+2) HEAD canvas shrunk raw 160->128 (logical 80->64)
+3) slot colors adjusted near-equal for one pair (slot1: 0xFFC400 -> 0xFEFEFE)
+
+Observed distinct failure classes:
+- Anchor range failure (ARM_L): anchor y out of [0,1] (1.5)
+- Headroom failure (HEAD): above-joint headroom 32 < required 34
+- Luminance pair failure (slot0-slot1): delta 0.008107456514 < 0.12
+
+After QA, all perturbations were reverted.

@@ -6,36 +6,36 @@ import type { CharacterId } from '@smash/shared';
 
 describe('createPartRenderer factory', () => {
   it('should return SpritePartRenderer when mode is "sprite"', () => {
-    const renderer = createPartRenderer('sprite', 0);
+    const renderer = createPartRenderer('sprite', 0, 'all-rounder');
     expect(renderer).toBeInstanceOf(SpritePartRenderer);
   });
 
-  it('should throw error when draw() is called on SpritePartRenderer', () => {
-    const renderer = createPartRenderer('sprite', 0);
+  it('should not throw when draw() is called on SpritePartRenderer', () => {
+    const renderer = createPartRenderer('sprite', 0, 'all-rounder');
     expect(() => {
       renderer.draw('HEAD', { x: 0, y: 0, rotation: 0, scaleX: 1, scaleY: 1 }, {
         kind: 'solid',
         primaryColor: 0xFFFFFF,
         secondaryColor: 0x000000,
       });
-    }).toThrow('SpritePartRenderer not yet implemented');
+    }).not.toThrow();
   });
 
   it('should return a display object from SpritePartRenderer.getDisplayObject()', () => {
-    const renderer = createPartRenderer('sprite', 0);
+    const renderer = createPartRenderer('sprite', 0, 'all-rounder');
     const displayObject = renderer.getDisplayObject('HEAD');
     expect(displayObject).toBeDefined();
-    expect(displayObject.name).toBe('sprite-HEAD');
+    expect(displayObject.label).toBe('sprite-HEAD');
   });
 
   it('should throw error for unknown renderer mode', () => {
     expect(() => {
-      createPartRenderer('unknown' as any, 0);
+      createPartRenderer('unknown' as unknown as 'polygon' | 'sprite', 0);
     }).toThrow('Unknown renderer mode');
   });
 
   it('should default to polygon mode when no mode is specified', () => {
-    const renderer = createPartRenderer(undefined as any, 0);
+    const renderer = createPartRenderer(undefined, 0);
     expect(renderer).toBeInstanceOf(PolygonPartRenderer);
   });
 
@@ -58,7 +58,7 @@ describe('createPartRenderer factory', () => {
     });
 
     it('should accept all valid characterId values', () => {
-      const validIds: CharacterId[] = ['all-rounder', 'abe-lincoln'];
+      const validIds: CharacterId[] = ['all-rounder', 'abe-lincoln', 'swift'];
       for (const id of validIds) {
         const renderer = createPartRenderer('polygon', 0, id);
         expect(renderer).toBeInstanceOf(PolygonPartRenderer);

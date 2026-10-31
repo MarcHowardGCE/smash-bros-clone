@@ -1,14 +1,20 @@
 /**
- * @fileoverview Sprite-based fighter part renderer (stub).
+ * @fileoverview Sprite-based fighter part renderer.
  *
  * Implements {@link IPartRenderer} using PixiJS {@link Sprite} instances.
- * Currently a stub — no art assets exist yet. When sprite art ships, this
- * class will load a texture atlas and select frames per animation state.
- * See ROADMAP.md "Visuals" section for sprite art requirements.
+ * Texture lookup is injected so this renderer stays synchronous and testable.
  */
-import { Container, Filter, GlProgram, GpuProgram } from 'pixi.js';
-import { Sprite } from 'pixi.js';
+import type { CharacterId } from '@smash/shared';
+import { Container, Filter, GlProgram, GpuProgram, Sprite } from 'pixi.js';
+import type { Texture } from 'pixi.js';
 import type { FighterPart, IPartRenderer, PartTransform, PatternDescriptor } from './IPartRenderer';
+import { FIGHTER_VISUAL_CONTRACTS, clampSlotIndex, getSlotColor } from './assetContract.js';
+
+const PART_DRAW_ORDER: readonly FighterPart[] = ['LEG_L', 'LEG_R', 'BODY', 'ARM_L', 'ARM_R', 'HEAD'] as const;
+
+export type TextureProvider = {
+  getTexture(characterId: CharacterId, part: FighterPart): Texture;
+};
 
 const HIT_FLASH_COLOR = 0xffdd44;
 const HIT_FLASH_R = ((HIT_FLASH_COLOR >> 16) & 0xff) / 255;
@@ -154,72 +160,71 @@ export function applyHitFlash(container: Container, active: boolean): void {
   container.filters = null;
 }
 
-/**
- * Sprite-based fighter part renderer.
- * 
- * Currently a stub implementation — no art assets exist yet.
- * When sprite art is available, this will:
- * - Load a texture atlas
- * - Create Sprite instances per part
- * - Apply frame selection based on animation state
- * 
- * See ROADMAP.md Visuals section for sprite art requirements.
- */
 export class SpritePartRenderer implements IPartRenderer {
   readonly container: Container;
-  private atlasPath: string;
-  private displayObjects: Map<FighterPart, Sprite>;
 
-  /**
-   * Create a sprite renderer for a fighter part.
-   * 
-   * @param atlasPath - Path to the texture atlas (e.g., 'assets/fighter-atlas.png')
-   *                    Not loaded until textures are available.
-   */
-  constructor(atlasPath: string) {
-    this.atlasPath = atlasPath;
+  private readonly fighterCharacterId: CharacterId;
+  private readonly clampedSlotIndex: number;
+  private readonly sprites: Record<FighterPart, Sprite>;
+  private readonly fitScaleByPart: Record<FighterPart, number>;
+
+  get characterId(): CharacterId {
+    return this.fighterCharacterId;
+  }
+
+  get slotIndex(): number {
+    return this.clampedSlotIndex;
+  }
+
+  constructor(characterId: CharacterId, slotIndex: number, textureProvider: TextureProvider) {
+    this.fighterCharacterId = characterId;
+    this.clampedSlotIndex = clampSlotIndex(slotIndex);
     this.container = new Container();
-    this.displayObjects = new Map();
+
+    const contract = FIGHTER_VISUAL_CONTRACTS[this.fighterCharacterId];
+    const sprites = {} as Record<FighterPart, Sprite>;
+    const fitScaleByPart = {} as Record<FighterPart, number>;
+
+    for (const part of PART_DRAW_ORDER) {
+      const partContract = contract.parts[part];
+      const texture = textureProvider.getTexture(this.fighterCharacterId, part);
+      const fitScale = partContract.logicalCanvas.width / texture.orig.width;
+
+      const sprite = new Sprite(texture);
+      sprite.label = `sprite-${part}`;
+      sprite.anchor.set(partContract.anchor.x, partContract.anchor.y);
+      sprite.scale.set(fitScale, fitScale);
+      sprite.tint = partContract.tintable ? getSlotColor(this.clampedSlotIndex) : 0xffffff;
+
+      sprites[part] = sprite;
+      fitScaleByPart[part] = fitScale;
+      this.container.addChild(sprite);
+    }
+
+    this.sprites = sprites;
+    this.fitScaleByPart = fitScaleByPart;
   }
 
   setHitFlash(active: boolean): void {
     applyHitFlash(this.container, active);
   }
 
-  /**
-   * Get or create a Sprite display object for a fighter part.
-   * 
-   * @param part - The body part (HEAD, BODY, ARM_L, etc.)
-   * @returns A PixiJS Sprite instance for this part
-   */
   getDisplayObject(part: FighterPart): Sprite {
-    if (!this.displayObjects.has(part)) {
-      // Create a placeholder sprite (no texture yet)
-      const sprite = new Sprite();
-      sprite.name = `sprite-${part}`;
-      this.displayObjects.set(part, sprite);
-    }
-    return this.displayObjects.get(part)!;
+    return this.sprites[part];
   }
 
-  /**
-   * Draw a fighter part with sprite rendering.
-   * 
-   * Currently throws an error because no art assets exist.
-   * Once sprite art is available, this will:
-   * - Select the appropriate frame from the texture atlas
-   * - Apply the transform (position, rotation, scale)
-   * - Apply the pattern (color tint or overlay)
-   * 
-   * @param part - The body part to render
-   * @param transform - Position, rotation, and scale
-   * @param pattern - Color and pattern descriptor
-   * @throws Error indicating sprite art is not yet available
-   */
   draw(part: FighterPart, transform: PartTransform, pattern: PatternDescriptor): void {
-    throw new Error(
-      'SpritePartRenderer not yet implemented — no art assets exist. ' +
-      'See ROADMAP.md Visuals section for sprite art requirements.'
-    );
+    // Intentionally unused in sprite mode. Pattern is a polygon-era styling
+    // channel; sprite tinting is driven by contract.tintable + slot color.
+    void pattern;
+
+    const sprite = this.sprites[part];
+    const fitScale = this.fitScaleByPart[part];
+
+    sprite.x = transform.x;
+    sprite.y = transform.y;
+    sprite.rotation = transform.rotation;
+    sprite.scale.x = fitScale * transform.scaleX;
+    sprite.scale.y = fitScale * transform.scaleY;
   }
 }

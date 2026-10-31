@@ -24,3 +24,5 @@ _Auto-scaffolded by /start-work. Append new entries below - never overwrite._
 - Todo 5 AssetPack pipeline: a custom post-manifest normalizer pipe is useful for deterministic aliasing (`fighters/<characterId>`) and root-absolute `/assets/...` URLs without changing raw-asset tags (`fighters{m}` + `<id>{tps}`).
 - Todo 5 determinism guard should check both byte-level output equality and git porcelain untracked detection; `git diff` alone misses newly-generated untracked files.
 - Todo 5 density safety: assert atlas `meta.scale === 2` and per-frame `sourceSize` against raw contract dimensions (160x160 head/body, 64x128 limbs) so metadata regressions fail loud instead of silently forcing renderer-side scale hacks.
+- Todo 7 implementation detail: to compare sprite vs polygon fairly, parity checks must use transformed `referenceBoundsLogical` in local part space (via `toGlobal`) rather than Pixi layout bounds, which include transparent sprite canvas and will falsely fail.
+- Todo 7 QA guard: include an explicit anchor-perturbation failure test (+0.1 anchor delta) so parity assertions prove sensitivity instead of passing vacuously.

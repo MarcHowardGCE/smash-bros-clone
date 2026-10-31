@@ -1,0 +1,42 @@
+Todo 7 — SpritePartRenderer parity and scale evidence
+Date: 2026-10-31
+
+Command run:
+- pnpm -F @smash/client test -- src/renderer/parts/__tests__/SpritePartRenderer.test.ts
+
+Joint-position parity coverage (SpritePartRenderer vs PolygonPartRenderer):
+- Case neutral-all-rounder
+  - parts: LEG_L, LEG_R, BODY, ARM_L, ARM_R, HEAD
+  - assertions: joint world position parity + referenceBoundsLogical parity (tol <= 0.5px)
+  - result: pass
+- Case squash-stretch-all-rounder
+  - parts: LEG_L, LEG_R, BODY, ARM_L, ARM_R, HEAD
+  - assertions: joint world position parity + referenceBoundsLogical parity (tol <= 0.5px)
+  - result: pass
+- Case lincoln-pose
+  - parts: LEG_L, LEG_R, BODY, ARM_L, ARM_R, HEAD
+  - assertions: joint world position parity + referenceBoundsLogical parity (tol <= 0.5px)
+  - result: pass
+- Case facing-flipped (container.scale.x = -1)
+  - parts: LEG_L, LEG_R, BODY, ARM_L, ARM_R, HEAD
+  - assertions: joint world position parity + referenceBoundsLogical parity (tol <= 0.5px)
+  - result: pass
+
+Fit-scale evidence:
+- Fixture A (meta.scale=2 semantic): texture.orig matches logicalCanvas -> computed fit scale = 1.0
+- Fixture B (mismatched density): texture.orig is 2x logicalCanvas -> computed fit scale = 0.5
+- Confirms fit scale is computed from logicalCanvas.width / texture.orig.width (not hardcoded)
+
+Tint/clamp evidence:
+- slotIndex inputs tested: -1, 0, 1, 2, 3, 4
+- clamp behavior verified to [0,3]
+- tintable parts (BODY, ARM_L, ARM_R, LEG_L, LEG_R) use SLOT_COLORS[clamp(slotIndex)]
+- HEAD remains 0xffffff in all cases
+
+Mirroring evidence:
+- with container.scale.x = -1, global x coordinate for joints mirrors sign while y is preserved
+
+Failure-path QA (non-vacuous parity):
+- Deliberately perturbed BODY anchor by +0.1 on x in test-only contract copy
+- parity assertion showed bounds delta beyond 0.5px threshold (expected failure condition)
+- restored unperturbed anchor expectation in main parity path

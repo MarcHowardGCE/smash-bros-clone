@@ -1,10 +1,14 @@
 import { describe, expect, it } from 'vitest';
-import { Container } from 'pixi.js';
+import { Container, Texture } from 'pixi.js';
 import {
   SpritePartRenderer,
   applyHitFlash,
   getSharedHitFlashFilter,
 } from '../SpritePartRenderer';
+
+const TEST_TEXTURE_PROVIDER = {
+  getTexture: () => Texture.WHITE,
+};
 
 describe('SpritePartRenderer hit flash filter', () => {
   it('attaches filter when active and removes it when inactive', () => {
@@ -42,8 +46,8 @@ describe('SpritePartRenderer hit flash filter', () => {
   });
 
   it('all renderer instances share the same filter object identity', () => {
-    const rendererA = new SpritePartRenderer('assets/a.png');
-    const rendererB = new SpritePartRenderer('assets/b.png');
+    const rendererA = new SpritePartRenderer('all-rounder', 0, TEST_TEXTURE_PROVIDER);
+    const rendererB = new SpritePartRenderer('all-rounder', 1, TEST_TEXTURE_PROVIDER);
     const shared = getSharedHitFlashFilter();
 
     rendererA.setHitFlash(true);

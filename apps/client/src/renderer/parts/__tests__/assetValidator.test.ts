@@ -121,43 +121,31 @@ describe('assetValidator synthetic fixtures', () => {
 });
 
 describe('assetValidator real-art gate behavior', () => {
-  it('Given real raw-assets, When validating, Then skips missing character dirs with explicit messages', async () => {
+  it('Given real raw-assets, When validating, Then is a hard gate for 3 characters with 18 assets and 0 violations', async () => {
     const rootDir = resolveRealRawAssetsRoot();
     const run = await runFighterAssetValidation({ rootDir });
-
-    const skipMessages = run.result.skippedCharacters.map((entry) => entry.message);
-    expect(skipMessages.some((message) => message.includes('character=abe-lincoln'))).toBe(true);
-    expect(skipMessages.some((message) => message.includes('character=swift'))).toBe(true);
+    expect(run.result.skippedCharacters).toHaveLength(0);
+    expect(run.result.assetsChecked).toBe(18);
+    expect(run.result.violations).toHaveLength(0);
+    expect(run.ok).toBe(true);
   });
 
-  it('Given all-rounder real assets, When validating, Then pass now or skip with explicit Todo 4 message', async (ctx) => {
+  it('Given Lincoln real art, When reading alpha bounds, Then head paints above and below reference bounds and body paints below', async () => {
     const rootDir = resolveRealRawAssetsRoot();
-    const run = await runFighterAssetValidation({ rootDir });
+    const lincoln = FIGHTER_VISUAL_CONTRACTS['abe-lincoln'];
+    const headPath = path.join(rootDir, 'abe-lincoln{tps}', lincoln.parts.HEAD.filename);
+    const bodyPath = path.join(rootDir, 'abe-lincoln{tps}', lincoln.parts.BODY.filename);
 
-    const allRounderSkipped = run.result.skippedCharacters.some((entry) => entry.characterId === 'all-rounder');
-    if (allRounderSkipped) {
-      process.stderr.write(
-        'TODO(todo-4): all-rounder art directory missing at real-art gate; keep skip until Todo 4 hard gate.\n',
-      );
-      ctx.skip();
-      return;
-    }
+    const headBounds = alphaBounds(PNG.sync.read(await fs.readFile(headPath)));
+    const bodyBounds = alphaBounds(PNG.sync.read(await fs.readFile(bodyPath)));
+    const headRef = toRawBounds(lincoln.parts.HEAD);
+    const bodyRef = toRawBounds(lincoln.parts.BODY);
 
-    const allRounderViolations = run.result.violations.filter(
-      (violation) => violation.characterId === 'all-rounder',
-    );
-
-    if (allRounderViolations.length > 0) {
-      const violationSummary = allRounderViolations.map((entry) => entry.message).join(' | ');
-      process.stderr.write(
-        `TODO(todo-4): all-rounder real art currently fails validator; hard-gate enablement in Todo 4. Violations: ${violationSummary}\n`,
-      );
-      ctx.skip();
-      return;
-    }
-
-    expect(run.result.assetsChecked).toBeGreaterThan(0);
-    expect(allRounderViolations).toHaveLength(0);
+    expect(headBounds).not.toBeNull();
+    expect(bodyBounds).not.toBeNull();
+    expect(headBounds!.minY).toBeLessThan(headRef.y);
+    expect(headBounds!.maxY).toBeGreaterThan(headRef.y + headRef.height - 1);
+    expect(bodyBounds!.maxY).toBeGreaterThan(bodyRef.y + bodyRef.height - 1);
   });
 });
 
@@ -280,4 +268,37 @@ function setPixel(png: PNG, x: number, y: number, r: number, g: number, b: numbe
   png.data[index + 1] = g;
   png.data[index + 2] = b;
   png.data[index + 3] = a;
+}
+
+function alphaBounds(png: PNG):
+  | {
+      readonly minX: number;
+      readonly minY: number;
+      readonly maxX: number;
+      readonly maxY: number;
+    }
+  | null {
+  let minX = png.width;
+  let minY = png.height;
+  let maxX = -1;
+  let maxY = -1;
+
+  for (let y = 0; y < png.height; y += 1) {
+    for (let x = 0; x < png.width; x += 1) {
+      const index = ((y * png.width) + x) * 4;
+      const alpha = png.data[index + 3] ?? 0;
+      if (alpha > 0) {
+        if (x < minX) minX = x;
+        if (y < minY) minY = y;
+        if (x > maxX) maxX = x;
+        if (y > maxY) maxY = y;
+      }
+    }
+  }
+
+  if (maxX < 0 || maxY < 0) {
+    return null;
+  }
+
+  return { minX, minY, maxX, maxY };
 }

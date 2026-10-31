@@ -8,67 +8,190 @@ import { PNG } from 'pngjs';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const repoRoot = path.resolve(__dirname, '..', '..');
+const outputRoot = path.join(repoRoot, 'raw-assets', 'fighters{m}');
 
-const outputDir = path.join(
-  repoRoot,
-  'raw-assets',
-  'fighters{m}',
-  'all-rounder{tps}',
-);
+const COLORS = {
+  clothing: [245, 245, 245, 255],
+  skin: [242, 211, 179, 255],
+  hairDark: [56, 34, 20, 255],
+  hat: [26, 26, 30, 255],
+  glove: [248, 248, 250, 255],
+  shoeDark: [40, 44, 54, 255],
+  shoeLight: [92, 99, 114, 255],
+};
 
-const PARTS = {
-  head: {
-    width: 160,
-    height: 160,
-    draw: (png) => {
-      // Head canvas contract: 160x160, joint at (80,80)
-      fillCircle(png, 80, 80, 26, 242, 211, 179, 255);
-      // Simple hair cap for a cartoon silhouette
-      fillEllipse(png, 80, 65, 28, 11, 56, 34, 20, 255);
-      fillRect(png, 52, 65, 56, 8, 56, 34, 20, 255);
+const CHARACTERS = {
+  'all-rounder': {
+    head: {
+      width: 160,
+      height: 160,
+      draw: (png) => {
+        fillEllipse(png, 80, 80, 26, 28, ...COLORS.skin);
+        fillEllipse(png, 80, 63, 30, 11, ...COLORS.hairDark);
+        fillRect(png, 50, 63, 60, 8, ...COLORS.hairDark);
+        fillCircle(png, 71, 81, 2, 50, 35, 25, 255);
+        fillCircle(png, 89, 81, 2, 50, 35, 25, 255);
+        fillRect(png, 52, 80, 56, 12, ...COLORS.skin);
+      },
+    },
+    body: {
+      width: 160,
+      height: 160,
+      draw: (png) => {
+        fillRoundedRect(png, 40, 34, 80, 98, 20, ...COLORS.clothing);
+        fillRect(png, 36, 80, 88, 12, ...COLORS.clothing);
+      },
+    },
+    arm_l: {
+      width: 64,
+      height: 128,
+      draw: (png) => {
+        fillRoundedRect(png, 25, 8, 14, 56, 6, ...COLORS.clothing);
+        fillRect(png, 25, 8, 14, 12, ...COLORS.clothing);
+        fillRoundedRect(png, 24, 52, 16, 12, 5, ...COLORS.glove);
+      },
+    },
+    arm_r: {
+      width: 64,
+      height: 128,
+      draw: (png) => {
+        fillRoundedRect(png, 25, 8, 14, 56, 6, ...COLORS.clothing);
+        fillRect(png, 25, 8, 14, 12, ...COLORS.clothing);
+        fillRoundedRect(png, 24, 52, 16, 12, 5, ...COLORS.glove);
+      },
+    },
+    leg_l: {
+      width: 64,
+      height: 128,
+      draw: (png) => {
+        fillRoundedRect(png, 24, 8, 16, 64, 7, ...COLORS.clothing);
+        fillRect(png, 24, 8, 16, 12, ...COLORS.clothing);
+        fillRoundedRect(png, 20, 56, 24, 16, 7, ...COLORS.shoeDark);
+      },
+    },
+    leg_r: {
+      width: 64,
+      height: 128,
+      draw: (png) => {
+        fillRoundedRect(png, 24, 8, 16, 64, 7, ...COLORS.clothing);
+        fillRect(png, 24, 8, 16, 12, ...COLORS.clothing);
+        fillRoundedRect(png, 20, 56, 24, 16, 7, ...COLORS.shoeDark);
+      },
     },
   },
-  body: {
-    width: 160,
-    height: 160,
-    draw: (png) => {
-      // Body contract reference area in raw px: x=36, y=36, w=88, h=88
-      fillRoundedRect(png, 36, 36, 88, 88, 18, 245, 245, 245, 255);
+  'abe-lincoln': {
+    head: {
+      width: 160,
+      height: 160,
+      draw: (png) => {
+        fillEllipse(png, 80, 80, 24, 30, ...COLORS.skin);
+        fillRoundedRect(png, 66, 12, 28, 52, 6, ...COLORS.hat);
+        fillRoundedRect(png, 48, 56, 64, 8, 3, ...COLORS.hat);
+        fillRoundedRect(png, 62, 96, 36, 26, 8, ...COLORS.hairDark);
+        fillRect(png, 52, 80, 56, 12, ...COLORS.skin);
+      },
+    },
+    body: {
+      width: 160,
+      height: 160,
+      draw: (png) => {
+        fillRoundedRect(png, 38, 30, 84, 98, 16, ...COLORS.clothing);
+        fillRect(png, 36, 80, 88, 12, ...COLORS.clothing);
+        fillRoundedRect(png, 38, 122, 32, 30, 8, ...COLORS.clothing);
+        fillRoundedRect(png, 90, 122, 32, 30, 8, ...COLORS.clothing);
+      },
+    },
+    arm_l: {
+      width: 64,
+      height: 128,
+      draw: (png) => {
+        fillRoundedRect(png, 25, 8, 14, 60, 6, ...COLORS.clothing);
+        fillRect(png, 25, 8, 14, 12, ...COLORS.clothing);
+        fillRoundedRect(png, 23, 52, 18, 16, 6, ...COLORS.glove);
+      },
+    },
+    arm_r: {
+      width: 64,
+      height: 128,
+      draw: (png) => {
+        fillRoundedRect(png, 25, 8, 14, 60, 6, ...COLORS.clothing);
+        fillRect(png, 25, 8, 14, 12, ...COLORS.clothing);
+        fillRoundedRect(png, 23, 52, 18, 16, 6, ...COLORS.glove);
+      },
+    },
+    leg_l: {
+      width: 64,
+      height: 128,
+      draw: (png) => {
+        fillRoundedRect(png, 24, 8, 16, 68, 7, ...COLORS.clothing);
+        fillRect(png, 24, 8, 16, 12, ...COLORS.clothing);
+        fillRoundedRect(png, 19, 56, 26, 20, 8, ...COLORS.shoeDark);
+      },
+    },
+    leg_r: {
+      width: 64,
+      height: 128,
+      draw: (png) => {
+        fillRoundedRect(png, 24, 8, 16, 68, 7, ...COLORS.clothing);
+        fillRect(png, 24, 8, 16, 12, ...COLORS.clothing);
+        fillRoundedRect(png, 19, 56, 26, 20, 8, ...COLORS.shoeDark);
+      },
     },
   },
-  arm_l: {
-    width: 64,
-    height: 128,
-    draw: (png) => {
-      // Arm contract reference area in raw px: x=25, y=8, w=14, h=44
-      fillRoundedRect(png, 25, 8, 14, 44, 6, 245, 245, 245, 255);
-      // Explicit opaque 12px underlap below joint y=8 => [8, 20)
-      fillRect(png, 25, 8, 14, 12, 245, 245, 245, 255);
+  swift: {
+    head: {
+      width: 160,
+      height: 160,
+      draw: (png) => {
+        fillEllipse(png, 80, 80, 22, 27, ...COLORS.skin);
+        fillEllipse(png, 79, 64, 23, 9, ...COLORS.hairDark);
+        fillRoundedRect(png, 98, 70, 18, 30, 8, ...COLORS.hairDark);
+        fillRect(png, 52, 80, 56, 12, ...COLORS.skin);
+      },
     },
-  },
-  arm_r: {
-    width: 64,
-    height: 128,
-    draw: (png) => {
-      fillRoundedRect(png, 25, 8, 14, 44, 6, 245, 245, 245, 255);
-      fillRect(png, 25, 8, 14, 12, 245, 245, 245, 255);
+    body: {
+      width: 160,
+      height: 160,
+      draw: (png) => {
+        fillRoundedRect(png, 48, 32, 64, 96, 18, ...COLORS.clothing);
+        fillRect(png, 36, 80, 88, 12, ...COLORS.clothing);
+      },
     },
-  },
-  leg_l: {
-    width: 64,
-    height: 128,
-    draw: (png) => {
-      // Leg contract reference area in raw px: x=24, y=8, w=16, h=48
-      fillRoundedRect(png, 24, 8, 16, 48, 7, 245, 245, 245, 255);
-      fillRect(png, 24, 8, 16, 12, 245, 245, 245, 255);
+    arm_l: {
+      width: 64,
+      height: 128,
+      draw: (png) => {
+        fillRoundedRect(png, 27, 8, 10, 54, 5, ...COLORS.clothing);
+        fillRect(png, 25, 8, 14, 12, ...COLORS.clothing);
+        fillRoundedRect(png, 24, 52, 16, 10, 5, ...COLORS.glove);
+      },
     },
-  },
-  leg_r: {
-    width: 64,
-    height: 128,
-    draw: (png) => {
-      fillRoundedRect(png, 24, 8, 16, 48, 7, 245, 245, 245, 255);
-      fillRect(png, 24, 8, 16, 12, 245, 245, 245, 255);
+    arm_r: {
+      width: 64,
+      height: 128,
+      draw: (png) => {
+        fillRoundedRect(png, 27, 8, 10, 54, 5, ...COLORS.clothing);
+        fillRect(png, 25, 8, 14, 12, ...COLORS.clothing);
+        fillRoundedRect(png, 24, 52, 16, 10, 5, ...COLORS.glove);
+      },
+    },
+    leg_l: {
+      width: 64,
+      height: 128,
+      draw: (png) => {
+        fillRoundedRect(png, 26, 8, 12, 62, 6, ...COLORS.clothing);
+        fillRect(png, 24, 8, 16, 12, ...COLORS.clothing);
+        fillRoundedRect(png, 20, 56, 24, 14, 7, ...COLORS.shoeLight);
+      },
+    },
+    leg_r: {
+      width: 64,
+      height: 128,
+      draw: (png) => {
+        fillRoundedRect(png, 26, 8, 12, 62, 6, ...COLORS.clothing);
+        fillRect(png, 24, 8, 16, 12, ...COLORS.clothing);
+        fillRoundedRect(png, 20, 56, 24, 14, 7, ...COLORS.shoeLight);
+      },
     },
   },
 };
@@ -177,29 +300,33 @@ function alphaBounds(png) {
   };
 }
 
-fs.mkdirSync(outputDir, { recursive: true });
-
 const inventory = [];
 
-for (const [part, config] of Object.entries(PARTS)) {
-  const png = createPng(config.width, config.height);
-  config.draw(png);
+for (const [characterId, parts] of Object.entries(CHARACTERS)) {
+  const outputDir = path.join(outputRoot, `${characterId}{tps}`);
+  fs.mkdirSync(outputDir, { recursive: true });
 
-  const outPath = path.join(outputDir, `${part}.png`);
-  fs.writeFileSync(outPath, PNG.sync.write(png));
+  for (const [part, config] of Object.entries(parts)) {
+    const png = createPng(config.width, config.height);
+    config.draw(png);
 
-  inventory.push({
-    part,
-    width: config.width,
-    height: config.height,
-    alphaBounds: alphaBounds(png),
-    file: path.relative(repoRoot, outPath).replaceAll('\\', '/'),
-  });
+    const outPath = path.join(outputDir, `${part}.png`);
+    fs.writeFileSync(outPath, PNG.sync.write(png));
+
+    inventory.push({
+      characterId,
+      part,
+      width: config.width,
+      height: config.height,
+      alphaBounds: alphaBounds(png),
+      file: path.relative(repoRoot, outPath).replaceAll('\\', '/'),
+    });
+  }
 }
 
-console.log('Generated all-rounder Route B placeholder parts:');
+console.log('Generated deterministic fighter placeholder parts:');
 for (const item of inventory) {
   console.log(
-    `${item.part}.png ${item.width}x${item.height} alpha=${JSON.stringify(item.alphaBounds)}`,
+    `${item.characterId}/${item.part}.png ${item.width}x${item.height} alpha=${JSON.stringify(item.alphaBounds)}`,
   );
 }

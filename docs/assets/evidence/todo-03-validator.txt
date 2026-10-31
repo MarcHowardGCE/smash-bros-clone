@@ -1,0 +1,42 @@
+Todo 3 — Node contract validator QA evidence
+Date: 2026-10-31
+
+Command: pnpm -F @smash/client test -- --reporter verbose src/renderer/parts/__tests__/assetValidator.test.ts
+
+Happy synthetic case evidence:
+- Test: "Given 6 valid fixtures, When validating, Then checks 6 assets and 0 violations"
+- Result: PASS
+- Assertions satisfied: assetsChecked=6, violations=0
+
+Failure synthetic case evidence (6 distinct classes):
+- missing-part:
+  character=all-rounder part=LEG_R rule=missing-part expected-filename=leg_r.png actual-filename=absent
+- filename-casing:
+  character=all-rounder part=HEAD rule=filename-casing expected-filename=head.png actual-filename=Head.png
+- dimensions:
+  character=all-rounder part=ARM_L rule=dimensions expected=64x128 actual=63x128
+- empty-alpha:
+  character=all-rounder part=BODY rule=empty-alpha expected=alpha>0 actual=all-alpha-zero
+- joint-underlap:
+  character=all-rounder part=LEG_L rule=joint-underlap expected=opaque-band-height=12 actual=transparent-pixel-found ...
+- tint-purity:
+  character=all-rounder part=ARM_R rule=tint-purity expected=#F5F5F5±10 actual=rgb(255,0,0) ...
+
+Real-art behavior evidence:
+- Test: "Given real raw-assets, When validating, Then skips missing character dirs with explicit messages"
+- Result: PASS (explicit skips for abe-lincoln and swift)
+- Test: "Given all-rounder real assets, When validating, Then pass now or skip with explicit Todo 4 message"
+- Result: SKIPPED (explicit TODO message emitted)
+- Emitted TODO line:
+  TODO(todo-4): all-rounder real art currently fails validator; hard-gate enablement in Todo 4. Violations: character=all-rounder part=HEAD rule=joint-underlap expected=opaque-band-height=12 actual=transparent-pixel-found band=x:52..107,y:80..91
+
+Command: pnpm -F @smash/client assets:validate
+Observed output:
+- assets-checked=6
+- skips: abe-lincoln, swift missing art dirs
+- violations=1
+- character=all-rounder part=HEAD rule=joint-underlap expected=opaque-band-height=12 actual=transparent-pixel-found band=x:52..107,y:80..91
+
+Workspace verification:
+- pnpm test: PASS
+- pnpm build: PASS

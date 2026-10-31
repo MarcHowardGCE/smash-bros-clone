@@ -1,0 +1,48 @@
+Todo 6 — Extend IPartRenderer for whole-silhouette hit flash
+Date: 2026-10-31
+
+Plan reference:
+- .omo/plans/cartoon-asset-pipeline.md lines 220-248
+
+Happy-path QA
+1) FighterRenderer fallback path (no setHitFlash on part renderer)
+   - Added test: apps/client/src/renderer/__tests__/FighterRenderer.test.ts
+   - Case: "applies tint fallback when part renderer does not implement setHitFlash"
+   - Verifies:
+     - startHitFlash() applies container tint 0xffdd44
+     - after flash timer expiry, tint resets to 0xffffff
+
+2) FighterRenderer enhanced path (setHitFlash provided)
+   - Added test: apps/client/src/renderer/__tests__/FighterRenderer.test.ts
+   - Case: "uses setHitFlash when available and keeps container tint at default"
+   - Verifies:
+     - setHitFlash called with true then false
+     - container.tint remains 0xffffff throughout (no tint path used)
+
+3) Sprite hit-flash filter attachment/removal
+   - Added test file: apps/client/src/renderer/parts/__tests__/SpritePartRenderer.hitflash.test.ts
+   - Case: "attaches filter when active and removes it when inactive"
+   - Verifies:
+     - active => container.filters = [sharedFilter]
+     - inactive => container.filters = null
+
+4) Rapid toggle stability
+   - Added test: "does not attach duplicate filters over rapid toggles"
+   - Verifies:
+     - across 10 rapid flashes, max attached filters count is 1
+
+Failure-path QA
+5) Shared singleton identity across many renderers/containers
+   - Added tests:
+     - "all renderer instances share the same filter object identity"
+     - "50 containers flashed still use exactly one filter instance"
+   - Verifies:
+     - all containers reference exactly one filter object identity
+     - no per-renderer filter allocation
+
+Targeted execution evidence
+- Command:
+  pnpm -F @smash/client test -- "src/renderer/__tests__/FighterRenderer.test.ts" "src/renderer/parts/__tests__/SpritePartRenderer.hitflash.test.ts"
+- Result:
+  Test Files: 2 passed
+  Tests: 15 passed

@@ -52,6 +52,17 @@ export interface IPartRenderer {
   readonly container: Container;
 
   /**
+   * Toggle whole-silhouette hit flash for this renderer.
+   *
+   * Ownership boundary:
+   * - Part renderer owns sprite tint + any per-part filters/effects.
+   * - FighterRenderer owns only outer container tint and alpha.
+   *
+   * Optional so legacy/polygon renderers can keep using FighterRenderer tint fallback.
+   */
+  setHitFlash?(active: boolean): void;
+
+  /**
    * Draw a fighter part with the given transform and pattern.
    * Called once per frame for each visible part.
    *

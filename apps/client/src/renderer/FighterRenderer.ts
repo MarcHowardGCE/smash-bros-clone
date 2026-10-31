@@ -140,6 +140,10 @@ export class FighterRenderer {
    */
   startHitFlash(): void {
     this.hitFlashFrames = HIT_FLASH_FRAMES;
+    if (this.partRenderer.setHitFlash) {
+      this.partRenderer.setHitFlash(true);
+      return;
+    }
     this.partRenderer.container.tint = HIT_FLASH_TINT;
   }
 
@@ -148,6 +152,10 @@ export class FighterRenderer {
     if (this.hitFlashFrames <= 0) return;
     this.hitFlashFrames--;
     if (this.hitFlashFrames === 0) {
+      if (this.partRenderer.setHitFlash) {
+        this.partRenderer.setHitFlash(false);
+        return;
+      }
       this.partRenderer.container.tint = DEFAULT_TINT;
     }
   }

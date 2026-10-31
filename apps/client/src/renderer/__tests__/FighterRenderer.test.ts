@@ -1,6 +1,42 @@
 import { describe, it, expect, vi } from 'vitest';
 import { Container } from 'pixi.js';
 import { FighterRenderer } from '../FighterRenderer';
+import type { IPartRenderer } from '../parts/IPartRenderer';
+
+type RenderableState = {
+  x: number;
+  y: number;
+  facing: 1 | -1;
+  isInvincible: boolean;
+  isKnockedOut: boolean;
+  isShielding: boolean;
+  shieldHealth: number;
+  state: string;
+  stateFrame: number;
+  slotIndex: number;
+  currentMoveId: null;
+};
+
+function makePlayerState(overrides: Partial<RenderableState> = {}): RenderableState {
+  return {
+    x: 100,
+    y: 200,
+    facing: 1,
+    isInvincible: false,
+    isKnockedOut: false,
+    isShielding: false,
+    shieldHealth: 100,
+    state: 'IDLE',
+    stateFrame: 0,
+    slotIndex: 0,
+    currentMoveId: null,
+    ...overrides,
+  };
+}
+
+function getPartRenderer(renderer: FighterRenderer): IPartRenderer {
+  return (renderer as unknown as Record<string, unknown>)['partRenderer'] as IPartRenderer;
+}
 
 describe('FighterRenderer', () => {
   describe('destroy()', () => {
@@ -166,6 +202,44 @@ describe('FighterRenderer', () => {
 
       const shieldBubble = renderer.container.children[1]!;
       expect(shieldBubble.visible).toBe(false);
+    });
+  });
+
+  describe('hit flash', () => {
+    it('applies tint fallback when part renderer does not implement setHitFlash', () => {
+      const parent = new Container();
+      const renderer = new FighterRenderer(parent, 0);
+      const partRenderer = getPartRenderer(renderer);
+
+      renderer.startHitFlash();
+
+      expect(partRenderer.container.tint).toBe(0xffdd44);
+
+      for (let frame = 1; frame <= 4; frame++) {
+        renderer.update(makePlayerState({ stateFrame: frame }));
+      }
+
+      expect(partRenderer.container.tint).toBe(0xffffff);
+    });
+
+    it('uses setHitFlash when available and keeps container tint at default', () => {
+      const parent = new Container();
+      const renderer = new FighterRenderer(parent, 0);
+      const partRenderer = getPartRenderer(renderer);
+      const calls: boolean[] = [];
+
+      partRenderer.setHitFlash = (active: boolean) => {
+        calls.push(active);
+      };
+
+      renderer.startHitFlash();
+
+      for (let frame = 1; frame <= 4; frame++) {
+        renderer.update(makePlayerState({ stateFrame: frame }));
+      }
+
+      expect(calls).toEqual([true, false]);
+      expect(partRenderer.container.tint).toBe(0xffffff);
     });
   });
 });

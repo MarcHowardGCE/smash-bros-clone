@@ -1,0 +1,50 @@
+Todo 09 — Boot preload with sheet-scoped provider, timeout, and fallback
+Date: 2026-10-31
+
+Command (targeted):
+- pnpm vitest run src/renderer/__tests__/fighterAssets.test.ts
+
+Result:
+- PASS (9 tests)
+
+18-lookup identity table (provider lookup -> expected sheet frame texture identity)
+
+| characterId   | part  | frameName  | expected alias            |
+|---------------|-------|------------|---------------------------|
+| all-rounder   | HEAD  | head.png   | fighters/all-rounder      |
+| all-rounder   | BODY  | body.png   | fighters/all-rounder      |
+| all-rounder   | ARM_L | arm_l.png  | fighters/all-rounder      |
+| all-rounder   | ARM_R | arm_r.png  | fighters/all-rounder      |
+| all-rounder   | LEG_L | leg_l.png  | fighters/all-rounder      |
+| all-rounder   | LEG_R | leg_r.png  | fighters/all-rounder      |
+| abe-lincoln   | HEAD  | head.png   | fighters/abe-lincoln      |
+| abe-lincoln   | BODY  | body.png   | fighters/abe-lincoln      |
+| abe-lincoln   | ARM_L | arm_l.png  | fighters/abe-lincoln      |
+| abe-lincoln   | ARM_R | arm_r.png  | fighters/abe-lincoln      |
+| abe-lincoln   | LEG_L | leg_l.png  | fighters/abe-lincoln      |
+| abe-lincoln   | LEG_R | leg_r.png  | fighters/abe-lincoln      |
+| swift         | HEAD  | head.png   | fighters/swift            |
+| swift         | BODY  | body.png   | fighters/swift            |
+| swift         | ARM_L | arm_l.png  | fighters/swift            |
+| swift         | ARM_R | arm_r.png  | fighters/swift            |
+| swift         | LEG_L | leg_l.png  | fighters/swift            |
+| swift         | LEG_R | leg_r.png  | fighters/swift            |
+
+Collision guard evidence:
+- Swift HEAD texture identity != All-Rounder HEAD texture identity
+- Abe Lincoln BODY texture identity != All-Rounder BODY texture identity
+
+Failure QA (nonexistent manifest):
+- Simulated via fake loader `init` rejection (`Error: manifest not found`)
+- Expected result observed: `{ mode: 'polygon' }`
+- `logger.warn` called
+- zero throws escaped caller (`await expect(...).resolves.toEqual({ mode: 'polygon' })`)
+
+Other acceptance checks in same test suite:
+- rejected bundle => polygon, no throw
+- one missing frame => polygon
+- never-resolving load => 5000ms timeout => polygon
+- `?renderer=polygon` force mode
+- `Assets.init` receives `texturePreference: { resolution: window.devicePixelRatio, format: ['webp','png'] }`
+- atlas texture sources set to `scaleMode='linear'` and `autoGenerateMipmaps=true`
+- preload completion ordering validated before first renderer construction at facade-level flow

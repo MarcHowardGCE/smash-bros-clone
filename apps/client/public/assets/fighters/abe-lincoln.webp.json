@@ -124,7 +124,7 @@
   "meta": {
     "app": "http://github.com/pixijs/assetpack",
     "version": "1.0",
-    "image": "/assets/fighters/abe-lincoln.webp",
+    "image": "abe-lincoln.webp",
     "format": "RGBA8888",
     "size": {
       "w": 98,

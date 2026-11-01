@@ -30,8 +30,8 @@ function buildTexture(id: number): Texture {
 }
 
 interface FakeSheet {
-  readonly textures: Record<string, Texture>;
-  readonly textureSource: {
+  textures: Record<string, Texture>;
+  textureSource?: {
     scaleMode: string;
     autoGenerateMipmaps: boolean;
   };
@@ -179,8 +179,39 @@ describe('fighterAssets preload', () => {
     });
 
     for (const characterId of CHARACTER_IDS) {
-      expect(sheets[characterId].textureSource.scaleMode).toBe('linear');
-      expect(sheets[characterId].textureSource.autoGenerateMipmaps).toBe(true);
+      expect(sheets[characterId].textureSource?.scaleMode).toBe('linear');
+      expect(sheets[characterId].textureSource?.autoGenerateMipmaps).toBe(true);
+    }
+  });
+
+  it('Given sheets without textureSource field, When preloading, Then sprite mode still succeeds and texture sources get preferences', async () => {
+    const loader = new FakeLoader();
+    const { bundle, sheets } = createBundleWithSheets();
+
+    for (const characterId of CHARACTER_IDS) {
+      const sheet = sheets[characterId] as FakeSheet & {
+        textures: Record<string, Texture & { source: { scaleMode?: string; autoGenerateMipmaps?: boolean } }>;
+      };
+      delete sheet.textureSource;
+      for (const texture of Object.values(sheet.textures)) {
+        texture.source.scaleMode = 'nearest';
+        texture.source.autoGenerateMipmaps = false;
+      }
+    }
+
+    loader.loadBundleImpl = async () => bundle;
+
+    const result = await preloadFighterAssets({ loader, locationSearch: '' });
+
+    expect(result.mode).toBe('sprite');
+    for (const characterId of CHARACTER_IDS) {
+      const sheet = sheets[characterId] as FakeSheet & {
+        textures: Record<string, Texture & { source: { scaleMode?: string; autoGenerateMipmaps?: boolean } }>;
+      };
+      for (const texture of Object.values(sheet.textures)) {
+        expect(texture.source.scaleMode).toBe('linear');
+        expect(texture.source.autoGenerateMipmaps).toBe(true);
+      }
     }
   });
 

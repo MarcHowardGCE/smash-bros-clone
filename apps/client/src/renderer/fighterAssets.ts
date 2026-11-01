@@ -129,7 +129,7 @@ function isSpritesheetLike(value: unknown): value is Spritesheet {
     return false;
   }
 
-  return isRecord(value['textures']) && isRecord(value['textureSource']);
+  return isRecord(value['textures']);
 }
 
 function getCharacterSheets(
@@ -187,9 +187,28 @@ function findMissingFrameReason(sheets: Record<CharacterId, Spritesheet>): strin
 
 function applyAtlasTextureSourcePreferences(sheets: Record<CharacterId, Spritesheet>): void {
   for (const characterId of CHARACTER_IDS) {
-    const textureSource = sheets[characterId].textureSource;
-    textureSource.scaleMode = 'linear';
-    textureSource.autoGenerateMipmaps = true;
+    const sheet = sheets[characterId] as unknown as {
+      textureSource?: { scaleMode?: string; autoGenerateMipmaps?: boolean };
+      textures?: Record<string, { source?: { scaleMode?: string; autoGenerateMipmaps?: boolean } }>;
+    };
+
+    if (sheet.textureSource) {
+      sheet.textureSource.scaleMode = 'linear';
+      sheet.textureSource.autoGenerateMipmaps = true;
+      continue;
+    }
+
+    const textureSources = new Set<{ scaleMode?: string; autoGenerateMipmaps?: boolean }>();
+    for (const texture of Object.values(sheet.textures ?? {})) {
+      if (texture.source) {
+        textureSources.add(texture.source);
+      }
+    }
+
+    for (const source of textureSources) {
+      source.scaleMode = 'linear';
+      source.autoGenerateMipmaps = true;
+    }
   }
 }
 

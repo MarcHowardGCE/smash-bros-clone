@@ -1,0 +1,52 @@
+Final wave raw output evidence
+Date: 2026-10-31
+
+1) pnpm test
+Command:
+  pnpm test
+Exit code:
+  0
+Raw summary:
+  - engine: 9 files passed; 271 passed, 1 skipped
+  - server: 19 files passed, 1 skipped; 128 passed, 16 skipped
+  - client: 40 files passed; 507 passed
+
+2) pnpm build
+Command:
+  pnpm build
+Exit code:
+  0
+Raw summary:
+  - packages/shared build: Done
+  - packages/gamepad-input build: Done
+  - packages/engine build: Done
+  - apps/server build: Done
+  - apps/client build: vite build complete (862 modules transformed)
+
+3) pnpm test:e2e
+Command:
+  pnpm test:e2e
+Exit code:
+  0
+Raw summary:
+  - total: 12 tests
+  - passed: 6
+  - skipped: 6
+  - failed: 0
+
+4) node scripts/assets/verify-assets-determinism.mjs
+Command:
+  node scripts/assets/verify-assets-determinism.mjs
+Exit code:
+  0
+Raw output:
+  ok: deterministic generation and committed output checks passed
+
+5) pnpm -F @smash/client assets:validate
+Command:
+  pnpm -F @smash/client assets:validate
+Exit code:
+  0
+Raw output:
+  assets-checked=18
+  violations=0

@@ -58,3 +58,12 @@ Notes:
   - AssetPack skip behavior for tests is asserted in apps/server/src/createApp.production.test.ts via build output containing:
       [assetpack] skipped via SKIP_ASSETPACK=1
   - SpritePartRenderer.ts was not edited in this Todo (concurrent Todo 7 worker scope).
+
+7) Windows line-ending-robust determinism rerun (post-fix)
+Command:
+  node scripts/assets/verify-assets-determinism.mjs
+
+Result:
+  PASS (exit 0)
+  Output:
+    ok: deterministic generation and committed output checks passed

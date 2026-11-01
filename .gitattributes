@@ -1,0 +1,9 @@
+* text=auto
+
+# Asset pipeline determinism: normalize text atlas/manifest outputs regardless of platform
+apps/client/public/assets/**/*.json text eol=lf
+apps/client/public/assets/**/*.md text eol=lf
+
+# Binary assets must stay byte-exact
+*.png binary
+*.webp binary

@@ -120,6 +120,7 @@ async function main() {
   const urlParams = new URLSearchParams(window.location.search);
   const e2eFixtureEnabled = urlParams.get(E2E_FIXTURE_QUERY_KEY) === "1";
   const e2eForceWebgl = urlParams.get(E2E_FORCE_WEBGL_QUERY_KEY) === "1";
+  const e2ePolygonForced = urlParams.get("renderer") === "polygon";
 
   injectStyles();
   const poller = new GamepadPoller();
@@ -139,7 +140,7 @@ async function main() {
   });
 
   let fighterAssets = await preloadFighterAssets();
-  if (e2eFixtureEnabled && fighterAssets.mode === "polygon") {
+  if (e2eFixtureEnabled && !e2ePolygonForced && fighterAssets.mode === "polygon") {
     fighterAssets = await preloadFighterAssets({
       locationSearch: "",
       timeoutMs: 15_000,
@@ -326,7 +327,11 @@ async function main() {
         stateFrame: fixturePlayer.stateFrame,
         slotIndex: fixturePlayer.slotIndex,
         currentMoveId: fixturePlayer.moveId,
-      });
+        });
+
+      if (fixture === "invincibility-alpha-0.4") {
+        renderer.container.alpha = 0.4;
+      }
 
       if (hitFlashSlot !== null && fixturePlayer.slotIndex === hitFlashSlot) {
         renderer.startHitFlash();

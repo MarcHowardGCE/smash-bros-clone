@@ -104,8 +104,7 @@ function normalizeFightersManifest(manifestPath) {
         const atlasJson = JSON.parse(atlasRaw);
 
         if (typeof atlasJson?.meta?.image === 'string') {
-          const imageName = path.basename(atlasJson.meta.image);
-          atlasJson.meta.image = normalizeSrc(`fighters/${imageName}`);
+          atlasJson.meta.image = path.basename(atlasJson.meta.image);
         }
 
         await fs.writeFile(atlasPath, `${JSON.stringify(atlasJson, null, 2)}\n`, 'utf8');

@@ -2,10 +2,12 @@ import { test, expect } from '@playwright/test';
 import { AssetPack } from '@assetpack/core';
 import { PNG } from 'pngjs';
 import { promises as fs } from 'node:fs';
+import { spawn } from 'node:child_process';
 import os from 'node:os';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { createAssetPackConfig } from '../assetpack.config.mjs';
+import { runFighterAssetValidation } from '../src/renderer/parts/validateFighterAssets.js';
 
 const CURRENT_FILE = fileURLToPath(import.meta.url);
 const CURRENT_DIR = path.dirname(CURRENT_FILE);
@@ -26,6 +28,8 @@ const PART_SPECS = {
 } as const;
 
 const UNIQUE_HEAD_RGB = { r: 255, g: 0, b: 255 } as const;
+const TINT_NEUTRAL_RGB = { r: 245, g: 245, b: 245 } as const;
+const OUTLINE_RGB = { r: 16, g: 16, b: 16 } as const;
 
 type Rgb = {
   readonly r: number;
@@ -65,11 +69,34 @@ async function createReplacementRawPack(tempRoot: string): Promise<string> {
   for (const characterId of CHARACTER_IDS) {
     const characterDir = path.join(rawRoot, 'fighters{m}', `${characterId}{tps}`);
 
-    await writePng(path.join(characterDir, 'head.png'), PART_SPECS.head.width, PART_SPECS.head.height, () => UNIQUE_HEAD_RGB);
+    await writePng(path.join(characterDir, 'head.png'), PART_SPECS.head.width, PART_SPECS.head.height, (x, y) => {
+      const withinHeadCircle = (x - 80) * (x - 80) + (y - 80) * (y - 80) <= 54 * 54;
+      if (!withinHeadCircle) {
+        return null;
+      }
+      if (x >= 70 && x <= 89 && y >= 70 && y <= 89) {
+        return UNIQUE_HEAD_RGB;
+      }
+      return OUTLINE_RGB;
+    });
 
-    await writePng(path.join(characterDir, 'body.png'), PART_SPECS.body.width, PART_SPECS.body.height, () => ({ r: 0, g: 255, b: 255 }));
+    await writePng(path.join(characterDir, 'body.png'), PART_SPECS.body.width, PART_SPECS.body.height, (x, y) => {
+      const inside = x >= 36 && x <= 123 && y >= 34 && y <= 131;
+      if (!inside) {
+        return null;
+      }
+      const isOutline = x <= 39 || x >= 120 || y <= 37 || y >= 128;
+      return isOutline ? OUTLINE_RGB : TINT_NEUTRAL_RGB;
+    });
 
-    const limbDraw = (): Rgb => ({ r: 0, g: 255, b: 0 });
+    const limbDraw = (x: number, y: number): Rgb | null => {
+      const inside = x >= 24 && x <= 39 && y >= 8 && y <= 63;
+      if (!inside) {
+        return null;
+      }
+      const isOutline = x <= 25 || x >= 38 || y <= 9 || y >= 62;
+      return isOutline ? OUTLINE_RGB : TINT_NEUTRAL_RGB;
+    };
 
     await writePng(path.join(characterDir, 'arm_l.png'), PART_SPECS.arm_l.width, PART_SPECS.arm_l.height, limbDraw);
     await writePng(path.join(characterDir, 'arm_r.png'), PART_SPECS.arm_r.width, PART_SPECS.arm_r.height, limbDraw);
@@ -78,6 +105,44 @@ async function createReplacementRawPack(tempRoot: string): Promise<string> {
   }
 
   return rawRoot;
+}
+
+async function assertReplacementPackValid(rawEntry: string): Promise<void> {
+  const validation = await runFighterAssetValidation({
+    rootDir: path.join(rawEntry, 'fighters{m}'),
+  });
+
+  if (!validation.ok) {
+    throw new Error(`replacement raw pack violates fighter asset contract:\n${validation.report}`);
+  }
+}
+
+async function runRepoCommand(command: string, args: readonly string[]): Promise<string> {
+  return await new Promise<string>((resolve, reject) => {
+    const child = spawn(command, [...args], {
+      cwd: REPO_ROOT,
+      stdio: ['ignore', 'pipe', 'pipe'],
+      shell: process.platform === 'win32',
+    });
+
+    let stdout = '';
+    let stderr = '';
+
+    child.stdout.on('data', (chunk: unknown) => {
+      stdout += chunk.toString();
+    });
+    child.stderr.on('data', (chunk: unknown) => {
+      stderr += chunk.toString();
+    });
+    child.on('error', reject);
+    child.on('exit', (code) => {
+      if (code === 0) {
+        resolve(stdout);
+        return;
+      }
+      reject(new Error(`${command} ${args.join(' ')} failed (${String(code)}): ${stderr || stdout}`));
+    });
+  });
 }
 
 async function generateReplacementAssets(tempRoot: string, rawEntry: string): Promise<string> {
@@ -177,6 +242,7 @@ test('replacement asset pack renders in Chromium via real AssetPack->Assets->ren
 
   const tempRoot = await fs.mkdtemp(path.join(os.tmpdir(), 'todo-12-replacement-pack-'));
   const rawEntry = await createReplacementRawPack(tempRoot);
+  await assertReplacementPackValid(rawEntry);
   const generatedAssetsDir = await generateReplacementAssets(tempRoot, rawEntry);
   const restorePublicAssets = await swapPublicAssets(generatedAssetsDir);
 
@@ -213,9 +279,11 @@ test('replacement asset pack renders in Chromium via real AssetPack->Assets->ren
     const magentaPixels = countNearColorPixels(screenshotImage, UNIQUE_HEAD_RGB, 28);
 
     expect(preloadWarnings).toEqual([]);
-    expect(magentaPixels).toBeGreaterThan(300);
+    // Marker survives sprite scaling/AA in the in-match camera; keep a conservative floor.
+    expect(magentaPixels).toBeGreaterThan(80);
   } finally {
     await restorePublicAssets();
+    await runRepoCommand('node', ['scripts/assets/verify-assets-determinism.mjs']);
     await fs.rm(tempRoot, { recursive: true, force: true });
   }
 });

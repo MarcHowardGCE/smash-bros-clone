@@ -125,24 +125,20 @@ const navigateFixtureHarness = async (page: import('@playwright/test').Page, ext
   }, { timeout: 20_000 });
 };
 
-test.beforeAll(async () => {
+test.beforeAll(async ({}, testInfo) => {
   await ensureDirs();
-  if (UPDATE_BASELINES) {
-  await fs.writeFile(
-    REPORT_PATH,
-    '# F3 visual QA report\n\n- mode: baseline-generation (UPDATE_BASELINES=1)\n- hook: query-gated fixture harness at /?e2e-fixture=1 (plus e2e-force-webgl=1 for draw-call measurement), exposed via window.__smashE2E\n',
-    'utf8',
-  );
-  return;
-}
+  const shouldWriteHeader = testInfo.project.name.includes('dpr-1');
+  if (!shouldWriteHeader) {
+    return;
+  }
 
-  try {
-    const current = await fs.readFile(REPORT_PATH, 'utf8');
-    if (current.includes('- mode: baseline-compare')) {
-      return;
-    }
-  } catch {
-    // write fresh report header below
+  if (UPDATE_BASELINES) {
+    await fs.writeFile(
+      REPORT_PATH,
+      '# F3 visual QA report\n\n- mode: baseline-generation (UPDATE_BASELINES=1)\n- hook: query-gated fixture harness at /?e2e-fixture=1 (plus e2e-force-webgl=1 for draw-call measurement), exposed via window.__smashE2E\n',
+      'utf8',
+    );
+    return;
   }
 
   await fs.writeFile(
@@ -164,6 +160,7 @@ test('captures fixture matrix and compares against committed baselines', async (
     const win = window as Window & { __smashE2E?: SmashE2EApi };
     return win.__smashE2E?.getRendererMode() ?? 'polygon';
   });
+  expect(mode, `${dprTag} fixture harness must run in sprite mode`).toBe('sprite');
   await appendReport(`- ${dprTag}: renderer mode=${mode}`);
 
   for (const fixture of FIXTURES) {

@@ -124,7 +124,7 @@
   "meta": {
     "app": "http://github.com/pixijs/assetpack",
     "version": "1.0",
-    "image": "/assets/fighters/all-rounder@2x.webp",
+    "image": "all-rounder@2x.webp",
     "format": "RGBA8888",
     "size": {
       "w": 144,

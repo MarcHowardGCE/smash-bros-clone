@@ -20,6 +20,7 @@ const assetPackModulePath = requireFromClient.resolve('@assetpack/core');
 const { AssetPack } = await import(pathToFileURL(assetPackModulePath).href);
 
 const CHARACTER_IDS = ['all-rounder', 'abe-lincoln', 'swift'];
+const LINE_ENDING_INSENSITIVE_EXTENSIONS = new Set(['.json', '.md', '.txt', '.js', '.mjs', '.cjs', '.ts', '.tsx', '.yml', '.yaml']);
 const FRAME_EXPECTATIONS = {
   head: { w: 160, h: 160 },
   body: { w: 160, h: 160 },
@@ -94,9 +95,10 @@ async function listFilesWithHashes(rootDir) {
       }
 
       const data = await fs.readFile(absolutePath);
+      const relativePath = path.relative(rootDir, absolutePath).replace(/\\/g, '/');
       output.push({
-        relativePath: path.relative(rootDir, absolutePath).replace(/\\/g, '/'),
-        hash: createHash('sha256').update(data).digest('hex'),
+        relativePath,
+        hash: hashForDeterminism(relativePath, data),
       });
     }
   }
@@ -104,6 +106,19 @@ async function listFilesWithHashes(rootDir) {
   await walk(rootDir);
   output.sort((a, b) => a.relativePath.localeCompare(b.relativePath));
   return output;
+}
+
+function hashForDeterminism(relativePath, data) {
+  const extension = path.extname(relativePath).toLowerCase();
+
+  if (LINE_ENDING_INSENSITIVE_EXTENSIONS.has(extension)) {
+    const normalized = data
+      .toString('utf8')
+      .replace(/\r\n/g, '\n');
+    return createHash('sha256').update(normalized, 'utf8').digest('hex');
+  }
+
+  return createHash('sha256').update(data).digest('hex');
 }
 
 async function assertAtlasContract(outputDir) {

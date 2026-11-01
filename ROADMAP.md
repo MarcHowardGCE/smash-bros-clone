@@ -10,41 +10,42 @@ The engine and netcode here are production-quality: a 25-state FSM per fighter, 
 | ------------------ | -------------------------------------------------------------------------------------------------------------------------------------- | ------ |
 | Engine / physics   | 25-state FSM, 22 moves, hitlag/hitstun, real knockback formula                                                                         | ★★★★☆  |
 | Netcode            | Client prediction, server reconciliation, interpolation buffer                                                                         | ★★★★☆  |
-| Rendering          | Part-based polygon renderer; hit flash, screen shake, impact sparks, shield bubble, damage% color, per-move poses, KO tumble/stars     | ★★★★☆  |
+| Rendering          | Part-based sprite renderer with polygon fallback; hit flash, screen shake, impact sparks, shield bubble, damage% color, per-move poses, KO tumble/stars | ★★★★☆  |
 | Audio              | AudioManager with `playTrack`/`stopCurrentTrack`/`setVolume`; 6 stage BGM tracks + main-menu + game-over loaded; autoplay-policy retry | ★★★★☆  |
 | Input              | Solid bitmask foundation; gamepad support shipped; no remapping UI                                                                     | ★★★☆☆  |
 | UI/UX              | Functional prototype; raw `innerHTML`, text stock icons; stage-select UI present                                                       | ★★★☆☆  |
-| Content            | 2 fighters (All-Rounder + Abe Lincoln), 6 stages with backgrounds and music, stock match only                                          | ★★★★☆  |
+| Content            | 3 fighters (All-Rounder + Abe Lincoln + Swift), 6 stages with backgrounds and music, stock match only                                   | ★★★★☆  |
 | Meta / persistence | None — no accounts, no replays, no settings                                                                                            | ★☆☆☆☆  |
 
 ---
 
 ## 🎨 Visuals
 
-The renderer (`apps/client`) has received significant polish through T9-T20. The architecture is now part-based and renderer-agnostic — `FighterRenderer` delegates all drawing to an `IPartRenderer` contract (`apps/client/src/renderer/parts/IPartRenderer.ts`), with a `PolygonPartRenderer` as the current concrete backend and a `SpritePartRenderer` stub ready for a future art pass.
+The renderer (`apps/client`) has received significant polish through T9-T20 and the cartoon asset pipeline. The architecture is part-based and renderer-agnostic. `FighterRenderer` delegates drawing to an `IPartRenderer` contract (`apps/client/src/renderer/parts/IPartRenderer.ts`), using `SpritePartRenderer` for sprite atlas rendering and `PolygonPartRenderer` as a fallback via `?renderer=polygon`.
 
 ### Characters
 
-**What's shipped (T9-T20):**
+**What's shipped:**
 
-- Part-based renderer abstraction — `FighterRenderer` delegates to `PolygonPartRenderer` via `IPartRenderer` contract; a `SpritePartRenderer` stub exists for future sprite atlas work (`apps/client/src/renderer/parts/SpritePartRenderer.ts`)
-- Per-move poses — `getAnimationPose` now accepts `currentMoveId`; all 22 `MoveId` values have distinct keyframe entries differing by ≥0.2 radians on at least one limb angle (`apps/client/src/renderer/animations.ts`)
-- Hit flash — `FighterRenderer.startHitFlash()` applies a golden-yellow tint (`0xFFDD44`) to the part renderer container for 4 frames on every connecting hit (`apps/client/src/renderer/FighterRenderer.ts:110-121`)
-- Impact sparks — `ImpactSpark` radiates 6 white circles from the hit world position over 10 frames, auto-cleaned after expiry (`apps/client/src/renderer/effects/ImpactSpark.ts`)
-- Screen shake — `Camera.shake(knockbackMagnitude)` applies a decaying random offset for 8-15 frames, clamped to 20px max, skipping hits below a threshold of 5 to avoid shaking on pummels (`apps/client/src/renderer/Camera.ts:54`)
-- Shield bubble — `updateShieldBubble()` draws a semi-transparent circle (radius 36, alpha 0.4) color-cycling from blue (`0x4488ff`) at full health to red (`0xff2222`) near zero; disappears immediately when `isShielding` is false (`apps/client/src/renderer/FighterRenderer.ts:142-155`)
-- KO tumble/star effect — `KOEffect` rotates the fighter container 18°/frame for 40 frames and spawns 8 star particles at 45° spacing that fade to alpha 0; wired via `updateKOEffect()` on `isKnockedOut` transitions (`apps/client/src/renderer/FighterRenderer.ts:124-137`, `apps/client/src/renderer/KOEffect.ts`)
+- Cartoon sprite pipeline: `SpritePartRenderer` renders character cutouts with multi-slot tinting and hit-flash color replacement via AssetPack texture atlases (`apps/client/public/assets/fighters/`). All 3 fighters (`all-rounder`, `abe-lincoln`, `swift`) render cartoon sprites. (Art note: current assets are script-authored in-repo placeholders rather than final hand-drawn production art).
+- Part-based renderer abstraction: `FighterRenderer` delegates to `IPartRenderer` backends, switching dynamically between sprite rendering and polygon fallback (`apps/client/src/renderer/parts/index.ts`).
+- Per-move poses: `getAnimationPose` accepts `currentMoveId`. All 22 `MoveId` values have distinct keyframe entries differing by ≥0.2 radians on at least one limb angle (`apps/client/src/renderer/animations.ts`).
+- Hit flash: golden-yellow tint (`0xFFDD44`) applied for 4 frames on every connecting hit (`apps/client/src/renderer/FighterRenderer.ts:110-121`).
+- Impact sparks: `ImpactSpark` radiates 6 white circles from the hit world position over 10 frames, auto-cleaned after expiry (`apps/client/src/renderer/effects/ImpactSpark.ts`).
+- Screen shake: `Camera.shake(knockbackMagnitude)` applies a decaying random offset for 8-15 frames, clamped to 20px max, skipping hits below a threshold of 5 to avoid shaking on pummels (`apps/client/src/renderer/Camera.ts:54`).
+- Shield bubble: `updateShieldBubble()` draws a semi-transparent circle (radius 36, alpha 0.4) color-cycling from blue (`0x4488ff`) at full health to red (`0xff2222`) near zero; disappears immediately when `isShielding` is false (`apps/client/src/renderer/FighterRenderer.ts:142-155`).
+- KO tumble/star effect: `KOEffect` rotates the fighter container 18°/frame for 40 frames and spawns 8 star particles at 45° spacing that fade to alpha 0; wired via `updateKOEffect()` on `isKnockedOut` transitions (`apps/client/src/renderer/FighterRenderer.ts:124-137`, `apps/client/src/renderer/KOEffect.ts`).
 
 **Still missing:**
 
-- Sprite sheets or vector art — every fighter is still a pentagon + circles + rectangles (the `SpritePartRenderer` contract exists but has no art assets yet)
-- **Sprite specifications:** A comprehensive generation guide exists at [`SPRITE-GENERATION-GUIDE.md`](./SPRITE-GENERATION-GUIDE.md) covering all 22 moves, 4 player-slot color variants, VFX frames, and UI elements with AI-generation prompts ready for artist handoff
+- Final production art: hand-drawn character art to replace the script-authored placeholder sprites. See `docs/assets/REPLACING-FIGHTER-ART.md` for specifications and the drop-in replacement workflow.
+- **Sprite specifications:** A comprehensive generation guide exists at [`SPRITE-GENERATION-GUIDE.md`](./SPRITE-GENERATION-GUIDE.md) covering all 22 moves, 4 player-slot color variants, VFX frames, and UI elements with AI-generation prompts ready for artist handoff.
 
 **Existing hooks (unchanged):**
 
-- `FighterRenderer.redraw()` remains the sole draw call — swap `PolygonPartRenderer` for `SpritePartRenderer` via the `createPartRenderer` factory (`apps/client/src/renderer/parts/index.ts`) to sample a sprite atlas, no `FighterRenderer` rewrite needed
-- `PlayerState.currentMoveId` is tracked and passed to the renderer — per-move art now keys off it
-- `HitEventData` in `StateSnapshot.hitEvents` is the event source for all client-side hit effects
+- `FighterRenderer.redraw()` remains the sole draw call. Swapping between `SpritePartRenderer` and `PolygonPartRenderer` happens via `createPartRenderer` (`apps/client/src/renderer/parts/index.ts`).
+- `PlayerState.currentMoveId` is tracked and passed to the renderer. Per-move art keys off it.
+- `HitEventData` in `StateSnapshot.hitEvents` is the event source for all client-side hit effects.
 
 ### Stage
 
@@ -251,7 +252,7 @@ No persistence exists today. This is the lowest priority but required for a publ
 | ---------- | -------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------- |
 | **Low**    | ~~Short hop (wire `JumpsquatState`)~~ ✅ · ~~Landing lag~~ ✅ · ~~Shield break stun~~ ✅ · ~~SFX (5 clips)~~ ✅      | ~~Damage % color progression~~ ✅ · Blast-zone edge glow                         |
 | **Medium** | ~~Smash charge~~ ✅ · ~~Grab victim pinning + pummel/throw~~ ✅ · ~~Stage background art~~ ✅ · ~~Shield bubble~~ ✅ | ~~Down Special counter logic~~ ✅ · Reconnection handling · Settings persistence |
-| **High**   | Sprite art for fighters · Additional fighter (full move set) · Additional stage                                      | Ranked / matchmaking · Replays · ~~Ledge grab~~ ✅ · ~~Audio system + BGM~~ ✅   |
+| **High**   | ~~Sprite art for fighters (script-authored placeholders)~~ ✅ · Additional fighter (full move set) · Additional stage | Ranked / matchmaking · Replays · ~~Ledge grab~~ ✅ · ~~Audio system + BGM~~ ✅   |
 
 ### ✅ CPU opponents (Implemented — 2026-08-08)
 

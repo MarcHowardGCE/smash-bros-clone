@@ -5,7 +5,7 @@
  * PixiJS Container. Each frame, {@link FighterRenderer.update} drives position,
  * direction, invincibility flicker, hit-flash tint, shield bubble, and the
  * KO tumble + star-burst effect. Geometry is delegated to an {@link IPartRenderer}
- * implementation (currently {@link PolygonPartRenderer}).
+ * implementation ({@link SpritePartRenderer} with {@link PolygonPartRenderer} fallback).
  */
 import { Container, Graphics } from 'pixi.js';
 import type { PlayerState, CharacterId } from '@smash/shared';

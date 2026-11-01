@@ -11,14 +11,11 @@ const DEFAULT_CHARACTER_ID: CharacterId = 'all-rounder';
  * Factory for creating part renderers.
  * 
  * Routes to the appropriate renderer implementation based on mode:
- * - 'polygon': Uses PolygonPartRenderer (current production mode)
- * - 'sprite': Uses SpritePartRenderer (future sprite-based rendering)
+ * - 'polygon': Uses PolygonPartRenderer (polygon fallback mode)
+ * - 'sprite': Uses SpritePartRenderer (sprite-based rendering with atlas textures)
  * 
- * Default mode is 'polygon' to maintain backward compatibility.
- * Swapping to sprites later requires:
- * 1. Supplying sprite art assets
- * 2. Changing this factory call to mode: 'sprite'
- * 3. No other code changes needed
+ * Default mode is 'polygon' when called without an explicit mode argument,
+ * though runtime fighter rendering defaults to 'sprite' via bootstrapFighterAssets.
  * 
  * @param mode - Renderer mode: 'polygon' (default) or 'sprite'
  * @param slotIndex - Fighter slot index (0-3) for pattern/color selection

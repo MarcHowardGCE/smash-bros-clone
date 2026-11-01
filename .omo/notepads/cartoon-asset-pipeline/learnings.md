@@ -34,3 +34,9 @@ _Auto-scaffolded by /start-work. Append new entries below - never overwrite._
 - Todo 12 animation coverage: derive coverage sets directly from exported enums (`PlayerStateEnum`, `MoveId`) and assert totals/contracts explicitly (`25`, `22`, `47`) so enum drift fails loudly; assert `MoveId.LEDGE_ATTACK` exclusion by name rather than by index/length.
 - Todo 12 AIR_ATTACK nuance: `getAnimationPose` aliases `AIR_ATTACK -> ATTACK`, so table entry coverage must be explicit (`ANIMATIONS['AIR_ATTACK']`) and recorded as dead-via-alias, otherwise mapped-count assertions can pass without touching the entry.
 - Todo 12 swap proof: browser-level replaceability can be proven without production code changes by generating temp replacement raw assets, running AssetPack in-test, hot-swapping `public/assets` with guaranteed restore in `finally`, and asserting both no preload fallback warning and replacement-color pixels in screenshot.
+- Todo 14 documentation guard: keep the artist-facing numeric table in `docs/assets/REPLACING-FIGHTER-ART.md` mechanically synced to `assetContract.ts` via a parser-based Vitest; this turns silent docs drift into deterministic CI failure.
+- Todo 14 evidence workflow: capture both happy-path doc-follow execution and a deliberate one-number perturbation failure/recovery cycle in the same evidence file to prove the drift test is active rather than ceremonial.
+
+## Todo 13
+- createApp.ts:67 uses new URL(...).pathname -> '/C:/...' on Windows: express.static + SPA catch-all both 404 on Windows production. Real bug (should use fileURLToPath); out of scope. createApp.assets.test.ts is describe.skipIf(win32). Evidence captured by patching gitignored apps/server/dist.
+- On POSIX: atlas json -> application/json, png -> image/png, missing -> 200 text/html (catch-all).

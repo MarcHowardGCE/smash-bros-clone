@@ -18,6 +18,10 @@ BUGS.md
 /playwright-report
 test-results.json
 
+# AssetPack build cache
+/apps/client/.assetpack/
+.assetpack/
+
 # Stray QA screenshots
 /lincoln-live-manual2.png
 /character-select-*.png

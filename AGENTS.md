@@ -109,11 +109,30 @@ pnpm install
 # Start server + client, open browser, clean up on exit (recommended)
 just play
 
-# Run all unit tests (regression gate — must exit 0 before any commit)
+# Run all unit tests (regression gate: must exit 0 before any commit)
 pnpm test
 
 # Build all packages in dependency order
 pnpm build
+
+# Run Playwright end-to-end tests
+pnpm test:e2e
+```
+
+### Useful asset and renderer commands
+
+```bash
+# Bypass AssetPack generation during build or test runs
+SKIP_ASSETPACK=1 pnpm build
+
+# Regenerate placeholder raw part PNGs for fighters
+node scripts/assets/generate-all-rounder-parts.mjs
+
+# Verify asset generation determinism and atlas contracts
+node scripts/assets/verify-assets-determinism.mjs
+
+# Runtime polygon renderer kill-switch (append to browser URL)
+http://localhost:5173/?renderer=polygon
 ```
 
 ### All `just` commands
@@ -141,7 +160,7 @@ just logs       # tail live server logs
 
 3. **Override moves** (optional) in `packages/engine/src/moves/`. Create a file analogous to `lincoln.ts`. Call `getMoveDataForCharacter(characterId, moveId)` in `packages/engine/src/moves/index.ts` to route to your overrides.
 
-4. **Add renderer visuals** in `apps/client/src/renderer/`. Create a character-specific accessory/animation file (see `lincolnAccessories.ts` and `lincolnAnimations.ts` for reference). Wire it into `FighterRenderer.ts`.
+4. **Add renderer visuals and assets** in `apps/client/`. Add the raw cutouts to `raw-assets/fighters{m}/<characterId>{tps}/` with the 6 contracted filenames (`head.png`, `body.png`, `arm_l.png`, `arm_r.png`, `leg_l.png`, `leg_r.png`) following `docs/assets/REPLACING-FIGHTER-ART.md`. Update `apps/client/src/renderer/parts/assetContract.ts` and `apps/client/src/renderer/fighterAssets.ts` to include the new fighter ID. Build or start the dev server to package sprite atlases into `apps/client/public/assets/fighters/`. If custom accessories or animation poses are needed, create a character-specific file (see `lincolnAccessories.ts` and `lincolnAnimations.ts` for reference) and wire it into `FighterRenderer.ts`.
 
 5. **Write tests** covering frame-data validity (see `packages/engine/src/characters/characters.test.ts`) and any custom move overrides (see `packages/engine/src/moves/lincoln.test.ts`).
 

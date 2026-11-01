@@ -1,0 +1,38 @@
+﻿GET /assets/fighters/all-rounder@2x.png.json -> 200
+  Connection: keep-alive
+  Keep-Alive: timeout=5
+  Accept-Ranges: bytes
+  Content-Length: 2280
+  Cache-Control: public, max-age=0
+  Content-Type: application/json; charset=utf-8
+  Date: Sun, 01 Nov 2026 00:13:41 GMT
+  ETag: W/"8e8-1a194720e9a"
+  Last-Modified: Sun, 01 Nov 2026 00:11:05 GMT
+  X-Powered-By: Express
+GET /assets/fighters/all-rounder@2x.png -> 200
+  Connection: keep-alive
+  Keep-Alive: timeout=5
+  Accept-Ranges: bytes
+  Content-Length: 635
+  Cache-Control: public, max-age=0
+  Content-Type: image/png
+  Date: Sun, 01 Nov 2026 00:13:41 GMT
+  ETag: W/"27b-1a1946febe0"
+  Last-Modified: Sun, 01 Nov 2026 00:08:45 GMT
+  X-Powered-By: Express
+GET /assets/does-not-exist.json -> 200
+  Connection: keep-alive
+  Keep-Alive: timeout=5
+  Accept-Ranges: bytes
+  Content-Length: 971
+  Cache-Control: public, max-age=0
+  Content-Type: text/html; charset=utf-8
+  Date: Sun, 01 Nov 2026 00:13:41 GMT
+  ETag: W/"3cb-1a1947420d3"
+  Last-Modified: Sun, 01 Nov 2026 00:13:20 GMT
+  X-Powered-By: Express
+
+FAILURE QA: atlas removed from served dist -> GET all-rounder@2x.png.json -> 200 Content-Type: text/html; charset=utf-8
+=> positive assertion toContain('application/json') FAILS (SPA fallback returned text/html). Atlas restored afterwards.
+
+NOTE: on Windows createApp.ts:67 (new URL(...).pathname -> '/C:/...') makes express.static 404 everything; this evidence was captured with apps/server/dist (gitignored build output) patched to a drive path. Test is skipped on win32 for that reason.

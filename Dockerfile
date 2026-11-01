@@ -16,7 +16,9 @@ COPY packages/ ./packages/
 COPY apps/ ./apps/
 COPY tsconfig.base.json tsconfig.json ./
 
-RUN pnpm build
+# Atlases are committed under apps/client/public/assets; raw-assets/ is not
+# copied into the image, so skip the AssetPack step.
+RUN SKIP_ASSETPACK=1 pnpm build
 
 EXPOSE 3001
 

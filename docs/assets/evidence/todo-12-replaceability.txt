@@ -1,0 +1,46 @@
+Todo 12 — Browser swap proof and exact animation coverage
+Date: 2026-10-31
+
+Scope
+- Added root `test:e2e` script.
+- Added exact enum-derived animation coverage test.
+- Added Playwright replacement-pack browser proof test.
+
+Implemented files
+- package.json
+- playwright.config.ts
+- apps/client/src/renderer/__tests__/animations.coverage.test.ts
+- apps/client/e2e/todo-12-swap-proof.spec.ts
+- docs/assets/evidence/todo-12-swap-proof.png
+
+Animation coverage evidence (Vitest)
+- Derived PlayerStateEnum values: 25
+- Derived MoveId values: 23
+- Explicitly excluded by name: MoveId.LEDGE_ATTACK
+- Derived attack move set count: 22
+- Total derived execution cases: 47 (25 + 22)
+- Classification assertion: 19 direct-mapped + 1 alias (AIR_ATTACK->ATTACK) + 5 IDLE fallbacks = 25
+- AIR_ATTACK table entry (`ANIMATIONS['AIR_ATTACK']`) directly exercised and recorded as dead-via-alias for `getAnimationPose` (current contract).
+
+Failure QA evidence (simulated in test)
+- Removed one move from derived attack move set (simulated with slice): total becomes 46; assertion path verifies mismatch.
+- Added fake 26th state (simulated append): classification sum becomes 26 and fails `== 25` guard.
+- Restored baseline by keeping all exported enums untouched.
+
+Browser swap proof evidence (Playwright, Chromium headless)
+- Test generates a temporary replacement raw pack (not committed art) in OS temp dir.
+- Test runs real AssetPack generation against that replacement raw pack.
+- Test swaps generated output into `apps/client/public/assets` for run only, then restores committed assets in `finally`.
+- Test drives real browser flow to local match and captures screenshot:
+  - docs/assets/evidence/todo-12-swap-proof.png
+- Test asserts sprite path actually rendered by:
+  - checking no `[fighterAssets] preload failed` warning appears,
+  - counting near-magenta pixels in screenshot (>300) from replacement head art.
+
+Gate results
+- `pnpm test` => PASS
+- `pnpm build` => PASS
+- `pnpm test:e2e` => PASS (todo-12-swap-proof spec)
+
+Notes
+- `node scripts/assets/verify-assets-determinism.mjs` passes only when committed atlas set is in canonical generated state; this run recorded both mismatch and pass states while restoring the tree. Final committed files do not include temporary replacement assets.

@@ -6,6 +6,7 @@
     "build": "pnpm -r build",
     "dev": "concurrently \"pnpm -F @smash/client dev\" \"pnpm -F @smash/server dev\"",
     "test": "pnpm -F @smash/engine test && pnpm -F @smash/server test && pnpm -F @smash/client test",
+    "test:e2e": "playwright test apps/client/e2e/todo-12-swap-proof.spec.ts",
     "lint": "pnpm -r lint",
     "start": "node apps/server/dist/index.js",
     "deploy:render": "echo 'Push to GitHub and connect repo to Render.com'",

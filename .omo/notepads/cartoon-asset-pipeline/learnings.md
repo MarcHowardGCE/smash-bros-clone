@@ -40,3 +40,9 @@ _Auto-scaffolded by /start-work. Append new entries below - never overwrite._
 ## Todo 13
 - createApp.ts:67 uses new URL(...).pathname -> '/C:/...' on Windows: express.static + SPA catch-all both 404 on Windows production. Real bug (should use fileURLToPath); out of scope. createApp.assets.test.ts is describe.skipIf(win32). Evidence captured by patching gitignored apps/server/dist.
 - On POSIX: atlas json -> application/json, png -> image/png, missing -> 200 text/html (catch-all).
+
+## F3 final-wave
+- Query-gated fixture harness in `main.ts` (`?e2e-fixture=1`) is the cleanest way to drive render-only baselines in Playwright without touching normal gameplay paths; expose a tiny test API on `window.__smashE2E` for deterministic fixture rendering and draw-call measurement.
+- Draw-call measurement in Pixi v8 should be explicit GL wrapping (`drawElements`, `drawElementsInstanced`, `drawArrays`, `drawArraysInstanced`) and recorded as a reported metric, not a pass/fail threshold.
+- Baseline generation should be hard-gated behind `UPDATE_BASELINES=1`; default compare runs must refuse missing baselines to prevent accidental regeneration drift.
+- AssetPack atlas JSON `meta.image` normalization must use `path.basename(...)` before prepending `/assets/fighters/` to avoid recursive `/assets/fighters//assets/fighters/...` path corruption that breaks sprite preload and silently forces polygon fallback.

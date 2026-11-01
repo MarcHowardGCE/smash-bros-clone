@@ -8,8 +8,13 @@ export default defineConfig({
     baseURL: 'http://localhost:5173',
     headless: true,
     browserName: 'chromium',
+    viewport: { width: 1280, height: 720 },
   },
-  projects: [{ name: 'chromium', use: { browserName: 'chromium' } }],
+  projects: [
+    { name: 'chromium-dpr-1', use: { browserName: 'chromium', deviceScaleFactor: 1 } },
+    { name: 'chromium-dpr-2', use: { browserName: 'chromium', deviceScaleFactor: 2 } },
+    { name: 'chromium-dpr-3', use: { browserName: 'chromium', deviceScaleFactor: 3 } },
+  ],
   reporter: [['list']],
   webServer: {
     command: 'pnpm dev',

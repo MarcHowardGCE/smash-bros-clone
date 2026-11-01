@@ -7,7 +7,7 @@ import type {
   PlayerId,
   StateSnapshot,
 } from "@smash/shared";
-import { STAGE } from "@smash/shared";
+import { MoveId, PHYSICS, STAGE } from "@smash/shared";
 import { STAGES, type StageConfig } from "./stages/stageConfig.js";
 import { GamepadPoller, GamepadPreferenceStore } from "@smash/gamepad-input";
 import { Application } from "pixi.js";
@@ -47,6 +47,50 @@ import {
 import { GameplaySfxRouter } from "./audio/GameplaySfxRouter.js";
 import { SfxManager } from "./audio/SfxManager.js";
 
+const E2E_FIXTURE_QUERY_KEY = "e2e-fixture";
+const E2E_FORCE_WEBGL_QUERY_KEY = "e2e-force-webgl";
+
+type E2EFixtureName =
+  | "neutral-idle"
+  | "hit-flash-slot-0"
+  | "hit-flash-slot-1"
+  | "hit-flash-slot-2"
+  | "hit-flash-slot-3"
+  | "lincoln-idle"
+  | "facing-flipped"
+  | "squash-stretch"
+  | "invincibility-alpha-0.4"
+  | "camera-scale-0.4";
+
+type E2EFixturePlayer = {
+  readonly id: PlayerId;
+  readonly slotIndex: number;
+  readonly characterId: CharacterId;
+  readonly x: number;
+  readonly y: number;
+  readonly facing: 1 | -1;
+  readonly state: string;
+  readonly stateFrame: number;
+  readonly isInvincible: boolean;
+  readonly moveId: MoveId | null;
+};
+
+declare global {
+  interface Window {
+    __smashE2E?: {
+      readonly ready: boolean;
+      renderFixture: (name: E2EFixtureName) => void;
+      measureDrawCalls: (name: E2EFixtureName) => {
+        readonly count: number;
+        readonly wrappedMethods: readonly string[];
+        readonly hasContext: boolean;
+      };
+      getRendererMode: () => "sprite" | "polygon";
+      getGameScale: () => { readonly x: number; readonly y: number };
+    };
+  }
+}
+
 // In production on Render, use the same domain. In dev, use localhost.
 const getDefaultServerUrl = () => {
   if (import.meta.env.DEV) {
@@ -73,6 +117,10 @@ let lastLocalSetup: {
 } | null = null;
 
 async function main() {
+  const urlParams = new URLSearchParams(window.location.search);
+  const e2eFixtureEnabled = urlParams.get(E2E_FIXTURE_QUERY_KEY) === "1";
+  const e2eForceWebgl = urlParams.get(E2E_FORCE_WEBGL_QUERY_KEY) === "1";
+
   injectStyles();
   const poller = new GamepadPoller();
   const store = new GamepadPreferenceStore(localStorage);
@@ -87,14 +135,24 @@ async function main() {
     antialias: true,
     resolution: window.devicePixelRatio || 1,
     autoDensity: true,
+    ...(e2eForceWebgl ? ({ preference: "webgl" } as const) : {}),
   });
 
-  const fighterAssets = await preloadFighterAssets();
+  let fighterAssets = await preloadFighterAssets();
+  if (e2eFixtureEnabled && fighterAssets.mode === "polygon") {
+    fighterAssets = await preloadFighterAssets({
+      locationSearch: "",
+      timeoutMs: 15_000,
+    });
+  }
+  if (e2eFixtureEnabled) {
+    app.ticker.stop();
+  }
 
   app.canvas.id = "game-canvas";
   document.body.appendChild(app.canvas);
   // Hide canvas until splash screen is dismissed to prevent game graphics showing behind splash
-  app.canvas.style.visibility = "hidden";
+  app.canvas.style.visibility = e2eFixtureEnabled ? "visible" : "hidden";
 
   function resize() {
     const scaleX = window.innerWidth / STAGE.WIDTH;
@@ -133,6 +191,221 @@ async function main() {
   setStageBackground(STAGES[0]!.backgroundImage);
 
   const fighterRenderers = new Map<PlayerId, FighterRenderer>();
+  const e2eRenderers = new Map<PlayerId, FighterRenderer>();
+  const glWrappedMethods = new Set<string>();
+  let drawCallCount = 0;
+
+  const getE2EHitFlashSlot = (fixture: E2EFixtureName): number | null => {
+    if (!fixture.startsWith("hit-flash-slot-")) {
+      return null;
+    }
+    const slot = Number.parseInt(fixture.slice("hit-flash-slot-".length), 10);
+    return Number.isNaN(slot) ? null : slot;
+  };
+
+  const buildE2EFixturePlayers = (fixture: E2EFixtureName): readonly E2EFixturePlayer[] => {
+    const basePlayers: E2EFixturePlayer[] = [
+      {
+        id: "e2e-p1",
+        slotIndex: 0,
+        characterId: "all-rounder",
+        x: 360,
+        y: 500,
+        facing: 1,
+        state: "IDLE",
+        stateFrame: 0,
+        isInvincible: false,
+        moveId: null,
+      },
+      {
+        id: "e2e-p2",
+        slotIndex: 1,
+        characterId: "all-rounder",
+        x: 520,
+        y: 500,
+        facing: 1,
+        state: "IDLE",
+        stateFrame: 0,
+        isInvincible: false,
+        moveId: null,
+      },
+      {
+        id: "e2e-p3",
+        slotIndex: 2,
+        characterId: "swift",
+        x: 680,
+        y: 500,
+        facing: 1,
+        state: "IDLE",
+        stateFrame: 0,
+        isInvincible: false,
+        moveId: null,
+      },
+      {
+        id: "e2e-p4",
+        slotIndex: 3,
+        characterId: "all-rounder",
+        x: 840,
+        y: 500,
+        facing: 1,
+        state: "IDLE",
+        stateFrame: 0,
+        isInvincible: false,
+        moveId: null,
+      },
+    ];
+
+    switch (fixture) {
+      case "lincoln-idle":
+        basePlayers[0] = { ...basePlayers[0]!, characterId: "abe-lincoln" };
+        return basePlayers;
+      case "facing-flipped":
+        return basePlayers.map((player) => ({ ...player, facing: -1 }));
+      case "squash-stretch":
+        return basePlayers.map((player) => ({
+          ...player,
+          state: "ATTACK",
+          stateFrame: 0,
+          moveId: MoveId.DOWN_SMASH,
+        }));
+      case "invincibility-alpha-0.4":
+        return basePlayers.map((player) => ({ ...player, isInvincible: true }));
+      case "camera-scale-0.4":
+        return [
+          { ...basePlayers[0]!, x: 200, y: 470 },
+          { ...basePlayers[1]!, x: 560, y: 500 },
+          { ...basePlayers[2]!, x: 920, y: 520 },
+          { ...basePlayers[3]!, x: 1280, y: 490 },
+        ];
+      default:
+        return basePlayers;
+    }
+  };
+
+  const destroyE2ERenderers = (): void => {
+    for (const [id, renderer] of e2eRenderers.entries()) {
+      renderer.destroy();
+      e2eRenderers.delete(id);
+    }
+  };
+
+  const renderE2EFixture = (fixture: E2EFixtureName, includeAppRender: boolean): void => {
+    destroyE2ERenderers();
+
+    if (fixture === "camera-scale-0.4") {
+      layers.game.scale.set(0.4);
+      layers.game.position.set(0, 0);
+    } else {
+      layers.game.scale.set(1);
+      layers.game.position.set(0, 0);
+    }
+
+    const fixturePlayers = buildE2EFixturePlayers(fixture);
+    const hitFlashSlot = getE2EHitFlashSlot(fixture);
+
+    for (const fixturePlayer of fixturePlayers) {
+      const renderer = new FighterRenderer(
+        layers.game,
+        fixturePlayer.slotIndex,
+        fixturePlayer.characterId,
+        {
+          mode: fighterAssets.mode,
+          textureProvider: fighterAssets.mode === "sprite" ? fighterAssets.provider : undefined,
+        },
+      );
+
+      renderer.update({
+        x: fixturePlayer.x,
+        y: fixturePlayer.y,
+        facing: fixturePlayer.facing,
+        isInvincible: fixturePlayer.isInvincible,
+        isKnockedOut: false,
+        isShielding: false,
+        shieldHealth: PHYSICS.SHIELD_MAX_HEALTH,
+        state: fixturePlayer.state,
+        stateFrame: fixturePlayer.stateFrame,
+        slotIndex: fixturePlayer.slotIndex,
+        currentMoveId: fixturePlayer.moveId,
+      });
+
+      if (hitFlashSlot !== null && fixturePlayer.slotIndex === hitFlashSlot) {
+        renderer.startHitFlash();
+      }
+
+      e2eRenderers.set(fixturePlayer.id, renderer);
+    }
+
+    if (includeAppRender) {
+      app.render();
+    }
+  };
+
+  const ensureGLDrawInstrumentation = (): WebGLRenderingContext | WebGL2RenderingContext | null => {
+    const rendererMaybeGl = app.renderer as unknown as { gl?: WebGLRenderingContext | WebGL2RenderingContext };
+    const gl = rendererMaybeGl.gl ?? null;
+    if (!gl) {
+      return null;
+    }
+
+    const wrapDrawMethod = (methodName: "drawElements" | "drawElementsInstanced" | "drawArrays" | "drawArraysInstanced") => {
+      const method = (gl as unknown as Record<string, unknown>)[methodName];
+      if (typeof method !== "function") {
+        return;
+      }
+
+      const wrappedMarker = `__smashWrapped_${methodName}`;
+      if ((method as unknown as Record<string, unknown>)[wrappedMarker] === true) {
+        glWrappedMethods.add(methodName);
+        return;
+      }
+
+      const original = method as (...args: unknown[]) => unknown;
+      const wrapped = function wrappedDraw(this: unknown, ...args: unknown[]): unknown {
+        drawCallCount += 1;
+        return original.apply(this, args);
+      };
+
+      (wrapped as unknown as Record<string, unknown>)[wrappedMarker] = true;
+      (gl as unknown as Record<string, unknown>)[methodName] = wrapped;
+      glWrappedMethods.add(methodName);
+    };
+
+    wrapDrawMethod("drawElements");
+    wrapDrawMethod("drawElementsInstanced");
+    wrapDrawMethod("drawArrays");
+    wrapDrawMethod("drawArraysInstanced");
+
+    return gl;
+  };
+
+  if (e2eFixtureEnabled) {
+    const e2eApi = {
+      ready: true,
+      renderFixture: (name: E2EFixtureName) => {
+        renderE2EFixture(name, true);
+      },
+      measureDrawCalls: (name: E2EFixtureName) => {
+        const gl = ensureGLDrawInstrumentation();
+        drawCallCount = 0;
+        renderE2EFixture(name, true);
+        return {
+          count: drawCallCount,
+          wrappedMethods: Array.from(glWrappedMethods).sort(),
+          hasContext: gl !== null,
+        } as const;
+      },
+      getRendererMode: () => fighterAssets.mode,
+      getGameScale: () => ({
+        x: layers.game.scale.x,
+        y: layers.game.scale.y,
+      }),
+    };
+
+    window.__smashE2E = e2eApi;
+    renderE2EFixture("neutral-idle", true);
+    return;
+  }
+
   const activeSparks: ImpactSpark[] = [];
 
   /** Process hit events: play SFX, flash defender, and spawn an impact spark. */
@@ -271,7 +544,6 @@ async function main() {
     tickSparks();
   };
 
-  const urlParams = new URLSearchParams(window.location.search);
   const roomCodeFromUrl = urlParams.get("room");
 
   const gameClient = new GameClient({

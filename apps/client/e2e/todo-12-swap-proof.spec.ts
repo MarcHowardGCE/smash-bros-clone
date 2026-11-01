@@ -161,7 +161,10 @@ function countNearColorPixels(image: PNG, target: Rgb, tolerance: number): numbe
   return count;
 }
 
-test('replacement asset pack renders in Chromium via real AssetPack->Assets->renderer pipeline', async ({ page }) => {
+test('replacement asset pack renders in Chromium via real AssetPack->Assets->renderer pipeline', async ({ page }, testInfo) => {
+  if (!testInfo.project.name.includes('dpr-1')) {
+    test.skip();
+  }
   test.setTimeout(120_000);
   const preloadWarnings: string[] = [];
   page.on('console', (message) => {

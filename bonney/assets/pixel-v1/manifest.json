@@ -1,0 +1,30 @@
+{
+  "tiles": {
+    "names": [
+      "quay-top",
+      "stone-fill",
+      "platform",
+      "water",
+      "crate",
+      "barrel",
+      "coin",
+      "transform-pickup"
+    ],
+    "cellHeight": 16,
+    "cellWidth": 16
+  },
+  "character": {
+    "productionReady": false,
+    "frames": [
+      "idle",
+      "run-study",
+      "jump-study"
+    ],
+    "cellHeight": 32,
+    "cellWidth": 32
+  },
+  "viewport": {
+    "height": 216,
+    "width": 384
+  }
+}

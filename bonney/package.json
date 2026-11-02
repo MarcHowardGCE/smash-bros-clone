@@ -1,0 +1,11 @@
+{
+  "name": "bonney-harbor-poc",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "start": "node server.mjs",
+    "dev": "node server.mjs",
+    "test": "node --test src/engine.test.mjs src/locomotion.test.mjs src/full-level.test.mjs src/rendering.test.mjs",
+    "check": "node --check src/level-data.mjs && node --check src/encounters.mjs && node --check src/full-level-art.mjs && node --check src/world-art.mjs && node --check src/locomotion.mjs && node --check src/engine.mjs && node --check src/game.mjs && node --check server.mjs"
+  }
+}

@@ -1,0 +1,97 @@
+{
+  "frames": [
+    {
+      "file": "egghead-baby-idle.png",
+      "anchor": {
+        "x": 16,
+        "y": 31
+      },
+      "powerUp": "egghead",
+      "age": "baby",
+      "frame": {
+        "x": 0,
+        "width": 32,
+        "height": 32,
+        "y": 0
+      }
+    },
+    {
+      "file": "egghead-teenage-idle.png",
+      "anchor": {
+        "x": 16,
+        "y": 31
+      },
+      "powerUp": "egghead",
+      "age": "teenage",
+      "frame": {
+        "x": 32,
+        "width": 32,
+        "height": 32,
+        "y": 0
+      }
+    },
+    {
+      "file": "egghead-adult-idle.png",
+      "anchor": {
+        "x": 16,
+        "y": 31
+      },
+      "powerUp": "egghead",
+      "age": "adult",
+      "frame": {
+        "x": 64,
+        "width": 32,
+        "height": 32,
+        "y": 0
+      }
+    },
+    {
+      "file": "captain-baby-idle.png",
+      "anchor": {
+        "x": 16,
+        "y": 31
+      },
+      "powerUp": "captain",
+      "age": "baby",
+      "frame": {
+        "x": 0,
+        "width": 32,
+        "height": 32,
+        "y": 32
+      }
+    },
+    {
+      "file": "captain-teenage-idle.png",
+      "anchor": {
+        "x": 16,
+        "y": 31
+      },
+      "powerUp": "captain",
+      "age": "teenage",
+      "frame": {
+        "x": 32,
+        "width": 32,
+        "height": 32,
+        "y": 32
+      }
+    },
+    {
+      "file": "captain-adult-idle.png",
+      "anchor": {
+        "x": 16,
+        "y": 31
+      },
+      "powerUp": "captain",
+      "age": "adult",
+      "frame": {
+        "x": 64,
+        "width": 32,
+        "height": 32,
+        "y": 32
+      }
+    }
+  ],
+  "cellWidth": 32,
+  "cellHeight": 32,
+  "status": "idle design studies, not animated"
+}

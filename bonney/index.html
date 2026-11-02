@@ -1,0 +1,22 @@
+<!doctype html>
+<html lang="en">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Bonney · Harbor Run</title><link rel="stylesheet" href="./style.css"></head>
+<body>
+<main>
+ <header><div><p class="eyebrow">HARBOR BREAKOUT · FULL LEVEL + TUTORIAL</p><h1>Bonney <span>Harbor Run</span></h1></div><span class="badge">32-BIT INSPIRED</span></header>
+ <section class="game-shell" aria-label="Bonney platformer">
+  <canvas width="768" height="432" tabindex="0" aria-label="Game. Arrow keys or A D to move, Space to jump, X to charge." aria-describedby="controls"></canvas>
+  <div id="overlay"><div class="overlay-card"><p class="eyebrow">A PIRATE HARBOR ADVENTURE</p><h2 id="overlay-title">Bonney: Harbor Run</h2><p id="overlay-text">Loading your voyage…</p><button id="play" disabled>Loading sprites…</button></div></div>
+ </section>
+ <div class="toolbar"><label>Course <select id="level-select"><option value="full">Harbor Breakout</option><option value="tutorial">Tutorial</option></select></label><p>Reach the pink flag. Every age has the same movement and abilities.</p><div><button id="sound" aria-pressed="false">Sound off</button><button id="pause">Pause</button><button id="restart">Restart</button></div></div>
+ <p id="objective" class="objective"></p><section id="controls" class="cards" aria-label="Controls and rules">
+  <article><h2>Explore</h2><p><kbd>←</kbd> <kbd>→</kbd> or <kbd>A</kbd> <kbd>D</kbd> Move<br><kbd>Space</kbd> Jump · <kbd>E</kbd> Switch · <kbd>P</kbd> Pause · <kbd>R</kbd> Restart</p></article>
+  <article><h2><span class="dot purple"></span> Egghead</h2><p>Jump, then press <kbd>Space</kbd> again to use up to 5 seconds of flight fuel. Hold <kbd>Space</kbd> to rise; release to fall under gravity. Only lift uses fuel. Landing starts the 5-second cooldown.</p></article>
+  <article><h2><span class="dot green"></span> Pirate Captain</h2><p>Press <kbd>X</kbd> to charge as a cannonball. A new power-up replaces your current one and is ready immediately. Full recharge takes 5 seconds. Use a partially filled bar for a shorter ability.</p></article>
+  <article><h2>Three chances</h2><p>Adult → teenage → baby → out. Stomp enemies or charge through them. A fall costs one hit. In Harbor Breakout, defeat lets you retry from the checkpoint as adult; treasures and switches stay secured.</p></article>
+ </section>
+ <details class="field-guide"><summary>Enemy field guide</summary><p><b>Patrol:</b> stomp or cannonball. <b>Lookout:</b> watch the aim cue, dodge the shot, approach during recovery. <b>Shield:</b> bait its swing, then attack from behind or above. <b>Gull:</b> its warning marks a committed dive; move off that line.</p><p><b>E</b> operates purple switches while Egghead is equipped. Food restores one age stage. <b>R / Restart</b> resets the whole run; Continue from checkpoint preserves treasures and secured mechanisms after defeat.</p></details><p class="footnote">Early fan-game prototype · Keyboard / desktop browser · Refined pixel characters, harbor scenery, props, and animated guards; gameplay tuning continues.</p>
+ <p id="live" class="sr-only" aria-live="polite"></p>
+</main><script type="module" src="./src/game.mjs"></script>
+</body></html>

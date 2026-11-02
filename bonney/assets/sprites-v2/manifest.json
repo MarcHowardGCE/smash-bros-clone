@@ -1,0 +1,466 @@
+{
+  "cellWidth": 64,
+  "cellHeight": 64,
+  "worldWidth": 32,
+  "worldHeight": 32,
+  "anchor": {
+    "x": 32,
+    "y": 63
+  },
+  "poses": [
+    "idle",
+    "run-a",
+    "run-b",
+    "jump"
+  ],
+  "rows": [
+    "adult",
+    "teenage",
+    "baby"
+  ],
+  "outfits": {
+    "captain": {
+      "file": "captain-atlas.png",
+      "frames": [
+        {
+          "age": "adult",
+          "pose": "idle",
+          "file": "captain-adult-idle.png",
+          "sourceBounds": {
+            "x": 38,
+            "y": 8,
+            "width": 309,
+            "height": 452
+          },
+          "frame": {
+            "x": 0,
+            "y": 0,
+            "width": 64,
+            "height": 64
+          },
+          "scale": 0.13274336283185842
+        },
+        {
+          "age": "adult",
+          "pose": "run-a",
+          "file": "captain-adult-run-a.png",
+          "sourceBounds": {
+            "x": 407,
+            "y": 8,
+            "width": 320,
+            "height": 442
+          },
+          "frame": {
+            "x": 64,
+            "y": 0,
+            "width": 64,
+            "height": 64
+          },
+          "scale": 0.13274336283185842
+        },
+        {
+          "age": "adult",
+          "pose": "run-b",
+          "file": "captain-adult-run-b.png",
+          "sourceBounds": {
+            "x": 768,
+            "y": 8,
+            "width": 373,
+            "height": 456
+          },
+          "frame": {
+            "x": 128,
+            "y": 0,
+            "width": 64,
+            "height": 64
+          },
+          "scale": 0.13274336283185842
+        },
+        {
+          "age": "adult",
+          "pose": "jump",
+          "file": "captain-adult-jump.png",
+          "sourceBounds": {
+            "x": 1118,
+            "y": 6,
+            "width": 302,
+            "height": 379
+          },
+          "frame": {
+            "x": 192,
+            "y": 0,
+            "width": 64,
+            "height": 64
+          },
+          "scale": 0.13274336283185842
+        },
+        {
+          "age": "teenage",
+          "pose": "idle",
+          "file": "captain-teenage-idle.png",
+          "sourceBounds": {
+            "x": 67,
+            "y": 473,
+            "width": 250,
+            "height": 355
+          },
+          "frame": {
+            "x": 0,
+            "y": 64,
+            "width": 64,
+            "height": 64
+          },
+          "scale": 0.14084507042253522
+        },
+        {
+          "age": "teenage",
+          "pose": "run-a",
+          "file": "captain-teenage-run-a.png",
+          "sourceBounds": {
+            "x": 424,
+            "y": 476,
+            "width": 284,
+            "height": 351
+          },
+          "frame": {
+            "x": 64,
+            "y": 64,
+            "width": 64,
+            "height": 64
+          },
+          "scale": 0.14084507042253522
+        },
+        {
+          "age": "teenage",
+          "pose": "run-b",
+          "file": "captain-teenage-run-b.png",
+          "sourceBounds": {
+            "x": 762,
+            "y": 473,
+            "width": 338,
+            "height": 355
+          },
+          "frame": {
+            "x": 128,
+            "y": 64,
+            "width": 64,
+            "height": 64
+          },
+          "scale": 0.14084507042253522
+        },
+        {
+          "age": "teenage",
+          "pose": "jump",
+          "file": "captain-teenage-jump.png",
+          "sourceBounds": {
+            "x": 1122,
+            "y": 466,
+            "width": 273,
+            "height": 329
+          },
+          "frame": {
+            "x": 192,
+            "y": 64,
+            "width": 64,
+            "height": 64
+          },
+          "scale": 0.14084507042253522
+        },
+        {
+          "age": "baby",
+          "pose": "idle",
+          "file": "captain-baby-idle.png",
+          "sourceBounds": {
+            "x": 112,
+            "y": 834,
+            "width": 185,
+            "height": 243
+          },
+          "frame": {
+            "x": 0,
+            "y": 128,
+            "width": 64,
+            "height": 64
+          },
+          "scale": 0.14814814814814814
+        },
+        {
+          "age": "baby",
+          "pose": "run-a",
+          "file": "captain-baby-run-a.png",
+          "sourceBounds": {
+            "x": 434,
+            "y": 834,
+            "width": 216,
+            "height": 241
+          },
+          "frame": {
+            "x": 64,
+            "y": 128,
+            "width": 64,
+            "height": 64
+          },
+          "scale": 0.14814814814814814
+        },
+        {
+          "age": "baby",
+          "pose": "run-b",
+          "file": "captain-baby-run-b.png",
+          "sourceBounds": {
+            "x": 780,
+            "y": 838,
+            "width": 234,
+            "height": 240
+          },
+          "frame": {
+            "x": 128,
+            "y": 128,
+            "width": 64,
+            "height": 64
+          },
+          "scale": 0.14814814814814814
+        },
+        {
+          "age": "baby",
+          "pose": "jump",
+          "file": "captain-baby-jump.png",
+          "sourceBounds": {
+            "x": 1140,
+            "y": 818,
+            "width": 230,
+            "height": 234
+          },
+          "frame": {
+            "x": 192,
+            "y": 128,
+            "width": 64,
+            "height": 64
+          },
+          "scale": 0.14814814814814814
+        }
+      ]
+    },
+    "egghead": {
+      "file": "egghead-atlas.png",
+      "frames": [
+        {
+          "age": "adult",
+          "pose": "idle",
+          "file": "egghead-adult-idle.png",
+          "sourceBounds": {
+            "x": 51,
+            "y": 14,
+            "width": 313,
+            "height": 477
+          },
+          "frame": {
+            "x": 0,
+            "y": 0,
+            "width": 64,
+            "height": 64
+          },
+          "scale": 0.12578616352201258
+        },
+        {
+          "age": "adult",
+          "pose": "run-a",
+          "file": "egghead-adult-run-a.png",
+          "sourceBounds": {
+            "x": 395,
+            "y": 37,
+            "width": 346,
+            "height": 458
+          },
+          "frame": {
+            "x": 64,
+            "y": 0,
+            "width": 64,
+            "height": 64
+          },
+          "scale": 0.12578616352201258
+        },
+        {
+          "age": "adult",
+          "pose": "run-b",
+          "file": "egghead-adult-run-b.png",
+          "sourceBounds": {
+            "x": 788,
+            "y": 34,
+            "width": 355,
+            "height": 464
+          },
+          "frame": {
+            "x": 128,
+            "y": 0,
+            "width": 64,
+            "height": 64
+          },
+          "scale": 0.12578616352201258
+        },
+        {
+          "age": "adult",
+          "pose": "jump",
+          "file": "egghead-adult-jump.png",
+          "sourceBounds": {
+            "x": 1142,
+            "y": 29,
+            "width": 284,
+            "height": 377
+          },
+          "frame": {
+            "x": 192,
+            "y": 0,
+            "width": 64,
+            "height": 64
+          },
+          "scale": 0.12578616352201258
+        },
+        {
+          "age": "teenage",
+          "pose": "idle",
+          "file": "egghead-teenage-idle.png",
+          "sourceBounds": {
+            "x": 86,
+            "y": 507,
+            "width": 212,
+            "height": 336
+          },
+          "frame": {
+            "x": 0,
+            "y": 64,
+            "width": 64,
+            "height": 64
+          },
+          "scale": 0.1488095238095238
+        },
+        {
+          "age": "teenage",
+          "pose": "run-a",
+          "file": "egghead-teenage-run-a.png",
+          "sourceBounds": {
+            "x": 455,
+            "y": 512,
+            "width": 245,
+            "height": 331
+          },
+          "frame": {
+            "x": 64,
+            "y": 64,
+            "width": 64,
+            "height": 64
+          },
+          "scale": 0.1488095238095238
+        },
+        {
+          "age": "teenage",
+          "pose": "run-b",
+          "file": "egghead-teenage-run-b.png",
+          "sourceBounds": {
+            "x": 834,
+            "y": 516,
+            "width": 243,
+            "height": 331
+          },
+          "frame": {
+            "x": 128,
+            "y": 64,
+            "width": 64,
+            "height": 64
+          },
+          "scale": 0.1488095238095238
+        },
+        {
+          "age": "teenage",
+          "pose": "jump",
+          "file": "egghead-teenage-jump.png",
+          "sourceBounds": {
+            "x": 1165,
+            "y": 507,
+            "width": 236,
+            "height": 286
+          },
+          "frame": {
+            "x": 192,
+            "y": 64,
+            "width": 64,
+            "height": 64
+          },
+          "scale": 0.1488095238095238
+        },
+        {
+          "age": "baby",
+          "pose": "idle",
+          "file": "egghead-baby-idle.png",
+          "sourceBounds": {
+            "x": 87,
+            "y": 851,
+            "width": 188,
+            "height": 226
+          },
+          "frame": {
+            "x": 0,
+            "y": 128,
+            "width": 64,
+            "height": 64
+          },
+          "scale": 0.1592920353982301
+        },
+        {
+          "age": "baby",
+          "pose": "run-a",
+          "file": "egghead-baby-run-a.png",
+          "sourceBounds": {
+            "x": 452,
+            "y": 851,
+            "width": 200,
+            "height": 226
+          },
+          "frame": {
+            "x": 64,
+            "y": 128,
+            "width": 64,
+            "height": 64
+          },
+          "scale": 0.1592920353982301
+        },
+        {
+          "age": "baby",
+          "pose": "run-b",
+          "file": "egghead-baby-run-b.png",
+          "sourceBounds": {
+            "x": 810,
+            "y": 851,
+            "width": 204,
+            "height": 228
+          },
+          "frame": {
+            "x": 128,
+            "y": 128,
+            "width": 64,
+            "height": 64
+          },
+          "scale": 0.1592920353982301
+        },
+        {
+          "age": "baby",
+          "pose": "jump",
+          "file": "egghead-baby-jump.png",
+          "sourceBounds": {
+            "x": 1185,
+            "y": 841,
+            "width": 198,
+            "height": 225
+          },
+          "frame": {
+            "x": 192,
+            "y": 128,
+            "width": 64,
+            "height": 64
+          },
+          "scale": 0.1592920353982301
+        }
+      ]
+    }
+  },
+  "source": "built-in image generation + transparent component slicing / nearest-neighbor export"
+}

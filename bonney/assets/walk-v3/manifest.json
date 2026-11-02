@@ -1,0 +1,488 @@
+{
+  "cellWidth": 96,
+  "cellHeight": 64,
+  "columns": 6,
+  "rows": [
+    "adult",
+    "teenage",
+    "baby"
+  ],
+  "anchor": {
+    "x": 56,
+    "y": 63
+  },
+  "outfits": {
+    "captain": [
+      {
+        "age": "adult",
+        "column": 0,
+        "file": "captain-adult-walk-0.png",
+        "scale": 0.16666666666666666,
+        "faceX": 223.42293510324484,
+        "sourceBounds": {
+          "x": 13,
+          "y": 8,
+          "w": 306,
+          "h": 360
+        }
+      },
+      {
+        "age": "adult",
+        "column": 1,
+        "file": "captain-adult-walk-1.png",
+        "scale": 0.16666666666666666,
+        "faceX": 534.189367311072,
+        "sourceBounds": {
+          "x": 341,
+          "y": 6,
+          "w": 263,
+          "h": 354
+        }
+      },
+      {
+        "age": "adult",
+        "column": 2,
+        "file": "captain-adult-walk-2.png",
+        "scale": 0.16666666666666666,
+        "faceX": 797.9981343283582,
+        "sourceBounds": {
+          "x": 656,
+          "y": 6,
+          "w": 205,
+          "h": 355
+        }
+      },
+      {
+        "age": "adult",
+        "column": 3,
+        "file": "captain-adult-walk-3.png",
+        "scale": 0.16666666666666666,
+        "faceX": 1112.0444915254238,
+        "sourceBounds": {
+          "x": 904,
+          "y": 6,
+          "w": 324,
+          "h": 360
+        }
+      },
+      {
+        "age": "adult",
+        "column": 4,
+        "file": "captain-adult-walk-4.png",
+        "scale": 0.16666666666666666,
+        "faceX": 1433.3721934369603,
+        "sourceBounds": {
+          "x": 1237,
+          "y": 9,
+          "w": 260,
+          "h": 352
+        }
+      },
+      {
+        "age": "adult",
+        "column": 5,
+        "file": "captain-adult-walk-5.png",
+        "scale": 0.16666666666666666,
+        "faceX": 1682.8114155251142,
+        "sourceBounds": {
+          "x": 1540,
+          "y": 6,
+          "w": 210,
+          "h": 355
+        }
+      },
+      {
+        "age": "teenage",
+        "column": 0,
+        "file": "captain-teenage-walk-0.png",
+        "scale": 0.15772870662460567,
+        "faceX": 208.88968481375358,
+        "sourceBounds": {
+          "x": 20,
+          "y": 363,
+          "w": 286,
+          "h": 317
+        }
+      },
+      {
+        "age": "teenage",
+        "column": 1,
+        "file": "captain-teenage-walk-1.png",
+        "scale": 0.15772870662460567,
+        "faceX": 533.8719684151156,
+        "sourceBounds": {
+          "x": 352,
+          "y": 366,
+          "w": 244,
+          "h": 304
+        }
+      },
+      {
+        "age": "teenage",
+        "column": 2,
+        "file": "captain-teenage-walk-2.png",
+        "scale": 0.15772870662460567,
+        "faceX": 793.6215902495647,
+        "sourceBounds": {
+          "x": 654,
+          "y": 366,
+          "w": 205,
+          "h": 305
+        }
+      },
+      {
+        "age": "teenage",
+        "column": 3,
+        "file": "captain-teenage-walk-3.png",
+        "scale": 0.15772870662460567,
+        "faceX": 1100.5029023746702,
+        "sourceBounds": {
+          "x": 910,
+          "y": 367,
+          "w": 301,
+          "h": 315
+        }
+      },
+      {
+        "age": "teenage",
+        "column": 4,
+        "file": "captain-teenage-walk-4.png",
+        "scale": 0.15772870662460567,
+        "faceX": 1424.052662037037,
+        "sourceBounds": {
+          "x": 1242,
+          "y": 373,
+          "w": 249,
+          "h": 301
+        }
+      },
+      {
+        "age": "teenage",
+        "column": 5,
+        "file": "captain-teenage-walk-5.png",
+        "scale": 0.15772870662460567,
+        "faceX": 1677.7347055460264,
+        "sourceBounds": {
+          "x": 1536,
+          "y": 366,
+          "w": 207,
+          "h": 303
+        }
+      },
+      {
+        "age": "baby",
+        "column": 0,
+        "file": "captain-baby-walk-0.png",
+        "scale": 0.16744186046511628,
+        "faceX": 197.40904522613064,
+        "sourceBounds": {
+          "x": 41,
+          "y": 670,
+          "w": 214,
+          "h": 215
+        }
+      },
+      {
+        "age": "baby",
+        "column": 1,
+        "file": "captain-baby-walk-1.png",
+        "scale": 0.16744186046511628,
+        "faceX": 528.2598091198304,
+        "sourceBounds": {
+          "x": 365,
+          "y": 676,
+          "w": 216,
+          "h": 209
+        }
+      },
+      {
+        "age": "baby",
+        "column": 2,
+        "file": "captain-baby-walk-2.png",
+        "scale": 0.16744186046511628,
+        "faceX": 785.4248210023866,
+        "sourceBounds": {
+          "x": 655,
+          "y": 671,
+          "w": 180,
+          "h": 213
+        }
+      },
+      {
+        "age": "baby",
+        "column": 3,
+        "file": "captain-baby-walk-3.png",
+        "scale": 0.16744186046511628,
+        "faceX": 1093.0750577367205,
+        "sourceBounds": {
+          "x": 937,
+          "y": 675,
+          "w": 223,
+          "h": 209
+        }
+      },
+      {
+        "age": "baby",
+        "column": 4,
+        "file": "captain-baby-walk-4.png",
+        "scale": 0.16744186046511628,
+        "faceX": 1426.6285018270403,
+        "sourceBounds": {
+          "x": 1258,
+          "y": 675,
+          "w": 221,
+          "h": 211
+        }
+      },
+      {
+        "age": "baby",
+        "column": 5,
+        "file": "captain-baby-walk-5.png",
+        "scale": 0.16744186046511628,
+        "faceX": 1673.7458926615552,
+        "sourceBounds": {
+          "x": 1537,
+          "y": 672,
+          "w": 189,
+          "h": 212
+        }
+      }
+    ],
+    "egghead": [
+      {
+        "age": "adult",
+        "column": 0,
+        "file": "egghead-adult-walk-0.png",
+        "scale": 0.1507537688442211,
+        "faceX": 218.73097739573385,
+        "sourceBounds": {
+          "x": 13,
+          "y": 10,
+          "w": 366,
+          "h": 398
+        }
+      },
+      {
+        "age": "adult",
+        "column": 1,
+        "file": "egghead-adult-walk-1.png",
+        "scale": 0.1507537688442211,
+        "faceX": 518.5375396545646,
+        "sourceBounds": {
+          "x": 356,
+          "y": 18,
+          "w": 281,
+          "h": 393
+        }
+      },
+      {
+        "age": "adult",
+        "column": 2,
+        "file": "egghead-adult-walk-2.png",
+        "scale": 0.1507537688442211,
+        "faceX": 777.2815634728468,
+        "sourceBounds": {
+          "x": 631,
+          "y": 11,
+          "w": 209,
+          "h": 396
+        }
+      },
+      {
+        "age": "adult",
+        "column": 3,
+        "file": "egghead-adult-walk-3.png",
+        "scale": 0.1507537688442211,
+        "faceX": 1118.9084902543773,
+        "sourceBounds": {
+          "x": 904,
+          "y": 14,
+          "w": 352,
+          "h": 394
+        }
+      },
+      {
+        "age": "adult",
+        "column": 4,
+        "file": "egghead-adult-walk-4.png",
+        "scale": 0.1507537688442211,
+        "faceX": 1413.052389380531,
+        "sourceBounds": {
+          "x": 1248,
+          "y": 22,
+          "w": 256,
+          "h": 388
+        }
+      },
+      {
+        "age": "adult",
+        "column": 5,
+        "file": "egghead-adult-walk-5.png",
+        "scale": 0.1507537688442211,
+        "faceX": 1689.2332070272132,
+        "sourceBounds": {
+          "x": 1530,
+          "y": 11,
+          "w": 222,
+          "h": 395
+        }
+      },
+      {
+        "age": "teenage",
+        "column": 0,
+        "file": "egghead-teenage-walk-0.png",
+        "scale": 0.16722408026755853,
+        "faceX": 240.3407448582546,
+        "sourceBounds": {
+          "x": 49,
+          "y": 415,
+          "w": 292,
+          "h": 296
+        }
+      },
+      {
+        "age": "teenage",
+        "column": 1,
+        "file": "egghead-teenage-walk-1.png",
+        "scale": 0.16722408026755853,
+        "faceX": 536.2093308778392,
+        "sourceBounds": {
+          "x": 377,
+          "y": 419,
+          "w": 231,
+          "h": 292
+        }
+      },
+      {
+        "age": "teenage",
+        "column": 2,
+        "file": "egghead-teenage-walk-2.png",
+        "scale": 0.16722408026755853,
+        "faceX": 793.3075117370892,
+        "sourceBounds": {
+          "x": 638,
+          "y": 413,
+          "w": 202,
+          "h": 290
+        }
+      },
+      {
+        "age": "teenage",
+        "column": 3,
+        "file": "egghead-teenage-walk-3.png",
+        "scale": 0.16722408026755853,
+        "faceX": 1126.471363115693,
+        "sourceBounds": {
+          "x": 942,
+          "y": 415,
+          "w": 281,
+          "h": 299
+        }
+      },
+      {
+        "age": "teenage",
+        "column": 4,
+        "file": "egghead-teenage-walk-4.png",
+        "scale": 0.16722408026755853,
+        "faceX": 1428.6281287246723,
+        "sourceBounds": {
+          "x": 1273,
+          "y": 421,
+          "w": 206,
+          "h": 293
+        }
+      },
+      {
+        "age": "teenage",
+        "column": 5,
+        "file": "egghead-teenage-walk-5.png",
+        "scale": 0.16722408026755853,
+        "faceX": 1696.4195037507213,
+        "sourceBounds": {
+          "x": 1540,
+          "y": 417,
+          "w": 204,
+          "h": 289
+        }
+      },
+      {
+        "age": "baby",
+        "column": 0,
+        "file": "egghead-baby-walk-0.png",
+        "scale": 0.20224719101123595,
+        "faceX": 223.08685162846803,
+        "sourceBounds": {
+          "x": 77,
+          "y": 711,
+          "w": 191,
+          "h": 176
+        }
+      },
+      {
+        "age": "baby",
+        "column": 1,
+        "file": "egghead-baby-walk-1.png",
+        "scale": 0.20224719101123595,
+        "faceX": 522.2159887798036,
+        "sourceBounds": {
+          "x": 388,
+          "y": 711,
+          "w": 179,
+          "h": 176
+        }
+      },
+      {
+        "age": "baby",
+        "column": 2,
+        "file": "egghead-baby-walk-2.png",
+        "scale": 0.20224719101123595,
+        "faceX": 781.7615571776156,
+        "sourceBounds": {
+          "x": 649,
+          "y": 707,
+          "w": 177,
+          "h": 178
+        }
+      },
+      {
+        "age": "baby",
+        "column": 3,
+        "file": "egghead-baby-walk-3.png",
+        "scale": 0.20224719101123595,
+        "faceX": 1117.131325301205,
+        "sourceBounds": {
+          "x": 966,
+          "y": 714,
+          "w": 195,
+          "h": 173
+        }
+      },
+      {
+        "age": "baby",
+        "column": 4,
+        "file": "egghead-baby-walk-4.png",
+        "scale": 0.20224719101123595,
+        "faceX": 1424.5562913907286,
+        "sourceBounds": {
+          "x": 1291,
+          "y": 716,
+          "w": 176,
+          "h": 171
+        }
+      },
+      {
+        "age": "baby",
+        "column": 5,
+        "file": "egghead-baby-walk-5.png",
+        "scale": 0.20224719101123595,
+        "faceX": 1691.5691747572816,
+        "sourceBounds": {
+          "x": 1561,
+          "y": 710,
+          "w": 176,
+          "h": 176
+        }
+      }
+    ]
+  }
+}

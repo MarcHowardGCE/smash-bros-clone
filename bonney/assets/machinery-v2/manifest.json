@@ -1,0 +1,34 @@
+{
+  "crane": {
+    "width": 256,
+    "height": 229
+  },
+  "hook": {
+    "width": 154,
+    "height": 256
+  },
+  "gate": {
+    "width": 135,
+    "height": 256
+  },
+  "winch": {
+    "width": 256,
+    "height": 195
+  },
+  "lever": {
+    "width": 208,
+    "height": 256
+  },
+  "bell": {
+    "width": 205,
+    "height": 256
+  },
+  "chest": {
+    "width": 256,
+    "height": 184
+  },
+  "perch": {
+    "width": 256,
+    "height": 240
+  }
+}

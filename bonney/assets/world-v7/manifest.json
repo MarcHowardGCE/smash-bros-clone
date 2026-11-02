@@ -1,0 +1,34 @@
+{
+  "background": [
+    1296,
+    432
+  ],
+  "terrain": {
+    "tileSize": 32,
+    "worldSize": 16,
+    "columns": 8
+  },
+  "guard": {
+    "cellSize": 64,
+    "frames": 4,
+    "visibleHeight": 44
+  },
+  "props": [
+    "crate",
+    "barrel",
+    "rope",
+    "lantern",
+    "boots",
+    "hat",
+    "coin",
+    "sign",
+    "goal",
+    "checkpoint",
+    "cannon",
+    "impact"
+  ],
+  "effects": [
+    "flight-exhaust",
+    "charge-trail"
+  ]
+}

@@ -1,26 +1,8 @@
-/**
- * @fileoverview HARD_LANDING state — missed-tech landing penalty.
- *
- * Fires when a fighter fails to tech a hard landing (tumble state hits the
- * ground without a tech input in the window). The fighter bounces and lies
- * prone for `PHYSICS.TECH_MISS_LANDING_FRAMES` frames before recovering.
- *
- * Entered from: externally by `GameEngine` when a missed-tech landing is
- * detected (state forced to HARD_LANDING via player.state override).
- *
- * Transitions out to: IDLE (frame >= PHYSICS.TECH_MISS_LANDING_FRAMES - 1).
- */
-import { BaseState, PHYSICS, PlayerStateEnum, transition } from './utils.js';
-import type { FSMContext, FSMTransition } from '../index.js';
-
-/**
- * Missed-tech landing penalty state. Holds the fighter prone for
- * `PHYSICS.TECH_MISS_LANDING_FRAMES` then returns to IDLE.
- */
-export class HardLandingState extends BaseState {
-	update(_ctx: FSMContext, frame: number): FSMTransition | null {
-		return frame >= PHYSICS.TECH_MISS_LANDING_FRAMES - 1
-			? transition(PlayerStateEnum.IDLE)
-			: null;
-	}
+import{BaseState,PHYSICS,INPUT_BITS,PlayerStateEnum,isPressed,transition}from'./utils.js';import type{FSMContext,FSMTransition}from'../index.js';
+export class HardLandingState extends BaseState{
+ update(ctx:FSMContext,frame:number):FSMTransition|null{
+  if(!ctx.isGrounded)return transition(PlayerStateEnum.AIRBORNE);
+  if(frame>=18){if(isPressed(ctx.input,INPUT_BITS.ATTACK))return transition(PlayerStateEnum.ATTACK);if(isPressed(ctx.input,INPUT_BITS.LEFT)||isPressed(ctx.input,INPUT_BITS.RIGHT))return transition(PlayerStateEnum.GETUP_ROLL);if(isPressed(ctx.input,INPUT_BITS.JUMP)||isPressed(ctx.input,INPUT_BITS.SHIELD))return transition(PlayerStateEnum.GETUP);}
+  return frame>=PHYSICS.TECH_MISS_LANDING_FRAMES-1?transition(PlayerStateEnum.GETUP):null;
+ }
 }

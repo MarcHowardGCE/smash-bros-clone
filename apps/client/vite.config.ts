@@ -50,6 +50,8 @@ function assetPackVitePlugin(): Plugin {
 }
 
 export default defineConfig({
+  envDir: process.env.SMASH_ENV_DIR,
+  publicDir: process.env.SMASH_PUBLIC_DIR,
   plugins: [assetPackVitePlugin()],
   server: {
     port: 5173,
@@ -62,5 +64,7 @@ export default defineConfig({
   },
   build: {
     target: 'esnext',
+    outDir: process.env.SMASH_BUILD_OUT_DIR,
   },
 });
+

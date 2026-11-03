@@ -211,7 +211,7 @@ build:
 # Run all engine unit tests (67 tests).
 # ─────────────────────────────────────────────
 test:
-    pnpm -F @smash/engine test --run
+    pnpm test
 
 # ─────────────────────────────────────────────
 # LOGS

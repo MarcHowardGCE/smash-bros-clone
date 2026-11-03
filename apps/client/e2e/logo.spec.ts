@@ -1,3 +1,4 @@
+import { dismissSplash } from "./helpers/flow";
 import { expect, test } from '@playwright/test';
 
 test('logo loads without 404 and renders at top of page', async ({ page }) => {
@@ -15,6 +16,7 @@ test('logo loads without 404 and renders at top of page', async ({ page }) => {
 	});
 
 	await page.goto('http://localhost:5173');
+  await dismissSplash(page);
 	await page.waitForSelector('img[alt="Everybody Throws Hands"]', { timeout: 5000 });
 
 	// Assert: no console errors mentioning branding or 404

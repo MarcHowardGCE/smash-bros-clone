@@ -1,0 +1,14 @@
+{
+  "browserTests": 37,
+  "focusedUnitTests": 10,
+  "typeScript": true,
+  "completeStagedProductionBuild": true,
+  "packagedBrowserSmoke": true,
+  "engineTestsPassed": 275,
+  "engineTestsSkipped": 1,
+  "combatServerTestsPassed": 9,
+  "groundRecoveryServerTestsPassed": 10,
+  "ledgeServerTestsPassed": 37,
+  "ledgeServerTestsSkipped": 13,
+  "clientFocusedTestsPassed": 3
+}

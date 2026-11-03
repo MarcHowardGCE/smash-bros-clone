@@ -17,6 +17,7 @@ try{
  await page.goto('http://127.0.0.1:4174/?test=1&mode=full');
  await page.waitForFunction(()=>window.__bonney?.loaded);
  assert.equal(await page.locator('#level-select').inputValue(),'full');
+ if(process.argv.includes('--luffy'))await page.getByLabel('Character',{exact:true}).selectOption('luffy');
  await page.getByRole('button',{name:'Start playing'}).click();
  await page.keyboard.down('ArrowRight');await page.waitForTimeout(250);await page.keyboard.up('ArrowRight');
  assert.ok(await page.evaluate(()=>window.__bonney.game.player.x>50));
@@ -40,7 +41,7 @@ try{
  // Actual death -> checkpoint retry must preserve progress.
  await page.evaluate(()=>{
   const g=window.__bonney.game,p=g.player;g.treasures[0].collected=true;
-  p.hits=1;p.y=520;p.invulnerableMs=0;
+  p.hits=1;p.y=372;p.power="none";p.ability="ready";p.activeMs=0;p.vx=0;p.vy=0;p.invulnerableMs=0;g.projectiles=[{x:p.x,y:p.y+16,w:6,h:4,vx:0,vy:0,life:1}];
  });
  await page.waitForFunction(()=>window.__bonney.game.status==='dead');
  await page.getByRole('button',{name:'Continue from checkpoint'}).click();
@@ -52,7 +53,8 @@ try{
  await page.waitForFunction(()=>window.__bonney.game.latches.winch);
  await place(5888,224);await page.keyboard.press('KeyE');
  await page.waitForFunction(()=>window.__bonney.game.latches.rigging);
- await place(6128,168);await page.keyboard.press('KeyE');
+ const bell=await page.evaluate(()=>window.__bonney.game.switches.find(s=>s.id==='bell'));
+ await place(bell.x,bell.y);await page.keyboard.press('KeyE');
  await page.waitForFunction(()=>window.__bonney.game.latches.bell);
  await place(6048,372,'pirateCaptain');await page.keyboard.press('KeyX');
  await page.waitForFunction(()=>window.__bonney.game.latches.cabinSeal);
@@ -67,3 +69,4 @@ try{
  assert.deepEqual(errors,[]);
  console.log('PASS: full-level assets and six district renders, keyboard movement, customs lock+lever, gate passage, checkpoint retry/persistence, winch+rigging, bell+cabin treasure, victory, tutorial chooser.');
 }finally{await browser.close();}
+

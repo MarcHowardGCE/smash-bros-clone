@@ -1,3 +1,4 @@
+import { dismissSplash, chooseFirstStage } from "./helpers/flow";
 import { expect, test } from '@playwright/test';
 
 type SnapshotPlayer = {
@@ -46,6 +47,7 @@ test('local mode exposes non-null debug snapshots via both debug APIs', async ({
   test.setTimeout(60_000);
 
   await page.goto('/');
+  await dismissSplash(page);
   await page.waitForSelector('#local-play-btn', { timeout: 10_000 });
   // Let Vite dev client settle to avoid mid-test hot-reload during first launch.
   await page.waitForTimeout(2_000);
@@ -56,6 +58,7 @@ test('local mode exposes non-null debug snapshots via both debug APIs', async ({
   await page.click('#lps-start-btn');
   await page.keyboard.press('Enter');
   await page.keyboard.press('KeyU');
+  await chooseFirstStage(page);
 
   await page.waitForFunction(() => {
     const hudPanel = document.getElementById('hud-panel');

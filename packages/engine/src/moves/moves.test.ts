@@ -10,9 +10,9 @@ describe('Move Definitions', () => {
     expect(jab.isAerial).toBe(false);
   });
 
-  it('all 23 MoveId values resolve without throwing', () => {
+  it('all 28 MoveId values resolve without throwing', () => {
     const moveIds = Object.values(MoveId);
-    expect(moveIds).toHaveLength(23);
+    expect(moveIds).toHaveLength(28);
     for (const id of moveIds) {
       expect(() => getMoveData(id as MoveId)).not.toThrow();
     }

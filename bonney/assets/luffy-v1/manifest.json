@@ -1,0 +1,1470 @@
+{
+  "character": "luffy",
+  "ages": [
+    "adult",
+    "teenage",
+    "baby"
+  ],
+  "columns": [
+    "idle",
+    "walk-0",
+    "walk-1",
+    "walk-2",
+    "walk-3",
+    "walk-4",
+    "walk-5",
+    "jump",
+    "punch",
+    "kick"
+  ],
+  "outfits": {
+    "default": [
+      {
+        "age": "adult",
+        "pose": "idle",
+        "file": "default-adult-idle.png",
+        "height": 60,
+        "sourceBounds": {
+          "x": 74,
+          "y": 8,
+          "w": 113,
+          "h": 266
+        }
+      },
+      {
+        "age": "adult",
+        "pose": "walk-0",
+        "file": "default-adult-walk-0.png",
+        "height": 60,
+        "sourceBounds": {
+          "x": 286,
+          "y": 8,
+          "w": 150,
+          "h": 266
+        }
+      },
+      {
+        "age": "adult",
+        "pose": "walk-1",
+        "file": "default-adult-walk-1.png",
+        "height": 60,
+        "sourceBounds": {
+          "x": 524,
+          "y": 8,
+          "w": 122,
+          "h": 266
+        }
+      },
+      {
+        "age": "adult",
+        "pose": "walk-2",
+        "file": "default-adult-walk-2.png",
+        "height": 60,
+        "sourceBounds": {
+          "x": 758,
+          "y": 8,
+          "w": 106,
+          "h": 266
+        }
+      },
+      {
+        "age": "adult",
+        "pose": "walk-3",
+        "file": "default-adult-walk-3.png",
+        "height": 60,
+        "sourceBounds": {
+          "x": 959,
+          "y": 8,
+          "w": 156,
+          "h": 266
+        }
+      },
+      {
+        "age": "adult",
+        "pose": "walk-4",
+        "file": "default-adult-walk-4.png",
+        "height": 60,
+        "sourceBounds": {
+          "x": 1207,
+          "y": 8,
+          "w": 115,
+          "h": 266
+        }
+      },
+      {
+        "age": "adult",
+        "pose": "walk-5",
+        "file": "default-adult-walk-5.png",
+        "height": 60,
+        "sourceBounds": {
+          "x": 1425,
+          "y": 8,
+          "w": 116,
+          "h": 266
+        }
+      },
+      {
+        "age": "adult",
+        "pose": "jump",
+        "file": "default-adult-jump.png",
+        "height": 48,
+        "sourceBounds": {
+          "x": 1610,
+          "y": 3,
+          "w": 147,
+          "h": 211
+        }
+      },
+      {
+        "age": "adult",
+        "pose": "punch",
+        "file": "default-adult-punch.png",
+        "height": 59,
+        "sourceBounds": {
+          "x": 1794,
+          "y": 12,
+          "w": 191,
+          "h": 262
+        }
+      },
+      {
+        "age": "adult",
+        "pose": "kick",
+        "file": "default-adult-kick.png",
+        "height": 59,
+        "sourceBounds": {
+          "x": 2013,
+          "y": 11,
+          "w": 151,
+          "h": 263
+        }
+      },
+      {
+        "age": "teenage",
+        "pose": "idle",
+        "file": "default-teenage-idle.png",
+        "height": 50,
+        "sourceBounds": {
+          "x": 74,
+          "y": 298,
+          "w": 99,
+          "h": 222
+        }
+      },
+      {
+        "age": "teenage",
+        "pose": "walk-0",
+        "file": "default-teenage-walk-0.png",
+        "height": 50,
+        "sourceBounds": {
+          "x": 285,
+          "y": 299,
+          "w": 134,
+          "h": 221
+        }
+      },
+      {
+        "age": "teenage",
+        "pose": "walk-1",
+        "file": "default-teenage-walk-1.png",
+        "height": 50,
+        "sourceBounds": {
+          "x": 522,
+          "y": 299,
+          "w": 112,
+          "h": 221
+        }
+      },
+      {
+        "age": "teenage",
+        "pose": "walk-2",
+        "file": "default-teenage-walk-2.png",
+        "height": 50,
+        "sourceBounds": {
+          "x": 753,
+          "y": 298,
+          "w": 97,
+          "h": 222
+        }
+      },
+      {
+        "age": "teenage",
+        "pose": "walk-3",
+        "file": "default-teenage-walk-3.png",
+        "height": 50,
+        "sourceBounds": {
+          "x": 955,
+          "y": 299,
+          "w": 142,
+          "h": 221
+        }
+      },
+      {
+        "age": "teenage",
+        "pose": "walk-4",
+        "file": "default-teenage-walk-4.png",
+        "height": 50,
+        "sourceBounds": {
+          "x": 1206,
+          "y": 301,
+          "w": 100,
+          "h": 219
+        }
+      },
+      {
+        "age": "teenage",
+        "pose": "walk-5",
+        "file": "default-teenage-walk-5.png",
+        "height": 50,
+        "sourceBounds": {
+          "x": 1425,
+          "y": 299,
+          "w": 106,
+          "h": 221
+        }
+      },
+      {
+        "age": "teenage",
+        "pose": "jump",
+        "file": "default-teenage-jump.png",
+        "height": 40,
+        "sourceBounds": {
+          "x": 1604,
+          "y": 290,
+          "w": 127,
+          "h": 177
+        }
+      },
+      {
+        "age": "teenage",
+        "pose": "punch",
+        "file": "default-teenage-punch.png",
+        "height": 48,
+        "sourceBounds": {
+          "x": 1789,
+          "y": 305,
+          "w": 174,
+          "h": 215
+        }
+      },
+      {
+        "age": "teenage",
+        "pose": "kick",
+        "file": "default-teenage-kick.png",
+        "height": 48,
+        "sourceBounds": {
+          "x": 2007,
+          "y": 305,
+          "w": 132,
+          "h": 215
+        }
+      },
+      {
+        "age": "baby",
+        "pose": "idle",
+        "file": "default-baby-idle.png",
+        "height": 36,
+        "sourceBounds": {
+          "x": 75,
+          "y": 552,
+          "w": 97,
+          "h": 165
+        }
+      },
+      {
+        "age": "baby",
+        "pose": "walk-0",
+        "file": "default-baby-walk-0.png",
+        "height": 36,
+        "sourceBounds": {
+          "x": 295,
+          "y": 552,
+          "w": 109,
+          "h": 166
+        }
+      },
+      {
+        "age": "baby",
+        "pose": "walk-1",
+        "file": "default-baby-walk-1.png",
+        "height": 36,
+        "sourceBounds": {
+          "x": 525,
+          "y": 554,
+          "w": 96,
+          "h": 164
+        }
+      },
+      {
+        "age": "baby",
+        "pose": "walk-2",
+        "file": "default-baby-walk-2.png",
+        "height": 36,
+        "sourceBounds": {
+          "x": 749,
+          "y": 555,
+          "w": 95,
+          "h": 163
+        }
+      },
+      {
+        "age": "baby",
+        "pose": "walk-3",
+        "file": "default-baby-walk-3.png",
+        "height": 36,
+        "sourceBounds": {
+          "x": 968,
+          "y": 552,
+          "w": 112,
+          "h": 166
+        }
+      },
+      {
+        "age": "baby",
+        "pose": "walk-4",
+        "file": "default-baby-walk-4.png",
+        "height": 36,
+        "sourceBounds": {
+          "x": 1202,
+          "y": 555,
+          "w": 98,
+          "h": 163
+        }
+      },
+      {
+        "age": "baby",
+        "pose": "walk-5",
+        "file": "default-baby-walk-5.png",
+        "height": 36,
+        "sourceBounds": {
+          "x": 1428,
+          "y": 552,
+          "w": 95,
+          "h": 165
+        }
+      },
+      {
+        "age": "baby",
+        "pose": "jump",
+        "file": "default-baby-jump.png",
+        "height": 31,
+        "sourceBounds": {
+          "x": 1599,
+          "y": 546,
+          "w": 106,
+          "h": 140
+        }
+      },
+      {
+        "age": "baby",
+        "pose": "punch",
+        "file": "default-baby-punch.png",
+        "height": 35,
+        "sourceBounds": {
+          "x": 1799,
+          "y": 558,
+          "w": 142,
+          "h": 159
+        }
+      },
+      {
+        "age": "baby",
+        "pose": "kick",
+        "file": "default-baby-kick.png",
+        "height": 35,
+        "sourceBounds": {
+          "x": 2011,
+          "y": 556,
+          "w": 114,
+          "h": 162
+        }
+      }
+    ],
+    "captain": [
+      {
+        "age": "adult",
+        "pose": "idle",
+        "file": "captain-adult-idle.png",
+        "height": 60,
+        "sourceBounds": {
+          "x": 38,
+          "y": 9,
+          "w": 178,
+          "h": 279
+        }
+      },
+      {
+        "age": "adult",
+        "pose": "walk-0",
+        "file": "captain-adult-walk-0.png",
+        "height": 60,
+        "sourceBounds": {
+          "x": 260,
+          "y": 11,
+          "w": 188,
+          "h": 274
+        }
+      },
+      {
+        "age": "adult",
+        "pose": "walk-1",
+        "file": "captain-adult-walk-1.png",
+        "height": 60,
+        "sourceBounds": {
+          "x": 477,
+          "y": 14,
+          "w": 181,
+          "h": 272
+        }
+      },
+      {
+        "age": "adult",
+        "pose": "walk-2",
+        "file": "captain-adult-walk-2.png",
+        "height": 60,
+        "sourceBounds": {
+          "x": 692,
+          "y": 9,
+          "w": 156,
+          "h": 277
+        }
+      },
+      {
+        "age": "adult",
+        "pose": "walk-3",
+        "file": "captain-adult-walk-3.png",
+        "height": 60,
+        "sourceBounds": {
+          "x": 902,
+          "y": 11,
+          "w": 181,
+          "h": 274
+        }
+      },
+      {
+        "age": "adult",
+        "pose": "walk-4",
+        "file": "captain-adult-walk-4.png",
+        "height": 60,
+        "sourceBounds": {
+          "x": 1124,
+          "y": 18,
+          "w": 176,
+          "h": 269
+        }
+      },
+      {
+        "age": "adult",
+        "pose": "walk-5",
+        "file": "captain-adult-walk-5.png",
+        "height": 60,
+        "sourceBounds": {
+          "x": 1355,
+          "y": 13,
+          "w": 156,
+          "h": 272
+        }
+      },
+      {
+        "age": "adult",
+        "pose": "jump",
+        "file": "captain-adult-jump.png",
+        "height": 45,
+        "sourceBounds": {
+          "x": 1537,
+          "y": 9,
+          "w": 166,
+          "h": 207
+        }
+      },
+      {
+        "age": "adult",
+        "pose": "punch",
+        "file": "captain-adult-punch.png",
+        "height": 57,
+        "sourceBounds": {
+          "x": 1717,
+          "y": 20,
+          "w": 240,
+          "h": 266
+        }
+      },
+      {
+        "age": "adult",
+        "pose": "kick",
+        "file": "captain-adult-kick.png",
+        "height": 57,
+        "sourceBounds": {
+          "x": 1956,
+          "y": 19,
+          "w": 211,
+          "h": 266
+        }
+      },
+      {
+        "age": "teenage",
+        "pose": "idle",
+        "file": "captain-teenage-idle.png",
+        "height": 50,
+        "sourceBounds": {
+          "x": 55,
+          "y": 319,
+          "w": 143,
+          "h": 219
+        }
+      },
+      {
+        "age": "teenage",
+        "pose": "walk-0",
+        "file": "captain-teenage-walk-0.png",
+        "height": 50,
+        "sourceBounds": {
+          "x": 265,
+          "y": 322,
+          "w": 163,
+          "h": 214
+        }
+      },
+      {
+        "age": "teenage",
+        "pose": "walk-1",
+        "file": "captain-teenage-walk-1.png",
+        "height": 50,
+        "sourceBounds": {
+          "x": 480,
+          "y": 322,
+          "w": 163,
+          "h": 215
+        }
+      },
+      {
+        "age": "teenage",
+        "pose": "walk-2",
+        "file": "captain-teenage-walk-2.png",
+        "height": 50,
+        "sourceBounds": {
+          "x": 708,
+          "y": 320,
+          "w": 134,
+          "h": 217
+        }
+      },
+      {
+        "age": "teenage",
+        "pose": "walk-3",
+        "file": "captain-teenage-walk-3.png",
+        "height": 50,
+        "sourceBounds": {
+          "x": 917,
+          "y": 323,
+          "w": 155,
+          "h": 213
+        }
+      },
+      {
+        "age": "teenage",
+        "pose": "walk-4",
+        "file": "captain-teenage-walk-4.png",
+        "height": 50,
+        "sourceBounds": {
+          "x": 1131,
+          "y": 328,
+          "w": 159,
+          "h": 212
+        }
+      },
+      {
+        "age": "teenage",
+        "pose": "walk-5",
+        "file": "captain-teenage-walk-5.png",
+        "height": 50,
+        "sourceBounds": {
+          "x": 1359,
+          "y": 323,
+          "w": 142,
+          "h": 217
+        }
+      },
+      {
+        "age": "teenage",
+        "pose": "jump",
+        "file": "captain-teenage-jump.png",
+        "height": 40,
+        "sourceBounds": {
+          "x": 1538,
+          "y": 315,
+          "w": 148,
+          "h": 175
+        }
+      },
+      {
+        "age": "teenage",
+        "pose": "punch",
+        "file": "captain-teenage-punch.png",
+        "height": 48,
+        "sourceBounds": {
+          "x": 1739,
+          "y": 329,
+          "w": 191,
+          "h": 211
+        }
+      },
+      {
+        "age": "teenage",
+        "pose": "kick",
+        "file": "captain-teenage-kick.png",
+        "height": 47,
+        "sourceBounds": {
+          "x": 1971,
+          "y": 331,
+          "w": 173,
+          "h": 208
+        }
+      },
+      {
+        "age": "baby",
+        "pose": "idle",
+        "file": "captain-baby-idle.png",
+        "height": 36,
+        "sourceBounds": {
+          "x": 86,
+          "y": 578,
+          "w": 87,
+          "h": 135
+        }
+      },
+      {
+        "age": "baby",
+        "pose": "walk-0",
+        "file": "captain-baby-walk-0.png",
+        "height": 36,
+        "sourceBounds": {
+          "x": 296,
+          "y": 581,
+          "w": 107,
+          "h": 132
+        }
+      },
+      {
+        "age": "baby",
+        "pose": "walk-1",
+        "file": "captain-baby-walk-1.png",
+        "height": 36,
+        "sourceBounds": {
+          "x": 511,
+          "y": 582,
+          "w": 107,
+          "h": 132
+        }
+      },
+      {
+        "age": "baby",
+        "pose": "walk-2",
+        "file": "captain-baby-walk-2.png",
+        "height": 36,
+        "sourceBounds": {
+          "x": 737,
+          "y": 581,
+          "w": 82,
+          "h": 133
+        }
+      },
+      {
+        "age": "baby",
+        "pose": "walk-3",
+        "file": "captain-baby-walk-3.png",
+        "height": 36,
+        "sourceBounds": {
+          "x": 941,
+          "y": 583,
+          "w": 104,
+          "h": 131
+        }
+      },
+      {
+        "age": "baby",
+        "pose": "walk-4",
+        "file": "captain-baby-walk-4.png",
+        "height": 36,
+        "sourceBounds": {
+          "x": 1162,
+          "y": 584,
+          "w": 102,
+          "h": 131
+        }
+      },
+      {
+        "age": "baby",
+        "pose": "walk-5",
+        "file": "captain-baby-walk-5.png",
+        "height": 36,
+        "sourceBounds": {
+          "x": 1390,
+          "y": 582,
+          "w": 88,
+          "h": 132
+        }
+      },
+      {
+        "age": "baby",
+        "pose": "jump",
+        "file": "captain-baby-jump.png",
+        "height": 33,
+        "sourceBounds": {
+          "x": 1563,
+          "y": 565,
+          "w": 100,
+          "h": 124
+        }
+      },
+      {
+        "age": "baby",
+        "pose": "punch",
+        "file": "captain-baby-punch.png",
+        "height": 35,
+        "sourceBounds": {
+          "x": 1765,
+          "y": 582,
+          "w": 125,
+          "h": 132
+        }
+      },
+      {
+        "age": "baby",
+        "pose": "kick",
+        "file": "captain-baby-kick.png",
+        "height": 35,
+        "sourceBounds": {
+          "x": 1995,
+          "y": 581,
+          "w": 115,
+          "h": 133
+        }
+      }
+    ],
+    "egghead": [
+      {
+        "age": "adult",
+        "pose": "idle",
+        "file": "egghead-adult-idle.png",
+        "height": 60,
+        "sourceBounds": {
+          "x": 19,
+          "y": 38,
+          "w": 136,
+          "h": 310
+        }
+      },
+      {
+        "age": "adult",
+        "pose": "walk-0",
+        "file": "egghead-adult-walk-0.png",
+        "height": 60,
+        "sourceBounds": {
+          "x": 176,
+          "y": 42,
+          "w": 155,
+          "h": 306
+        }
+      },
+      {
+        "age": "adult",
+        "pose": "walk-1",
+        "file": "egghead-adult-walk-1.png",
+        "height": 60,
+        "sourceBounds": {
+          "x": 345,
+          "y": 42,
+          "w": 137,
+          "h": 306
+        }
+      },
+      {
+        "age": "adult",
+        "pose": "walk-2",
+        "file": "egghead-adult-walk-2.png",
+        "height": 60,
+        "sourceBounds": {
+          "x": 494,
+          "y": 39,
+          "w": 117,
+          "h": 309
+        }
+      },
+      {
+        "age": "adult",
+        "pose": "walk-3",
+        "file": "egghead-adult-walk-3.png",
+        "height": 60,
+        "sourceBounds": {
+          "x": 625,
+          "y": 40,
+          "w": 154,
+          "h": 308
+        }
+      },
+      {
+        "age": "adult",
+        "pose": "walk-4",
+        "file": "egghead-adult-walk-4.png",
+        "height": 60,
+        "sourceBounds": {
+          "x": 790,
+          "y": 46,
+          "w": 134,
+          "h": 302
+        }
+      },
+      {
+        "age": "adult",
+        "pose": "walk-5",
+        "file": "egghead-adult-walk-5.png",
+        "height": 60,
+        "sourceBounds": {
+          "x": 936,
+          "y": 41,
+          "w": 117,
+          "h": 307
+        }
+      },
+      {
+        "age": "adult",
+        "pose": "jump",
+        "file": "egghead-adult-jump.png",
+        "height": 48,
+        "sourceBounds": {
+          "x": 1063,
+          "y": 35,
+          "w": 135,
+          "h": 248
+        }
+      },
+      {
+        "age": "adult",
+        "pose": "punch",
+        "file": "egghead-adult-punch.png",
+        "height": 57,
+        "sourceBounds": {
+          "x": 1198,
+          "y": 55,
+          "w": 171,
+          "h": 294
+        }
+      },
+      {
+        "age": "adult",
+        "pose": "kick",
+        "file": "egghead-adult-kick.png",
+        "height": 57,
+        "sourceBounds": {
+          "x": 1362,
+          "y": 52,
+          "w": 173,
+          "h": 296
+        }
+      },
+      {
+        "age": "teenage",
+        "pose": "idle",
+        "file": "egghead-teenage-idle.png",
+        "height": 50,
+        "sourceBounds": {
+          "x": 28,
+          "y": 409,
+          "w": 115,
+          "h": 257
+        }
+      },
+      {
+        "age": "teenage",
+        "pose": "walk-0",
+        "file": "egghead-teenage-walk-0.png",
+        "height": 50,
+        "sourceBounds": {
+          "x": 180,
+          "y": 414,
+          "w": 134,
+          "h": 252
+        }
+      },
+      {
+        "age": "teenage",
+        "pose": "walk-1",
+        "file": "egghead-teenage-walk-1.png",
+        "height": 50,
+        "sourceBounds": {
+          "x": 348,
+          "y": 417,
+          "w": 119,
+          "h": 249
+        }
+      },
+      {
+        "age": "teenage",
+        "pose": "walk-2",
+        "file": "egghead-teenage-walk-2.png",
+        "height": 50,
+        "sourceBounds": {
+          "x": 495,
+          "y": 412,
+          "w": 103,
+          "h": 254
+        }
+      },
+      {
+        "age": "teenage",
+        "pose": "walk-3",
+        "file": "egghead-teenage-walk-3.png",
+        "height": 50,
+        "sourceBounds": {
+          "x": 639,
+          "y": 416,
+          "w": 128,
+          "h": 250
+        }
+      },
+      {
+        "age": "teenage",
+        "pose": "walk-4",
+        "file": "egghead-teenage-walk-4.png",
+        "height": 50,
+        "sourceBounds": {
+          "x": 796,
+          "y": 420,
+          "w": 118,
+          "h": 247
+        }
+      },
+      {
+        "age": "teenage",
+        "pose": "walk-5",
+        "file": "egghead-teenage-walk-5.png",
+        "height": 50,
+        "sourceBounds": {
+          "x": 944,
+          "y": 416,
+          "w": 102,
+          "h": 250
+        }
+      },
+      {
+        "age": "teenage",
+        "pose": "jump",
+        "file": "egghead-teenage-jump.png",
+        "height": 38,
+        "sourceBounds": {
+          "x": 1068,
+          "y": 407,
+          "w": 120,
+          "h": 197
+        }
+      },
+      {
+        "age": "teenage",
+        "pose": "punch",
+        "file": "egghead-teenage-punch.png",
+        "height": 47,
+        "sourceBounds": {
+          "x": 1209,
+          "y": 427,
+          "w": 152,
+          "h": 240
+        }
+      },
+      {
+        "age": "teenage",
+        "pose": "kick",
+        "file": "egghead-teenage-kick.png",
+        "height": 47,
+        "sourceBounds": {
+          "x": 1369,
+          "y": 423,
+          "w": 157,
+          "h": 243
+        }
+      },
+      {
+        "age": "baby",
+        "pose": "idle",
+        "file": "egghead-baby-idle.png",
+        "height": 36,
+        "sourceBounds": {
+          "x": 40,
+          "y": 757,
+          "w": 100,
+          "h": 209
+        }
+      },
+      {
+        "age": "baby",
+        "pose": "walk-0",
+        "file": "egghead-baby-walk-0.png",
+        "height": 36,
+        "sourceBounds": {
+          "x": 193,
+          "y": 758,
+          "w": 118,
+          "h": 208
+        }
+      },
+      {
+        "age": "baby",
+        "pose": "walk-1",
+        "file": "egghead-baby-walk-1.png",
+        "height": 36,
+        "sourceBounds": {
+          "x": 359,
+          "y": 763,
+          "w": 110,
+          "h": 203
+        }
+      },
+      {
+        "age": "baby",
+        "pose": "walk-2",
+        "file": "egghead-baby-walk-2.png",
+        "height": 36,
+        "sourceBounds": {
+          "x": 505,
+          "y": 760,
+          "w": 92,
+          "h": 206
+        }
+      },
+      {
+        "age": "baby",
+        "pose": "walk-3",
+        "file": "egghead-baby-walk-3.png",
+        "height": 36,
+        "sourceBounds": {
+          "x": 650,
+          "y": 761,
+          "w": 114,
+          "h": 205
+        }
+      },
+      {
+        "age": "baby",
+        "pose": "walk-4",
+        "file": "egghead-baby-walk-4.png",
+        "height": 36,
+        "sourceBounds": {
+          "x": 803,
+          "y": 767,
+          "w": 108,
+          "h": 199
+        }
+      },
+      {
+        "age": "baby",
+        "pose": "walk-5",
+        "file": "egghead-baby-walk-5.png",
+        "height": 36,
+        "sourceBounds": {
+          "x": 956,
+          "y": 761,
+          "w": 91,
+          "h": 205
+        }
+      },
+      {
+        "age": "baby",
+        "pose": "jump",
+        "file": "egghead-baby-jump.png",
+        "height": 26,
+        "sourceBounds": {
+          "x": 1077,
+          "y": 746,
+          "w": 111,
+          "h": 153
+        }
+      },
+      {
+        "age": "baby",
+        "pose": "punch",
+        "file": "egghead-baby-punch.png",
+        "height": 34,
+        "sourceBounds": {
+          "x": 1224,
+          "y": 768,
+          "w": 130,
+          "h": 198
+        }
+      },
+      {
+        "age": "baby",
+        "pose": "kick",
+        "file": "egghead-baby-kick.png",
+        "height": 34,
+        "sourceBounds": {
+          "x": 1379,
+          "y": 769,
+          "w": 132,
+          "h": 197
+        }
+      }
+    ],
+    "gear": [
+      {
+        "age": "adult",
+        "pose": "idle",
+        "file": "gear-adult-idle.png",
+        "height": 60,
+        "sourceBounds": {
+          "x": 59,
+          "y": 10,
+          "w": 160,
+          "h": 273
+        }
+      },
+      {
+        "age": "adult",
+        "pose": "walk-0",
+        "file": "gear-adult-walk-0.png",
+        "height": 60,
+        "sourceBounds": {
+          "x": 292,
+          "y": 10,
+          "w": 178,
+          "h": 272
+        }
+      },
+      {
+        "age": "adult",
+        "pose": "walk-1",
+        "file": "gear-adult-walk-1.png",
+        "height": 60,
+        "sourceBounds": {
+          "x": 520,
+          "y": 15,
+          "w": 151,
+          "h": 268
+        }
+      },
+      {
+        "age": "adult",
+        "pose": "walk-2",
+        "file": "gear-adult-walk-2.png",
+        "height": 60,
+        "sourceBounds": {
+          "x": 728,
+          "y": 10,
+          "w": 139,
+          "h": 272
+        }
+      },
+      {
+        "age": "adult",
+        "pose": "walk-3",
+        "file": "gear-adult-walk-3.png",
+        "height": 60,
+        "sourceBounds": {
+          "x": 935,
+          "y": 16,
+          "w": 169,
+          "h": 266
+        }
+      },
+      {
+        "age": "adult",
+        "pose": "walk-4",
+        "file": "gear-adult-walk-4.png",
+        "height": 60,
+        "sourceBounds": {
+          "x": 1150,
+          "y": 17,
+          "w": 153,
+          "h": 267
+        }
+      },
+      {
+        "age": "adult",
+        "pose": "walk-5",
+        "file": "gear-adult-walk-5.png",
+        "height": 60,
+        "sourceBounds": {
+          "x": 1353,
+          "y": 10,
+          "w": 148,
+          "h": 272
+        }
+      },
+      {
+        "age": "adult",
+        "pose": "jump",
+        "file": "gear-adult-jump.png",
+        "height": 49,
+        "sourceBounds": {
+          "x": 1544,
+          "y": 0,
+          "w": 163,
+          "h": 222
+        }
+      },
+      {
+        "age": "adult",
+        "pose": "punch",
+        "file": "gear-adult-punch.png",
+        "height": 57,
+        "sourceBounds": {
+          "x": 1734,
+          "y": 23,
+          "w": 212,
+          "h": 260
+        }
+      },
+      {
+        "age": "adult",
+        "pose": "kick",
+        "file": "gear-adult-kick.png",
+        "height": 58,
+        "sourceBounds": {
+          "x": 1961,
+          "y": 16,
+          "w": 201,
+          "h": 264
+        }
+      },
+      {
+        "age": "teenage",
+        "pose": "idle",
+        "file": "gear-teenage-idle.png",
+        "height": 50,
+        "sourceBounds": {
+          "x": 65,
+          "y": 305,
+          "w": 134,
+          "h": 228
+        }
+      },
+      {
+        "age": "teenage",
+        "pose": "walk-0",
+        "file": "gear-teenage-walk-0.png",
+        "height": 50,
+        "sourceBounds": {
+          "x": 300,
+          "y": 308,
+          "w": 154,
+          "h": 224
+        }
+      },
+      {
+        "age": "teenage",
+        "pose": "walk-1",
+        "file": "gear-teenage-walk-1.png",
+        "height": 50,
+        "sourceBounds": {
+          "x": 529,
+          "y": 314,
+          "w": 131,
+          "h": 218
+        }
+      },
+      {
+        "age": "teenage",
+        "pose": "walk-2",
+        "file": "gear-teenage-walk-2.png",
+        "height": 50,
+        "sourceBounds": {
+          "x": 736,
+          "y": 308,
+          "w": 122,
+          "h": 224
+        }
+      },
+      {
+        "age": "teenage",
+        "pose": "walk-3",
+        "file": "gear-teenage-walk-3.png",
+        "height": 50,
+        "sourceBounds": {
+          "x": 943,
+          "y": 312,
+          "w": 145,
+          "h": 220
+        }
+      },
+      {
+        "age": "teenage",
+        "pose": "walk-4",
+        "file": "gear-teenage-walk-4.png",
+        "height": 50,
+        "sourceBounds": {
+          "x": 1162,
+          "y": 316,
+          "w": 130,
+          "h": 216
+        }
+      },
+      {
+        "age": "teenage",
+        "pose": "walk-5",
+        "file": "gear-teenage-walk-5.png",
+        "height": 50,
+        "sourceBounds": {
+          "x": 1367,
+          "y": 308,
+          "w": 127,
+          "h": 224
+        }
+      },
+      {
+        "age": "teenage",
+        "pose": "jump",
+        "file": "gear-teenage-jump.png",
+        "height": 40,
+        "sourceBounds": {
+          "x": 1553,
+          "y": 299,
+          "w": 141,
+          "h": 181
+        }
+      },
+      {
+        "age": "teenage",
+        "pose": "punch",
+        "file": "gear-teenage-punch.png",
+        "height": 47,
+        "sourceBounds": {
+          "x": 1745,
+          "y": 318,
+          "w": 185,
+          "h": 214
+        }
+      },
+      {
+        "age": "teenage",
+        "pose": "kick",
+        "file": "gear-teenage-kick.png",
+        "height": 47,
+        "sourceBounds": {
+          "x": 1965,
+          "y": 314,
+          "w": 175,
+          "h": 216
+        }
+      },
+      {
+        "age": "baby",
+        "pose": "idle",
+        "file": "gear-baby-idle.png",
+        "height": 36,
+        "sourceBounds": {
+          "x": 86,
+          "y": 562,
+          "w": 99,
+          "h": 157
+        }
+      },
+      {
+        "age": "baby",
+        "pose": "walk-0",
+        "file": "gear-baby-walk-0.png",
+        "height": 36,
+        "sourceBounds": {
+          "x": 310,
+          "y": 564,
+          "w": 114,
+          "h": 154
+        }
+      },
+      {
+        "age": "baby",
+        "pose": "walk-1",
+        "file": "gear-baby-walk-1.png",
+        "height": 36,
+        "sourceBounds": {
+          "x": 535,
+          "y": 565,
+          "w": 103,
+          "h": 154
+        }
+      },
+      {
+        "age": "baby",
+        "pose": "walk-2",
+        "file": "gear-baby-walk-2.png",
+        "height": 36,
+        "sourceBounds": {
+          "x": 745,
+          "y": 562,
+          "w": 93,
+          "h": 157
+        }
+      },
+      {
+        "age": "baby",
+        "pose": "walk-3",
+        "file": "gear-baby-walk-3.png",
+        "height": 36,
+        "sourceBounds": {
+          "x": 950,
+          "y": 565,
+          "w": 116,
+          "h": 154
+        }
+      },
+      {
+        "age": "baby",
+        "pose": "walk-4",
+        "file": "gear-baby-walk-4.png",
+        "height": 36,
+        "sourceBounds": {
+          "x": 1168,
+          "y": 567,
+          "w": 107,
+          "h": 152
+        }
+      },
+      {
+        "age": "baby",
+        "pose": "walk-5",
+        "file": "gear-baby-walk-5.png",
+        "height": 36,
+        "sourceBounds": {
+          "x": 1375,
+          "y": 562,
+          "w": 101,
+          "h": 157
+        }
+      },
+      {
+        "age": "baby",
+        "pose": "jump",
+        "file": "gear-baby-jump.png",
+        "height": 32,
+        "sourceBounds": {
+          "x": 1571,
+          "y": 549,
+          "w": 114,
+          "h": 139
+        }
+      },
+      {
+        "age": "baby",
+        "pose": "punch",
+        "file": "gear-baby-punch.png",
+        "height": 35,
+        "sourceBounds": {
+          "x": 1761,
+          "y": 566,
+          "w": 141,
+          "h": 153
+        }
+      },
+      {
+        "age": "baby",
+        "pose": "kick",
+        "file": "gear-baby-kick.png",
+        "height": 35,
+        "sourceBounds": {
+          "x": 1979,
+          "y": 567,
+          "w": 135,
+          "h": 151
+        }
+      }
+    ]
+  }
+}

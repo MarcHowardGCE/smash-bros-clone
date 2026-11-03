@@ -1,0 +1,765 @@
+[
+  {
+    "path": "/assets/powerups-v1/gear-fruit.png",
+    "width": 48,
+    "height": 48,
+    "visiblePixels": 1147,
+    "status": 200
+  },
+  {
+    "path": "/assets/underwater-v1/crab-atlas.png",
+    "width": 256,
+    "height": 64,
+    "visiblePixels": 6915,
+    "status": 200
+  },
+  {
+    "path": "/assets/flight-v1/luffy-flight-atlas.png",
+    "width": 384,
+    "height": 192,
+    "visiblePixels": 10169,
+    "status": 200
+  },
+  {
+    "path": "/assets/flight-v1/bonney-flight-atlas.png",
+    "width": 384,
+    "height": 192,
+    "visiblePixels": 11295,
+    "status": 200
+  },
+  {
+    "path": "/assets/flight-v1/thrusters-atlas.png",
+    "width": 192,
+    "height": 128,
+    "visiblePixels": 8377,
+    "status": 200
+  },
+  {
+    "path": "/assets/underwater-v1/background.png",
+    "width": 2172,
+    "height": 724,
+    "visiblePixels": 1572528,
+    "status": 200
+  },
+  {
+    "path": "/assets/cloud-full-v1/habitat.png",
+    "width": 512,
+    "height": 151,
+    "visiblePixels": 73391,
+    "status": 200
+  },
+  {
+    "path": "/assets/cloud-full-v1/reactor.png",
+    "width": 512,
+    "height": 140,
+    "visiblePixels": 67495,
+    "status": 200
+  },
+  {
+    "path": "/assets/cloud-full-v1/enemies-atlas.png",
+    "width": 384,
+    "height": 192,
+    "visiblePixels": 22636,
+    "status": 200
+  },
+  {
+    "path": "/assets/cloud-full-v1/observatory.png",
+    "width": 512,
+    "height": 132,
+    "visiblePixels": 63912,
+    "status": 200
+  },
+  {
+    "path": "/assets/cloud-full-v1/console.png",
+    "width": 201,
+    "height": 256,
+    "visiblePixels": 36866,
+    "status": 200
+  },
+  {
+    "path": "/assets/cloud-full-v1/casing.png",
+    "width": 256,
+    "height": 170,
+    "visiblePixels": 36649,
+    "status": 200
+  },
+  {
+    "path": "/assets/cloud-full-v1/fan.png",
+    "width": 256,
+    "height": 210,
+    "visiblePixels": 45495,
+    "status": 200
+  },
+  {
+    "path": "/assets/cloud-full-v1/pylon.png",
+    "width": 178,
+    "height": 256,
+    "visiblePixels": 22207,
+    "status": 200
+  },
+  {
+    "path": "/assets/cloud-full-v1/flag.png",
+    "width": 190,
+    "height": 256,
+    "visiblePixels": 17578,
+    "status": 200
+  },
+  {
+    "path": "/assets/cloud-full-v1/snack.png",
+    "width": 227,
+    "height": 256,
+    "visiblePixels": 43151,
+    "status": 200
+  },
+  {
+    "path": "/assets/gear-combat-v1/gear-walk-atlas.png",
+    "width": 576,
+    "height": 192,
+    "visiblePixels": 12150,
+    "status": 200
+  },
+  {
+    "path": "/assets/gear-combat-v1/gear-atlas.png",
+    "width": 256,
+    "height": 192,
+    "visiblePixels": 8384,
+    "status": 200
+  },
+  {
+    "path": "/assets/gear-combat-v1/gear-attacks.png",
+    "width": 192,
+    "height": 192,
+    "visiblePixels": 3895,
+    "status": 200
+  },
+  {
+    "path": "/assets/gear-combat-v1/default-attacks.png",
+    "width": 192,
+    "height": 192,
+    "visiblePixels": 5355,
+    "status": 200
+  },
+  {
+    "path": "/assets/world-v7/terrain-atlas.png",
+    "width": 256,
+    "height": 32,
+    "visiblePixels": 6166,
+    "status": 200
+  },
+  {
+    "path": "/assets/gear-combat-v1/captain-attacks.png",
+    "width": 192,
+    "height": 192,
+    "visiblePixels": 6107,
+    "status": 200
+  },
+  {
+    "path": "/assets/gear-combat-v1/egghead-attacks.png",
+    "width": 192,
+    "height": 192,
+    "visiblePixels": 5082,
+    "status": 200
+  },
+  {
+    "path": "/assets/world-v7/harbor-background.png",
+    "width": 1296,
+    "height": 432,
+    "visiblePixels": 559872,
+    "status": 200
+  },
+  {
+    "path": "/assets/market-polish-v1/fish-market.png",
+    "width": 236,
+    "height": 256,
+    "visiblePixels": 49059,
+    "status": 200
+  },
+  {
+    "path": "/assets/cloud-discovery-v1/cloud-island.png",
+    "width": 768,
+    "height": 71,
+    "visiblePixels": 36285,
+    "status": 200
+  },
+  {
+    "path": "/assets/cloud-discovery-v1/laboratory.png",
+    "width": 768,
+    "height": 190,
+    "visiblePixels": 85064,
+    "status": 200
+  },
+  {
+    "path": "/assets/scene-followup-v1/tall-sky.png",
+    "width": 1296,
+    "height": 864,
+    "visiblePixels": 1119744,
+    "status": 200
+  },
+  {
+    "path": "/assets/warehouse-polish-v1/warehouse-wide.png",
+    "width": 256,
+    "height": 119,
+    "visiblePixels": 24295,
+    "status": 200
+  },
+  {
+    "path": "/assets/warehouse-polish-v1/warehouse-annex.png",
+    "width": 213,
+    "height": 256,
+    "visiblePixels": 43162,
+    "status": 200
+  },
+  {
+    "path": "/assets/market-polish-v1/supply-shop.png",
+    "width": 256,
+    "height": 145,
+    "visiblePixels": 26506,
+    "status": 200
+  },
+  {
+    "path": "/assets/gameplay-props-v2/food.png",
+    "width": 120,
+    "height": 85,
+    "visiblePixels": 6735,
+    "status": 200
+  },
+  {
+    "path": "/assets/gameplay-props-v2/projectile.png",
+    "width": 120,
+    "height": 90,
+    "visiblePixels": 8611,
+    "status": 200
+  },
+  {
+    "path": "/assets/gameplay-props-v2/cargo-warning.png",
+    "width": 120,
+    "height": 106,
+    "visiblePixels": 7965,
+    "status": 200
+  },
+  {
+    "path": "/assets/gameplay-props-v2/breakable-seal.png",
+    "width": 120,
+    "height": 107,
+    "visiblePixels": 11911,
+    "status": 200
+  },
+  {
+    "path": "/assets/scene-followup-v1/gantry-clean.png",
+    "width": 384,
+    "height": 204,
+    "visiblePixels": 42127,
+    "status": 200
+  },
+  {
+    "path": "/assets/district-polish-v1/customs-house.png",
+    "width": 384,
+    "height": 286,
+    "visiblePixels": 64287,
+    "status": 200
+  },
+  {
+    "path": "/assets/district-polish-v1/ship-cabin.png",
+    "width": 384,
+    "height": 232,
+    "visiblePixels": 57890,
+    "status": 200
+  },
+  {
+    "path": "/assets/district-polish-v1/shipyard-hull.png",
+    "width": 384,
+    "height": 151,
+    "visiblePixels": 36860,
+    "status": 200
+  },
+  {
+    "path": "/assets/level-v1/enemies-atlas.png",
+    "width": 384,
+    "height": 192,
+    "visiblePixels": 8794,
+    "status": 200
+  },
+  {
+    "path": "/assets/world-v7/guard-atlas.png",
+    "width": 256,
+    "height": 64,
+    "visiblePixels": 2525,
+    "status": 200
+  },
+  {
+    "path": "/assets/world-v7/cannon.png",
+    "width": 64,
+    "height": 64,
+    "visiblePixels": 2804,
+    "status": 200
+  },
+  {
+    "path": "/assets/world-v7/impact.png",
+    "width": 64,
+    "height": 64,
+    "visiblePixels": 1047,
+    "status": 200
+  },
+  {
+    "path": "/assets/world-v7/charge-trail.png",
+    "width": 64,
+    "height": 32,
+    "visiblePixels": 216,
+    "status": 200
+  },
+  {
+    "path": "/assets/sprites-v2/captain-atlas.png",
+    "width": 256,
+    "height": 192,
+    "visiblePixels": 12326,
+    "status": 200
+  },
+  {
+    "path": "/assets/sprites-v2/egghead-atlas.png",
+    "width": 256,
+    "height": 192,
+    "visiblePixels": 11548,
+    "status": 200
+  },
+  {
+    "path": "/assets/walk-v3/captain-walk-atlas.png",
+    "width": 576,
+    "height": 192,
+    "visiblePixels": 19328,
+    "status": 200
+  },
+  {
+    "path": "/assets/pirate-captain-v1/captain-atlas.png",
+    "width": 256,
+    "height": 192,
+    "visiblePixels": 9440,
+    "status": 200
+  },
+  {
+    "path": "/assets/walk-v3/egghead-walk-atlas.png",
+    "width": 576,
+    "height": 192,
+    "visiblePixels": 19887,
+    "status": 200
+  },
+  {
+    "path": "/assets/pirate-captain-v1/captain-walk-atlas.png",
+    "width": 576,
+    "height": 192,
+    "visiblePixels": 14276,
+    "status": 200
+  },
+  {
+    "path": "/assets/underwater-full-v1/ruin.png",
+    "width": 512,
+    "height": 393,
+    "visiblePixels": 147854,
+    "status": 200
+  },
+  {
+    "path": "/assets/underwater-full-v1/habitat.png",
+    "width": 512,
+    "height": 410,
+    "visiblePixels": 157404,
+    "status": 200
+  },
+  {
+    "path": "/assets/underwater-full-v1/wreck.png",
+    "width": 512,
+    "height": 399,
+    "visiblePixels": 154633,
+    "status": 200
+  },
+  {
+    "path": "/assets/underwater-full-v1/valve.png",
+    "width": 132,
+    "height": 192,
+    "visiblePixels": 17291,
+    "status": 200
+  },
+  {
+    "path": "/assets/underwater-full-v1/gate.png",
+    "width": 192,
+    "height": 188,
+    "visiblePixels": 30163,
+    "status": 200
+  },
+  {
+    "path": "/assets/underwater-full-v1/pearl.png",
+    "width": 192,
+    "height": 171,
+    "visiblePixels": 24464,
+    "status": 200
+  },
+  {
+    "path": "/assets/underwater-full-v1/vent.png",
+    "width": 106,
+    "height": 192,
+    "visiblePixels": 11197,
+    "status": 200
+  },
+  {
+    "path": "/assets/underwater-full-v1/console.png",
+    "width": 152,
+    "height": 192,
+    "visiblePixels": 20559,
+    "status": 200
+  },
+  {
+    "path": "/assets/underwater-full-v1/chest.png",
+    "width": 192,
+    "height": 145,
+    "visiblePixels": 25116,
+    "status": 200
+  },
+  {
+    "path": "/assets/underwater-full-v1/reef-block.png",
+    "width": 192,
+    "height": 191,
+    "visiblePixels": 34574,
+    "status": 200
+  },
+  {
+    "path": "/assets/underwater-full-v1/kelp.png",
+    "width": 165,
+    "height": 192,
+    "visiblePixels": 18609,
+    "status": 200
+  },
+  {
+    "path": "/assets/underwater-full-v1/bell.png",
+    "width": 159,
+    "height": 192,
+    "visiblePixels": 22038,
+    "status": 200
+  },
+  {
+    "path": "/assets/underwater-full-v1/reef-ledge.png",
+    "width": 192,
+    "height": 79,
+    "visiblePixels": 13823,
+    "status": 200
+  },
+  {
+    "path": "/assets/underwater-full-v1/catwalk.png",
+    "width": 192,
+    "height": 74,
+    "visiblePixels": 11894,
+    "status": 200
+  },
+  {
+    "path": "/assets/underwater-full-v1/metal-block.png",
+    "width": 192,
+    "height": 190,
+    "visiblePixels": 34465,
+    "status": 200
+  },
+  {
+    "path": "/assets/underwater-full-v1/jelly-0.png",
+    "width": 96,
+    "height": 96,
+    "visiblePixels": 6058,
+    "status": 200
+  },
+  {
+    "path": "/assets/underwater-full-v1/jelly-1.png",
+    "width": 96,
+    "height": 88,
+    "visiblePixels": 5084,
+    "status": 200
+  },
+  {
+    "path": "/assets/underwater-full-v1/jelly-2.png",
+    "width": 96,
+    "height": 90,
+    "visiblePixels": 5166,
+    "status": 200
+  },
+  {
+    "path": "/assets/underwater-full-v1/jelly-3.png",
+    "width": 96,
+    "height": 94,
+    "visiblePixels": 5624,
+    "status": 200
+  },
+  {
+    "path": "/assets/underwater-full-v1/sub-0.png",
+    "width": 96,
+    "height": 81,
+    "visiblePixels": 4712,
+    "status": 200
+  },
+  {
+    "path": "/assets/underwater-full-v1/sub-1.png",
+    "width": 96,
+    "height": 73,
+    "visiblePixels": 3928,
+    "status": 200
+  },
+  {
+    "path": "/assets/underwater-full-v1/sub-2.png",
+    "width": 96,
+    "height": 72,
+    "visiblePixels": 3902,
+    "status": 200
+  },
+  {
+    "path": "/assets/underwater-full-v1/sub-3.png",
+    "width": 96,
+    "height": 80,
+    "visiblePixels": 4640,
+    "status": 200
+  },
+  {
+    "path": "/assets/underwater-v1/bonney/diving-atlas.png",
+    "width": 256,
+    "height": 192,
+    "visiblePixels": 10843,
+    "status": 200
+  },
+  {
+    "path": "/assets/underwater-v1/bonney/diving-walk-atlas.png",
+    "width": 576,
+    "height": 192,
+    "visiblePixels": 16202,
+    "status": 200
+  },
+  {
+    "path": "/assets/underwater-v1/bonney/diving-attacks.png",
+    "width": 192,
+    "height": 192,
+    "visiblePixels": 5592,
+    "status": 200
+  },
+  {
+    "path": "/assets/underwater-v1/luffy/diving-walk-atlas.png",
+    "width": 576,
+    "height": 192,
+    "visiblePixels": 15406,
+    "status": 200
+  },
+  {
+    "path": "/assets/luffy-v1/default-walk-atlas.png",
+    "width": 576,
+    "height": 192,
+    "visiblePixels": 13441,
+    "status": 200
+  },
+  {
+    "path": "/assets/underwater-v1/luffy/diving-atlas.png",
+    "width": 256,
+    "height": 192,
+    "visiblePixels": 10541,
+    "status": 200
+  },
+  {
+    "path": "/assets/underwater-v1/luffy/diving-attacks.png",
+    "width": 192,
+    "height": 192,
+    "visiblePixels": 5028,
+    "status": 200
+  },
+  {
+    "path": "/assets/luffy-v1/default-attacks.png",
+    "width": 192,
+    "height": 192,
+    "visiblePixels": 4745,
+    "status": 200
+  },
+  {
+    "path": "/assets/luffy-v1/default-atlas.png",
+    "width": 256,
+    "height": 192,
+    "visiblePixels": 9083,
+    "status": 200
+  },
+  {
+    "path": "/assets/luffy-v1/captain-atlas.png",
+    "width": 256,
+    "height": 192,
+    "visiblePixels": 11706,
+    "status": 200
+  },
+  {
+    "path": "/assets/luffy-v1/captain-walk-atlas.png",
+    "width": 576,
+    "height": 192,
+    "visiblePixels": 17840,
+    "status": 200
+  },
+  {
+    "path": "/assets/luffy-v1/captain-attacks.png",
+    "width": 192,
+    "height": 192,
+    "visiblePixels": 6058,
+    "status": 200
+  },
+  {
+    "path": "/assets/luffy-v1/egghead-atlas.png",
+    "width": 256,
+    "height": 192,
+    "visiblePixels": 8719,
+    "status": 200
+  },
+  {
+    "path": "/assets/luffy-v1/egghead-attacks.png",
+    "width": 192,
+    "height": 192,
+    "visiblePixels": 4219,
+    "status": 200
+  },
+  {
+    "path": "/assets/luffy-v1/egghead-walk-atlas.png",
+    "width": 576,
+    "height": 192,
+    "visiblePixels": 12683,
+    "status": 200
+  },
+  {
+    "path": "/assets/world-v7/crate.png",
+    "width": 64,
+    "height": 64,
+    "visiblePixels": 3281,
+    "status": 200
+  },
+  {
+    "path": "/assets/luffy-v1/gear-atlas.png",
+    "width": 256,
+    "height": 192,
+    "visiblePixels": 11047,
+    "status": 200
+  },
+  {
+    "path": "/assets/world-v7/barrel.png",
+    "width": 64,
+    "height": 64,
+    "visiblePixels": 2742,
+    "status": 200
+  },
+  {
+    "path": "/assets/world-v7/rope.png",
+    "width": 64,
+    "height": 64,
+    "visiblePixels": 1623,
+    "status": 200
+  },
+  {
+    "path": "/assets/luffy-v1/gear-walk-atlas.png",
+    "width": 576,
+    "height": 192,
+    "visiblePixels": 16303,
+    "status": 200
+  },
+  {
+    "path": "/assets/luffy-v1/gear-attacks.png",
+    "width": 192,
+    "height": 192,
+    "visiblePixels": 5634,
+    "status": 200
+  },
+  {
+    "path": "/assets/world-v7/lantern.png",
+    "width": 64,
+    "height": 64,
+    "visiblePixels": 878,
+    "status": 200
+  },
+  {
+    "path": "/assets/world-v7/boots.png",
+    "width": 64,
+    "height": 64,
+    "visiblePixels": 2113,
+    "status": 200
+  },
+  {
+    "path": "/assets/world-v7/coin.png",
+    "width": 64,
+    "height": 64,
+    "visiblePixels": 2874,
+    "status": 200
+  },
+  {
+    "path": "/assets/world-v7/hat.png",
+    "width": 64,
+    "height": 64,
+    "visiblePixels": 1251,
+    "status": 200
+  },
+  {
+    "path": "/assets/world-v7/sign.png",
+    "width": 64,
+    "height": 64,
+    "visiblePixels": 2388,
+    "status": 200
+  },
+  {
+    "path": "/assets/world-v7/goal.png",
+    "width": 64,
+    "height": 64,
+    "visiblePixels": 1229,
+    "status": 200
+  },
+  {
+    "path": "/assets/world-v7/checkpoint.png",
+    "width": 64,
+    "height": 64,
+    "visiblePixels": 876,
+    "status": 200
+  },
+  {
+    "path": "/assets/machinery-v2/crane.png",
+    "width": 256,
+    "height": 229,
+    "visiblePixels": 20614,
+    "status": 200
+  },
+  {
+    "path": "/assets/machinery-v2/hook.png",
+    "width": 154,
+    "height": 256,
+    "visiblePixels": 19854,
+    "status": 200
+  },
+  {
+    "path": "/assets/machinery-v2/gate.png",
+    "width": 135,
+    "height": 256,
+    "visiblePixels": 26307,
+    "status": 200
+  },
+  {
+    "path": "/assets/machinery-v2/lever.png",
+    "width": 208,
+    "height": 256,
+    "visiblePixels": 26992,
+    "status": 200
+  },
+  {
+    "path": "/assets/machinery-v2/winch.png",
+    "width": 256,
+    "height": 195,
+    "visiblePixels": 30634,
+    "status": 200
+  },
+  {
+    "path": "/assets/machinery-v2/bell.png",
+    "width": 205,
+    "height": 256,
+    "visiblePixels": 32374,
+    "status": 200
+  },
+  {
+    "path": "/assets/machinery-v2/chest.png",
+    "width": 256,
+    "height": 184,
+    "visiblePixels": 41570,
+    "status": 200
+  },
+  {
+    "path": "/assets/machinery-v2/perch.png",
+    "width": 256,
+    "height": 240,
+    "visiblePixels": 29858,
+    "status": 200
+  }
+]

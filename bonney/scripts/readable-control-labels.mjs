@@ -1,0 +1,1 @@
+import fs from 'node:fs';let p='src/encounters.mjs',s=fs.readFileSync(p,'utf8');s=s.replace("g.notice='Mechanism secured: '+s.id;","g.notice='Mechanism secured: '+(s.name||({customsLever:'Customs lever',rigging:'Rigging lever',bell:'Captain bell',skyConsole:'Research console'}[s.id])||'Control');");fs.writeFileSync(p,s);

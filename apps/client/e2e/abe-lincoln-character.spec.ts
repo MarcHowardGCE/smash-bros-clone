@@ -1,3 +1,4 @@
+import { chooseFirstStage } from "./helpers/flow";
 import { test, expect } from '@playwright/test';
 import { mkdirSync } from 'fs';
 
@@ -29,6 +30,7 @@ async function navigateToCharacterSelect(page: import('@playwright/test').Page):
  * Helper: wait for match phase to be 'match' via debug API.
  */
 async function waitForMatchStart(page: import('@playwright/test').Page): Promise<void> {
+  await chooseFirstStage(page);
   await page.waitForFunction(() => {
     const state = (window as any).__DEBUG_GAME_STATE__?.();
     return state?.matchPhase === 'match';
@@ -72,7 +74,7 @@ test('character-select shows both All-Rounder and Abe Lincoln options', async ({
 
   // Check P1 panel has both fighter options
   const p1Options = page.locator('[data-player="1"].fighter-option');
-  await expect(p1Options).toHaveCount(2);
+  await expect(p1Options).toHaveCount(3);
 
   const allRounderOption = page.locator('[data-player="1"][data-id="all-rounder"]');
   const abeLincolnOption = page.locator('[data-player="1"][data-id="abe-lincoln"]');

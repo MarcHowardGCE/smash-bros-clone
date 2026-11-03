@@ -1,0 +1,15 @@
+import fs from 'node:fs';
+const edit=(p,a,b)=>{let s=fs.readFileSync(p,'utf8');if(!s.includes(a))throw Error('Missing '+p+' '+a);fs.writeFileSync(p,s.replaceAll(a,b));};
+let s=fs.readFileSync('src/underwater-level.mjs','utf8');s="import {fullUnderwaterData} from './underwater-data.mjs';\n"+s;const a=s.indexOf('export function underwaterData()'),b=s.indexOf('export function enterUnderwater');s=s.slice(0,a)+'export const underwaterData=fullUnderwaterData;\n'+s.slice(b);s=s.replace("'width','height'","'goalY','width','height'").replace('x:48,y:340','x:g.checkpointState.x,y:g.checkpointState.y');fs.writeFileSync('src/underwater-level.mjs',s);
+edit('src/engine.mjs',"if(wet&&input.interactPressed&&p.x>=56&&p.x<=120&&p.grounded)","if(wet&&input.interactPressed&&p.x>=56&&p.x<=120&&p.grounded&&Math.abs(p.y+p.h-1056)<8)");
+edit('src/engine.mjs',"({...s,y:-448,h:928})","({...s,y:-448,h:game.height+896})");
+edit('src/encounters.mjs',"h.type==='beam'","h.type==='beam'||h.type==='vent'");
+edit('src/encounters.mjs',"  e.timer+=dt;","  if(e.type==='jelly'){e.x=e.homeX+Math.sin(t*1.2+e.homeX)*26;e.y=e.homeY+Math.sin(t*1.6+e.homeX)*22;continue;}\n  e.timer+=dt;");
+edit('src/encounters.mjs',"e.skin==='cloud'?Math.max", "(e.skin==='cloud'||e.skin==='reefSub')?Math.max");
+edit('src/encounters.mjs',"p.power===s.power&&input.interactPressed", "p.power===s.power&&(!s.requires||g.latches[s.requires])&&input.interactPressed");
+edit('src/encounters.mjs',"if(p.x>=cp.x&&g.checkpointIndex<i)","if(p.x>=cp.x&&g.checkpointIndex<i&&(g.scene!=='underwater'||(p.x<cp.x+64&&Math.abs(p.y+p.h-cp.y)<8)))");
+edit('src/encounters.mjs',"(p.y+p.h>=390&&p.y<400)","(p.y+p.h>=g.goalY-8&&p.y<g.goalY)");
+edit('src/combat.mjs'," if(p.attackKind==='charged')for(const cr", " for(const cr");
+edit('src/combat.mjs',"if(cr.hp>0&&hit(box,cr)&&(!cr.requires||g.latches?.[cr.requires])){cr.hp=0;g.events.push('break');}","if(cr.hp>0&&(p.attackKind==='charged'||cr.meleeBreakable)&&!p.attackHits.has(cr)&&hit(box,cr)&&(!cr.requires||g.latches?.[cr.requires])){p.attackHits.add(cr);cr.hp=p.attackKind==='charged'?0:Math.max(0,cr.hp-1);g.events.push(cr.hp?'impact':'break');}");
+edit('server.mjs',"(underwater-level|","(underwater-data|underwater-level|");
+let pkg=JSON.parse(fs.readFileSync('package.json'));pkg.scripts.check+=' && node --check src/underwater-data.mjs';fs.writeFileSync('package.json',JSON.stringify(pkg,null,2)+'\n');

@@ -1,0 +1,85 @@
+{
+  "coverage": "All 408 first poses inspected on 12 boards; color screening sampled all 2289 registered frames. Ten flagged drawings inspected enlarged. This is not visual approval of every frame.",
+  "assessments": [
+    {
+      "fighter": "all-rounder",
+      "clip": "helpless_loop",
+      "frame": 1,
+      "image": "palette-focus-all-rounder-helpless_loop.png",
+      "status": "retain",
+      "reason": "Face and signature costume features remain coherent. Shadow exposure and folded fabric affect the measured color mixture."
+    },
+    {
+      "fighter": "all-rounder",
+      "clip": "tumble_recover",
+      "frame": 0,
+      "image": "palette-focus-all-rounder-tumble_recover.png",
+      "status": "retain",
+      "reason": "Face and signature costume features remain coherent. Shadow exposure and folded fabric affect the measured color mixture."
+    },
+    {
+      "fighter": "all-rounder",
+      "clip": "hit_mid",
+      "frame": 2,
+      "image": "palette-focus-all-rounder-hit_mid.png",
+      "status": "retain",
+      "reason": "Face and signature costume features remain coherent. Shadow exposure and folded fabric affect the measured color mixture."
+    },
+    {
+      "fighter": "abe-lincoln",
+      "clip": "up_tilt",
+      "frame": 2,
+      "image": "palette-focus-abe-lincoln-up_tilt.png",
+      "status": "retain",
+      "reason": "Accepted high-kick palette retained. Slight highlight variation does not justify another brightness correction."
+    },
+    {
+      "fighter": "abe-lincoln",
+      "clip": "dodge",
+      "frame": 2,
+      "image": "palette-focus-abe-lincoln-dodge.png",
+      "status": "retain",
+      "reason": "Face and signature costume features remain coherent. Shadow exposure and folded fabric affect the measured color mixture."
+    },
+    {
+      "fighter": "abe-lincoln",
+      "clip": "tumble_recover",
+      "frame": 0,
+      "image": "palette-focus-abe-lincoln-tumble_recover.png",
+      "status": "retain",
+      "reason": "Face and signature costume features remain coherent. Shadow exposure and folded fabric affect the measured color mixture."
+    },
+    {
+      "fighter": "swift",
+      "clip": "knockdown_up",
+      "frame": 0,
+      "image": "palette-focus-swift-knockdown_up.png",
+      "status": "retain",
+      "reason": "Pink hair, goggles, flower, green jacket, purple clothing and yellow accessories remain coherent. Pose, shadow and exposed boot/jacket proportions affect the green signature."
+    },
+    {
+      "fighter": "swift",
+      "clip": "prone_up",
+      "frame": 2,
+      "image": "palette-focus-swift-prone_up.png",
+      "status": "retain",
+      "reason": "Pink hair, goggles, flower, green jacket, purple clothing and yellow accessories remain coherent. Pose, shadow and exposed boot/jacket proportions affect the green signature."
+    },
+    {
+      "fighter": "swift",
+      "clip": "ko_launch",
+      "frame": 1,
+      "image": "palette-focus-swift-ko_launch.png",
+      "status": "retain",
+      "reason": "Pink hair, goggles, flower, green jacket, purple clothing and yellow accessories remain coherent. Pose, shadow and exposed boot/jacket proportions affect the green signature."
+    },
+    {
+      "fighter": "swift",
+      "clip": "helpless_loop",
+      "frame": 1,
+      "image": "palette-focus-swift-helpless_loop.png",
+      "status": "retain",
+      "reason": "Pink hair, goggles, flower, green jacket, purple clothing and yellow accessories remain coherent. Pose, shadow and exposed boot/jacket proportions affect the green signature."
+    }
+  ]
+}

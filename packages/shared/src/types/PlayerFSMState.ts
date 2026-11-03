@@ -51,6 +51,8 @@ export enum PlayerStateEnum {
   TECH_ROLL = 'TECH_ROLL',
   /** Missed tech; prone hard-landing lockout. */
   HARD_LANDING = 'HARD_LANDING',
+  GETUP = 'GETUP',
+  GETUP_ROLL = 'GETUP_ROLL',
   /** Aerial-move landing lag; reduced by L-cancel. */
   LANDING_LAG = 'LANDING_LAG',
   /** Active grab startup frames; grab hitbox is live. */

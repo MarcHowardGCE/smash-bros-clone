@@ -1,0 +1,168 @@
+{
+  "players": 4,
+  "characters": [
+    "all-rounder",
+    "all-rounder",
+    "abe-lincoln",
+    "swift"
+  ],
+  "atlas": true,
+  "movementObserved": [
+    {
+      "packing": "atlas",
+      "players": [
+        {
+          "slot": 0,
+          "character": "all-rounder",
+          "clip": "air_rise_loop",
+          "bodyVisible": true,
+          "markerVisible": true,
+          "markerFacing": 1
+        },
+        {
+          "slot": 1,
+          "character": "all-rounder",
+          "clip": "idle",
+          "bodyVisible": true,
+          "markerVisible": true,
+          "markerFacing": 1
+        },
+        {
+          "slot": 2,
+          "character": "abe-lincoln",
+          "clip": "idle",
+          "bodyVisible": true,
+          "markerVisible": true,
+          "markerFacing": 1
+        },
+        {
+          "slot": 3,
+          "character": "swift",
+          "clip": "idle",
+          "bodyVisible": true,
+          "markerVisible": true,
+          "markerFacing": 1
+        }
+      ]
+    },
+    {
+      "packing": "atlas",
+      "players": [
+        {
+          "slot": 0,
+          "character": "all-rounder",
+          "clip": "air_rise_loop",
+          "bodyVisible": true,
+          "markerVisible": true,
+          "markerFacing": 1
+        },
+        {
+          "slot": 1,
+          "character": "all-rounder",
+          "clip": "idle",
+          "bodyVisible": true,
+          "markerVisible": true,
+          "markerFacing": 1
+        },
+        {
+          "slot": 2,
+          "character": "abe-lincoln",
+          "clip": "idle",
+          "bodyVisible": true,
+          "markerVisible": true,
+          "markerFacing": 1
+        },
+        {
+          "slot": 3,
+          "character": "swift",
+          "clip": "idle",
+          "bodyVisible": true,
+          "markerVisible": true,
+          "markerFacing": 1
+        }
+      ]
+    },
+    {
+      "packing": "atlas",
+      "players": [
+        {
+          "slot": 0,
+          "character": "all-rounder",
+          "clip": "air_rise_loop",
+          "bodyVisible": true,
+          "markerVisible": true,
+          "markerFacing": 1
+        },
+        {
+          "slot": 1,
+          "character": "all-rounder",
+          "clip": "idle",
+          "bodyVisible": true,
+          "markerVisible": true,
+          "markerFacing": 1
+        },
+        {
+          "slot": 2,
+          "character": "abe-lincoln",
+          "clip": "idle",
+          "bodyVisible": true,
+          "markerVisible": true,
+          "markerFacing": 1
+        },
+        {
+          "slot": 3,
+          "character": "swift",
+          "clip": "idle",
+          "bodyVisible": true,
+          "markerVisible": true,
+          "markerFacing": 1
+        }
+      ]
+    },
+    {
+      "packing": "atlas",
+      "players": [
+        {
+          "slot": 0,
+          "character": "all-rounder",
+          "clip": "air_rise_loop",
+          "bodyVisible": true,
+          "markerVisible": true,
+          "markerFacing": 1
+        },
+        {
+          "slot": 1,
+          "character": "all-rounder",
+          "clip": "idle",
+          "bodyVisible": true,
+          "markerVisible": true,
+          "markerFacing": 1
+        },
+        {
+          "slot": 2,
+          "character": "abe-lincoln",
+          "clip": "idle",
+          "bodyVisible": true,
+          "markerVisible": true,
+          "markerFacing": 1
+        },
+        {
+          "slot": 3,
+          "character": "swift",
+          "clip": "idle",
+          "bodyVisible": true,
+          "markerVisible": true,
+          "markerFacing": 1
+        }
+      ]
+    }
+  ],
+  "pauseTicks": [
+    111,
+    111,
+    111,
+    111
+  ],
+  "rejoin": true,
+  "pageErrors": []
+}

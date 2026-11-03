@@ -31,3 +31,5 @@ Updated district montage visually inspected.
 Existing game rules and power timing remain unchanged.
 
 Follow-up: removed the flat ship-deck panel overlay shown in player feedback. Hull surfaces now use short textured planks, grain, bevels, seams, rivets and ribs, culled to the viewport. Replaced large opaque warehouse window blocks with open timber framing. Updated the ship-floor regression to use an on-screen camera. All 38 tests, syntax checks and full-level browser flow pass.
+
+November 2 cleanup: removed the warehouse tint rectangle, repeated timber lattice, full-height supports beneath every raised platform, global panorama tint rectangle, and oversized ship mast/sail overlays. Replaced supports with short platform brackets and kept grounded bird posts. Rescaled crane assemblies to prop size on narrow grounded pilings. Added a regression against broad tint boxes and oversized background timber. All 39 tests and full-level browser checks pass; repaired crane and district captures visually reviewed.

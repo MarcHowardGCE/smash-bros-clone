@@ -48,7 +48,8 @@ describe('MatchSession pause/resume', () => {
 		session.stop();
 	});
 
-	it('pause broadcasts game:paused event, resume broadcasts game:resumed', async () => {
+	it('pause and resume use the control callback, never the snapshot transport', async () => {
+    const onPauseChange = vi.fn();
 		const broadcasts: Uint8Array[] = [];
 		const session = new MatchSession({
 			playerIds: ['p1', 'p2'],
@@ -58,6 +59,7 @@ describe('MatchSession pause/resume', () => {
 				broadcasts.push(bytes);
 			},
 			onMatchOver: () => {},
+      onPauseChange,
 		});
 
 		session.start();
@@ -67,13 +69,15 @@ describe('MatchSession pause/resume', () => {
 		session.pause();
 
 		// pause() should have broadcast one event
-		expect(broadcasts.length).toBe(beforePauseBroadcastCount + 1);
+		expect(broadcasts.length).toBe(beforePauseBroadcastCount);
+    expect(onPauseChange).toHaveBeenLastCalledWith(true);
 
 		const beforeResumeBroadcastCount = broadcasts.length;
 		session.resume();
 
 		// resume() should have broadcast one event
-		expect(broadcasts.length).toBe(beforeResumeBroadcastCount + 1);
+		expect(broadcasts.length).toBe(beforeResumeBroadcastCount);
+    expect(onPauseChange).toHaveBeenLastCalledWith(false);
 
 		session.stop();
 	});
@@ -147,6 +151,7 @@ describe('MatchSession pause/resume', () => {
 	});
 
 	it('double pause is idempotent', async () => {
+    const onPauseChange = vi.fn();
 		const broadcasts: Uint8Array[] = [];
 		const session = new MatchSession({
 			playerIds: ['p1', 'p2'],
@@ -156,6 +161,7 @@ describe('MatchSession pause/resume', () => {
 				broadcasts.push(bytes);
 			},
 			onMatchOver: () => {},
+      onPauseChange,
 		});
 
 		session.start();
@@ -163,11 +169,12 @@ describe('MatchSession pause/resume', () => {
 
 		const beforePause = broadcasts.length;
 		session.pause();
-		expect(broadcasts.length).toBe(beforePause + 1);
+		expect(broadcasts.length).toBe(beforePause);
 
 		session.pause(); // Second pause
-		expect(broadcasts.length).toBe(beforePause + 1); // No additional broadcast
+		expect(broadcasts.length).toBe(beforePause); // No additional broadcast
 
-		session.stop();
+		expect(onPauseChange).toHaveBeenCalledTimes(1);
+    session.stop();
 	});
 });

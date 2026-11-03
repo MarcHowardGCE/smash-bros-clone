@@ -1,0 +1,605 @@
+{
+  "ages": [
+    "adult",
+    "teenage",
+    "baby"
+  ],
+  "gearFrames": [
+    {
+      "age": "adult",
+      "column": 0,
+      "height": 60,
+      "sourceBounds": {
+        "x": 16,
+        "y": 29,
+        "w": 151,
+        "h": 333
+      },
+      "file": "gear-adult-0.png"
+    },
+    {
+      "age": "adult",
+      "column": 1,
+      "height": 60,
+      "sourceBounds": {
+        "x": 175,
+        "y": 55,
+        "w": 170,
+        "h": 307
+      },
+      "file": "gear-adult-1.png"
+    },
+    {
+      "age": "adult",
+      "column": 2,
+      "height": 60,
+      "sourceBounds": {
+        "x": 320,
+        "y": 95,
+        "w": 135,
+        "h": 267
+      },
+      "file": "gear-adult-2.png"
+    },
+    {
+      "age": "adult",
+      "column": 3,
+      "height": 60,
+      "sourceBounds": {
+        "x": 476,
+        "y": 51,
+        "w": 124,
+        "h": 311
+      },
+      "file": "gear-adult-3.png"
+    },
+    {
+      "age": "adult",
+      "column": 4,
+      "height": 60,
+      "sourceBounds": {
+        "x": 610,
+        "y": 57,
+        "w": 166,
+        "h": 305
+      },
+      "file": "gear-adult-4.png"
+    },
+    {
+      "age": "adult",
+      "column": 5,
+      "height": 60,
+      "sourceBounds": {
+        "x": 772,
+        "y": 92,
+        "w": 140,
+        "h": 270
+      },
+      "file": "gear-adult-5.png"
+    },
+    {
+      "age": "adult",
+      "column": 6,
+      "height": 60,
+      "sourceBounds": {
+        "x": 914,
+        "y": 50,
+        "w": 126,
+        "h": 311
+      },
+      "file": "gear-adult-6.png"
+    },
+    {
+      "age": "adult",
+      "column": 7,
+      "height": 41,
+      "sourceBounds": {
+        "x": 1035,
+        "y": 29,
+        "w": 137,
+        "h": 228
+      },
+      "file": "gear-adult-7.png"
+    },
+    {
+      "age": "adult",
+      "column": 8,
+      "height": 53,
+      "sourceBounds": {
+        "x": 1166,
+        "y": 67,
+        "w": 184,
+        "h": 296
+      },
+      "file": "gear-adult-8.png"
+    },
+    {
+      "age": "adult",
+      "column": 9,
+      "height": 54,
+      "sourceBounds": {
+        "x": 1347,
+        "y": 62,
+        "w": 185,
+        "h": 300
+      },
+      "file": "gear-adult-9.png"
+    },
+    {
+      "age": "teenage",
+      "column": 0,
+      "height": 50,
+      "sourceBounds": {
+        "x": 23,
+        "y": 415,
+        "w": 134,
+        "h": 286
+      },
+      "file": "gear-teenage-0.png"
+    },
+    {
+      "age": "teenage",
+      "column": 1,
+      "height": 50,
+      "sourceBounds": {
+        "x": 171,
+        "y": 435,
+        "w": 156,
+        "h": 266
+      },
+      "file": "gear-teenage-1.png"
+    },
+    {
+      "age": "teenage",
+      "column": 2,
+      "height": 50,
+      "sourceBounds": {
+        "x": 323,
+        "y": 467,
+        "w": 134,
+        "h": 234
+      },
+      "file": "gear-teenage-2.png"
+    },
+    {
+      "age": "teenage",
+      "column": 3,
+      "height": 50,
+      "sourceBounds": {
+        "x": 474,
+        "y": 428,
+        "w": 117,
+        "h": 273
+      },
+      "file": "gear-teenage-3.png"
+    },
+    {
+      "age": "teenage",
+      "column": 4,
+      "height": 50,
+      "sourceBounds": {
+        "x": 613,
+        "y": 436,
+        "w": 156,
+        "h": 265
+      },
+      "file": "gear-teenage-4.png"
+    },
+    {
+      "age": "teenage",
+      "column": 5,
+      "height": 50,
+      "sourceBounds": {
+        "x": 769,
+        "y": 467,
+        "w": 129,
+        "h": 234
+      },
+      "file": "gear-teenage-5.png"
+    },
+    {
+      "age": "teenage",
+      "column": 6,
+      "height": 50,
+      "sourceBounds": {
+        "x": 914,
+        "y": 424,
+        "w": 114,
+        "h": 277
+      },
+      "file": "gear-teenage-6.png"
+    },
+    {
+      "age": "teenage",
+      "column": 7,
+      "height": 34,
+      "sourceBounds": {
+        "x": 1038,
+        "y": 405,
+        "w": 123,
+        "h": 196
+      },
+      "file": "gear-teenage-7.png"
+    },
+    {
+      "age": "teenage",
+      "column": 8,
+      "height": 45,
+      "sourceBounds": {
+        "x": 1166,
+        "y": 441,
+        "w": 177,
+        "h": 260
+      },
+      "file": "gear-teenage-8.png"
+    },
+    {
+      "age": "teenage",
+      "column": 9,
+      "height": 47,
+      "sourceBounds": {
+        "x": 1350,
+        "y": 434,
+        "w": 169,
+        "h": 267
+      },
+      "file": "gear-teenage-9.png"
+    },
+    {
+      "age": "baby",
+      "column": 0,
+      "height": 36,
+      "sourceBounds": {
+        "x": 27,
+        "y": 770,
+        "w": 116,
+        "h": 223
+      },
+      "file": "gear-baby-0.png"
+    },
+    {
+      "age": "baby",
+      "column": 1,
+      "height": 36,
+      "sourceBounds": {
+        "x": 176,
+        "y": 785,
+        "w": 133,
+        "h": 208
+      },
+      "file": "gear-baby-1.png"
+    },
+    {
+      "age": "baby",
+      "column": 2,
+      "height": 36,
+      "sourceBounds": {
+        "x": 330,
+        "y": 809,
+        "w": 113,
+        "h": 186
+      },
+      "file": "gear-baby-2.png"
+    },
+    {
+      "age": "baby",
+      "column": 3,
+      "height": 36,
+      "sourceBounds": {
+        "x": 476,
+        "y": 782,
+        "w": 105,
+        "h": 213
+      },
+      "file": "gear-baby-3.png"
+    },
+    {
+      "age": "baby",
+      "column": 4,
+      "height": 36,
+      "sourceBounds": {
+        "x": 619,
+        "y": 790,
+        "w": 131,
+        "h": 205
+      },
+      "file": "gear-baby-4.png"
+    },
+    {
+      "age": "baby",
+      "column": 5,
+      "height": 36,
+      "sourceBounds": {
+        "x": 771,
+        "y": 817,
+        "w": 110,
+        "h": 178
+      },
+      "file": "gear-baby-5.png"
+    },
+    {
+      "age": "baby",
+      "column": 6,
+      "height": 36,
+      "sourceBounds": {
+        "x": 914,
+        "y": 781,
+        "w": 107,
+        "h": 214
+      },
+      "file": "gear-baby-6.png"
+    },
+    {
+      "age": "baby",
+      "column": 7,
+      "height": 27,
+      "sourceBounds": {
+        "x": 1044,
+        "y": 760,
+        "w": 108,
+        "h": 169
+      },
+      "file": "gear-baby-7.png"
+    },
+    {
+      "age": "baby",
+      "column": 8,
+      "height": 32,
+      "sourceBounds": {
+        "x": 1179,
+        "y": 794,
+        "w": 161,
+        "h": 201
+      },
+      "file": "gear-baby-8.png"
+    },
+    {
+      "age": "baby",
+      "column": 9,
+      "height": 33,
+      "sourceBounds": {
+        "x": 1356,
+        "y": 790,
+        "w": 153,
+        "h": 204
+      },
+      "file": "gear-baby-9.png"
+    }
+  ],
+  "meleeFrames": [
+    {
+      "age": "adult",
+      "column": 0,
+      "height": 60,
+      "sourceBounds": {
+        "x": 10,
+        "y": 15,
+        "w": 256,
+        "h": 376
+      },
+      "outfit": "default",
+      "file": "default-adult-punch.png"
+    },
+    {
+      "age": "adult",
+      "column": 1,
+      "height": 60,
+      "sourceBounds": {
+        "x": 278,
+        "y": 23,
+        "w": 236,
+        "h": 369
+      },
+      "outfit": "default",
+      "file": "default-adult-kick.png"
+    },
+    {
+      "age": "adult",
+      "column": 2,
+      "height": 60,
+      "sourceBounds": {
+        "x": 513,
+        "y": 11,
+        "w": 267,
+        "h": 381
+      },
+      "outfit": "captain",
+      "file": "captain-adult-punch.png"
+    },
+    {
+      "age": "adult",
+      "column": 3,
+      "height": 60,
+      "sourceBounds": {
+        "x": 771,
+        "y": 15,
+        "w": 256,
+        "h": 377
+      },
+      "outfit": "captain",
+      "file": "captain-adult-kick.png"
+    },
+    {
+      "age": "adult",
+      "column": 4,
+      "height": 60,
+      "sourceBounds": {
+        "x": 1042,
+        "y": 25,
+        "w": 251,
+        "h": 367
+      },
+      "outfit": "egghead",
+      "file": "egghead-adult-punch.png"
+    },
+    {
+      "age": "adult",
+      "column": 5,
+      "height": 60,
+      "sourceBounds": {
+        "x": 1299,
+        "y": 36,
+        "w": 232,
+        "h": 356
+      },
+      "outfit": "egghead",
+      "file": "egghead-adult-kick.png"
+    },
+    {
+      "age": "teenage",
+      "column": 0,
+      "height": 50,
+      "sourceBounds": {
+        "x": 21,
+        "y": 434,
+        "w": 219,
+        "h": 301
+      },
+      "outfit": "default",
+      "file": "default-teenage-punch.png"
+    },
+    {
+      "age": "teenage",
+      "column": 1,
+      "height": 50,
+      "sourceBounds": {
+        "x": 282,
+        "y": 442,
+        "w": 194,
+        "h": 293
+      },
+      "outfit": "default",
+      "file": "default-teenage-kick.png"
+    },
+    {
+      "age": "teenage",
+      "column": 2,
+      "height": 50,
+      "sourceBounds": {
+        "x": 528,
+        "y": 431,
+        "w": 227,
+        "h": 304
+      },
+      "outfit": "captain",
+      "file": "captain-teenage-punch.png"
+    },
+    {
+      "age": "teenage",
+      "column": 3,
+      "height": 50,
+      "sourceBounds": {
+        "x": 784,
+        "y": 435,
+        "w": 212,
+        "h": 300
+      },
+      "outfit": "captain",
+      "file": "captain-teenage-kick.png"
+    },
+    {
+      "age": "teenage",
+      "column": 4,
+      "height": 50,
+      "sourceBounds": {
+        "x": 1050,
+        "y": 441,
+        "w": 220,
+        "h": 294
+      },
+      "outfit": "egghead",
+      "file": "egghead-teenage-punch.png"
+    },
+    {
+      "age": "teenage",
+      "column": 5,
+      "height": 50,
+      "sourceBounds": {
+        "x": 1303,
+        "y": 453,
+        "w": 203,
+        "h": 282
+      },
+      "outfit": "egghead",
+      "file": "egghead-teenage-kick.png"
+    },
+    {
+      "age": "baby",
+      "column": 0,
+      "height": 36,
+      "sourceBounds": {
+        "x": 29,
+        "y": 783,
+        "w": 179,
+        "h": 230
+      },
+      "outfit": "default",
+      "file": "default-baby-punch.png"
+    },
+    {
+      "age": "baby",
+      "column": 1,
+      "height": 36,
+      "sourceBounds": {
+        "x": 284,
+        "y": 793,
+        "w": 165,
+        "h": 220
+      },
+      "outfit": "default",
+      "file": "default-baby-kick.png"
+    },
+    {
+      "age": "baby",
+      "column": 2,
+      "height": 36,
+      "sourceBounds": {
+        "x": 544,
+        "y": 783,
+        "w": 180,
+        "h": 230
+      },
+      "outfit": "captain",
+      "file": "captain-baby-punch.png"
+    },
+    {
+      "age": "baby",
+      "column": 3,
+      "height": 36,
+      "sourceBounds": {
+        "x": 795,
+        "y": 790,
+        "w": 174,
+        "h": 223
+      },
+      "outfit": "captain",
+      "file": "captain-baby-kick.png"
+    },
+    {
+      "age": "baby",
+      "column": 4,
+      "height": 36,
+      "sourceBounds": {
+        "x": 1058,
+        "y": 789,
+        "w": 175,
+        "h": 224
+      },
+      "outfit": "egghead",
+      "file": "egghead-baby-punch.png"
+    },
+    {
+      "age": "baby",
+      "column": 5,
+      "height": 36,
+      "sourceBounds": {
+        "x": 1314,
+        "y": 801,
+        "w": 177,
+        "h": 212
+      },
+      "outfit": "egghead",
+      "file": "egghead-baby-kick.png"
+    }
+  ]
+}

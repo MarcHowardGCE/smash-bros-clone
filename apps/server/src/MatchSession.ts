@@ -30,58 +30,19 @@ extensionCodec.register({
 });
 
 /**
- * Authoritative fixed-timestep game loop for a single match.
- *
- * Owns one {@link GameEngine} instance and drives it at 60 Hz via a
- * `setImmediate` + `performance.now()` accumulator loop. Every three ticks
- * (20 Hz) it encodes the full game snapshot with msgpack and forwards it to
- * all room members through the injected `onBroadcast` callback.
- *
- * @remarks
- * **Why `setImmediate` instead of `setInterval` / `setTimeout`**
- *
- * `setImmediate` fires after I/O callbacks but before any `setTimeout` /
- * `setInterval` callbacks in the same event loop iteration. This gives tighter,
- * more consistent scheduling than `setInterval` (which can drift and stack
- * multiple callbacks when the process is busy) or `setTimeout(fn, 16)` (which
- * has a minimum ~1 ms variance and accumulates jitter across hundreds of ticks
- * per second). The tick runs as soon as I/O has drained, not after an arbitrary
- * timer delay.
- *
- * **Why the fixed-timestep accumulator pattern**
- *
- * `accumulator += deltaTime` then `while (accumulator >= TICK_MS)` prevents the
- * "spiral of death". If one tick takes longer than TICK_MS (e.g. a GC pause),
- * the accumulator simply grows. On the next loop call we run as many
- * TICK_MS-sized steps as needed to drain it, keeping simulation time aligned
- * with wall-clock time even under CPU spikes. A naive `setInterval` approach
- * would either skip ticks or run them late, causing the simulation to fall
- * behind real time permanently.
- *
- * **Why `BROADCAST_EVERY = 3`**
- *
- * Game simulation runs at 60 Hz (TICK_MS ~16.67 ms). Broadcasting every tick
- * would send 60 snapshots/second — far more than necessary and expensive on
- * bandwidth. Broadcasting every 3 ticks gives 20 snapshots/second, sufficient
- * for smooth client-side interpolation. The client's InterpolationBuffer stores
- * the last 3 snapshots and lerps remote player positions between them, producing
- * visually smooth 60 fps rendering from a 20 Hz update stream.
- *
- * **Why callbacks (`onBroadcast`, `onMatchOver`) rather than owning a socket**
- *
- * Injecting transport callbacks instead of passing a socket directly decouples
- * the game simulation from the networking layer. `MatchSession` (and the
- * `GameEngine` it wraps) can be instantiated and exercised in unit tests without
- * any socket infrastructure. The caller (RoomManager) decides how to route the
- * encoded snapshot — over one socket, a broadcast room, or a test spy — without
- * any changes to this class.
+ * Drives one authoritative match at 60 Hz. Catch-up is capped at six steps
+ * per callback to bound event-loop stalls. Snapshots target 20 Hz; a catch-up
+ * batch sends one fully advanced state once at least three ticks have elapsed.
+ * Control events use onPauseChange, separate from binary snapshot transport.
+ * createApp owns socket routing, disconnect expiry and shutdown cleanup.
  */
-
 interface MatchSessionConfig {
 	playerIds: PlayerId[];
 	characterIds: Record<PlayerId, CharacterId>;
 	onBroadcast: (data: Uint8Array | Buffer) => void;
-	onMatchOver: (winnerId: PlayerId) => void;
+	onMatchOver: (winnerId: PlayerId | null) => void;
+  onPauseChange?: (paused: boolean) => void;
+  now?: () => number;
 }
 
 /** @see {@link MatchSessionConfig} for constructor options. */
@@ -89,9 +50,13 @@ export class MatchSession {
   private readonly engine: GameEngine;
   private readonly inputQueue = new Map<PlayerId, InputEvent[]>();
   private readonly lastConfirmedSeq: Record<PlayerId, number> = {};
-  private readonly characterIds: Record<PlayerId, CharacterId>;
   private readonly onBroadcast: (data: Uint8Array | Buffer) => void;
-  private readonly onMatchOver: (winnerId: PlayerId) => void;
+  private readonly onMatchOver: (winnerId: PlayerId | null) => void;
+  private readonly onPauseChange?: (paused: boolean) => void;
+  private readonly inputNow: () => number;
+  private readonly lastHeldInput = new Map<PlayerId, InputEvent>();
+  private readonly inputReceivedAt = new Map<PlayerId, number>();
+  private ticksSinceBroadcast = 0;
   private tickCount = 0;
   private isRunning = false;
   private paused = false;
@@ -104,10 +69,11 @@ export class MatchSession {
    * @param config - Player IDs, character selections, and transport callbacks.
    */
   constructor(config: MatchSessionConfig) {
-    this.engine = new GameEngine({ playerIds: config.playerIds });
-    this.characterIds = config.characterIds;
+    this.engine = new GameEngine({ playerIds: config.playerIds, characterIds: config.characterIds });
     this.onBroadcast = config.onBroadcast;
     this.onMatchOver = config.onMatchOver;
+    this.onPauseChange = config.onPauseChange;
+    this.inputNow = config.now ?? (() => performance.now());
 
     for (const playerId of config.playerIds) {
       this.inputQueue.set(playerId, []);
@@ -145,7 +111,7 @@ export class MatchSession {
    *
    * While paused the accumulator continues draining each `setImmediate` call
    * (preventing a spike on resume), but no game ticks are processed and no
-   * snapshots are broadcast. A `game:paused` msgpack event is emitted to all
+   * snapshots are broadcast. A `game:paused` control notification is emitted to all
    * clients immediately.
    *
    * No-ops if not running or already paused.
@@ -153,10 +119,13 @@ export class MatchSession {
   pause(): void {
     if (!this.isRunning || this.paused) return;
     this.paused = true;
-    // Broadcast pause event as a simple msgpack-encoded object.
+    // Keep control notifications separate from snapshot data.
     // Keep the loop scheduling alive (don't call stop()), just skip tick processing.
-    const pauseEvent = encode({ type: 'game:paused' }, { extensionCodec });
-    this.onBroadcast(Buffer.from(pauseEvent.buffer, pauseEvent.byteOffset, pauseEvent.byteLength));
+    this.accumulator = 0;
+    for (const queue of this.inputQueue.values()) queue.length = 0;
+    this.lastHeldInput.clear();
+    this.inputReceivedAt.clear();
+    this.onPauseChange?.(true);
   }
 
   /**
@@ -164,7 +133,7 @@ export class MatchSession {
    *
    * Resets `lastTime` to the current wall-clock instant so the accumulator
    * doesn't try to catch up on the entire pause duration. Emits a
-   * `game:resumed` msgpack event to all clients.
+   * `game:resumed` control notification to all clients.
    *
    * No-ops if not running or not paused.
    */
@@ -173,8 +142,8 @@ export class MatchSession {
     this.paused = false;
     // Reset lastTime to prevent accumulator spike after pause duration.
     this.lastTime = performance.now();
-    const resumeEvent = encode({ type: 'game:resumed' }, { extensionCodec });
-    this.onBroadcast(Buffer.from(resumeEvent.buffer, resumeEvent.byteOffset, resumeEvent.byteLength));
+    this.accumulator = 0;
+    this.onPauseChange?.(false);
   }
 
   /**
@@ -199,7 +168,15 @@ export class MatchSession {
     const input = this.decodeInput(rawInput);
     if (!input) return;
 
-		queue.push(input);
+    const newestSeq = queue[queue.length - 1]?.seq ?? this.lastConfirmedSeq[playerId] ?? -1;
+    if (input.seq <= newestSeq) return;
+    // Bound memory while preserving edge bits from an unusually busy tick.
+    if (queue.length >= 120) {
+      const merged = this.consumeLatestInput(queue);
+      if (merged) queue.push(merged);
+    }
+    queue.push({ ...input, playerId });
+    this.inputReceivedAt.set(playerId, this.inputNow());
   }
 
   /**
@@ -223,7 +200,7 @@ export class MatchSession {
     if (!this.isRunning) return;
 
     const now = performance.now();
-    this.accumulator += now - this.lastTime;
+    this.accumulator = Math.min(this.accumulator + now - this.lastTime, TICK_MS * 6);
     this.lastTime = now;
 
     let processedTick = false;
@@ -238,6 +215,7 @@ export class MatchSession {
 
       this.processTick();
       this.tickCount += 1;
+      this.ticksSinceBroadcast += 1;
       this.accumulator -= TICK_MS;
       processedTick = true;
 
@@ -249,7 +227,8 @@ export class MatchSession {
     // Broadcast AFTER draining the full accumulator, not mid-loop. This ensures the
     // snapshot reflects all ticks processed this wall-clock instant rather than a
     // partially-advanced simulation state.
-    if (processedTick && this.tickCount % BROADCAST_EVERY === 0) {
+    if (processedTick && this.ticksSinceBroadcast >= BROADCAST_EVERY) {
+      this.ticksSinceBroadcast %= BROADCAST_EVERY;
       this.broadcastState();
     }
 
@@ -267,7 +246,13 @@ export class MatchSession {
     const inputs = new Map<PlayerId, InputEvent | null>();
     for (const [playerId, queue] of this.inputQueue.entries()) {
 			const input = this.consumeLatestInput(queue);
-			inputs.set(playerId, input);
+      if (input) this.lastHeldInput.set(playerId, input);
+      const previous = this.lastHeldInput.get(playerId);
+      // Keep continuous buttons through short delivery gaps, never repeat edges.
+      // A stale connection becomes neutral after 250 ms.
+      const held = previous && this.inputNow() - (this.inputReceivedAt.get(playerId) ?? -Infinity) <= 250
+        ? { ...previous, pressed: 0, released: 0 } : null;
+      inputs.set(playerId, input ?? held);
 			if (input) {
 				this.lastConfirmedSeq[playerId] = input.seq;
 			}
@@ -285,28 +270,40 @@ export class MatchSession {
 
     if (this.engine.isMatchOver()) {
       const winnerId = this.engine.getWinnerId();
-      if (winnerId) {
-        this.onMatchOver(winnerId);
-      }
+      this.broadcastState();
       this.stop();
+      this.onMatchOver(winnerId);
     }
   }
 
-  /**
-   * Encodes the current game snapshot with msgpack and passes it to the
-   * `onBroadcast` callback. Character selections are injected into each
-   * player's snapshot entry before encoding since the `GameEngine` doesn't
-   * store character metadata.
-   */
+  get isPaused(): boolean { return this.paused; }
+
+  /** Send current state without consuming events queued for the regular broadcast. */
+  syncState(send: (data: Uint8Array) => void): void {
+    const snapshot = this.engine.getSnapshot(performance.now(), { ...this.lastConfirmedSeq });
+    send(encode({ ...snapshot, hitEvents: [] }, { extensionCodec }));
+  }
+
+  releaseInput(playerId: PlayerId): void {
+    const queue = this.inputQueue.get(playerId);
+    if (queue) queue.length = 0;
+    this.lastHeldInput.delete(playerId);
+    this.inputReceivedAt.delete(playerId);
+  }
+
+  forfeitPlayer(playerId: PlayerId): void {
+    this.releaseInput(playerId);
+    this.inputQueue.delete(playerId);
+    this.engine.forfeitPlayer(playerId);
+    this.broadcastState();
+    if (this.engine.isMatchOver()) {
+      this.stop();
+      this.onMatchOver(this.engine.getWinnerId());
+    }
+  }
+
   private broadcastState(): void {
     const snapshot = this.engine.getSnapshot(performance.now(), this.lastConfirmedSeq);
-    // Forward character selections to each player in the snapshot
-    for (const playerId in snapshot.players) {
-      const player = snapshot.players[playerId];
-      if (player) {
-        player.characterId = this.characterIds[playerId];
-      }
-    }
     // msgpack binary encoding is ~3× smaller than JSON for PlayerState structs
     // (binary ints vs. string-encoded numbers). At 20 Hz × 4 players this is the
     // hottest network write in the server; every byte saved reduces bandwidth and
@@ -346,13 +343,13 @@ export class MatchSession {
    * passing them into the simulation.
    */
   private isInputEvent(value: unknown): value is InputEvent {
-    return typeof value === 'object' && value !== null
-      && typeof (value as InputEvent).seq === 'number'
-      && typeof (value as InputEvent).tick === 'number'
-      && typeof (value as InputEvent).held === 'number'
-      && typeof (value as InputEvent).pressed === 'number'
-      && typeof (value as InputEvent).released === 'number'
-      && typeof (value as InputEvent).playerId === 'string';
+    if (typeof value !== 'object' || value === null) return false;
+    const input = value as InputEvent;
+    return Number.isSafeInteger(input.seq) && input.seq >= 0
+      && Number.isSafeInteger(input.tick) && input.tick >= 0
+      && [input.held, input.pressed, input.released].every(
+        bits => Number.isInteger(bits) && bits >= 0 && bits <= 0xff)
+      && typeof input.playerId === 'string';
   }
 
 	/**

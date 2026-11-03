@@ -2,7 +2,7 @@ services:
   - type: web
     name: smash-clone
     runtime: node
-    buildCommand: npm install -g pnpm && pnpm install && pnpm build
+    buildCommand: npm install -g pnpm@11.20.0 && pnpm install --frozen-lockfile && pnpm build
     startCommand: node apps/server/dist/index.js
     envVars:
       - key: NODE_ENV

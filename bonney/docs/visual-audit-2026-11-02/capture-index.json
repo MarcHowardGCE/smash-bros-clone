@@ -1,0 +1,164 @@
+[
+  {
+    "x": 100,
+    "y": 372,
+    "name": "ground-100",
+    "index": 1
+  },
+  {
+    "x": 400,
+    "y": 372,
+    "name": "ground-400",
+    "index": 2
+  },
+  {
+    "x": 700,
+    "y": 372,
+    "name": "ground-700",
+    "index": 3
+  },
+  {
+    "x": 1000,
+    "y": 372,
+    "name": "ground-1000",
+    "index": 4
+  },
+  {
+    "x": 1300,
+    "y": 372,
+    "name": "ground-1300",
+    "index": 5
+  },
+  {
+    "x": 1600,
+    "y": 372,
+    "name": "ground-1600",
+    "index": 6
+  },
+  {
+    "x": 1900,
+    "y": 372,
+    "name": "ground-1900",
+    "index": 7
+  },
+  {
+    "x": 2200,
+    "y": 372,
+    "name": "ground-2200",
+    "index": 8
+  },
+  {
+    "x": 2500,
+    "y": 372,
+    "name": "ground-2500",
+    "index": 9
+  },
+  {
+    "x": 2800,
+    "y": 372,
+    "name": "ground-2800",
+    "index": 10
+  },
+  {
+    "x": 3100,
+    "y": 372,
+    "name": "ground-3100",
+    "index": 11
+  },
+  {
+    "x": 3400,
+    "y": 372,
+    "name": "ground-3400",
+    "index": 12
+  },
+  {
+    "x": 3700,
+    "y": 372,
+    "name": "ground-3700",
+    "index": 13
+  },
+  {
+    "x": 4000,
+    "y": 372,
+    "name": "ground-4000",
+    "index": 14
+  },
+  {
+    "x": 4300,
+    "y": 372,
+    "name": "ground-4300",
+    "index": 15
+  },
+  {
+    "x": 4600,
+    "y": 372,
+    "name": "ground-4600",
+    "index": 16
+  },
+  {
+    "x": 4900,
+    "y": 372,
+    "name": "ground-4900",
+    "index": 17
+  },
+  {
+    "x": 5200,
+    "y": 372,
+    "name": "ground-5200",
+    "index": 18
+  },
+  {
+    "x": 5500,
+    "y": 372,
+    "name": "ground-5500",
+    "index": 19
+  },
+  {
+    "x": 5800,
+    "y": 372,
+    "name": "ground-5800",
+    "index": 20
+  },
+  {
+    "x": 6100,
+    "y": 372,
+    "name": "ground-6100",
+    "index": 21
+  },
+  {
+    "x": 1440,
+    "y": 266,
+    "name": "warehouse-roof",
+    "index": 22
+  },
+  {
+    "x": 2660,
+    "y": 210,
+    "name": "crane-lifts",
+    "index": 23
+  },
+  {
+    "x": 2976,
+    "y": 112,
+    "name": "crane-secret",
+    "index": 24
+  },
+  {
+    "x": 4000,
+    "y": 200,
+    "name": "customs-lever",
+    "index": 25
+  },
+  {
+    "x": 5888,
+    "y": 224,
+    "name": "rigging",
+    "index": 26
+  },
+  {
+    "x": 6128,
+    "y": 168,
+    "name": "bell",
+    "index": 27
+  }
+]

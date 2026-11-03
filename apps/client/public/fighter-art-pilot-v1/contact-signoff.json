@@ -1,0 +1,1333 @@
+{
+  "revision": 18,
+  "date": "2026-11-03",
+  "scope": "126 selected holder/ledge anchors checked against source alpha; 20 manually guided hand anchors corrected across five clips. Proximity to opaque pixels is a diagnostic, not proof of anatomically correct contact.",
+  "corrected": [
+    {
+      "fighter": "abe-lincoln",
+      "clip": "grab_hold",
+      "frame": 0,
+      "socket": "grabGrip",
+      "activeContact": true,
+      "previousDistance": 0.084,
+      "distance": 0.044
+    },
+    {
+      "fighter": "abe-lincoln",
+      "clip": "grab_hold",
+      "frame": 1,
+      "socket": "grabGrip",
+      "activeContact": true,
+      "previousDistance": 4.733,
+      "distance": 0.09
+    },
+    {
+      "fighter": "abe-lincoln",
+      "clip": "grab_hold",
+      "frame": 2,
+      "socket": "grabGrip",
+      "activeContact": true,
+      "previousDistance": 0.084,
+      "distance": 0.019
+    },
+    {
+      "fighter": "abe-lincoln",
+      "clip": "grab_hold",
+      "frame": 3,
+      "socket": "grabGrip",
+      "activeContact": true,
+      "previousDistance": 3.862,
+      "distance": 0.033
+    },
+    {
+      "fighter": "abe-lincoln",
+      "clip": "pummel",
+      "frame": 0,
+      "socket": "grabGrip",
+      "activeContact": true,
+      "previousDistance": 0.11,
+      "distance": 0.089
+    },
+    {
+      "fighter": "abe-lincoln",
+      "clip": "pummel",
+      "frame": 1,
+      "socket": "grabGrip",
+      "activeContact": true,
+      "previousDistance": 3.19,
+      "distance": 0.038
+    },
+    {
+      "fighter": "abe-lincoln",
+      "clip": "pummel",
+      "frame": 2,
+      "socket": "grabGrip",
+      "activeContact": true,
+      "previousDistance": 3.317,
+      "distance": 0.067
+    },
+    {
+      "fighter": "abe-lincoln",
+      "clip": "pummel",
+      "frame": 3,
+      "socket": "grabGrip",
+      "activeContact": true,
+      "previousDistance": 0.11,
+      "distance": 0.062
+    },
+    {
+      "fighter": "abe-lincoln",
+      "clip": "pummel",
+      "frame": 4,
+      "socket": "grabGrip",
+      "activeContact": true,
+      "previousDistance": 3.19,
+      "distance": 0.108
+    },
+    {
+      "fighter": "abe-lincoln",
+      "clip": "pummel",
+      "frame": 5,
+      "socket": "grabGrip",
+      "activeContact": true,
+      "previousDistance": 3.317,
+      "distance": 0.038
+    },
+    {
+      "fighter": "abe-lincoln",
+      "clip": "ledge_catch",
+      "frame": 0,
+      "socket": "ledgeGrip",
+      "activeContact": true,
+      "previousDistance": 0.018,
+      "distance": 0.049
+    },
+    {
+      "fighter": "abe-lincoln",
+      "clip": "ledge_catch",
+      "frame": 1,
+      "socket": "ledgeGrip",
+      "activeContact": true,
+      "previousDistance": 1.806,
+      "distance": 0.098
+    },
+    {
+      "fighter": "abe-lincoln",
+      "clip": "ledge_catch",
+      "frame": 2,
+      "socket": "ledgeGrip",
+      "activeContact": true,
+      "previousDistance": 0.131,
+      "distance": 0.074
+    },
+    {
+      "fighter": "abe-lincoln",
+      "clip": "ledge_catch",
+      "frame": 3,
+      "socket": "ledgeGrip",
+      "activeContact": true,
+      "previousDistance": 3.699,
+      "distance": 0.067
+    },
+    {
+      "fighter": "swift",
+      "clip": "forward_throw",
+      "frame": 0,
+      "socket": "grabGrip",
+      "activeContact": true,
+      "previousDistance": 4.141,
+      "distance": 0.086
+    },
+    {
+      "fighter": "swift",
+      "clip": "forward_throw",
+      "frame": 1,
+      "socket": "grabGrip",
+      "activeContact": true,
+      "previousDistance": 3.682,
+      "distance": 0.033
+    },
+    {
+      "fighter": "swift",
+      "clip": "ledge_hang",
+      "frame": 0,
+      "socket": "ledgeGrip",
+      "activeContact": true,
+      "previousDistance": 0.064,
+      "distance": 0.064
+    },
+    {
+      "fighter": "swift",
+      "clip": "ledge_hang",
+      "frame": 1,
+      "socket": "ledgeGrip",
+      "activeContact": true,
+      "previousDistance": 6.478,
+      "distance": 0.048
+    },
+    {
+      "fighter": "swift",
+      "clip": "ledge_hang",
+      "frame": 2,
+      "socket": "ledgeGrip",
+      "activeContact": true,
+      "previousDistance": 0.256,
+      "distance": 0.037
+    },
+    {
+      "fighter": "swift",
+      "clip": "ledge_hang",
+      "frame": 3,
+      "socket": "ledgeGrip",
+      "activeContact": true,
+      "previousDistance": 6.957,
+      "distance": 0.06
+    }
+  ],
+  "remainingCandidates": [],
+  "rows": [
+    {
+      "fighter": "all-rounder",
+      "clip": "grab_hold",
+      "frame": 0,
+      "socket": "grabGrip",
+      "activeContact": true,
+      "previousDistance": 0.972,
+      "distance": 0.972
+    },
+    {
+      "fighter": "all-rounder",
+      "clip": "grab_hold",
+      "frame": 1,
+      "socket": "grabGrip",
+      "activeContact": true,
+      "previousDistance": 2.117,
+      "distance": 2.117
+    },
+    {
+      "fighter": "all-rounder",
+      "clip": "grab_hold",
+      "frame": 2,
+      "socket": "grabGrip",
+      "activeContact": true,
+      "previousDistance": 0.957,
+      "distance": 0.957
+    },
+    {
+      "fighter": "all-rounder",
+      "clip": "grab_hold",
+      "frame": 3,
+      "socket": "grabGrip",
+      "activeContact": true,
+      "previousDistance": 1.494,
+      "distance": 1.494
+    },
+    {
+      "fighter": "all-rounder",
+      "clip": "pummel",
+      "frame": 0,
+      "socket": "grabGrip",
+      "activeContact": true,
+      "previousDistance": 0.095,
+      "distance": 0.095
+    },
+    {
+      "fighter": "all-rounder",
+      "clip": "pummel",
+      "frame": 1,
+      "socket": "grabGrip",
+      "activeContact": true,
+      "previousDistance": 0.095,
+      "distance": 0.095
+    },
+    {
+      "fighter": "all-rounder",
+      "clip": "pummel",
+      "frame": 2,
+      "socket": "grabGrip",
+      "activeContact": true,
+      "previousDistance": 0.095,
+      "distance": 0.095
+    },
+    {
+      "fighter": "all-rounder",
+      "clip": "pummel",
+      "frame": 3,
+      "socket": "grabGrip",
+      "activeContact": true,
+      "previousDistance": 0.095,
+      "distance": 0.095
+    },
+    {
+      "fighter": "all-rounder",
+      "clip": "pummel",
+      "frame": 4,
+      "socket": "grabGrip",
+      "activeContact": true,
+      "previousDistance": 0.095,
+      "distance": 0.095
+    },
+    {
+      "fighter": "all-rounder",
+      "clip": "pummel",
+      "frame": 5,
+      "socket": "grabGrip",
+      "activeContact": true,
+      "previousDistance": 0.095,
+      "distance": 0.095
+    },
+    {
+      "fighter": "all-rounder",
+      "clip": "forward_throw",
+      "frame": 0,
+      "socket": "grabGrip",
+      "activeContact": true,
+      "previousDistance": 0.06,
+      "distance": 0.06
+    },
+    {
+      "fighter": "all-rounder",
+      "clip": "forward_throw",
+      "frame": 1,
+      "socket": "grabGrip",
+      "activeContact": true,
+      "previousDistance": 0.043,
+      "distance": 0.043
+    },
+    {
+      "fighter": "all-rounder",
+      "clip": "forward_throw",
+      "frame": 2,
+      "socket": "grabGrip",
+      "activeContact": true,
+      "previousDistance": 0.082,
+      "distance": 0.082
+    },
+    {
+      "fighter": "all-rounder",
+      "clip": "forward_throw",
+      "frame": 3,
+      "socket": "grabGrip",
+      "activeContact": false,
+      "previousDistance": 0.043,
+      "distance": 0.043
+    },
+    {
+      "fighter": "all-rounder",
+      "clip": "forward_throw",
+      "frame": 4,
+      "socket": "grabGrip",
+      "activeContact": false,
+      "previousDistance": 0.015,
+      "distance": 0.015
+    },
+    {
+      "fighter": "all-rounder",
+      "clip": "forward_throw",
+      "frame": 5,
+      "socket": "grabGrip",
+      "activeContact": false,
+      "previousDistance": 0.068,
+      "distance": 0.068
+    },
+    {
+      "fighter": "all-rounder",
+      "clip": "back_throw",
+      "frame": 0,
+      "socket": "grabGrip",
+      "activeContact": true,
+      "previousDistance": 0.069,
+      "distance": 0.069
+    },
+    {
+      "fighter": "all-rounder",
+      "clip": "back_throw",
+      "frame": 1,
+      "socket": "grabGrip",
+      "activeContact": true,
+      "previousDistance": 0.081,
+      "distance": 0.081
+    },
+    {
+      "fighter": "all-rounder",
+      "clip": "back_throw",
+      "frame": 2,
+      "socket": "grabGrip",
+      "activeContact": true,
+      "previousDistance": 0.031,
+      "distance": 0.031
+    },
+    {
+      "fighter": "all-rounder",
+      "clip": "back_throw",
+      "frame": 3,
+      "socket": "grabGrip",
+      "activeContact": false,
+      "previousDistance": 0.075,
+      "distance": 0.075
+    },
+    {
+      "fighter": "all-rounder",
+      "clip": "back_throw",
+      "frame": 4,
+      "socket": "grabGrip",
+      "activeContact": false,
+      "previousDistance": 0.062,
+      "distance": 0.062
+    },
+    {
+      "fighter": "all-rounder",
+      "clip": "back_throw",
+      "frame": 5,
+      "socket": "grabGrip",
+      "activeContact": false,
+      "previousDistance": 0.078,
+      "distance": 0.078
+    },
+    {
+      "fighter": "all-rounder",
+      "clip": "up_throw",
+      "frame": 0,
+      "socket": "grabGrip",
+      "activeContact": true,
+      "previousDistance": 0.268,
+      "distance": 0.268
+    },
+    {
+      "fighter": "all-rounder",
+      "clip": "up_throw",
+      "frame": 1,
+      "socket": "grabGrip",
+      "activeContact": true,
+      "previousDistance": 0.035,
+      "distance": 0.035
+    },
+    {
+      "fighter": "all-rounder",
+      "clip": "up_throw",
+      "frame": 2,
+      "socket": "grabGrip",
+      "activeContact": true,
+      "previousDistance": 0.071,
+      "distance": 0.071
+    },
+    {
+      "fighter": "all-rounder",
+      "clip": "up_throw",
+      "frame": 3,
+      "socket": "grabGrip",
+      "activeContact": false,
+      "previousDistance": 0.329,
+      "distance": 0.329
+    },
+    {
+      "fighter": "all-rounder",
+      "clip": "up_throw",
+      "frame": 4,
+      "socket": "grabGrip",
+      "activeContact": false,
+      "previousDistance": 0.023,
+      "distance": 0.023
+    },
+    {
+      "fighter": "all-rounder",
+      "clip": "up_throw",
+      "frame": 5,
+      "socket": "grabGrip",
+      "activeContact": false,
+      "previousDistance": 4.071,
+      "distance": 4.071
+    },
+    {
+      "fighter": "all-rounder",
+      "clip": "down_throw",
+      "frame": 0,
+      "socket": "grabGrip",
+      "activeContact": true,
+      "previousDistance": 0.054,
+      "distance": 0.054
+    },
+    {
+      "fighter": "all-rounder",
+      "clip": "down_throw",
+      "frame": 1,
+      "socket": "grabGrip",
+      "activeContact": true,
+      "previousDistance": 0.083,
+      "distance": 0.083
+    },
+    {
+      "fighter": "all-rounder",
+      "clip": "down_throw",
+      "frame": 2,
+      "socket": "grabGrip",
+      "activeContact": true,
+      "previousDistance": 0.035,
+      "distance": 0.035
+    },
+    {
+      "fighter": "all-rounder",
+      "clip": "down_throw",
+      "frame": 3,
+      "socket": "grabGrip",
+      "activeContact": false,
+      "previousDistance": 0.282,
+      "distance": 0.282
+    },
+    {
+      "fighter": "all-rounder",
+      "clip": "down_throw",
+      "frame": 4,
+      "socket": "grabGrip",
+      "activeContact": false,
+      "previousDistance": 0.035,
+      "distance": 0.035
+    },
+    {
+      "fighter": "all-rounder",
+      "clip": "down_throw",
+      "frame": 5,
+      "socket": "grabGrip",
+      "activeContact": false,
+      "previousDistance": 0.077,
+      "distance": 0.077
+    },
+    {
+      "fighter": "all-rounder",
+      "clip": "ledge_catch",
+      "frame": 0,
+      "socket": "ledgeGrip",
+      "activeContact": true,
+      "previousDistance": 0.055,
+      "distance": 0.055
+    },
+    {
+      "fighter": "all-rounder",
+      "clip": "ledge_catch",
+      "frame": 1,
+      "socket": "ledgeGrip",
+      "activeContact": true,
+      "previousDistance": 0.06,
+      "distance": 0.06
+    },
+    {
+      "fighter": "all-rounder",
+      "clip": "ledge_catch",
+      "frame": 2,
+      "socket": "ledgeGrip",
+      "activeContact": true,
+      "previousDistance": 0.092,
+      "distance": 0.092
+    },
+    {
+      "fighter": "all-rounder",
+      "clip": "ledge_catch",
+      "frame": 3,
+      "socket": "ledgeGrip",
+      "activeContact": true,
+      "previousDistance": 0.081,
+      "distance": 0.081
+    },
+    {
+      "fighter": "all-rounder",
+      "clip": "ledge_hang",
+      "frame": 0,
+      "socket": "ledgeGrip",
+      "activeContact": true,
+      "previousDistance": 0.031,
+      "distance": 0.031
+    },
+    {
+      "fighter": "all-rounder",
+      "clip": "ledge_hang",
+      "frame": 1,
+      "socket": "ledgeGrip",
+      "activeContact": true,
+      "previousDistance": 0.073,
+      "distance": 0.073
+    },
+    {
+      "fighter": "all-rounder",
+      "clip": "ledge_hang",
+      "frame": 2,
+      "socket": "ledgeGrip",
+      "activeContact": true,
+      "previousDistance": 0.027,
+      "distance": 0.027
+    },
+    {
+      "fighter": "all-rounder",
+      "clip": "ledge_hang",
+      "frame": 3,
+      "socket": "ledgeGrip",
+      "activeContact": true,
+      "previousDistance": 0.072,
+      "distance": 0.072
+    },
+    {
+      "fighter": "abe-lincoln",
+      "clip": "grab_hold",
+      "frame": 0,
+      "socket": "grabGrip",
+      "activeContact": true,
+      "previousDistance": 0.084,
+      "distance": 0.044
+    },
+    {
+      "fighter": "abe-lincoln",
+      "clip": "grab_hold",
+      "frame": 1,
+      "socket": "grabGrip",
+      "activeContact": true,
+      "previousDistance": 4.733,
+      "distance": 0.09
+    },
+    {
+      "fighter": "abe-lincoln",
+      "clip": "grab_hold",
+      "frame": 2,
+      "socket": "grabGrip",
+      "activeContact": true,
+      "previousDistance": 0.084,
+      "distance": 0.019
+    },
+    {
+      "fighter": "abe-lincoln",
+      "clip": "grab_hold",
+      "frame": 3,
+      "socket": "grabGrip",
+      "activeContact": true,
+      "previousDistance": 3.862,
+      "distance": 0.033
+    },
+    {
+      "fighter": "abe-lincoln",
+      "clip": "pummel",
+      "frame": 0,
+      "socket": "grabGrip",
+      "activeContact": true,
+      "previousDistance": 0.11,
+      "distance": 0.089
+    },
+    {
+      "fighter": "abe-lincoln",
+      "clip": "pummel",
+      "frame": 1,
+      "socket": "grabGrip",
+      "activeContact": true,
+      "previousDistance": 3.19,
+      "distance": 0.038
+    },
+    {
+      "fighter": "abe-lincoln",
+      "clip": "pummel",
+      "frame": 2,
+      "socket": "grabGrip",
+      "activeContact": true,
+      "previousDistance": 3.317,
+      "distance": 0.067
+    },
+    {
+      "fighter": "abe-lincoln",
+      "clip": "pummel",
+      "frame": 3,
+      "socket": "grabGrip",
+      "activeContact": true,
+      "previousDistance": 0.11,
+      "distance": 0.062
+    },
+    {
+      "fighter": "abe-lincoln",
+      "clip": "pummel",
+      "frame": 4,
+      "socket": "grabGrip",
+      "activeContact": true,
+      "previousDistance": 3.19,
+      "distance": 0.108
+    },
+    {
+      "fighter": "abe-lincoln",
+      "clip": "pummel",
+      "frame": 5,
+      "socket": "grabGrip",
+      "activeContact": true,
+      "previousDistance": 3.317,
+      "distance": 0.038
+    },
+    {
+      "fighter": "abe-lincoln",
+      "clip": "forward_throw",
+      "frame": 0,
+      "socket": "grabGrip",
+      "activeContact": true,
+      "previousDistance": 2.957,
+      "distance": 2.957
+    },
+    {
+      "fighter": "abe-lincoln",
+      "clip": "forward_throw",
+      "frame": 1,
+      "socket": "grabGrip",
+      "activeContact": true,
+      "previousDistance": 0.051,
+      "distance": 0.051
+    },
+    {
+      "fighter": "abe-lincoln",
+      "clip": "forward_throw",
+      "frame": 2,
+      "socket": "grabGrip",
+      "activeContact": true,
+      "previousDistance": 0.098,
+      "distance": 0.098
+    },
+    {
+      "fighter": "abe-lincoln",
+      "clip": "forward_throw",
+      "frame": 3,
+      "socket": "grabGrip",
+      "activeContact": false,
+      "previousDistance": 0.051,
+      "distance": 0.051
+    },
+    {
+      "fighter": "abe-lincoln",
+      "clip": "forward_throw",
+      "frame": 4,
+      "socket": "grabGrip",
+      "activeContact": false,
+      "previousDistance": 0.706,
+      "distance": 0.706
+    },
+    {
+      "fighter": "abe-lincoln",
+      "clip": "forward_throw",
+      "frame": 5,
+      "socket": "grabGrip",
+      "activeContact": false,
+      "previousDistance": 3.582,
+      "distance": 3.582
+    },
+    {
+      "fighter": "abe-lincoln",
+      "clip": "back_throw",
+      "frame": 0,
+      "socket": "grabGrip",
+      "activeContact": true,
+      "previousDistance": 0.08,
+      "distance": 0.08
+    },
+    {
+      "fighter": "abe-lincoln",
+      "clip": "back_throw",
+      "frame": 1,
+      "socket": "grabGrip",
+      "activeContact": true,
+      "previousDistance": 0.095,
+      "distance": 0.095
+    },
+    {
+      "fighter": "abe-lincoln",
+      "clip": "back_throw",
+      "frame": 2,
+      "socket": "grabGrip",
+      "activeContact": true,
+      "previousDistance": 0.036,
+      "distance": 0.036
+    },
+    {
+      "fighter": "abe-lincoln",
+      "clip": "back_throw",
+      "frame": 3,
+      "socket": "grabGrip",
+      "activeContact": false,
+      "previousDistance": 0.087,
+      "distance": 0.087
+    },
+    {
+      "fighter": "abe-lincoln",
+      "clip": "back_throw",
+      "frame": 4,
+      "socket": "grabGrip",
+      "activeContact": false,
+      "previousDistance": 1.163,
+      "distance": 1.163
+    },
+    {
+      "fighter": "abe-lincoln",
+      "clip": "back_throw",
+      "frame": 5,
+      "socket": "grabGrip",
+      "activeContact": false,
+      "previousDistance": 2.844,
+      "distance": 2.844
+    },
+    {
+      "fighter": "abe-lincoln",
+      "clip": "up_throw",
+      "frame": 0,
+      "socket": "grabGrip",
+      "activeContact": true,
+      "previousDistance": 0.065,
+      "distance": 0.065
+    },
+    {
+      "fighter": "abe-lincoln",
+      "clip": "up_throw",
+      "frame": 1,
+      "socket": "grabGrip",
+      "activeContact": true,
+      "previousDistance": 0.059,
+      "distance": 0.059
+    },
+    {
+      "fighter": "abe-lincoln",
+      "clip": "up_throw",
+      "frame": 2,
+      "socket": "grabGrip",
+      "activeContact": true,
+      "previousDistance": 0.093,
+      "distance": 0.093
+    },
+    {
+      "fighter": "abe-lincoln",
+      "clip": "up_throw",
+      "frame": 3,
+      "socket": "grabGrip",
+      "activeContact": false,
+      "previousDistance": 2.284,
+      "distance": 2.284
+    },
+    {
+      "fighter": "abe-lincoln",
+      "clip": "up_throw",
+      "frame": 4,
+      "socket": "grabGrip",
+      "activeContact": false,
+      "previousDistance": 2.968,
+      "distance": 2.968
+    },
+    {
+      "fighter": "abe-lincoln",
+      "clip": "up_throw",
+      "frame": 5,
+      "socket": "grabGrip",
+      "activeContact": false,
+      "previousDistance": 5.746,
+      "distance": 5.746
+    },
+    {
+      "fighter": "abe-lincoln",
+      "clip": "down_throw",
+      "frame": 0,
+      "socket": "grabGrip",
+      "activeContact": true,
+      "previousDistance": 0.064,
+      "distance": 0.064
+    },
+    {
+      "fighter": "abe-lincoln",
+      "clip": "down_throw",
+      "frame": 1,
+      "socket": "grabGrip",
+      "activeContact": true,
+      "previousDistance": 0.099,
+      "distance": 0.099
+    },
+    {
+      "fighter": "abe-lincoln",
+      "clip": "down_throw",
+      "frame": 2,
+      "socket": "grabGrip",
+      "activeContact": true,
+      "previousDistance": 0.042,
+      "distance": 0.042
+    },
+    {
+      "fighter": "abe-lincoln",
+      "clip": "down_throw",
+      "frame": 3,
+      "socket": "grabGrip",
+      "activeContact": false,
+      "previousDistance": 0.074,
+      "distance": 0.074
+    },
+    {
+      "fighter": "abe-lincoln",
+      "clip": "down_throw",
+      "frame": 4,
+      "socket": "grabGrip",
+      "activeContact": false,
+      "previousDistance": 0.042,
+      "distance": 0.042
+    },
+    {
+      "fighter": "abe-lincoln",
+      "clip": "down_throw",
+      "frame": 5,
+      "socket": "grabGrip",
+      "activeContact": false,
+      "previousDistance": 1.699,
+      "distance": 1.699
+    },
+    {
+      "fighter": "abe-lincoln",
+      "clip": "ledge_catch",
+      "frame": 0,
+      "socket": "ledgeGrip",
+      "activeContact": true,
+      "previousDistance": 0.018,
+      "distance": 0.049
+    },
+    {
+      "fighter": "abe-lincoln",
+      "clip": "ledge_catch",
+      "frame": 1,
+      "socket": "ledgeGrip",
+      "activeContact": true,
+      "previousDistance": 1.806,
+      "distance": 0.098
+    },
+    {
+      "fighter": "abe-lincoln",
+      "clip": "ledge_catch",
+      "frame": 2,
+      "socket": "ledgeGrip",
+      "activeContact": true,
+      "previousDistance": 0.131,
+      "distance": 0.074
+    },
+    {
+      "fighter": "abe-lincoln",
+      "clip": "ledge_catch",
+      "frame": 3,
+      "socket": "ledgeGrip",
+      "activeContact": true,
+      "previousDistance": 3.699,
+      "distance": 0.067
+    },
+    {
+      "fighter": "abe-lincoln",
+      "clip": "ledge_hang",
+      "frame": 0,
+      "socket": "ledgeGrip",
+      "activeContact": true,
+      "previousDistance": 0.08,
+      "distance": 0.08
+    },
+    {
+      "fighter": "abe-lincoln",
+      "clip": "ledge_hang",
+      "frame": 1,
+      "socket": "ledgeGrip",
+      "activeContact": true,
+      "previousDistance": 0.115,
+      "distance": 0.115
+    },
+    {
+      "fighter": "abe-lincoln",
+      "clip": "ledge_hang",
+      "frame": 2,
+      "socket": "ledgeGrip",
+      "activeContact": true,
+      "previousDistance": 0.08,
+      "distance": 0.08
+    },
+    {
+      "fighter": "abe-lincoln",
+      "clip": "ledge_hang",
+      "frame": 3,
+      "socket": "ledgeGrip",
+      "activeContact": true,
+      "previousDistance": 0.115,
+      "distance": 0.115
+    },
+    {
+      "fighter": "swift",
+      "clip": "grab_hold",
+      "frame": 0,
+      "socket": "grabGrip",
+      "activeContact": true,
+      "previousDistance": 0.063,
+      "distance": 0.063
+    },
+    {
+      "fighter": "swift",
+      "clip": "grab_hold",
+      "frame": 1,
+      "socket": "grabGrip",
+      "activeContact": true,
+      "previousDistance": 0.063,
+      "distance": 0.063
+    },
+    {
+      "fighter": "swift",
+      "clip": "grab_hold",
+      "frame": 2,
+      "socket": "grabGrip",
+      "activeContact": true,
+      "previousDistance": 0.063,
+      "distance": 0.063
+    },
+    {
+      "fighter": "swift",
+      "clip": "grab_hold",
+      "frame": 3,
+      "socket": "grabGrip",
+      "activeContact": true,
+      "previousDistance": 0.063,
+      "distance": 0.063
+    },
+    {
+      "fighter": "swift",
+      "clip": "pummel",
+      "frame": 0,
+      "socket": "grabGrip",
+      "activeContact": true,
+      "previousDistance": 0.927,
+      "distance": 0.927
+    },
+    {
+      "fighter": "swift",
+      "clip": "pummel",
+      "frame": 1,
+      "socket": "grabGrip",
+      "activeContact": true,
+      "previousDistance": 0.927,
+      "distance": 0.927
+    },
+    {
+      "fighter": "swift",
+      "clip": "pummel",
+      "frame": 2,
+      "socket": "grabGrip",
+      "activeContact": true,
+      "previousDistance": 0.927,
+      "distance": 0.927
+    },
+    {
+      "fighter": "swift",
+      "clip": "pummel",
+      "frame": 3,
+      "socket": "grabGrip",
+      "activeContact": true,
+      "previousDistance": 0.927,
+      "distance": 0.927
+    },
+    {
+      "fighter": "swift",
+      "clip": "pummel",
+      "frame": 4,
+      "socket": "grabGrip",
+      "activeContact": true,
+      "previousDistance": 0.927,
+      "distance": 0.927
+    },
+    {
+      "fighter": "swift",
+      "clip": "pummel",
+      "frame": 5,
+      "socket": "grabGrip",
+      "activeContact": true,
+      "previousDistance": 0.927,
+      "distance": 0.927
+    },
+    {
+      "fighter": "swift",
+      "clip": "forward_throw",
+      "frame": 0,
+      "socket": "grabGrip",
+      "activeContact": true,
+      "previousDistance": 4.141,
+      "distance": 0.086
+    },
+    {
+      "fighter": "swift",
+      "clip": "forward_throw",
+      "frame": 1,
+      "socket": "grabGrip",
+      "activeContact": true,
+      "previousDistance": 3.682,
+      "distance": 0.033
+    },
+    {
+      "fighter": "swift",
+      "clip": "forward_throw",
+      "frame": 2,
+      "socket": "grabGrip",
+      "activeContact": true,
+      "previousDistance": 0.954,
+      "distance": 0.954
+    },
+    {
+      "fighter": "swift",
+      "clip": "forward_throw",
+      "frame": 3,
+      "socket": "grabGrip",
+      "activeContact": false,
+      "previousDistance": 0.681,
+      "distance": 0.681
+    },
+    {
+      "fighter": "swift",
+      "clip": "forward_throw",
+      "frame": 4,
+      "socket": "grabGrip",
+      "activeContact": false,
+      "previousDistance": 0.014,
+      "distance": 0.014
+    },
+    {
+      "fighter": "swift",
+      "clip": "forward_throw",
+      "frame": 5,
+      "socket": "grabGrip",
+      "activeContact": false,
+      "previousDistance": 0.607,
+      "distance": 0.607
+    },
+    {
+      "fighter": "swift",
+      "clip": "back_throw",
+      "frame": 0,
+      "socket": "grabGrip",
+      "activeContact": true,
+      "previousDistance": 0.064,
+      "distance": 0.064
+    },
+    {
+      "fighter": "swift",
+      "clip": "back_throw",
+      "frame": 1,
+      "socket": "grabGrip",
+      "activeContact": true,
+      "previousDistance": 0.988,
+      "distance": 0.988
+    },
+    {
+      "fighter": "swift",
+      "clip": "back_throw",
+      "frame": 2,
+      "socket": "grabGrip",
+      "activeContact": true,
+      "previousDistance": 0.029,
+      "distance": 0.029
+    },
+    {
+      "fighter": "swift",
+      "clip": "back_throw",
+      "frame": 3,
+      "socket": "grabGrip",
+      "activeContact": false,
+      "previousDistance": 1.226,
+      "distance": 1.226
+    },
+    {
+      "fighter": "swift",
+      "clip": "back_throw",
+      "frame": 4,
+      "socket": "grabGrip",
+      "activeContact": false,
+      "previousDistance": 0.058,
+      "distance": 0.058
+    },
+    {
+      "fighter": "swift",
+      "clip": "back_throw",
+      "frame": 5,
+      "socket": "grabGrip",
+      "activeContact": false,
+      "previousDistance": 0.073,
+      "distance": 0.073
+    },
+    {
+      "fighter": "swift",
+      "clip": "up_throw",
+      "frame": 0,
+      "socket": "grabGrip",
+      "activeContact": true,
+      "previousDistance": 0.426,
+      "distance": 0.426
+    },
+    {
+      "fighter": "swift",
+      "clip": "up_throw",
+      "frame": 1,
+      "socket": "grabGrip",
+      "activeContact": true,
+      "previousDistance": 0.034,
+      "distance": 0.034
+    },
+    {
+      "fighter": "swift",
+      "clip": "up_throw",
+      "frame": 2,
+      "socket": "grabGrip",
+      "activeContact": true,
+      "previousDistance": 0.068,
+      "distance": 0.068
+    },
+    {
+      "fighter": "swift",
+      "clip": "up_throw",
+      "frame": 3,
+      "socket": "grabGrip",
+      "activeContact": false,
+      "previousDistance": 0.953,
+      "distance": 0.953
+    },
+    {
+      "fighter": "swift",
+      "clip": "up_throw",
+      "frame": 4,
+      "socket": "grabGrip",
+      "activeContact": false,
+      "previousDistance": 0.022,
+      "distance": 0.022
+    },
+    {
+      "fighter": "swift",
+      "clip": "up_throw",
+      "frame": 5,
+      "socket": "grabGrip",
+      "activeContact": false,
+      "previousDistance": 10.374,
+      "distance": 10.374
+    },
+    {
+      "fighter": "swift",
+      "clip": "down_throw",
+      "frame": 0,
+      "socket": "grabGrip",
+      "activeContact": true,
+      "previousDistance": 0.06,
+      "distance": 0.06
+    },
+    {
+      "fighter": "swift",
+      "clip": "down_throw",
+      "frame": 1,
+      "socket": "grabGrip",
+      "activeContact": true,
+      "previousDistance": 0.093,
+      "distance": 0.093
+    },
+    {
+      "fighter": "swift",
+      "clip": "down_throw",
+      "frame": 2,
+      "socket": "grabGrip",
+      "activeContact": true,
+      "previousDistance": 2.896,
+      "distance": 2.896
+    },
+    {
+      "fighter": "swift",
+      "clip": "down_throw",
+      "frame": 3,
+      "socket": "grabGrip",
+      "activeContact": false,
+      "previousDistance": 0.069,
+      "distance": 0.069
+    },
+    {
+      "fighter": "swift",
+      "clip": "down_throw",
+      "frame": 4,
+      "socket": "grabGrip",
+      "activeContact": false,
+      "previousDistance": 0.039,
+      "distance": 0.039
+    },
+    {
+      "fighter": "swift",
+      "clip": "down_throw",
+      "frame": 5,
+      "socket": "grabGrip",
+      "activeContact": false,
+      "previousDistance": 6.252,
+      "distance": 6.252
+    },
+    {
+      "fighter": "swift",
+      "clip": "ledge_catch",
+      "frame": 0,
+      "socket": "ledgeGrip",
+      "activeContact": true,
+      "previousDistance": 0.043,
+      "distance": 0.043
+    },
+    {
+      "fighter": "swift",
+      "clip": "ledge_catch",
+      "frame": 1,
+      "socket": "ledgeGrip",
+      "activeContact": true,
+      "previousDistance": 0.065,
+      "distance": 0.065
+    },
+    {
+      "fighter": "swift",
+      "clip": "ledge_catch",
+      "frame": 2,
+      "socket": "ledgeGrip",
+      "activeContact": true,
+      "previousDistance": 0.043,
+      "distance": 0.043
+    },
+    {
+      "fighter": "swift",
+      "clip": "ledge_catch",
+      "frame": 3,
+      "socket": "ledgeGrip",
+      "activeContact": true,
+      "previousDistance": 2.599,
+      "distance": 2.599
+    },
+    {
+      "fighter": "swift",
+      "clip": "ledge_hang",
+      "frame": 0,
+      "socket": "ledgeGrip",
+      "activeContact": true,
+      "previousDistance": 0.064,
+      "distance": 0.064
+    },
+    {
+      "fighter": "swift",
+      "clip": "ledge_hang",
+      "frame": 1,
+      "socket": "ledgeGrip",
+      "activeContact": true,
+      "previousDistance": 6.478,
+      "distance": 0.048
+    },
+    {
+      "fighter": "swift",
+      "clip": "ledge_hang",
+      "frame": 2,
+      "socket": "ledgeGrip",
+      "activeContact": true,
+      "previousDistance": 0.256,
+      "distance": 0.037
+    },
+    {
+      "fighter": "swift",
+      "clip": "ledge_hang",
+      "frame": 3,
+      "socket": "ledgeGrip",
+      "activeContact": true,
+      "previousDistance": 6.957,
+      "distance": 0.06
+    }
+  ],
+  "unchanged": 403,
+  "changed": [
+    "abe-lincoln/grab_hold",
+    "abe-lincoln/pummel",
+    "abe-lincoln/ledge_catch",
+    "swift/forward_throw",
+    "swift/ledge_hang"
+  ],
+  "validation": "Use native/distant/detail scale controls on all contact pages. Source artwork, attack timing and physics are unchanged."
+}

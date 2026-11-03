@@ -1,0 +1,1 @@
+import fs from 'node:fs';const p='src/game.mjs';let s=fs.readFileSync(p,'utf8');s=s.replace("button.setAttribute('aria-pressed',String(mixer.settings.muted));","button.setAttribute('aria-pressed',String(mixer.settings.muted));button.setAttribute('aria-label',mixer.blocked?'Enable audio':mixer.settings.muted?'Unmute all audio':'Mute all audio');");fs.writeFileSync(p,s);

@@ -11,6 +11,13 @@ Always pass `category=` when spawning subagents; never pass a raw model ID.
 
 ---
 
+## Scope and documentation maintenance
+
+- This project is the platform fighter in apps/ and packages/. Exclude bonney/ from analysis, edits, tests, builds, deployments, and refinement; it is a separate project.
+- Never inspect .env or .env.global files.
+- Update README.md and relevant current design/status documents in the same change whenever behavior, commands, or limitations change. Do not silently rewrite historical evidence.
+- Current refinement decisions and remaining gaps are tracked in docs/REFINEMENT.md.
+
 ## Monorepo Structure
 
 ```
@@ -142,7 +149,7 @@ just            # list available commands
 just play       # start server + client + open browser + auto-cleanup
 just dev        # start server + client without opening browser
 just build      # build all packages
-just test       # run engine unit tests (same as pnpm test)
+just test       # run all five fighter package test suites
 just clean      # remove all dist/ and node_modules/
 just stop       # kill any running server/client processes
 just logs       # tail live server logs
@@ -170,7 +177,7 @@ just logs       # tail live server logs
 
 ## Adding a Stage
 
-1. **Define geometry** in `apps/client/src/stages/stageConfig.ts`. Add a `StageConfig` entry with `id`, `name`, main platform bounds, and any soft platforms.
+1. **Define a visual/music theme** in `apps/client/src/stages/stageConfig.ts`. Its fields are id, displayName, backgroundImage and musicTrack. Distinct arenas require shared geometry and a selected-stage protocol for simulation and rendering.
 
 2. **Update blast zones** if the stage is a different size. Blast zone constants live in `packages/shared/src/constants/stage.ts` (`STAGE.blastZone`). If you want per-stage blast zones, extend `StageConfig` to carry them and thread the values through `MatchSession` into `GameEngine`.
 
@@ -206,7 +213,7 @@ just logs       # tail live server logs
 
 **Test isolation.** `GameEngine` tests construct a fresh engine with `makeDefaultGameState()` helpers at the top of each test file. They don't share state across tests. If you see flaky tests, check for shared mutable objects leaking between `it()` blocks.
 
-**`EMPTY_INPUT` sentinel.** When a player's input doesn't arrive in time for a tick (network lag, disconnection), `GameEngine` substitutes `EMPTY_INPUT`: all bits cleared, no directional input, sequence number carried over. Never pass `null` or `undefined` to `GameEngine.tick()` for a missing player — use `EMPTY_INPUT`.
+**`EMPTY_INPUT` sentinel.** When a player's input doesn't arrive in time for a tick (network lag, disconnection), `GameEngine` substitutes `EMPTY_INPUT`: all bits cleared, no directional input, sequence number carried over. GameEngine.tickGame accepts missing/null input and substitutes EMPTY_INPUT internally; callers must not implement competing fallback physics.
 
 ---
 
@@ -218,7 +225,7 @@ When a local player presses a key, `InputManager` encodes the input as a binary 
 
 Every ~50 ms the server sends a `game:state` snapshot. When `LocalPredictor` receives it, it checks the sequence number of the last confirmed input. It discards all pending inputs older than that, resets position to the server's authoritative value, then replays the remaining unconfirmed inputs forward from that point. If the re-simulated position matches the local prediction closely, nothing visible happens. If there's a divergence (packet loss, lag spike), the local player snaps to the correct position.
 
-Remote players don't get prediction. Their positions come only from server snapshots. `InterpolationBuffer` stores the last 3 snapshots and lerps between them, so a 20 Hz update stream renders as smooth 60 fps motion with roughly 50 ms of added latency on remote players. That's the correct trade-off: remote player positions are always slightly behind real time but never wrong.
+Remote players don't get prediction. Their positions come only from server snapshots. `InterpolationBuffer` stores the last 3 snapshots and lerps between them, so a 20 Hz update stream renders as smooth 60 fps motion with roughly 50 ms of added latency on remote players. That's the correct trade-off: remote positions are deliberately delayed; jitter, interpolation and prediction still require measured validation.
 
 ---
 

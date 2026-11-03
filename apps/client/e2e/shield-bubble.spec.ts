@@ -1,3 +1,4 @@
+import { dismissSplash, chooseFirstStage, stageDuel } from "./helpers/flow";
 import { test, expect } from '@playwright/test';
 import { mkdirSync } from 'fs';
 
@@ -19,6 +20,7 @@ test('shield bubble renders with color interpolation', async ({ page }) => {
   test.setTimeout(90_000);
 
   await page.goto('http://localhost:5173');
+  await dismissSplash(page);
   await page.waitForSelector('#local-play-btn', { timeout: 10_000 });
 
   // Start local play (2-player local, no server room needed)
@@ -29,6 +31,7 @@ test('shield bubble renders with color interpolation', async ({ page }) => {
   // Confirm character select: P1 = Enter, P2 = U
   await page.keyboard.press('Enter');
   await page.keyboard.press('KeyU');
+  await chooseFirstStage(page);
 
   // Wait for match to start
   await page.waitForFunction(() => {
@@ -38,7 +41,8 @@ test('shield bubble renders with color interpolation', async ({ page }) => {
 
   // Wait for fighters to land from spawn and for spawn invincibility to clear
   // (spawn invincibility is ~180 frames = ~3s; wait for shieldHealth to be full before starting)
-  await page.waitForTimeout(3500);
+  await stageDuel(page);
+  await page.waitForTimeout(100);
 
   // Wait until shield is fully regenerated (100 HP) before starting drain test
   await page.waitForFunction(() => {

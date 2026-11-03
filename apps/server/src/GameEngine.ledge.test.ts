@@ -1568,7 +1568,7 @@ describe('GameEngine ledge integration', () => {
 		expect(landed.isInvincible).toBe(false);
 
 		const after30 = advance(engine, PHYSICS.TECH_MISS_LANDING_FRAMES).players.p1;
-		expect(after30?.state).toBe(PlayerStateEnum.IDLE);
+		expect(after30?.state).toBe(PlayerStateEnum.GETUP);
 		expect(after30?.techLockoutFrames).toBe(10);
 
 		primePlayer(engine, 'p1', {
@@ -1615,7 +1615,7 @@ describe('GameEngine ledge integration', () => {
 		expect(landed.techLockoutFrames).toBe(0);
 
 		const after30 = advance(engine, PHYSICS.TECH_MISS_LANDING_FRAMES).players.p1;
-		expect(after30?.state).toBe(PlayerStateEnum.IDLE);
+		expect(after30?.state).toBe(PlayerStateEnum.GETUP);
 	});
 
 	it('TECHING: directional input on landing resolves to tech roll (40f)', () => {
@@ -1941,3 +1941,4 @@ describe('GameEngine ledge integration', () => {
 			expect(nonSpikeAngle.state).toBe(PlayerStateEnum.HITSTUN);
 		});
 	});
+

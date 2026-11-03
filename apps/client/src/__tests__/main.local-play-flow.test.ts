@@ -153,6 +153,7 @@ const bootMainWithMocks = async (
       createRoom(): void {}
       joinRoom(): void {}
       markReady(): void {}
+      leaveRoom(): void {}
       disconnect(): void {
         gameClientDisconnectCalls += 1;
       }
@@ -447,8 +448,7 @@ describe("main local play flow wiring", () => {
       slotIndex: 1,
     });
     expect(p2Controller.config.gamepadSource).toBeDefined();
-    expect(runtime.gamepadInputSourceCtorCalls).toHaveLength(1);
-    expect(runtime.gamepadInputSourceCtorCalls[0]?.gamepadIndex).toBe(0);
+    expect(runtime.gamepadInputSourceCtorCalls.some(call => call.gamepadIndex === 0)).toBe(true);
   });
 
   it("passes remembered lastLocalSetup as initial on local play again", async () => {

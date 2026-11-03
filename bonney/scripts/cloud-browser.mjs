@@ -1,0 +1,31 @@
+import {createRequire} from 'node:module';
+import {mkdir,writeFile} from 'node:fs/promises';
+import assert from 'node:assert/strict';
+const require=createRequire(new URL('../../package.json',import.meta.url)),{chromium}=require('playwright');
+const out=new URL('../docs/screenshots/cloud-discovery-v1/',import.meta.url);await mkdir(out,{recursive:true});
+const browser=await chromium.launch({headless:true}),page=await browser.newPage();const errors=[];
+page.on('pageerror',e=>errors.push(e.message));page.on('response',r=>{if(r.url().startsWith('http://127.0.0.1:4174/')&&r.status()>=400)errors.push(r.status()+' '+r.url());});
+const capture=async name=>{await page.evaluate(()=>{window.__bonney.game.player.invulnerableMs=0;});await page.waitForTimeout(name==='upper-route-exit'?900:80);await writeFile(new URL(name+'.png',out),Buffer.from(await page.evaluate(()=>document.querySelector('canvas').toDataURL('image/png').split(',')[1]),'base64'));};
+try{
+ await page.goto('http://127.0.0.1:4174/?test=1&mode=full');await page.waitForFunction(()=>window.__bonney?.loaded);
+ await page.getByRole('button',{name:'Start playing'}).click();
+ await page.evaluate(()=>{const g=window.__bonney.game;g.enemies=[];g.hazards=[];g.latches.customsLock=true;Object.assign(g.player,{x:2992,y:116,power:'egghead',ability:'ready',cooldownMs:0,grounded:true,vy:0});});
+ await capture('launch');
+ await page.keyboard.down('Space');await page.waitForTimeout(40);await page.keyboard.up('Space');await page.waitForTimeout(40);
+ await page.keyboard.down('Space');
+ await page.waitForFunction(()=>window.__bonney.game.scene==='cloud',{},{timeout:8000});await page.keyboard.up('Space');
+ await capture('arrival');assert.equal(await page.evaluate(()=>window.__bonney.game.skyUnlocked),true);
+ await page.keyboard.press('KeyP');await page.evaluate(()=>{Object.assign(window.__bonney.game.player,{x:740,y:124,grounded:true,invulnerableMs:0});window.__bonney.game.noticeMs=0;});await capture('research-clouds');
+ await page.keyboard.press('KeyP');
+ const hits=await page.evaluate(()=>window.__bonney.game.player.hits);
+ await page.evaluate(()=>Object.assign(window.__bonney.game.player,{x:432,y:260,grounded:false,vx:0,vy:150}));
+ await page.waitForFunction(()=>window.__bonney.game.scene==='harbor');
+ assert.equal(await page.evaluate(()=>window.__bonney.game.player.hits),hits);assert.equal(await page.evaluate(()=>window.__bonney.game.latches.customsLock),true);
+ await capture('harbor-drop');
+ await page.evaluate(async()=>{const {enterCloud}=await import('/src/cloud-level.mjs');enterCloud(window.__bonney.game);const g=window.__bonney.game;g.latches.reactorSeal=true;g.latches.skyConsole=true;Object.assign(g.player,{x:3750,y:292});});
+ await page.waitForFunction(()=>window.__bonney.game.scene==='cloud'&&window.__bonney.game.status==='won');
+ assert.equal(await page.evaluate(()=>window.__bonney.game.nextLevelEntry.entry),'sky-observatory');await capture('cloud-victory');
+ await page.getByRole('button',{name:'Return to harbor'}).click();
+ assert.equal(await page.evaluate(()=>window.__bonney.game.scene),'harbor');assert.ok(await page.evaluate(()=>window.__bonney.game.player.x+window.__bonney.game.player.w<=window.__bonney.game.gates[0].x));
+ assert.deepEqual(errors,[]);console.log('PASS: real keyboard full-flight discovery, cloud rendering, no-damage harbor fall with saved progress, independent cloud victory and harbor return.');
+}finally{await browser.close();}

@@ -1,305 +1,201 @@
-# ROADMAP — smash-clone
+# Fighter refinement roadmap
 
-The engine and netcode here are production-quality: a 25-state FSM per fighter, 22 declarative moves, real knockback math, hitlag/hitstun, and a full client-prediction + server-reconciliation netcode stack. The gaps are almost entirely in the **presentation layer and content breadth** — not in the simulation underneath. Most additions below slot into existing hooks without restructuring what's already there.
+Scope: Everybody Throws Hands only. bonney/ is a separate project and is excluded.
 
----
+## Ultimate mechanics and artwork target
+User decision November 2, 2026: target Ultimate mechanics for the three original fighters. Complete the animation inventory and selected variants first, then implement missing/corrected engine behavior. See docs/assets/ULTIMATE-ANIMATION-CHECKLIST.md and docs/assets/ultimate-animation-inventory.json. Prioritize kick tilts, dash attack and remaining offense; retain conditional item, stage and fighter-kit content explicitly. Existing timing/control/air-dodge/parry behavior is not verified Ultimate parity.
 
-## Scorecard
+## Current foundations
+Three fighters, one shared arena with six visual/music themes, local human/CPU play, online rooms, deterministic engine primitives, percent/stock combat, advanced movement, controllers, saved controls/audio, articulated sprites and polygon fallback.
 
-| Area               | Current state                                                                                                                          | Rating |
-| ------------------ | -------------------------------------------------------------------------------------------------------------------------------------- | ------ |
-| Engine / physics   | 25-state FSM, 22 moves, hitlag/hitstun, real knockback formula                                                                         | ★★★★☆  |
-| Netcode            | Client prediction, server reconciliation, interpolation buffer                                                                         | ★★★★☆  |
-| Rendering          | Part-based sprite renderer with polygon fallback; hit flash, screen shake, impact sparks, shield bubble, damage% color, per-move poses, KO tumble/stars | ★★★★☆  |
-| Audio              | AudioManager with `playTrack`/`stopCurrentTrack`/`setVolume`; 6 stage BGM tracks + main-menu + game-over loaded; autoplay-policy retry | ★★★★☆  |
-| Input              | Solid bitmask foundation; gamepad support shipped; no remapping UI                                                                     | ★★★☆☆  |
-| UI/UX              | Functional prototype; raw `innerHTML`, text stock icons; stage-select UI present                                                       | ★★★☆☆  |
-| Content            | 3 fighters (All-Rounder + Abe Lincoln + Swift), 6 stages with backgrounds and music, stock match only                                   | ★★★★☆  |
-| Meta / persistence | None — no accounts, no replays, no settings                                                                                            | ★☆☆☆☆  |
+## Refinement pass
+- Enforce 30-second disconnect grace with expiry and forfeiture.
+- Restore identity/rendering on reconnect and align pause/resume control events.
+- Initialize character simulation before the first tick and preserve predicted render identity.
+- Step input at 60 Hz independently of display refresh; interpolate on browser receipt time.
+- Bound catch-up/input queues, validate numeric fields and reject stale sequences.
+- Preserve seat keyboard maps and follow live controller assignments.
+- Resolve simultaneous final KOs as draws; reuse vacant lobby slots.
+- Align Docker/Fly dependencies and exclude unrelated project content.
+- Run all five package suites, expose the full browser suite, replace placeholder lint with TypeScript checking.
 
----
+## Verification and hardening still needed
+- Measure prediction corrections and perceived latency under jitter and 30/60/120/144 Hz displays.
+- Add reconnect tokens and broader event validation before public competitive hosting.
+- Benchmark multi-room CPU use; setImmediate still polls continuously.
+- Verify clean Linux container builds and externally hosted WebSocket recovery.
+- Exercise identical controllers, remapping and hot reconnects on physical devices.
+- Align coverage/Vitest peer versions, establish tested Node versions and reconcile lockfile ownership.
 
-## 🎨 Visuals
+## Later content
+Final fighter art and complete asset provenance are the next requested phase.
+Distinct arenas, accessibility, onboarding and balance require explicit product decisions.
+Accounts, rankings, matchmaking, replays and persistent match storage are not implemented.
 
-The renderer (`apps/client`) has received significant polish through T9-T20 and the cartoon asset pipeline. The architecture is part-based and renderer-agnostic. `FighterRenderer` delegates drawing to an `IPartRenderer` contract (`apps/client/src/renderer/parts/IPartRenderer.ts`), using `SpritePartRenderer` for sprite atlas rendering and `PolygonPartRenderer` as a fallback via `?renderer=polygon`.
+Maintain this roadmap with behavioral changes. Detailed decisions: docs/REFINEMENT.md.
 
-### Characters
+### Fighter art production update
 
-**What's shipped:**
+Smash batch available for review:nine clips/54new drawings across three fighters. Next:15aerial clips, then specials, grabs/throws and movement/recovery gaps. Engine timing parity remains pending.
 
-- Cartoon sprite pipeline: `SpritePartRenderer` renders character cutouts with multi-slot tinting and hit-flash color replacement via AssetPack texture atlases (`apps/client/public/assets/fighters/`). All 3 fighters (`all-rounder`, `abe-lincoln`, `swift`) render cartoon sprites. (Art note: current assets are script-authored in-repo placeholders rather than final hand-drawn production art).
-- Part-based renderer abstraction: `FighterRenderer` delegates to `IPartRenderer` backends, switching dynamically between sprite rendering and polygon fallback (`apps/client/src/renderer/parts/index.ts`).
-- Per-move poses: `getAnimationPose` accepts `currentMoveId`. All 22 `MoveId` values have distinct keyframe entries differing by ≥0.2 radians on at least one limb angle (`apps/client/src/renderer/animations.ts`).
-- Hit flash: golden-yellow tint (`0xFFDD44`) applied for 4 frames on every connecting hit (`apps/client/src/renderer/FighterRenderer.ts:110-121`).
-- Impact sparks: `ImpactSpark` radiates 6 white circles from the hit world position over 10 frames, auto-cleaned after expiry (`apps/client/src/renderer/effects/ImpactSpark.ts`).
-- Screen shake: `Camera.shake(knockbackMagnitude)` applies a decaying random offset for 8-15 frames, clamped to 20px max, skipping hits below a threshold of 5 to avoid shaking on pummels (`apps/client/src/renderer/Camera.ts:54`).
-- Shield bubble: `updateShieldBubble()` draws a semi-transparent circle (radius 36, alpha 0.4) color-cycling from blue (`0x4488ff`) at full health to red (`0xff2222`) near zero; disappears immediately when `isShielding` is false (`apps/client/src/renderer/FighterRenderer.ts:142-155`).
-- KO tumble/star effect: `KOEffect` rotates the fighter container 18°/frame for 40 frames and spawns 8 star particles at 45° spacing that fade to alpha 0; wired via `updateKOEffect()` on `isKnockedOut` transitions (`apps/client/src/renderer/FighterRenderer.ts:124-137`, `apps/client/src/renderer/KOEffect.ts`).
+## Roster coverage gap filled
 
-**Still missing:**
+Added Lincoln and Swift jab (9 drawings), run (6), jump/airborne/landing (6), shield (4), spot dodge (6), roll (6), and damage/recoil/tumble/prone (4): 41 drawings each, 82 total across 14 clips. All three fighters now have the same 15 clip families and 87 drawings each (261 drawings / 45 clips). Equal current pilot coverage; full Ultimate animation coverage remains incomplete.
 
-- Final production art: hand-drawn character art to replace the script-authored placeholder sprites. See `docs/assets/REPLACING-FIGHTER-ART.md` for specifications and the drop-in replacement workflow.
-- **Sprite specifications:** A comprehensive generation guide exists at [`SPRITE-GENERATION-GUIDE.md`](./SPRITE-GENERATION-GUIDE.md) covering all 22 moves, 4 player-slot color variants, VFX frames, and UI elements with AI-generation prompts ready for artist handoff.
+New jabs use planted support-foot registration and character-specific timings. Airborne jump poses use torso registration; roll and tumble use center pivots. Existing 31 clips are unchanged. Optional full-body mode uses the new clips and retains fallback artwork for unfinished actions.
 
-**Existing hooks (unchanged):**
+Validation: 19 focused unit tests, 10 browser tests and client build passed. New sheets passed alpha and cell-boundary checks. Built-in imagegen prompts and selected sources are in prompts.json. Both portable reviews are updated.
 
-- `FighterRenderer.redraw()` remains the sole draw call. Swapping between `SpritePartRenderer` and `PolygonPartRenderer` happens via `createPartRenderer` (`apps/client/src/renderer/parts/index.ts`).
-- `PlayerState.currentMoveId` is tracked and passed to the renderer. Per-move art keys off it.
-- `HitEventData` in `StateSnapshot.hitEvents` is the event source for all client-side hit effects.
+Next: review transitions and visual consistency across the equal roster, then five aerial attacks per fighter (15 clips). Engine timing disagreements and broader Ultimate mechanics remain open.
 
-### Stage
+## Aerial animation batch
 
-**What's shipped:**
+Added neutral, forward, back, up and down aerials for all three fighters: 15 clips / 90 drawings. Every fighter now has 20 clip families and 117 drawings (351 drawings / 60 clips). The previous 45 clips are unchanged. Source images and built-in imagegen prompts are included in this pack.
 
-- 6 stages (`stage1`–`stage6`) defined in `apps/client/src/stages/stageConfig.ts`, each with a background image and a music track
-- Background images (`stage1.png`–`stage6.png`) served from `/public/backgrounds/`
-- Stage-select UI routes through `getStageById` and `getRandomStage`
+Aerials are selected only in AIR_ATTACK and follow character move-data startup, contact and recovery windows. Their fixed source-cell torso pivots use offsetY=0, freeing the legs from ground registration. Air-ready height is normalized to90percent of standing height; precise pose alignment remains a visual-review item. Landing lag switches immediately to the existing landing pose; damage and physics are unchanged. Current hitbox circles and landing-lag metadata are exposed for review, not verified Ultimate frame-data parity.
 
-**Still missing:**
+The synchronized review loads current clips on demand, avoiding decoding all60sheets at once. Its staged transition sequence includes all five aerials and landing. Both portable reviews are updated.
 
-- Blast-zone indicators — players have no visual cue for kill boundaries
-- Moving soft platforms on any stage (all current stages use the static shared geometry)
+Validation:20focused tests,12browser tests,TypeScript and the client code bundle passed. All15new sheets passed alpha/cell checks. Full packaging failed with Windows EPERM while copying unrelated menu-audio/branding files; code bundling passed with public copying disabled. These are review candidates, not final full-roster replacement. Next:each fighter neutral, side, up and down special, including ground/air variants and effects as needed.
 
-**Existing hooks:**
+## Specials and counter batch
 
-- `STAGE` constants in `packages/shared` are the full stage definition — adding a stage is adding a data object plus a background image
-- `BackgroundLayer` is drawn once at startup — the right place for blast-zone edge glows
+Added four six-drawing specials and one four-drawing successful-counter reaction per fighter:15bodyclips/84drawings. All three fighters now have25clips/145drawings each (435bodydrawings). Four shared effect sheets add16frames:neutral burst, side trail, recovery trail and counter flash.19new sheets,100new body/effect frames combined; prior60bodyclips unchanged.
 
-### UI
+Neutral special shows a one-tick release cue at startup completion, including the zero-active-frame declaration. Current server hitbox execution indexes its one-entry hitbox array; no travelling-projectile implementation was found in that path despite projectile wording in move-data comments. This remains an engine/design gap, not a new projectile mechanic. Counter readiness/failed recovery is separate from counter success; confirmed DOWN_SPECIAL hit events trigger only the attacking fighter retaliation clip, which progresses on state frames and cancels on state interruption.
 
-**What's shipped (T18):**
+Ground/air special versions reuse source poses with alternate torso anchors; up special is airborne. The individual review has Airborne special pose and Preview special effects controls. Effects are staged visual candidates in the review and saved as a separate manifest.effects library; live engine effect triggers are not integrated yet. Existing impact sparks remain in gameplay. Upward recovery artwork and effect pages use explicit row crop boundaries to preserve crossing extrema; the recovery effect orientation is corrected by rotation metadata.
 
-- Damage % color progression — `UIManager.interpolateDamageColor()` interpolates white (0%) → yellow (~50-100%) → red (150%+), applied every `updateHUD` call (`apps/client/src/ui/UIManager.ts:351-366`)
-- Stage-select screen present and wired
+Validation:21focused unit tests,13browser tests,TypeScript and code bundling passed. New sheets passed alpha/cell checks. Full public-file packaging remains blocked by earlier unrelated Windows file-copy errors; code bundling skips public copying. Built-in imagegen prompts/source records are in prompts.json. Broader Ultimate timing parity and precise palette/pose alignment remain review work.
 
-**Still missing:**
+Next:grab, hold, pummel, four throws and matching victim/release reactions across all three fighters.
 
-- Stock icons are `■□` text characters — needs fighter portrait thumbnails
-- No countdown animation — the number just appears
-- Character select has placeholder text; no fighter preview art
+## Grab and throw animation batch
 
-**Existing hooks:**
+Added 11 sheets / 58 drawings per fighter (33 sheets / 174 drawings): standing grab, hold, pummel, four throws, held victim, pummel recoil, release and directional throw reactions. Current coverage is 36 body clips / 203 drawings per fighter, 108 clips / 609 body drawings total, plus 16 shared effect frames. Previous 75 body clips are unchanged.
 
-- `UIManager` in `apps/client` — all UI phases flow through here
-- `UILayer` (PixiJS) is separate from the HTML overlay — move HUD elements there for GPU rendering and animation
+Optional full-body rendering distinguishes holder and victim in GRAB_HOLDING. Confirmed PUMMEL and throw hit events select victim reactions; down throw uses impact/bounce/tumble drawings. Release to IDLE uses a short recovery, interrupted by another state. Directional throw poses are independent choices, not a six-pose linear animation. Source-facing metadata corrects the All-Rounder and Lincoln pummel sheets without changing source pixels.
 
----
+The render snapshot now preserves grab ownership, charge, double-jump and tumble flags through local prediction and interpolation. Existing grab offset remains 40 world units. Combat physics, damage and input rules are unchanged. grab-pairs.html supports all nine fighter pairings, both facing directions, slow playback and stepping. Release trajectories in that page are staged illustrations; final hand attachment, movement during throw startup, air-release handling and Ultimate rules still need engine/design refinement. Dash and pivot grabs remain missing.
 
-## 🎵 Audio
+Validation: all new sheets passed alpha and frame-boundary checks; TypeScript, 51 animation/network unit tests, 15 animation browser tests and the production code bundle passed. All 75 previous body clips match the saved pre-batch manifest exactly. Full public-file packaging retains the prior unrelated Windows copy limitation; code bundling passed with public copying disabled. Built-in imagegen prompts and selected/refined sources are in prompts.json. These are review candidates, not final visual signoff or complete Ultimate parity.
 
-**What's shipped:**
+Next art families: ledge transitions, knockdown/getup/tech variants, remaining movement/defense transitions and dash/pivot grabs.
 
-- `AudioManager` (`apps/client/src/audio/AudioManager.ts`) — HTML Audio wrapper with `playTrack`, `stopCurrentTrack`, `setVolume`, and `getVolume`
-- Autoplay-policy retry — if the browser blocks the initial `play()` call, `AudioManager` waits for the next user interaction (`pointerdown`, `keydown`, `touchstart`, or `mousemove`) and retries automatically
-- 6 stage music tracks (`/public/audio/stage1.mp3`–`stage6.mp3`) served and wired through `stageConfig.ts`'s `musicTrack` field
-- `main-menu.mp3` and `game-over.mp3` also present in `/public/audio/`
-- `SfxManager` — pooled HTML Audio playback for overlapping hit, jump, land, shield, and KO cues, sharing the persisted master mute and volume settings
-- `GameplaySfxRouter` — deduplicated render-state edge detection shared by local and network play; hit pitch scales with authoritative `knockbackMagnitude`
-- Six authored clips under `/public/audio/sfx/`, including two alternating hit variants
+## Grab contact polish and ledge batch
 
-**Still missing:**
+Grab contact now uses per-drawing holding-hand points and victim upper-body contact rails. Held sprites align at the hand across all nine fighter combinations, follow throw windup, and blend the remaining visual offset back to the physics position after release. The live renderer and paired review share the same contact calculation. Body positions, collision, damage and the 40-unit engine grab offset are unchanged. The paired review can show contact and physics-position markers.
 
-- Independent music/SFX level controls, menu cues, shield-impact/break cues, and character-specific voice or move sounds
+Added eight ledge families per fighter: catch, hang, climb, roll, attack, jump, voluntary drop and trump reaction. Each fighter gains 40 drawings / 8 sheets; 24 sheets / 120 drawings total. Current coverage: 44 body clips / 243 drawings per fighter, 132 clips / 729 body drawings across the roster, plus 16 shared effect frames. Source PNGs for all 108 earlier clips are unchanged; contact sockets are new metadata.
 
----
+Ledge grip pivots align catch/hang hands to the platform lip; getup drawings progress to the platform top. Runtime facing follows ledge identity, which is preserved in snapshot/interpolation/prediction render assembly. Catch plays for eight visual ticks before the breathing hang. Climb/roll/jump use current 40/45/12 tick lengths; ledge attack uses contact ticks 20-27 of its 60 tick sequence. Drop/trump are twelve-tick visual reactions inferred from hang-to-AIRBORNE and launch velocity, interrupted immediately by damage or other state changes. They add no new input lock. Separate authoritative release-reason markers would improve classification under skipped snapshots.
 
-## 🕹️ Input
+ledge-review.html offers all three fighters, both stage edges, grip markers, slow playback, tick stepping and staged catch/hang/action/recovery sequences. Actual getup displacement, jump resource rules, ledge eligibility, invulnerability/regrabs and Ultimate parity remain engine work. The current engine freezes ledge action positions and applies exit snaps; the artwork does not repair these mechanics.
 
-`InputManager.ts` is solid — bitmask, pressed/released tracking, configurable keymap. Three specific gaps:
+The individual review now loads only the selected animation and matching effect, with a bounded cache, avoiding intermittent image-decoding failures as the library grew. Built-in imagegen prompts, selected sources and cleanup prompts are recorded in prompts.json. Baked-in ledge-hit flashes were removed.
 
-### ✅ Gamepad support (Implemented)
+Validation: TypeScript, 28 focused animation/contact/snapshot unit tests and 17 animation browser tests passed; all new sheets passed alpha/cell checks. These remain visual review candidates. Next art: knockdown/getup/floor attacks and tech variants, then remaining movement/defense transitions and dash/pivot grabs.
 
-Implemented in `packages/gamepad-input`. Auto-detects Xbox/Standard-mapping controllers, supports up to 4 controllers simultaneously, and persists slot assignments across sessions. Open the **Controls** screen from the local-play lobby to view device assignments and rebind keys/buttons.
+## Recovery and floor attack batch
 
-### Remapping UI
+Added 20 recovery families per fighter (60 sheets / 342 new body drawings): face-up/down knockdown, prone, neutral getup and getup roll; three floor attacks; trip fall, prone, getup and roll; neutral/directional ground techs, wall tech, wall-tech jump and ceiling tech. Current roster: 64 clips / 357 drawings each, 192 clips / 1071 body drawings plus 16 shared effect frames.
 
-**What's missing:** Keymap is a static `const` — no in-game binding changes.
+All new sources pass strict alpha, page-size and cell-boundary checks. Built-in imagegen prompts, original sources and transparency/padding refinements are recorded in the pack prompts.json. All 132 earlier clip manifests match the saved pre-batch baseline exactly, preserving the accepted walk, jab and Lincoln high-kick appearance.
 
-**Approach:** Move keybinds to `localStorage`-backed config; add a settings screen to `UIManager` that writes to it.
+recovery-review.html compares all three fighters with tick stepping, facing, roll direction and staged impact/prone/action/recovery chains. Floor attack contact uses source drawing 3 (zero-based index 2), matching the extended kick. Wall/ceiling surfaces are staging guides rather than authored collision/contact data. Per-drawing source mirroring aligns the first two face-down getup-roll poses with the preceding prone orientation.
 
-### Smash input (tilt vs smash distinction)
+Optional full-body mode maps HARD_LANDING to 18 impact ticks then prone; current neutral tech and roll tech follow the existing 26/40 tick state lengths. Only four new live clips are loaded per fighter; other recovery clips are preview-only. HARD_LANDING still returns directly to IDLE after 30 ticks. Engine floor orientation, getup inputs/timeouts, trip/floor-attack states and hitboxes remain missing. TECH_ROLL currently clears horizontal velocity, so the new drawing does not create travel. Wall techs resolve directly to AIRBORNE without an explicit visual event; ceiling tech and surface event markers remain engine work.
 
-**What's missing:** `SHIELD + ATTACK = smash` is non-standard. Real Smash uses analog stick speed. On keyboard this is typically a double-tap detector or a dedicated smash button.
+Validation: TypeScript and 29 focused unit tests passed; production code bundling passed with public copying disabled. Full public-file packaging retains the existing unrelated Windows copy limitation. All 19 browser checks passed (17 in the main run and two corrected setup reruns). These are artwork review candidates, not final visual signoff or a claim of Ultimate parity.
 
-**Approach:** Add a double-tap detection layer to `InputManager` — track time between two directional inputs; if under a threshold, set a `SMASH_DIRECTIONAL` bit instead of plain directional. The FSM `AttackState` already reads `currentMoveId` — this just changes which move gets selected.
+Next artwork families: remaining movement/defense transitions, dash/pivot grabs and presentation; then implement missing mechanics against the inventory.
 
-### Short hop
+## Movement, defense and grab approach batch
 
-**What's missing:** `PHYSICS.SHORT_HOP_THRESHOLD_FRAMES` is defined and `resolveJump` exists, but `JumpsquatState` doesn't track how long `JUMP` is held before transitioning.
+Added 25 families per fighter: dash start, standing/running turn, brake, crouch entry/hold/exit, jump squat, soft/heavy landing, platform drop, front/back teeter, shield raise/hit/drop, parry, neutral/directional air dodge, dodge landing, shield-break launch/dizzy/recovery and dash/pivot grab. This adds 75 sheets / 426 drawings. Current roster: 89 clips / 499 body drawings per fighter, 267 clips / 1497 body drawings plus 16 shared effect frames.
 
-**Approach:** In `JumpsquatState.update()`, count frames with `JUMP` held vs. released. Pass the result to `resolveJump` — the hook is already there.
+transition-review.html stages all three fighters, both facings, travel mirroring, single actions and ready/action/recovery sequences. Dash/pivot grab show a catch/whiff pose rather than simulating an opponent. Directional air dodge has one diagonal pose set plus mirroring, not a complete eight-direction solution. Parry body art has no baked-in effects; dedicated success effects remain open. Expanded takeoff/double-jump/air loops, footstool pairs, jab-lock reactions, dash attack and presentation remain on the inventory.
 
----
+Optional full-body mode maps dash startup to the existing 15-tick DASH, jump compression to three JUMPSQUAT ticks (drawings 2/4/6), shield entry to six visual ticks then the existing guard loop, and generic AIR_DODGE to its existing 23-tick state. These add no input lock or physics changes. Only four new clips are loaded per fighter (52 live clips total); other new clips are preview-only. Turn/skid, crouch, normal/attack landing distinctions, release parry, shield-break identity and moving/pivot grabs need authoritative state/event support. Neutral air-dodge art does not repair current down-focused direction capture or wavedash/Ultimate differences.
 
-## ⚙️ Engine gaps
+Generation used built-in imagegen with approved idle sheets as identity/palette references. Prompts and selected/refined sources are in prompts.json. Earlier source art, accepted walk cadence and planted jab are preserved. All new sources passed strict alpha, cell-boundary and page-size checks; the saved pre-batch manifest is the regression baseline.
 
-The engine is the strongest part of this repo. These are the remaining gaps — all have data stubs already:
+Validation: all 75 new sheets passed strict transparency, frame-boundary and page-size checks; all 192 earlier clip manifests are unchanged. TypeScript, 30 focused animation/contact/snapshot unit tests and 22 browser checks passed (one updated shield-entry expectation was rerun). The final production code bundle passed with public copying disabled; full public-file packaging retains the previous unrelated Windows copy limitation. The portable review is a folder bundle: HTML pages load adjacent PNG files on demand, avoiding the single-file embedding limit. Offline folder playback passed a browser check. Pivot-grab drawings 3-6 use per-drawing source mirroring; All-Rounder standing-turn frames 3/4 are reordered for continuity. New artwork remains under visual review.
 
-### Smash charge
 
-- **Status:** ✅ **Implemented (Wave 2)** — `GameEngine.ts:908-988` (`withHitboxState`) tracks `chargeFrames` per player, clamps to `SMASH_CHARGE_MAX_FRAMES`, and scales both `damage` and `baseKnockback` by up to 1.4× on release. Charge is held while `ATTACK` is held and `stateFrame < startupFrames + clampedChargeFrames`.
+## Combat, footstool and presentation art — 2026-11-03
 
-### Down Special (Counter)
+Added 26 families per fighter: dash attack; high/middle/low, heavy and airborne hit reactions; tumble/recovery; face-up/down jab-lock flinches; footstool attacker and ground/air victims; entry; respawn wait/drop; three taunts; three victories; defeat applause; launch, screen and star KO bodies. This adds 78 transparent sheets / 414 drawings. Current coverage is 115 clips / 637 body drawings per fighter, 345 clips / 1911 body drawings plus 16 shared FX frames. All previous clips are preserved.
 
-- **Status:** ✅ **Implemented** — `packages/engine/src/moves/special.ts` defines the counter move with invincibility frames and counter-hit detection. `GameEngine.ts` handles the counter logic and applies invincibility during the active window.
-- **Hook:** Counter-hit detection is wired; invincibility frames are applied correctly.
+action-review.html shows all three fighters and contextual sequences. footstool-pairs.html covers all nine pairings, grounded/airborne victims and both facings, with sole/crown markers on drawing three. Approach, bounce and fall are staged artwork trajectories, with no collision or simulation. Review folders use adjacent PNG files and work offline. Prompts and selected source paths are recorded in prompts.json under actionBatch (built-in image_gen).
 
-### Landing lag
+Optional full-body mode maps generic HITSTUN to hit_mid and existing isTumbling to a six-drawing tumble loop, increasing live loading from 52 to 54 clips per fighter. Height/intensity/aerial reaction choice, tumble recovery events, dash-attack mechanics, jab locks, footstool triggers/physics and presentation hooks remain engine work. KO fallback/effects remain unchanged. All new clips except hit_mid and tumble remain preview-only. These are illustrated pilot candidates; palette, silhouette and contact review remain necessary before final sprite compression/atlas replacement. Tumble rotation spacing and cross-clip transition continuity are not final animation polish.
 
-- **Status:** ✅ **Implemented (Wave 2)** — `GameEngine.ts:689-700` reads `player.currentMove?.landingLag` on landing from `AIR_ATTACK` and transitions to the `LANDING_LAG` state (defined in `PlayerFSMState.ts:19`). `tickLandingLagCounter` (`GameEngine.ts:720-738`) decrements `landingLagFrames` each tick and releases back to `IDLE` when exhausted.
 
-### Shield break stun
+## Airborne families and moveset baseline — 2026-11-03
 
-- **Status:** ✅ **Implemented (Wave 2)** — `GameEngine.ts:1363` applies `PHYSICS.SHIELD_BREAK_STUN_FRAMES` directly as `hitstunFramesRemaining` when shield health reaches 0, launching the fighter upward (`vy: -8`) and transitioning to `HITSTUN`.
+Added 18 six-drawing families per fighter: neutral/forward/backward takeoff; rise/apex/fall/fastfall loops; double-jump transition; five directional air-dodge sheets with mirroring for eight directions; helpless enter/loop/land; jab 2 and jab 3. This adds 54 sheets / 324 drawings. Current totals: 133 clips / 745 body drawings per fighter, 399 clips / 2235 body drawings plus 16 shared effect frames.
 
-### Grab victim position
+airborne-review.html includes single clips, contextual flight, double jump, recovery/helplessness, jab chains and all eight dodge directions. New families remain preview-only; 54 existing live clips per fighter and prior runtime behavior are preserved. No new mechanic or timing is implemented by generating artwork. Short/full hop share drawings, leftward dodge variants use an explicit mirrored-pose policy, backward roll reuses current mirrored art, and Swift wall jump reuses wall-tech launch plus rising-air art. Source poses/loops are pilot candidates; in-betweening, seam/pivot/facing consistency and transition/contact approval belong to the final polish pass.
 
-- **Status:** ✅ **Fully implemented (T6-T8).** Position pinning, pummel, and all four directional throws are wired. `GrabHoldingState` detects `ATTACK` for pummel and directional inputs for throws; `GameEngine.ts` generates hitboxes, applies damage/knockback, and clears grab flags on throw resolution. Pummel suppresses `HITSTUN` to keep victim in `GRAB_HOLDING`; stale-move scaling accumulates across repeated pummels. Tests: `apps/server/src/GameEngine.grab.test.ts` — pummel stale accumulation (line 442), forward/back/up/down throw assertions (lines 324-408).
+See docs/assets/FIGHTER-MOVESET-BASELINE.md and moveset-decisions.html/json for the selected core kits: three-hit punch-punch-kick jabs for all; up-special helpless fall for all; one air jump; Swift-only wall jump; four existing special categories without a new projectile/weapon/transform subsystem. No rapid jab, angled variants, crawl, cling, tether, reflector/absorber, stance or extra jumps in this baseline. Current engine differs from this target (including ungated wall jumping). Items, Final Smashes and conditional content remain later expansion work. Canonical move timing and server action/event replication must be resolved before final gameplay animation signoff.
 
-### Ledge grab
 
-- **Status:** ✅ **Implemented and tested** — contrary to earlier analysis, ledge grab is fully wired.
-- **What's done:** 5 ledge states (LEDGE_HANG, LEDGE_CLIMB, LEDGE_ATTACK, LEDGE_ROLL, LEDGE_JUMP) are defined, transitioned by `GameEngine.ts` when player is AIRBORNE/DOUBLE_JUMP and in range of a ledge. Invincibility frames applied on grab. Ledge occupancy managed (first player gets ledge, second player is "trumped" and launched). Comprehensive test suite in `GameEngine.ledge.test.ts` covers all getup options and priority system.
-- **Remaining edge mechanics:** Wall bounce, footstool — these are new features, not stubs.
+## Polish audit and scale correction — 2026-11-03
 
-### Advanced tech mechanics (wavedash, L-cancel, wall-jump/wall-tech)
+Revision 16 adds polish-audit.html: 399 clip measurements, 18 visually inspected first/key/last comparison boards and a prioritized correction list. Three tumble-recovery scales now normalize from their upright final pose (100% standing height), correcting previous endpoints of 135.2%, 111.5% and 118.4%. All source drawings, the other 396 clips and runtime behavior are unchanged; these clips remain preview-only. New jab 2/3 support-foot drift measures zero. Priorities remain directional-dodge facing, canonical combat timing, tumble/gait loop spacing, cross-clip/contact approval, effects, multiplayer identification and production packaging. See docs/assets/FIGHTER-POLISH-AUDIT.md. The strict pack check, all 28 browser tests and the new report offline/filter/image checks passed. This audit is not final approval of every drawing.
 
-- **Status:** ✅ **Implemented (Waves 1–6)**
 
-**Implementation evidence by todo (1–17):**
+## Facing, loop spacing and transition polish — revision 17
 
-- Todo 1: `packages/shared/src/constants/stage.ts:43-48`, `packages/engine/src/physics/types.ts:16-34`, `packages/engine/src/physics/index.ts:10-25` — wall geometry and stage/type wiring (`WALLS`, `WallData`, `StageData.walls`).
-- Todo 2: `packages/shared/src/constants/physics.ts:50-59` — wall-jump / wall-tech / L-cancel / wavedash constants.
-- Todo 3: `packages/engine/src/physics/index.ts:386-407`, `packages/engine/src/index.ts:21` — pure `checkWallCollision` and package export.
-- Todo 4: `packages/shared/src/types/GameState.ts:53`, `packages/engine/src/fsm/states/AirborneState.ts:22-24`, `apps/server/src/GameEngine.ts:618-625`, `packages/engine/src/physics/index.ts:57-67`, `apps/server/src/GameEngine.ts:1275-1299` — single-use `hasAirDodge` gate/consume/reset.
-- Todo 5: `packages/engine/src/physics/physics.test.ts:621-685`, `packages/engine/src/fsm/fsm.test.ts:659-758`, `apps/server/src/GameEngine.wavedash.test.ts:215-327` — regression coverage protecting foundation fields/mechanics.
-- Todo 6: `apps/server/src/GameEngine.ts:998-1035` — wall-jump detection + away-direction + velocity injection path.
-- Todo 7: `packages/shared/src/types/GameState.ts:54`, `apps/server/src/GameEngine.ts:1008-1011`, `apps/server/src/GameEngine.ts:1022`, `packages/engine/src/physics/index.ts:66`, `apps/server/src/GameEngine.ts:1298`, `apps/server/src/GameEngine.wallJump.test.ts:249-363` — streak decay and landing/ledge resets, with integration tests.
-- Todo 8: `apps/server/src/GameEngine.ts:1023-1024`, `apps/server/src/GameEngine.ts:870-880`, `apps/server/src/GameEngine.wallJump.test.ts:118-193` — wall-jump intangibility grant and decay.
-- Todo 9: `apps/server/src/GameEngine.wallJump.test.ts:195-247` — regression guards that wall jump neither grants nor consumes double jump.
-- Todo 10: `apps/server/src/GameEngine.ts:839-886`, `apps/server/src/GameEngine.wallTech.test.ts:50-81` — wall-tech success branch (momentum cancel + airborne return + intangibility).
-- Todo 11: `apps/server/src/GameEngine.ts:845-873`, `apps/server/src/GameEngine.wallTech.test.ts:180-241` — wall-tech-jump chaining when jump is held.
-- Todo 12: `apps/server/src/GameEngine.ts:887-895`, `apps/server/src/GameEngine.wallTech.test.ts:117-178` — missed wall-tech lockout penalty and enforcement.
-- Todo 13: `apps/server/src/GameEngine.ts:543-547`, `apps/server/src/GameEngine.ts:557-566`, `apps/server/src/GameEngine.lcancel.test.ts:50-161` — L-cancel buffer countdown and shield-press window tracking.
-- Todo 14: `apps/server/src/GameEngine.ts:690-698`, `apps/server/src/GameEngine.ts:898-910`, `packages/shared/src/types/GameState.ts:67-70`, `apps/server/src/GameEngine.lcancel.test.ts:217-311` — cached `isSpecial` plus aerial landing-lag halving rule.
-- Todo 15: `packages/shared/src/types/GameState.ts:79`, `packages/engine/src/fsm/states/AirDodgeState.ts:5-17`, `packages/engine/src/fsm/states/AirDodgeState.ts:23-25`, `packages/engine/src/fsm/fsm.test.ts:709-757` — directional air-dodge capture and clear-on-exit.
-- Todo 16: `apps/server/src/GameEngine.ts:913-943`, `apps/server/src/GameEngine.ts:822-831`, `apps/server/src/GameEngine.wavedash.test.ts:60-214` — wavedash landing branch and friction-driven slide decay.
-- Todo 17: `packages/engine/src/fsm/states/AirborneState.ts:22-24`, `apps/server/src/GameEngine.wavedash.test.ts:215-327` — no repeat wavedash without a landing reset.
+Added nine backward-dodge sheets and three run-v2 sheets (72 generated drawings; nine new clips / 54 net registered frames). The pack now has 136 clips / 763 registered body frames per fighter, 408 clips / 2289 frames plus 16 shared FX frames. Original source PNGs remain intact. New backward-dodge selection preserves apparent facing across all sixteen world-direction/facing combinations. Run keeps its 18-tick period with clearer alternating footfalls. Every walk and jab clip is unchanged, including the accepted All-Rounder 24-tick walk and planted jab; Lincoln high kick is untouched.
 
-**Regression baseline:** full engine/server suites remain green for advanced-tech mechanics and associated integration specs.
+Tumble now reuses the existing coiled source pose with uniform centered rotation over 18 simulation ticks. Six metadata views store orientation samples; runtime and playback advance rotation on simulation ticks. It does not add six new hand-drawn angles. Duplicate upright beats and angle-spacing jumps are removed, repeated snapshots do not advance spin, and interruption resets rotation. Run/tumble changes apply in optional full-body mode; live loading remains 54 clips per fighter. The nine new backward-dodge clips remain preview-only.
 
----
+Airborne contextual review uses torso-anchored continuous flight, double-jump, recovery and dodge paths. All tested phase-boundary torso movements are below ten canvas pixels per tick; these are staged review trajectories, not new movement physics or guaranteed final pose in-betweening. Grounded actions retain foot registration. loop-polish-review.html compares revision 16 and current run/tumble/walk playback, and airborne-review.html demonstrates facing/transitions. The art baseline version 2 supersedes the earlier five-direction/mirroring policy.
 
-## 🌐 Multiplayer / backend hardening
+Validation: twelve selected sheets pass alpha/cell/page-size checks; pack contract and TypeScript pass; 33 focused unit tests and 30 browser tests pass; client code-only bundle passes with environment loading redirected to the empty directory and public copying disabled. Before/after and backward-dodge captures were visually inspected. A pre-change manifest comparison verifies only run/tumble changed among prior clips (393 unchanged), plus nine new clips. Final palette/in-between/contact approval, canonical timing, engine state/event integration, VFX, four-player identification and production atlas/public-file packaging remain open.
 
-The netcode architecture (client prediction + server reconciliation + interpolation) is the most impressive part of this repo. For a shipped product, several gaps need addressing:
 
-| Gap                          | Current state                                                                           | Fix                                                                                                 |
-| ---------------------------- | --------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------- |
-| **Reconnection**             | `socket.io` initialized with `reconnection: false` — a dropped packet kills the session | Set `reconnection: true`, implement session rejoin by `playerId` in `RoomManager`                   |
-| **Room persistence**         | Rooms live in-memory — a server restart destroys all active sessions                    | Redis layer or graceful shutdown handler that serializes `RoomManager` state                        |
-| **Authentication**           | `generatePlayerId()` is a random string — spoofable                                     | Session tokens / signed cookies; fine to skip for casual play, required for rankings                |
-| **Spectator mode**           | Not implemented                                                                         | The 20 Hz `StateSnapshot` broadcast already supports it — connect a client that doesn't send inputs |
-| **Matchmaking**              | Manual room codes only                                                                  | A simple queue: emit `FIND_MATCH`, server pairs waiting players, creates room, redirects both       |
-| **Determinism verification** | `getStateHash()` mismatch is `console.log` only                                         | On mismatch: send corrective full-state snapshot to the desynced client and alert in the HUD        |
+## Contact and gameplay-scale pass — revision 18
 
----
+Corrected 20 hand anchors across Lincoln grab_hold/pummel/ledge_catch and Swift forward_throw approach/ledge_hang, based on inspected hand regions. The selected 126-anchor audit now has no active-contact proximity flags above three world pixels; corrected points are within 0.108 world pixel of opaque hand artwork. This diagnostic does not replace anatomical/contact visual approval. Only five clips of metadata changed; 403 clips, source PNGs/colors, durations, scales and gameplay rules are unchanged. Ledge roots follow their corrected grips. contactVersion is 2.
 
-## 🗂️ Content
+contact-signoff.html provides the before/after measurements and all-nine-pair gameplay-size board. Grab/throw, footstool and ledge reviews now have 1x gameplay and 0.4x distant-sprite scale controls plus enlarged detail. The native pair board and corrected ledge capture were visually inspected. 32 browser tests, the pack contract and TypeScript passed; new tests cover 288 grab/action/pair/facing/scale scenes, 72 footstool cases and 32 three-fighter ledge scenes. See docs/assets/FIGHTER-CONTACT-SIGNOFF.md. Palette/face approval, effects, duplicate-fighter identification, production atlases/public-file packaging and missing engine mechanics remain open.
 
-Two fighters, six stages, one game mode. The engine is fully content-agnostic — adding content is adding data.
 
-### Additional fighters
+### Palette audit — 2026-11-03 (batch 19)
 
-**What's shipped:** All-Rounder (baseline stats) and Abe Lincoln (heavier, slower, longer reach — 7 move overrides).
+Added a portable palette/face/costume comparison at fighter-art-pilot-v1/palette-review.html. Screened 2,289 registered frames, visually scanned all 408 first poses on 12 boards, and inspected ten flagged drawings enlarged. No confirmed palette defect warranted source-art edits; Lincoln’s accepted high kick is retained. Pack revision 18 and gameplay behavior are unchanged. This is sampled visual evidence, not every-frame approval. See docs/assets/FIGHTER-PALETTE-AUDIT.md. Remaining work: remaining-frame visual checks, effects/player identification, final packaging and engine integration.
 
-**What's needed for a third fighter:** New `MoveData` constants in `packages/engine/src/moves/` and new art in `apps/client`. The FSM, physics, hitboxes, and netcode don't change.
 
-**Approach:** Clone the existing move set as a starting point. The interesting work is differentiation — a lightweight floaty character (low weight ~75, high air speed, multi-jump, weaker knockback) creates meaningful character-select decisions against Lincoln's heavyweight bruiser style.
+## Shared effects, player identification and handoff — batch 20 (2026-11-03)
 
-### Additional stages
+Optional full-body rendering now loads the four existing shared effect sheets and displays effects at special-move active startup, or the confirmed counter-success cue. Effects use simulation frames, stop after eight ticks and cancel on interruption/KO; missing effect sheets time out and leave body rendering available. Initial placements sit near the special-action hands/trails and still need real-match visual approval. No combat/hitbox rules changed.
 
-**What's shipped:** 6 stages (`stage1`–`stage6`) with backgrounds and music tracks.
+Full-body players have upright colored badges with one through four pips, preserving costume colors and allowing duplicate-fighter identification without color alone. Badges hide on KO. Added every-frame-review.html: 96 pages cover all 2,289 registered frames. All pages loaded successfully; nine additional pages (selected kicks/smashes, turns/braking/crouch and backward dodges for all fighters) were visually inspected. Fitted boards do not establish gameplay scale or every-frame approval. Source artwork and manifest revision 18 remain unchanged.
 
-**What's needed for a seventh:** A new `StageConfig` entry in `apps/client/src/stages/stageConfig.ts`, a background image in `/public/backgrounds/`, and a music track in `/public/audio/`. The server reads stage config at room creation; the client's `AudioManager` and `BackgroundLayer` pick it up automatically.
+Validation: TypeScript passed; 47 existing focused renderer tests plus two new effect/marker tests passed; all 32 browser tests passed. Live browser loaded all four effect sheets and rendered four facing-correct duplicate-player badges. Code-only client production build passed with public copying disabled and environment loading redirected to the empty directory. The portable asset folder has a SHA-256 inventory of 413 manifest/source-image files. This is not full production packaging, an optimized atlas or default-renderer cutover.
 
-**Moving platforms:** None of the current 6 stages have moving soft platforms. Adding them requires server-authoritative position updates each tick so the deterministic engine drives platform state.
+Remaining: every-frame visual signoff, real-match effect placement and four-player distant-camera checks, texture-memory/atlas optimization, full public-file build, then missing authoritative mechanics/state-event hooks. There are still 54 live clips and 82 prepared clips per fighter; do not enable prepared art as implemented mechanics. See outputs engine-art-handoff.json and docs/assets/FIGHTER-ENGINE-HANDOFF.md.
 
-### Game modes
 
-**What's needed:** A time mode (most KOs after N minutes) is the obvious first addition. `MATCH_CONFIG` already has the constants structure for it; `MatchSession` handles win condition checks.
 
----
+## Production atlas and replicated movement hooks — batch 21 (2026-11-03)
 
-## 📊 Meta / persistence
+Completed the drawing screen for all 2,289 registered body frames on 24 inspected montages: no new blocking palette, costume, silhouette or clipping issue found. This signs off the static drawing screen for integration, not the authoritative motion timing of unimplemented actions. Source PNGs and source manifest revision 18 are preserved.
 
-No persistence exists today. This is the lowest priority but required for a public game.
+Added production atlases (two pixels per world unit, premultiplied-alpha bilinear sampling, two-pixel extrusion): 15 pages total, eight loaded live. Live decoded texture storage drops from 1,214,237,188 bytes across 193 equivalent source sheets to 134,217,728 bytes (128 MiB), an 88.9% reduction; live PNG downloads total 30,726,124 bytes. The verifier checks all 2,305 body/effect frame entries, bounds and world-space roots/sockets; maximum registration error is zero. Memory figures exclude GPU overhead, mipmaps and legacy renderer resources.
 
-| Feature                  | Notes                                                                                                                           |
-| ------------------------ | ------------------------------------------------------------------------------------------------------------------------------- |
-| **Win/loss record**      | Requires accounts — server-side only, `playerId` as key                                                                         |
-| **Settings persistence** | Volume, keybinds → `localStorage` on the client; no server needed                                                               |
-| **Replays**              | The deterministic engine makes this feasible: store the input stream per match, replay it locally. Same architecture as netcode |
-| **Ranked mode**          | Requires matchmaking + auth first                                                                                               |
+Connected nine additional clips per fighter: rise/apex/fall/fast-fall loops, double-jump transition, soft landing and three downward dodge variants. Fast-fall/dodge-direction metadata now survives local, remote and predicted-local render paths. Double jump uses the replicated resource change to play twelve simulation ticks even if a snapshot misses the one-tick trigger; repeated snapshots freeze and interruption cancels. Current supported dodge vectors are inherited from the engine; no new combat or movement physics was introduced. Runtime loading is now 63 clips per fighter; the original source manifest retains its historical 54-live/82-prepared flags. Runtime policy and production manifest supersede those flags for the nine promoted clips.
 
----
+Four actual browser clients passed atlas rendering, duplicate-player identification, movement propagation, synchronized pause and refresh/rejoin. All 35 browser tests passed, along with TypeScript and ten focused hook/contact/effect/marker/metadata unit tests. A complete Vite production build with staged public assets passed. The packaged game loaded all eight live atlas pages with no failed requests or page errors. Original review sheets are excluded from the production distribution; legacy part rendering remains available. Development/review distributions retain source-sheet fallback (?atlas=source); the staged production distribution falls back to legacy parts when atlas art is unavailable.
 
-## How to use this roadmap
+Remaining engine integration: 73 prepared clips per fighter still need mappings, event metadata or mechanics. This includes overlapping legacy/alternative variants, not 73 independent mechanics. Prioritize jab 2/3 and dash attack, floor/getup actions and shield reactions, then paired footstools, recovery lockout, movement transition cues and presentation. Full-body mode remains optional (?renderer=fullbody). Low-end device/memory testing, WAN/packet-loss stress and exhaustive animation-in-context testing are outside this local validation. See docs/assets/FIGHTER-PRODUCTION-ATLAS.md and integration-signoff.html/json.
 
-### Impact vs. effort matrix
 
-| Effort     | High impact                                                                                                          | Lower impact                                                                     |
-| ---------- | -------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------- |
-| **Low**    | ~~Short hop (wire `JumpsquatState`)~~ ✅ · ~~Landing lag~~ ✅ · ~~Shield break stun~~ ✅ · ~~SFX (5 clips)~~ ✅      | ~~Damage % color progression~~ ✅ · Blast-zone edge glow                         |
-| **Medium** | ~~Smash charge~~ ✅ · ~~Grab victim pinning + pummel/throw~~ ✅ · ~~Stage background art~~ ✅ · ~~Shield bubble~~ ✅ | ~~Down Special counter logic~~ ✅ · Reconnection handling · Settings persistence |
-| **High**   | ~~Sprite art for fighters (script-authored placeholders)~~ ✅ · Additional fighter (full move set) · Additional stage | Ranked / matchmaking · Replays · ~~Ledge grab~~ ✅ · ~~Audio system + BGM~~ ✅   |
+### Engine integration batch 22 — 2026-11-03
 
-### ✅ CPU opponents (Implemented — 2026-08-08)
+74 clips per fighter now have runtime hooks; 62 prepared clips remain. The original revision-18 artwork is preserved. Jab 2/3 chain from fresh buffered attack presses, and dash attack uses authoritative timing. Ground recovery records face-up/down orientation, locks inputs for 18 ticks, and supports standing, rolls and two-sided floor attacks. Automatic stand-up begins after 30 ticks and lasts 24 ticks. Rolls move 36 world units over 12 ticks; stand/roll invincibility lasts 8/18 ticks. Floor attacks use 6 startup, 4 active and 14 recovery ticks, with startup invincibility. These are initial custom settings requiring playtesting, not verified Ultimate timings.
 
-Local-play CPU opponents are shipped. The lobby's participant-count-first flow lets the host set the number of human players, then assigns a CPU to each remaining slot at Easy, Medium, or Hard difficulty. The CPU runs a reactive targeting loop inside the server's authoritative game tick — no client-side simulation, no networking required.
-
-**Remaining gap:** CPUs currently always target Player 1 and do not fight each other. Full multi-CPU targeting awareness is a planned future improvement.
-
----
-
-## Next Steps
-
-Ordered by impact-to-effort ratio. None of these require touching the engine's determinism invariants or the server-authority model.
-
-- **Audio polish.** Add independent BGM/SFX levels, menu navigation/confirm cues, distinct shield impact and shield-break sounds, and character-specific move audio on top of the shipped five-cue gameplay layer.
-
-- **Blast-zone edge glow.** A subtle red glow at the `STAGE.blastZones` coordinates drawn in `BackgroundLayer` — low effort, immediately improves spatial awareness. Players currently have zero visual cue for kill boundaries.
-
-- **Smash input distinction (double-tap detector).** `SHIELD + ATTACK` for smash is non-standard. Add a double-tap detection layer to `InputManager`: track time between two directional inputs and set a `SMASH_DIRECTIONAL` bit when under the threshold. `AttackState` already reads `currentMoveId` — this just changes which move gets selected.
-
-- **Third fighter: a fast floaty archetype.** The FSM, physics, and netcode don't change — this is purely new `MoveData` constants in `packages/engine/src/moves/` and new render assets in `apps/client`. A lightweight floaty character (low weight ~75, high air speed, multi-jump, weaker knockback) creates meaningful character-select decisions against Lincoln's heavyweight bruiser style.
-
-- **Moving-platform stage.** Add a seventh `StageConfig` with a center platform and one or two moving soft platforms. Wire platform-position ticks through `GameEngine` (server-authoritative position update each tick) so the deterministic engine drives platform state.
-
-- **Reconnection and session rejoin.** `socket.io` is initialized with `reconnection: false` — one dropped packet kills the match. Set `reconnection: true`, store `playerId` in `RoomManager` on disconnect, and re-slot the player on reconnect. No engine changes needed; the server's `GameState` is already the authoritative record.
-
-- **Spectator mode.** The 20 Hz `StateSnapshot` broadcast already supports extra connected clients that never send inputs. Add a `SPECTATE` join path in `RoomManager` that skips slot assignment. The client renders the game state normally; `LocalPredictor` just never fires.
-
-- **Replay system.** The deterministic engine makes this straightforward: store the full input stream per match (sequence of `InputEvent[]` per tick), then replay it by feeding those inputs back into a fresh `GameEngine` instance. No video encoding needed. Ship as a "watch last match" button on the result screen; persist to `localStorage` for the most recent match.
-
-- **Training mode with frame-data display.** A local-play mode where stocks are infinite, percent resets on a button press, and the HUD shows the current FSM state name and frame count for both fighters. Hooks into `UIManager`'s phase system; the server runs a normal match loop with a `TRAINING` flag that skips KO stock-loss.
-
-- **Multi-CPU targeting awareness.** CPUs currently always target Player 1 and ignore each other. Update `botAI.ts` to select the nearest opponent by position (or lowest-stock opponent) rather than hardcoding index 0. Affects `apps/server/src/GameEngine.ts` where bot inputs are generated.
-
-- **Settings persistence (keybinds + volume).** Move the keymap from a static `const` in `InputManager` to a `localStorage`-backed config object. Add a settings screen in `UIManager` that writes volume and keybind changes. No server work needed.
-
-- **Time mode (timed stock match).** `MATCH_CONFIG` already has the constants structure for it. Add a `timeLimit` field, a countdown clock to the HUD in `UIManager`, and a win-condition branch in `MatchSession` that checks elapsed ticks against `timeLimit × 60`. Tiebreak by stocks remaining, then by current percent (lower wins).
-
----
-
-## Open initiatives — mechanics fidelity closed, three paths forward
-
-**Gap A (mechanics fidelity) is now closed.** After Waves 1–6, the engine, netcode, FSM, physics, all 22 moves, grab/throw, ledge, shield, counters, smash charge, stale-move queue, DI, teching, KO effects, hit flash, pause, result screen, wavedash, L-cancel, wall-jump, and wall-tech are all shipped and green across 144 engine tests, 94 server tests, and 12 Playwright e2e specs.
-
-Three open initiatives remain — none is blocked on the others, and none is clearly higher priority than the others. Pick the one that fits your next available effort:
-
-**Option 1 — Audio polish:** `AudioManager`, BGM, and the five core gameplay cues now ship. The next audio pass is independent BGM/SFX levels, menu navigation/confirm cues, shield impact/break variants, and character-specific move audio. Estimated effort: low to medium.
-
-**Option 2 — Sprite art:** `FighterRenderer` draws a functional polygon fighter, but the art contract is fully pluggable. Swapping in a sprite sheet requires only a new render path in `FighterRenderer` — no engine or server changes. A `SpritePartRenderer` stub already exists at `apps/client/src/renderer/parts/SpritePartRenderer.ts`. Estimated effort: medium (art) + low (wiring).
-
-**Option 3 — Third fighter / character architecture (Gap B):** Adding a third fighter requires new `MoveData` constants in `packages/engine/src/moves/` and new render assets in `apps/client`. The FSM, physics, hitboxes, and netcode don't change. The interesting work is differentiation: a fast floaty character with multi-jump and a long recovery creates a meaningful third archetype alongside the All-Rounder and Lincoln. Estimated effort: high.
+Validation: 37 browser checks passed, including four actual clients, movement, pause and refresh/rejoin; 275 engine tests passed (one skipped), 9 combat server tests, 10 ground-recovery server tests, and 37 ledge tests (13 skipped) passed. Three focused client tests and TypeScript checks passed. Source drawing review remains unchanged. Remaining priorities: shield reactions, footstools, helpless/recovery lockout, and remaining movement/presentation hooks. Prepared clips include overlapping variants, not 62 separate mechanics.

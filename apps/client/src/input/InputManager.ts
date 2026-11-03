@@ -33,7 +33,7 @@ export class InputManager {
   private seqCounter: number = 0;
   private playerId: PlayerId = '';
   private currentTick: number = 0;
-  private readonly keymap: Record<string, InputBitmask>;
+  private keymap: Record<string, InputBitmask>;
   private gamepadSource: GamepadInputSource | null = null;
 
   // Double-tap smash detection
@@ -89,6 +89,16 @@ export class InputManager {
   }
 
   /** Update the current tick stamped on future emitted events. */
+  setKeymap(keymap: Record<string, InputBitmask>): void {
+    this.keymap = keymap;
+    this.resetHeld();
+    this.lastHeld = 0;
+  }
+
+  setSequenceNumber(seq: number): void {
+    this.seqCounter = Math.max(this.seqCounter, seq);
+  }
+
   setCurrentTick(tick: number): void {
     this.currentTick = tick;
   }
@@ -102,12 +112,16 @@ export class InputManager {
   destroy(): void {
     window.removeEventListener('keydown', this.onKeyDown);
     window.removeEventListener('keyup', this.onKeyUp);
+    window.removeEventListener('blur', this.resetHeld);
   }
 
   private setupListeners(): void {
     window.addEventListener('keydown', this.onKeyDown);
     window.addEventListener('keyup', this.onKeyUp);
+    window.addEventListener('blur', this.resetHeld);
   }
+
+  private readonly resetHeld = (): void => { this.currentHeld = 0; };
 
   private readonly onKeyDown = (e: KeyboardEvent): void => {
     const bit = this.keyToBit(e.code);
@@ -193,7 +207,7 @@ export class InputManager {
    * Merges gamepad input bits with keyboard bits BEFORE computing pressed/released diff
    * to prevent false "released" events when keyboard releases while gamepad holds.
    */
-  pollInput(): InputEvent | null {
+  pollInput(force = false): InputEvent | null {
     // Merge keyboard and gamepad bits BEFORE computing diff (critical for correctness)
     let gamepadBits: InputBitmask = 0;
     if (this.gamepadSource) {
@@ -218,7 +232,7 @@ export class InputManager {
     this.lastHeld = held;
 
     // Only emit event if something changed OR if we're holding keys
-    if (held === 0 && pressed === 0 && released === 0) return null;
+    if (!force && held === 0 && pressed === 0 && released === 0) return null;
 
     const event: InputEvent = {
       tick: this.currentTick,

@@ -12,6 +12,7 @@
 import type * as http from "node:http";
 import express from "express";
 import { createServer } from "node:http";
+import { fileURLToPath } from "node:url";
 import { decode } from "@msgpack/msgpack";
 import type { CharacterId, InputEvent, PlayerId } from "@smash/shared";
 import { isCharacterId } from "@smash/shared";
@@ -48,7 +49,7 @@ import { RoomManager } from "./RoomManager.js";
  * | `game:input` | client → server | Binary msgpack `InputEvent`; forwarded to the active session |
  * | `game:pause` | client → server | Pause the active match session |
  * | `game:resume` | client → server | Resume a paused match session |
- * | `room:leave` | client → server | Explicit leave (treated identically to disconnect) |
+ * | `room:leave` | client → server | Explicit leave: remove slot and forfeit immediately |
  * | `disconnect` | socket.io | Handles cleanup for any phase |
  *
  * @returns An object containing the raw `httpServer`, the socket.io `io`
@@ -64,8 +65,7 @@ export function createApp(): {
 	const httpServer = createServer(app);
 
 	if (process.env.NODE_ENV === "production") {
-		const clientDistPath = new URL("../../client/dist", import.meta.url)
-			.pathname;
+		const clientDistPath = fileURLToPath(new URL("../../client/dist", import.meta.url));
 		app.use(express.static(clientDistPath));
 		app.use((_req, res) => {
 			res.sendFile("index.html", { root: clientDistPath });
@@ -85,12 +85,22 @@ export function createApp(): {
 	const roomManager = new RoomManager();
 	const matchSessions = new Map<string, MatchSession>();
 	const countdownTimers = new Map<string, ReturnType<typeof setTimeout>>();
+  const disconnectTimers = new Map<PlayerId, ReturnType<typeof setTimeout>>();
+  httpServer.on("close", () => {
+    for (const timer of countdownTimers.values()) clearTimeout(timer);
+    for (const timer of disconnectTimers.values()) clearTimeout(timer);
+    for (const session of matchSessions.values()) session.stop();
+    countdownTimers.clear();
+    disconnectTimers.clear();
+    matchSessions.clear();
+  });
 
 	io.on("connection", (socket) => {
 		console.log(`[server] connected: ${socket.id}`);
 
 		socket.on("room:create", (callback: (data: unknown) => void) => {
-			const result = roomManager.createRoom(socket.id);
+			if (roomManager.getRoomBySocketId(socket.id)) return;
+      const result = roomManager.createRoom(socket.id);
 			socket.join(result.roomCode);
 			console.log(`[room] created ${result.roomCode} by ${socket.id}`);
 			if (typeof callback === "function") {
@@ -101,7 +111,9 @@ export function createApp(): {
 		socket.on(
 			"room:join",
 			(roomCode: string, callback: (data: unknown) => void) => {
-				const result = roomManager.joinRoom(roomCode, socket.id);
+				if (typeof roomCode !== "string") return;
+        if (roomManager.getRoomBySocketId(socket.id)) return;
+        const result = roomManager.joinRoom(roomCode, socket.id);
 				if ("error" in result) {
 					if (typeof callback === "function") callback(result);
 					return;
@@ -119,6 +131,7 @@ export function createApp(): {
 		);
 
 		socket.on("player:ready", (roomCode: string) => {
+      if (typeof roomCode !== "string") return;
 			const roomInfo = roomManager.getRoomBySocketId(socket.id);
 			if (!roomInfo) return;
 			const result = roomManager.setReady(
@@ -209,7 +222,10 @@ export function createApp(): {
 						const session = new MatchSession({
 							playerIds,
 							characterIds: characterSelections as Record<PlayerId, CharacterId>,
-							onBroadcast: (binary) => {
+							onPauseChange: (paused) => {
+                io.to(normalizedRoomCode).emit(paused ? "game:paused" : "game:resumed");
+              },
+              onBroadcast: (binary) => {
 								io.to(normalizedRoomCode).emit("game:state", binary);
 							},
 							onMatchOver: (winnerId) => {
@@ -277,37 +293,53 @@ export function createApp(): {
 			session.resume();
 		});
 
-	socket.on("room:rejoin", (data: unknown, callback: (response: { ok: boolean; error?: string }) => void) => {
-		const rejoinData = data as { roomCode?: string; playerId?: string };
-		if (!rejoinData.roomCode || !rejoinData.playerId) {
-			callback({ ok: false, error: "Missing roomCode or playerId" });
-			return;
-		}
+  socket.on("room:rejoin", (data: unknown, callback?: (response: unknown) => void) => {
+    if (typeof callback !== "function") return;
+    if (!data || typeof data !== "object") {
+      callback({ ok: false, error: "Missing roomCode or playerId" }); return;
+    }
+    const { roomCode, playerId } = data as { roomCode?: unknown; playerId?: unknown };
+    if (typeof roomCode !== "string" || typeof playerId !== "string") {
+      callback({ ok: false, error: "Missing roomCode or playerId" }); return;
+    }
+    const code = roomCode.toUpperCase();
+    const result = roomManager.rejoinRoom(code, playerId, socket.id);
+    if ("error" in result) { callback({ ok: false, error: result.error }); return; }
+    clearTimeout(disconnectTimers.get(playerId));
+    disconnectTimers.delete(playerId);
+    socket.join(code);
+    const room = roomManager.getRoom(code)!;
+    const session = matchSessions.get(code);
+    callback({ ok: true, slotIndex: result.slotIndex, phase: room.phase, paused: session?.isPaused ?? false });
+    session?.syncState(binary => socket.emit("game:state", binary));
+    io.to(code).emit("room:playerRejoined", { playerId });
+  });
 
-		const rejoinResult = roomManager.rejoinRoom(rejoinData.roomCode, rejoinData.playerId as PlayerId, socket.id);
-		if ("error" in rejoinResult) {
-			callback({ ok: false, error: rejoinResult.error });
-			return;
-		}
-
-		// Success: re-join socket to room and confirm rejoin
-		socket.join(rejoinData.roomCode);
-		callback({ ok: true });
-
-		// Notify other players that this player has returned
-		io.to(rejoinData.roomCode).emit("room:playerRejoined", {
-			playerId: rejoinData.playerId,
-		});
-	});
-
-	socket.on("room:leave", () => {
-		handleDisconnect(socket.id);
-	});
+  socket.on("room:leave", () => {
+    const lookup = roomManager.getRoomBySocketId(socket.id);
+    if (!lookup) return;
+    socket.leave(lookup.room.code);
+    removeDepartedPlayer(socket.id, lookup.room.code, lookup.playerId);
+  });
 
 	socket.on("disconnect", (reason) => {
 		console.log(`[server] disconnected: ${socket.id} (${reason})`);
 		handleDisconnect(socket.id);
 	});
+
+  function removeDepartedPlayer(socketId: string, roomCode: string, playerId: PlayerId) {
+    clearTimeout(disconnectTimers.get(playerId));
+    disconnectTimers.delete(playerId);
+    roomManager.removePlayer(socketId);
+    const countdown = countdownTimers.get(roomCode);
+    if (countdown) { clearTimeout(countdown); countdownTimers.delete(roomCode); }
+    matchSessions.get(roomCode)?.forfeitPlayer(playerId);
+    if (!roomManager.getRoom(roomCode)) {
+      matchSessions.get(roomCode)?.stop();
+      matchSessions.delete(roomCode);
+    }
+    io.to(roomCode).emit("room:playerLeft", { playerId });
+  }
 
 	function handleDisconnect(socketId: string) {
 		const lookup = roomManager.getRoomBySocketId(socketId);
@@ -316,22 +348,14 @@ export function createApp(): {
 		const roomCode = room.code;
 
 		// For LOBBY/CHARACTER_SELECT/COUNTDOWN phases, use immediate removal
-		if (room.phase === "LOBBY" || room.phase === "CHARACTER_SELECT" || room.phase === "COUNTDOWN") {
-			const removed = roomManager.removePlayer(socketId);
-			if (!removed) return;
-
-			const countdownTimer = countdownTimers.get(roomCode);
-			if (countdownTimer) {
-				clearTimeout(countdownTimer);
-				countdownTimers.delete(roomCode);
-			}
-
-			io.to(roomCode).emit("room:playerLeft", { playerId });
+		if (room.phase !== "MATCH") {
+			removeDepartedPlayer(socketId, roomCode, playerId);
 			return;
 		}
 
 		// For MATCH phase, use grace window with disconnected state
-		const marked = roomManager.markDisconnected(playerId);
+		matchSessions.get(roomCode)?.releaseInput(playerId);
+    const marked = roomManager.markDisconnected(playerId);
 		if ("error" in marked) return;
 
 		// Notify remaining players of disconnection (with grace window)
@@ -340,7 +364,14 @@ export function createApp(): {
 			graceSeconds: 30,
 		});
 
-		// Session stays alive — disconnected player will receive EMPTY_INPUT each tick
+		// A real timer enforces expiry even if nobody attempts to reconnect.
+    clearTimeout(disconnectTimers.get(playerId));
+    const expiry = setTimeout(() => {
+      disconnectTimers.delete(playerId);
+      removeDepartedPlayer(socketId, roomCode, playerId);
+    }, 30_000);
+    expiry.unref();
+    disconnectTimers.set(playerId, expiry);
 	}
 	});
 

@@ -102,7 +102,8 @@ export class RoomManager {
     if (room.phase !== 'LOBBY') return { error: 'Game already in progress' };
     if (room.players.size >= MAX_PLAYERS) return { error: 'Room is full' };
 
-    const slotIndex = room.players.size;
+    const occupied = new Set([...room.players.values()].map(p => p.slotIndex));
+    const slotIndex = [0, 1, 2, 3].find(index => !occupied.has(index))!;
     const playerId = generatePlayerId();
     room.players.set(playerId, { playerId, socketId, slotIndex, isReady: false, characterId: 'all-rounder', characterConfirmed: false });
     return { playerId, slotIndex };
@@ -122,6 +123,7 @@ export class RoomManager {
     const slot = room.players.get(playerId);
     if (!slot) return { error: 'Player not in room' };
 
+    if (room.phase !== 'LOBBY') return { error: 'Not in lobby' };
     slot.isReady = true;
     const allReady = room.players.size >= 2 && [...room.players.values()].every(p => p.isReady);
     if (allReady) room.phase = 'CHARACTER_SELECT';

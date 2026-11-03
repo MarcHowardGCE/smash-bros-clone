@@ -140,4 +140,18 @@ describe('GamepadInputSource', () => {
       expect(bits & INPUT_BITS.JUMP).toBe(INPUT_BITS.JUMP);
     });
   });
+
+  it('follows a live slot resolver across disconnect and reconnect', () => {
+    let assignedIndex = 0;
+    mockPoller.poll.mockReturnValue(new Map([
+      [0, { gamepad: {}, bits: GenericInputBits.A }],
+      [2, { gamepad: {}, bits: GenericInputBits.B }],
+    ]));
+    const dynamic = new GamepadInputSource(mockPoller, 0, () => assignedIndex);
+    expect(dynamic.getHeldBits()).toBe(INPUT_BITS.JUMP);
+    assignedIndex = -1;
+    expect(dynamic.getHeldBits()).toBe(0);
+    assignedIndex = 2;
+    expect(dynamic.getHeldBits()).toBe(INPUT_BITS.SPECIAL);
+  });
 });

@@ -35,3 +35,5 @@ export {
 export type { StageData } from "./physics/types.js";
 export type { BotMemory } from "./ai/botAI.js";
 export { createBotMemory, decideBotInput, selectTarget } from "./ai/botAI.js";
+
+export {advanceJabChain} from "./moves/jabChain.js";

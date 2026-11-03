@@ -78,6 +78,7 @@ export class LocalPredictor {
     }
 
     this.pendingInputs.push(input);
+    if (this.pendingInputs.length > 120) this.pendingInputs.shift();
     this.predictedState = this.applyLocalMovement(this.predictedState, input);
   }
 
@@ -150,6 +151,12 @@ export class LocalPredictor {
   }
 
   private applyLocalMovement(player: PlayerState, input: InputEvent): PlayerState {
+    const movementStates: string[] = [
+      PlayerStateEnum.IDLE, PlayerStateEnum.WALK, PlayerStateEnum.DASH,
+      PlayerStateEnum.RUN, PlayerStateEnum.AIRBORNE, PlayerStateEnum.DOUBLE_JUMP,
+    ];
+    if (player.isKnockedOut || player.hitlagFramesRemaining > 0 || player.hitstunFramesRemaining > 0
+      || !movementStates.includes(player.state)) return clonePlayerState(player);
 		let nextPlayer = clonePlayerState(player);
 		if ((input.pressed & INPUT_BITS.JUMP) !== 0) {
 			nextPlayer = startJump(nextPlayer, false);

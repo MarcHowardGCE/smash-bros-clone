@@ -162,6 +162,7 @@ const bootMainWithMocks = async (): Promise<BootResult> => {
       createRoom(): void {}
       joinRoom(): void {}
       markReady(): void {}
+      leaveRoom(): void {}
       disconnect(): void {}
       emitResume(): void {}
       emitPause(): void {}

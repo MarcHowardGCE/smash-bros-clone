@@ -21,6 +21,7 @@ import { DoubleJumpState } from './states/DoubleJumpState.js';
 import { GrabHoldingState } from './states/GrabHoldingState.js';
 import { GrabState } from './states/GrabState.js';
 import { HitstunState } from './states/HitstunState.js';
+import{GetupState}from './states/GetupState.js';
 import { HardLandingState } from './states/HardLandingState.js';
 import { LandingLagState } from './states/LandingLagState.js';
 import { IdleState } from './states/IdleState.js';
@@ -97,6 +98,8 @@ export class FSMController {
       [PlayerStateEnum.TECH_NEUTRAL, new TechNeutralState()],
       [PlayerStateEnum.TECH_ROLL, new TechRollState()],
       [PlayerStateEnum.HARD_LANDING, new HardLandingState()],
+      [PlayerStateEnum.GETUP,new GetupState()],
+      [PlayerStateEnum.GETUP_ROLL,new GetupState(true)],
       [PlayerStateEnum.LANDING_LAG, new LandingLagState()],
       [PlayerStateEnum.GRAB, new GrabState()],
       [PlayerStateEnum.GRAB_HOLDING, new GrabHoldingState()],

@@ -1,0 +1,22 @@
+[
+  {
+    "name": "structures",
+    "prompt": "Exactly SIX isolated objects in THREE COLUMNS TWO ROWS, transparent background, no text or grid. 32-bit richly shaded crisp pixel art side-view underwater platformer architecture. Top row: pale stone ruined arch with flat walkable top and seaweed, futuristic teal pressure habitat with a flat walkable roof, tall ancient pillar tower with flat top. Bottom row: sunken wooden shipwreck cabin with flat upper deck roof, rounded futuristic research station with flat roof, vertical sealed airlock return elevator with green lamps and open door. All straight-on SIDE VIEW no isometric perspective. Each building sits on same baseline within cell. Keep roof top flat with small edge trims only so collision surface is clear. Fine barnacles coral and portholes, cream stone and oxidized teal metal, dark outlines and luminous cyan details. Large transparent gaps separate all six fully visible objects. No ground scenery, no people, no background or shadows."
+  },
+  {
+    "name": "props",
+    "prompt": "Exactly TWELVE isolated game objects in FOUR COLUMNS THREE ROWS, transparent alpha background, no text or grid lines. Richly shaded crisp 32-bit pixel art side-view underwater pirate platformer assets, dark outlines, aged teal metal, coral lavender and luminous aqua details. Row1 left to right: brass handwheel pressure valve on short pipe pedestal; tall closed teal security gate panel; short steam vent pipe pedestal; large open glowing oyster pearl. Row2: glowing relay console on short pedestal; brass diving bell; sealed treasure chest; tall coral seaweed cluster. Row3: square textured reef stone block with flat top; wide horizontal reef stone ledge with flat top; square oxidized research metal block with flat top; wide horizontal research metal catwalk ledge flat top. All objects isolated fully visible with generous transparent gaps, no people, no scenery or shadows. Make actual transparent background."
+  },
+  {
+    "name": "enemies",
+    "prompt": "Exactly EIGHT isolated fully visible game enemy sprites in FOUR COLUMNS TWO ROWS. Actual transparent alpha background. Crisp richly shaded 32-bit pixel art for polished underwater pirate platformer, dark plum outlines, expressive readable silhouettes. Top row same hovering luminous lavender jellyfish with cyan core and short dangling tentacles in four successive pulsing movement poses. Bottom row same compact menacing egg-shaped teal research security submarine drone with gold trim, glass eye, tiny propellers and short forward nozzle, facing right, four poses idle, aiming, firing without separate projectile, recovery. Consistent size and feet/baseline per row, generous transparent gaps between all sprites. No text, no grid, no particles or glow outside silhouettes, no background or shadows."
+  },
+  {
+    "name": "accepted-building-retry",
+    "prompt": "TRANSPARENT BACKGROUND PNG sprite atlas, three columns one row. ONLY THREE isolated side-view platformer building sprites, all fully visible with large transparent gaps. Rich polished 32-bit pixel art. Left: ancient underwater stone ruin arch with FLAT roof. Center: futuristic teal underwater research habitat with cyan portholes and FLAT roof. Right: sunken wooden pirate ship cabin with FLAT deck roof. Barnacles seaweed and coral details attached to each building. Dark outlines, fine square pixel clusters. NO background, NO gradients, NO haze, NO shadows, NO scene, NO sky, NO text. Actual transparent alpha behind and between objects."
+  },
+  {
+    "name": "prop-background-extraction",
+    "prompt": "Background extraction ONLY. Remove all background colors, shadows and haze between objects to actual TRANSPARENT ALPHA. Preserve the exact twelve objects in a four column three row layout, all details and positions. Clean isolated silhouettes with no background bridges or surrounding glow. Do not alter the artwork. Transparent gaps between every object."
+  }
+]

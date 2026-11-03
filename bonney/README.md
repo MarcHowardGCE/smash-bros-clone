@@ -84,3 +84,42 @@ No public deployment, parent fighter integration, controller/touch support, mult
 See docs/full-level-implementation-v1.md for details.
 
 District rendering repair: docs/district-rendering-repair.md. Scenery loads by world bounds; enemies and decorations have supported placement; machinery artwork is in assets/machinery-v2/. Current suite: 38 passing tests.
+
+Market Quay polish slice: the first 960 pixels use authored facades, smaller coin trails, curated props, compact HUD and lower grounded camera framing. See docs/market-polish-v1.md and docs/screenshots/market-polish-v1/. Current suite: 41 passing tests.
+
+Market grounding and Warehouse Row polish: docs/warehouse-polish-v1.md. First two districts now use authored architecture, smaller coin trails, curated props, compact HUD and grounded camera framing. Current suite: 44 passing tests.
+
+Remaining-district polish: docs/remaining-district-polish-v1.md. All six districts now use compact framing and authored reward/decor placement; 68 total coins, 16 enemies, 16 power-ups and three treasures remain. New district structures are in assets/district-polish-v1/. Current suite: 47 passing tests.
+
+Current cloud course: see docs/cloud-full-v1.md. The original discovery prototype has expanded into a four-district alternate level with its own cyan flag, robots, architecture, hazards and mandatory puzzle. Only Egghead/Gear costume pickups spawn there. Cloud and harbor flags reserve distinct future next-level entrances.
+
+Character roster: choose Jewelry Bonney or Monkey D. Luffy beneath the canvas. Selection changes sprites only and preserves the run. Luffy has all four outfits, all three age stages and full movement/melee animation sets. See docs/luffy-v1.md and assets/luffy-v1/manifest.json.
+
+## Underwater route: Coral Current
+Harbor water now leads into a separate 2,560-pixel underwater course without fall damage. Both heroes automatically wear their diving suit at the current age. Walk speed is 62% of normal, gravity is 280 instead of 760, and grounded jump impulse is 285 instead of 255. There is no free swimming, flight, or midair jump; Shift still runs. Z punches, C kicks, and stomps remain available. Power costumes are stowed on entry and restored upon surfacing.
+
+Four districts contain four animated coral crabs, three high-route treasures, health food, and a checkpoint. Press E at the entry lift to surface early; complete the far lift to record the separate deep-research-dock destination, then choose Return to harbor. Surface return uses nearby solid ground and respects locked harbor gates. Harbor and underwater progress persist independently. Cloud falls retain their existing harbor return.
+
+This is a first playable pass. Reef ledges still use simple drawn stonework; Bonney's helmet/hair seal artwork needs another pass. The sealed suit is fan-game fiction, not a canonical exemption to Devil Fruit sea weakness. See docs/underwater-route-v1.md.
+
+## Full underwater course (version 2)
+Coral Current now spans 4,608 × 1,152 pixels, with five districts and a high route more than 800 pixels above the seabed. It includes two mandatory gated puzzles (paired pressure valves and ordered research relays), 14 enemies across four encounter types, warning vents, a moving lift, playable building roofs, three optional secrets, four food pickups and three checkpoint bells. E operates controls; Z/C break the optional cracked cache. Shift runs. No swimming or power pickups are required.
+
+This supersedes the smaller first-pass map described above. Current design, art provenance, controls, verification and remaining balance work: docs/underwater-full-v2.md. Full browser audit: node scripts/underwater-full-browser.mjs. All 103 gameplay tests pass; harbor and cloud progression checks also pass.
+
+## Connected-level design audit — November 2, 2026
+Current review: docs/connected-level-design-audit.md. It covers all three routes, evidence, fairness repairs, encounter pacing, secrets, recovery costs and a prioritized fun/difficulty pass. This audit fixes visible underwater gunfire/aim cues, projectile blocking at solid gates/crates, checkpoint-respecting cloud re-entry and area-specific rules. It does not yet implement the proposed movement, camera, supply or puzzle redesigns. Verification: 106 tests, all three browser progression checks and scripts/level-design-audit-browser.mjs. Reproduce layout/movement measurements with node scripts/level-design-metrics.mjs.
+
+## Movement and recovery refinement — pass 1
+Tap Space for a low hop; hold for the original full-height jump. The camera now eases toward the direction of travel and looks farther down while falling. Damage bounds follow each age's standing artwork without changing shared movement collision. A safe practice fading cloud, one additional cloud checkpoint, two additional underwater bells and an unlocked-only crane return reduce repeated traversal. The original cloud discovery still requires the full-flight ascent. Details and verification: docs/refinement-movement-v1.md. New browser check: node scripts/refinement-browser.mjs.
+
+## Xbox / Xbox 360 controllers
+Connect a recognized controller, open the game and press/release a button. Left stick or D-pad moves; A jumps (hold for height/flight), X punches/charges Gear, B kicks, Y interacts, RB uses the Captain special, RT or LB runs, and Menu/Start pauses. A confirms start/resume/retry/route return. In menus, LB/RB chooses the character; D-pad left/right chooses the initial course. Disconnecting pauses play. Keyboard controls remain available. Full guide and hardware-test limitation: docs/controller-support-v1.md. Automated verification: 119 tests plus node scripts/controller-browser.mjs with simulated Xbox/Xbox 360 input.
+
+Underwater-only camera correction: falling look-down applies only inside Coral Current. Harbor/cloud framing and land gravity remain separate. Regression suite: 121 passing tests.
+
+## Deliberate supplies and physical puzzle effects
+Marked supply trays now require E / Xbox Y to choose a replacement costume; walking past keeps the current power. Harbor supplies are curated from 16 to 12, with required recovery supplies preserved. The harbor winch frees boarding rigging, the cloud reactor powers a lift to its console, underwater valves activate a pressure platform and shut off vents, and relay A powers the research lift. Gates retain their original required solutions. Full details: docs/deliberate-puzzles-v1.md. Verification: 128 tests, all three progression checks, and node scripts/puzzle-effects-browser.mjs.
+
+## Background music and volume
+ANCHORS AWEIGH! (MARINE PORT) now loops during gameplay across all three areas. Use Volume and Mute beside the game; expand Music and effects for separate levels. Preferences survive refreshes. Music pauses/resumes with the game and restarts on a new run. See docs/level-audio-v1.md. Verified with the actual MP3, 133 tests, node scripts/audio-browser.mjs, and the controller browser regression.

@@ -10,7 +10,7 @@ import type { MoveData, CharacterId } from '@smash/shared';
 import { MoveId } from '@smash/shared';
 
 import {
-  MOVE_JAB, MOVE_FORWARD_TILT, MOVE_UP_TILT, MOVE_DOWN_TILT,
+  MOVE_FLOOR_ATTACK_UP,MOVE_FLOOR_ATTACK_DOWN,MOVE_JAB_2, MOVE_JAB_3, MOVE_DASH_ATTACK, MOVE_JAB, MOVE_FORWARD_TILT, MOVE_UP_TILT, MOVE_DOWN_TILT,
   MOVE_FORWARD_SMASH, MOVE_UP_SMASH, MOVE_DOWN_SMASH,
 } from './ground.js';
 import {
@@ -35,6 +35,11 @@ import {
 
 const MOVE_REGISTRY: ReadonlyMap<MoveId, MoveData> = new Map([
   [MoveId.JAB, MOVE_JAB],
+  [MoveId.FLOOR_ATTACK_UP,MOVE_FLOOR_ATTACK_UP],
+  [MoveId.FLOOR_ATTACK_DOWN,MOVE_FLOOR_ATTACK_DOWN],
+  [MoveId.JAB_2,MOVE_JAB_2],
+  [MoveId.JAB_3,MOVE_JAB_3],
+  [MoveId.DASH_ATTACK,MOVE_DASH_ATTACK],
   [MoveId.FORWARD_TILT, MOVE_FORWARD_TILT],
   [MoveId.UP_TILT, MOVE_UP_TILT],
   [MoveId.DOWN_TILT, MOVE_DOWN_TILT],

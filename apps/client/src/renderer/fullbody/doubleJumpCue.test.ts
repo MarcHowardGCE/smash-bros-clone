@@ -1,0 +1,4 @@
+
+import{describe,it,expect}from'vitest';import{Texture}from'pixi.js';import{FullBodyPilot}from'./FullBodyPilot.js';
+describe('double-jump snapshot cue',()=>{it('survives a skipped trigger, freezes duplicate snapshots and cancels on hit',()=>{const clip={scale:1,frames:Array.from({length:6},(_,i)=>({texture:Texture.EMPTY,root:[i,0],offsetY:0}))};const p=new FullBodyPilot({characters:{'all-rounder':{air_rise_loop:clip,air_fall_loop:clip,double_jump_transition:clip,hit_mid:clip}}});p.update('AIRBORNE',20,null,true,-8,true);p.update('AIRBORNE',2,null,true,-8,false);expect(p.sprite.label).toBe('double_jump_transition');expect(p.sprite.pivot.x).toBe(0);p.update('AIRBORNE',2,null,true,-8,false);expect(p.sprite.pivot.x).toBe(0);p.update('AIRBORNE',8,null,true,-8,false);expect(p.sprite.pivot.x).toBe(3);p.update('HITSTUN',0,null,true,8,false);expect(p.sprite.label).toBe('hit_mid');p.update('AIRBORNE',10,null,true,8,false);expect(p.sprite.label).toBe('air_fall_loop');});});
+

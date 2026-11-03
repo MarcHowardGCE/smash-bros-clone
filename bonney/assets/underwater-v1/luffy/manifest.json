@@ -1,0 +1,384 @@
+{
+  "character": "luffy",
+  "ages": [
+    "adult",
+    "teenage",
+    "baby"
+  ],
+  "columns": [
+    "idle",
+    "walk-0",
+    "walk-1",
+    "walk-2",
+    "walk-3",
+    "walk-4",
+    "walk-5",
+    "jump",
+    "punch",
+    "kick"
+  ],
+  "outfits": {
+    "diving": [
+      {
+        "age": "adult",
+        "pose": "idle",
+        "file": "diving-adult-idle.png",
+        "height": 60,
+        "sourceBounds": {
+          "x": 72,
+          "y": 11,
+          "w": 142,
+          "h": 276
+        }
+      },
+      {
+        "age": "adult",
+        "pose": "walk-0",
+        "file": "diving-adult-walk-0.png",
+        "height": 60,
+        "sourceBounds": {
+          "x": 321,
+          "y": 15,
+          "w": 154,
+          "h": 271
+        }
+      },
+      {
+        "age": "adult",
+        "pose": "walk-1",
+        "file": "diving-adult-walk-1.png",
+        "height": 60,
+        "sourceBounds": {
+          "x": 557,
+          "y": 13,
+          "w": 162,
+          "h": 273
+        }
+      },
+      {
+        "age": "adult",
+        "pose": "walk-2",
+        "file": "diving-adult-walk-2.png",
+        "height": 60,
+        "sourceBounds": {
+          "x": 788,
+          "y": 15,
+          "w": 132,
+          "h": 273
+        }
+      },
+      {
+        "age": "adult",
+        "pose": "walk-3",
+        "file": "diving-adult-walk-3.png",
+        "height": 60,
+        "sourceBounds": {
+          "x": 1009,
+          "y": 15,
+          "w": 121,
+          "h": 273
+        }
+      },
+      {
+        "age": "adult",
+        "pose": "walk-4",
+        "file": "diving-adult-walk-4.png",
+        "height": 60,
+        "sourceBounds": {
+          "x": 1203,
+          "y": 15,
+          "w": 125,
+          "h": 273
+        }
+      },
+      {
+        "age": "adult",
+        "pose": "walk-5",
+        "file": "diving-adult-walk-5.png",
+        "height": 60,
+        "sourceBounds": {
+          "x": 1387,
+          "y": 15,
+          "w": 126,
+          "h": 272
+        }
+      },
+      {
+        "age": "adult",
+        "pose": "jump",
+        "file": "diving-adult-jump.png",
+        "height": 47,
+        "sourceBounds": {
+          "x": 1569,
+          "y": 7,
+          "w": 132,
+          "h": 216
+        }
+      },
+      {
+        "age": "adult",
+        "pose": "punch",
+        "file": "diving-adult-punch.png",
+        "height": 55,
+        "sourceBounds": {
+          "x": 1743,
+          "y": 34,
+          "w": 190,
+          "h": 251
+        }
+      },
+      {
+        "age": "adult",
+        "pose": "kick",
+        "file": "diving-adult-kick.png",
+        "height": 55,
+        "sourceBounds": {
+          "x": 1978,
+          "y": 33,
+          "w": 164,
+          "h": 253
+        }
+      },
+      {
+        "age": "teenage",
+        "pose": "idle",
+        "file": "diving-teenage-idle.png",
+        "height": 50,
+        "sourceBounds": {
+          "x": 85,
+          "y": 310,
+          "w": 114,
+          "h": 216
+        }
+      },
+      {
+        "age": "teenage",
+        "pose": "walk-0",
+        "file": "diving-teenage-walk-0.png",
+        "height": 50,
+        "sourceBounds": {
+          "x": 322,
+          "y": 310,
+          "w": 126,
+          "h": 215
+        }
+      },
+      {
+        "age": "teenage",
+        "pose": "walk-1",
+        "file": "diving-teenage-walk-1.png",
+        "height": 50,
+        "sourceBounds": {
+          "x": 560,
+          "y": 310,
+          "w": 124,
+          "h": 215
+        }
+      },
+      {
+        "age": "teenage",
+        "pose": "walk-2",
+        "file": "diving-teenage-walk-2.png",
+        "height": 50,
+        "sourceBounds": {
+          "x": 789,
+          "y": 310,
+          "w": 111,
+          "h": 216
+        }
+      },
+      {
+        "age": "teenage",
+        "pose": "walk-3",
+        "file": "diving-teenage-walk-3.png",
+        "height": 50,
+        "sourceBounds": {
+          "x": 1001,
+          "y": 310,
+          "w": 110,
+          "h": 218
+        }
+      },
+      {
+        "age": "teenage",
+        "pose": "walk-4",
+        "file": "diving-teenage-walk-4.png",
+        "height": 50,
+        "sourceBounds": {
+          "x": 1202,
+          "y": 310,
+          "w": 113,
+          "h": 218
+        }
+      },
+      {
+        "age": "teenage",
+        "pose": "walk-5",
+        "file": "diving-teenage-walk-5.png",
+        "height": 50,
+        "sourceBounds": {
+          "x": 1398,
+          "y": 309,
+          "w": 108,
+          "h": 219
+        }
+      },
+      {
+        "age": "teenage",
+        "pose": "jump",
+        "file": "diving-teenage-jump.png",
+        "height": 41,
+        "sourceBounds": {
+          "x": 1579,
+          "y": 303,
+          "w": 113,
+          "h": 179
+        }
+      },
+      {
+        "age": "teenage",
+        "pose": "punch",
+        "file": "diving-teenage-punch.png",
+        "height": 45,
+        "sourceBounds": {
+          "x": 1765,
+          "y": 332,
+          "w": 151,
+          "h": 194
+        }
+      },
+      {
+        "age": "teenage",
+        "pose": "kick",
+        "file": "diving-teenage-kick.png",
+        "height": 45,
+        "sourceBounds": {
+          "x": 1987,
+          "y": 332,
+          "w": 139,
+          "h": 194
+        }
+      },
+      {
+        "age": "baby",
+        "pose": "idle",
+        "file": "diving-baby-idle.png",
+        "height": 36,
+        "sourceBounds": {
+          "x": 85,
+          "y": 556,
+          "w": 110,
+          "h": 157
+        }
+      },
+      {
+        "age": "baby",
+        "pose": "walk-0",
+        "file": "diving-baby-walk-0.png",
+        "height": 36,
+        "sourceBounds": {
+          "x": 324,
+          "y": 560,
+          "w": 111,
+          "h": 153
+        }
+      },
+      {
+        "age": "baby",
+        "pose": "walk-1",
+        "file": "diving-baby-walk-1.png",
+        "height": 36,
+        "sourceBounds": {
+          "x": 562,
+          "y": 560,
+          "w": 109,
+          "h": 153
+        }
+      },
+      {
+        "age": "baby",
+        "pose": "walk-2",
+        "file": "diving-baby-walk-2.png",
+        "height": 36,
+        "sourceBounds": {
+          "x": 789,
+          "y": 560,
+          "w": 109,
+          "h": 153
+        }
+      },
+      {
+        "age": "baby",
+        "pose": "walk-3",
+        "file": "diving-baby-walk-3.png",
+        "height": 36,
+        "sourceBounds": {
+          "x": 996,
+          "y": 560,
+          "w": 108,
+          "h": 153
+        }
+      },
+      {
+        "age": "baby",
+        "pose": "walk-4",
+        "file": "diving-baby-walk-4.png",
+        "height": 36,
+        "sourceBounds": {
+          "x": 1200,
+          "y": 560,
+          "w": 109,
+          "h": 153
+        }
+      },
+      {
+        "age": "baby",
+        "pose": "walk-5",
+        "file": "diving-baby-walk-5.png",
+        "height": 36,
+        "sourceBounds": {
+          "x": 1394,
+          "y": 560,
+          "w": 107,
+          "h": 153
+        }
+      },
+      {
+        "age": "baby",
+        "pose": "jump",
+        "file": "diving-baby-jump.png",
+        "height": 34,
+        "sourceBounds": {
+          "x": 1587,
+          "y": 543,
+          "w": 107,
+          "h": 147
+        }
+      },
+      {
+        "age": "baby",
+        "pose": "punch",
+        "file": "diving-baby-punch.png",
+        "height": 33,
+        "sourceBounds": {
+          "x": 1783,
+          "y": 567,
+          "w": 118,
+          "h": 146
+        }
+      },
+      {
+        "age": "baby",
+        "pose": "kick",
+        "file": "diving-baby-kick.png",
+        "height": 35,
+        "sourceBounds": {
+          "x": 1989,
+          "y": 560,
+          "w": 121,
+          "h": 153
+        }
+      }
+    ]
+  }
+}

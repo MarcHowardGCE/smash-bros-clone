@@ -8,8 +8,9 @@
     "assets:verify-determinism": "node ../../scripts/assets/verify-assets-determinism.mjs",
     "dev": "vite --port 5173",
     "build": "tsc -p tsconfig.json && vite build",
-    "lint": "echo 'lint ok'",
-    "test": "vitest run"
+    "lint": "pnpm typecheck",
+    "test": "vitest run",
+    "typecheck": "tsc -p tsconfig.json --noEmit --incremental false --composite false"
   },
   "dependencies": {
     "@msgpack/msgpack": "^3.1.3",

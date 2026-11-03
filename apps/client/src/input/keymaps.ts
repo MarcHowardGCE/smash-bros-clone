@@ -92,3 +92,29 @@ export function convertPersistedKeymap(
 
   return result;
 }
+
+/** Controls-screen per-seat bindings take precedence over legacy P1 settings. */
+export function loadSlotKeymap(slotIndex: number, fallback: Record<string, InputBitmask>): Record<string, InputBitmask> {
+  try {
+    const raw = localStorage.getItem('smash:keymap:' + slotIndex);
+    if (raw) {
+      const parsed = JSON.parse(raw);
+      const allowed = new Set<number>(Object.values(INPUT_BITS));
+      if (parsed && typeof parsed === 'object' && !Array.isArray(parsed)
+        && Object.keys(parsed).length && Object.values(parsed).every(bit => typeof bit === 'number' && allowed.has(bit))) {
+        return { ...parsed };
+      }
+    }
+    if (slotIndex === 0) {
+      const rawSettings = localStorage.getItem('smash:settings:v1');
+      if (rawSettings) {
+        const legacy = JSON.parse(rawSettings)?.keymapP1;
+        if (legacy && typeof legacy === 'object' && !Array.isArray(legacy)) {
+          const converted = convertPersistedKeymap(legacy);
+          if (Object.keys(converted).length) return converted;
+        }
+      }
+    }
+  } catch { /* Invalid or unavailable storage falls back to the supplied seat map. */ }
+  return { ...fallback };
+}

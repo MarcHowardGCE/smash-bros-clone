@@ -1,0 +1,3 @@
+import fs from 'node:fs';
+let s=fs.readFileSync('src/underwater-level.test.mjs','utf8').replace('x:2482,y:372','x:g.goalX+2,y:g.goalY-28');fs.writeFileSync('src/underwater-level.test.mjs',s);
+s=fs.readFileSync('scripts/underwater-browser.mjs','utf8').replace("['landing',48,340],['ruins',920,372],['gardens',1450,340],['exit',2390,372]","['landing',48,1028],['ruins',1048,596],['gardens',3120,676],['exit',4400,1060]").replace('x:2482,y:372','x:4500,y:1060');s=s.replace("await page.evaluate(()=>Object.assign(window.__bonney.game.player,{x:4500,y:1060}));","await page.evaluate(()=>{const g=window.__bonney.game;for(const s of g.switches)g.latches[s.id]=true;Object.assign(g.player,{x:4500,y:1060});});");fs.writeFileSync('scripts/underwater-browser.mjs',s);

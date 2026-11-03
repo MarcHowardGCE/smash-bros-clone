@@ -1,0 +1,1 @@
+import fs from 'node:fs';let s=fs.readFileSync('scripts/refine-movement-recovery.mjs','utf8');const start=s.indexOf("edit('src/game.mjs',\" camera=");s=s.slice(0,s.indexOf("edit('src/engine.mjs'"))+s.slice(start);s=s.replace("fs.readFileSync(p,'utf8');","fs.readFileSync(p,'utf8').replaceAll('\\r\\n','\\n');");fs.writeFileSync('scripts/finish-movement-recovery.mjs',s);

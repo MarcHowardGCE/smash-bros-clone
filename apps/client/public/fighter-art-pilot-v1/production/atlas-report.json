@@ -1,0 +1,131 @@
+{
+  "sourceRevision": 18,
+  "frames": 2305,
+  "pages": 15,
+  "livePages": 8,
+  "liveTextureBytes": 134217728,
+  "downloadBytes": 67604573,
+  "sampling": "premultiplied-alpha bilinear at two pixels per world unit; original artwork preserved",
+  "files": [
+    {
+      "file": "atlas-all-rounder-live-0.png",
+      "width": 2048,
+      "height": 2048,
+      "bytes": 6040217,
+      "sha256": "8f75fedcb02b8c285b98c44cf384ae9da0f01d1b3fb4c58adf1fc11f14ab893a",
+      "live": true
+    },
+    {
+      "file": "atlas-all-rounder-live-1.png",
+      "width": 2048,
+      "height": 2048,
+      "bytes": 4904637,
+      "sha256": "ffd2d49a5f41176385dbd2ad2740a29b2c23caa1b0e0b6b9174d22b0b3e752c4",
+      "live": true
+    },
+    {
+      "file": "atlas-all-rounder-prepared-0.png",
+      "width": 2048,
+      "height": 2048,
+      "bytes": 6283931,
+      "sha256": "63c33dd438cc497bb08b27ff6eb103f3c9d829d4d1e03326e4f16281d0451fab",
+      "live": false
+    },
+    {
+      "file": "atlas-all-rounder-prepared-1.png",
+      "width": 2048,
+      "height": 2048,
+      "bytes": 3248503,
+      "sha256": "594985569958cc40f5671b8ef55e7594756b9f58ae8da45219166a9a502d8212",
+      "live": false
+    },
+    {
+      "file": "atlas-abe-lincoln-live-0.png",
+      "width": 2048,
+      "height": 2048,
+      "bytes": 5621903,
+      "sha256": "49f6dc86a35d163b24db10121f99c9533f83e1e1079fe6f00bf729bcaf80cac3",
+      "live": true
+    },
+    {
+      "file": "atlas-abe-lincoln-live-1.png",
+      "width": 2048,
+      "height": 2048,
+      "bytes": 4751333,
+      "sha256": "0890a0659f0bb49df3c471de3f56cf0f68a77db7a1efe55950a9d03b258e3c64",
+      "live": true
+    },
+    {
+      "file": "atlas-abe-lincoln-live-2.png",
+      "width": 2048,
+      "height": 2048,
+      "bytes": 3539515,
+      "sha256": "ce316452f788605303ccd76521275ec125aa0ece3a56793d09815f7058900185",
+      "live": true
+    },
+    {
+      "file": "atlas-abe-lincoln-prepared-0.png",
+      "width": 2048,
+      "height": 2048,
+      "bytes": 5424167,
+      "sha256": "49419bef9f23e4f0ec6aadc24ae10fb71e73e1ed9cde0cd43e9e50e4d6de15ae",
+      "live": false
+    },
+    {
+      "file": "atlas-abe-lincoln-prepared-1.png",
+      "width": 2048,
+      "height": 2048,
+      "bytes": 5460597,
+      "sha256": "b830ee701440afd1acbf4ef6dece3eb18a4900badbfbe922b859b1f76c9942ae",
+      "live": false
+    },
+    {
+      "file": "atlas-abe-lincoln-prepared-2.png",
+      "width": 2048,
+      "height": 2048,
+      "bytes": 1064052,
+      "sha256": "43a4749d4d688f2d2859a1c82d7ae7d59eeeddad9b2222b7757561a993eb3907",
+      "live": false
+    },
+    {
+      "file": "atlas-swift-live-0.png",
+      "width": 2048,
+      "height": 2048,
+      "bytes": 6636757,
+      "sha256": "bee84a8734e57deb22e7b51aabd47988d5d13ac4bddf2bb2a69606ad9958eadd",
+      "live": true
+    },
+    {
+      "file": "atlas-swift-live-1.png",
+      "width": 2048,
+      "height": 2048,
+      "bytes": 4648097,
+      "sha256": "297b9d86ab5bf73b73e30efc9b3dd1878b199f07e378d898096a540bea2074f8",
+      "live": true
+    },
+    {
+      "file": "atlas-swift-prepared-0.png",
+      "width": 2048,
+      "height": 2048,
+      "bytes": 6357601,
+      "sha256": "82a6647afeb574c88ef55a41a6e13ec0d50155a603341bac1e5a32cd6aac623a",
+      "live": false
+    },
+    {
+      "file": "atlas-swift-prepared-1.png",
+      "width": 2048,
+      "height": 2048,
+      "bytes": 3444243,
+      "sha256": "0e77b761426febb8db4e7f8e665c4e5e4ec5833d1f779bb5c4b20351a3129b88",
+      "live": false
+    },
+    {
+      "file": "atlas-effects-live-0.png",
+      "width": 2048,
+      "height": 2048,
+      "bytes": 179020,
+      "sha256": "e8452d471b548d1be05160a0c212a67fed2e048698cd73d4a51e3595b9cfbbb0",
+      "live": true
+    }
+  ]
+}

@@ -1,0 +1,3 @@
+import fs from 'node:fs';let p='src/level-data.mjs',s=fs.readFileSync(p,'utf8').replace('[1800,3392,4208,4352]','[1800,4208,4352,5912]');fs.writeFileSync(p,s);
+p='src/puzzle-effects.mjs';s=fs.readFileSync(p,'utf8').replace(' const p=g.player;',' const p=g.player;\n // A usable puzzle control takes priority over a nearby supply tray.\n if((g.switches||[]).some(s=>!g.latches[s.id]&&s.power===p.power&&mechanismsReady(g,s.requires)&&p.x<s.x+s.w&&p.x+p.w>s.x&&p.y<s.y+s.h&&p.y+p.h>s.y))return null;');fs.writeFileSync(p,s);
+p='src/underwater-full.test.mjs';s=fs.readFileSync(p,'utf8').replace('g.hazards=[data.hazards[0]];g.time=0','g.latches={};g.hazards=[data.hazards[0]];g.time=0');fs.writeFileSync(p,s);

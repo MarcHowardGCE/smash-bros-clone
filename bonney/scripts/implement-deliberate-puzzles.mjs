@@ -1,0 +1,24 @@
+import fs from 'node:fs';
+const edit=(p,a,b)=>{let s=fs.readFileSync(p,'utf8').replaceAll('\r\n','\n');if(!s.includes(a))throw Error('Missing '+p+' '+a);fs.writeFileSync(p,s.replaceAll(a,b));};
+edit('src/engine.mjs',"import {playerHurtbox}","import {selectedSupply} from './puzzle-effects.mjs';\nimport {playerHurtbox}");
+edit('src/engine.mjs',"  for(const item of game.pickups)if(item.respawnMs===0&&!(p.pickupLockMs>0)&&overlaps(p,item)&&p.power!==item.power){", "  const choice=selectedSupply(game,input);\n  for(const item of game.pickups)if(item.respawnMs===0&&!(p.pickupLockMs>0)&&(item.requiresInteract?item===choice:overlaps(p,item))&&p.power!==item.power){");
+edit('src/level-data.mjs'," const coinsList=[];", " for(let i=pickups.length-1;i>=0;i--)if([1800,3392,4208,4352].includes(pickups[i].x))pickups.splice(i,1);\n for(const p of pickups)if(p.x!==112&&p.x!==608){p.requiresInteract=true;p.restockMs=4000;}\n const coinsList=[];");
+edit('src/level-data.mjs',"{id:'lift-b',x:2688", "{id:'boarding-rigging',x:5744,y:336,w:64,h:8,oneWay:true,axis:'y',range:96,period:5,baseX:5744,baseY:336,anchorY:192,requires:'winch'},\n {id:'lift-b',x:2688");
+// Preserve the two original crane lifts' array order; some tools refer to lift-b as index 1.
+let s=fs.readFileSync('src/level-data.mjs','utf8');const mover="{id:'boarding-rigging',x:5744,y:336,w:64,h:8,oneWay:true,axis:'y',range:96,period:5,baseX:5744,baseY:336,anchorY:192,requires:'winch'},\n ";s=s.replace(mover,'');s=s.replace("baseY:288,anchorY:132}],","baseY:288,anchorY:132},"+mover.trim().slice(0,-1)+"],");fs.writeFileSync('src/level-data.mjs',s);
+edit('src/cloud-data.mjs',"power,respawnMs:0,restockMs}","power,respawnMs:0,restockMs,requiresInteract:true}");
+edit('src/cloud-data.mjs',"requiresJump:true}","requiresJump:true,requiresInteract:false}");
+edit('src/cloud-data.mjs',"x:2800,y:280,w:80", "x:2440,y:312,w:64");
+edit('src/cloud-data.mjs',"baseX:2800,baseY:280,range:72,period:5", "baseX:2440,baseY:312,range:88,period:5,requires:'reactorSeal'");
+edit('src/underwater-data.mjs',"movers:[{id:'researchLift'", "movers:[{id:'pressureLift',x:1360,y:688,w:96,h:12,oneWay:true,kind:'reef',baseX:1360,baseY:688,range:176,period:6,requires:'coralValve'},\n {id:'researchLift'");
+edit('src/underwater-data.mjs',"range:224,period:7}","range:224,period:7,requires:'circuitA'}");
+edit('src/underwater-data.mjs',"period:4.5,phase:0}","period:4.5,phase:0,shutoffRequires:['coralValve','ballastValve']}");
+edit('src/underwater-data.mjs',"period:4.8,phase:1.7}","period:4.8,phase:1.7,shutoffRequires:['coralValve','ballastValve']}");
+edit('src/underwater-data.mjs',"period:5,phase:2.8}","period:5,phase:2.8,shutoffRequires:['circuitB']}");
+edit('src/encounters.mjs',"import {renderedCameraView}","import {mechanismsReady,mechanismMessages} from './puzzle-effects.mjs';\nimport {renderedCameraView}");
+edit('src/encounters.mjs',"  m.y=m.baseY-m.range*(1-Math.cos(t*Math.PI*2/m.period))/2;", "  m.powered=mechanismsReady(g,m.requires);\n  if(m.requires)m.elapsed=m.powered?(m.elapsed||0)+dt:0;\n  const clock=m.requires?m.elapsed:t;\n  m.y=m.powered?m.baseY-m.range*(1-Math.cos(clock*Math.PI*2/m.period))/2:m.baseY;");
+edit('src/encounters.mjs'," for(const h of g.hazards){", " for(const h of g.hazards){\n  h.disabled=!!h.shutoffRequires&&mechanismsReady(g,h.shutoffRequires);\n  if(h.disabled){h.live=false;h.warning=false;continue;}");
+edit('src/encounters.mjs'," for(const c of g.crates)if(c.hp<=0){if(c.latch)g.latches[c.latch]=true;if(c.secret)g.latches[c.secret]=true;}"," for(const c of g.crates)if(c.hp<=0){if(c.latch&&!g.latches[c.latch]){g.latches[c.latch]=true;if(mechanismMessages[c.latch]){g.notice=mechanismMessages[c.latch];g.noticeMs=4500;}}if(c.secret)g.latches[c.secret]=true;}");
+edit('src/encounters.mjs',"g.notice='Mechanism secured: '+(s.name", "g.notice=mechanismMessages[s.id]||'Mechanism secured: '+(s.name");
+edit('server.mjs',"(controller|", "(puzzle-effects|controller|");
+let pkg=JSON.parse(fs.readFileSync('package.json'));pkg.scripts.check+=' && node --check src/puzzle-effects.mjs';fs.writeFileSync('package.json',JSON.stringify(pkg,null,2)+'\n');

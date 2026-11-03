@@ -1,0 +1,19 @@
+{
+  "underwater": {
+    "projectileCount": 1,
+    "waterGuide": true,
+    "wrongSkyGuide": false
+  },
+  "firstFadingFailure": {
+    "result": "harbor-route-change",
+    "health": 3
+  },
+  "cloudReentry": {
+    "x": 2944,
+    "checkpoint": 2944
+  },
+  "firstHarborPit": {
+    "result": "underwater-route-change",
+    "health": 3
+  }
+}

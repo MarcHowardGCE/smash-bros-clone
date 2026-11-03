@@ -209,3 +209,28 @@ describe('LocalPlayerController', () => {
     expect(DEFAULT_KEYMAP_P2.KeyL).toBe(INPUT_BITS.RIGHT);
   });
 });
+
+describe("seat-specific keyboard regression", () => {
+  it("keeps P2 keys when P1 settings supply defaults", () => {
+    localStorage.clear();
+    const p1 = new LocalPlayerController({ playerId: "p1", slotIndex: 0, keymap: DEFAULT_KEYMAP_P1 });
+    const p2 = new LocalPlayerController({ playerId: "p2", slotIndex: 1, keymap: DEFAULT_KEYMAP_P2 });
+    try {
+      window.dispatchEvent(new KeyboardEvent("keydown", { code: "KeyJ" }));
+      expect(p1.pollInput()).toBeNull(); expect(p2.pollInput()?.held).toBe(INPUT_BITS.LEFT);
+      window.dispatchEvent(new KeyboardEvent("keyup", { code: "KeyJ" })); p2.pollInput();
+      window.dispatchEvent(new KeyboardEvent("keydown", { code: "KeyA" }));
+      expect(p1.pollInput()?.held).toBe(INPUT_BITS.LEFT); expect(p2.pollInput()).toBeNull();
+      window.dispatchEvent(new Event("blur")); expect(p1.pollInput()?.released).toBe(INPUT_BITS.LEFT);
+    } finally { p1.destroy(); p2.destroy(); }
+  });
+});
+
+it("uses the Controls screen's numeric per-seat keymap", () => {
+  localStorage.setItem("smash:keymap:1", JSON.stringify({ KeyQ: INPUT_BITS.LEFT }));
+  const ctrl = new LocalPlayerController({ playerId: "p2", slotIndex: 1, keymap: DEFAULT_KEYMAP_P2 });
+  try {
+    window.dispatchEvent(new KeyboardEvent("keydown", { code: "KeyQ" }));
+    expect(ctrl.pollInput()?.held).toBe(INPUT_BITS.LEFT);
+  } finally { ctrl.destroy(); localStorage.clear(); }
+});

@@ -35,6 +35,7 @@ import type {
 import { Camera } from "./renderer/Camera.js";
 import { FighterRenderer } from "./renderer/FighterRenderer.js";
 import { preloadFighterAssets } from "./renderer/fighterAssets.js";
+import { preloadFullBodyPilot } from "./renderer/fullbody/FullBodyPilot.js";
 import { createLayers } from "./renderer/layers.js";
 import { StageRenderer } from "./renderer/StageRenderer.js";
 import { ImpactSpark } from "./renderer/effects/ImpactSpark.js";
@@ -139,6 +140,7 @@ async function main() {
     ...(e2eForceWebgl ? ({ preference: "webgl" } as const) : {}),
   });
 
+  const fullBodyPilot = await preloadFullBodyPilot();
   let fighterAssets = await preloadFighterAssets();
   if (e2eFixtureEnabled && !e2ePolygonForced && fighterAssets.mode === "polygon") {
     fighterAssets = await preloadFighterAssets({
@@ -311,6 +313,7 @@ async function main() {
         fixturePlayer.characterId,
         {
           mode: fighterAssets.mode,
+          fullBodyPilot,
           textureProvider: fighterAssets.mode === "sprite" ? fighterAssets.provider : undefined,
         },
       );
@@ -417,7 +420,9 @@ async function main() {
   const processHitEvents = (events: HitEventData[]): void => {
     for (const event of events) {
       sfxManager.playHit(event.knockbackMagnitude);
+      if(event.moveId===MoveId.DOWN_SPECIAL)fighterRenderers.get(event.attackerId)?.startCounterReaction();
       const defenderRenderer = fighterRenderers.get(event.defenderId);
+ if(event.moveId===MoveId.PUMMEL||[MoveId.FORWARD_THROW,MoveId.BACK_THROW,MoveId.UP_THROW,MoveId.DOWN_THROW].includes(event.moveId)){const attacker=fighterRenderers.get(event.attackerId);defenderRenderer?.startGrabReaction(event.moveId,attacker?.container.scale.x===-1?-1:1);}
       if (defenderRenderer) {
         defenderRenderer.startHitFlash();
       }
@@ -507,6 +512,7 @@ async function main() {
           shieldHealth: playerState.shieldHealth,
           currentMoveId: playerState.currentMoveId,
           characterId: playerState.characterId,
+ floorOrientation:playerState.floorOrientation,floorRollDirection:playerState.floorRollDirection,isFastFalling:playerState.isFastFalling,airDodgeDirection:playerState.airDodgeDirection,hasDoubleJump:playerState.hasDoubleJump,isTumbling:playerState.isTumbling,chargeFrames:playerState.chargeFrames,isGrabbing:playerState.isGrabbing,grabbedPlayerId:playerState.grabbedPlayerId,ledgeId:playerState.ledgeId,
         },
       ]),
     );
@@ -529,13 +535,15 @@ async function main() {
           playerState.characterId,
           {
             mode: fighterAssets.mode,
+          fullBodyPilot,
             textureProvider:
               fighterAssets.mode === "sprite" ? fighterAssets.provider : undefined,
           },
         );
         fighterRenderers.set(id, fighterRenderer);
       }
-      fighterRenderer.update(playerState);
+      const grabOwner=[...state.players.values()].find(p=>p.isGrabbing&&p.grabbedPlayerId===id);
+ fighterRenderer.update({...playerState,grabFacing:grabOwner?.facing,grabOwner:grabOwner?{characterId:grabOwner.characterId??"all-rounder",state:grabOwner.state,frame:grabOwner.stateFrame,move:grabOwner.currentMoveId,dx:(playerState.x-grabOwner.x)*grabOwner.facing,dy:playerState.y-grabOwner.y,facing:grabOwner.facing}:undefined});
     }
 
     for (const [id, fighterRenderer] of fighterRenderers.entries()) {
@@ -549,12 +557,36 @@ async function main() {
     tickSparks();
   };
 
-  const roomCodeFromUrl = urlParams.get("room");
 
+  let networkCountdownInterval: ReturnType<typeof setInterval> | null = null;
+  const clearNetworkCountdown = (): void => {
+    if (networkCountdownInterval !== null) {
+      clearInterval(networkCountdownInterval);
+      networkCountdownInterval = null;
+    }
+  };
+  let onlinePadIndex = -1;
+  let onlinePadSource: GamepadInputSource | null = null;
   const gameClient = new GameClient({
     serverUrl: SERVER_URL,
+    gamepadSource: {
+      getHeldBits: () => {
+        const assignment = assignmentManager.getAssignments().get(0);
+        if (!assignment) return 0;
+        if (onlinePadIndex !== assignment.gamepadIndex || !onlinePadSource) {
+          onlinePadIndex = assignment.gamepadIndex;
+          onlinePadSource = new GamepadInputSource(poller, onlinePadIndex);
+        }
+        return onlinePadSource.getHeldBits();
+      },
+    } as GamepadInputSource,
+    onRejoined: () => {
+      hasShownSplashOnThisPageLoad = true;
+      app.canvas.style.visibility = "visible";
+    },
     onConnected: () => {
       const enterLobby = (): void => {
+        const roomCodeFromUrl = new URLSearchParams(window.location.search).get("room");
         if (roomCodeFromUrl) {
           uiManager.setRoomCode(roomCodeFromUrl.toUpperCase());
           gameClient.joinRoom(roomCodeFromUrl);
@@ -592,24 +624,23 @@ async function main() {
       if (phase === "countdown") {
         gameplaySfxRouter.reset();
         networkMatchPhase = "countdown";
+        clearNetworkCountdown();
         let count = 3;
         uiManager.showCountdown(count);
         audioManager.playTrack(selectedStage.musicTrack.replace(".mp3", ""));
-        const interval = setInterval(() => {
+        networkCountdownInterval = setInterval(() => {
+          if (networkMatchPhase !== "countdown") { clearNetworkCountdown(); return; }
           count--;
-          if (count > 0) {
-            uiManager.showCountdown(count);
-          } else {
-            uiManager.showCountdown(0);
-            clearInterval(interval);
-            setTimeout(() => uiManager.showMatch(), 1000);
-          }
+          uiManager.showCountdown(Math.max(0, count));
+          if (count <= 0) clearNetworkCountdown();
         }, 1000);
       } else if (phase === "match") {
+        clearNetworkCountdown();
         networkMatchPhase = "match";
         uiManager.showMatch();
         audioManager.playTrack(selectedStage.musicTrack.replace(".mp3", ""));
       } else if (phase === "result") {
+        clearNetworkCountdown();
         networkMatchPhase = "result";
         gameplaySfxRouter.processMatchResult();
         uiManager.showResult(winnerId ?? null, myPlayerId);
@@ -658,6 +689,8 @@ async function main() {
     },
     onPlayerLeft: (playerId) => {
       if (networkMatchPhase !== "match" && networkMatchPhase !== "result") {
+        clearNetworkCountdown();
+        networkMatchPhase = "pre-match";
         uiManager.showLobby();
       }
     },
@@ -690,6 +723,7 @@ async function main() {
   };
 
   uiManager.onPlayAgain = () => {
+    gameClient.leaveRoom();
     window.location.href = window.location.pathname;
   };
 
@@ -728,14 +762,14 @@ async function main() {
 
     const p1Assignment = assignments.get(0);
     const p1GamepadSource = p1Assignment
-      ? new GamepadInputSource(poller, p1Assignment.gamepadIndex)
+      ? new GamepadInputSource(poller, p1Assignment.gamepadIndex, () => assignmentManager.getAssignments().get(0)?.gamepadIndex ?? -1)
       : null;
     controllers.push(
       new LocalPlayerController({
         playerId: "local-p1",
         keymap: DEFAULT_KEYMAP_P1,
         slotIndex: 0,
-        gamepadSource: p1GamepadSource,
+        gamepadSource: p1GamepadSource ?? new GamepadInputSource(poller, -1, () => assignmentManager.getAssignments().get(0)?.gamepadIndex ?? -1),
       }),
     );
 
@@ -758,8 +792,8 @@ async function main() {
 
       const assignment = assignments.get(slotIndex);
       const gamepadSource = assignment
-        ? new GamepadInputSource(poller, assignment.gamepadIndex)
-        : null;
+        ? new GamepadInputSource(poller, assignment.gamepadIndex, () => assignmentManager.getAssignments().get(slotIndex)?.gamepadIndex ?? -1)
+        : new GamepadInputSource(poller, -1, () => assignmentManager.getAssignments().get(slotIndex)?.gamepadIndex ?? -1);
       controllers.push(
         new LocalPlayerController({
           playerId,
@@ -924,18 +958,19 @@ async function main() {
   };
 
   uiManager.onMainMenu = () => {
+    clearNetworkCountdown();
     const wasLocalMode = isLocalMode;
 
     // Clean up local match if active (safe no-op when not in local mode)
     cleanupLocalMode();
 
-    // Multiplayer: disconnect triggers server forfeit via handleDisconnect
+    // Explicit Main Menu forfeits immediately; retain the connection for another room.
     if (!isLocalMode) {
       try {
-        gameClient.disconnect();
+        gameClient.leaveRoom();
       } catch (err) {
         console.error(
-          "Failed to disconnect game client before returning to main menu:",
+          "Failed to leave room before returning to main menu:",
           err,
         );
       }
@@ -1074,6 +1109,7 @@ async function main() {
         getSnapshot: () => ReturnType<GameClient["getLatestSnapshot"]>;
         forcePosition?: (playerId: PlayerId, x: number, y: number) => boolean;
         getKOEvents?: () => KOEventData[];
+        getArtState?:()=>{packing:string|undefined;players:ReturnType<FighterRenderer["getArtDiagnostics"]>[]};
       };
     }
   ).__smashDebug = {
@@ -1083,6 +1119,7 @@ async function main() {
       ? {
           forcePosition: forceDebugPosition,
           getKOEvents: getDebugKOEvents,
+          getArtState:()=>({packing:fullBodyPilot?.packing,players:[...fighterRenderers.values()].map(f=>f.getArtDiagnostics())}),
         }
       : {}),
   };

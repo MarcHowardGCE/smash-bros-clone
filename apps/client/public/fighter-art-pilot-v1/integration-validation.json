@@ -1,0 +1,10 @@
+{
+  "pagesLoaded": 96,
+  "effects": [
+    "neutral_burst",
+    "side_trail",
+    "recovery_trail",
+    "counter_flash"
+  ],
+  "markers": 4
+}

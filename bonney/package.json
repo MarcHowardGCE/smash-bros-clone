@@ -5,7 +5,7 @@
   "scripts": {
     "start": "node server.mjs",
     "dev": "node server.mjs",
-    "test": "node --test src/engine.test.mjs src/locomotion.test.mjs src/full-level.test.mjs src/rendering.test.mjs",
-    "check": "node --check src/level-data.mjs && node --check src/encounters.mjs && node --check src/full-level-art.mjs && node --check src/world-art.mjs && node --check src/locomotion.mjs && node --check src/engine.mjs && node --check src/game.mjs && node --check server.mjs"
+    "test": "node --test src/engine.test.mjs src/locomotion.test.mjs src/full-level.test.mjs src/rendering.test.mjs src/market-scene.test.mjs src/remaining-scene.test.mjs src/cloud-level.test.mjs src/combat.test.mjs src/cloud-full.test.mjs src/flight-art.test.mjs src/underwater-level.test.mjs src/underwater-full.test.mjs src/level-audit.test.mjs src/refinement.test.mjs src/controller.test.mjs src/puzzle-effects.test.mjs src/audio.test.mjs",
+    "check": "node --check src/flight-art.mjs && node --check src/flight-anchors.mjs && node --check src/cloud-data.mjs && node --check src/combat.mjs && node --check src/cloud-level.mjs && node --check src/cloud-art.mjs && node --check src/remaining-scene.mjs && node --check src/market-scene.mjs && node --check src/level-data.mjs && node --check src/encounters.mjs && node --check src/full-level-art.mjs && node --check src/world-art.mjs && node --check src/locomotion.mjs && node --check src/engine.mjs && node --check src/game.mjs && node --check server.mjs && node --check src/underwater-level.mjs && node --check src/underwater-art.mjs && node --check src/underwater-data.mjs && node --check src/player-body.mjs && node --check src/camera.mjs && node --check src/controller.mjs && node --check src/puzzle-effects.mjs && node --check src/audio.mjs && node --check src/audio-config.mjs"
   }
 }

@@ -39,6 +39,7 @@ export interface RenderPlayerState {
   shieldHealth: number;
   currentMoveId: MoveId | null;
   characterId?: CharacterId;
+  floorOrientation?:"up"|"down";floorRollDirection?:1|-1;isFastFalling?:boolean;airDodgeDirection?:{x:number;y:number}|null;hasDoubleJump?: boolean;isTumbling?:boolean;chargeFrames?:number;isGrabbing?:boolean;grabbedPlayerId?:PlayerId|null;ledgeId?:string|null;
 }
 
 export interface RenderState {
@@ -69,6 +70,7 @@ export interface RenderState {
 export class InterpolationBuffer {
   private snapshots: StateSnapshot[] = [];
   private readonly bufferSize = 3;
+  private latestReceivedAt = 0;
 
   /**
    * Queues an authoritative server snapshot, keeping only the last `bufferSize` entries.
@@ -81,7 +83,9 @@ export class InterpolationBuffer {
    *
    * @param snapshot - The latest authoritative `StateSnapshot` from the server.
    */
-  pushSnapshot(snapshot: StateSnapshot): void {
+  pushSnapshot(snapshot: StateSnapshot, receivedAt = performance.now()): void {
+    if (this.snapshots.length && snapshot.tick <= this.snapshots[this.snapshots.length - 1]!.tick) return;
+    this.latestReceivedAt = receivedAt;
     this.snapshots.push(snapshot);
     // Keep last 3 snapshots
     if (this.snapshots.length > this.bufferSize) {
@@ -121,11 +125,10 @@ export class InterpolationBuffer {
       return this.snapshotToRenderState(snap1);
     }
 
-    // WHY alpha is clamped to [0, 1]: If `now` is ahead of snap1.timestamp (we're slightly
-    // behind the broadcast schedule), alpha would exceed 1.0 and we'd extrapolate beyond the
-    // known state — producing speculative positions that may diverge from reality. Clamping
-    // keeps rendering strictly between two known-good authoritative states.
-    const alpha = Math.max(0, Math.min(1, (now - snap0.timestamp) / duration));
+    // Play the previous->latest interval from local receipt time. Server and
+    // browser performance.now() have unrelated origins; only server intervals
+    // are comparable. Clamp during stalls rather than extrapolate combat positions.
+    const alpha = Math.max(0, Math.min(1, (now - this.latestReceivedAt) / duration));
 
     const players = new Map<PlayerId, RenderPlayerState>();
 
@@ -173,6 +176,7 @@ export class InterpolationBuffer {
         shieldHealth: p1.shieldHealth,
         currentMoveId: p1.currentMoveId,
         characterId: p1.characterId,
+ floorOrientation:p1.floorOrientation,floorRollDirection:p1.floorRollDirection,isFastFalling:p1.isFastFalling,airDodgeDirection:p1.airDodgeDirection,hasDoubleJump:p1.hasDoubleJump,isTumbling:p1.isTumbling,chargeFrames:p1.chargeFrames,isGrabbing:p1.isGrabbing,grabbedPlayerId:p1.grabbedPlayerId,ledgeId:p1.ledgeId,
       };
 
       players.set(id as PlayerId, interpolated);
@@ -198,6 +202,7 @@ export class InterpolationBuffer {
   /** Clears all buffered snapshots. Called on disconnect and match restart. */
   clear(): void {
     this.snapshots = [];
+    this.latestReceivedAt = 0;
   }
 
   private snapshotToRenderState(snap: StateSnapshot): RenderState {
@@ -228,6 +233,7 @@ export class InterpolationBuffer {
       shieldHealth: p.shieldHealth,
       currentMoveId: p.currentMoveId,
       characterId: p.characterId,
+ floorOrientation:p.floorOrientation,floorRollDirection:p.floorRollDirection,isFastFalling:p.isFastFalling,airDodgeDirection:p.airDodgeDirection,hasDoubleJump:p.hasDoubleJump,isTumbling:p.isTumbling,chargeFrames:p.chargeFrames,isGrabbing:p.isGrabbing,grabbedPlayerId:p.grabbedPlayerId,ledgeId:p.ledgeId,
     };
   }
 }

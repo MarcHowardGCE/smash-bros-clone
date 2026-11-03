@@ -1,3 +1,4 @@
+import { dismissSplash, chooseFirstStage } from "./helpers/flow";
 import { test, expect } from '@playwright/test';
 import { mkdirSync } from 'fs';
 
@@ -13,6 +14,7 @@ test.beforeAll(() => {
  */
 async function startLocalMatch(page: import('@playwright/test').Page): Promise<void> {
   await page.goto('http://localhost:5173');
+  await dismissSplash(page);
   await page.waitForSelector('#local-play-btn', { timeout: 5000 });
   await page.click('#local-play-btn');
   await page.waitForSelector('#lps-start-btn', { timeout: 10_000 });
@@ -21,6 +23,7 @@ async function startLocalMatch(page: import('@playwright/test').Page): Promise<v
   // Confirm character select: P1 = Enter, P2 = U
   await page.keyboard.press('Enter');
   await page.keyboard.press('KeyU');
+  await chooseFirstStage(page);
 
   // Wait for countdown + match start
   await page.waitForFunction(() => {
@@ -275,6 +278,7 @@ test.describe('T26: Full pause/resume/main-menu flow', () => {
     test.setTimeout(30000);
 
     await page.goto('http://localhost:5173');
+  await dismissSplash(page);
     await page.waitForSelector('#local-play-btn', { timeout: 5000 });
 
     // Verify the multiplayer UI entry points exist (Create Room / Join)

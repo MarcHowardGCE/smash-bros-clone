@@ -28,7 +28,12 @@ export const DEFAULT_MOVE_TOTAL_FRAMES = 20;
 // but importing MoveData directly would create engine/fsm → engine/moves → engine/fsm.
 // Keeping a lightweight lookup here breaks the cycle.
 const MOVE_TOTAL_FRAMES: Partial<Record<MoveId, number>> = {
-  [MoveId.JAB]: 20,
+  [MoveId.JAB]: 15,
+  [MoveId.FLOOR_ATTACK_UP]:24,
+  [MoveId.FLOOR_ATTACK_DOWN]:24,
+  [MoveId.JAB_2]:15,
+  [MoveId.JAB_3]:25,
+  [MoveId.DASH_ATTACK]:33,
   [MoveId.FORWARD_TILT]: 24,
   [MoveId.UP_TILT]: 22,
   [MoveId.DOWN_TILT]: 22,
@@ -55,6 +60,11 @@ const MOVE_TOTAL_FRAMES: Partial<Record<MoveId, number>> = {
 
 const MOVE_STARTUP_FRAMES: Partial<Record<MoveId, number>> = {
   [MoveId.JAB]: 3,
+  [MoveId.FLOOR_ATTACK_UP]:6,
+  [MoveId.FLOOR_ATTACK_DOWN]:6,
+  [MoveId.JAB_2]:3,
+  [MoveId.JAB_3]:4,
+  [MoveId.DASH_ATTACK]:8,
   [MoveId.FORWARD_TILT]: 7,
   [MoveId.UP_TILT]: 6,
   [MoveId.DOWN_TILT]: 5,
@@ -132,3 +142,4 @@ export function isSmashMoveId(moveId: string | null): moveId is MoveId.FORWARD_S
 }
 
 export { INPUT_BITS, PHYSICS, PlayerStateEnum };
+

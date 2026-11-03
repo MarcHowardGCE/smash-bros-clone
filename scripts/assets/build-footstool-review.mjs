@@ -1,0 +1,5 @@
+import fs from 'node:fs';import path from 'node:path';import{stripTypeScriptTypes}from'node:module';
+const source='apps/client/public/fighter-art-pilot-v1',pack=JSON.parse(fs.readFileSync(source+'/manifest.json')),template=fs.readFileSync('scripts/assets/footstool-review.template.html','utf8'),math=stripTypeScriptTypes(fs.readFileSync('apps/client/src/renderer/fullbody/footstoolPose.ts','utf8'));
+const p=structuredClone(pack);delete p.clips;delete p.effects;for(const c of Object.values(p.characters))for(const n of Object.keys(c.clips))if(!n.startsWith('footstool_'))delete c.clips[n];
+const html=template.replace('__PACK__',JSON.stringify(p)).replace('__FOOTSTOOL_MATH__',math);fs.writeFileSync(source+'/footstool-pairs.html',html);
+for(const out of process.argv.slice(2)){fs.mkdirSync(out,{recursive:true});for(const c of Object.values(p.characters))for(const clip of Object.values(c.clips))fs.copyFileSync(path.join(source,clip.image),path.join(out,clip.image));fs.writeFileSync(path.join(out,'footstool-pairs.html'),html);}console.log('Built paired footstool review.');

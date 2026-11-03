@@ -1,12 +1,13 @@
-FROM node:20-slim
+FROM node:24-slim
 
-RUN npm install -g pnpm@9
+RUN npm install -g pnpm@11.20.0
 
 WORKDIR /app
 
 COPY package.json pnpm-workspace.yaml pnpm-lock.yaml ./
 COPY packages/shared/package.json ./packages/shared/
 COPY packages/engine/package.json ./packages/engine/
+COPY packages/gamepad-input/package.json ./packages/gamepad-input/
 COPY apps/client/package.json ./apps/client/
 COPY apps/server/package.json ./apps/server/
 

@@ -20,6 +20,11 @@ import type { HitboxData } from './GameState.js';
 export enum MoveId {
   /** Fast 3-frame startup combo starter; primary grounded neutral tool. */
   JAB = 'JAB',
+  JAB_2 = 'JAB_2',
+  JAB_3 = 'JAB_3',
+  DASH_ATTACK = 'DASH_ATTACK',
+  FLOOR_ATTACK_UP = 'FLOOR_ATTACK_UP',
+  FLOOR_ATTACK_DOWN = 'FLOOR_ATTACK_DOWN',
   /** Mid-range grounded poke; safe on shield at proper spacing. */
   FORWARD_TILT = 'FORWARD_TILT',
   /** Grounded anti-air launcher; sends opponents upward for juggle follow-ups. */

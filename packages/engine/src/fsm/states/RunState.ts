@@ -29,6 +29,14 @@ import type { FSMContext, FSMTransition } from '../index.js';
  */
 export class RunState extends BaseState {
 	update(ctx: FSMContext): FSMTransition | null {
+    if (isPressed(ctx.input, INPUT_BITS.JUMP)) {
+      return transition(PlayerStateEnum.JUMPSQUAT);
+    }
+
+    if (isPressed(ctx.input, INPUT_BITS.ATTACK)) {
+      return transition(PlayerStateEnum.ATTACK);
+    }
+
 		const holdingLeft = isHeld(ctx.input, INPUT_BITS.LEFT);
 		const holdingRight = isHeld(ctx.input, INPUT_BITS.RIGHT);
 		const isSingleDirection = holdingLeft !== holdingRight;
@@ -44,14 +52,6 @@ export class RunState extends BaseState {
 		if (!isDirectionHeld(ctx.input)) {
 			return transition(PlayerStateEnum.IDLE);
 		}
-
-    if (isPressed(ctx.input, INPUT_BITS.JUMP)) {
-      return transition(PlayerStateEnum.JUMPSQUAT);
-    }
-
-    if (isPressed(ctx.input, INPUT_BITS.ATTACK)) {
-      return transition(PlayerStateEnum.ATTACK);
-    }
 
     return null;
   }

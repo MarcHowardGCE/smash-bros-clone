@@ -1,0 +1,9 @@
+import {describe,it,expect}from 'vitest';import {InterpolationBuffer}from '../InterpolationBuffer.js';import type{StateSnapshot,PlayerState,PlayerId}from '@smash/shared';
+describe('animation snapshot metadata',()=>{it('preserves role, charge, jump and tumble flags on single, local and remote snapshot paths',()=>{
+ const id='fighter' as PlayerId;
+ const player={id,slotIndex:0,x:0,y:0,vx:0,vy:0,isGrounded:true,facing:1,state:'GRAB_HOLDING',stateFrame:3,percent:0,stocks:3,isInvincible:false,isKnockedOut:false,isShielding:false,shieldHealth:60,currentMoveId:null,characterId:'swift',floorOrientation:"down",floorRollDirection:-1,isFastFalling:true,airDodgeDirection:{x:-1,y:1},hasDoubleJump:false,isTumbling:true,chargeFrames:27,isGrabbing:true,grabbedPlayerId:'victim',ledgeId:'left'}as unknown as PlayerState;
+ const snapshot=(tick:number)=>({tick,timestamp:tick*50,players:{[id]:player},matchPhase:'match',winnerId:null})as unknown as StateSnapshot;
+ const b=new InterpolationBuffer();b.pushSnapshot(snapshot(1),100);
+ const assert=(local:PlayerId)=>expect(b.getInterpolatedState(150,local)?.players.get(id)).toMatchObject({floorOrientation:"down",floorRollDirection:-1,isFastFalling:true,airDodgeDirection:{x:-1,y:1},hasDoubleJump:false,isTumbling:true,chargeFrames:27,isGrabbing:true,grabbedPlayerId:'victim',ledgeId:'left'});
+ assert("no-local" as PlayerId);b.pushSnapshot(snapshot(2),150);assert("no-local" as PlayerId);assert(id);
+});});

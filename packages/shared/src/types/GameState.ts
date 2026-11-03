@@ -129,6 +129,10 @@ export interface PlayerState {
   activeHitbox: HitboxData | null;
   /** The move currently being executed, or null when idle. */
   currentMoveId: MoveId | null;
+  /** Authoritative fresh-press buffer for the next jab link. */
+  jabQueued?: boolean;
+  floorOrientation?: "up"|"down";
+  floorRollDirection?:1|-1;
   /** Queue of recently used move ids for stale-move knockback decay (FIFO, max 9). */
   staleMoveQueue: MoveId[];
   /** Landing-lag and special flag cached from the move that launched this aerial. */

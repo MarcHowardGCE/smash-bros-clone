@@ -26,3 +26,24 @@ test('airborne pose, age rows, and teleport resets',()=>{
  assert.equal(advanceWalkDistance(20,10,{...player,x:11,ability:'active',power:'pirateCaptain'}),0);
  assert.equal(advanceWalkDistance(STRIDE_PIXELS-1,10,{...player,x:11}),0);
 });
+
+
+test('default, Captain and Egghead always select separate outfit atlases',async()=>{
+ const {characterOutfit}=await import('./locomotion.mjs');
+ for(const hits of [1,2,3])for(const grounded of [false,true]){
+  assert.equal(characterOutfit({power:'none',hits,grounded}),'default');
+  assert.equal(characterOutfit({power:'pirateCaptain',hits,grounded}),'captain');
+  assert.equal(characterOutfit({power:'egghead',hits,grounded}),'egghead');
+ }
+});
+
+
+test('roster selection swaps all four outfit atlases without mutating the player',async()=>{
+ const {CHARACTER_ROSTER,characterSpriteKey}=await import('./locomotion.mjs');assert.equal(CHARACTER_ROSTER.length,2);
+ for(const hits of [1,2,3])for(const [power,outfit]of [['none','default'],['pirateCaptain','captain'],['egghead','egghead'],['gear','gear']]){
+  for(const [extra,suffix]of [[{grounded:true,vx:0},'Atlas'],[{grounded:true,vx:105},'Walk'],[{grounded:false,vx:105},'Atlas'],[{grounded:true,attackMs:100,attackKind:'punch'},'Attack']]){
+   const p={...player,hits,power,...extra},before=structuredClone(p);
+   assert.equal(characterSpriteKey('bonney',p),outfit+suffix);assert.equal(characterSpriteKey('luffy',p),'luffy_'+outfit+suffix);assert.deepEqual(p,before);
+  }
+ }
+});

@@ -1,3 +1,4 @@
+import { dismissSplash, chooseFirstStage } from "./helpers/flow";
 import { test, expect } from '@playwright/test';
 
 /**
@@ -11,6 +12,7 @@ test('pause freezes fighters and resume restores movement', async ({ page }) => 
   test.setTimeout(60000);
 
   await page.goto('http://localhost:5173');
+  await dismissSplash(page);
   await page.waitForSelector('#local-play-btn', { timeout: 5000 });
 
   // Start local play
@@ -21,6 +23,7 @@ test('pause freezes fighters and resume restores movement', async ({ page }) => 
   // Confirm character select: P1 = Enter, P2 = U
   await page.keyboard.press('Enter');
   await page.keyboard.press('KeyU');
+  await chooseFirstStage(page);
 
   // Wait for countdown + match start
   await page.waitForFunction(() => {
@@ -110,6 +113,7 @@ test('pause during countdown is a no-op', async ({ page }) => {
   test.setTimeout(60000);
 
   await page.goto('http://localhost:5173');
+  await dismissSplash(page);
   await page.waitForSelector('#local-play-btn', { timeout: 5000 });
 
   // Start local play
@@ -120,6 +124,7 @@ test('pause during countdown is a no-op', async ({ page }) => {
   // Confirm character select
   await page.keyboard.press('Enter');
   await page.keyboard.press('KeyU');
+  await chooseFirstStage(page);
 
   // Wait for countdown to appear (but not match start)
   await page.waitForFunction(() => {

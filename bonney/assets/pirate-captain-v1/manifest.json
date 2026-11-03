@@ -1,0 +1,331 @@
+{
+  "ages": [
+    "adult",
+    "teenage",
+    "baby"
+  ],
+  "poses": [
+    "idle",
+    "stride-0",
+    "stride-1",
+    "stride-2",
+    "stride-3",
+    "stride-4",
+    "stride-5",
+    "jump"
+  ],
+  "frames": [
+    {
+      "age": "adult",
+      "pose": "idle",
+      "file": "adult-idle.png",
+      "sourceBounds": {
+        "x": 26,
+        "y": 10,
+        "w": 161,
+        "h": 341
+      },
+      "height": 60,
+      "scale": 0.17595307917888564
+    },
+    {
+      "age": "adult",
+      "pose": "stride-0",
+      "file": "adult-stride-0.png",
+      "sourceBounds": {
+        "x": 228,
+        "y": 18,
+        "w": 192,
+        "h": 332
+      },
+      "height": 60,
+      "scale": 0.18072289156626506
+    },
+    {
+      "age": "adult",
+      "pose": "stride-1",
+      "file": "adult-stride-1.png",
+      "sourceBounds": {
+        "x": 437,
+        "y": 31,
+        "w": 152,
+        "h": 320
+      },
+      "height": 60,
+      "scale": 0.1875
+    },
+    {
+      "age": "adult",
+      "pose": "stride-2",
+      "file": "adult-stride-2.png",
+      "sourceBounds": {
+        "x": 636,
+        "y": 18,
+        "w": 144,
+        "h": 333
+      },
+      "height": 60,
+      "scale": 0.18018018018018017
+    },
+    {
+      "age": "adult",
+      "pose": "stride-3",
+      "file": "adult-stride-3.png",
+      "sourceBounds": {
+        "x": 814,
+        "y": 31,
+        "w": 180,
+        "h": 320
+      },
+      "height": 60,
+      "scale": 0.1875
+    },
+    {
+      "age": "adult",
+      "pose": "stride-4",
+      "file": "adult-stride-4.png",
+      "sourceBounds": {
+        "x": 1015,
+        "y": 46,
+        "w": 153,
+        "h": 305
+      },
+      "height": 60,
+      "scale": 0.19672131147540983
+    },
+    {
+      "age": "adult",
+      "pose": "stride-5",
+      "file": "adult-stride-5.png",
+      "sourceBounds": {
+        "x": 1198,
+        "y": 31,
+        "w": 148,
+        "h": 320
+      },
+      "height": 60,
+      "scale": 0.1875
+    },
+    {
+      "age": "adult",
+      "pose": "jump",
+      "file": "adult-jump.png",
+      "sourceBounds": {
+        "x": 1363,
+        "y": 14,
+        "w": 166,
+        "h": 281
+      },
+      "height": 55,
+      "scale": 0.19644128113879006
+    },
+    {
+      "age": "teenage",
+      "pose": "idle",
+      "file": "teenage-idle.png",
+      "sourceBounds": {
+        "x": 39,
+        "y": 401,
+        "w": 140,
+        "h": 302
+      },
+      "height": 50,
+      "scale": 0.16556291390728478
+    },
+    {
+      "age": "teenage",
+      "pose": "stride-0",
+      "file": "teenage-stride-0.png",
+      "sourceBounds": {
+        "x": 230,
+        "y": 404,
+        "w": 178,
+        "h": 298
+      },
+      "height": 50,
+      "scale": 0.16778523489932887
+    },
+    {
+      "age": "teenage",
+      "pose": "stride-1",
+      "file": "teenage-stride-1.png",
+      "sourceBounds": {
+        "x": 441,
+        "y": 420,
+        "w": 139,
+        "h": 282
+      },
+      "height": 50,
+      "scale": 0.1773049645390071
+    },
+    {
+      "age": "teenage",
+      "pose": "stride-2",
+      "file": "teenage-stride-2.png",
+      "sourceBounds": {
+        "x": 642,
+        "y": 409,
+        "w": 126,
+        "h": 293
+      },
+      "height": 50,
+      "scale": 0.17064846416382254
+    },
+    {
+      "age": "teenage",
+      "pose": "stride-3",
+      "file": "teenage-stride-3.png",
+      "sourceBounds": {
+        "x": 820,
+        "y": 420,
+        "w": 164,
+        "h": 282
+      },
+      "height": 50,
+      "scale": 0.1773049645390071
+    },
+    {
+      "age": "teenage",
+      "pose": "stride-4",
+      "file": "teenage-stride-4.png",
+      "sourceBounds": {
+        "x": 1015,
+        "y": 431,
+        "w": 136,
+        "h": 271
+      },
+      "height": 50,
+      "scale": 0.18450184501845018
+    },
+    {
+      "age": "teenage",
+      "pose": "stride-5",
+      "file": "teenage-stride-5.png",
+      "sourceBounds": {
+        "x": 1204,
+        "y": 419,
+        "w": 135,
+        "h": 283
+      },
+      "height": 50,
+      "scale": 0.17667844522968199
+    },
+    {
+      "age": "teenage",
+      "pose": "jump",
+      "file": "teenage-jump.png",
+      "sourceBounds": {
+        "x": 1367,
+        "y": 399,
+        "w": 154,
+        "h": 251
+      },
+      "height": 46,
+      "scale": 0.18326693227091634
+    },
+    {
+      "age": "baby",
+      "pose": "idle",
+      "file": "baby-idle.png",
+      "sourceBounds": {
+        "x": 52,
+        "y": 765,
+        "w": 115,
+        "h": 244
+      },
+      "height": 36,
+      "scale": 0.14754098360655737
+    },
+    {
+      "age": "baby",
+      "pose": "stride-0",
+      "file": "baby-stride-0.png",
+      "sourceBounds": {
+        "x": 245,
+        "y": 773,
+        "w": 142,
+        "h": 236
+      },
+      "height": 36,
+      "scale": 0.15254237288135594
+    },
+    {
+      "age": "baby",
+      "pose": "stride-1",
+      "file": "baby-stride-1.png",
+      "sourceBounds": {
+        "x": 445,
+        "y": 787,
+        "w": 123,
+        "h": 222
+      },
+      "height": 36,
+      "scale": 0.16216216216216217
+    },
+    {
+      "age": "baby",
+      "pose": "stride-2",
+      "file": "baby-stride-2.png",
+      "sourceBounds": {
+        "x": 642,
+        "y": 778,
+        "w": 111,
+        "h": 231
+      },
+      "height": 36,
+      "scale": 0.15584415584415584
+    },
+    {
+      "age": "baby",
+      "pose": "stride-3",
+      "file": "baby-stride-3.png",
+      "sourceBounds": {
+        "x": 822,
+        "y": 787,
+        "w": 140,
+        "h": 221
+      },
+      "height": 36,
+      "scale": 0.16289592760180996
+    },
+    {
+      "age": "baby",
+      "pose": "stride-4",
+      "file": "baby-stride-4.png",
+      "sourceBounds": {
+        "x": 1018,
+        "y": 800,
+        "w": 119,
+        "h": 209
+      },
+      "height": 36,
+      "scale": 0.1722488038277512
+    },
+    {
+      "age": "baby",
+      "pose": "stride-5",
+      "file": "baby-stride-5.png",
+      "sourceBounds": {
+        "x": 1211,
+        "y": 787,
+        "w": 117,
+        "h": 222
+      },
+      "height": 36,
+      "scale": 0.16216216216216217
+    },
+    {
+      "age": "baby",
+      "pose": "jump",
+      "file": "baby-jump.png",
+      "sourceBounds": {
+        "x": 1371,
+        "y": 758,
+        "w": 142,
+        "h": 215
+      },
+      "height": 33,
+      "scale": 0.154046511627907
+    }
+  ]
+}

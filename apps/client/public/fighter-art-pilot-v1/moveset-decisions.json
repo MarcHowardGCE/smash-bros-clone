@@ -1,0 +1,89 @@
+{
+  "version": 2,
+  "date": "2026-11-03",
+  "status": "Production baseline for animation and later engine implementation; no gameplay changes in this batch",
+  "fighters": [
+    "all-rounder",
+    "abe-lincoln",
+    "swift"
+  ],
+  "decisions": [
+    {
+      "family": "Jab chain",
+      "selected": "All three use jab 1 → opposite-hand jab 2 → front-kick jab 3. No rapid-jab branch.",
+      "art": "Existing nine-drawing jab 1 plus new six-drawing jab_2 and jab_3 sheets per fighter.",
+      "engine": "Current MoveId.JAB is a single move. Add stage/cancel/buffer rules and separate combat data; preview timing is not final frame data.",
+      "evidence": "packages/engine/src/moves/ground.ts; packages/shared/src/types/MoveData.ts"
+    },
+    {
+      "family": "Recovery helplessness",
+      "selected": "Up special ends in helpless freefall for all three until landing or a valid ledge catch. Side special does not automatically cause helplessness.",
+      "art": "New helpless_enter, helpless_loop and helpless_land per fighter.",
+      "engine": "Add explicit state/event, aerial resource eligibility and landing rules; do not infer from an animation ending.",
+      "evidence": "packages/engine/src/moves/special.ts"
+    },
+    {
+      "family": "Jump resources",
+      "selected": "One ground jump plus one air jump per fighter. Short/full hop share takeoff art. No multi-jump ability.",
+      "art": "Neutral/forward/back takeoff, rise/apex/fall/fastfall loops and double-jump transition.",
+      "engine": "Retain hasDoubleJump contract; authoritative trigger/phase data must survive skipped snapshots. This batch changes no jump physics.",
+      "evidence": "packages/engine/src/physics/index.ts:303; packages/shared/src/types/GameState.ts"
+    },
+    {
+      "family": "Wall jump",
+      "selected": "Swift only; no wall cling. All-Rounder and Lincoln have no standalone wall-jump ability. Wall techs remain a shared defensive family.",
+      "art": "Swift reuses existing wall_tech_jump push-off and new air_rise_loop; no new bespoke wall-jump sheet required.",
+      "engine": "Current server wall-jump path is not roster-gated. Add eligibility before claiming this kit is implemented; audit current resource/decay rules.",
+      "evidence": "apps/server/src/GameEngine.ts:1327; apps/server/src/GameEngine.wallJump.test.ts"
+    },
+    {
+      "family": "Directional air dodge",
+      "selected": "Eight world directions with facing preserved independently. Forward/backward horizontal and diagonal source poses are selected relative to facing; vertical poses mirror only with facing.",
+      "art": "Eight source-pose families per fighter, including three dedicated backward directions. Whole-body travel mirroring is replaced by facing-preserving selection.",
+      "engine": "Preview verifies all sixteen direction/facing combinations. Current authoritative dodge direction capture/physics and event hooks still need implementation.",
+      "evidence": "packages/engine/src/fsm/states/AirDodgeState.ts"
+    },
+    {
+      "family": "Backward roll",
+      "selected": "Reuse current mirrored roll drawings; independently tune forward/backward timing and travel.",
+      "art": "No additional body sheet required for this baseline.",
+      "engine": "Separate timing/travel metadata and invulnerability policy remain engine work.",
+      "evidence": "apps/client/src/renderer/fullbody/pilotTimeline.ts"
+    },
+    {
+      "family": "Attack angling",
+      "selected": "No high/low angling of the same tilt or smash in the baseline. Existing up/down attacks remain separate moves.",
+      "art": "Existing directional attacks suffice.",
+      "engine": "No new angle variants required.",
+      "evidence": "packages/engine/src/moves/ground.ts"
+    },
+    {
+      "family": "Special kit",
+      "selected": "Keep four current categories: neutral close-range burst, side rushing strike, up rising recovery and down counter. Ground/air uses shared body drawings with appropriate anchors; no transformation, tether, weapon, reflect or absorb variant.",
+      "art": "Existing specials/counter art plus helpless set. No new travelling-projectile artwork in this baseline.",
+      "engine": "Neutral special comments mention projectile spawn but the existing execution path uses local hitbox data. Reconcile naming/zero-active-frame execution and canonical timing; no projectile feature is claimed here.",
+      "evidence": "packages/engine/src/moves/special.ts; apps/server/src/GameEngine.ts; scripts/assets/build-roster-pilot-pack.mjs"
+    },
+    {
+      "family": "Movement extras",
+      "selected": "No crawl, wall cling, extra air jumps, automatic turnaround, command-input subsystem or stance changes for these baseline kits.",
+      "art": "Existing crouch/turn/movement art suffices.",
+      "engine": "These are intentional kit exclusions, not universally required shared actions.",
+      "evidence": "docs/assets/ultimate-animation-inventory.json"
+    },
+    {
+      "family": "Items and Final Smashes",
+      "selected": "Deferred to the later casual-mode expansion; remain outstanding toward broader Ultimate feature parity.",
+      "art": "Design each item interaction, status family and fighter Final Smash before producing its sheets.",
+      "engine": "Not implemented or waived by completing the core roster.",
+      "evidence": "docs/assets/ultimate-animation-inventory.json"
+    },
+    {
+      "family": "Frame data",
+      "selected": "Lock animation families now, reconcile authoritative move timing before final combat polish.",
+      "art": "Jab 2/3 preview contact is drawing four; durations remain adjustable metadata.",
+      "engine": "Resolve duplicated timing tables and previously recorded 20/23 entry disagreements, then author jab follow-up data and event markers.",
+      "evidence": "packages/engine/src/fsm/states/utils.ts; packages/engine/src/moves/"
+    }
+  ]
+}

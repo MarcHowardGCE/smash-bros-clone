@@ -142,7 +142,8 @@ describe('main renderer bootstrap', () => {
         createRoom(): void {}
         joinRoom(): void {}
         markReady(): void {}
-        disconnect(): void {}
+        leaveRoom(): void {}
+      disconnect(): void {}
         connect(): void {}
         emitResume(): void {}
         emitPause(): void {}

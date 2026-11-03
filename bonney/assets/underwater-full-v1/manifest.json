@@ -1,0 +1,301 @@
+{
+  "ruin": {
+    "w": 512,
+    "h": 393,
+    "source": "buildings",
+    "bounds": {
+      "id": 3,
+      "minX": 25,
+      "minY": 129,
+      "maxX": 672,
+      "maxY": 625,
+      "count": 236832
+    }
+  },
+  "habitat": {
+    "w": 512,
+    "h": 410,
+    "source": "buildings",
+    "bounds": {
+      "id": 1,
+      "minX": 744,
+      "minY": 78,
+      "maxX": 1428,
+      "maxY": 625,
+      "count": 281760
+    }
+  },
+  "wreck": {
+    "w": 512,
+    "h": 399,
+    "source": "buildings",
+    "bounds": {
+      "id": 2,
+      "minX": 1494,
+      "minY": 116,
+      "maxX": 2148,
+      "maxY": 625,
+      "count": 253260
+    }
+  },
+  "valve": {
+    "w": 132,
+    "h": 192,
+    "source": "props",
+    "bounds": {
+      "id": 7,
+      "minX": 77,
+      "minY": 58,
+      "maxX": 284,
+      "maxY": 359,
+      "count": 42910
+    }
+  },
+  "gate": {
+    "w": 192,
+    "h": 188,
+    "source": "props",
+    "bounds": {
+      "id": 1,
+      "minX": 367,
+      "minY": 11,
+      "maxX": 722,
+      "maxY": 359,
+      "count": 104140
+    }
+  },
+  "vent": {
+    "w": 106,
+    "h": 192,
+    "source": "props",
+    "bounds": {
+      "id": 4,
+      "minX": 812,
+      "minY": 24,
+      "maxX": 996,
+      "maxY": 359,
+      "count": 34413
+    }
+  },
+  "pearl": {
+    "w": 192,
+    "h": 171,
+    "source": "props",
+    "bounds": {
+      "id": 6,
+      "minX": 1087,
+      "minY": 57,
+      "maxX": 1427,
+      "maxY": 360,
+      "count": 77161
+    }
+  },
+  "console": {
+    "w": 152,
+    "h": 192,
+    "source": "props",
+    "bounds": {
+      "id": 10,
+      "minX": 29,
+      "minY": 405,
+      "maxX": 292,
+      "maxY": 737,
+      "count": 61965
+    }
+  },
+  "bell": {
+    "w": 159,
+    "h": 192,
+    "source": "props",
+    "bounds": {
+      "id": 9,
+      "minX": 383,
+      "minY": 393,
+      "maxX": 668,
+      "maxY": 738,
+      "count": 71688
+    }
+  },
+  "chest": {
+    "w": 192,
+    "h": 145,
+    "source": "props",
+    "bounds": {
+      "id": 13,
+      "minX": 728,
+      "minY": 494,
+      "maxX": 1046,
+      "maxY": 734,
+      "count": 69521
+    }
+  },
+  "kelp": {
+    "w": 165,
+    "h": 192,
+    "source": "props",
+    "bounds": {
+      "id": 8,
+      "minX": 1111,
+      "minY": 392,
+      "maxX": 1413,
+      "maxY": 743,
+      "count": 62550
+    }
+  },
+  "reef-block": {
+    "w": 192,
+    "h": 191,
+    "source": "props",
+    "bounds": {
+      "id": 19,
+      "minX": 12,
+      "minY": 812,
+      "maxX": 243,
+      "maxY": 1042,
+      "count": 50428
+    }
+  },
+  "reef-ledge": {
+    "w": 192,
+    "h": 79,
+    "source": "props",
+    "bounds": {
+      "id": 21,
+      "minX": 277,
+      "minY": 858,
+      "maxX": 704,
+      "maxY": 1034,
+      "count": 68477
+    }
+  },
+  "metal-block": {
+    "w": 192,
+    "h": 190,
+    "source": "props",
+    "bounds": {
+      "id": 20,
+      "minX": 737,
+      "minY": 813,
+      "maxX": 970,
+      "maxY": 1044,
+      "count": 50972
+    }
+  },
+  "catwalk": {
+    "w": 192,
+    "h": 74,
+    "source": "props",
+    "bounds": {
+      "id": 22,
+      "minX": 997,
+      "minY": 859,
+      "maxX": 1441,
+      "maxY": 1029,
+      "count": 63931
+    }
+  },
+  "jelly-0": {
+    "w": 96,
+    "h": 96,
+    "source": "enemies",
+    "bounds": {
+      "id": 4,
+      "minX": 71,
+      "minY": 92,
+      "maxX": 358,
+      "maxY": 379,
+      "count": 54592
+    }
+  },
+  "jelly-1": {
+    "w": 96,
+    "h": 88,
+    "source": "enemies",
+    "bounds": {
+      "id": 2,
+      "minX": 489,
+      "minY": 73,
+      "maxX": 826,
+      "maxY": 382,
+      "count": 62915
+    }
+  },
+  "jelly-2": {
+    "w": 96,
+    "h": 90,
+    "source": "enemies",
+    "bounds": {
+      "id": 1,
+      "minX": 922,
+      "minY": 41,
+      "maxX": 1288,
+      "maxY": 384,
+      "count": 75552
+    }
+  },
+  "jelly-3": {
+    "w": 96,
+    "h": 94,
+    "source": "enemies",
+    "bounds": {
+      "id": 3,
+      "minX": 1392,
+      "minY": 84,
+      "maxX": 1706,
+      "maxY": 391,
+      "count": 60624
+    }
+  },
+  "sub-0": {
+    "w": 96,
+    "h": 81,
+    "source": "enemies",
+    "bounds": {
+      "id": 7,
+      "minX": 37,
+      "minY": 517,
+      "maxX": 376,
+      "maxY": 803,
+      "count": 59044
+    }
+  },
+  "sub-1": {
+    "w": 96,
+    "h": 73,
+    "source": "enemies",
+    "bounds": {
+      "id": 8,
+      "minX": 479,
+      "minY": 517,
+      "maxX": 856,
+      "maxY": 803,
+      "count": 61090
+    }
+  },
+  "sub-2": {
+    "w": 96,
+    "h": 72,
+    "source": "enemies",
+    "bounds": {
+      "id": 9,
+      "minX": 922,
+      "minY": 517,
+      "maxX": 1305,
+      "maxY": 803,
+      "count": 62342
+    }
+  },
+  "sub-3": {
+    "w": 96,
+    "h": 80,
+    "source": "enemies",
+    "bounds": {
+      "id": 10,
+      "minX": 1370,
+      "minY": 517,
+      "maxX": 1712,
+      "maxY": 803,
+      "count": 59389
+    }
+  }
+}

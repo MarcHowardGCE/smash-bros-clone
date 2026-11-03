@@ -1,3 +1,4 @@
+import { dismissSplash } from "./helpers/flow";
 import { test, expect } from '@playwright/test';
 
 test('ledge grab, jump getup, and trump lifecycle', async ({ browser }) => {
@@ -9,6 +10,7 @@ test('ledge grab, jump getup, and trump lifecycle', async ({ browser }) => {
   const page2 = await ctx2.newPage();
 
   await page1.goto('http://localhost:5173');
+  await dismissSplash(page1);
   
   // Create room on page1
   await page1.click('#create-btn');
@@ -18,10 +20,15 @@ test('ledge grab, jump getup, and trump lifecycle', async ({ browser }) => {
   
   // Join on page2
   await page2.goto(roomUrl);
+  await dismissSplash(page2);
   
   // Both ready up
   await page1.click('#ready-btn');
   await page2.click('#ready-btn');
+  await page1.locator('.network-fighter-option[data-id="all-rounder"]').click();
+  await page2.locator('.network-fighter-option[data-id="all-rounder"]').click();
+  await page1.locator('#network-charselect-confirm-btn').click();
+  await page2.locator('#network-charselect-confirm-btn').click();
   
   // Wait for match to start
   console.log('Waiting for match to start');

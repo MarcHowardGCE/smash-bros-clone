@@ -33,6 +33,7 @@
  * `getStateHash()` to detect divergence between server and client simulations.
  */
 import {
+	advanceJabChain,
 	applyFastFall,
 	applyGravity,
 	applyDI,
@@ -289,6 +290,7 @@ export class GameEngine {
 				ledgeId: null,
 				activeHitbox: null,
 				currentMoveId: null,
+                jabQueued: false,
 				currentMove: undefined,
 				hitPlayerIds: new Set<string>(),
 					chargeFrames: 0,
@@ -340,7 +342,7 @@ export class GameEngine {
 	 */
 	// ─── TICK ENTRY POINT ──────────────────────────────────────────────────────
 	tickGame(inputs: Map<PlayerId, InputEvent | null>): GameState {
-		if (this.state.winnerId) {
+		if (this.state.matchPhase === "result") {
 			return this.state;
 		}
 
@@ -388,7 +390,7 @@ export class GameEngine {
 		this.state = {
 			tick: this.tick,
 			players,
-			matchPhase: winnerId ? "result" : "match",
+			matchPhase: alivePlayers.length <= 1 && Object.values(players).length > 1 ? "result" : "match",
 			winnerId,
 			ledges: ledgesSnapshot,
 		};
@@ -470,6 +472,30 @@ export class GameEngine {
 	 * @returns `true` if the player was found and repositioned; `false` if the ID
 	 *   does not exist in the current state.
 	 */
+  /** Permanently eliminate a departing player and release any grab/ledge ownership. */
+  forfeitPlayer(playerId: PlayerId): void {
+    const player = this.state.players[playerId];
+    if (!player || this.isMatchOver()) return;
+    this.state.players[playerId] = {
+      ...clonePlayer(player), stocks: 0, isKnockedOut: true, respawnTimer: 0,
+      activeHitbox: null, isGrabbing: false, grabbedPlayerId: null, ledgeId: null,
+    };
+    for (const [id, other] of Object.entries(this.state.players)) {
+      if (other.grabbedPlayerId === playerId || player.grabbedPlayerId === id) {
+        const state = other.isGrounded ? PlayerStateEnum.IDLE : PlayerStateEnum.AIRBORNE;
+        this.state.players[id] = { ...other, state, stateFrame: 0, isGrabbing: false, grabbedPlayerId: null };
+        this.fsmControllers.set(id, new FSMController(state));
+      }
+    }
+    for (const ledge of this.ledgeState.values()) {
+      if (ledge.occupantId === playerId) ledge.occupantId = null;
+    }
+    const alive = Object.values(this.state.players).filter(p => p.stocks > 0);
+    if (alive.length <= 1 && Object.keys(this.state.players).length > 1) {
+      this.state = { ...this.state, matchPhase: "result", winnerId: alive[0]?.id ?? null };
+    }
+  }
+
 	forcePosition(playerId: PlayerId, x: number, y: number): boolean {
 		const player = this.state.players[playerId];
 		if (!player) {
@@ -496,6 +522,7 @@ export class GameEngine {
 			landingLagFrames: 0,
 			activeHitbox: null,
 			currentMoveId: null,
+                jabQueued: false,
 			currentMove: undefined,
 			chargeFrames: 0,
 			isGrabbing: false,
@@ -516,7 +543,7 @@ export class GameEngine {
 	 * Once this returns `true`, `tickGame` becomes a no-op.
 	 */
 	isMatchOver(): boolean {
-		return this.state.winnerId !== null;
+		return this.state.matchPhase === "result";
 	}
 
 	/**
@@ -558,7 +585,7 @@ export class GameEngine {
 				(player) =>
 					`${player.slotIndex}:${Math.round(player.x)},${Math.round(player.y)},${Math.round(
 						player.vx,
-					)},${Math.round(player.vy)},${Math.round(player.percent)},${player.stocks},${player.state}`,
+					)},${Math.round(player.vy)},${Math.round(player.percent)},${player.stocks},${player.state},${player.stateFrame},${player.currentMoveId??""},${player.jabQueued?1:0}`,
 			)
 			.join("|");
 	}
@@ -608,6 +635,7 @@ export class GameEngine {
 				...player,
 				activeHitbox: null,
 				currentMoveId: null,
+                jabQueued: false,
 				currentMove: undefined,
 				chargeFrames: 0,
 				sdiInputCooldown: 0,
@@ -623,6 +651,7 @@ export class GameEngine {
 				respawnTimer: player.respawnTimer - 1,
 				activeHitbox: null,
 				currentMoveId: null,
+                jabQueued: false,
 				currentMove: undefined,
 				hitPlayerIds: new Set<string>(),
 				chargeFrames: 0,
@@ -687,6 +716,7 @@ export class GameEngine {
 					invincibilityFrames: PHYSICS.LEDGE_TRUMP_INVINCIBILITY_FRAMES,
 					activeHitbox: null,
 					currentMoveId: null,
+                jabQueued: false,
 					currentMove: undefined,
 					landingLagFrames: 0,
 					hitPlayerIds: new Set<string>(),
@@ -947,11 +977,15 @@ export class GameEngine {
 				player.state === PlayerStateEnum.GRAB_HOLDING) &&
 			previous.state !== player.state
 		) {
-		const moveId = this.selectMoveId(player, input);
+		const dashAttack=[PlayerStateEnum.DASH,PlayerStateEnum.RUN].includes(previous.state as PlayerStateEnum)&&player.state===PlayerStateEnum.ATTACK&&isPressed(input,INPUT_BITS.ATTACK)&&!isPressed(input,INPUT_BITS.SPECIAL)&&!isPressed(input,INPUT_BITS.GRAB)&&!isHeld(input,INPUT_BITS.SHIELD);
+  const floorAttack=previous.state===PlayerStateEnum.HARD_LANDING&&player.state===PlayerStateEnum.ATTACK;
+  const moveId = floorAttack?(player.floorOrientation==='down'?MoveId.FLOOR_ATTACK_DOWN:MoveId.FLOOR_ATTACK_UP):dashAttack?MoveId.DASH_ATTACK:this.selectMoveId(player, input);
 		const moveData = getMoveDataForCharacter(player.characterId, moveId);
 		nextPlayer = {
 			...nextPlayer,
 			currentMoveId: moveId,
+            isInvincible:floorAttack?true:nextPlayer.isInvincible,
+            invincibilityFrames:floorAttack?6:nextPlayer.invincibilityFrames,
 			currentMove: {
 				landingLag: moveData.landingLag,
 				isSpecial: moveData.isSpecial,
@@ -972,6 +1006,7 @@ export class GameEngine {
 				state: PlayerStateEnum.GRAB_HOLDING,
 				stateFrame: 0,
 				currentMoveId: null,
+                jabQueued: false,
 				currentMove: undefined,
 				hitPlayerIds: new Set<string>(),
 			};
@@ -996,6 +1031,7 @@ export class GameEngine {
 			nextPlayer = {
 				...nextPlayer,
 				currentMoveId: null,
+                jabQueued: false,
 				currentMove: undefined,
 				hitPlayerIds: new Set<string>(),
 				chargeFrames: 0,
@@ -1006,6 +1042,7 @@ export class GameEngine {
 			nextPlayer = {
 				...nextPlayer,
 				currentMoveId: null,
+                jabQueued: false,
 				currentMove: undefined,
 				chargeFrames: 0,
 				activeHitbox: null,
@@ -1022,7 +1059,9 @@ export class GameEngine {
 			};
 		}
 
-		return nextPlayer;
+		const finalJabPress=nextPlayer.state===PlayerStateEnum.IDLE&&previous.state===PlayerStateEnum.ATTACK&&[MoveId.JAB,MoveId.JAB_2].includes(previous.currentMoveId as MoveId)&&isPressed(input,INPUT_BITS.ATTACK)&&nextPlayer.isGrounded;
+  if(finalJabPress)nextPlayer={...nextPlayer,state:PlayerStateEnum.ATTACK,currentMoveId:previous.currentMoveId,stateFrame:previous.stateFrame+1};
+  return advanceJabChain(nextPlayer,previous.state===player.state||finalJabPress?input:null,previous.hitlagFramesRemaining>0);
 	}
 
 	/**
@@ -1062,6 +1101,10 @@ export class GameEngine {
 			tick: this.tick,
 		};
 		let nextPlayer = player;
+
+  if(player.state===PlayerStateEnum.GETUP)return {...player,vx:0,vy:0};
+  if(player.state===PlayerStateEnum.GETUP_ROLL){const speed=player.stateFrame>=4&&player.stateFrame<16?3:0;return checkPlatformCollision({...player,x:player.x+speed*(player.floorRollDirection??player.facing),y:player.y+.1,vy:.1,vx:speed*(player.floorRollDirection??player.facing),isGrounded:false},DEFAULT_STAGE);}
+  if(player.state===PlayerStateEnum.ATTACK&&[MoveId.FLOOR_ATTACK_UP,MoveId.FLOOR_ATTACK_DOWN].includes(player.currentMoveId as MoveId)&&player.isGrounded)return {...player,vx:0,vy:0};
 
 		if (isLedgeLockedState(player.state)) {
 			return nextPlayer;
@@ -1417,6 +1460,8 @@ export class GameEngine {
 		return {
 			...player,
 			state: PlayerStateEnum.HARD_LANDING,
+            floorOrientation:player.vx*player.facing>0?"down":"up",
+            hitstunFramesRemaining:0,
 			stateFrame: 0,
 			isInvincible: false,
 			invincibilityFrames: 0,
@@ -1447,6 +1492,8 @@ export class GameEngine {
 		player: PlayerState,
 		input: InputEvent | null,
 	): PlayerState {
+ if([PlayerStateEnum.HARD_LANDING,PlayerStateEnum.GETUP,PlayerStateEnum.GETUP_ROLL].includes(player.state as PlayerStateEnum)||[MoveId.FLOOR_ATTACK_UP,MoveId.FLOOR_ATTACK_DOWN].includes(player.currentMoveId as MoveId))return player;
+
 		if (player.isGrabbing) {
 			return player;
 		}
@@ -2215,6 +2262,7 @@ export class GameEngine {
 			hitPlayerIds: trackedHitIds,
 			activeHitbox: null,
 			currentMoveId: null,
+                jabQueued: false,
 			currentMove: undefined,
 			vx: 0,
 			vy: 0,
@@ -2231,6 +2279,7 @@ export class GameEngine {
 			vy: 0,
 			activeHitbox: null,
 			currentMoveId: null,
+                jabQueued: false,
 			currentMove: undefined,
 		};
 
@@ -2392,6 +2441,7 @@ export class GameEngine {
 			vy: 0,
 			activeHitbox: null,
 			currentMoveId: null,
+                jabQueued: false,
 			currentMove: undefined,
 		};
 
@@ -2610,6 +2660,7 @@ export class GameEngine {
 			sdiInputCooldown: 0,
 			activeHitbox: null,
 			currentMoveId: null,
+                jabQueued: false,
 			currentMove: undefined,
 			landingLagFrames: 0,
 			chargeFrames: 0,
@@ -2698,6 +2749,7 @@ export class GameEngine {
 				hitlagFramesRemaining: Math.max(player.hitlagFramesRemaining, hit.hitlagFrames),
 				activeHitbox: null,
 				currentMoveId: null,
+                jabQueued: false,
 				currentMove: undefined,
 				landingLagFrames: 0,
 				chargeFrames: 0,
@@ -2737,6 +2789,7 @@ export class GameEngine {
 			isGrounded: false,
 			activeHitbox: null,
 			currentMoveId: null,
+                jabQueued: false,
 			currentMove: undefined,
 				landingLagFrames: 0,
 				sdiInputCooldown: 0,
@@ -2782,6 +2835,7 @@ export class GameEngine {
 				asdiDriftAccumulated: 0,
 				activeHitbox: null,
 			currentMoveId: null,
+                jabQueued: false,
 			currentMove: undefined,
 			hitPlayerIds: new Set<string>(),
 			chargeFrames: 0,
@@ -2856,6 +2910,7 @@ export class GameEngine {
 					isFastFalling: false,
 					activeHitbox: null,
 					currentMoveId: null,
+                jabQueued: false,
 					currentMove: undefined,
 					landingLagFrames: 0,
 					sdiInputCooldown: 0,
@@ -2906,6 +2961,7 @@ export class GameEngine {
 				invincibilityFrames: MATCH_CONFIG.RESPAWN_INVINCIBILITY_FRAMES,
 				activeHitbox: null,
 			currentMoveId: null,
+                jabQueued: false,
 			currentMove: undefined,
 			chargeFrames: 0,
 			asdiDriftAccumulated: 0,
@@ -2970,3 +3026,5 @@ export class GameEngine {
 		return null;
 	}
 }
+
+

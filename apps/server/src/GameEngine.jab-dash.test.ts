@@ -1,0 +1,16 @@
+
+import{describe,it,expect}from'vitest';import{GameEngine}from'./GameEngine.js';import{getCharacterStats,INPUT_BITS,MoveId,type GameState,type PlayerState,type InputEvent}from'@smash/shared';
+const input=(pressed:number,held=pressed):InputEvent=>({playerId:'a',tick:0,seq:0,pressed,held,released:0});
+const make=(characterId:'all-rounder'|'abe-lincoln'|'swift'='all-rounder')=>{const e=new GameEngine({playerIds:['a','b'],characterIds:{a:characterId,b:'all-rounder'}}),s=(e as unknown as{state:GameState}).state;Object.assign(s.players.a!,{x:450,y:500-getCharacterStats(characterId).hurtboxRadius,state:"IDLE",stateFrame:0,vx:0,vy:0,isGrounded:true,facing:1,isInvincible:false,invincibilityFrames:0});Object.assign(s.players.b!,{x:900,y:472,state:"IDLE",stateFrame:0,vx:0,vy:0,isGrounded:true,isInvincible:false,invincibilityFrames:0});return{e,s};};
+const tick=(e:GameEngine,i:InputEvent|null=null)=>e.tickGame(new Map([['a',i],['b',null]]));
+describe('authoritative jab and dash attacks',()=>{
+for(const id of['all-rounder','abe-lincoln','swift']as const){
+it(id+' buffers both jab links and stops at finisher',()=>{const{e}=make(id);let a=tick(e,input(INPUT_BITS.ATTACK)).players.a!;expect(a.currentMoveId).toBe(MoveId.JAB);a=tick(e,input(INPUT_BITS.ATTACK)).players.a!;expect(a.jabQueued).toBe(true);for(let n=0;n<20&&a.currentMoveId!==MoveId.JAB_2;n++)a=tick(e).players.a!;expect(a.currentMoveId).toBe(MoveId.JAB_2);expect(a.stateFrame).toBe(0);a=tick(e,input(INPUT_BITS.ATTACK)).players.a!;for(let n=0;n<20&&a.currentMoveId!==MoveId.JAB_3;n++)a=tick(e).players.a!;expect(a.currentMoveId).toBe(MoveId.JAB_3);for(let n=0;n<30;n++)a=tick(e).players.a!;expect(a.currentMoveId).toBeNull();});
+it(id+' selects dash attack from dash and run and gives its own active hitbox',()=>{for(const state of['DASH','RUN']){const{e,s}=make(id);Object.assign(s.players.a!,{state,stateFrame:8,vx:4});let a=tick(e,input(INPUT_BITS.ATTACK,INPUT_BITS.RIGHT|INPUT_BITS.ATTACK)).players.a!;expect(a.currentMoveId).toBe(MoveId.DASH_ATTACK);expect(a.activeHitbox).toBeNull();for(let n=0;n<8;n++)a=tick(e).players.a!;expect(a.activeHitbox?.damage).toBe(8);}});
+}
+it('a new jab link can damage a previously tracked target exactly once',()=>{const{e,s}=make();Object.assign(s.players.a!,{state:'ATTACK',stateFrame:6,currentMoveId:MoveId.JAB,hitPlayerIds:new Set(['b'])});Object.assign(s.players.b!,{x:500});let next=tick(e,input(INPUT_BITS.ATTACK));expect(next.players.a!.currentMoveId).toBe(MoveId.JAB_2);expect(next.players.a!.hitPlayerIds.size).toBe(0);for(let n=0;n<12;n++)next=tick(e);expect(next.players.b!.percent).toBe(3);});
+it('accepts a fresh link press on the final jab recovery tick',()=>{const{e,s}=make();Object.assign(s.players.a!,{state:'ATTACK',stateFrame:14,currentMoveId:MoveId.JAB});expect(tick(e,input(INPUT_BITS.ATTACK)).players.a!.currentMoveId).toBe(MoveId.JAB_2);});
+it('held attack does not auto-chain, and an interrupted buffer is cleared',()=>{const{e,s}=make();tick(e,input(INPUT_BITS.ATTACK));let a:PlayerState=s.players.a!;for(let n=0;n<22;n++){a=tick(e,input(0,INPUT_BITS.ATTACK)).players.a!;expect(a.currentMoveId).not.toBe(MoveId.JAB_2);}Object.assign((e as unknown as{state:GameState}).state.players.a!,{state:'HITSTUN',stateFrame:0,jabQueued:true,hitstunFramesRemaining:5});expect(tick(e).players.a!.jabQueued).toBe(false);});
+});
+
+

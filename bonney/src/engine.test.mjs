@@ -142,3 +142,17 @@ test('partial flight uses its shorter fuel budget and still recharges on landing
  for(let i=0;i<120&&g.player.ability==='active';i++)update(g,1/120);
  assert.equal(g.player.ability,'cooldown');assert.equal(g.player.cooldownMs,5000);
 });
+
+
+test('an equipped power absorbs the first enemy hit at every age',()=>{
+ for(const power of ['egghead','pirateCaptain','gear'])for(const hits of [1,2,3]){
+  const g=createGame();equipPower(g,power);g.player.hits=hits;
+  damagePlayer(g);assert.equal(g.player.power,'none');assert.equal(g.player.hits,hits);assert.equal(g.status,'playing');assert.equal(g.player.attackMs,0);assert.equal(g.player.activeMs,0);
+  assert.equal(damagePlayer(g),false);g.player.invulnerableMs=0;damagePlayer(g);assert.equal(g.player.hits,hits-1);
+ }
+});
+test('powered adult takes four enemy hits to defeat and cannot immediately recollect a pickup',()=>{
+ const g=createGame();g.enemies=[];equipPower(g,'gear');
+ for(let n=0;n<4;n++){g.player.invulnerableMs=0;damagePlayer(g);assert.equal(g.status,n===3?'dead':'playing');}
+ const h=createGame();h.enemies=[];equipPower(h,'egghead');Object.assign(h.player,{x:120,y:148});damagePlayer(h);update(h,1/120);assert.equal(h.player.power,'none');assert.ok(h.player.pickupLockMs>0);
+});

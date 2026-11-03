@@ -120,3 +120,18 @@ test('crane keepsake and high customs lever are physically reachable using fligh
   update(h,1/120,{interactPressed:true});assert.equal(h.latches.customsLever,true);
  }
 });
+
+
+test('closed gate fields prevent forward movement at all reachable heights and ages',()=>{
+ for(const hits of [1,2,3])for(const y of [-420,-200,100,220,300,372])for(const index of [0,1]){
+  const g=quiet(),s=g.gates[index];g.enemies=[];g.crates=[];
+  Object.assign(g.player,{x:s.x-40,y,hits,power:'gear',grounded:false,vy:0});
+  tick(g,35,{right:true,runHeld:true});assert.ok(g.player.x+g.player.w<=s.x+.001,'gate '+index+' height '+y);
+ }
+});
+test('completed gate puzzle removes the entire field and permits aerial passage',()=>{
+ for(const index of [0,1]){
+  const g=quiet(),s=g.gates[index];g.enemies=[];g.crates=[];for(const id of s.requires)g.latches[id]=true;
+  Object.assign(g.player,{x:s.x-40,y:100,grounded:false,vy:0});tick(g,80,{right:true});assert.ok(g.player.x>s.x+s.w);
+ }
+});

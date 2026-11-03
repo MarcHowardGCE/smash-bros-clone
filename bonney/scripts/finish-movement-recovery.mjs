@@ -1,0 +1,21 @@
+import fs from 'node:fs';
+const edit=(p,a,b)=>{let s=fs.readFileSync(p,'utf8').replaceAll('\r\n','\n');if(!s.includes(a))throw Error('Missing '+p+' '+a);fs.writeFileSync(p,s.replaceAll(a,b));};
+edit('src/game.mjs'," camera=Math.max(0,Math.min(game.width-384,p.x-104));\n cameraY=game.mode==='full'?Math.max(game.secretLaunchEligible?-500:-38,Math.min(game.height-216,p.y-cameraTarget(game))):0;", " cameraState=followCamera(game,cameraState,dt);camera=cameraState.x;cameraY=cameraState.y;\n game.viewBounds={x:camera,y:cameraY,scene:game.scene||'harbor'};");
+edit('src/game.mjs',"hiddenCloudBank(ctx,images,game,camera)","hiddenCloudBank(ctx,images,game,camera,text)");
+edit('src/game.mjs'," render();requestAnimationFrame(loop);", " render(dt);requestAnimationFrame(loop);");
+edit('src/game.mjs',"get renderedFrames(){return frame;}","get camera(){return {x:camera,y:cameraY};},get renderedFrames(){return frame;}");
+edit('src/cloud-level.mjs'," if(g.secretLaunchEligible&&", " if(g.skyUnlocked&&input.interactPressed&&p.grounded&&p.x>=2944&&p.x<=3040&&Math.abs(p.y+p.h-144)<8){enterCloud(g);return;}\n if(g.secretLaunchEligible&&");
+edit('src/cloud-level.mjs',"Secret discovered: Skyward Egghead!", "Skyward Egghead! Try the shimmering cloud over safe ground.");
+edit('src/cloud-art.mjs',"export function hiddenCloudBank(c,images,g,camera){", "export function hiddenCloudBank(c,images,g,camera,text){");
+edit('src/cloud-art.mjs'," if(g.scene==='cloud')return;", " if(g.scene==='cloud')return;\n if(g.skyUnlocked){c.drawImage(images.skyFan,3008-camera,128,20,16);c.fillStyle='#91e6ef';c.fillRect(2944-camera,142,96,2);if(text&&Math.abs(g.player.x-2992)<96&&g.player.y<180)text('E: RETURN TO SKY',2948-camera,110,'#a7eaff',6);}");
+edit('src/cloud-data.mjs',"ledge(1168,240,64,'fading')", "ledge(320,184,64,'fading'),ledge(1168,240,64,'fading')");
+edit('src/cloud-data.mjs',"coinsList:[[240,198]", "coinsList:[[344,158],[240,198]");
+edit('src/cloud-data.mjs',"{x:32,y:224,power:'egghead'},{x:1480", "{x:32,y:224,power:'egghead'},{x:1104,y:256,power:'egghead'},{x:1480");
+edit('src/underwater-data.mjs',"{x:32,y:1056,power:'none'},{x:1920", "{x:32,y:1056,power:'none'},{x:832,y:1088,power:'none'},{x:1920");
+edit('src/underwater-data.mjs',"{x:1920,y:1056,power:'none'},{x:3888", "{x:1920,y:1056,power:'none'},{x:2816,y:1088,power:'none'},{x:3888");
+edit('index.html',"<kbd>Space</kbd> Jump", "<kbd>Space</kbd> Tap for a short jump; hold for height");
+edit('index.html',"grounded jumps rise higher.", "hold Space for high grounded jumps, or tap for a low hop.");
+edit('server.mjs',"(underwater-data|", "(player-body|camera|underwater-data|");
+// Browser death fixtures must target the visible baby torso, not space above its head.
+edit('scripts/full-level-browser.mjs',"y:p.y+5,w:6", "y:p.y+16,w:6");
+let pkg=JSON.parse(fs.readFileSync('package.json'));pkg.scripts.check+=' && node --check src/player-body.mjs && node --check src/camera.mjs';fs.writeFileSync('package.json',JSON.stringify(pkg,null,2)+'\n');

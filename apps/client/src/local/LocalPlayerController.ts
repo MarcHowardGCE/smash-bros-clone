@@ -7,8 +7,7 @@
  */
 import type { InputEvent, PlayerId } from '@smash/shared';
 import { InputManager } from '../input/InputManager.js';
-import { DEFAULT_KEYMAP_P1, convertPersistedKeymap } from '../input/keymaps.js';
-import { SettingsStore } from '../settings/SettingsStore.js';
+import { loadSlotKeymap } from '../input/keymaps.js';
 import type { LocalPlayerConfig } from './types.js';
 
 /**
@@ -25,7 +24,7 @@ export class LocalPlayerController {
   /**
    * Create a human player controller.
    *
-   * Loads the keymap from SettingsStore if available, else falls back to DEFAULT_KEYMAP_P1.
+   * Loads Controls-screen bindings for this seat, then legacy P1 settings or the supplied layout.
    *
    * @param config - Player config including playerId, slotIndex, keymap, and optional gamepad source
    */
@@ -33,19 +32,7 @@ export class LocalPlayerController {
     this.playerId = config.playerId;
     this.slotIndex = config.slotIndex;
 
-    // Load keymap from SettingsStore; fall back to config.keymap or DEFAULT_KEYMAP_P1
-    let keymap = config.keymap;
-    try {
-      const settings = new SettingsStore();
-      settings.load();
-      const persistedKeymap = settings.get('keymapP1');
-      if (persistedKeymap && Object.keys(persistedKeymap).length > 0) {
-        keymap = convertPersistedKeymap(persistedKeymap);
-      }
-    } catch (error) {
-      // SettingsStore load failed; gracefully fall back to config keymap
-      console.warn('Failed to load keymap from SettingsStore, using default:', error);
-    }
+    const keymap = loadSlotKeymap(config.slotIndex, config.keymap);
 
     this.inputManager = new InputManager(
       keymap,

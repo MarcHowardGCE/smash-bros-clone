@@ -1,3 +1,4 @@
+import { dismissSplash, chooseFirstStage } from "./helpers/flow";
 import { expect, test, type Page } from "@playwright/test";
 
 type Boundary = "left" | "right" | "top" | "bottom";
@@ -60,12 +61,14 @@ const BOUNDARY_PROBES: Record<
 
 async function startLocalMatch(page: Page): Promise<void> {
 	await page.goto("/");
+  await dismissSplash(page);
 	await page.waitForSelector("#local-play-btn", { timeout: 10_000 });
 	await page.click("#local-play-btn");
 	await page.waitForSelector("#lps-start-btn", { timeout: 10_000 });
 	await page.click("#lps-start-btn");
 	await page.keyboard.press("Enter");
 	await page.keyboard.press("KeyU");
+  await chooseFirstStage(page);
 	await page.waitForFunction(
 		() => {
 			const debug = (

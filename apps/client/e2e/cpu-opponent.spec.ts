@@ -112,8 +112,7 @@ test('CPU opponent acts in a real local match', async ({ page }) => {
   await page.keyboard.press('Enter');
   
   // Select stage (wait for stage selection screen and press Enter to select first stage)
-  await page.waitForTimeout(500);
-  await page.keyboard.press('Enter');
+  await page.locator('[data-stage-idx="0"]').click();
 
   await page.waitForFunction(() => {
     const hudPanel = document.getElementById('hud-panel');
@@ -187,8 +186,7 @@ test('CPU jumps upward to reach opponent on higher platform', async ({ page }) =
   await page.keyboard.press('Enter');
   
   // Select stage (wait for stage selection screen and press Enter to select first stage)
-  await page.waitForTimeout(500);
-  await page.keyboard.press('Enter');
+  await page.locator('[data-stage-idx="0"]').click();
 
   await page.waitForFunction(() => {
     const hudPanel = document.getElementById('hud-panel');

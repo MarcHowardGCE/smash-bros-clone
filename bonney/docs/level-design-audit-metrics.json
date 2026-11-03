@@ -1,0 +1,101 @@
+{
+  "date": "2026-11-02",
+  "method": "Source inventory and isolated real-physics probes. Timing estimates exclude fights, vertical traversal, puzzles and searching; they are not measured completion times.",
+  "routes": [
+    {
+      "name": "harbor",
+      "width": 6400,
+      "height": 480,
+      "districts": 6,
+      "platformRecords": 150,
+      "normalEnemies": 16,
+      "enemyTypes": [
+        "patrol",
+        "lookout",
+        "gull",
+        "shield"
+      ],
+      "pickups": 16,
+      "coins": 68,
+      "treasures": 3,
+      "checkpoints": 3,
+      "gates": 2,
+      "switches": 3,
+      "hazards": 4,
+      "minimumPlatformY": 144,
+      "unpoweredRunSecondsAcrossWidth": 38.1,
+      "largestHorizontalCheckpointInterval": 2000,
+      "tapJump": {
+        "height": 41.72,
+        "airSeconds": 0.667
+      },
+      "heldJump": {
+        "height": 41.72,
+        "airSeconds": 0.667
+      }
+    },
+    {
+      "name": "cloud",
+      "width": 3840,
+      "height": 480,
+      "districts": 4,
+      "platformRecords": 20,
+      "normalEnemies": 8,
+      "enemyTypes": [
+        "patrol",
+        "lookout",
+        "shield"
+      ],
+      "pickups": 6,
+      "coins": 28,
+      "treasures": 3,
+      "checkpoints": 3,
+      "gates": 1,
+      "switches": 1,
+      "hazards": 4,
+      "minimumPlatformY": 152,
+      "unpoweredRunSecondsAcrossWidth": 22.9,
+      "largestHorizontalCheckpointInterval": 1464,
+      "tapJump": {
+        "height": 41.72,
+        "airSeconds": 0.667
+      },
+      "heldJump": {
+        "height": 41.72,
+        "airSeconds": 0.667
+      }
+    },
+    {
+      "name": "underwater",
+      "width": 4608,
+      "height": 1152,
+      "districts": 5,
+      "platformRecords": 31,
+      "normalEnemies": 14,
+      "enemyTypes": [
+        "patrol",
+        "shield",
+        "jelly",
+        "lookout"
+      ],
+      "pickups": 0,
+      "coins": 35,
+      "treasures": 3,
+      "checkpoints": 3,
+      "gates": 2,
+      "switches": 4,
+      "hazards": 3,
+      "minimumPlatformY": 256,
+      "unpoweredRunSecondsAcrossWidth": 44.2,
+      "largestHorizontalCheckpointInterval": 1968,
+      "tapJump": {
+        "height": 143.86,
+        "airSeconds": 2.167
+      },
+      "heldJump": {
+        "height": 143.86,
+        "airSeconds": 2.167
+      }
+    }
+  ]
+}

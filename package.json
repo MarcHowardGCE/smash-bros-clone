@@ -5,12 +5,14 @@
   "scripts": {
     "build": "pnpm -r build",
     "dev": "concurrently \"pnpm -F @smash/client dev\" \"pnpm -F @smash/server dev\"",
-    "test": "pnpm -F @smash/engine test && pnpm -F @smash/server test && pnpm -F @smash/client test",
-    "test:e2e": "playwright test apps/client/e2e/todo-12-swap-proof.spec.ts apps/client/e2e/f3-visual-baselines.spec.ts",
-    "lint": "pnpm -r lint",
+    "test": "pnpm -r --workspace-concurrency=1 test",
+    "test:e2e": "playwright test",
+    "lint": "pnpm typecheck",
     "start": "node apps/server/dist/index.js",
     "deploy:render": "echo 'Push to GitHub and connect repo to Render.com'",
-    "deploy:fly": "fly deploy --config fly.toml"
+    "deploy:fly": "fly deploy --config fly.toml",
+    "test:e2e:visual": "playwright test apps/client/e2e/todo-12-swap-proof.spec.ts apps/client/e2e/f3-visual-baselines.spec.ts",
+    "typecheck": "pnpm -r typecheck"
   },
   "devDependencies": {
     "@playwright/test": "1.61.1",

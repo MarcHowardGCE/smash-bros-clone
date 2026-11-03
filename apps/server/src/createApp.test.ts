@@ -278,6 +278,16 @@ describe("createApp socket integration", () => {
 
 		expect(decoded.players[playerAId]?.characterId).toBe("abe-lincoln");
 		expect(decoded.players[playerBId]?.characterId).toBe("all-rounder");
+    const pausedA = waitForEvent(clientA, "game:paused");
+    const pausedB = waitForEvent(clientB, "game:paused");
+    clientA.emit("game:pause");
+    await Promise.all([pausedA, pausedB]);
+    const resumed = waitForEvent(clientA, "game:resumed");
+    clientB.emit("game:resume"); await resumed;
+    const matchOver = waitForEvent<{ winnerId: string }>(clientA, "game:over");
+    clientB.emit("room:leave");
+    expect((await matchOver).winnerId).toBe(playerAId);
+    expect(roomManager.getRoom(roomCode)?.players.has(playerBId)).toBe(false);
 	});
 
 	it("resets to LOBBY and allows rejoin when a player disconnects during CHARACTER_SELECT", async () => {
@@ -570,7 +580,9 @@ describe("createApp socket integration", () => {
 			{ roomCode, playerId: playerBId },
 		);
 		expect(rejoinResult.ok).toBe(false);
-		expect(rejoinResult.error).toBe("Rejoin grace window expired");
+		expect(rejoinResult.error).toBe("Player not in room");
+    expect(roomManager.getRoom(roomCode)?.players.has(playerBId)).toBe(false);
+    expect(roomManager.getRoom(roomCode)?.phase).toBe("RESULT");
 
 		sockets.push(clientBReconnected);
 	}, 40000); // Extended timeout for grace window expiry test

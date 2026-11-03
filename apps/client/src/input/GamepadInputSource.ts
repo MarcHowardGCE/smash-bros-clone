@@ -26,7 +26,7 @@ export class GamepadInputSource {
   private gamepadPoller: GamepadPoller;
   private gamepadIndex: number;
 
-  constructor(poller: GamepadPoller, gamepadIndex: number) {
+  constructor(poller: GamepadPoller, gamepadIndex: number, private readonly resolveIndex?: () => number) {
     this.gamepadPoller = poller;
     this.gamepadIndex = gamepadIndex;
   }
@@ -39,7 +39,7 @@ export class GamepadInputSource {
    */
   getHeldBits(): InputBitmask {
     const pollResult = this.gamepadPoller.poll();
-    const gamepadState = pollResult.get(this.gamepadIndex);
+    const gamepadState = pollResult.get(this.resolveIndex?.() ?? this.gamepadIndex);
 
     // Disconnected gamepad: return 0 gracefully
     if (!gamepadState) {

@@ -122,3 +122,11 @@ export const MOVE_DOWN_SMASH: MoveData = {
   landingLag: 0, isAerial: false, isGrab: false, isSpecial: false,
   chargeMax: 60,
 };
+
+/** Initial custom-roster tuning; shared timing across all three fighters. */
+export const MOVE_JAB_2:MoveData={...MOVE_JAB,id:MoveId.JAB_2,hitboxPerActiveFrame:Array.from({length:2},()=>({...jabHitbox,offsetX:48,damage:3}))};
+export const MOVE_JAB_3:MoveData={...MOVE_JAB,id:MoveId.JAB_3,startupFrames:4,activeFrames:3,recoveryFrames:18,hitboxPerActiveFrame:Array.from({length:3},()=>({...jabHitbox,offsetX:56,radius:24,damage:5,baseKnockback:5,knockbackGrowth:65,knockbackAngle:35,hitstunFrames:16}))};
+export const MOVE_DASH_ATTACK:MoveData={...MOVE_JAB,id:MoveId.DASH_ATTACK,startupFrames:8,activeFrames:5,recoveryFrames:20,hitboxPerActiveFrame:Array.from({length:5},()=>({...jabHitbox,offsetX:55,radius:26,damage:8,baseKnockback:6,knockbackGrowth:70,knockbackAngle:40,hitlagFrames:5,hitstunFrames:18}))};
+
+export const MOVE_FLOOR_ATTACK_UP:MoveData={...MOVE_JAB,id:MoveId.FLOOR_ATTACK_UP,startupFrames:6,activeFrames:4,recoveryFrames:14,hitboxPerActiveFrame:Array.from({length:4},(_,i)=>({...jabHitbox,offsetX:i<2?45:-45,offsetY:12,radius:26,damage:7,baseKnockback:5,knockbackGrowth:55,hitlagFrames:4,hitstunFrames:14}))};
+export const MOVE_FLOOR_ATTACK_DOWN:MoveData={...MOVE_FLOOR_ATTACK_UP,id:MoveId.FLOOR_ATTACK_DOWN};

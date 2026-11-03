@@ -26,12 +26,12 @@ import type {
   StateSnapshot,
   HitEventData,
 } from "@smash/shared";
+import type { GamepadInputSource } from "../input/GamepadInputSource.js";
 import { InputManager } from "../input/InputManager.js";
 import {
   DEFAULT_KEYMAP_P1,
-  convertPersistedKeymap,
+  loadSlotKeymap,
 } from "../input/keymaps.js";
-import { SettingsStore } from "../settings/SettingsStore.js";
 import {
   InterpolationBuffer,
   type RenderState,
@@ -54,6 +54,8 @@ extensionCodec.register({
 
 export interface GameClientOptions {
   serverUrl: string;
+  gamepadSource?: GamepadInputSource;
+  onRejoined?: () => void;
   onConnected?: () => void;
   onPlayerAssigned?: (playerId: PlayerId, roomCode: string) => void;
   onRenderState: (state: RenderState, localPlayerId: PlayerId) => void;
@@ -102,6 +104,8 @@ export class GameClient {
   private readonly options: GameClientOptions;
   private rafHandle: number | null = null;
   private paused = false;
+  private lastInputTime: number | null = null;
+  private inputAccumulator = 0;
 
   constructor(options: GameClientOptions) {
     this.options = options;
@@ -110,21 +114,9 @@ export class GameClient {
       reconnection: true,
     });
 
-    // Load keymap from SettingsStore; fall back to DEFAULT_KEYMAP_P1
-    let keymap = DEFAULT_KEYMAP_P1;
-    try {
-      const settings = new SettingsStore();
-      settings.load();
-      const persistedKeymap = settings.get('keymapP1');
-      if (persistedKeymap && Object.keys(persistedKeymap).length > 0) {
-        keymap = convertPersistedKeymap(persistedKeymap);
-      }
-    } catch (error) {
-      // SettingsStore load failed; gracefully fall back to DEFAULT_KEYMAP_P1
-      console.warn('Failed to load keymap from SettingsStore, using default:', error);
-    }
+    const keymap = loadSlotKeymap(0, DEFAULT_KEYMAP_P1);
 
-    this.inputManager = new InputManager(keymap);
+    this.inputManager = new InputManager(keymap, '', options.gamepadSource);
     this.setupSocketHandlers();
   }
 
@@ -137,6 +129,7 @@ export class GameClient {
    * all subsequent input events and snapshot lookups are keyed to the right slot.
    */
   createRoom(): void {
+    this.inputManager.setKeymap(loadSlotKeymap(0, DEFAULT_KEYMAP_P1));
     this.socket.emit(
       "room:create",
       (data: { roomCode: string; playerId: PlayerId; slotIndex: number }) => {
@@ -167,6 +160,7 @@ export class GameClient {
    * ignored so the caller can surface it through UI state instead.
    */
   joinRoom(roomCode: string): void {
+    this.inputManager.setKeymap(loadSlotKeymap(0, DEFAULT_KEYMAP_P1));
     this.socket.emit(
       "room:join",
       roomCode,
@@ -240,7 +234,6 @@ export class GameClient {
   /** Requests a pause from the server. No-op if already paused. */
   emitPause(): void {
     if (this.paused) return;
-    this.paused = true;
     this.socket.emit("game:pause");
   }
 
@@ -248,6 +241,18 @@ export class GameClient {
   emitResume(): void {
     if (!this.paused) return;
     this.socket.emit("game:resume");
+  }
+
+  /** Deliberate departure forfeits immediately, unlike a transient transport drop. */
+  leaveRoom(): void {
+    this.socket.emit("room:leave");
+    try { sessionStorage.removeItem("smash:rejoin"); } catch {}
+    this.stopRenderLoop();
+    this.interpolationBuffer.clear();
+    this.predictor = null;
+    this.myRoomCode = null;
+    this.myPlayerId = null;
+    this.paused = false;
   }
 
   /** Stops the render loop and closes the socket connection. */
@@ -279,7 +284,7 @@ export class GameClient {
 
     const event: InputEvent = {
       tick: this.currentTick,
-      seq: Date.now(),
+      seq: this.inputManager.pollInput(true)!.seq,
       playerId: this.myPlayerId,
       held: input.held,
       pressed: input.pressed,
@@ -299,33 +304,37 @@ export class GameClient {
     this.socket.on("connect", () => {
       console.log("[client] connected to server:", this.socket.id);
 
-      // Attempt rejoin if we have persisted session identity
-      const rejoinData = sessionStorage.getItem("smash:rejoin");
-      if (rejoinData) {
-        try {
-          const { roomCode, playerId } = JSON.parse(rejoinData);
-          if (roomCode && playerId) {
-            console.log("[client] attempting rejoin:", { roomCode, playerId });
-            this.socket.emit(
-              "room:rejoin",
-              { roomCode, playerId },
-              (response: { ok: boolean; error?: string }) => {
-                if (response.ok) {
-                  console.log("[client] rejoin successful");
-                } else {
-                  console.log("[client] rejoin failed:", response.error);
-                  // Clear persisted session if rejoin fails (grace window expired, etc.)
-                  sessionStorage.removeItem("smash:rejoin");
-                }
-              },
-            );
-          }
-        } catch (e) {
-          console.error("[client] failed to parse rejoin data:", e);
-          sessionStorage.removeItem("smash:rejoin");
+      let saved: { roomCode: string; playerId: PlayerId } | null = null;
+      try {
+        const raw = sessionStorage.getItem("smash:rejoin");
+        if (raw) {
+          const value = JSON.parse(raw);
+          if (typeof value.roomCode === "string" && typeof value.playerId === "string") saved = value;
         }
-      }
-      this.options.onConnected?.();
+      } catch { /* Storage may be unavailable. */ }
+      if (!saved) { this.options.onConnected?.(); return; }
+      const identity = saved;
+      this.socket.emit("room:rejoin", identity,
+        (response: { ok: boolean; phase?: string; paused?: boolean }) => {
+          if (!response.ok) {
+            try { sessionStorage.removeItem("smash:rejoin"); } catch {}
+            this.options.onConnected?.();
+            return;
+          }
+          this.myPlayerId = identity.playerId;
+          this.myRoomCode = identity.roomCode;
+          this.inputManager.setPlayerId(identity.playerId);
+          this.options.onPlayerAssigned?.(identity.playerId, identity.roomCode);
+          this.paused = response.paused ?? false;
+          this.options.onRejoined?.();
+          if (response.phase === "MATCH") {
+            this.options.onMatchPhaseChange("match");
+            this.startRenderLoop();
+            if (this.paused) this.options.onPaused?.();
+          } else {
+            this.options.onConnected?.();
+          }
+        });
     });
 
     this.socket.on("connect_error", (error) => {
@@ -372,6 +381,7 @@ export class GameClient {
             ? binaryData
             : new Uint8Array(binaryData);
         const snapshot = decode(data, { extensionCodec }) as StateSnapshot;
+        this.inputManager.setSequenceNumber((snapshot.lastConfirmedSeq[this.myPlayerId ?? ''] ?? -1) + 1);
         this.currentTick = snapshot.tick;
         this.inputManager.setCurrentTick(this.currentTick);
         this.interpolationBuffer.pushSnapshot(snapshot);
@@ -413,7 +423,8 @@ export class GameClient {
       this.options.onResumed?.();
     });
 
-    this.socket.on("game:over", (data: { winnerId: PlayerId }) => {
+    this.socket.on("game:over", (data: { winnerId: PlayerId | null }) => {
+      if (!this.myRoomCode) return;
       console.log("[client] match over, winner:", data.winnerId);
       this.paused = false;
       this.options.onMatchPhaseChange("result", data.winnerId);
@@ -460,6 +471,8 @@ export class GameClient {
   }
 
   private startRenderLoop(): void {
+    this.lastInputTime = null;
+    this.inputAccumulator = 0;
     if (this.rafHandle !== null) {
       return;
     }
@@ -479,16 +492,25 @@ export class GameClient {
     }
   }
 
-  private renderTick(): void {
+  private renderTick(now = performance.now()): void {
     if (!this.myPlayerId) {
       return;
     }
 
-    if (!this.paused) {
-      const inputEvent = this.inputManager.pollInput();
-      if (inputEvent) {
-        this.predictor?.onInput(inputEvent);
-        this.sendInput(inputEvent);
+    const stepMs = 1000 / 60;
+    const elapsed = this.lastInputTime === null ? stepMs : Math.max(0, Math.min(100, now - this.lastInputTime));
+    this.lastInputTime = now;
+    if (this.paused) {
+      this.inputAccumulator = 0;
+    } else {
+      this.inputAccumulator += elapsed;
+      while (this.inputAccumulator + 1e-7 >= stepMs) {
+        const inputEvent = this.inputManager.pollInput(true);
+        if (inputEvent) {
+          this.predictor?.onInput(inputEvent);
+          this.sendInput(inputEvent);
+        }
+        this.inputAccumulator -= stepMs;
       }
     }
 
@@ -520,6 +542,8 @@ export class GameClient {
         isShielding: predictedLocal.isShielding,
         shieldHealth: predictedLocal.shieldHealth,
         currentMoveId: predictedLocal.currentMoveId,
+        characterId: predictedLocal.characterId,
+ floorOrientation:predictedLocal.floorOrientation,floorRollDirection:predictedLocal.floorRollDirection,isFastFalling:predictedLocal.isFastFalling,airDodgeDirection:predictedLocal.airDodgeDirection,hasDoubleJump:predictedLocal.hasDoubleJump,isTumbling:predictedLocal.isTumbling,chargeFrames:predictedLocal.chargeFrames,isGrabbing:predictedLocal.isGrabbing,grabbedPlayerId:predictedLocal.grabbedPlayerId,ledgeId:predictedLocal.ledgeId,
       });
     }
 

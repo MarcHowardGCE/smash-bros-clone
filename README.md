@@ -199,3 +199,5 @@ Remaining engine integration: 73 prepared clips per fighter still need mappings,
 Validation: 37 browser checks passed, including four actual clients, movement, pause and refresh/rejoin; 275 engine tests passed (one skipped), 9 combat server tests, 10 ground-recovery server tests, and 37 ledge tests (13 skipped) passed. Three focused client tests and TypeScript checks passed. Source drawing review remains unchanged. Remaining priorities: shield reactions, footstools, helpless/recovery lockout, and remaining movement/presentation hooks. Prepared clips include overlapping variants, not 62 separate mechanics.
 
 Docker dependency installation uses pnpm 11's explicit allowBuilds policy in pnpm-workspace.yaml. The locked Linux x64 FFmpeg installer (4.1.0), pulled in by the asset tooling, is approved there; keep this policy in the Docker build context. Unreviewed dependency scripts remain blocked.
+
+Sprite artwork is now enabled by default on ordinary game URLs, including production deployments. Use ?renderer=legacy only to explicitly select the old articulated renderer; ?renderer=fullbody remains compatible. Missing clips retain the existing fallback.

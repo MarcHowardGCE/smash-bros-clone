@@ -16,9 +16,9 @@ export interface FullBodyPilotAssets {
  readonly characters: Partial<Record<CharacterId, Partial<Record<PilotClip, LoadedClip>>>>;
 }
 
-/** Opt-in and incremental: a missing clip uses the existing articulated renderer. */
+/** Default sprite renderer: a missing clip uses the existing articulated renderer. */
 export async function preloadFullBodyPilot(): Promise<FullBodyPilotAssets | undefined> {
- if(new URLSearchParams(window.location.search).get('renderer')!=='fullbody')return undefined;
+ if(new URLSearchParams(window.location.search).get('renderer')==='legacy')return undefined;
  try {
   const response=await fetch('/fighter-art-pilot-v1/manifest.json',{signal:AbortSignal.timeout(5000)});
   if(!response.ok)throw new Error('Pilot manifest unavailable');
@@ -104,5 +104,6 @@ export class FullBodyPilot {
   return true;
  }
 }
+
 
 

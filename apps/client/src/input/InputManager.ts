@@ -30,6 +30,9 @@ export interface InputManagerOptions {
 export class InputManager {
   private currentHeld: InputBitmask = 0;
   private lastHeld: InputBitmask = 0;
+  private lastAnalogActive=false;
+  private lastJumpButtons=0;
+  private pendingTaunts:InputBitmask=0;
   private seqCounter: number = 0;
   private playerId: PlayerId = '';
   private currentTick: number = 0;
@@ -121,12 +124,13 @@ export class InputManager {
     window.addEventListener('blur', this.resetHeld);
   }
 
-  private readonly resetHeld = (): void => { this.currentHeld = 0; };
+  private readonly resetHeld = (): void => { this.currentHeld = 0;this.pendingTaunts=0; };
 
   private readonly onKeyDown = (e: KeyboardEvent): void => {
     const bit = this.keyToBit(e.code);
     if (bit !== 0) {
       e.preventDefault();
+      if(!(this.currentHeld&bit)&&(bit&(INPUT_BITS.TAUNT_UP|INPUT_BITS.TAUNT_SIDE|INPUT_BITS.TAUNT_DOWN)))this.pendingTaunts|=bit;
       this.currentHeld |= bit;
 
       // Track double-tap smash detection
@@ -210,9 +214,12 @@ export class InputManager {
   pollInput(force = false): InputEvent | null {
     // Merge keyboard and gamepad bits BEFORE computing diff (critical for correctness)
     let gamepadBits: InputBitmask = 0;
+    let sticks:Partial<InputEvent>={};
     if (this.gamepadSource) {
       try {
-        gamepadBits = this.gamepadSource.getHeldBits();
+        const sample=this.gamepadSource.sampleInput?.();
+        gamepadBits=sample?.held??this.gamepadSource.getHeldBits();
+        if(sample){const {held:_,connected,...axes}=sample;if(connected!==false)sticks=axes;}
       } catch (error) {
         // Gamepad source threw (e.g., permission denied, device error)
         // Gracefully degrade: treat as no gamepad input
@@ -225,16 +232,20 @@ export class InputManager {
     const held = this.currentHeld | gamepadBits;
     const prev = this.lastHeld;
 
-    const pressed = held & ~prev;   // newly pressed this frame
+    const jumpButtons=sticks.jumpButtons??0,newJumpButtons=jumpButtons&~this.lastJumpButtons;this.lastJumpButtons=jumpButtons;
+    const pressed = (held & ~prev)|this.pendingTaunts|(newJumpButtons?INPUT_BITS.JUMP:0);this.pendingTaunts=0;   // newly pressed this frame
     const released = prev & ~held;  // newly released this frame
 
     // Update with merged value (not keyboard-only) so next frame's diff is correct
     this.lastHeld = held;
 
+    if(this.currentHeld&(INPUT_BITS.LEFT|INPUT_BITS.RIGHT|INPUT_BITS.UP|INPUT_BITS.DOWN)){delete sticks.stickX;delete sticks.stickY;}
+    const analogActive=!!(sticks.stickX||sticks.stickY),analogReleased=this.lastAnalogActive&&!analogActive;this.lastAnalogActive=analogActive;
     // Only emit event if something changed OR if we're holding keys
-    if (!force && held === 0 && pressed === 0 && released === 0) return null;
+    if (!force && held === 0 && pressed === 0 && released === 0 && !analogActive && !analogReleased) return null;
 
     const event: InputEvent = {
+      ...sticks,
       tick: this.currentTick,
       seq: this.seqCounter++,
       playerId: this.playerId,

@@ -1,0 +1,91 @@
+{
+  "date": "2026-11-04",
+  "batch": 34,
+  "validation": {
+    "date": "2026-11-04",
+    "batch": 34,
+    "typecheck": true,
+    "workspace": {
+      "passed": 1552,
+      "skipped": 17,
+      "shared": 31,
+      "gamepad": 75,
+      "engine": 615,
+      "server": 268,
+      "client": 563
+    },
+    "browser": {
+      "reviewAndController": 51,
+      "fourClientRegression": 1,
+      "total": 52
+    },
+    "independentShieldFormulaCases": 96,
+    "physicalControllerValidation": false,
+    "productionBuild": true,
+    "productionSmoke": {
+      "atlasPagesLoaded": 14,
+      "failedRequests": 0,
+      "pageErrors": 0
+    },
+    "finalBoundaryCheck": "After full workspace/browser regression, final ASDI platform-edge horizontal position fix passed all ten focused authoritative hitstop tests and server typecheck; latest package refreshed."
+  },
+  "fullUltimateParity": false,
+  "changes": [
+    "Controls now has live left-stick readings, 60-sample neutral capture, drift filtering, direction threshold, persistence per browser/device name and reset. Gameplay uses the same saved profile. Controls scrolling and calibration cleanup on navigation fixed.",
+    "Normal shield hitlag uses a distinct formula: minimum move multiplier 1, factor .67, electric scaling, cap 30, separate attached/unattached projectile attacker handling. Zero damage yields no freeze. Parry keeps its existing custom path.",
+    "Shield SDI is horizontal, direction-tap based, has no body four-tick cooldown or 16-pulse cap, and has no automatic exit shift. Holding and vertical-only changes do not repeat movement.",
+    "ASDI effect policy supports electric, paralyze, crumple and autoshift classifications. Supported effects shift on impact and on exit; zero-hitlag projectiles shift on impact only. Ordinary hits default to none. Vertical launch band 70 to below 110 degrees suppresses automatic shifts. Held contacts and shields suppress body ASDI.",
+    "Removing a diagonal input component no longer creates another body pulse. Body pulse count is capped at 16. Unattached projectile body freeze no longer uses participant scaling."
+  ],
+  "tuning": {
+    "bodySDIWorldUnits": 3,
+    "bodySDICooldownTicks": 4,
+    "shieldSDIRatio": 0.66,
+    "ASDIWorldUnitsPerBoundary": 2,
+    "worldUnitCalibrationVerified": false,
+    "protocol": "Digital direction/action bitmask retained; analog magnitudes and C-stick are not transmitted."
+  },
+  "scope": [
+    "No existing roster move was assigned a new electric/paralyze/crumple/autoshift identity. The policy is ready for explicit effect metadata; this does not add the underlying paralysis or crumple status systems.",
+    "The calculator author functions provide the 96 shield timing references. Research notes describe shield taps and automatic-shift boundaries. Later autoshift and exact vertical-band behavior remain compatibility policy pending direct version-specific verification.",
+    "Browser controller tests use a simulated standard-mapping gamepad, not a physical device. Same-name controllers share one profile.",
+    "Shield browser screenshot extends confirmed jab contact to 30 frozen ticks for stable sampling; server tests assert the actual five-tick jab shield freeze."
+  ],
+  "next": [
+    "Use Controls > Controller stick settings with real hardware; test neutral and all eight directions, then repeat shield and multihit escape drills.",
+    "Analog input protocol and C-stick behavior, thresholds/rearm details, and world-space SDI/ASDI calibration.",
+    "Shieldstun/damage/pushback and parry timing, shield-break interactions, effect-specific status behavior and later-version exceptions.",
+    "Grounded early-frame upward SDI and consecutive-hit escape rules; launch speed/decay/gravity/LSI and remote-network/controller validation."
+  ],
+  "sources": [
+    {
+      "url": "https://raw.githubusercontent.com/rubendal/SSBU-Calculator/master/js/formulas.js",
+      "scope": "Author implementation: shield freeze formulas and independent fixtures."
+    },
+    {
+      "url": "https://raw.githubusercontent.com/rubendal/SSBU-Calculator/master/js/global.js",
+      "scope": "Author caller: stale damage supplied to shield freeze calculations."
+    },
+    {
+      "url": "https://w.atwiki.jp/smashsp_kensyou/pages/35.html",
+      "scope": "Community verification research: horizontal shield SDI, no body cooldown, .66 distance ratio."
+    },
+    {
+      "url": "https://w.atwiki.jp/smashsp_kensyou/pages/66.html",
+      "scope": "Verification research: ordinary versus exceptional automatic-shift boundaries; notes are historical and do not certify later effects."
+    }
+  ],
+  "paths": [
+    "packages/gamepad-input/src/calibration.ts",
+    "packages/gamepad-input/src/standardMapping.ts",
+    "packages/gamepad-input/src/GamepadPoller.ts",
+    "apps/client/src/ui/ControllerCalibration.ts",
+    "apps/client/src/ui/ControlsScreen.ts",
+    "apps/client/src/ui/UIManager.ts",
+    "packages/engine/src/hitbox/hitlag.ts",
+    "packages/engine/src/hitbox/displacement.ts",
+    "packages/engine/src/fsm/hitstop.ts",
+    "packages/engine/src/hitbox/index.ts",
+    "apps/server/src/GameEngine.ts"
+  ]
+}

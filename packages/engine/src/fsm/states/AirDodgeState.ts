@@ -31,15 +31,15 @@ const AIR_DODGE_DURATION_FRAMES = 23;
  */
 export class AirDodgeState extends BaseState {
   override enter(ctx: FSMContext): void {
-    // Capture held LEFT/RIGHT/DOWN bits at entry
+    // Capture directional aim independently of the jump action.
     const hasLeft = isHeld(ctx.input, INPUT_BITS.LEFT);
     const hasRight = isHeld(ctx.input, INPUT_BITS.RIGHT);
     const hasDown = isHeld(ctx.input, INPUT_BITS.DOWN);
 
-    // Direction vector: DOWN must be held for wavedash-capable dodge (y > 0)
+    // Snapshot an eight-direction vector; downward landing keeps legacy wavedash rules.
     // DOWN+RIGHT → { x: 1, y: 1 }, no direction → { x: 0, y: 0 }
-    const x = hasDown ? (hasRight ? 1 : hasLeft ? -1 : 0) : 0;
-    const y = hasDown ? 1 : 0;
+    const x = Number(hasRight)-Number(hasLeft);
+    const y = Number(hasDown)-Number(isHeld(ctx.input,INPUT_BITS.UP));
 
     ctx.player.airDodgeDirection = { x, y };
   }

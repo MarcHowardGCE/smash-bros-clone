@@ -29,6 +29,18 @@ export interface Circle {
  * applies `attackerFacing` when computing world-space hit position.
  */
 export interface HitboxData {
+  /** Multiplier for computed body-hit freeze; defaults to one. */
+  hitlagMultiplier?:number;
+  shieldstunMultiplier?:number;
+  direct?:boolean;
+  sdiMultiplier?:number;
+  /** Explicit exit-shift opt-in; ordinary attacks default to zero. */
+  asdiMultiplier?:number;
+  electric?:boolean;
+  /** Hit effect classification; ASDI does not implement paralysis/crumple status itself. */
+  effect?:'normal'|'electric'|'paralyze'|'crumple'|'autoshift';
+  projectileAttached?:boolean;
+  isProjectile?:boolean;
   /** Horizontal offset from the fighter's origin in px (positive = forward). */
   offsetX: number;
   /** Vertical offset from the fighter's origin in px (positive = downward). */
@@ -43,7 +55,7 @@ export interface HitboxData {
   knockbackGrowth: number;
   /** Launch angle in degrees (0 = horizontal, 90 = straight up). */
   knockbackAngle: number;
-  /** Frames both attacker and defender are frozen on hit (gives hits "weight"). */
+  /** Legacy hitlag hint: zero opts out unless hitlagMultiplier is supplied; nonzero duration is computed. */
   hitlagFrames: number;
   /**
    * Optional override for hitstun duration in frames.
@@ -117,6 +129,28 @@ export interface PlayerState {
   isShielding: boolean;
   /** Shield HP (0–100). Reaching 0 triggers shield-break stun. */
   shieldHealth: number;
+  /** Authoritative visual cue; does not change shield mechanics. */
+  shieldReaction?: "hit" | "parry" | "break" | "drop";
+  shieldReactionFrame?: number;
+  /** Authoritative cosmetic movement cue and simulation age. */
+  artCue?:string;
+  artCueFrame?:number;
+  jabLockCount?:number;
+  shortHop?:boolean;
+  queuedJumpMoveId?:MoveId;
+  shieldReleaseFrame?:number;
+  shieldReleaseEligible?:boolean;
+  shieldParryConsumed?:boolean;
+  queuedJumpAttack?:boolean;
+  shieldDodgeIntent?:number;
+  tauntKind?:'up'|'side'|'down';
+  hitReaction?:'high'|'low'|'heavy'|'air';
+  koVisual?:{id:number;kind:'launch'|'screen'|'star';x:number;y:number;facing:1|-1};
+  footstoolRole?: 'attacker'|'ground'|'air';
+  footstoolPartnerId?: PlayerId;
+  footstoolFrame?: number;
+  footstoolCooldownFrames?: number;
+
   /** Frames of shield-hit stun remaining. */
   shieldStunFrames: number;
   /** True while this fighter has an opponent grabbed. */
@@ -135,6 +169,8 @@ export interface PlayerState {
   floorRollDirection?:1|-1;
   /** Queue of recently used move ids for stale-move knockback decay (FIFO, max 9). */
   staleMoveQueue: MoveId[];
+  /** Parallel oldest-first queue: true means the hit connected with a shield. */
+  staleMoveShieldQueue?:boolean[];
   /** Landing-lag and special flag cached from the move that launched this aerial. */
   currentMove?: {
     landingLag: number;
@@ -144,8 +180,18 @@ export interface PlayerState {
   hitPlayerIds: Set<string>;
   /** Frames a smash attack has been charged (0 when not charging). */
   chargeFrames: number;
-  /** Cumulative px of ASDI drift applied this hitstun instance. */
+  /** Last explicitly enabled hitlag-exit displacement; retained legacy field name. */
   asdiDriftAccumulated?: number;
+  queuedShortHop?:boolean;
+  sdiEligible?:boolean;
+  sdiMode?:'body'|'shield';
+  sdiPulseCount?:number;
+  sdiLastDirection?:number;
+  sdiBufferedDirection?:number;
+  sdiBufferedX?:number;sdiBufferedY?:number;
+  sdiMultiplier?:number;
+  asdiMultiplier?:number;
+  sdiGrounded?:boolean;
   /** Facing direction of the last attacker; used by counter resolution. */
   lastHitByFacing?: 1 | -1 | null;
   /** Knockback angle of the last hit; used by counter resolution. */

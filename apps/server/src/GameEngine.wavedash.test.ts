@@ -151,7 +151,7 @@ describe('GameEngine wavedash landing', () => {
 		expect(player.landingLagFrames).toBe(0);
 	});
 
-	it('AIR_DODGE landing with only horizontal component (no downward) does not wavedash', () => {
+	it('horizontal AIR_DODGE recovery landing (no downward component) does not wavedash', () => {
 		const engine = new GameEngine({ playerIds: ['p1'] });
 		const STAGE_MAIN_Y = 500;
 		primePlayer(engine, 'p1', {
@@ -160,7 +160,7 @@ describe('GameEngine wavedash landing', () => {
 			vx: 0,
 			vy: 4,
 			state: PlayerStateEnum.AIR_DODGE,
-			stateFrame: 5,
+			stateFrame: 14, // after directional travel ends
 			isGrounded: false,
 			airDodgeDirection: { x: 1, y: 0 }, // horizontal only, no downward
 			landingLagFrames: 0,

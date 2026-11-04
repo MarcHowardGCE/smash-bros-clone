@@ -1,12 +1,12 @@
 {
   "frames": 2305,
-  "liveClipsPerFighter": 74,
-  "sourceSheets": 226,
-  "sourceTextureBytes": 1421863324,
-  "atlasLiveTextureBytes": 134217728,
-  "textureReductionPercent": 90.6,
+  "liveClipsPerFighter": 135,
+  "sourceSheets": 409,
+  "sourceTextureBytes": 2573203760,
+  "atlasLiveTextureBytes": 234881024,
+  "textureReductionPercent": 90.9,
   "maxRegistrationError": 0,
-  "pages": 15,
-  "livePages": 8,
-  "liveDownloadBytes": 36321479
+  "pages": 17,
+  "livePages": 14,
+  "liveDownloadBytes": 67118860
 }

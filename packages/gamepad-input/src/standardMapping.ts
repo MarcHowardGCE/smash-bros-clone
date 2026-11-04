@@ -74,16 +74,19 @@ export function applyRadialDeadzone(
   y: number,
   deadzone: number = 0.2
 ): [number, number] {
+  x=Number.isFinite(x)?Math.max(-1,Math.min(1,x)):0;
+  y=Number.isFinite(y)?Math.max(-1,Math.min(1,y)):0;
+  deadzone=Number.isFinite(deadzone)?Math.max(0,Math.min(.95,deadzone)):.2;
   // Calculate magnitude
   const magnitude = Math.sqrt(x * x + y * y);
 
   // If within deadzone, return zero
-  if (magnitude < deadzone) {
+  if (magnitude <= deadzone || magnitude === 0) {
     return [0, 0];
   }
 
   // Rescale: (value / magnitude) * ((magnitude - deadzone) / (1 - deadzone))
-  const scale = (magnitude - deadzone) / (1 - deadzone);
+  const scale = (Math.min(1,magnitude) - deadzone) / (1 - deadzone);
   return [
     (x / magnitude) * scale,
     (y / magnitude) * scale,
@@ -99,13 +102,13 @@ export function applyRadialDeadzone(
  * @returns GenericInputBitmask with button and direction bits set
  *
  * Returns 0 if gamepad is not "standard" mapping (no throw)
- * Left stick beyond 0.5 post-deadzone → directional bits
+ * Left stick beyond 0.45 post-deadzone → directional bits
  * D-pad buttons (12-15) → directional bits OR'd with stick bits
  * Face/shoulder/trigger buttons → action bits
  */
 export function sampleGamepadBits(
   gamepad: Gamepad | null | undefined,
-  deadzone: number = 0.2
+  deadzone: number = 0.2, threshold: number = .45, centerX: number = 0, centerY: number = 0,
 ): GenericInputBitmask {
   // Validate gamepad and mapping
   if (!gamepad || gamepad.mapping !== 'standard') {
@@ -117,22 +120,22 @@ export function sampleGamepadBits(
   // Sample left analog stick (axes 0, 1)
   const axes = gamepad.axes ?? [];
   const [stickX, stickY] = applyRadialDeadzone(
-    axes[0] ?? 0,
-    axes[1] ?? 0,
+    (axes[0] ?? 0)-centerX,
+    (axes[1] ?? 0)-centerY,
     deadzone
   );
 
   // Left stick beyond 0.5 threshold → directional bits
-  if (stickX >= 0.45) {
+  if (stickX >= threshold) {
     bits |= GenericInputBits.RIGHT;
   }
-  if (stickX <= -0.45) {
+  if (stickX <= -threshold) {
     bits |= GenericInputBits.LEFT;
   }
-  if (stickY >= 0.45) {
+  if (stickY >= threshold) {
     bits |= GenericInputBits.DOWN;
   }
-  if (stickY <= -0.45) {
+  if (stickY <= -threshold) {
     bits |= GenericInputBits.UP;
   }
 

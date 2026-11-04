@@ -53,7 +53,7 @@ export class LedgeHangState extends BaseState {
       // Drop: no dedicated LEDGE_DROP state — transitions directly to AIRBORNE
       return transition(PlayerStateEnum.AIRBORNE);
     }
-    if (isHeld(ctx.input, INPUT_BITS.LEFT) || isHeld(ctx.input, INPUT_BITS.RIGHT)) {
+    if (isHeld(ctx.input, INPUT_BITS.UP) || isHeld(ctx.input, INPUT_BITS.LEFT) || isHeld(ctx.input, INPUT_BITS.RIGHT)) {
       // Climb: any directional hold toward/away from stage triggers climb getup
       return transition(PlayerStateEnum.LEDGE_CLIMB);
     }

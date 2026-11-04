@@ -1,0 +1,25 @@
+{
+  "date": "2026-11-04",
+  "workspaceTestsPassed": 1261,
+  "shared": 71,
+  "gamepad": 31,
+  "engine": 340,
+  "server": 257,
+  "client": 562,
+  "skipped": 17,
+  "workspaceTypecheck": true,
+  "browser": {
+    "reviewAndLocal": 48,
+    "multiplayer": 1,
+    "total": 49
+  },
+  "productionBuild": true,
+  "productionSmoke": {
+    "errors": [],
+    "failed": [],
+    "atlasPagesLoaded": 14,
+    "publicFilesIncluded": true
+  },
+  "closeContactAndDistantWhiff": true,
+  "allFighterPairingsBothFacings": true
+}

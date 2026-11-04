@@ -1,0 +1,1 @@
+import{it,expect}from'vitest';import{calculateShieldHitlag}from'./hitlag.js';import{shieldHitlagReferenceCases as cases}from'./shieldHitlagReferenceCases.js';for(const c of cases)it('reference shield hitlag '+JSON.stringify(c),()=>expect(calculateShieldHitlag(c.damage,c.multiplier,c.electric,c.projectile,c.attached)).toEqual({target:c.target,attacker:c.attacker}));

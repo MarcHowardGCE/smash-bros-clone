@@ -1,3 +1,8 @@
+import{advanceHitstop}from'./hitstop.js';
+import{TripFallState,TripProneState,JabLockState}from'./states/TripState.js';
+import{TauntState}from'./states/TauntState.js';
+import{CrouchState}from'./states/CrouchState.js';
+import{HelplessState,HelplessLandState}from'./states/HelplessState.js';
 /**
  * @fileoverview Per-fighter finite state machine driver.
  *
@@ -82,11 +87,15 @@ export class FSMController {
   constructor(initialState: PlayerStateEnum = PlayerStateEnum.IDLE) {
     this.stateRegistry = new Map([
       [PlayerStateEnum.IDLE, new IdleState()],
+      [PlayerStateEnum.CROUCH,new CrouchState()],
+      [PlayerStateEnum.TAUNT,new TauntState()],
       [PlayerStateEnum.WALK, new WalkState()],
       [PlayerStateEnum.DASH, new DashState()],
       [PlayerStateEnum.RUN, new RunState()],
       [PlayerStateEnum.JUMPSQUAT, new JumpsquatState()],
       [PlayerStateEnum.AIRBORNE, new AirborneState()],
+      [PlayerStateEnum.HELPLESS,new HelplessState()],
+      [PlayerStateEnum.HELPLESS_LAND,new HelplessLandState()],
       [PlayerStateEnum.DOUBLE_JUMP, new DoubleJumpState()],
       [PlayerStateEnum.ATTACK, new AttackState()],
       [PlayerStateEnum.AIR_ATTACK, new AirAttackState()],
@@ -98,6 +107,7 @@ export class FSMController {
       [PlayerStateEnum.TECH_NEUTRAL, new TechNeutralState()],
       [PlayerStateEnum.TECH_ROLL, new TechRollState()],
       [PlayerStateEnum.HARD_LANDING, new HardLandingState()],
+      [PlayerStateEnum.TRIP_FALL,new TripFallState()],[PlayerStateEnum.TRIP_PRONE,new TripProneState()],[PlayerStateEnum.TRIP_GETUP,new GetupState()],[PlayerStateEnum.TRIP_ROLL,new GetupState(true)],[PlayerStateEnum.JAB_LOCK,new JabLockState()],
       [PlayerStateEnum.GETUP,new GetupState()],
       [PlayerStateEnum.GETUP_ROLL,new GetupState(true)],
       [PlayerStateEnum.LANDING_LAG, new LandingLagState()],
@@ -120,7 +130,7 @@ export class FSMController {
    * Order of operations:
    * 1. Re-sync active state object if the server overrode `player.state`.
    * 2. If hitlag is active, apply SDI drift and return early — no state progress.
-   * 3. Apply ASDI positional drift while in hitstun (post-hitlag).
+   * 3. ASDI, when enabled by the hit effect, applies only at hitstop boundaries.
    * 4. Delegate to `currentState.update()` to get a transition (or `null`).
    * 5. Force AIRBORNE transition if a grounded state detects loss of ground.
    * 6. Advance `stateFrame`; decrement `hitstunFramesRemaining`.
@@ -140,68 +150,9 @@ export class FSMController {
     // This is a deliberate Smash Bros game-feel mechanic — the brief shared freeze on
     // impact makes hits feel weighty and impactful rather than passing through.
     // No state machine progress occurs during hitlag; the early return skips the rest of tick().
-	    if (player.hitlagFramesRemaining > 0) {
-	      const decrementedCooldown = Math.max(0, (player.sdiInputCooldown ?? 0) - 1);
-	      const leftHeld = Boolean((input?.held ?? 0) & INPUT_BITS.LEFT);
-	      const rightHeld = Boolean((input?.held ?? 0) & INPUT_BITS.RIGHT);
-	      const upHeld = Boolean((input?.held ?? 0) & INPUT_BITS.JUMP);
-	      const downHeld = Boolean((input?.held ?? 0) & INPUT_BITS.DOWN);
-	      const inputX = leftHeld === rightHeld ? 0 : leftHeld ? -1 : 1;
-	      const inputY = upHeld === downHeld ? 0 : upHeld ? -1 : 1;
-	      const hasDirectionalInput = inputX !== 0 || inputY !== 0;
-	      const canAcceptSdiInput = decrementedCooldown <= 0;
-
-	      const sdiDeltaX = hasDirectionalInput && canAcceptSdiInput ? inputX * 3 : 0;
-	      const sdiDeltaY = hasDirectionalInput && canAcceptSdiInput ? inputY * 3 : 0;
-	      const nextSdiCooldown =
-	        hasDirectionalInput && canAcceptSdiInput ? 4 : decrementedCooldown;
-
-	      return {
-	        ...player,
-	        hitlagFramesRemaining: player.hitlagFramesRemaining - 1,
-	        sdiInputCooldown: nextSdiCooldown,
-	        x: player.x + sdiDeltaX,
-	        y: player.y + sdiDeltaY,
-	        vx: 0,
-	        vy: 0,
-	      };
-	    }
-
-	    let playerForStateMachine = player;
-
-	    // ASDI (Automatic/Additional SDI): post-hitlag hitstun drift
-	    // Applies only when hitlag has ended (hitlagFramesRemaining <= 0) and player is in HITSTUN state.
-	    // Each frame with directional input, apply positional drift (not velocity) clamped to max total.
-	    if (
-	      playerForStateMachine.hitlagFramesRemaining <= 0 &&
-	      playerForStateMachine.state === PlayerStateEnum.HITSTUN &&
-	      playerForStateMachine.hitstunFramesRemaining > 0
-	    ) {
-	      const leftHeld = Boolean((input?.held ?? 0) & INPUT_BITS.LEFT);
-	      const rightHeld = Boolean((input?.held ?? 0) & INPUT_BITS.RIGHT);
-	      const upHeld = Boolean((input?.held ?? 0) & INPUT_BITS.JUMP);
-	      const downHeld = Boolean((input?.held ?? 0) & INPUT_BITS.DOWN);
-	      const inputX = leftHeld === rightHeld ? 0 : leftHeld ? -1 : 1;
-	      const inputY = upHeld === downHeld ? 0 : upHeld ? -1 : 1;
-	      const hasDirectionalInput = inputX !== 0 || inputY !== 0;
-
-	      if (hasDirectionalInput) {
-	        const currentAccumulated = playerForStateMachine.asdiDriftAccumulated ?? 0;
-	        const driftDelta = PHYSICS.ASDI_DRIFT_PX_PER_FRAME;
-	        const newAccumulated = Math.min(
-	          currentAccumulated + driftDelta,
-	          PHYSICS.ASDI_MAX_TOTAL_DRIFT_PX,
-	        );
-	        const actualDrift = newAccumulated - currentAccumulated;
-
-	        playerForStateMachine = {
-	          ...playerForStateMachine,
-	          x: playerForStateMachine.x + inputX * actualDrift,
-	          y: playerForStateMachine.y + inputY * actualDrift,
-	          asdiDriftAccumulated: newAccumulated,
-	        };
-	      }
-	    }
+    if(player.hitlagFramesRemaining>0)return advanceHitstop(player,input?.held??0,input);
+    // Displacement belongs to hitstop; no continuous drift during hitstun.
+    const playerForStateMachine=player;
 
     const ctx: FSMContext = {
       player: playerForStateMachine,
@@ -209,7 +160,8 @@ export class FSMController {
       isGrounded: playerForStateMachine.isGrounded,
     };
 
-    let transition = this.currentState.update(ctx, playerForStateMachine.stateFrame);
+    const jumpAttack=!input?.smashAttack&&playerForStateMachine.isGrounded&&[PlayerStateEnum.IDLE,PlayerStateEnum.WALK,PlayerStateEnum.DASH,PlayerStateEnum.RUN,PlayerStateEnum.CROUCH,PlayerStateEnum.SHIELD].includes(playerForStateMachine.state as PlayerStateEnum)&&((input?.pressed??0)&(INPUT_BITS.JUMP|INPUT_BITS.ATTACK))===(INPUT_BITS.JUMP|INPUT_BITS.ATTACK);
+    let transition = jumpAttack?{nextState:PlayerStateEnum.JUMPSQUAT}:this.currentState.update(ctx, playerForStateMachine.stateFrame);
 
     // stateFrame advances here — before any transition is applied. This is intentional:
     // the current state's update() already ran against the current stateFrame value,

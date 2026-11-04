@@ -1,0 +1,11 @@
+import{it,expect}from'vitest';import{INPUT_BITS as B,type HitboxData}from'@smash/shared';import{asdiPolicy}from'./displacement.js';const base={knockbackAngle:45,hitlagFrames:5}as HitboxData;
+it('ordinary attacks have neither impact nor exit ASDI',()=>expect(asdiPolicy(base,B.RIGHT,false)).toEqual({impactX:0,impactY:0,exitMultiplier:0}));
+for(const effect of['electric','paralyze','crumple','autoshift']as const)it(effect+' enables impact and exit shifting',()=>expect(asdiPolicy({...base,effect},B.LEFT,false)).toEqual({impactX:-2,impactY:0,exitMultiplier:1}));
+it('legacy electric flag selects the same policy',()=>expect(asdiPolicy({...base,electric:true},B.RIGHT,false).impactX).toBe(2));
+it('zero hitlag projectile shifts on impact but never schedules exit',()=>expect(asdiPolicy({...base,isProjectile:true,hitlagMultiplier:0},B.RIGHT,false)).toEqual({impactX:2,impactY:0,exitMultiplier:0}));
+it('zero hitlag melee does not automatically shift',()=>expect(asdiPolicy({...base,hitlagMultiplier:0},B.RIGHT,false).impactX).toBe(0));
+for(const angle of[70,90,109.99])it('vertical launch '+angle+' suppresses ASDI',()=>expect(asdiPolicy({...base,effect:'electric',knockbackAngle:angle},B.RIGHT,false).exitMultiplier).toBe(0));
+it('boundary at 110 degrees allows effect ASDI',()=>expect(asdiPolicy({...base,effect:'electric',knockbackAngle:110},B.RIGHT,false).exitMultiplier).toBe(1));
+it('zero SDI disables default effect ASDI but explicit override remains available',()=>{expect(asdiPolicy({...base,effect:'electric',sdiMultiplier:0},B.RIGHT,false).impactX).toBe(0);expect(asdiPolicy({...base,effect:'electric',sdiMultiplier:0,asdiMultiplier:1},B.RIGHT,false).impactX).toBe(2);});
+it('held throws and shields suppress every ASDI path',()=>expect(asdiPolicy({...base,effect:'electric',asdiMultiplier:5},B.RIGHT,false,true).exitMultiplier).toBe(0));
+it('grounded ASDI cannot move vertically and airborne diagonal has fixed magnitude',()=>{expect(asdiPolicy({...base,effect:'electric'},B.UP,true).impactY).toBe(0);const p=asdiPolicy({...base,effect:'electric'},B.UP|B.RIGHT,false);expect(Math.hypot(p.impactX,p.impactY)).toBeCloseTo(2);});

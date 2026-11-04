@@ -1,0 +1,55 @@
+{
+  "date": "2026-11-04",
+  "batch": 33,
+  "sources": [
+    "https://raw.githubusercontent.com/rubendal/SSBU-Calculator/master/js/formulas.js",
+    "https://raw.githubusercontent.com/rubendal/SSBU-Calculator/master/js/global.js",
+    "https://primagames.com/eguides/prima-games-8-eguide/ultimate-glossary-of-terms-and-mechanics/directional-influence",
+    "https://raw.githubusercontent.com/jugeeya/UltimateTrainingModpack/main/src/training/sdi.rs"
+  ],
+  "implemented": [
+    "Computed body hitlag with damage, participant count, electric and crouch factors; 30-frame cap; separate attacker/target durations; excludes current-hit one-on-one damage multiplier.",
+    "Hitstop freezes action pose, action clock and hitstun clock, then resumes recovery. Simultaneous trades retain both victim states.",
+    "Victim-only direction-change SDI with latest-direction buffering; holding a direction does not repeat. Grounded vertical shift is suppressed and aerial floor penetration clipped.",
+    "Removed continuous hitstun ASDI drift. Ordinary attacks default to no ASDI; explicit attack opt-in applies one exit shift. Held pummel/throw contacts disable displacement."
+  ],
+  "projectTuning": {
+    "SDIWorldDistance": 3,
+    "SDICooldownTicks": 4,
+    "ASDIExitWorldDistance": 2,
+    "ultimateCalibrationVerified": false
+  },
+  "remaining": [
+    "Analog and C-stick thresholds, rearm behavior and world-space calibration",
+    "Effect-specific ASDI catalog and grounded early-frame SDI exceptions",
+    "Shield SDI and shield hitlag; custom parry attacker +11 freeze; projectile attachment and specialized interactions",
+    "Analog LSI and world-space launch speed/decay/gravity; human/controller and remote-network testing"
+  ],
+  "screenshot": "Real local contact fixture extends confirmed hitlag to 30 ticks for deterministic sampling; it does not establish a normal 30-tick jab.",
+  "paths": [
+    "packages/engine/src/hitbox/hitlag.ts",
+    "packages/engine/src/fsm/hitstop.ts",
+    "packages/engine/src/hitbox/index.ts",
+    "packages/engine/src/fsm/FSMController.ts",
+    "apps/server/src/GameEngine.ts",
+    "packages/shared/src/types/GameState.ts"
+  ],
+  "validation": {
+    "date": "2026-11-04",
+    "batch": 33,
+    "typecheck": true,
+    "referenceCases": 96,
+    "focusedHitstopEngine": 9,
+    "focusedHitstopServer": 8,
+    "browserReview": 49,
+    "multiplayer": 1,
+    "productionBuild": true,
+    "productionSmoke": {
+      "liveAtlasPages": 14,
+      "failedRequests": 0,
+      "pageErrors": 0
+    },
+    "unitEvidence": "Full workspace run passed; subsequent full server run passed 265 tests with 16 skips; final added ASDI policy cases passed in focused engine/server suites. Counts are not presented as a single final full run."
+  },
+  "fullUltimateParity": false
+}

@@ -96,7 +96,7 @@ describe('Lincoln Move Overrides', () => {
   describe('Lincoln hitbox stats match spec', () => {
     it('JAB has Lincoln hitbox stats (offsetX: 58, damage: 3)', () => {
       const hitbox = LINCOLN_JAB.hitboxPerActiveFrame[0];
-      expect(hitbox.offsetX).toBe(58);
+      expect(hitbox.offsetX).toBe(50);
       expect(hitbox.damage).toBe(3);
     });
 
@@ -142,7 +142,7 @@ describe('Lincoln Move Overrides', () => {
   describe('getMoveDataForCharacter', () => {
     it('returns Lincoln overrides for abe-lincoln', () => {
       const move = getMoveDataForCharacter('abe-lincoln', MoveId.JAB);
-      expect(move.hitboxPerActiveFrame[0].offsetX).toBe(58);
+      expect(move.hitboxPerActiveFrame[0].offsetX).toBe(50);
       expect(move.hitboxPerActiveFrame[0].damage).toBe(3);
     });
 

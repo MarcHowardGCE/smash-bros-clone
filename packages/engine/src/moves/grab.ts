@@ -100,3 +100,6 @@ export const MOVE_DOWN_THROW: MoveData = {
   hitboxPerActiveFrame: [downThrowHitbox],
   landingLag: 0, isAerial: false, isGrab: false, isSpecial: false,
 };
+
+export const MOVE_GRAB_DASH:MoveData={...MOVE_GRAB,id:MoveId.GRAB_DASH,startupFrames:8,activeFrames:3,recoveryFrames:21,hitboxPerActiveFrame:Array.from({length:3},()=>({...MOVE_GRAB.hitboxPerActiveFrame[0]!,offsetX:34,radius:20}))};
+export const MOVE_GRAB_PIVOT:MoveData={...MOVE_GRAB,id:MoveId.GRAB_PIVOT,startupFrames:10,activeFrames:3,recoveryFrames:22,hitboxPerActiveFrame:Array.from({length:3},()=>({...MOVE_GRAB.hitboxPerActiveFrame[0]!,offsetX:40,radius:20}))};

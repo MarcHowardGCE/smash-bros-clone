@@ -1,0 +1,17 @@
+{
+  "date": "2026-11-04",
+  "batch": 33,
+  "typecheck": true,
+  "referenceCases": 96,
+  "focusedHitstopEngine": 9,
+  "focusedHitstopServer": 8,
+  "browserReview": 49,
+  "multiplayer": 1,
+  "productionBuild": true,
+  "productionSmoke": {
+    "liveAtlasPages": 14,
+    "failedRequests": 0,
+    "pageErrors": 0
+  },
+  "unitEvidence": "Full workspace run passed; subsequent full server run passed 265 tests with 16 skips; final added ASDI policy cases passed in focused engine/server suites. Counts are not presented as a single final full run."
+}

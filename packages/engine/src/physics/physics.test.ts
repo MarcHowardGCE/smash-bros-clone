@@ -485,62 +485,15 @@ describe('Physics Engine - applyMovementInput', () => {
   });
 });
 
-describe('Physics Engine - applyDI', () => {
-  it('returns knockback angle unchanged when no input', () => {
-    const angle = Math.PI / 4; // 45°
-    const result = applyDI(angle, 0, 0, 1);
-    expect(result).toBe(angle);
-  });
-
-  it('clamps DI angle shift to ±0.314159 radians (±18°)', () => {
-    const knockbackAngle = 0; // horizontal right
-    // Input perpendicular to knockback (straight up) should max out at ±18°
-    const resultUp = applyDI(knockbackAngle, 0, 1, 1);
-    const resultDown = applyDI(knockbackAngle, 0, -1, 1);
-
-    // Should be clamped to ±0.314159
-    expect(Math.abs(resultUp - knockbackAngle)).toBeLessThanOrEqual(0.314159 + 0.0001);
-    expect(Math.abs(resultDown - knockbackAngle)).toBeLessThanOrEqual(0.314159 + 0.0001);
-  });
-
-  it('shifts angle upward when input is perpendicular upward', () => {
-    const knockbackAngle = 0; // horizontal right
-    const result = applyDI(knockbackAngle, 0, 1, 1);
-    expect(result).toBeGreaterThan(knockbackAngle);
-  });
-
-  it('shifts angle downward when input is perpendicular downward', () => {
-    const knockbackAngle = 0; // horizontal right
-    const result = applyDI(knockbackAngle, 0, -1, 1);
-    expect(result).toBeLessThan(knockbackAngle);
-  });
-
-  it('does not shift angle when input is parallel to knockback', () => {
-    const knockbackAngle = 0; // horizontal right
-    const result = applyDI(knockbackAngle, 1, 0, 1); // input also right
-    expect(result).toBeCloseTo(knockbackAngle);
-  });
-
-  it('applies partial shift for diagonal input', () => {
-    const knockbackAngle = 0; // horizontal right
-    const result = applyDI(knockbackAngle, 1, 1, 1); // diagonal up-right
-    expect(result).toBeGreaterThan(knockbackAngle);
-    expect(result).toBeLessThan(0.314159 + 0.0001); // less than max shift
-  });
-
-  it('18° cone: max positive shift is ~0.314159 radians', () => {
-    const knockbackAngle = 0;
-    const result = applyDI(knockbackAngle, 0, 1, 1);
-    const shift = result - knockbackAngle;
-    expect(shift).toBeCloseTo(0.314159, 5);
-  });
-
-  it('18° cone: max negative shift is ~-0.314159 radians', () => {
-    const knockbackAngle = 0;
-    const result = applyDI(knockbackAngle, 0, -1, 1);
-    const shift = result - knockbackAngle;
-    expect(shift).toBeCloseTo(-0.314159, 5);
-  });
+describe('Physics Engine - applyDI',()=>{
+ it('keeps the angle without input',()=>expect(applyDI(Math.PI/4,0,0,1)).toBe(Math.PI/4));
+ it('disables DI for horizontal right launches',()=>expect(applyDI(0,0,1,1)).toBe(0));
+ it('disables DI for horizontal left launches',()=>expect(applyDI(Math.PI,0,1,1)).toBe(Math.PI));
+ it('positive perpendicular direction reaches .17 radians',()=>expect(applyDI(Math.PI/4,-1,1,1)-Math.PI/4).toBeCloseTo(.17));
+ it('negative perpendicular direction reaches -.17 radians',()=>expect(applyDI(Math.PI/4,1,-1,1)-Math.PI/4).toBeCloseTo(-.17));
+ it('parallel input leaves angle alone',()=>expect(applyDI(Math.PI/4,1,1,1)).toBeCloseTo(Math.PI/4));
+ it('partial perpendicular input has a smaller shift',()=>{const shift=applyDI(Math.PI/4,0,1,1)-Math.PI/4;expect(shift).toBeCloseTo(.17/Math.sqrt(2));});
+ it('diagonal input is normalized',()=>expect(applyDI(Math.PI/4,-1,1,1)).toBeCloseTo(applyDI(Math.PI/4,-Math.SQRT1_2,Math.SQRT1_2,1)));
 });
 
 describe('Physics Engine - Stage Geometry Regression Guard', () => {

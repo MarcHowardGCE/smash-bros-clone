@@ -69,7 +69,7 @@ function makeHitbox(overrides: Partial<HitboxData> = {}): HitboxData {
   };
 }
 
-const hitstunFromKnockback = (knockback: number): number => Math.max(4, Math.floor(knockback * 0.4) - 3);
+const hitstunFromKnockback = (knockback: number): number => Math.max(4, Math.floor(knockback * 0.4) - 1);
 
 describe('circleOverlap (from shared)', () => {
   it('overlapping circles returns true', () => {
@@ -218,16 +218,16 @@ describe('resolveHit', () => {
     const hitbox = makeHitbox({ offsetX: 40, radius: 20, damage: 8 });
     const result = resolveHit(attacker, defender, hitbox);
     expect(result.hit).toBe(true);
-    expect(result.damage).toBe(8);
+    expect(result.damage).toBeCloseTo(8*1.05);
   });
 
-  it('returns hitlag from hitbox', () => {
+  it('derives hitlag from damage rather than the legacy frame hint', () => {
     const attacker = makePlayer({ x: 0, y: 0, facing: 1 });
     const defender = makePlayer({ x: 50, y: 0 });
     const hitbox = makeHitbox({ offsetX: 40, radius: 20, hitlagFrames: 7 });
     const result = resolveHit(attacker, defender, hitbox);
     expect(result.hit).toBe(true);
-    expect(result.hitlagFrames).toBe(7);
+    expect(result.hitlagFrames).toBe(11);
   });
 
   it.skip('baseline characterization (pre-change): static hitstun ignored knockback magnitude differences', () => {
@@ -294,8 +294,8 @@ describe('resolveHit', () => {
 
     const jabExpected = hitstunFromKnockback(
       calculateKnockback(
-        jabTarget.percent,
-        scaledJabDamage,
+        jabTarget.percent+scaledJabDamage,
+        jabHitbox.damage*1.015,
         jabHitbox.baseKnockback,
         jabHitbox.knockbackGrowth,
         PHYSICS.FIGHTER_WEIGHT,
@@ -303,8 +303,8 @@ describe('resolveHit', () => {
     );
     const smashExpected = hitstunFromKnockback(
       calculateKnockback(
-        smashTarget.percent,
-        scaledSmashDamage,
+        smashTarget.percent+scaledSmashDamage,
+        smashHitbox.damage*1.015,
         smashHitbox.baseKnockback,
         smashHitbox.knockbackGrowth,
         PHYSICS.FIGHTER_WEIGHT,
@@ -317,7 +317,7 @@ describe('resolveHit', () => {
 
     expect(jabResult.hitstunFrames, `jab hitstun=${jabResult.hitstunFrames}, expected=${jabExpected}`).toBe(jabExpected);
     expect(smashResult.hitstunFrames, `fsmash hitstun=${smashResult.hitstunFrames}, expected=${smashExpected}`).toBe(smashExpected);
-    expect(smashResult.hitstunFrames).toBe(79);
+    expect(smashResult.hitstunFrames).toBe(89);
     expect(jabResult.hitstunFrames).toBeGreaterThanOrEqual(4);
     expect(jabResult.hitstunFrames).toBeLessThanOrEqual(8);
     expect(smashResult.hitstunFrames).toBeGreaterThanOrEqual(30);

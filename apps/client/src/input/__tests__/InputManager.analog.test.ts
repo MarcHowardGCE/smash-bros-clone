@@ -1,0 +1,4 @@
+import{it,expect}from'vitest';import{InputManager}from'../InputManager.js';
+it('a subthreshold stick value sends its neutral release even when no direction bit was held',()=>{let x=.2;const source={getHeldBits:()=>0,sampleInput:()=>({held:0,stickX:x,stickY:0,cStickX:0,cStickY:0})}as any;const manager=new InputManager({},'a',source);expect(manager.pollInput()?.stickX).toBe(.2);x=0;expect(manager.pollInput()?.stickX).toBe(0);expect(manager.pollInput()).toBeNull();manager.destroy();});
+
+it('a second jump button creates an edge while the first remains held',()=>{let buttons=1;const source={getHeldBits:()=>4,sampleInput:()=>({held:4,stickX:0,stickY:0,cStickX:0,cStickY:0,jumpButtons:buttons})}as any;const manager=new InputManager({},'a',source);expect((manager.pollInput()?.pressed??0)&4).toBe(4);expect(manager.pollInput()?.pressed).toBe(0);buttons=3;expect((manager.pollInput()?.pressed??0)&4).toBe(4);manager.destroy();});

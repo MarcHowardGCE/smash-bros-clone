@@ -135,7 +135,7 @@ describe('GameEngine Down Special counter', () => {
 		const attackerAfter = state.players.p1;
 		const defenderAfter = state.players.p2;
 
-		expect(attackerAfter?.percent).toBe(attackerBefore.percent + expectedCounterDamage);
+		expect(attackerAfter?.percent).toBe(attackerBefore.percent + expectedCounterDamage*1.2);
 		expect(attackerAfter?.state).toBe(PlayerStateEnum.HITSTUN);
 		expect(attackerAfter?.vx).toBeCloseTo(expectedCounterVelocity.x, 6);
 		expect(attackerAfter?.vy).toBeCloseTo(expectedCounterVelocity.y, 6);
@@ -156,7 +156,7 @@ describe('GameEngine Down Special counter', () => {
 		const attackerAfter = state.players.p1;
 		const defenderAfter = state.players.p2;
 
-		expect(defenderAfter?.percent).toBe(defenderBefore.percent + expectedNormalHit.damage);
+		expect(defenderAfter?.percent).toBe(defenderBefore.percent + expectedNormalHit.damage*1.2);
 		expect(defenderAfter?.state).toBe(PlayerStateEnum.HITSTUN);
 		expect(defenderAfter?.vx).toBeCloseTo(expectedNormalHit.knockbackVx, 6);
 		expect(defenderAfter?.vy).toBeCloseTo(expectedNormalHit.knockbackVy, 6);

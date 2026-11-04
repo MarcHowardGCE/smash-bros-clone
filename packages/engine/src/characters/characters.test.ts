@@ -54,7 +54,7 @@ describe('Character Registry - Abe Lincoln', () => {
       expect(move.activeFrames).toBe(2);
       expect(move.recoveryFrames).toBe(10);
       expect(move.hitboxPerActiveFrame.length).toBe(2);
-      expect(move.hitboxPerActiveFrame[0]?.offsetX).toBe(58); // Lincoln-specific reach
+      expect(move.hitboxPerActiveFrame[0]?.offsetX).toBe(50); // Lincoln-specific reach
       expect(move.hitboxPerActiveFrame[0]?.damage).toBe(3);
     });
 
@@ -172,7 +172,7 @@ describe('Character Registry - Abe Lincoln', () => {
       expect(lincolnJab.recoveryFrames).toBe(defaultJab.recoveryFrames);
       
       // Hitbox stats DIFFER
-      expect(lincolnJab.hitboxPerActiveFrame[0]?.offsetX).toBe(58);
+      expect(lincolnJab.hitboxPerActiveFrame[0]?.offsetX).toBe(50);
       expect(defaultJab.hitboxPerActiveFrame[0]?.offsetX).toBe(45);
     });
 

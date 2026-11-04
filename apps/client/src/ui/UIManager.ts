@@ -1,3 +1,4 @@
+import{XBOX360_PROFILE as CONTROLLER_PROFILE}from'../input/xbox360Profile';
 /**
  * @fileoverview HTML overlay UI manager for all game phases.
  *
@@ -37,6 +38,7 @@ export type UIPhase = 'connecting' | 'lobby' | 'waiting' | 'countdown' | 'match'
  * starts a {@link MenuNavigator} for gamepad/keyboard navigation.
  */
 export class UIManager {
+  private controlsScreenHandle:{destroy:()=>void}|null=null;
   private overlay: HTMLElement;
   private hudPanel: HTMLElement;
   private phase: UIPhase = 'connecting';
@@ -94,6 +96,7 @@ export class UIManager {
   }
 
   private stopMenuNav(): void {
+    this.controlsScreenHandle?.destroy();this.controlsScreenHandle=null;
     if (this.menuNav) {
       this.menuNav.stop();
       this.menuNav = null;
@@ -299,7 +302,8 @@ export class UIManager {
     this.hudPanel.style.display = 'none';
     this.overlay.innerHTML = '';
     
-    renderControlsScreen(this.overlay, {
+    this.controlsScreenHandle=renderControlsScreen(this.overlay, {
+      gamepadPoller:this._gamepadPoller,
       ...deps,
       onBack: () => this.showLobby(),
     });
@@ -552,8 +556,8 @@ export class UIManager {
           const prev = lastBits.get(gpIndex) ?? 0;
           const pressed = bits & ~prev;
 
-          // B button → back
-          if ((pressed & 0x0020) && onBack) {
+          // A button → back
+          if ((pressed & CONTROLLER_PROFILE.cancel) && onBack) {
             cleanup();
             onBack();
             return;
@@ -618,8 +622,8 @@ export class UIManager {
               }
             }
 
-           // A button → set choice and confirm for matching slot
-            if (pressed & 0x0010) {
+           // B button → set choice and confirm for matching slot
+            if (pressed & CONTROLLER_PROFILE.confirm) {
               const slotIndex = gamepadSlotByIndex?.get(gpIndex) ?? gpIndex;
               console.log('[CharSelect] Gamepad', gpIndex, 'A button pressed, mapped to slotIndex:', slotIndex);
               if (slotIndex < playerCount && !confirmed[slotIndex]) {

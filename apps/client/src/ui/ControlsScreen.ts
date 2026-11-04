@@ -1,3 +1,7 @@
+import{MenuNavigator}from'./MenuNavigator';
+import{resetStickCalibration,type GamepadPoller}from'@smash/gamepad-input';
+import{xboxBindingLabel,XBOX360_PROFILE}from'../input/xbox360Profile';
+import { renderControllerCalibration } from './ControllerCalibration';
 /**
  * @fileoverview Controls screen: per-slot device bindings with live rebind.
  *
@@ -16,24 +20,27 @@ import type { InputBitmask } from '@smash/shared';
 import type { GamepadPreferenceStore } from '@smash/gamepad-input';
 import type { ControllerAssignmentManager, SlotAssignment } from '../input/ControllerAssignmentManager';
 import {
+  withTauntDefaults,
   DEFAULT_KEYMAP_P1,
   DEFAULT_KEYMAP_P2,
   DEFAULT_KEYMAP_P3,
   DEFAULT_KEYMAP_P4,
 } from '../input/keymaps';
 
-const ACTION_NAMES = ['LEFT', 'RIGHT', 'JUMP', 'DOWN', 'ATTACK', 'SPECIAL', 'SHIELD', 'GRAB'] as const;
+const ACTION_NAMES = ['LEFT', 'RIGHT', 'UP', 'JUMP', 'DOWN', 'ATTACK', 'SPECIAL', 'SHIELD', 'GRAB','TAUNT_UP','TAUNT_SIDE','TAUNT_DOWN'] as const;
 type ActionName = (typeof ACTION_NAMES)[number];
 
 const ACTION_BITS: Record<ActionName, InputBitmask> = {
   LEFT: INPUT_BITS.LEFT,
   RIGHT: INPUT_BITS.RIGHT,
+  UP: INPUT_BITS.UP,
   JUMP: INPUT_BITS.JUMP,
   DOWN: INPUT_BITS.DOWN,
   ATTACK: INPUT_BITS.ATTACK,
   SPECIAL: INPUT_BITS.SPECIAL,
   SHIELD: INPUT_BITS.SHIELD,
   GRAB: INPUT_BITS.GRAB,
+  TAUNT_UP:INPUT_BITS.TAUNT_UP,TAUNT_SIDE:INPUT_BITS.TAUNT_SIDE,TAUNT_DOWN:INPUT_BITS.TAUNT_DOWN,
 };
 
 const DEFAULT_KEYMAPS: Record<string, InputBitmask>[] = [
@@ -45,15 +52,9 @@ const DEFAULT_KEYMAPS: Record<string, InputBitmask>[] = [
 
 const STORAGE_KEY_PREFIX = 'smash:keymap:';
 
-/** Standard gamepad button names (indices match Standard Gamepad mapping) */
-const GAMEPAD_BUTTON_NAMES: Record<number, string> = {
-  0: 'A', 1: 'B', 2: 'X', 3: 'Y',
-  4: 'LB', 5: 'RB', 6: 'LT', 7: 'RT',
-  8: 'Back', 9: 'Start', 10: 'LS', 11: 'RS',
-  12: 'DPad Up', 13: 'DPad Down', 14: 'DPad Left', 15: 'DPad Right',
-};
 
 interface ControlsScreenDeps {
+  gamepadPoller?:GamepadPoller|null;
   assignmentManager: ControllerAssignmentManager;
   preferenceStore: GamepadPreferenceStore;
   onBack: () => void;
@@ -100,19 +101,7 @@ function getGamepadButtonName(
   const assignment = assignments.get(slotIndex);
   if (!assignment) return '—';
 
-  const buttonMap: Record<ActionName, number> = {
-    LEFT: 14,
-    RIGHT: 15,
-    JUMP: 0,
-    DOWN: 13,
-    ATTACK: 2,
-    SPECIAL: 3,
-    SHIELD: 5,
-    GRAB: 1,
-  };
-
-  const buttonIndex = buttonMap[action];
-  return GAMEPAD_BUTTON_NAMES[buttonIndex] ?? `Button ${buttonIndex}`;
+  return xboxBindingLabel(action);
 }
 
 function parseGamepadName(id: string): string {
@@ -130,7 +119,7 @@ function loadKeymap(slotIndex: number): Record<string, InputBitmask> {
   if (raw) {
     try {
       const parsed = JSON.parse(raw);
-      if (parsed && typeof parsed === 'object') return parsed as Record<string, InputBitmask>;
+      if (parsed && typeof parsed === 'object') return withTauntDefaults(parsed as Record<string,InputBitmask>,DEFAULT_KEYMAPS[slotIndex]!);
     } catch { /* fall through */ }
   }
   return { ...DEFAULT_KEYMAPS[slotIndex]! };
@@ -166,12 +155,16 @@ export function renderControlsScreen(
   const listeners: Array<() => void> = [];
   let listeningState: { slotIndex: number; action: ActionName; cleanup: () => void } | null = null;
 
+  let controllerNav:MenuNavigator|null=null;
+  let calibrationCleanup:Array<()=>void>=[];
   function render(): void {
+    controllerNav?.stop();
+    for(const cleanup of calibrationCleanup)cleanup();calibrationCleanup=[];
     const currentAssignments = assignmentManager.getAssignments();
     let html = `
-      <div class="overlay-center" style="max-width:900px;width:100%;align-items:stretch">
+      <div class="overlay-center" style="max-width:900px;width:100%;align-items:stretch;max-height:calc(100vh - 32px);overflow-y:auto;padding:16px;box-sizing:border-box;background:rgba(9,18,30,.94);border-radius:8px">
         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:24px">
-          <div style="font-size:32px;letter-spacing:2px">CONTROLS</div>
+          <div style="text-align:left"><div style="font-size:32px;letter-spacing:2px">CONTROLS</div><div style="font-size:12px;margin-top:6px">${XBOX360_PROFILE.name} · B confirm / A back · Start pause<br>Right stick: smash / aerial attacks · Left stick up: jump</div></div>
           <button id="controls-back-btn" class="ui-btn" style="font-size:14px">Back</button>
         </div>`;
 
@@ -205,7 +198,7 @@ export function renderControlsScreen(
         const rebindDisabled = isUnassigned || isGamepad;
         html += `
             <div style="display:flex;flex-direction:column;align-items:center;padding:8px;background:rgba(255,255,255,0.05);border-radius:4px">
-              <div style="font-size:11px;color:rgba(255,255,255,0.5);margin-bottom:4px">${action}</div>
+              <div style="font-size:11px;color:rgba(255,255,255,0.5);margin-bottom:4px">${action.replaceAll("_"," ")}</div>
               <div id="binding-${slot}-${action}" style="font-size:14px;margin-bottom:6px;min-height:20px">${currentKey}</div>
               <button id="${btnId}" class="ui-btn" style="font-size:11px;padding:2px 8px" ${rebindDisabled ? 'disabled' : ''}>Rebind</button>
             </div>`;
@@ -218,7 +211,9 @@ export function renderControlsScreen(
 
     html += '</div>';
     container.innerHTML = html;
+    for(const [slot,assignment] of currentAssignments){const row=container.querySelector('#reset-slot-'+slot)?.parentElement?.parentElement;if(row){const host=document.createElement('div');host.dataset.controllerCalibration=String(slot);row.appendChild(host);calibrationCleanup.push(renderControllerCalibration(host,assignment.gamepadId,assignment.gamepadIndex));}}
 
+    controllerNav=new MenuNavigator(deps.gamepadPoller);controllerNav.setButtons([{id:'controls-back-btn',element:container.querySelector('#controls-back-btn') as HTMLElement,onActivate:onBack}]);controllerNav.start(onBack);
     // Wire back button
     const backBtn = document.getElementById('controls-back-btn');
     if (backBtn) {
@@ -233,6 +228,7 @@ export function renderControlsScreen(
       if (resetBtn) {
         const s = slot;
         const handler = () => {
+          const assignment=currentAssignments.get(s);if(assignment)resetStickCalibration(assignment.gamepadId);
           keymaps[s] = { ...DEFAULT_KEYMAPS[s]! };
           saveKeymap(s, keymaps[s]!);
           render();
@@ -313,6 +309,8 @@ export function renderControlsScreen(
   }
 
   function cleanupAll(): void {
+    controllerNav?.stop();controllerNav=null;
+    for(const cleanup of calibrationCleanup)cleanup();calibrationCleanup=[];
     if (listeningState) {
       listeningState.cleanup();
       listeningState = null;

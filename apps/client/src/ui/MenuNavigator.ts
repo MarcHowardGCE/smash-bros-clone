@@ -1,3 +1,4 @@
+import{XBOX360_PROFILE as CONTROLLER_PROFILE}from'../input/xbox360Profile';
 /**
  * @fileoverview Unified keyboard + gamepad menu navigation.
  *
@@ -27,7 +28,7 @@ export interface MenuButton {
  * - Arrow keys (Left/Right) for item adjustment (e.g., volume slider)
  * - Enter/Space to activate the selected button
  * - Escape to trigger back/cancel
- * - Gamepad D-pad for navigation, A to activate, B to back
+ * - Gamepad D-pad for navigation, B to activate, A to back
  * - Gamepad D-pad Left/Right for item adjustment
  *
  * Edge-triggered only — no repeat fires on held gamepad buttons.
@@ -63,7 +64,7 @@ export class MenuNavigator {
   /**
    * Start listening for keyboard and gamepad input.
    *
-   * @param onBack - Optional callback fired when Escape or gamepad B is pressed
+   * @param onBack - Optional callback fired when Escape or gamepad A is pressed
    */
   start(onBack?: () => void): void {
     this.updateVisuals();
@@ -155,10 +156,10 @@ export class MenuNavigator {
            if (pressed & GenericInputBits.RIGHT) {
              this.buttons[this.selectedIndex]?.onAdjust?.(1);
            }
-           if (pressed & GenericInputBits.A) {
+           if (pressed & CONTROLLER_PROFILE.confirm) {
              this.activateSelected();
            }
-           if ((pressed & GenericInputBits.B) && onBack) {
+           if ((pressed & CONTROLLER_PROFILE.cancel) && onBack) {
              onBack();
            }
 

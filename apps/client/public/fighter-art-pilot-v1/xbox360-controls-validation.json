@@ -1,0 +1,34 @@
+{
+  "typecheck": true,
+  "profileContracts": 17,
+  "authoritativeComboTests": 7,
+  "focusedInputAndMenu": 20,
+  "productionBrowser": 4,
+  "fourClientRegression": 1,
+  "productionBuild": true,
+  "atlasPagesLoaded": 14,
+  "failedProductionRequests": 0,
+  "physicalWiredOrWirelessController": false,
+  "fullClientRegression": {
+    "fullRun": {
+      "passed": 561,
+      "failed": 4,
+      "total": 565
+    },
+    "correctedAffectedFiles": {
+      "passed": 57,
+      "failed": 0
+    },
+    "reason": "Four expectations/mock exports assumed the prior controller layout. They were corrected and every test in the three affected files passed. No runtime code changed after the full client run.",
+    "outstandingKnownFailures": 0
+  },
+  "workspace": {
+    "shared": 33,
+    "gamepad": 75,
+    "engine": 917,
+    "server": 279,
+    "clientCasesCovered": 565,
+    "skipped": 17,
+    "method": "Full package runs plus corrected affected-client-file rerun; not one final full-workspace invocation."
+  }
+}

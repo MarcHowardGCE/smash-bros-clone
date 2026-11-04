@@ -1,3 +1,4 @@
+import{XBOX360_PROFILE as CONTROLLER_PROFILE}from'../input/xbox360Profile';
 /**
  * @fileoverview Stage Select screen with grid navigation.
  *
@@ -242,8 +243,8 @@ export function renderStageSelectScreen(
         if (pressed & GenericInputBits.DOWN) moveGrid('down');
         if (pressed & GenericInputBits.LEFT) moveGrid('left');
         if (pressed & GenericInputBits.RIGHT) moveGrid('right');
-        if (pressed & GenericInputBits.A) selectStage(selectedIndex);
-        if (pressed & GenericInputBits.B) goBack();
+        if (pressed & CONTROLLER_PROFILE.confirm) selectStage(selectedIndex);
+        if (pressed & CONTROLLER_PROFILE.cancel) goBack();
 
         lastBitsPerGamepad.set(gpIndex, bits);
       }

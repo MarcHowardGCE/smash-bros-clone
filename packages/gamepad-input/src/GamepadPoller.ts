@@ -1,3 +1,4 @@
+import { loadStickCalibration } from './calibration.js';
 /**
  * @fileoverview Tick-driven gamepad polling for up to 4 simultaneous controllers.
  *
@@ -109,7 +110,8 @@ export class GamepadPoller {
       }
 
       // Sample this gamepad's input bits
-      const bits = sampleGamepadBits(gamepad);
+      const profile=loadStickCalibration(gamepad.id);
+      const bits = sampleGamepadBits(gamepad,profile.deadzone,profile.threshold,profile.centerX,profile.centerY);
 
       result.set(i, { gamepad, bits });
     }

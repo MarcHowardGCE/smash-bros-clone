@@ -1,6 +1,12 @@
 {
-  "date": "2026-11-03",
-  "batch": 22,
+  "xbox360ControllerAudit": "xbox360-controls-audit.html",
+  "defensiveHitstopAudit": "defensive-hitstop-audit.html",
+  "hitstopAudit": "hitstop-audit.html",
+  "combatFormulaAudit": "combat-formulas-audit.html",
+  "contactRangeAudit": "contact-range-audit.html",
+  "gameplayAudit": "ultimate-parity-audit.html",
+  "date": "2026-11-04",
+  "batch": 36,
   "sourceRevision": 18,
   "drawingReview": {
     "registeredFrames": 2289,
@@ -226,9 +232,73 @@
     "limits": "Fitted source rectangles were inspected. Tumble reuses a source pose; stored rotation is exercised by playback tests. This is not authoritative timing approval for unimplemented actions or exhaustive pixel-level anatomy certification."
   },
   "runtime": {
-    "connectedClipsPerFighter": 74,
-    "preparedClipsPerFighter": 62,
+    "connectedClipsPerFighter": 135,
+    "preparedClipsPerFighter": 1,
+    "legacyClipsPerFighter": 1,
+    "pendingClipsPerFighter": 0,
     "promoted": [
+      "trip_fall",
+      "trip_prone",
+      "trip_getup",
+      "floor_attack_trip",
+      "trip_roll",
+      "jab_lock_up",
+      "jab_lock_down",
+      "ceiling_tech",
+      "air_dodge_land",
+      "air_dodge_up",
+      "air_dodge_side",
+      "air_dodge_up_diagonal",
+      "air_dodge_back",
+      "air_dodge_up_back",
+      "taunt_up",
+      "taunt_side",
+      "taunt_down",
+      "ko_launch",
+      "ko_screen",
+      "ko_star",
+      "grab_dash",
+      "grab_pivot",
+      "hit_high",
+      "hit_low",
+      "hit_heavy",
+      "hit_air",
+      "wall_tech",
+      "wall_tech_jump",
+      "tumble_recover",
+      "turn_stand",
+      "turn_run",
+      "brake",
+      "crouch_enter",
+      "crouch_hold",
+      "crouch_exit",
+      "land_heavy",
+      "platform_drop",
+      "teeter_front",
+      "teeter_back",
+      "takeoff_neutral",
+      "takeoff_forward",
+      "takeoff_backward",
+      "entry",
+      "respawn_wait",
+      "respawn_drop",
+      "victory_1",
+      "victory_2",
+      "victory_3",
+      "defeat",
+      "helpless_enter",
+      "helpless_loop",
+      "helpless_land",
+      "footstool_attacker",
+      "footstool_ground_victim",
+      "footstool_air_victim",
+      "shield_raise",
+      "shield_hit",
+      "shield_drop",
+      "parry",
+      "shield_break_launch",
+      "shield_break_dizzy",
+      "shield_break_recover",
       "air_rise_loop",
       "air_apex_loop",
       "air_fall_loop",
@@ -250,285 +320,173 @@
       "floor_attack_up",
       "floor_attack_down"
     ],
-    "mode": "?renderer=fullbody; default renderer unchanged",
+    "mode": "Sprites by default; ?renderer=legacy opts out",
     "doubleJumpCue": "Resource consumption starts a 12-simulation-tick cue, including snapshots that skip the one-tick DOUBLE_JUMP state; interruption cancels it."
   },
   "atlas": {
     "frames": 2305,
-    "liveClipsPerFighter": 74,
-    "sourceSheets": 226,
-    "sourceTextureBytes": 1421863324,
-    "atlasLiveTextureBytes": 134217728,
-    "textureReductionPercent": 90.6,
+    "liveClipsPerFighter": 135,
+    "sourceSheets": 409,
+    "sourceTextureBytes": 2573203760,
+    "atlasLiveTextureBytes": 234881024,
+    "textureReductionPercent": 90.9,
     "maxRegistrationError": 0,
-    "pages": 15,
-    "livePages": 8,
-    "liveDownloadBytes": 36321479
+    "pages": 17,
+    "livePages": 14,
+    "liveDownloadBytes": 67118860
   },
-  "multiplayer": "Four actual browser clients: duplicate All-Rounders, Abe Lincoln, Swift; atlas bodies and upright markers, position propagation, pause, refresh/rejoin passed.",
-  "packaging": "Complete staged production build including public files passed; packaged game loaded eight live pages with no failed requests or page errors. Original source artwork preserved.",
+  "multiplayer": "Four actual browser clients: duplicate All-Rounders, Abe Lincoln, Swift; atlas bodies and upright markers, position propagation, pause, refresh/rejoin and taunt replication passed.",
+  "packaging": "Complete staged production build including public files passed; packaged game loaded fourteen live pages with no failed requests or page errors. Original source artwork preserved.",
   "remaining": [
     {
-      "clip": "trip_fall",
-      "needs": "Authoritative floor orientation and recovery action"
-    },
-    {
-      "clip": "trip_prone",
-      "needs": "Authoritative floor orientation and recovery action"
-    },
-    {
-      "clip": "trip_getup",
-      "needs": "Authoritative floor orientation and recovery action"
-    },
-    {
-      "clip": "floor_attack_trip",
-      "needs": "Authoritative floor orientation and recovery action"
-    },
-    {
-      "clip": "wall_tech",
-      "needs": "Replicated movement transition/action cue"
-    },
-    {
-      "clip": "wall_tech_jump",
-      "needs": "Replicated movement transition/action cue"
-    },
-    {
-      "clip": "ceiling_tech",
-      "needs": "Replicated movement transition/action cue"
-    },
-    {
-      "clip": "trip_roll",
-      "needs": "Authoritative floor orientation and recovery action"
-    },
-    {
-      "clip": "turn_stand",
-      "needs": "Replicated movement transition/action cue"
-    },
-    {
-      "clip": "turn_run",
-      "needs": "Replicated movement transition/action cue"
-    },
-    {
-      "clip": "brake",
-      "needs": "Replicated movement transition/action cue"
-    },
-    {
-      "clip": "crouch_enter",
-      "needs": "Replicated movement transition/action cue"
-    },
-    {
-      "clip": "crouch_hold",
-      "needs": "Replicated movement transition/action cue"
-    },
-    {
-      "clip": "crouch_exit",
-      "needs": "Replicated movement transition/action cue"
-    },
-    {
-      "clip": "land_heavy",
-      "needs": "Replicated movement transition/action cue"
-    },
-    {
-      "clip": "platform_drop",
-      "needs": "Replicated movement transition/action cue"
-    },
-    {
-      "clip": "teeter_front",
-      "needs": "Replicated movement transition/action cue"
-    },
-    {
-      "clip": "teeter_back",
-      "needs": "Replicated movement transition/action cue"
-    },
-    {
-      "clip": "shield_hit",
-      "needs": "Replicated shield impact, release, break or parry cue"
-    },
-    {
-      "clip": "shield_drop",
-      "needs": "Replicated shield impact, release, break or parry cue"
-    },
-    {
-      "clip": "parry",
-      "needs": "Replicated shield impact, release, break or parry cue"
-    },
-    {
       "clip": "air_dodge_directional",
-      "needs": "Dodge direction/action mapping; some legacy preview variants overlap canonical directions"
-    },
-    {
-      "clip": "air_dodge_land",
-      "needs": "Dodge direction/action mapping; some legacy preview variants overlap canonical directions"
-    },
-    {
-      "clip": "shield_break_launch",
-      "needs": "Replicated shield impact, release, break or parry cue"
-    },
-    {
-      "clip": "shield_break_dizzy",
-      "needs": "Replicated shield impact, release, break or parry cue"
-    },
-    {
-      "clip": "shield_break_recover",
-      "needs": "Replicated shield impact, release, break or parry cue"
-    },
-    {
-      "clip": "grab_dash",
-      "needs": "Replicated movement transition/action cue"
-    },
-    {
-      "clip": "grab_pivot",
-      "needs": "Replicated movement transition/action cue"
-    },
-    {
-      "clip": "hit_high",
-      "needs": "Replicated hit classification or tumble-exit cue"
-    },
-    {
-      "clip": "hit_low",
-      "needs": "Replicated hit classification or tumble-exit cue"
-    },
-    {
-      "clip": "hit_heavy",
-      "needs": "Replicated hit classification or tumble-exit cue"
-    },
-    {
-      "clip": "hit_air",
-      "needs": "Replicated hit classification or tumble-exit cue"
-    },
-    {
-      "clip": "tumble_recover",
-      "needs": "Replicated hit classification or tumble-exit cue"
-    },
-    {
-      "clip": "jab_lock_up",
-      "needs": "Authoritative floor orientation and recovery action"
-    },
-    {
-      "clip": "jab_lock_down",
-      "needs": "Authoritative floor orientation and recovery action"
-    },
-    {
-      "clip": "footstool_attacker",
-      "needs": "Paired authoritative attacker/victim event and state"
-    },
-    {
-      "clip": "footstool_ground_victim",
-      "needs": "Paired authoritative attacker/victim event and state"
-    },
-    {
-      "clip": "footstool_air_victim",
-      "needs": "Paired authoritative attacker/victim event and state"
-    },
-    {
-      "clip": "entry",
-      "needs": "Match presentation/KO/respawn event hook"
-    },
-    {
-      "clip": "respawn_wait",
-      "needs": "Match presentation/KO/respawn event hook"
-    },
-    {
-      "clip": "respawn_drop",
-      "needs": "Match presentation/KO/respawn event hook"
-    },
-    {
-      "clip": "taunt_up",
-      "needs": "Match presentation/KO/respawn event hook"
-    },
-    {
-      "clip": "taunt_side",
-      "needs": "Match presentation/KO/respawn event hook"
-    },
-    {
-      "clip": "taunt_down",
-      "needs": "Match presentation/KO/respawn event hook"
-    },
-    {
-      "clip": "victory_1",
-      "needs": "Match presentation/KO/respawn event hook"
-    },
-    {
-      "clip": "victory_2",
-      "needs": "Match presentation/KO/respawn event hook"
-    },
-    {
-      "clip": "victory_3",
-      "needs": "Match presentation/KO/respawn event hook"
-    },
-    {
-      "clip": "defeat",
-      "needs": "Match presentation/KO/respawn event hook"
-    },
-    {
-      "clip": "ko_launch",
-      "needs": "Match presentation/KO/respawn event hook"
-    },
-    {
-      "clip": "ko_screen",
-      "needs": "Match presentation/KO/respawn event hook"
-    },
-    {
-      "clip": "ko_star",
-      "needs": "Match presentation/KO/respawn event hook"
-    },
-    {
-      "clip": "takeoff_neutral",
-      "needs": "Replicated movement transition/action cue"
-    },
-    {
-      "clip": "takeoff_forward",
-      "needs": "Replicated movement transition/action cue"
-    },
-    {
-      "clip": "takeoff_backward",
-      "needs": "Replicated movement transition/action cue"
-    },
-    {
-      "clip": "air_dodge_up",
-      "needs": "Dodge direction/action mapping; some legacy preview variants overlap canonical directions"
-    },
-    {
-      "clip": "air_dodge_side",
-      "needs": "Dodge direction/action mapping; some legacy preview variants overlap canonical directions"
-    },
-    {
-      "clip": "air_dodge_up_diagonal",
-      "needs": "Dodge direction/action mapping; some legacy preview variants overlap canonical directions"
-    },
-    {
-      "clip": "helpless_enter",
-      "needs": "Recovery lockout and landing state"
-    },
-    {
-      "clip": "helpless_loop",
-      "needs": "Recovery lockout and landing state"
-    },
-    {
-      "clip": "helpless_land",
-      "needs": "Recovery lockout and landing state"
-    },
-    {
-      "clip": "air_dodge_back",
-      "needs": "Dodge direction/action mapping; some legacy preview variants overlap canonical directions"
-    },
-    {
-      "clip": "air_dodge_up_back",
-      "needs": "Dodge direction/action mapping; some legacy preview variants overlap canonical directions"
+      "legacy": true,
+      "needs": "Legacy overview variant; eight canonical directional clips are connected"
     }
   ],
   "validation": {
-    "browserTests": 37,
+    "browserTests": 52,
     "focusedUnitTests": 10,
     "typeScript": true,
     "completeStagedProductionBuild": true,
     "packagedBrowserSmoke": true,
-    "engineTestsPassed": 275,
+    "engineTestsPassed": 917,
     "engineTestsSkipped": 1,
     "combatServerTestsPassed": 9,
     "groundRecoveryServerTestsPassed": 10,
     "ledgeServerTestsPassed": 37,
     "ledgeServerTestsSkipped": 13,
-    "clientFocusedTestsPassed": 3
+    "clientFocusedTestsPassed": 3,
+    "browserRun": "50 review/local checks plus controller calibration and separate four-client regression passed.",
+    "shieldServerTestsPassed": 3,
+    "combatGroundRegressionTestsPassed": 19,
+    "shieldClientTestsPassed": 1,
+    "metadataClientTestsPassed": 1,
+    "footstoolPureTestsPassed": 26,
+    "footstoolServerTestsPassed": 1,
+    "footstoolClientTestsPassed": 3,
+    "helplessServerTestsPassed": 15,
+    "helplessClientTestsPassed": 1,
+    "movementServerTestsPassed": 3,
+    "movementRecoveryRegressionTestsPassed": 25,
+    "movementPresentationClientTestsPassed": 2,
+    "tauntCombatTechServerTestsPassed": 22,
+    "grabRegressionTestsPassed": 11,
+    "refinementInputTestsPassed": 11,
+    "tauntCombatTechClientTestsPassed": 3,
+    "gamepadTestsPassed": 75,
+    "controlsTestsPassed": 7,
+    "quickTauntTapTestsPassed": 1,
+    "tauntMultiplayerReplication": true,
+    "serverTestsPassed": 279,
+    "serverTestsSkipped": 16,
+    "serverRun": "258 passed in complete single-worker workspace run; final throw-history assertions also passed.",
+    "tripJabLockPureTestsPassed": 13,
+    "tripJabLockServerTestsPassed": 15,
+    "tripJabLockClientTestsPassed": 1,
+    "connectedClipsPerFighter": 135,
+    "legacyClipsPerFighter": 1,
+    "pendingClipsPerFighter": 0,
+    "date": "2026-11-04",
+    "clientTestsPassed": 562,
+    "clientTestsFailed": 0,
+    "parityFoundationServerTestsPassed": 26,
+    "seededBotMatches": 96,
+    "parityAudit": "ultimate-parity-audit.html",
+    "ultimateParityComplete": false,
+    "humanBalanceCertified": false,
+    "sharedTestsPassed": 71,
+    "gamepadPackageTestsPassed": 31,
+    "fullRegressionGatePassed": true,
+    "parryInputDamageTestsPassed": 13,
+    "independentUpMultiplayer": true,
+    "workspaceTestsPassed": 1320,
+    "contactRangeAudit": "contact-range-audit.html",
+    "spriteReachPairingTestsPassed": 18,
+    "combatReferenceCasesPassed": 54,
+    "combatFormulaAudit": "combat-formulas-audit.html",
+    "fullUltimateParity": false,
+    "hitstopAudit": {
+      "date": "2026-11-04",
+      "batch": 33,
+      "typecheck": true,
+      "referenceCases": 96,
+      "focusedHitstopEngine": 9,
+      "focusedHitstopServer": 8,
+      "browserReview": 49,
+      "multiplayer": 1,
+      "productionBuild": true,
+      "productionSmoke": {
+        "liveAtlasPages": 14,
+        "failedRequests": 0,
+        "pageErrors": 0
+      },
+      "unitEvidence": "Full workspace run passed; subsequent full server run passed 265 tests with 16 skips; final added ASDI policy cases passed in focused engine/server suites. Counts are not presented as a single final full run."
+    },
+    "hitstopParityComplete": false,
+    "defensiveHitstopAudit": {
+      "date": "2026-11-04",
+      "batch": 34,
+      "typecheck": true,
+      "workspace": {
+        "passed": 1552,
+        "skipped": 17,
+        "shared": 31,
+        "gamepad": 75,
+        "engine": 615,
+        "server": 268,
+        "client": 563
+      },
+      "browser": {
+        "reviewAndController": 51,
+        "fourClientRegression": 1,
+        "total": 52
+      },
+      "independentShieldFormulaCases": 96,
+      "physicalControllerValidation": false,
+      "productionBuild": true,
+      "productionSmoke": {
+        "atlasPagesLoaded": 14,
+        "failedRequests": 0,
+        "pageErrors": 0
+      },
+      "finalBoundaryCheck": "After full workspace/browser regression, final ASDI platform-edge horizontal position fix passed all ten focused authoritative hitstop tests and server typecheck; latest package refreshed."
+    },
+    "defensiveHitstopParityComplete": false,
+    "xbox360ControllerAudit": {
+      "typecheck": true,
+      "profileContracts": 17,
+      "authoritativeComboTests": 7,
+      "focusedInputAndMenu": 20,
+      "productionBrowser": 4,
+      "fourClientRegression": 1,
+      "productionBuild": true,
+      "atlasPagesLoaded": 14,
+      "failedProductionRequests": 0,
+      "physicalWiredOrWirelessController": false,
+      "fullClientRegression": {
+        "fullRun": {
+          "passed": 561,
+          "failed": 4,
+          "total": 565
+        },
+        "correctedAffectedFiles": {
+          "passed": 57,
+          "failed": 0
+        },
+        "reason": "Four expectations/mock exports assumed the prior controller layout. They were corrected and every test in the three affected files passed. No runtime code changed after the full client run.",
+        "outstandingKnownFailures": 0
+      },
+      "workspace": {
+        "shared": 33,
+        "gamepad": 75,
+        "engine": 917,
+        "server": 279,
+        "clientCasesCovered": 565,
+        "skipped": 17,
+        "method": "Full package runs plus corrected affected-client-file rerun; not one final full-workspace invocation."
+      }
+    },
+    "xbox360ControllerProfile": "ultimate-xbox360-v1"
   }
 }

@@ -1,0 +1,2 @@
+import{it,expect}from'vitest';import{InputManager}from'../InputManager.js';import{DEFAULT_KEYMAP_P1}from'../keymaps.js';import{INPUT_BITS}from'@smash/shared';
+it('retains a quick taunt tap until the next input poll, without repeating it',()=>{const m=new InputManager(DEFAULT_KEYMAP_P1,'a');window.dispatchEvent(new KeyboardEvent('keydown',{code:'Digit1'}));window.dispatchEvent(new KeyboardEvent('keyup',{code:'Digit1'}));expect(m.pollInput()?.pressed).toBe(INPUT_BITS.TAUNT_UP);expect(m.pollInput()).toBeNull();m.destroy();});

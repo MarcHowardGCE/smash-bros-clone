@@ -185,7 +185,7 @@ export function decideBotInput(
   // (2)
   if (sensors.isOffStage(self, STAGE) && self.ledgeId === null) {
     const towardCenterBits = self.x < 640 ? INPUT_BITS.RIGHT : INPUT_BITS.LEFT;
-    const recoveryBits = self.hasDoubleJump ? INPUT_BITS.JUMP : INPUT_BITS.SPECIAL;
+    const recoveryBits = self.hasDoubleJump ? INPUT_BITS.JUMP : (INPUT_BITS.UP|INPUT_BITS.SPECIAL);
     return applyExecutionError(
       towardCenterBits | recoveryBits,
       difficultyConfig.executionErrorRate,

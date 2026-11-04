@@ -34,9 +34,9 @@ describe('Swift Move Overrides', () => {
   });
 
   describe('Swift hitbox stats: extended reach, lower damage', () => {
-    it('JAB: offsetX 50 (extended from default 45), damage 2, kbGrowth 22', () => {
+    it('JAB: forward extent 68, close-range coverage, damage 2, kbGrowth 22', () => {
       const h = SWIFT_JAB.hitboxPerActiveFrame[0];
-      expect(h.offsetX).toBe(50);
+      expect(h.offsetX).toBe(44);
       expect(h.damage).toBe(2);
       expect(h.knockbackGrowth).toBe(22);
     });
@@ -110,7 +110,7 @@ describe('Swift Move Overrides', () => {
 
     it('Swift reach meets or exceeds defaults on all reach-extended moves', () => {
       // JAB, FORWARD_TILT, FORWARD_AIR use offsetX for reach
-      expect(SWIFT_JAB.hitboxPerActiveFrame[0].offsetX).toBeGreaterThan(getMoveData(MoveId.JAB).hitboxPerActiveFrame[0].offsetX);
+      expect(SWIFT_JAB.hitboxPerActiveFrame[0].offsetX + SWIFT_JAB.hitboxPerActiveFrame[0].radius).toBeGreaterThan(getMoveData(MoveId.JAB).hitboxPerActiveFrame[0].offsetX + getMoveData(MoveId.JAB).hitboxPerActiveFrame[0].radius);
       expect(SWIFT_FORWARD_TILT.hitboxPerActiveFrame[0].offsetX).toBeGreaterThan(getMoveData(MoveId.FORWARD_TILT).hitboxPerActiveFrame[0].offsetX);
       expect(SWIFT_FORWARD_AIR.hitboxPerActiveFrame[0].offsetX).toBeGreaterThan(getMoveData(MoveId.FORWARD_AIR).hitboxPerActiveFrame[0].offsetX);
       // NEUTRAL_AIR, NEUTRAL_SPECIAL, UP_SPECIAL use radius for reach
@@ -126,7 +126,7 @@ describe('Swift Move Overrides', () => {
   describe('getMoveDataForCharacter', () => {
     it('returns Swift overrides for swift', () => {
       const move = getMoveDataForCharacter('swift', MoveId.JAB);
-      expect(move.hitboxPerActiveFrame[0].offsetX).toBe(50);
+      expect(move.hitboxPerActiveFrame[0].offsetX).toBe(44);
       expect(move.hitboxPerActiveFrame[0].damage).toBe(2);
     });
 
@@ -139,8 +139,8 @@ describe('Swift Move Overrides', () => {
     it('swift and abe-lincoln overrides do not collide', () => {
       const swiftJab = getMoveDataForCharacter('swift', MoveId.JAB);
       const lincolnJab = getMoveDataForCharacter('abe-lincoln', MoveId.JAB);
-      expect(swiftJab.hitboxPerActiveFrame[0].offsetX).toBe(50);
-      expect(lincolnJab.hitboxPerActiveFrame[0].offsetX).toBe(58);
+      expect(swiftJab.hitboxPerActiveFrame[0].offsetX).toBe(44);
+      expect(lincolnJab.hitboxPerActiveFrame[0].offsetX).toBe(50);
     });
 
     it('all 7 Swift moves resolve with default frame timing preserved', () => {

@@ -23,6 +23,18 @@ export const SMASH_CHARGE_MAX_FRAMES = 60;
  * - Jumpsquat: JUMPSQUAT_FRAMES frames of crouch before leaving the ground
  */
 export const PHYSICS = {
+  /** Digital hitstop displacement tuning; world-unit calibration is not certified Ultimate data. */
+  SDI_DISTANCE_WORLD:3,SDI_COOLDOWN_TICKS:4,ASDI_EXIT_DISTANCE_WORLD:2,
+  /** Prima short-hop guide / Rubendal calculator; not full formula parity. */
+  SHORT_HOP_AERIAL_DAMAGE_MULTIPLIER:0.85,
+  ONE_ON_ONE_DAMAGE_MULTIPLIER:1.2,
+  /** Custom shared dodge tuning; separately audited from Ultimate frame data. */
+  DODGE_INTANGIBILITY_START:3,DODGE_INTANGIBILITY_END:12,
+  AIR_DODGE_TRAVEL_START:3,AIR_DODGE_TRAVEL_END:13,AIR_DODGE_SPEED:6,
+  ROLL_TRAVEL_START:3,ROLL_TRAVEL_END:15,ROLL_SPEED:4,
+  /** Initial shared recovery tuning; not verified Ultimate frame data. */
+  UP_SPECIAL_LAUNCH_VELOCITY: -16,
+  HELPLESS_LANDING_FRAMES: 14,
   /** px/frame² downward acceleration each tick. Tuned for a floaty but responsive arc. */
   GRAVITY: 0.65,
   /** px/frame maximum fall speed; prevents tunneling through thin platforms. */
@@ -80,7 +92,10 @@ export const PHYSICS = {
   /** Frames of shield-break stun (~2.5 s at 60 Hz); long enough to guarantee a punish. */
   SHIELD_BREAK_STUN_FRAMES: 150,
   /** Frames after shield raise during which a perfect shield (powershield) is active. */
-  PERFECT_SHIELD_WINDOW_FRAMES: 4,
+  PERFECT_SHIELD_WINDOW_FRAMES: 5,
+  SHIELD_PARRY_MIN_HOLD_FRAMES:3,
+  // Custom hitstop advantage pending versioned Ultimate hitlag calibration.
+  PARRY_ATTACKER_EXTRA_HITLAG:11,
   /** Proximity radius in px for the hurtbox-to-ledge-point `circleOverlap` check. */
   LEDGE_GRAB_RADIUS: 50,
   /** Maximum vertical distance in px above or below ledge `y` where a grab is valid. */
@@ -115,7 +130,7 @@ export const PHYSICS = {
   COUNTER_KNOCKBACK_MULTIPLIER: 1.2,
   /** Launch angle in degrees used by counter-hit resolution (mirrored by defender's facing). */
   COUNTER_ANGLE_DEGREES: 45,
-  /** px/frame positional drift during post-hitlag hitstun when a direction is held (ASDI). */
+  /** Deprecated legacy drift parameter; no longer used by the hitstop model. */
   ASDI_DRIFT_PX_PER_FRAME: 2,
   /** Cumulative ASDI drift cap in px per hitstun instance. */
   ASDI_MAX_TOTAL_DRIFT_PX: 30,

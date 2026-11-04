@@ -19,6 +19,8 @@ import type { PlayerId } from './GameState.js';
  * - bit 5 (0x0020): special
  * - bit 6 (0x0040): shield
  * - bit 7 (0x0080): grab
+ * - bits 8–10: up / side / down taunts
+ * - bit 11 (0x0800): directional up, independent of jump
  */
 export type InputBitmask = number;
 
@@ -30,6 +32,7 @@ export type InputBitmask = number;
  * ```
  */
 export const INPUT_BITS = {
+  UP:      0x0800,
   LEFT:    0x0001,
   RIGHT:   0x0002,
   JUMP:    0x0004,
@@ -38,6 +41,9 @@ export const INPUT_BITS = {
   SPECIAL: 0x0020,
   SHIELD:  0x0040,
   GRAB:    0x0080,
+  TAUNT_UP:0x0100,
+  TAUNT_SIDE:0x0200,
+  TAUNT_DOWN:0x0400,
 } as const;
 
 /**
@@ -47,6 +53,10 @@ export const INPUT_BITS = {
  * prediction buffer.
  */
 export interface InputEvent {
+  /** Controller shortcuts; absent on legacy/keyboard packets. */
+  jumpButtons?:number;smashAttack?:boolean;
+  /** Optional calibrated sticks, -1..1; screen coordinates (down is positive). Old digital clients remain valid. */
+  stickX?:number;stickY?:number;cStickX?:number;cStickY?:number;
   /** Server tick this input targets (used for rollback alignment). */
   tick: number;
   /** Monotonically incrementing sequence number per player; never resets. */

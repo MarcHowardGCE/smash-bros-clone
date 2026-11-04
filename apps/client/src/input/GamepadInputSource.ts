@@ -1,108 +1,24 @@
-/**
- * @fileoverview Gamepad-to-InputBitmask adapter.
- *
- * Bridges the `@smash/gamepad-input` package's {@link GenericInputBits}
- * enumeration to the `@smash/shared` {@link INPUT_BITS} bitmask used by the
- * engine. Consumed by {@link InputManager} as an optional second input source
- * that is OR-merged with keyboard bits each frame.
- */
-import type { GamepadPoller, GenericInputBitmask } from '@smash/gamepad-input';
-import { GenericInputBits } from '@smash/gamepad-input';
-import { INPUT_BITS, type InputBitmask } from '@smash/shared';
-
-/**
- * GamepadInputSource - Adapts gamepad-input package's GenericInputBits
- * into @smash/shared's INPUT_BITS format, matching keyboard semantics.
- *
- * Mapping follows DEFAULT_KEYMAP_P1:
- * - Generic A / DPAD_UP / Stick_UP → INPUT_BITS.JUMP
- * - Generic X → INPUT_BITS.ATTACK
- * - Generic B → INPUT_BITS.SPECIAL
- * - Generic LB / RB → INPUT_BITS.SHIELD
- * - Generic LT / RT → INPUT_BITS.GRAB
- * - Generic LEFT / RIGHT / DOWN → INPUT_BITS.LEFT / RIGHT / DOWN
- */
-export class GamepadInputSource {
-  private gamepadPoller: GamepadPoller;
-  private gamepadIndex: number;
-
-  constructor(poller: GamepadPoller, gamepadIndex: number, private readonly resolveIndex?: () => number) {
-    this.gamepadPoller = poller;
-    this.gamepadIndex = gamepadIndex;
-  }
-
-  /**
-   * Get currently held input bits by polling gamepad state.
-   * Disconnected gamepads return 0 gracefully (no throw).
-   *
-   * @returns InputBitmask with translated bits from GenericInputBits
-   */
-  getHeldBits(): InputBitmask {
-    const pollResult = this.gamepadPoller.poll();
-    const gamepadState = pollResult.get(this.resolveIndex?.() ?? this.gamepadIndex);
-
-    // Disconnected gamepad: return 0 gracefully
-    if (!gamepadState) {
-      return 0;
-    }
-
-    const genericBits = gamepadState.bits;
-    return this.translateBits(genericBits);
-  }
-
-  /**
-   * Allow reassignment to a different gamepad index
-   * (e.g., if player switches controllers during match)
-   */
-  updateGamepadIndex(newIndex: number): void {
-    this.gamepadIndex = newIndex;
-  }
-
-  /**
-   * Translate GenericInputBits to INPUT_BITS using DEFAULT_KEYMAP_P1 semantics
-   */
-  private translateBits(genericBits: GenericInputBitmask): InputBitmask {
-    let inputBits: InputBitmask = 0;
-
-    // Directional mapping
-    if (genericBits & GenericInputBits.LEFT) {
-      inputBits |= INPUT_BITS.LEFT;
-    }
-    if (genericBits & GenericInputBits.RIGHT) {
-      inputBits |= INPUT_BITS.RIGHT;
-    }
-    if (genericBits & GenericInputBits.DOWN) {
-      inputBits |= INPUT_BITS.DOWN;
-    }
-
-    // Action mapping: A/DPAD_UP/Stick_UP → JUMP
-    if (genericBits & GenericInputBits.A) {
-      inputBits |= INPUT_BITS.JUMP;
-    }
-    if (genericBits & GenericInputBits.UP) {
-      inputBits |= INPUT_BITS.JUMP;
-    }
-
-    // X → ATTACK
-    if (genericBits & GenericInputBits.X) {
-      inputBits |= INPUT_BITS.ATTACK;
-    }
-
-    // B → SPECIAL
-    if (genericBits & GenericInputBits.B) {
-      inputBits |= INPUT_BITS.SPECIAL;
-    }
-
-    // LB/RB → SHIELD
-    if ((genericBits & GenericInputBits.LB) || (genericBits & GenericInputBits.RB)) {
-      inputBits |= INPUT_BITS.SHIELD;
-    }
-
-    // LT/RT → GRAB
-    if ((genericBits & GenericInputBits.LT) || (genericBits & GenericInputBits.RT)) {
-      inputBits |= INPUT_BITS.GRAB;
-    }
-
-    return inputBits;
-  }
+import type{GamepadPoller}from'@smash/gamepad-input';
+import{applyRadialDeadzone,loadStickCalibration,GenericInputBits as G}from'@smash/gamepad-input';
+import{INPUT_BITS as B,type InputBitmask}from'@smash/shared';
+import{XBOX360_PROFILE as P}from'./xbox360Profile';
+export class GamepadInputSource{
+ constructor(private gamepadPoller:GamepadPoller,private gamepadIndex:number,private readonly resolveIndex?:()=>number){}
+ updateGamepadIndex(index:number):void{this.gamepadIndex=index;}
+ getHeldBits():InputBitmask{return this.sampleInput().held;}
+ sampleInput():{connected:boolean;held:number;stickX:number;stickY:number;cStickX:number;cStickY:number;jumpButtons:number;smashAttack:boolean}{
+  const state=this.gamepadPoller.poll().get(this.resolveIndex?.()??this.gamepadIndex);
+  if(!state)return{connected:false,held:0,stickX:0,stickY:0,cStickX:0,cStickY:0,jumpButtons:0,smashAttack:false};
+  const pad=state.gamepad,axes=pad?.axes??[],buttons=pad?.buttons??[],profile=loadStickCalibration(pad?.id??'default');
+  const[x,y]=applyRadialDeadzone((axes[0]??0)-profile.centerX,(axes[1]??0)-profile.centerY,profile.deadzone);
+  const[cx,cy]=applyRadialDeadzone(axes[2]??0,axes[3]??0,.2),cActive=Math.hypot(cx,cy)>=.55;
+  let held=0;for(const binding of P.bindings)if(state.bits&binding.mask)held|=binding.bit;
+  if(x>=profile.threshold)held|=B.RIGHT;if(x<=-profile.threshold)held|=B.LEFT;
+  if(y>=profile.threshold)held|=B.DOWN;if(y<=-profile.threshold)held|=B.UP;
+  if(P.defaults.stickJump&&y<=-.7)held|=B.JUMP;
+  if(buttons[12]?.pressed)held|=B.TAUNT_UP;if(buttons[13]?.pressed)held|=B.TAUNT_DOWN;if(buttons[14]?.pressed||buttons[15]?.pressed)held|=B.TAUNT_SIDE;
+  if(cActive)held|=B.ATTACK;
+  const jumpButtons=((state.bits&G.X)?1:0)|((state.bits&G.Y)?2:0),q=(v:number)=>Math.round(v*1000)/1000;
+  return{connected:true,held,stickX:q(x),stickY:q(y),cStickX:cActive?q(cx):0,cStickY:cActive?q(cy):0,jumpButtons,smashAttack:!!((state.bits&G.A)&&(state.bits&G.B))};
+ }
 }

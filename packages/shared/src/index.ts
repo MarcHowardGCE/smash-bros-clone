@@ -36,3 +36,5 @@ export {
   degreesToRadians,
   knockbackAngleToVelocity,
 } from './math/vectors.js';
+
+export {inputVector,validStickInput} from './math/input.js';

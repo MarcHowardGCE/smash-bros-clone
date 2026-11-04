@@ -157,7 +157,7 @@ describe('UIManager', () => {
   describe('showCharacterSelect', () => {
     const fighters: FighterChoice[] = [{ id: 'fighter1', displayName: 'Fighter One' }];
 
-    it('does not skip Stage Select when Character Select confirms with held A after CPU auto-confirm', () => {
+    it('does not skip Stage Select when Character Select confirms with held B after CPU auto-confirm', () => {
       vi.useFakeTimers();
       const stageOnSelected = vi.fn();
       const stages: StageConfig[] = [
@@ -194,16 +194,16 @@ describe('UIManager', () => {
           .mockReturnValueOnce(new Map([[0, { bits: 0 }]]))
           // Character Select frame 1: still idle.
           .mockReturnValueOnce(new Map([[0, { bits: 0 }]]))
-          // Character Select frame 2: fresh A press confirms P1 while CPU already confirmed.
-          .mockReturnValueOnce(new Map([[0, { bits: GenericInputBits.A }]]))
-          // Stage Select prime runs synchronously in the same call stack; A still physically held.
-          .mockReturnValueOnce(new Map([[0, { bits: GenericInputBits.A }]]))
-          // Stage Select first real frame: A still held should NOT select stage.
-          .mockReturnValueOnce(new Map([[0, { bits: GenericInputBits.A }]]))
+          // Character Select frame 2: fresh B press confirms P1 while CPU already confirmed.
+          .mockReturnValueOnce(new Map([[0, { bits: GenericInputBits.B }]]))
+          // Stage Select prime runs synchronously in the same call stack; B still physically held.
+          .mockReturnValueOnce(new Map([[0, { bits: GenericInputBits.B }]]))
+          // Stage Select first real frame: B still held should NOT select stage.
+          .mockReturnValueOnce(new Map([[0, { bits: GenericInputBits.B }]]))
           // Release.
           .mockReturnValueOnce(new Map([[0, { bits: 0 }]]))
           // Fresh re-press: now Stage Select should select.
-          .mockReturnValueOnce(new Map([[0, { bits: GenericInputBits.A }]])),
+          .mockReturnValueOnce(new Map([[0, { bits: GenericInputBits.B }]])),
       };
 
       vi.stubGlobal('requestAnimationFrame', ((cb: FrameRequestCallback): number => {
@@ -236,12 +236,12 @@ describe('UIManager', () => {
         vi.advanceTimersByTime(500);
         expect(mockOverlay.querySelector('#p2-status')?.textContent).toBe('✓ Ready!');
 
-        // This frame confirms P1 via A and synchronously cascades into Stage Select.
+        // This frame confirms P1 via B and synchronously cascades into Stage Select.
         runNextFrame();
         expect(mockOverlay.innerHTML).toContain('SELECT STAGE');
         expect(document.getElementById('stage-back-btn')).not.toBeNull();
 
-        // First Stage Select frame sees held A baseline from priming; must NOT auto-select.
+        // First Stage Select frame sees held B baseline from priming; must NOT auto-select.
         runNextFrame();
         expect(stageOnSelected).not.toHaveBeenCalled();
 
@@ -256,20 +256,20 @@ describe('UIManager', () => {
       }
     });
 
-    it('primes gamepad lastBits so an already-held A button does not instantly confirm P1', () => {
+    it('primes gamepad lastBits so an already-held B button does not instantly confirm P1', () => {
       const onSelected = vi.fn();
       const rafCallbacks: FrameRequestCallback[] = [];
       const mockPoller = {
         poll: vi
           .fn()
-          // Priming snapshot: A already held from previous screen.
-          .mockReturnValueOnce(new Map([[0, { bits: GenericInputBits.A }]]))
+          // Priming snapshot: B already held from previous screen.
+          .mockReturnValueOnce(new Map([[0, { bits: GenericInputBits.B }]]))
           // First loop frame still held -> must NOT confirm.
-          .mockReturnValueOnce(new Map([[0, { bits: GenericInputBits.A }]]))
+          .mockReturnValueOnce(new Map([[0, { bits: GenericInputBits.B }]]))
           // Release.
           .mockReturnValueOnce(new Map([[0, { bits: 0 }]]))
           // Fresh new press -> should confirm.
-          .mockReturnValueOnce(new Map([[0, { bits: GenericInputBits.A }]])),
+          .mockReturnValueOnce(new Map([[0, { bits: GenericInputBits.B }]])),
       };
 
       vi.stubGlobal('requestAnimationFrame', ((cb: FrameRequestCallback): number => {
@@ -288,7 +288,7 @@ describe('UIManager', () => {
           callback!(0);
         };
 
-        // First frame: still-held A is ignored due to primed snapshot.
+        // First frame: still-held B is ignored due to primed snapshot.
         runNextFrame();
         expect(onSelected).not.toHaveBeenCalled();
         expect(mockOverlay.querySelector('#p1-status')?.textContent).not.toBe('✓ Ready!');

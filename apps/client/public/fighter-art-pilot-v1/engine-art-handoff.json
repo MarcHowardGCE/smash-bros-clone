@@ -1,6 +1,6 @@
 {
   "revision": 18,
-  "mode": "optional ?renderer=fullbody",
+  "mode": "Sprites by default; ?renderer=legacy opts out",
   "mapping": {
     "all-rounder": {
       "live": [
@@ -58,60 +58,47 @@
         "getup_roll_down",
         "floor_attack_up",
         "floor_attack_down",
-        "tech_neutral",
-        "tech_roll",
-        "dash_start",
-        "jump_squat",
-        "land_soft",
-        "shield_raise",
-        "air_dodge_neutral",
-        "dash_attack",
-        "hit_mid",
-        "tumble",
-        "air_rise_loop",
-        "air_apex_loop",
-        "air_fall_loop",
-        "air_fastfall_loop",
-        "double_jump_transition",
-        "air_dodge_down",
-        "air_dodge_down_diagonal",
-        "jab_2",
-        "jab_3",
-        "air_dodge_down_back"
-      ],
-      "prepared": [
         "trip_fall",
         "trip_prone",
         "trip_getup",
         "floor_attack_trip",
+        "tech_neutral",
+        "tech_roll",
         "wall_tech",
         "wall_tech_jump",
         "ceiling_tech",
         "trip_roll",
+        "dash_start",
         "turn_stand",
         "turn_run",
         "brake",
         "crouch_enter",
         "crouch_hold",
         "crouch_exit",
+        "jump_squat",
+        "land_soft",
         "land_heavy",
         "platform_drop",
         "teeter_front",
         "teeter_back",
+        "shield_raise",
         "shield_hit",
         "shield_drop",
         "parry",
-        "air_dodge_directional",
+        "air_dodge_neutral",
         "air_dodge_land",
         "shield_break_launch",
         "shield_break_dizzy",
         "shield_break_recover",
         "grab_dash",
         "grab_pivot",
+        "dash_attack",
         "hit_high",
+        "hit_mid",
         "hit_low",
         "hit_heavy",
         "hit_air",
+        "tumble",
         "tumble_recover",
         "jab_lock_up",
         "jab_lock_down",
@@ -134,15 +121,32 @@
         "takeoff_neutral",
         "takeoff_forward",
         "takeoff_backward",
+        "air_rise_loop",
+        "air_apex_loop",
+        "air_fall_loop",
+        "air_fastfall_loop",
+        "double_jump_transition",
         "air_dodge_up",
+        "air_dodge_down",
         "air_dodge_side",
         "air_dodge_up_diagonal",
+        "air_dodge_down_diagonal",
         "helpless_enter",
         "helpless_loop",
         "helpless_land",
+        "jab_2",
+        "jab_3",
         "air_dodge_back",
-        "air_dodge_up_back"
-      ]
+        "air_dodge_up_back",
+        "air_dodge_down_back"
+      ],
+      "prepared": [
+        "air_dodge_directional"
+      ],
+      "legacy": [
+        "air_dodge_directional"
+      ],
+      "pending": []
     },
     "abe-lincoln": {
       "live": [
@@ -200,60 +204,47 @@
         "getup_roll_down",
         "floor_attack_up",
         "floor_attack_down",
-        "tech_neutral",
-        "tech_roll",
-        "dash_start",
-        "jump_squat",
-        "land_soft",
-        "shield_raise",
-        "air_dodge_neutral",
-        "dash_attack",
-        "hit_mid",
-        "tumble",
-        "air_rise_loop",
-        "air_apex_loop",
-        "air_fall_loop",
-        "air_fastfall_loop",
-        "double_jump_transition",
-        "air_dodge_down",
-        "air_dodge_down_diagonal",
-        "jab_2",
-        "jab_3",
-        "air_dodge_down_back"
-      ],
-      "prepared": [
         "trip_fall",
         "trip_prone",
         "trip_getup",
         "floor_attack_trip",
+        "tech_neutral",
+        "tech_roll",
         "wall_tech",
         "wall_tech_jump",
         "ceiling_tech",
         "trip_roll",
+        "dash_start",
         "turn_stand",
         "turn_run",
         "brake",
         "crouch_enter",
         "crouch_hold",
         "crouch_exit",
+        "jump_squat",
+        "land_soft",
         "land_heavy",
         "platform_drop",
         "teeter_front",
         "teeter_back",
+        "shield_raise",
         "shield_hit",
         "shield_drop",
         "parry",
-        "air_dodge_directional",
+        "air_dodge_neutral",
         "air_dodge_land",
         "shield_break_launch",
         "shield_break_dizzy",
         "shield_break_recover",
         "grab_dash",
         "grab_pivot",
+        "dash_attack",
         "hit_high",
+        "hit_mid",
         "hit_low",
         "hit_heavy",
         "hit_air",
+        "tumble",
         "tumble_recover",
         "jab_lock_up",
         "jab_lock_down",
@@ -276,15 +267,32 @@
         "takeoff_neutral",
         "takeoff_forward",
         "takeoff_backward",
+        "air_rise_loop",
+        "air_apex_loop",
+        "air_fall_loop",
+        "air_fastfall_loop",
+        "double_jump_transition",
         "air_dodge_up",
+        "air_dodge_down",
         "air_dodge_side",
         "air_dodge_up_diagonal",
+        "air_dodge_down_diagonal",
         "helpless_enter",
         "helpless_loop",
         "helpless_land",
+        "jab_2",
+        "jab_3",
         "air_dodge_back",
-        "air_dodge_up_back"
-      ]
+        "air_dodge_up_back",
+        "air_dodge_down_back"
+      ],
+      "prepared": [
+        "air_dodge_directional"
+      ],
+      "legacy": [
+        "air_dodge_directional"
+      ],
+      "pending": []
     },
     "swift": {
       "live": [
@@ -342,60 +350,47 @@
         "getup_roll_down",
         "floor_attack_up",
         "floor_attack_down",
-        "tech_neutral",
-        "tech_roll",
-        "dash_start",
-        "jump_squat",
-        "land_soft",
-        "shield_raise",
-        "air_dodge_neutral",
-        "dash_attack",
-        "hit_mid",
-        "tumble",
-        "air_rise_loop",
-        "air_apex_loop",
-        "air_fall_loop",
-        "air_fastfall_loop",
-        "double_jump_transition",
-        "air_dodge_down",
-        "air_dodge_down_diagonal",
-        "jab_2",
-        "jab_3",
-        "air_dodge_down_back"
-      ],
-      "prepared": [
         "trip_fall",
         "trip_prone",
         "trip_getup",
         "floor_attack_trip",
+        "tech_neutral",
+        "tech_roll",
         "wall_tech",
         "wall_tech_jump",
         "ceiling_tech",
         "trip_roll",
+        "dash_start",
         "turn_stand",
         "turn_run",
         "brake",
         "crouch_enter",
         "crouch_hold",
         "crouch_exit",
+        "jump_squat",
+        "land_soft",
         "land_heavy",
         "platform_drop",
         "teeter_front",
         "teeter_back",
+        "shield_raise",
         "shield_hit",
         "shield_drop",
         "parry",
-        "air_dodge_directional",
+        "air_dodge_neutral",
         "air_dodge_land",
         "shield_break_launch",
         "shield_break_dizzy",
         "shield_break_recover",
         "grab_dash",
         "grab_pivot",
+        "dash_attack",
         "hit_high",
+        "hit_mid",
         "hit_low",
         "hit_heavy",
         "hit_air",
+        "tumble",
         "tumble_recover",
         "jab_lock_up",
         "jab_lock_down",
@@ -418,15 +413,32 @@
         "takeoff_neutral",
         "takeoff_forward",
         "takeoff_backward",
+        "air_rise_loop",
+        "air_apex_loop",
+        "air_fall_loop",
+        "air_fastfall_loop",
+        "double_jump_transition",
         "air_dodge_up",
+        "air_dodge_down",
         "air_dodge_side",
         "air_dodge_up_diagonal",
+        "air_dodge_down_diagonal",
         "helpless_enter",
         "helpless_loop",
         "helpless_land",
+        "jab_2",
+        "jab_3",
         "air_dodge_back",
-        "air_dodge_up_back"
-      ]
+        "air_dodge_up_back",
+        "air_dodge_down_back"
+      ],
+      "prepared": [
+        "air_dodge_directional"
+      ],
+      "legacy": [
+        "air_dodge_directional"
+      ],
+      "pending": []
     }
   },
   "sharedEffects": [
@@ -435,300 +447,7 @@
     "recovery_trail",
     "counter_flash"
   ],
-  "remaining": [
-    {
-      "clip": "knockdown_down",
-      "needs": "Authoritative floor orientation and recovery action"
-    },
-    {
-      "clip": "prone_down",
-      "needs": "Authoritative floor orientation and recovery action"
-    },
-    {
-      "clip": "getup_up",
-      "needs": "Authoritative floor orientation and recovery action"
-    },
-    {
-      "clip": "getup_down",
-      "needs": "Authoritative floor orientation and recovery action"
-    },
-    {
-      "clip": "getup_roll_up",
-      "needs": "Authoritative floor orientation and recovery action"
-    },
-    {
-      "clip": "getup_roll_down",
-      "needs": "Authoritative floor orientation and recovery action"
-    },
-    {
-      "clip": "floor_attack_up",
-      "needs": "Authoritative floor orientation and recovery action"
-    },
-    {
-      "clip": "floor_attack_down",
-      "needs": "Authoritative floor orientation and recovery action"
-    },
-    {
-      "clip": "trip_fall",
-      "needs": "Authoritative floor orientation and recovery action"
-    },
-    {
-      "clip": "trip_prone",
-      "needs": "Authoritative floor orientation and recovery action"
-    },
-    {
-      "clip": "trip_getup",
-      "needs": "Authoritative floor orientation and recovery action"
-    },
-    {
-      "clip": "floor_attack_trip",
-      "needs": "Authoritative floor orientation and recovery action"
-    },
-    {
-      "clip": "wall_tech",
-      "needs": "Replicated movement transition/action cue"
-    },
-    {
-      "clip": "wall_tech_jump",
-      "needs": "Replicated movement transition/action cue"
-    },
-    {
-      "clip": "ceiling_tech",
-      "needs": "Replicated movement transition/action cue"
-    },
-    {
-      "clip": "trip_roll",
-      "needs": "Authoritative floor orientation and recovery action"
-    },
-    {
-      "clip": "turn_stand",
-      "needs": "Replicated movement transition/action cue"
-    },
-    {
-      "clip": "turn_run",
-      "needs": "Replicated movement transition/action cue"
-    },
-    {
-      "clip": "brake",
-      "needs": "Replicated movement transition/action cue"
-    },
-    {
-      "clip": "crouch_enter",
-      "needs": "Replicated movement transition/action cue"
-    },
-    {
-      "clip": "crouch_hold",
-      "needs": "Replicated movement transition/action cue"
-    },
-    {
-      "clip": "crouch_exit",
-      "needs": "Replicated movement transition/action cue"
-    },
-    {
-      "clip": "land_heavy",
-      "needs": "Replicated movement transition/action cue"
-    },
-    {
-      "clip": "platform_drop",
-      "needs": "Replicated movement transition/action cue"
-    },
-    {
-      "clip": "teeter_front",
-      "needs": "Replicated movement transition/action cue"
-    },
-    {
-      "clip": "teeter_back",
-      "needs": "Replicated movement transition/action cue"
-    },
-    {
-      "clip": "shield_hit",
-      "needs": "Replicated shield impact, release, break or parry cue"
-    },
-    {
-      "clip": "shield_drop",
-      "needs": "Replicated shield impact, release, break or parry cue"
-    },
-    {
-      "clip": "parry",
-      "needs": "Replicated shield impact, release, break or parry cue"
-    },
-    {
-      "clip": "air_dodge_directional",
-      "needs": "Dodge direction/action mapping; some legacy preview variants overlap canonical directions"
-    },
-    {
-      "clip": "air_dodge_land",
-      "needs": "Dodge direction/action mapping; some legacy preview variants overlap canonical directions"
-    },
-    {
-      "clip": "shield_break_launch",
-      "needs": "Replicated shield impact, release, break or parry cue"
-    },
-    {
-      "clip": "shield_break_dizzy",
-      "needs": "Replicated shield impact, release, break or parry cue"
-    },
-    {
-      "clip": "shield_break_recover",
-      "needs": "Replicated shield impact, release, break or parry cue"
-    },
-    {
-      "clip": "grab_dash",
-      "needs": "Replicated movement transition/action cue"
-    },
-    {
-      "clip": "grab_pivot",
-      "needs": "Replicated movement transition/action cue"
-    },
-    {
-      "clip": "dash_attack",
-      "needs": "New authoritative move data, input transitions and timing"
-    },
-    {
-      "clip": "hit_high",
-      "needs": "Replicated hit classification or tumble-exit cue"
-    },
-    {
-      "clip": "hit_low",
-      "needs": "Replicated hit classification or tumble-exit cue"
-    },
-    {
-      "clip": "hit_heavy",
-      "needs": "Replicated hit classification or tumble-exit cue"
-    },
-    {
-      "clip": "hit_air",
-      "needs": "Replicated hit classification or tumble-exit cue"
-    },
-    {
-      "clip": "tumble_recover",
-      "needs": "Replicated hit classification or tumble-exit cue"
-    },
-    {
-      "clip": "jab_lock_up",
-      "needs": "Authoritative floor orientation and recovery action"
-    },
-    {
-      "clip": "jab_lock_down",
-      "needs": "Authoritative floor orientation and recovery action"
-    },
-    {
-      "clip": "footstool_attacker",
-      "needs": "Paired authoritative attacker/victim event and state"
-    },
-    {
-      "clip": "footstool_ground_victim",
-      "needs": "Paired authoritative attacker/victim event and state"
-    },
-    {
-      "clip": "footstool_air_victim",
-      "needs": "Paired authoritative attacker/victim event and state"
-    },
-    {
-      "clip": "entry",
-      "needs": "Match presentation/KO/respawn event hook"
-    },
-    {
-      "clip": "respawn_wait",
-      "needs": "Match presentation/KO/respawn event hook"
-    },
-    {
-      "clip": "respawn_drop",
-      "needs": "Match presentation/KO/respawn event hook"
-    },
-    {
-      "clip": "taunt_up",
-      "needs": "Match presentation/KO/respawn event hook"
-    },
-    {
-      "clip": "taunt_side",
-      "needs": "Match presentation/KO/respawn event hook"
-    },
-    {
-      "clip": "taunt_down",
-      "needs": "Match presentation/KO/respawn event hook"
-    },
-    {
-      "clip": "victory_1",
-      "needs": "Match presentation/KO/respawn event hook"
-    },
-    {
-      "clip": "victory_2",
-      "needs": "Match presentation/KO/respawn event hook"
-    },
-    {
-      "clip": "victory_3",
-      "needs": "Match presentation/KO/respawn event hook"
-    },
-    {
-      "clip": "defeat",
-      "needs": "Match presentation/KO/respawn event hook"
-    },
-    {
-      "clip": "ko_launch",
-      "needs": "Match presentation/KO/respawn event hook"
-    },
-    {
-      "clip": "ko_screen",
-      "needs": "Match presentation/KO/respawn event hook"
-    },
-    {
-      "clip": "ko_star",
-      "needs": "Match presentation/KO/respawn event hook"
-    },
-    {
-      "clip": "takeoff_neutral",
-      "needs": "Replicated movement transition/action cue"
-    },
-    {
-      "clip": "takeoff_forward",
-      "needs": "Replicated movement transition/action cue"
-    },
-    {
-      "clip": "takeoff_backward",
-      "needs": "Replicated movement transition/action cue"
-    },
-    {
-      "clip": "air_dodge_up",
-      "needs": "Dodge direction/action mapping; some legacy preview variants overlap canonical directions"
-    },
-    {
-      "clip": "air_dodge_side",
-      "needs": "Dodge direction/action mapping; some legacy preview variants overlap canonical directions"
-    },
-    {
-      "clip": "air_dodge_up_diagonal",
-      "needs": "Dodge direction/action mapping; some legacy preview variants overlap canonical directions"
-    },
-    {
-      "clip": "helpless_enter",
-      "needs": "Recovery lockout and landing state"
-    },
-    {
-      "clip": "helpless_loop",
-      "needs": "Recovery lockout and landing state"
-    },
-    {
-      "clip": "helpless_land",
-      "needs": "Recovery lockout and landing state"
-    },
-    {
-      "clip": "jab_2",
-      "needs": "New authoritative move data, input transitions and timing"
-    },
-    {
-      "clip": "jab_3",
-      "needs": "New authoritative move data, input transitions and timing"
-    },
-    {
-      "clip": "air_dodge_back",
-      "needs": "Dodge direction/action mapping; some legacy preview variants overlap canonical directions"
-    },
-    {
-      "clip": "air_dodge_up_back",
-      "needs": "Dodge direction/action mapping; some legacy preview variants overlap canonical directions"
-    }
-  ],
+  "remaining": "No prepared clips pending hooks. One legacy dodge overview is retained. Playtesting, balance, Ultimate parity, runtime reachability and performance validation remain.",
   "runtimePolicy": "Source revision 18 plus nine promotions; 63 runtime-connected and 73 prepared per fighter",
   "currentRemaining": [
     {
@@ -1024,7 +743,19 @@
       "needs": "Dodge direction/action mapping; some legacy preview variants overlap canonical directions"
     }
   ],
-  "batch": 22,
-  "connectedClipsPerFighter": 74,
-  "preparedClipsPerFighter": 62
+  "batch": 28,
+  "connectedClipsPerFighter": 135,
+  "preparedClipsPerFighter": 1,
+  "shieldLimit": "Existing raise-window perfect shield; Ultimate release parry and dedicated grounded shield-break state remain open.",
+  "footstool": "Custom fresh-press contact, 24/30 tick ground/air lockout, -14 bounce, no damage or double-jump use; automatic/short-hop variants remain open.",
+  "helpless": "Up special first-active-frame -16 lift, helpless commitment after completion, drift-only controls, 14-tick landing lockout; hits/ledges interrupt. Shared custom tuning, not Ultimate parity.",
+  "movement": "Crouch controls plus authoritative cosmetic turn/brake/takeoff/landing/drop/teeter cues; no new turn/brake lockouts or crouch hurtbox reduction.",
+  "presentation": "Initial entry, respawn timer/drop, result winner/loser variants. Result-only display clock; no simulation advancement. Taunts and cinematic KOs remain open.",
+  "taunts": "64 grounded ticks; keyboard and Back+direction controls, eleven-bit validated input mask.",
+  "KO": "Replicated deduplicated cosmetic copies, independent of stock loss/respawn; custom top-KO variant selection.",
+  "combat": "Custom dash/pivot grab data, trajectory-based hit reactions, wall and solid-ceiling techs, canonical directional dodges.",
+  "legacyClipsPerFighter": 1,
+  "pendingClipsPerFighter": 0,
+  "trips": "Down tilt trips eligible grounded targets below 30 pre-hit percent; 24-tick fall, up to 60-tick prone, stand/roll/floor attack recovery. Custom tuning.",
+  "jabLocks": "JAB/JAB_2 at <=5 damage lock grounded missed-tech prone victims at most twice per knockdown. 16-tick lock; third hit resolves normally."
 }

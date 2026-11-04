@@ -39,7 +39,7 @@ export interface RenderPlayerState {
   shieldHealth: number;
   currentMoveId: MoveId | null;
   characterId?: CharacterId;
-  floorOrientation?:"up"|"down";floorRollDirection?:1|-1;isFastFalling?:boolean;airDodgeDirection?:{x:number;y:number}|null;hasDoubleJump?: boolean;isTumbling?:boolean;chargeFrames?:number;isGrabbing?:boolean;grabbedPlayerId?:PlayerId|null;ledgeId?:string|null;
+  tauntKind?:'up'|'side'|'down';hitReaction?:'high'|'low'|'heavy'|'air';koVisual?:import('@smash/shared').PlayerState['koVisual'];artCue?:string;artCueFrame?:number;respawnTimer?:number;footstoolRole?:'attacker'|'ground'|'air';footstoolPartnerId?:string;footstoolFrame?:number;shieldReaction?:"hit"|"parry"|"break"|"drop";shieldReactionFrame?:number;hitstunFramesRemaining?:number;floorOrientation?:"up"|"down";floorRollDirection?:1|-1;isFastFalling?:boolean;airDodgeDirection?:{x:number;y:number}|null;hasDoubleJump?: boolean;isTumbling?:boolean;chargeFrames?:number;isGrabbing?:boolean;grabbedPlayerId?:PlayerId|null;ledgeId?:string|null;
 }
 
 export interface RenderState {
@@ -176,7 +176,7 @@ export class InterpolationBuffer {
         shieldHealth: p1.shieldHealth,
         currentMoveId: p1.currentMoveId,
         characterId: p1.characterId,
- floorOrientation:p1.floorOrientation,floorRollDirection:p1.floorRollDirection,isFastFalling:p1.isFastFalling,airDodgeDirection:p1.airDodgeDirection,hasDoubleJump:p1.hasDoubleJump,isTumbling:p1.isTumbling,chargeFrames:p1.chargeFrames,isGrabbing:p1.isGrabbing,grabbedPlayerId:p1.grabbedPlayerId,ledgeId:p1.ledgeId,
+ koVisual:p1.koVisual,tauntKind:p1.tauntKind,hitReaction:p1.hitReaction,artCue:p1.artCue,artCueFrame:p1.artCueFrame,respawnTimer:p1.respawnTimer,footstoolRole:p1.footstoolRole,footstoolPartnerId:p1.footstoolPartnerId,footstoolFrame:p1.footstoolFrame,shieldReaction:p1.shieldReaction,shieldReactionFrame:p1.shieldReactionFrame,hitstunFramesRemaining:p1.hitstunFramesRemaining,floorOrientation:p1.floorOrientation,floorRollDirection:p1.floorRollDirection,isFastFalling:p1.isFastFalling,airDodgeDirection:p1.airDodgeDirection,hasDoubleJump:p1.hasDoubleJump,isTumbling:p1.isTumbling,chargeFrames:p1.chargeFrames,isGrabbing:p1.isGrabbing,grabbedPlayerId:p1.grabbedPlayerId,ledgeId:p1.ledgeId,
       };
 
       players.set(id as PlayerId, interpolated);
@@ -233,7 +233,7 @@ export class InterpolationBuffer {
       shieldHealth: p.shieldHealth,
       currentMoveId: p.currentMoveId,
       characterId: p.characterId,
- floorOrientation:p.floorOrientation,floorRollDirection:p.floorRollDirection,isFastFalling:p.isFastFalling,airDodgeDirection:p.airDodgeDirection,hasDoubleJump:p.hasDoubleJump,isTumbling:p.isTumbling,chargeFrames:p.chargeFrames,isGrabbing:p.isGrabbing,grabbedPlayerId:p.grabbedPlayerId,ledgeId:p.ledgeId,
+ koVisual:p.koVisual,tauntKind:p.tauntKind,hitReaction:p.hitReaction,artCue:p.artCue,artCueFrame:p.artCueFrame,respawnTimer:p.respawnTimer,footstoolRole:p.footstoolRole,footstoolPartnerId:p.footstoolPartnerId,footstoolFrame:p.footstoolFrame,shieldReaction:p.shieldReaction,shieldReactionFrame:p.shieldReactionFrame,hitstunFramesRemaining:p.hitstunFramesRemaining,floorOrientation:p.floorOrientation,floorRollDirection:p.floorRollDirection,isFastFalling:p.isFastFalling,airDodgeDirection:p.airDodgeDirection,hasDoubleJump:p.hasDoubleJump,isTumbling:p.isTumbling,chargeFrames:p.chargeFrames,isGrabbing:p.isGrabbing,grabbedPlayerId:p.grabbedPlayerId,ledgeId:p.ledgeId,
     };
   }
 }

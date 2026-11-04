@@ -52,7 +52,7 @@ async function init(){
  for(const input of document.querySelectorAll('[data-control]'))input.disabled=true;
  const previousClip=select.value;
  manifest=pack.characters?.[fighter.value]??pack;
- select.replaceChildren(...Object.entries(manifest.clips).map(([name,clip])=>{const option=document.createElement('option');option.value=name;option.textContent=(labels[name]??name.replaceAll('_',' '))+' • '+clip.frames.length+' drawings';return option;}));
+ select.replaceChildren(...Object.entries(manifest.clips).map(([name,clip])=>{const option=document.createElement('option');option.value=name;option.textContent=(labels[name]??name.replaceAll('_',' '))+' • '+clip.frames.length+' drawings'+(name==='air_dodge_directional'?' • legacy overview':'');return option;}));
  if(manifest.clips[previousClip])select.value=previousClip;
  const character=fighter.value,activeManifest=manifest,nextImages={};
  try{

@@ -1,0 +1,2606 @@
+{
+  "stage": "current",
+  "seeded": true,
+  "settings": {
+    "matches": 96,
+    "seeds": 8,
+    "sideSwapped": true,
+    "difficulty": "hard",
+    "maxTicks": 3600,
+    "stocks": 3
+  },
+  "limits": "CPU self-play is a reproducible regression sample, not human balance certification. Timeouts are not assigned winners. No fighter damage/weight buffs are inferred from these results.",
+  "probes": {
+    "simultaneousJump": "JUMPSQUAT",
+    "shortHopLaunchVy": -9.35,
+    "expectedShortHopLaunchVy": -9.35,
+    "dodges": [
+      {
+        "requested": {
+          "x": -1,
+          "y": -1
+        },
+        "state": "AIR_DODGE",
+        "captured": {
+          "x": -1,
+          "y": -1
+        }
+      },
+      {
+        "requested": {
+          "x": -1,
+          "y": 0
+        },
+        "state": "AIR_DODGE",
+        "captured": {
+          "x": -1,
+          "y": 0
+        }
+      },
+      {
+        "requested": {
+          "x": -1,
+          "y": 1
+        },
+        "state": "AIR_DODGE",
+        "captured": {
+          "x": -1,
+          "y": 1
+        }
+      },
+      {
+        "requested": {
+          "x": 0,
+          "y": -1
+        },
+        "state": "AIR_DODGE",
+        "captured": {
+          "x": 0,
+          "y": -1
+        }
+      },
+      {
+        "requested": {
+          "x": 0,
+          "y": 1
+        },
+        "state": "AIR_DODGE",
+        "captured": {
+          "x": 0,
+          "y": 1
+        }
+      },
+      {
+        "requested": {
+          "x": 1,
+          "y": -1
+        },
+        "state": "AIR_DODGE",
+        "captured": {
+          "x": 1,
+          "y": -1
+        }
+      },
+      {
+        "requested": {
+          "x": 1,
+          "y": 0
+        },
+        "state": "AIR_DODGE",
+        "captured": {
+          "x": 1,
+          "y": 0
+        }
+      },
+      {
+        "requested": {
+          "x": 1,
+          "y": 1
+        },
+        "state": "AIR_DODGE",
+        "captured": {
+          "x": 1,
+          "y": 1
+        }
+      }
+    ],
+    "protectedAttackDamage": 3.7800000000000002
+  },
+  "summaries": [
+    {
+      "pair": [
+        "all-rounder",
+        "all-rounder"
+      ],
+      "matches": 16,
+      "finished": 15,
+      "timeouts": 1,
+      "winsByCharacter": {
+        "all-rounder": 15
+      },
+      "slotAWins": 7,
+      "slotBWins": 8,
+      "meanTicks": 2398
+    },
+    {
+      "pair": [
+        "all-rounder",
+        "abe-lincoln"
+      ],
+      "matches": 16,
+      "finished": 13,
+      "timeouts": 3,
+      "winsByCharacter": {
+        "all-rounder": 10,
+        "abe-lincoln": 3
+      },
+      "slotAWins": 8,
+      "slotBWins": 5,
+      "meanTicks": 2561
+    },
+    {
+      "pair": [
+        "all-rounder",
+        "swift"
+      ],
+      "matches": 16,
+      "finished": 12,
+      "timeouts": 4,
+      "winsByCharacter": {
+        "all-rounder": 5,
+        "swift": 7
+      },
+      "slotAWins": 7,
+      "slotBWins": 5,
+      "meanTicks": 2971
+    },
+    {
+      "pair": [
+        "abe-lincoln",
+        "abe-lincoln"
+      ],
+      "matches": 16,
+      "finished": 12,
+      "timeouts": 4,
+      "winsByCharacter": {
+        "abe-lincoln": 12
+      },
+      "slotAWins": 4,
+      "slotBWins": 8,
+      "meanTicks": 2708
+    },
+    {
+      "pair": [
+        "abe-lincoln",
+        "swift"
+      ],
+      "matches": 16,
+      "finished": 9,
+      "timeouts": 7,
+      "winsByCharacter": {
+        "abe-lincoln": 6,
+        "swift": 3
+      },
+      "slotAWins": 6,
+      "slotBWins": 3,
+      "meanTicks": 2798
+    },
+    {
+      "pair": [
+        "swift",
+        "swift"
+      ],
+      "matches": 16,
+      "finished": 10,
+      "timeouts": 6,
+      "winsByCharacter": {
+        "swift": 10
+      },
+      "slotAWins": 5,
+      "slotBWins": 5,
+      "meanTicks": 3005
+    }
+  ],
+  "matches": [
+    {
+      "pair": [
+        "all-rounder",
+        "all-rounder"
+      ],
+      "seed": 1,
+      "swapped": false,
+      "slotCharacters": [
+        "all-rounder",
+        "all-rounder"
+      ],
+      "ticks": 2936,
+      "finished": true,
+      "winner": "a",
+      "winnerCharacter": "all-rounder",
+      "stocks": {
+        "a": 1,
+        "b": 0
+      },
+      "damage": {
+        "a": 116.10953999999997,
+        "b": 57.91985999999999
+      },
+      "kos": 5
+    },
+    {
+      "pair": [
+        "all-rounder",
+        "all-rounder"
+      ],
+      "seed": 1,
+      "swapped": true,
+      "slotCharacters": [
+        "all-rounder",
+        "all-rounder"
+      ],
+      "ticks": 2936,
+      "finished": true,
+      "winner": "b",
+      "winnerCharacter": "all-rounder",
+      "stocks": {
+        "a": 0,
+        "b": 1
+      },
+      "damage": {
+        "a": 57.91985999999999,
+        "b": 116.10953999999997
+      },
+      "kos": 5
+    },
+    {
+      "pair": [
+        "all-rounder",
+        "all-rounder"
+      ],
+      "seed": 2,
+      "swapped": false,
+      "slotCharacters": [
+        "all-rounder",
+        "all-rounder"
+      ],
+      "ticks": 2098,
+      "finished": true,
+      "winner": "b",
+      "winnerCharacter": "all-rounder",
+      "stocks": {
+        "a": 0,
+        "b": 1
+      },
+      "damage": {
+        "a": 52.03265999999999,
+        "b": 72.26748
+      },
+      "kos": 5
+    },
+    {
+      "pair": [
+        "all-rounder",
+        "all-rounder"
+      ],
+      "seed": 2,
+      "swapped": true,
+      "slotCharacters": [
+        "all-rounder",
+        "all-rounder"
+      ],
+      "ticks": 2338,
+      "finished": true,
+      "winner": "a",
+      "winnerCharacter": "all-rounder",
+      "stocks": {
+        "a": 2,
+        "b": 0
+      },
+      "damage": {
+        "a": 74.94468,
+        "b": 72.05424
+      },
+      "kos": 4
+    },
+    {
+      "pair": [
+        "all-rounder",
+        "all-rounder"
+      ],
+      "seed": 3,
+      "swapped": false,
+      "slotCharacters": [
+        "all-rounder",
+        "all-rounder"
+      ],
+      "ticks": 3135,
+      "finished": true,
+      "winner": "a",
+      "winnerCharacter": "all-rounder",
+      "stocks": {
+        "a": 1,
+        "b": 0
+      },
+      "damage": {
+        "a": 96.31152000000003,
+        "b": 84.82572
+      },
+      "kos": 5
+    },
+    {
+      "pair": [
+        "all-rounder",
+        "all-rounder"
+      ],
+      "seed": 3,
+      "swapped": true,
+      "slotCharacters": [
+        "all-rounder",
+        "all-rounder"
+      ],
+      "ticks": 3600,
+      "finished": false,
+      "winner": null,
+      "winnerCharacter": null,
+      "stocks": {
+        "a": 3,
+        "b": 3
+      },
+      "damage": {
+        "a": 27.7488,
+        "b": 31.77726
+      },
+      "kos": 0
+    },
+    {
+      "pair": [
+        "all-rounder",
+        "all-rounder"
+      ],
+      "seed": 4,
+      "swapped": false,
+      "slotCharacters": [
+        "all-rounder",
+        "all-rounder"
+      ],
+      "ticks": 1979,
+      "finished": true,
+      "winner": "a",
+      "winnerCharacter": "all-rounder",
+      "stocks": {
+        "a": 2,
+        "b": 0
+      },
+      "damage": {
+        "a": 68.963112,
+        "b": 81.72882
+      },
+      "kos": 4
+    },
+    {
+      "pair": [
+        "all-rounder",
+        "all-rounder"
+      ],
+      "seed": 4,
+      "swapped": true,
+      "slotCharacters": [
+        "all-rounder",
+        "all-rounder"
+      ],
+      "ticks": 2525,
+      "finished": true,
+      "winner": "b",
+      "winnerCharacter": "all-rounder",
+      "stocks": {
+        "a": 0,
+        "b": 1
+      },
+      "damage": {
+        "a": 97.64081999999996,
+        "b": 77.80506
+      },
+      "kos": 5
+    },
+    {
+      "pair": [
+        "all-rounder",
+        "all-rounder"
+      ],
+      "seed": 5,
+      "swapped": false,
+      "slotCharacters": [
+        "all-rounder",
+        "all-rounder"
+      ],
+      "ticks": 1131,
+      "finished": true,
+      "winner": "b",
+      "winnerCharacter": "all-rounder",
+      "stocks": {
+        "a": 0,
+        "b": 2
+      },
+      "damage": {
+        "a": 25.340040000000002,
+        "b": 27.482039999999998
+      },
+      "kos": 4
+    },
+    {
+      "pair": [
+        "all-rounder",
+        "all-rounder"
+      ],
+      "seed": 5,
+      "swapped": true,
+      "slotCharacters": [
+        "all-rounder",
+        "all-rounder"
+      ],
+      "ticks": 1658,
+      "finished": true,
+      "winner": "a",
+      "winnerCharacter": "all-rounder",
+      "stocks": {
+        "a": 2,
+        "b": 0
+      },
+      "damage": {
+        "a": 62.06718,
+        "b": 34.8867
+      },
+      "kos": 4
+    },
+    {
+      "pair": [
+        "all-rounder",
+        "all-rounder"
+      ],
+      "seed": 6,
+      "swapped": false,
+      "slotCharacters": [
+        "all-rounder",
+        "all-rounder"
+      ],
+      "ticks": 2085,
+      "finished": true,
+      "winner": "a",
+      "winnerCharacter": "all-rounder",
+      "stocks": {
+        "a": 1,
+        "b": 0
+      },
+      "damage": {
+        "a": 78.18366000000002,
+        "b": 70.62642
+      },
+      "kos": 5
+    },
+    {
+      "pair": [
+        "all-rounder",
+        "all-rounder"
+      ],
+      "seed": 6,
+      "swapped": true,
+      "slotCharacters": [
+        "all-rounder",
+        "all-rounder"
+      ],
+      "ticks": 2085,
+      "finished": true,
+      "winner": "b",
+      "winnerCharacter": "all-rounder",
+      "stocks": {
+        "a": 0,
+        "b": 1
+      },
+      "damage": {
+        "a": 70.62642,
+        "b": 78.18366000000002
+      },
+      "kos": 5
+    },
+    {
+      "pair": [
+        "all-rounder",
+        "all-rounder"
+      ],
+      "seed": 7,
+      "swapped": false,
+      "slotCharacters": [
+        "all-rounder",
+        "all-rounder"
+      ],
+      "ticks": 2305,
+      "finished": true,
+      "winner": "b",
+      "winnerCharacter": "all-rounder",
+      "stocks": {
+        "a": 0,
+        "b": 2
+      },
+      "damage": {
+        "a": 54.759240000000005,
+        "b": 62.369001
+      },
+      "kos": 4
+    },
+    {
+      "pair": [
+        "all-rounder",
+        "all-rounder"
+      ],
+      "seed": 7,
+      "swapped": true,
+      "slotCharacters": [
+        "all-rounder",
+        "all-rounder"
+      ],
+      "ticks": 2097,
+      "finished": true,
+      "winner": "a",
+      "winnerCharacter": "all-rounder",
+      "stocks": {
+        "a": 1,
+        "b": 0
+      },
+      "damage": {
+        "a": 79.08635999999998,
+        "b": 31.77726
+      },
+      "kos": 5
+    },
+    {
+      "pair": [
+        "all-rounder",
+        "all-rounder"
+      ],
+      "seed": 8,
+      "swapped": false,
+      "slotCharacters": [
+        "all-rounder",
+        "all-rounder"
+      ],
+      "ticks": 2624,
+      "finished": true,
+      "winner": "b",
+      "winnerCharacter": "all-rounder",
+      "stocks": {
+        "a": 0,
+        "b": 2
+      },
+      "damage": {
+        "a": 62.14589999999999,
+        "b": 84.68520000000001
+      },
+      "kos": 4
+    },
+    {
+      "pair": [
+        "all-rounder",
+        "all-rounder"
+      ],
+      "seed": 8,
+      "swapped": true,
+      "slotCharacters": [
+        "all-rounder",
+        "all-rounder"
+      ],
+      "ticks": 2828,
+      "finished": true,
+      "winner": "b",
+      "winnerCharacter": "all-rounder",
+      "stocks": {
+        "a": 0,
+        "b": 1
+      },
+      "damage": {
+        "a": 101.03472000000001,
+        "b": 74.6109
+      },
+      "kos": 5
+    },
+    {
+      "pair": [
+        "all-rounder",
+        "abe-lincoln"
+      ],
+      "seed": 1,
+      "swapped": false,
+      "slotCharacters": [
+        "all-rounder",
+        "abe-lincoln"
+      ],
+      "ticks": 3600,
+      "finished": false,
+      "winner": null,
+      "winnerCharacter": null,
+      "stocks": {
+        "a": 1,
+        "b": 1
+      },
+      "damage": {
+        "a": 123.38766000000001,
+        "b": 78.98483999999998
+      },
+      "kos": 4
+    },
+    {
+      "pair": [
+        "all-rounder",
+        "abe-lincoln"
+      ],
+      "seed": 1,
+      "swapped": true,
+      "slotCharacters": [
+        "abe-lincoln",
+        "all-rounder"
+      ],
+      "ticks": 3600,
+      "finished": false,
+      "winner": null,
+      "winnerCharacter": null,
+      "stocks": {
+        "a": 1,
+        "b": 1
+      },
+      "damage": {
+        "a": 73.79147099999999,
+        "b": 103.05684000000001
+      },
+      "kos": 4
+    },
+    {
+      "pair": [
+        "all-rounder",
+        "abe-lincoln"
+      ],
+      "seed": 2,
+      "swapped": false,
+      "slotCharacters": [
+        "all-rounder",
+        "abe-lincoln"
+      ],
+      "ticks": 1694,
+      "finished": true,
+      "winner": "a",
+      "winnerCharacter": "all-rounder",
+      "stocks": {
+        "a": 2,
+        "b": 0
+      },
+      "damage": {
+        "a": 48.27269999999999,
+        "b": 44.07300000000001
+      },
+      "kos": 4
+    },
+    {
+      "pair": [
+        "all-rounder",
+        "abe-lincoln"
+      ],
+      "seed": 2,
+      "swapped": true,
+      "slotCharacters": [
+        "abe-lincoln",
+        "all-rounder"
+      ],
+      "ticks": 3600,
+      "finished": false,
+      "winner": null,
+      "winnerCharacter": null,
+      "stocks": {
+        "a": 1,
+        "b": 2
+      },
+      "damage": {
+        "a": 25.24698,
+        "b": 45.25872
+      },
+      "kos": 3
+    },
+    {
+      "pair": [
+        "all-rounder",
+        "abe-lincoln"
+      ],
+      "seed": 3,
+      "swapped": false,
+      "slotCharacters": [
+        "all-rounder",
+        "abe-lincoln"
+      ],
+      "ticks": 2272,
+      "finished": true,
+      "winner": "a",
+      "winnerCharacter": "all-rounder",
+      "stocks": {
+        "a": 2,
+        "b": 0
+      },
+      "damage": {
+        "a": 65.27123999999999,
+        "b": 69.51131999999998
+      },
+      "kos": 4
+    },
+    {
+      "pair": [
+        "all-rounder",
+        "abe-lincoln"
+      ],
+      "seed": 3,
+      "swapped": true,
+      "slotCharacters": [
+        "abe-lincoln",
+        "all-rounder"
+      ],
+      "ticks": 3418,
+      "finished": true,
+      "winner": "b",
+      "winnerCharacter": "all-rounder",
+      "stocks": {
+        "a": 0,
+        "b": 1
+      },
+      "damage": {
+        "a": 96.16013999999998,
+        "b": 115.28136
+      },
+      "kos": 5
+    },
+    {
+      "pair": [
+        "all-rounder",
+        "abe-lincoln"
+      ],
+      "seed": 4,
+      "swapped": false,
+      "slotCharacters": [
+        "all-rounder",
+        "abe-lincoln"
+      ],
+      "ticks": 3100,
+      "finished": true,
+      "winner": "b",
+      "winnerCharacter": "abe-lincoln",
+      "stocks": {
+        "a": 0,
+        "b": 1
+      },
+      "damage": {
+        "a": 110.9568,
+        "b": 76.99523999999998
+      },
+      "kos": 5
+    },
+    {
+      "pair": [
+        "all-rounder",
+        "abe-lincoln"
+      ],
+      "seed": 4,
+      "swapped": true,
+      "slotCharacters": [
+        "abe-lincoln",
+        "all-rounder"
+      ],
+      "ticks": 2829,
+      "finished": true,
+      "winner": "a",
+      "winnerCharacter": "abe-lincoln",
+      "stocks": {
+        "a": 2,
+        "b": 0
+      },
+      "damage": {
+        "a": 77.57219999999998,
+        "b": 88.93842
+      },
+      "kos": 4
+    },
+    {
+      "pair": [
+        "all-rounder",
+        "abe-lincoln"
+      ],
+      "seed": 5,
+      "swapped": false,
+      "slotCharacters": [
+        "all-rounder",
+        "abe-lincoln"
+      ],
+      "ticks": 2714,
+      "finished": true,
+      "winner": "a",
+      "winnerCharacter": "all-rounder",
+      "stocks": {
+        "a": 1,
+        "b": 0
+      },
+      "damage": {
+        "a": 69.97212,
+        "b": 83.78586000000001
+      },
+      "kos": 5
+    },
+    {
+      "pair": [
+        "all-rounder",
+        "abe-lincoln"
+      ],
+      "seed": 5,
+      "swapped": true,
+      "slotCharacters": [
+        "abe-lincoln",
+        "all-rounder"
+      ],
+      "ticks": 2357,
+      "finished": true,
+      "winner": "a",
+      "winnerCharacter": "abe-lincoln",
+      "stocks": {
+        "a": 1,
+        "b": 0
+      },
+      "damage": {
+        "a": 70.64621999999997,
+        "b": 46.09044000000001
+      },
+      "kos": 5
+    },
+    {
+      "pair": [
+        "all-rounder",
+        "abe-lincoln"
+      ],
+      "seed": 6,
+      "swapped": false,
+      "slotCharacters": [
+        "all-rounder",
+        "abe-lincoln"
+      ],
+      "ticks": 2551,
+      "finished": true,
+      "winner": "a",
+      "winnerCharacter": "all-rounder",
+      "stocks": {
+        "a": 1,
+        "b": 0
+      },
+      "damage": {
+        "a": 89.26956000000001,
+        "b": 63.74574
+      },
+      "kos": 5
+    },
+    {
+      "pair": [
+        "all-rounder",
+        "abe-lincoln"
+      ],
+      "seed": 6,
+      "swapped": true,
+      "slotCharacters": [
+        "abe-lincoln",
+        "all-rounder"
+      ],
+      "ticks": 2551,
+      "finished": true,
+      "winner": "b",
+      "winnerCharacter": "all-rounder",
+      "stocks": {
+        "a": 0,
+        "b": 1
+      },
+      "damage": {
+        "a": 63.74574,
+        "b": 89.26956000000001
+      },
+      "kos": 5
+    },
+    {
+      "pair": [
+        "all-rounder",
+        "abe-lincoln"
+      ],
+      "seed": 7,
+      "swapped": false,
+      "slotCharacters": [
+        "all-rounder",
+        "abe-lincoln"
+      ],
+      "ticks": 1674,
+      "finished": true,
+      "winner": "a",
+      "winnerCharacter": "all-rounder",
+      "stocks": {
+        "a": 2,
+        "b": 0
+      },
+      "damage": {
+        "a": 38.74806,
+        "b": 52.84008
+      },
+      "kos": 4
+    },
+    {
+      "pair": [
+        "all-rounder",
+        "abe-lincoln"
+      ],
+      "seed": 7,
+      "swapped": true,
+      "slotCharacters": [
+        "abe-lincoln",
+        "all-rounder"
+      ],
+      "ticks": 1674,
+      "finished": true,
+      "winner": "b",
+      "winnerCharacter": "all-rounder",
+      "stocks": {
+        "a": 0,
+        "b": 2
+      },
+      "damage": {
+        "a": 52.84008,
+        "b": 38.74806
+      },
+      "kos": 4
+    },
+    {
+      "pair": [
+        "all-rounder",
+        "abe-lincoln"
+      ],
+      "seed": 8,
+      "swapped": false,
+      "slotCharacters": [
+        "all-rounder",
+        "abe-lincoln"
+      ],
+      "ticks": 1653,
+      "finished": true,
+      "winner": "a",
+      "winnerCharacter": "all-rounder",
+      "stocks": {
+        "a": 3,
+        "b": 0
+      },
+      "damage": {
+        "a": 42.74838,
+        "b": 48.456959999999995
+      },
+      "kos": 3
+    },
+    {
+      "pair": [
+        "all-rounder",
+        "abe-lincoln"
+      ],
+      "seed": 8,
+      "swapped": true,
+      "slotCharacters": [
+        "abe-lincoln",
+        "all-rounder"
+      ],
+      "ticks": 1690,
+      "finished": true,
+      "winner": "b",
+      "winnerCharacter": "all-rounder",
+      "stocks": {
+        "a": 0,
+        "b": 2
+      },
+      "damage": {
+        "a": 37.23066,
+        "b": 57.65309999999999
+      },
+      "kos": 4
+    },
+    {
+      "pair": [
+        "all-rounder",
+        "swift"
+      ],
+      "seed": 1,
+      "swapped": false,
+      "slotCharacters": [
+        "all-rounder",
+        "swift"
+      ],
+      "ticks": 2557,
+      "finished": true,
+      "winner": "b",
+      "winnerCharacter": "swift",
+      "stocks": {
+        "a": 0,
+        "b": 1
+      },
+      "damage": {
+        "a": 70.42331999999999,
+        "b": 97.68288000000001
+      },
+      "kos": 5
+    },
+    {
+      "pair": [
+        "all-rounder",
+        "swift"
+      ],
+      "seed": 1,
+      "swapped": true,
+      "slotCharacters": [
+        "swift",
+        "all-rounder"
+      ],
+      "ticks": 3523,
+      "finished": true,
+      "winner": "b",
+      "winnerCharacter": "all-rounder",
+      "stocks": {
+        "a": 0,
+        "b": 1
+      },
+      "damage": {
+        "a": 130.42044000000007,
+        "b": 91.1358
+      },
+      "kos": 5
+    },
+    {
+      "pair": [
+        "all-rounder",
+        "swift"
+      ],
+      "seed": 2,
+      "swapped": false,
+      "slotCharacters": [
+        "all-rounder",
+        "swift"
+      ],
+      "ticks": 1813,
+      "finished": true,
+      "winner": "a",
+      "winnerCharacter": "all-rounder",
+      "stocks": {
+        "a": 2,
+        "b": 0
+      },
+      "damage": {
+        "a": 53.730360000000005,
+        "b": 29.48916
+      },
+      "kos": 4
+    },
+    {
+      "pair": [
+        "all-rounder",
+        "swift"
+      ],
+      "seed": 2,
+      "swapped": true,
+      "slotCharacters": [
+        "swift",
+        "all-rounder"
+      ],
+      "ticks": 1689,
+      "finished": true,
+      "winner": "b",
+      "winnerCharacter": "all-rounder",
+      "stocks": {
+        "a": 0,
+        "b": 2
+      },
+      "damage": {
+        "a": 35.86236,
+        "b": 53.730360000000005
+      },
+      "kos": 4
+    },
+    {
+      "pair": [
+        "all-rounder",
+        "swift"
+      ],
+      "seed": 3,
+      "swapped": false,
+      "slotCharacters": [
+        "all-rounder",
+        "swift"
+      ],
+      "ticks": 3600,
+      "finished": false,
+      "winner": null,
+      "winnerCharacter": null,
+      "stocks": {
+        "a": 3,
+        "b": 3
+      },
+      "damage": {
+        "a": 24.82686,
+        "b": 34.63632
+      },
+      "kos": 0
+    },
+    {
+      "pair": [
+        "all-rounder",
+        "swift"
+      ],
+      "seed": 3,
+      "swapped": true,
+      "slotCharacters": [
+        "swift",
+        "all-rounder"
+      ],
+      "ticks": 3600,
+      "finished": false,
+      "winner": null,
+      "winnerCharacter": null,
+      "stocks": {
+        "a": 3,
+        "b": 3
+      },
+      "damage": {
+        "a": 34.63632,
+        "b": 24.82686
+      },
+      "kos": 0
+    },
+    {
+      "pair": [
+        "all-rounder",
+        "swift"
+      ],
+      "seed": 4,
+      "swapped": false,
+      "slotCharacters": [
+        "all-rounder",
+        "swift"
+      ],
+      "ticks": 2875,
+      "finished": true,
+      "winner": "b",
+      "winnerCharacter": "swift",
+      "stocks": {
+        "a": 0,
+        "b": 2
+      },
+      "damage": {
+        "a": 48.48965999999998,
+        "b": 97.78392000000002
+      },
+      "kos": 4
+    },
+    {
+      "pair": [
+        "all-rounder",
+        "swift"
+      ],
+      "seed": 4,
+      "swapped": true,
+      "slotCharacters": [
+        "swift",
+        "all-rounder"
+      ],
+      "ticks": 3389,
+      "finished": true,
+      "winner": "a",
+      "winnerCharacter": "swift",
+      "stocks": {
+        "a": 2,
+        "b": 0
+      },
+      "damage": {
+        "a": 110.72322000000004,
+        "b": 53.56025999999997
+      },
+      "kos": 4
+    },
+    {
+      "pair": [
+        "all-rounder",
+        "swift"
+      ],
+      "seed": 5,
+      "swapped": false,
+      "slotCharacters": [
+        "all-rounder",
+        "swift"
+      ],
+      "ticks": 3561,
+      "finished": true,
+      "winner": "b",
+      "winnerCharacter": "swift",
+      "stocks": {
+        "a": 0,
+        "b": 1
+      },
+      "damage": {
+        "a": 107.26938,
+        "b": 119.23352799999999
+      },
+      "kos": 5
+    },
+    {
+      "pair": [
+        "all-rounder",
+        "swift"
+      ],
+      "seed": 5,
+      "swapped": true,
+      "slotCharacters": [
+        "swift",
+        "all-rounder"
+      ],
+      "ticks": 2072,
+      "finished": true,
+      "winner": "a",
+      "winnerCharacter": "swift",
+      "stocks": {
+        "a": 2,
+        "b": 0
+      },
+      "damage": {
+        "a": 63.00551999999999,
+        "b": 62.82324
+      },
+      "kos": 4
+    },
+    {
+      "pair": [
+        "all-rounder",
+        "swift"
+      ],
+      "seed": 6,
+      "swapped": false,
+      "slotCharacters": [
+        "all-rounder",
+        "swift"
+      ],
+      "ticks": 2933,
+      "finished": true,
+      "winner": "a",
+      "winnerCharacter": "all-rounder",
+      "stocks": {
+        "a": 1,
+        "b": 0
+      },
+      "damage": {
+        "a": 99.49176,
+        "b": 107.76804000000004
+      },
+      "kos": 5
+    },
+    {
+      "pair": [
+        "all-rounder",
+        "swift"
+      ],
+      "seed": 6,
+      "swapped": true,
+      "slotCharacters": [
+        "swift",
+        "all-rounder"
+      ],
+      "ticks": 3264,
+      "finished": true,
+      "winner": "a",
+      "winnerCharacter": "swift",
+      "stocks": {
+        "a": 1,
+        "b": 0
+      },
+      "damage": {
+        "a": 116.7444,
+        "b": 123.95639999999999
+      },
+      "kos": 5
+    },
+    {
+      "pair": [
+        "all-rounder",
+        "swift"
+      ],
+      "seed": 7,
+      "swapped": false,
+      "slotCharacters": [
+        "all-rounder",
+        "swift"
+      ],
+      "ticks": 2942,
+      "finished": true,
+      "winner": "a",
+      "winnerCharacter": "all-rounder",
+      "stocks": {
+        "a": 1,
+        "b": 0
+      },
+      "damage": {
+        "a": 95.10209999999998,
+        "b": 97.29162
+      },
+      "kos": 5
+    },
+    {
+      "pair": [
+        "all-rounder",
+        "swift"
+      ],
+      "seed": 7,
+      "swapped": true,
+      "slotCharacters": [
+        "swift",
+        "all-rounder"
+      ],
+      "ticks": 2516,
+      "finished": true,
+      "winner": "a",
+      "winnerCharacter": "swift",
+      "stocks": {
+        "a": 1,
+        "b": 0
+      },
+      "damage": {
+        "a": 86.95403999999998,
+        "b": 74.80026000000001
+      },
+      "kos": 5
+    },
+    {
+      "pair": [
+        "all-rounder",
+        "swift"
+      ],
+      "seed": 8,
+      "swapped": false,
+      "slotCharacters": [
+        "all-rounder",
+        "swift"
+      ],
+      "ticks": 3600,
+      "finished": false,
+      "winner": null,
+      "winnerCharacter": null,
+      "stocks": {
+        "a": 3,
+        "b": 3
+      },
+      "damage": {
+        "a": 31.436459999999997,
+        "b": 29.673240000000003
+      },
+      "kos": 0
+    },
+    {
+      "pair": [
+        "all-rounder",
+        "swift"
+      ],
+      "seed": 8,
+      "swapped": true,
+      "slotCharacters": [
+        "swift",
+        "all-rounder"
+      ],
+      "ticks": 3600,
+      "finished": false,
+      "winner": null,
+      "winnerCharacter": null,
+      "stocks": {
+        "a": 3,
+        "b": 3
+      },
+      "damage": {
+        "a": 29.673240000000003,
+        "b": 31.436459999999997
+      },
+      "kos": 0
+    },
+    {
+      "pair": [
+        "abe-lincoln",
+        "abe-lincoln"
+      ],
+      "seed": 1,
+      "swapped": false,
+      "slotCharacters": [
+        "abe-lincoln",
+        "abe-lincoln"
+      ],
+      "ticks": 3046,
+      "finished": true,
+      "winner": "a",
+      "winnerCharacter": "abe-lincoln",
+      "stocks": {
+        "a": 1,
+        "b": 0
+      },
+      "damage": {
+        "a": 78.15618,
+        "b": 80.95968000000002
+      },
+      "kos": 5
+    },
+    {
+      "pair": [
+        "abe-lincoln",
+        "abe-lincoln"
+      ],
+      "seed": 1,
+      "swapped": true,
+      "slotCharacters": [
+        "abe-lincoln",
+        "abe-lincoln"
+      ],
+      "ticks": 3046,
+      "finished": true,
+      "winner": "b",
+      "winnerCharacter": "abe-lincoln",
+      "stocks": {
+        "a": 0,
+        "b": 1
+      },
+      "damage": {
+        "a": 80.95968000000002,
+        "b": 78.15618
+      },
+      "kos": 5
+    },
+    {
+      "pair": [
+        "abe-lincoln",
+        "abe-lincoln"
+      ],
+      "seed": 2,
+      "swapped": false,
+      "slotCharacters": [
+        "abe-lincoln",
+        "abe-lincoln"
+      ],
+      "ticks": 1848,
+      "finished": true,
+      "winner": "b",
+      "winnerCharacter": "abe-lincoln",
+      "stocks": {
+        "a": 0,
+        "b": 2
+      },
+      "damage": {
+        "a": 45.14238,
+        "b": 71.10095999999999
+      },
+      "kos": 4
+    },
+    {
+      "pair": [
+        "abe-lincoln",
+        "abe-lincoln"
+      ],
+      "seed": 2,
+      "swapped": true,
+      "slotCharacters": [
+        "abe-lincoln",
+        "abe-lincoln"
+      ],
+      "ticks": 3600,
+      "finished": false,
+      "winner": null,
+      "winnerCharacter": null,
+      "stocks": {
+        "a": 2,
+        "b": 1
+      },
+      "damage": {
+        "a": 78.59364000000001,
+        "b": 79.45313999999999
+      },
+      "kos": 3
+    },
+    {
+      "pair": [
+        "abe-lincoln",
+        "abe-lincoln"
+      ],
+      "seed": 3,
+      "swapped": false,
+      "slotCharacters": [
+        "abe-lincoln",
+        "abe-lincoln"
+      ],
+      "ticks": 2523,
+      "finished": true,
+      "winner": "b",
+      "winnerCharacter": "abe-lincoln",
+      "stocks": {
+        "a": 0,
+        "b": 1
+      },
+      "damage": {
+        "a": 66.47142,
+        "b": 80.20128
+      },
+      "kos": 5
+    },
+    {
+      "pair": [
+        "abe-lincoln",
+        "abe-lincoln"
+      ],
+      "seed": 3,
+      "swapped": true,
+      "slotCharacters": [
+        "abe-lincoln",
+        "abe-lincoln"
+      ],
+      "ticks": 2321,
+      "finished": true,
+      "winner": "b",
+      "winnerCharacter": "abe-lincoln",
+      "stocks": {
+        "a": 0,
+        "b": 2
+      },
+      "damage": {
+        "a": 58.683060000000005,
+        "b": 65.75448
+      },
+      "kos": 4
+    },
+    {
+      "pair": [
+        "abe-lincoln",
+        "abe-lincoln"
+      ],
+      "seed": 4,
+      "swapped": false,
+      "slotCharacters": [
+        "abe-lincoln",
+        "abe-lincoln"
+      ],
+      "ticks": 1550,
+      "finished": true,
+      "winner": "a",
+      "winnerCharacter": "abe-lincoln",
+      "stocks": {
+        "a": 1,
+        "b": 0
+      },
+      "damage": {
+        "a": 47.308679999999995,
+        "b": 40.7754
+      },
+      "kos": 5
+    },
+    {
+      "pair": [
+        "abe-lincoln",
+        "abe-lincoln"
+      ],
+      "seed": 4,
+      "swapped": true,
+      "slotCharacters": [
+        "abe-lincoln",
+        "abe-lincoln"
+      ],
+      "ticks": 1550,
+      "finished": true,
+      "winner": "b",
+      "winnerCharacter": "abe-lincoln",
+      "stocks": {
+        "a": 0,
+        "b": 1
+      },
+      "damage": {
+        "a": 40.7754,
+        "b": 47.308679999999995
+      },
+      "kos": 5
+    },
+    {
+      "pair": [
+        "abe-lincoln",
+        "abe-lincoln"
+      ],
+      "seed": 5,
+      "swapped": false,
+      "slotCharacters": [
+        "abe-lincoln",
+        "abe-lincoln"
+      ],
+      "ticks": 1755,
+      "finished": true,
+      "winner": "a",
+      "winnerCharacter": "abe-lincoln",
+      "stocks": {
+        "a": 2,
+        "b": 0
+      },
+      "damage": {
+        "a": 67.17906,
+        "b": 48.69125999999999
+      },
+      "kos": 4
+    },
+    {
+      "pair": [
+        "abe-lincoln",
+        "abe-lincoln"
+      ],
+      "seed": 5,
+      "swapped": true,
+      "slotCharacters": [
+        "abe-lincoln",
+        "abe-lincoln"
+      ],
+      "ticks": 3079,
+      "finished": true,
+      "winner": "a",
+      "winnerCharacter": "abe-lincoln",
+      "stocks": {
+        "a": 1,
+        "b": 0
+      },
+      "damage": {
+        "a": 84.22445999999997,
+        "b": 103.34124
+      },
+      "kos": 5
+    },
+    {
+      "pair": [
+        "abe-lincoln",
+        "abe-lincoln"
+      ],
+      "seed": 6,
+      "swapped": false,
+      "slotCharacters": [
+        "abe-lincoln",
+        "abe-lincoln"
+      ],
+      "ticks": 2632,
+      "finished": true,
+      "winner": "b",
+      "winnerCharacter": "abe-lincoln",
+      "stocks": {
+        "a": 0,
+        "b": 1
+      },
+      "damage": {
+        "a": 70.84092000000001,
+        "b": 119.25846000000004
+      },
+      "kos": 5
+    },
+    {
+      "pair": [
+        "abe-lincoln",
+        "abe-lincoln"
+      ],
+      "seed": 6,
+      "swapped": true,
+      "slotCharacters": [
+        "abe-lincoln",
+        "abe-lincoln"
+      ],
+      "ticks": 3181,
+      "finished": true,
+      "winner": "b",
+      "winnerCharacter": "abe-lincoln",
+      "stocks": {
+        "a": 0,
+        "b": 1
+      },
+      "damage": {
+        "a": 113.54832,
+        "b": 89.17331999999999
+      },
+      "kos": 5
+    },
+    {
+      "pair": [
+        "abe-lincoln",
+        "abe-lincoln"
+      ],
+      "seed": 7,
+      "swapped": false,
+      "slotCharacters": [
+        "abe-lincoln",
+        "abe-lincoln"
+      ],
+      "ticks": 3600,
+      "finished": false,
+      "winner": null,
+      "winnerCharacter": null,
+      "stocks": {
+        "a": 2,
+        "b": 2
+      },
+      "damage": {
+        "a": 38.48634,
+        "b": 60.497159999999994
+      },
+      "kos": 2
+    },
+    {
+      "pair": [
+        "abe-lincoln",
+        "abe-lincoln"
+      ],
+      "seed": 7,
+      "swapped": true,
+      "slotCharacters": [
+        "abe-lincoln",
+        "abe-lincoln"
+      ],
+      "ticks": 3600,
+      "finished": false,
+      "winner": null,
+      "winnerCharacter": null,
+      "stocks": {
+        "a": 2,
+        "b": 2
+      },
+      "damage": {
+        "a": 60.497159999999994,
+        "b": 38.48634
+      },
+      "kos": 2
+    },
+    {
+      "pair": [
+        "abe-lincoln",
+        "abe-lincoln"
+      ],
+      "seed": 8,
+      "swapped": false,
+      "slotCharacters": [
+        "abe-lincoln",
+        "abe-lincoln"
+      ],
+      "ticks": 2393,
+      "finished": true,
+      "winner": "b",
+      "winnerCharacter": "abe-lincoln",
+      "stocks": {
+        "a": 0,
+        "b": 2
+      },
+      "damage": {
+        "a": 95.40281999999999,
+        "b": 69.27947999999999
+      },
+      "kos": 4
+    },
+    {
+      "pair": [
+        "abe-lincoln",
+        "abe-lincoln"
+      ],
+      "seed": 8,
+      "swapped": true,
+      "slotCharacters": [
+        "abe-lincoln",
+        "abe-lincoln"
+      ],
+      "ticks": 3600,
+      "finished": false,
+      "winner": null,
+      "winnerCharacter": null,
+      "stocks": {
+        "a": 1,
+        "b": 1
+      },
+      "damage": {
+        "a": 104.87892000000002,
+        "b": 140.40779999999998
+      },
+      "kos": 4
+    },
+    {
+      "pair": [
+        "abe-lincoln",
+        "swift"
+      ],
+      "seed": 1,
+      "swapped": false,
+      "slotCharacters": [
+        "abe-lincoln",
+        "swift"
+      ],
+      "ticks": 3600,
+      "finished": false,
+      "winner": null,
+      "winnerCharacter": null,
+      "stocks": {
+        "a": 2,
+        "b": 2
+      },
+      "damage": {
+        "a": 48.66138000000001,
+        "b": 31.742760000000004
+      },
+      "kos": 2
+    },
+    {
+      "pair": [
+        "abe-lincoln",
+        "swift"
+      ],
+      "seed": 1,
+      "swapped": true,
+      "slotCharacters": [
+        "swift",
+        "abe-lincoln"
+      ],
+      "ticks": 3600,
+      "finished": false,
+      "winner": null,
+      "winnerCharacter": null,
+      "stocks": {
+        "a": 2,
+        "b": 2
+      },
+      "damage": {
+        "a": 31.742760000000004,
+        "b": 48.66138000000001
+      },
+      "kos": 2
+    },
+    {
+      "pair": [
+        "abe-lincoln",
+        "swift"
+      ],
+      "seed": 2,
+      "swapped": false,
+      "slotCharacters": [
+        "abe-lincoln",
+        "swift"
+      ],
+      "ticks": 3496,
+      "finished": true,
+      "winner": "a",
+      "winnerCharacter": "abe-lincoln",
+      "stocks": {
+        "a": 1,
+        "b": 0
+      },
+      "damage": {
+        "a": 114.32136,
+        "b": 114.39636000000004
+      },
+      "kos": 5
+    },
+    {
+      "pair": [
+        "abe-lincoln",
+        "swift"
+      ],
+      "seed": 2,
+      "swapped": true,
+      "slotCharacters": [
+        "swift",
+        "abe-lincoln"
+      ],
+      "ticks": 2181,
+      "finished": true,
+      "winner": "a",
+      "winnerCharacter": "swift",
+      "stocks": {
+        "a": 1,
+        "b": 0
+      },
+      "damage": {
+        "a": 69.44580000000002,
+        "b": 82.22706
+      },
+      "kos": 5
+    },
+    {
+      "pair": [
+        "abe-lincoln",
+        "swift"
+      ],
+      "seed": 3,
+      "swapped": false,
+      "slotCharacters": [
+        "abe-lincoln",
+        "swift"
+      ],
+      "ticks": 2465,
+      "finished": true,
+      "winner": "a",
+      "winnerCharacter": "abe-lincoln",
+      "stocks": {
+        "a": 1,
+        "b": 0
+      },
+      "damage": {
+        "a": 77.48844,
+        "b": 81.97632000000002
+      },
+      "kos": 5
+    },
+    {
+      "pair": [
+        "abe-lincoln",
+        "swift"
+      ],
+      "seed": 3,
+      "swapped": true,
+      "slotCharacters": [
+        "swift",
+        "abe-lincoln"
+      ],
+      "ticks": 2465,
+      "finished": true,
+      "winner": "b",
+      "winnerCharacter": "abe-lincoln",
+      "stocks": {
+        "a": 0,
+        "b": 1
+      },
+      "damage": {
+        "a": 81.97632000000002,
+        "b": 77.48844
+      },
+      "kos": 5
+    },
+    {
+      "pair": [
+        "abe-lincoln",
+        "swift"
+      ],
+      "seed": 4,
+      "swapped": false,
+      "slotCharacters": [
+        "abe-lincoln",
+        "swift"
+      ],
+      "ticks": 1610,
+      "finished": true,
+      "winner": "b",
+      "winnerCharacter": "swift",
+      "stocks": {
+        "a": 0,
+        "b": 1
+      },
+      "damage": {
+        "a": 19.0179,
+        "b": 63.5526
+      },
+      "kos": 5
+    },
+    {
+      "pair": [
+        "abe-lincoln",
+        "swift"
+      ],
+      "seed": 4,
+      "swapped": true,
+      "slotCharacters": [
+        "swift",
+        "abe-lincoln"
+      ],
+      "ticks": 1610,
+      "finished": true,
+      "winner": "a",
+      "winnerCharacter": "swift",
+      "stocks": {
+        "a": 1,
+        "b": 0
+      },
+      "damage": {
+        "a": 63.5526,
+        "b": 19.0179
+      },
+      "kos": 5
+    },
+    {
+      "pair": [
+        "abe-lincoln",
+        "swift"
+      ],
+      "seed": 5,
+      "swapped": false,
+      "slotCharacters": [
+        "abe-lincoln",
+        "swift"
+      ],
+      "ticks": 3600,
+      "finished": false,
+      "winner": null,
+      "winnerCharacter": null,
+      "stocks": {
+        "a": 3,
+        "b": 3
+      },
+      "damage": {
+        "a": 12.7179,
+        "b": 16.76292
+      },
+      "kos": 0
+    },
+    {
+      "pair": [
+        "abe-lincoln",
+        "swift"
+      ],
+      "seed": 5,
+      "swapped": true,
+      "slotCharacters": [
+        "swift",
+        "abe-lincoln"
+      ],
+      "ticks": 3600,
+      "finished": false,
+      "winner": null,
+      "winnerCharacter": null,
+      "stocks": {
+        "a": 3,
+        "b": 3
+      },
+      "damage": {
+        "a": 16.76292,
+        "b": 12.7179
+      },
+      "kos": 0
+    },
+    {
+      "pair": [
+        "abe-lincoln",
+        "swift"
+      ],
+      "seed": 6,
+      "swapped": false,
+      "slotCharacters": [
+        "abe-lincoln",
+        "swift"
+      ],
+      "ticks": 3600,
+      "finished": false,
+      "winner": null,
+      "winnerCharacter": null,
+      "stocks": {
+        "a": 3,
+        "b": 3
+      },
+      "damage": {
+        "a": 10.02438,
+        "b": 16.76292
+      },
+      "kos": 0
+    },
+    {
+      "pair": [
+        "abe-lincoln",
+        "swift"
+      ],
+      "seed": 6,
+      "swapped": true,
+      "slotCharacters": [
+        "swift",
+        "abe-lincoln"
+      ],
+      "ticks": 3600,
+      "finished": false,
+      "winner": null,
+      "winnerCharacter": null,
+      "stocks": {
+        "a": 3,
+        "b": 3
+      },
+      "damage": {
+        "a": 16.76292,
+        "b": 10.02438
+      },
+      "kos": 0
+    },
+    {
+      "pair": [
+        "abe-lincoln",
+        "swift"
+      ],
+      "seed": 7,
+      "swapped": false,
+      "slotCharacters": [
+        "abe-lincoln",
+        "swift"
+      ],
+      "ticks": 1421,
+      "finished": true,
+      "winner": "a",
+      "winnerCharacter": "abe-lincoln",
+      "stocks": {
+        "a": 2,
+        "b": 0
+      },
+      "damage": {
+        "a": 35.3088,
+        "b": 37.992720000000006
+      },
+      "kos": 4
+    },
+    {
+      "pair": [
+        "abe-lincoln",
+        "swift"
+      ],
+      "seed": 7,
+      "swapped": true,
+      "slotCharacters": [
+        "swift",
+        "abe-lincoln"
+      ],
+      "ticks": 1421,
+      "finished": true,
+      "winner": "b",
+      "winnerCharacter": "abe-lincoln",
+      "stocks": {
+        "a": 0,
+        "b": 2
+      },
+      "damage": {
+        "a": 37.992720000000006,
+        "b": 35.3088
+      },
+      "kos": 4
+    },
+    {
+      "pair": [
+        "abe-lincoln",
+        "swift"
+      ],
+      "seed": 8,
+      "swapped": false,
+      "slotCharacters": [
+        "abe-lincoln",
+        "swift"
+      ],
+      "ticks": 2894,
+      "finished": true,
+      "winner": "a",
+      "winnerCharacter": "abe-lincoln",
+      "stocks": {
+        "a": 1,
+        "b": 0
+      },
+      "damage": {
+        "a": 90.65304,
+        "b": 84.37332
+      },
+      "kos": 5
+    },
+    {
+      "pair": [
+        "abe-lincoln",
+        "swift"
+      ],
+      "seed": 8,
+      "swapped": true,
+      "slotCharacters": [
+        "swift",
+        "abe-lincoln"
+      ],
+      "ticks": 3600,
+      "finished": false,
+      "winner": null,
+      "winnerCharacter": null,
+      "stocks": {
+        "a": 3,
+        "b": 3
+      },
+      "damage": {
+        "a": 41.55588,
+        "b": 38.48634
+      },
+      "kos": 0
+    },
+    {
+      "pair": [
+        "swift",
+        "swift"
+      ],
+      "seed": 1,
+      "swapped": false,
+      "slotCharacters": [
+        "swift",
+        "swift"
+      ],
+      "ticks": 3159,
+      "finished": true,
+      "winner": "b",
+      "winnerCharacter": "swift",
+      "stocks": {
+        "a": 0,
+        "b": 1
+      },
+      "damage": {
+        "a": 80.36489999999999,
+        "b": 75.02855999999998
+      },
+      "kos": 5
+    },
+    {
+      "pair": [
+        "swift",
+        "swift"
+      ],
+      "seed": 1,
+      "swapped": true,
+      "slotCharacters": [
+        "swift",
+        "swift"
+      ],
+      "ticks": 2511,
+      "finished": true,
+      "winner": "a",
+      "winnerCharacter": "swift",
+      "stocks": {
+        "a": 1,
+        "b": 0
+      },
+      "damage": {
+        "a": 72.54335999999999,
+        "b": 89.37083999999999
+      },
+      "kos": 5
+    },
+    {
+      "pair": [
+        "swift",
+        "swift"
+      ],
+      "seed": 2,
+      "swapped": false,
+      "slotCharacters": [
+        "swift",
+        "swift"
+      ],
+      "ticks": 2927,
+      "finished": true,
+      "winner": "a",
+      "winnerCharacter": "swift",
+      "stocks": {
+        "a": 1,
+        "b": 0
+      },
+      "damage": {
+        "a": 98.36436000000002,
+        "b": 45.298919999999995
+      },
+      "kos": 5
+    },
+    {
+      "pair": [
+        "swift",
+        "swift"
+      ],
+      "seed": 2,
+      "swapped": true,
+      "slotCharacters": [
+        "swift",
+        "swift"
+      ],
+      "ticks": 3517,
+      "finished": true,
+      "winner": "b",
+      "winnerCharacter": "swift",
+      "stocks": {
+        "a": 0,
+        "b": 1
+      },
+      "damage": {
+        "a": 51.143640000000005,
+        "b": 139.66828800000002
+      },
+      "kos": 5
+    },
+    {
+      "pair": [
+        "swift",
+        "swift"
+      ],
+      "seed": 3,
+      "swapped": false,
+      "slotCharacters": [
+        "swift",
+        "swift"
+      ],
+      "ticks": 2592,
+      "finished": true,
+      "winner": "b",
+      "winnerCharacter": "swift",
+      "stocks": {
+        "a": 0,
+        "b": 1
+      },
+      "damage": {
+        "a": 94.43016,
+        "b": 94.88520000000001
+      },
+      "kos": 5
+    },
+    {
+      "pair": [
+        "swift",
+        "swift"
+      ],
+      "seed": 3,
+      "swapped": true,
+      "slotCharacters": [
+        "swift",
+        "swift"
+      ],
+      "ticks": 3600,
+      "finished": false,
+      "winner": null,
+      "winnerCharacter": null,
+      "stocks": {
+        "a": 2,
+        "b": 1
+      },
+      "damage": {
+        "a": 65.13252,
+        "b": 67.04178
+      },
+      "kos": 3
+    },
+    {
+      "pair": [
+        "swift",
+        "swift"
+      ],
+      "seed": 4,
+      "swapped": false,
+      "slotCharacters": [
+        "swift",
+        "swift"
+      ],
+      "ticks": 2617,
+      "finished": true,
+      "winner": "a",
+      "winnerCharacter": "swift",
+      "stocks": {
+        "a": 2,
+        "b": 0
+      },
+      "damage": {
+        "a": 89.78970000000007,
+        "b": 77.6532
+      },
+      "kos": 4
+    },
+    {
+      "pair": [
+        "swift",
+        "swift"
+      ],
+      "seed": 4,
+      "swapped": true,
+      "slotCharacters": [
+        "swift",
+        "swift"
+      ],
+      "ticks": 3600,
+      "finished": false,
+      "winner": null,
+      "winnerCharacter": null,
+      "stocks": {
+        "a": 1,
+        "b": 1
+      },
+      "damage": {
+        "a": 108.31139999999999,
+        "b": 102.33090000000009
+      },
+      "kos": 4
+    },
+    {
+      "pair": [
+        "swift",
+        "swift"
+      ],
+      "seed": 5,
+      "swapped": false,
+      "slotCharacters": [
+        "swift",
+        "swift"
+      ],
+      "ticks": 1509,
+      "finished": true,
+      "winner": "b",
+      "winnerCharacter": "swift",
+      "stocks": {
+        "a": 0,
+        "b": 1
+      },
+      "damage": {
+        "a": 37.232040000000005,
+        "b": 43.64484
+      },
+      "kos": 5
+    },
+    {
+      "pair": [
+        "swift",
+        "swift"
+      ],
+      "seed": 5,
+      "swapped": true,
+      "slotCharacters": [
+        "swift",
+        "swift"
+      ],
+      "ticks": 2870,
+      "finished": true,
+      "winner": "b",
+      "winnerCharacter": "swift",
+      "stocks": {
+        "a": 0,
+        "b": 1
+      },
+      "damage": {
+        "a": 93.27576,
+        "b": 57.54084000000001
+      },
+      "kos": 5
+    },
+    {
+      "pair": [
+        "swift",
+        "swift"
+      ],
+      "seed": 6,
+      "swapped": false,
+      "slotCharacters": [
+        "swift",
+        "swift"
+      ],
+      "ticks": 3600,
+      "finished": false,
+      "winner": null,
+      "winnerCharacter": null,
+      "stocks": {
+        "a": 1,
+        "b": 1
+      },
+      "damage": {
+        "a": 131.48988000000006,
+        "b": 76.21008
+      },
+      "kos": 4
+    },
+    {
+      "pair": [
+        "swift",
+        "swift"
+      ],
+      "seed": 6,
+      "swapped": true,
+      "slotCharacters": [
+        "swift",
+        "swift"
+      ],
+      "ticks": 2613,
+      "finished": true,
+      "winner": "a",
+      "winnerCharacter": "swift",
+      "stocks": {
+        "a": 1,
+        "b": 0
+      },
+      "damage": {
+        "a": 61.84956,
+        "b": 55.73196000000001
+      },
+      "kos": 5
+    },
+    {
+      "pair": [
+        "swift",
+        "swift"
+      ],
+      "seed": 7,
+      "swapped": false,
+      "slotCharacters": [
+        "swift",
+        "swift"
+      ],
+      "ticks": 3600,
+      "finished": false,
+      "winner": null,
+      "winnerCharacter": null,
+      "stocks": {
+        "a": 2,
+        "b": 1
+      },
+      "damage": {
+        "a": 98.49432000000004,
+        "b": 110.19264000000007
+      },
+      "kos": 3
+    },
+    {
+      "pair": [
+        "swift",
+        "swift"
+      ],
+      "seed": 7,
+      "swapped": true,
+      "slotCharacters": [
+        "swift",
+        "swift"
+      ],
+      "ticks": 3600,
+      "finished": false,
+      "winner": null,
+      "winnerCharacter": null,
+      "stocks": {
+        "a": 1,
+        "b": 2
+      },
+      "damage": {
+        "a": 110.19264000000007,
+        "b": 98.49432000000004
+      },
+      "kos": 3
+    },
+    {
+      "pair": [
+        "swift",
+        "swift"
+      ],
+      "seed": 8,
+      "swapped": false,
+      "slotCharacters": [
+        "swift",
+        "swift"
+      ],
+      "ticks": 3600,
+      "finished": false,
+      "winner": null,
+      "winnerCharacter": null,
+      "stocks": {
+        "a": 1,
+        "b": 2
+      },
+      "damage": {
+        "a": 49.854719999999986,
+        "b": 61.06696000000001
+      },
+      "kos": 3
+    },
+    {
+      "pair": [
+        "swift",
+        "swift"
+      ],
+      "seed": 8,
+      "swapped": true,
+      "slotCharacters": [
+        "swift",
+        "swift"
+      ],
+      "ticks": 2169,
+      "finished": true,
+      "winner": "a",
+      "winnerCharacter": "swift",
+      "stocks": {
+        "a": 1,
+        "b": 0
+      },
+      "damage": {
+        "a": 57.39144,
+        "b": 47.97528
+      },
+      "kos": 5
+    }
+  ]
+}

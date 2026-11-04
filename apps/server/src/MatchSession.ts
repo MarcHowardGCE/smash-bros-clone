@@ -1,3 +1,4 @@
+import{validStickInput}from'@smash/shared';
 /**
  * @fileoverview Authoritative fixed-timestep game loop for a single match.
  *
@@ -348,8 +349,8 @@ export class MatchSession {
     return Number.isSafeInteger(input.seq) && input.seq >= 0
       && Number.isSafeInteger(input.tick) && input.tick >= 0
       && [input.held, input.pressed, input.released].every(
-        bits => Number.isInteger(bits) && bits >= 0 && bits <= 0xff)
-      && typeof input.playerId === 'string';
+        bits => Number.isInteger(bits) && bits >= 0 && bits <= 0xfff)
+      && typeof input.playerId === 'string' && validStickInput(input);
   }
 
 	/**
@@ -383,8 +384,11 @@ export class MatchSession {
 		// is sufficient for positional intent.
 		let pressed = 0;
 		let released = 0;
+        let cAttack:InputEvent|undefined;let dualJump=false,smash=false;
 		for (const input of queue) {
 			pressed |= input.pressed;
+            dualJump||=!!((input.pressed&4)&&input.jumpButtons===3);smash||=!!((input.pressed&16)&&input.smashAttack);
+            if((input.pressed&0x10)&&Math.hypot(input.cStickX??0,input.cStickY??0)>=.55)cAttack=input;
 			released |= input.released;
 		}
 
@@ -392,6 +396,8 @@ export class MatchSession {
 		queue.length = 0;
 		return {
 			...latest,
+            ...(dualJump?{jumpButtons:3}:{}),...(smash?{smashAttack:true}:{}),
+            ...(cAttack?{cStickX:cAttack.cStickX,cStickY:cAttack.cStickY}:{}),
 			pressed,
 			released,
 		};

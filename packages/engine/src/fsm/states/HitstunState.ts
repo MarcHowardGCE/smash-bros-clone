@@ -66,7 +66,7 @@ export class HitstunState extends BaseState {
     const directionalInputHeld =
       isHeld(ctx.input, INPUT_BITS.LEFT) ||
       isHeld(ctx.input, INPUT_BITS.RIGHT) ||
-      isHeld(ctx.input, INPUT_BITS.JUMP) ||
+      isHeld(ctx.input, INPUT_BITS.UP) ||
       isHeld(ctx.input, INPUT_BITS.DOWN);
 
     return directionalInputHeld ? transition(PlayerStateEnum.AIRBORNE) : null;

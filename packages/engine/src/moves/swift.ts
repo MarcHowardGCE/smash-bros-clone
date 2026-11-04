@@ -19,12 +19,12 @@ import type { MoveData, HitboxData } from '@smash/shared';
 import { MoveId } from '@smash/shared';
 
 const swiftJabHitbox: HitboxData = {
-  offsetX: 50, offsetY: 0, radius: 18,
+  offsetX: 44, offsetY: 0, radius: 24,
   damage: 2, baseKnockback: 1, knockbackGrowth: 22, knockbackAngle: 40,
   hitlagFrames: 3, hitstunFrames: 8, priority: 1,
 };
 
-/** Swift jab — same timing as default (3/2/10), EXTENDED reach (offsetX 50 vs 45), lower damage (2 vs 3), weaker knockback growth (22 vs 28). */
+/** Swift jab — same timing as default (3/2/10), 68-unit forward extent with inward coverage, lower damage (2 vs 3), weaker knockback growth (22 vs 28). */
 export const SWIFT_JAB: MoveData = {
   id: MoveId.JAB,
   startupFrames: 3, activeFrames: 2, recoveryFrames: 10,

@@ -1,16 +1,20 @@
+import{calculateHitlag,calculateShieldHitlag,calculateShieldStun,calculateParryHitlag}from'./hitlag.js';
+import{asdiPolicy}from'./displacement.js';
+import{directionZone,inputDirectionZone}from'../fsm/hitstop.js';
+import{staleMultiplier,rageMultiplier,hitstunFromKnockback}from'./combatFormulas.js';
+import{isDamageImmune}from'./immunity.js';
 /**
  * @fileoverview Hitbox collision and knockback resolution for the deterministic game engine.
  *
  * All functions are pure transformations — no mutation, no I/O. Collision is
- * modelled as circle overlap between a hitbox circle (positioned relative to the
- * attacker's facing direction) and the defender's hurtbox circle.
+ * modelled with sprite-scale attack circles (positioned relative to the
+ * attacker's facing direction) and narrow body capsules or shield circles.
  *
  * Key design decisions:
  * - **Knockback formula**: derived from Super Smash Bros. — magnitude scales with
  *   the defender's current damage percent, so early hits do little knockback but
  *   the same move at high percent can KO.
- * - **Stale-move negation**: repeated use of the same move reduces damage by up to
- *   40% (5% per entry in the stale queue, floor at 0.6×).
+ * - **Stale-move negation**: recency-weighted history with shield-contact weighting.
  * - **Rage multiplier**: attacker deals slightly more knockback as their own percent
  *   rises (up to ~10% bonus at 150%), rewarding survival under pressure.
  * - **Hit trading**: `resolveHitTrade` resolves simultaneous hitbox clashes by
@@ -30,6 +34,13 @@ import type { PlayerState, HitboxData, Circle, InputEvent } from '@smash/shared'
  * `result.hit` before consuming the other fields.
  */
 export interface HitResult {
+  attackerHitlagFrames?:number;
+  shieldStunFrames?:number;
+  asdiImpactX?:number;
+  asdiImpactY?:number;
+  sdiMultiplier?:number;
+  asdiMultiplier?:number;
+  sdiInitialDirection?:number;
   hit: boolean;
   damage: number;
   knockbackVx: number;
@@ -57,9 +68,6 @@ function isDownHeld(input: InputEvent | null): boolean {
 	return Boolean((input?.held ?? 0) & INPUT_BITS.DOWN);
 }
 
-const MIN_HITSTUN_FRAMES = 4;
-const HITSTUN_KNOCKBACK_SCALE = 0.4;
-const HITSTUN_HIGH_KB_OFFSET = 3;
 
 // Smash Bros knockback formula: ((p/10 + (p*d)/20) * (200/(w+100)) * 1.4 + 18) * (kbg/100) + bkb
 /**
@@ -77,8 +85,8 @@ const HITSTUN_HIGH_KB_OFFSET = 3;
  * - `bkb` (base knockback) is added last as a flat offset, useful for moves
  *   that need a minimum launch distance regardless of percent.
  *
- * @param percent - Defender's current damage percentage.
- * @param damage - Damage dealt by this hit (after stale-move negation).
+ * @param percent - Launch percent, including this hit's damage before the one-on-one modifier.
+ * @param damage - Launch base damage after the 30% stale adjustment.
  * @param baseKnockback - Flat knockback added after all scaling (the `bkb` term).
  * @param knockbackGrowth - Per-move growth coefficient (the `kbg` term).
  * @param weight - Defender's fighter weight (higher = less knockback).
@@ -110,16 +118,30 @@ export function calculateKnockback(
  * @param hitbox - Move hitbox definition with `offsetX`, `offsetY`, and `radius`.
  * @returns A `Circle` in world coordinates ready for `circleOverlap` testing.
  */
-export function getActiveHitboxWorldPos(player: PlayerState, hitbox: HitboxData): Circle {
-  return {
-    x: player.x + hitbox.offsetX * player.facing,
-    y: player.y + hitbox.offsetY,
-    radius: hitbox.radius,
-  };
+/** Attack data predates full-body art: convert legacy melee geometry to sprite world units. */
+function isHeldContact(player:PlayerState):boolean{return player.currentMoveId==='PUMMEL'||['FORWARD_THROW','BACK_THROW','UP_THROW','DOWN_THROW'].includes(player.currentMoveId??'');}
+export function getActiveHitboxWorldPos(player:PlayerState,hitbox:HitboxData):Circle{
+ const scaled=!!player.currentMoveId&&!isHeldContact(player);
+ const scale=scaled?(player.currentMoveId?.startsWith('GRAB')?0.75:0.5):1;
+ return{x:player.x+hitbox.offsetX*player.facing*scale,y:player.y+hitbox.offsetY*scale-(scaled&&player.isGrounded?20:0),radius:hitbox.radius*scale};
+}
+/** Narrow vertical damage capsule; physics/ground/ledge radius is deliberately independent. */
+export function getDamageHurtbox(player:PlayerState):{x:number;top:number;bottom:number;radius:number}{
+ const radius=player.characterId==='abe-lincoln'?15:player.characterId==='swift'?11:12;
+ const height=player.characterId==='abe-lincoln'?98:player.characterId==='swift'?78:82;
+ const feet=player.y+getCharacterStats(player.characterId).hurtboxRadius;
+ const crouched=player.state==='CROUCH',h=crouched?height*.6:height;
+ const center=player.isGrounded?feet-h/2:player.y;
+ return{x:player.x,top:center-h/2+radius,bottom:center+h/2-radius,radius};
+}
+function overlapsDamageHurtbox(hit:Circle,player:PlayerState):boolean{
+ if(player.isShielding||player.state==='SHIELD')return circleOverlap(hit,getHurtbox(player));
+ const body=getDamageHurtbox(player),nearY=Math.max(body.top,Math.min(body.bottom,hit.y));
+ return (hit.x-body.x)**2+(hit.y-nearY)**2<(hit.radius+body.radius)**2;
 }
 
 /**
- * Returns the world-space hurtbox circle for a player.
+ * Returns the legacy physics/shield bounding circle. Body damage uses getDamageHurtbox.
  *
  * The hurtbox is centred on the player's position. Its radius comes from the
  * character's stats so different fighters can have different body sizes.
@@ -139,17 +161,13 @@ export function getHurtbox(player: PlayerState): Circle {
  * Tests hitbox-vs-hurtbox circle overlap and computes the full hit result.
  *
  * Returns `NO_HIT` immediately if the circles don't overlap. When they do:
- * - **Stale-move negation**: damage is reduced by 5% per repeat of the same move
- *   in the stale queue (minimum 0.6× multiplier, maximum 1.05× on first use).
- * - **Knockback**: computed with `calculateKnockback` using the defender's current
- *   percent — higher percent means more launch distance.
+ * - **Stale moves / knockback**: weighted history changes damage and launch base;
+ *   launch percent includes the current hit. See combatFormulas.ts and referenceCases.test.ts.
  * - **Crouch cancel**: if the defender is grounded and holding DOWN, knockback is
  *   reduced by 15% (`× 0.85`).
  * - **Rage**: attacker at high percent deals slightly more knockback (up to ~10%
  *   bonus at 150% damage).
- * - **Hitstun**: `floor(knockbackMagnitude × 0.4) - 3`, floored at
- *   `MIN_HITSTUN_FRAMES (4)`. The `−3` offset fixes Bug #5 where high-knockback
- *   moves over-locked defenders by ~3 frames.
+ * - **Hitstun**: floor(knockback * 0.4) - 1, minimum four ticks.
  *
  * @param attacker - Attacking player state (provides position, facing, currentMoveId, staleMoveQueue, percent).
  * @param defender - Defending player state (provides position, percent, characterId).
@@ -162,27 +180,27 @@ export function resolveHit(
 	defender: PlayerState,
 	hitbox: HitboxData,
 	defenderInput: InputEvent | null = null,
+ context:{playerCount?:number}={},
 ): HitResult {
+  if(isDamageImmune(defender))return NO_HIT;
   const hitboxCircle = getActiveHitboxWorldPos(attacker, hitbox);
   const hurtboxCircle = getHurtbox(defender);
 
-  if (!circleOverlap(hitboxCircle, hurtboxCircle)) {
+  if (!(attacker.currentMoveId&&!isHeldContact(attacker)?(overlapsDamageHurtbox(hitboxCircle,defender)||(attacker.isGrounded&&hitbox.offsetX!==0&&Math.abs(hitbox.offsetY)<=20&&overlapsDamageHurtbox({x:attacker.x,y:hitboxCircle.y,radius:Math.min(hitboxCircle.radius,6)},defender))):circleOverlap(hitboxCircle, hurtboxCircle))) {
     return NO_HIT;
   }
 
-	const staleMoveQueue = attacker.staleMoveQueue ?? [];
-	const staleCount = attacker.currentMoveId
-		? staleMoveQueue.filter((moveId) => moveId === attacker.currentMoveId).length
-		: 0;
-	const staleMultiplier = Math.max(0.6, 1.05 - staleCount * 0.05);
-	const scaledDamage = hitbox.damage * staleMultiplier;
+	const stale=staleMultiplier(attacker.currentMoveId,attacker.staleMoveQueue??[],attacker.staleMoveShieldQueue);
+ const shortHop=attacker.shortHop&&attacker.state==='AIR_ATTACK'&&['NEUTRAL_AIR','FORWARD_AIR','BACK_AIR','UP_AIR','DOWN_AIR'].includes(attacker.currentMoveId??'');
+ const scaledDamage=hitbox.damage*stale*(shortHop?PHYSICS.SHORT_HOP_AERIAL_DAMAGE_MULTIPLIER:1);
+ const launchBaseDamage=hitbox.damage*(1-(1-stale)*.3);
 
 	// Knockback scales with defender's current percent — the higher the damage already
 	// taken, the more the next hit launches them. This is the core Smash Bros feel:
 	// early hits do little knockback, but the same move at high percent can KO.
 	const baseKnockbackMagnitude = calculateKnockback(
-		defender.percent,
-		scaledDamage,
+		defender.percent+scaledDamage,
+		launchBaseDamage,
 		hitbox.baseKnockback,
 		hitbox.knockbackGrowth,
 		getCharacterStats(defender.characterId).fighterWeight
@@ -191,10 +209,7 @@ export function resolveHit(
 			defender.isGrounded && isDownHeld(defenderInput)
 				? baseKnockbackMagnitude * 0.85
 				: baseKnockbackMagnitude;
-		const rageMult = Math.max(
-			1.0,
-			1 + (Math.min(attacker.percent, 150) - 35) * (0.1 / 115),
-		);
+		const rageMult = rageMultiplier(attacker.percent);
 		const knockbackMagnitude = crouchAdjustedKnockbackMagnitude * rageMult;
 
   const { x: vx, y: vy } = knockbackAngleToVelocity(
@@ -203,19 +218,25 @@ export function resolveHit(
     attacker.facing
   );
 
+ const multiplier=hitbox.hitlagMultiplier??(hitbox.hitlagFrames===0?0:1);
+ const electric=(hitbox.effect??(hitbox.electric?'electric':'normal'))==='electric';
+ const shielding=(defender.isShielding||defender.state==='SHIELD')&&defender.shieldHealth>0;
+ const parry=shielding&&defender.shieldReleaseEligible===true&&!defender.shieldParryConsumed&&defender.shieldReleaseFrame!==undefined&&defender.shieldReleaseFrame<PHYSICS.PERFECT_SHIELD_WINDOW_FRAMES;
+ const shield=calculateShieldHitlag(scaledDamage,multiplier,electric,hitbox.isProjectile,hitbox.projectileAttached);
+ const parryFreeze=calculateParryHitlag(scaledDamage,multiplier,electric,hitbox.isProjectile,hitbox.projectileAttached,hitbox.direct??true);
+ const shieldStun=calculateShieldStun(scaledDamage,hitbox.shieldstunMultiplier??1,hitbox.isProjectile,hitbox.projectileAttached,attacker.currentMoveId?.endsWith('_SMASH'),['NEUTRAL_AIR','FORWARD_AIR','BACK_AIR','UP_AIR','DOWN_AIR'].includes(attacker.currentMoveId??''));
+ const displacement=asdiPolicy(hitbox,defenderInput?.held??0,defender.isGrounded,isHeldContact(attacker)||shielding);
 	return {
 		hit: true,
-		damage: Math.floor(scaledDamage),
+		damage: scaledDamage,
 		knockbackVx: vx,
 		knockbackVy: vy,
-		hitlagFrames: hitbox.hitlagFrames,
-	    // Smash-style hitstun uses knockback scaling with a small high-KB offset.
-	    // Without subtracting this offset, high knockback moves over-lock defenders
-	    // by ~3 frames (Bug #5: fsmash@120% was 82 instead of 79).
-	    hitstunFrames: Math.max(
-	      MIN_HITSTUN_FRAMES,
-	      Math.floor(knockbackMagnitude * HITSTUN_KNOCKBACK_SCALE) - HITSTUN_HIGH_KB_OFFSET,
-	    ),
+		shieldStunFrames:shieldStun,
+        hitlagFrames:shielding?(parry?parryFreeze.target:shield.target):calculateHitlag(scaledDamage,multiplier,hitbox.isProjectile?2:context.playerCount??2,electric,defender.isGrounded&&isDownHeld(defenderInput)),
+        attackerHitlagFrames:shielding?(parry?parryFreeze.attacker:shield.attacker):hitbox.isProjectile&&!hitbox.projectileAttached?0:calculateHitlag(scaledDamage,multiplier,context.playerCount??2,electric),
+        sdiMultiplier:isHeldContact(attacker)?0:(hitbox.sdiMultiplier??1),asdiMultiplier:displacement.exitMultiplier,asdiImpactX:displacement.impactX,asdiImpactY:displacement.impactY,sdiInitialDirection:inputDirectionZone(defenderInput),
+	    // Reference hitstun: floor(0.4 * knockback) - 1, minimum four frames.
+	    hitstunFrames: hitstunFromKnockback(knockbackMagnitude),
 	  };
 }
 
@@ -237,16 +258,13 @@ export function checkHitboxCollision(
 	attacker: PlayerState,
 	defender: PlayerState,
 	defenderInput: InputEvent | null = null,
+ context:{playerCount?:number}={},
 ): HitResult {
 	if (!attacker.activeHitbox) return NO_HIT;
-	return resolveHit(attacker, defender, attacker.activeHitbox, defenderInput);
+	return resolveHit(attacker, defender, attacker.activeHitbox, defenderInput,context);
 }
 
-// When both fighters have active hitboxes simultaneously, we resolve priority rather
-// than always applying both hits. Higher-priority hitbox wins; the other player's
-// hit is cancelled. Equal priority = both hits land (a true trade). This mirrors
-// Smash Bros priority rules and prevents both players from always trading on
-// simultaneous attacks.
+// Project-specific priority resolution; not a complete Ultimate clank model.
 /**
  * Resolves simultaneous hitbox clashes between two fighters by priority.
  *
@@ -254,31 +272,30 @@ export function checkHitboxCollision(
  * would mean every simultaneous attack always trades. Instead, priority rules decide:
  * - **Higher priority wins**: the lower-priority hit is cancelled (`NO_HIT`), only
  *   the higher-priority hit lands.
- * - **Equal priority**: both hits land — a true trade, matching Smash Bros behaviour.
+ * - **Equal priority**: both hits land — a true trade, under this project's priority model.
  * - **One or both hitboxes absent**: returns `[NO_HIT, NO_HIT]` immediately.
  *
- * Result tuple order mirrors the input: `[hitOnPlayerB, hitOnPlayerA]` — i.e.
- * `result[0]` is the effect applied to `playerB` (playerA's hit landing on B),
- * and `result[1]` is the effect applied to `playerA`.
+ * Results are ordered by receiving fighter: [damage to A, damage to B].
  *
  * @param playerA - First fighter state.
  * @param playerB - Second fighter state.
  * @param playerAInput - playerA's input this frame (used for crouch-cancel on playerA). Pass `null` if unavailable.
  * @param playerBInput - playerB's input this frame (used for crouch-cancel on playerB). Pass `null` if unavailable.
- * @returns A tuple `[HitResult for playerB, HitResult for playerA]` after priority resolution.
+ * @returns A tuple `[damage to playerA, damage to playerB]` after priority resolution.
  */
 export function resolveHitTrade(
 	playerA: PlayerState,
 	playerB: PlayerState,
 	playerAInput: InputEvent | null = null,
 	playerBInput: InputEvent | null = null,
+ context:{playerCount?:number}={},
 ): [HitResult, HitResult] {
   if (!playerA.activeHitbox || !playerB.activeHitbox) {
     return [NO_HIT, NO_HIT];
   }
 
-	const hitA = resolveHit(playerA, playerB, playerA.activeHitbox, playerBInput);
-	const hitB = resolveHit(playerB, playerA, playerB.activeHitbox, playerAInput);
+	const hitB = resolveHit(playerA, playerB, playerA.activeHitbox, playerBInput,context);
+	const hitA = resolveHit(playerB, playerA, playerB.activeHitbox, playerAInput,context);
 
   if (!hitA.hit || !hitB.hit) {
     return [hitA, hitB];

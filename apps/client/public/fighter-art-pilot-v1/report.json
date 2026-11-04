@@ -1,0 +1,120 @@
+{
+  "date": "2026-11-04",
+  "batch": 31,
+  "problem": "Legacy attack circles were roughly twice the sprite reach, compounded by wide circular body hurtboxes.",
+  "changes": [
+    "Registered free-contact attacks convert legacy offsets/radii to 0.5 sprite world scale; grabs use 0.75 to match their reach. Grounded contact origin is raised 20 world units to the torso.",
+    "Body damage uses narrower vertical capsules: All-Rounder radius 12 / height 82, Abe radius 15 / height 98, Swift radius 11 / height 78. Crouching shortens the capsule.",
+    "Movement, floor and ledge radii are unchanged. Shield bubbles retain their circular coverage. Already-confirmed pummels and throws retain guaranteed paired contact.",
+    "A small inward contact at the torso prevents coincident/overlapping fighters from whiffing while leaving the outer reach unchanged."
+  ],
+  "measurements": {
+    "step": 0.25,
+    "rows": [
+      {
+        "attacker": "all-rounder",
+        "defender": "all-rounder",
+        "oldJabTip": 67,
+        "newJabTip": 33.5,
+        "oldCenterContactMax": 95,
+        "newCenterContactMaxSampled": 45.25
+      },
+      {
+        "attacker": "all-rounder",
+        "defender": "abe-lincoln",
+        "oldJabTip": 67,
+        "newJabTip": 33.5,
+        "oldCenterContactMax": 98.85164807134504,
+        "newCenterContactMaxSampled": 48.25
+      },
+      {
+        "attacker": "all-rounder",
+        "defender": "swift",
+        "oldJabTip": 67,
+        "newJabTip": 33.5,
+        "oldCenterContactMax": 92.9583152331272,
+        "newCenterContactMaxSampled": 44.25
+      },
+      {
+        "attacker": "abe-lincoln",
+        "defender": "all-rounder",
+        "oldJabTip": 78,
+        "newJabTip": 39,
+        "oldCenterContactMax": 105.85696017507576,
+        "newCenterContactMaxSampled": 50.75
+      },
+      {
+        "attacker": "abe-lincoln",
+        "defender": "abe-lincoln",
+        "oldJabTip": 78,
+        "newJabTip": 39,
+        "oldCenterContactMax": 110,
+        "newCenterContactMaxSampled": 53.75
+      },
+      {
+        "attacker": "abe-lincoln",
+        "defender": "swift",
+        "oldJabTip": 78,
+        "newJabTip": 39,
+        "oldCenterContactMax": 103.66563145999496,
+        "newCenterContactMaxSampled": 49.75
+      },
+      {
+        "attacker": "swift",
+        "defender": "all-rounder",
+        "oldJabTip": 68,
+        "newJabTip": 34,
+        "oldCenterContactMax": 95.96152422706632,
+        "newCenterContactMaxSampled": 45.75
+      },
+      {
+        "attacker": "swift",
+        "defender": "abe-lincoln",
+        "oldJabTip": 68,
+        "newJabTip": 34,
+        "oldCenterContactMax": 99.67764362830022,
+        "newCenterContactMaxSampled": 48.75
+      },
+      {
+        "attacker": "swift",
+        "defender": "swift",
+        "oldJabTip": 68,
+        "newJabTip": 34,
+        "oldCenterContactMax": 94,
+        "newCenterContactMaxSampled": 44.75
+      }
+    ]
+  },
+  "limits": "This is a horizontal reach correction using measured sprite scale and simple body capsules, not per-pixel or fully pose-specific collision. Damage, timing, weight and movement tuning were not changed.",
+  "validation": {
+    "date": "2026-11-04",
+    "workspaceTestsPassed": 1261,
+    "shared": 71,
+    "gamepad": 31,
+    "engine": 340,
+    "server": 257,
+    "client": 562,
+    "skipped": 17,
+    "workspaceTypecheck": true,
+    "browser": {
+      "reviewAndLocal": 48,
+      "multiplayer": 1,
+      "total": 49
+    },
+    "productionBuild": true,
+    "productionSmoke": {
+      "errors": [],
+      "failed": [],
+      "atlasPagesLoaded": 14,
+      "publicFilesIncluded": true
+    },
+    "closeContactAndDistantWhiff": true,
+    "allFighterPairingsBothFacings": true
+  },
+  "evidence": [
+    "packages/engine/src/hitbox/index.ts",
+    "packages/engine/src/hitbox/spriteReach.test.ts",
+    "packages/engine/src/hitbox/jabCoverage.test.ts",
+    "apps/client/e2e/fighter-art-review.spec.ts"
+  ]
+}

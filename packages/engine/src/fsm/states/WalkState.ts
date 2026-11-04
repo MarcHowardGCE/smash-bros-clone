@@ -29,6 +29,8 @@ export class WalkState extends BaseState {
 			return transition(PlayerStateEnum.ATTACK);
 		}
 
+    if(isPressed(ctx.input,INPUT_BITS.JUMP))return transition(PlayerStateEnum.JUMPSQUAT);
+    if(isHeld(ctx.input,INPUT_BITS.DOWN)&&!isHeld(ctx.input,INPUT_BITS.LEFT)&&!isHeld(ctx.input,INPUT_BITS.RIGHT))return transition(PlayerStateEnum.CROUCH);
     if (!isDirectionHeld(ctx.input)) {
       return transition(PlayerStateEnum.IDLE);
     }

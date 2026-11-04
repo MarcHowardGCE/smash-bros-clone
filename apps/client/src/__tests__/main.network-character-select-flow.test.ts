@@ -104,8 +104,11 @@ const bootMainWithMocks = async (): Promise<BootResult> => {
   let gameClientInstance: BootResult["gameClientInstance"] | null = null;
   let uiManagerInstance: BootResult["uiManagerInstance"] | null = null;
 
-  vi.doMock("pixi.js", () => {
+  vi.doMock('../renderer/fullbody/FullBodyPilot.js',()=>({preloadFullBodyPilot:async()=>null}));
+    vi.doMock('../renderer/fullbody/KOPresentation.js',()=>({KOPresentation:class{tick(){}destroy(){}clear(){}spawn(){}update(){}getDiagnostics(){return [];}}}));
+    vi.doMock("pixi.js", () => {
     class Application {
+        ticker = {add:()=>{},stop:()=>{},start:()=>{}};
       stage = { addChild: () => {} };
       canvas = document.createElement("canvas");
       async init(): Promise<void> {}
@@ -186,7 +189,8 @@ const bootMainWithMocks = async (): Promise<BootResult> => {
     },
   }));
 
-  vi.doMock("@smash/gamepad-input", () => ({
+  vi.doMock("@smash/gamepad-input", async () => ({
+    ...await vi.importActual<typeof import("@smash/gamepad-input")>("@smash/gamepad-input"),
     GamepadPoller: class GamepadPoller {
       onConnect: ((gamepad: Gamepad) => void) | null = null;
       onDisconnect: ((index: number) => void) | null = null;

@@ -25,6 +25,7 @@ export enum MoveId {
   DASH_ATTACK = 'DASH_ATTACK',
   FLOOR_ATTACK_UP = 'FLOOR_ATTACK_UP',
   FLOOR_ATTACK_DOWN = 'FLOOR_ATTACK_DOWN',
+  FLOOR_ATTACK_TRIP = 'FLOOR_ATTACK_TRIP',
   /** Mid-range grounded poke; safe on shield at proper spacing. */
   FORWARD_TILT = 'FORWARD_TILT',
   /** Grounded anti-air launcher; sends opponents upward for juggle follow-ups. */
@@ -57,6 +58,8 @@ export enum MoveId {
   DOWN_SPECIAL = 'DOWN_SPECIAL',
   /** Grab startup; transitions to GRAB_HOLDING on successful catch. */
   GRAB = 'GRAB',
+  GRAB_DASH = 'GRAB_DASH',
+  GRAB_PIVOT = 'GRAB_PIVOT',
   /** Repeated hit while holding an opponent; deals small damage per input. */
   PUMMEL = 'PUMMEL',
   /** Throw releasing the opponent forward. */
@@ -100,4 +103,6 @@ export interface MoveData {
   isSpecial: boolean;
   /** Maximum charge frames; present only on chargeable smash attacks. */
   chargeMax?: number;
+  /** Initial custom guaranteed-ground-trip eligibility; pre-hit percent is checked. */
+  tripBelowPercent?:number;
 }

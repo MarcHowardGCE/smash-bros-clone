@@ -1,0 +1,94 @@
+{
+  "batch": 36,
+  "date": "2026-11-04",
+  "profile": "ultimate-xbox360-v1",
+  "basis": "Ultimate Switch Pro default physical positions translated to Xbox 360 labels; not Nintendo letters copied onto Xbox.",
+  "mapping": {
+    "attack": "B",
+    "special": "A",
+    "jump": "X / Y",
+    "shield": "LT / RT",
+    "grab": "LB / RB",
+    "movement": "Left stick",
+    "smashAndAerial": "Right stick",
+    "taunts": "D-pad up / side / down",
+    "pause": "Start",
+    "menuConfirm": "B",
+    "menuCancel": "A",
+    "unassignedCombat": "Back / stick clicks / Guide"
+  },
+  "defaults": {
+    "stickJump": true,
+    "abSmash": true,
+    "rightStick": "smash",
+    "sensitivity": "normal"
+  },
+  "implemented": [
+    "Single shared profile drives gameplay action buttons, menu confirm/cancel/pause and Controls labels.",
+    "Direct D-pad taunts no longer move or jump. Left stick supplies movement and stick jump. Back is not a taunt modifier.",
+    "Jump buttons remain distinct through input transport; X+Y forces a short hop and a fresh second jump button creates an edge while the first remains held.",
+    "Server derives controller flick-smashes from simulation-tick windows (horizontal 6, vertical 4 at normal sensitivity). Attack after the window selects the appropriate held-direction move.",
+    "Controller shield+attack selects grab; A+B selects smash. Physical jump+attack retains the short-hop aerial shortcut.",
+    "Right-stick aiming remains separate from left-stick movement; calibration and optional analog fields work for local and online play.",
+    "No customizable gamepad button map previously existed to migrate. The versioned default profile replaces the hardcoded layout; saved slot assignments and stick calibration remain usable.",
+    "Controls can be exited with A, confirmed with B, and shows all four slot mappings."
+  ],
+  "validation": {
+    "typecheck": true,
+    "profileContracts": 17,
+    "authoritativeComboTests": 7,
+    "focusedInputAndMenu": 20,
+    "productionBrowser": 4,
+    "fourClientRegression": 1,
+    "productionBuild": true,
+    "atlasPagesLoaded": 14,
+    "failedProductionRequests": 0,
+    "physicalWiredOrWirelessController": false,
+    "fullClientRegression": {
+      "fullRun": {
+        "passed": 561,
+        "failed": 4,
+        "total": 565
+      },
+      "correctedAffectedFiles": {
+        "passed": 57,
+        "failed": 0
+      },
+      "reason": "Four expectations/mock exports assumed the prior controller layout. They were corrected and every test in the three affected files passed. No runtime code changed after the full client run.",
+      "outstandingKnownFailures": 0
+    },
+    "workspace": {
+      "shared": 33,
+      "gamepad": 75,
+      "engine": 917,
+      "server": 279,
+      "clientCasesCovered": 565,
+      "skipped": 17,
+      "method": "Full package runs plus corrected affected-client-file rerun; not one final full-workspace invocation."
+    }
+  },
+  "limits": [
+    "Browser checks use simulated standard-mapping Xbox 360 devices; actual wired/wireless USB or receiver behavior still requires hardware testing.",
+    "Button/action mapping is implemented; exact Ultimate analog thresholds, movement speed, trigger feel and full gameplay parity are not certified.",
+    "This is the requested Xbox/Switch-Pro-position profile. Dedicated GameCube and sideways Joy-Con profiles are separate work.",
+    "Keyboard bindings remain separate. Other Ultimate mechanics and specialized input interactions remain incomplete."
+  ],
+  "paths": [
+    "apps/client/src/input/xbox360Profile.ts",
+    "apps/client/src/input/GamepadInputSource.ts",
+    "apps/client/src/input/InputManager.ts",
+    "apps/client/src/ui/ControlsScreen.ts",
+    "apps/client/src/ui/MenuNavigator.ts",
+    "apps/client/src/ui/StageSelectScreen.ts",
+    "apps/client/src/ui/UIManager.ts",
+    "packages/shared/src/types/InputEvent.ts",
+    "apps/server/src/MatchSession.ts",
+    "apps/server/src/GameEngine.ts"
+  ],
+  "sources": [
+    "https://www.nintendo.com/en-gb/News/2019/January/New-to-Super-Smash-Bros-Ultimate-Get-up-to-speed-with-the-basics--1498909.html",
+    "https://gamepedia.jp/smbr/archives/1753",
+    "https://www.w3.org/TR/gamepad/#remapping",
+    "https://w.atwiki.jp/smashsp_kensyou/pages/45.html"
+  ]
+}

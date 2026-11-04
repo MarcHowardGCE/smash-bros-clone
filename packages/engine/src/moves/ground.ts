@@ -61,9 +61,10 @@ const downTiltHitbox: HitboxData = {
   hitlagFrames: 3, hitstunFrames: 11, priority: 1,
 };
 
-/** Down tilt — 5 startup, 2 active, 11 recovery. Low-profile poke at 25°, trips at higher percents. */
+/** Down tilt — 5 startup, 2 active, 11 recovery. Low-profile poke at 25°, trips grounded opponents below 30% with current custom tuning. */
 export const MOVE_DOWN_TILT: MoveData = {
   id: MoveId.DOWN_TILT,
+  tripBelowPercent:30,
   startupFrames: 5, activeFrames: 2, recoveryFrames: 11,
   hitboxPerActiveFrame: [downTiltHitbox, downTiltHitbox],
   landingLag: 0, isAerial: false, isGrab: false, isSpecial: false,
@@ -130,3 +131,5 @@ export const MOVE_DASH_ATTACK:MoveData={...MOVE_JAB,id:MoveId.DASH_ATTACK,startu
 
 export const MOVE_FLOOR_ATTACK_UP:MoveData={...MOVE_JAB,id:MoveId.FLOOR_ATTACK_UP,startupFrames:6,activeFrames:4,recoveryFrames:14,hitboxPerActiveFrame:Array.from({length:4},(_,i)=>({...jabHitbox,offsetX:i<2?45:-45,offsetY:12,radius:26,damage:7,baseKnockback:5,knockbackGrowth:55,hitlagFrames:4,hitstunFrames:14}))};
 export const MOVE_FLOOR_ATTACK_DOWN:MoveData={...MOVE_FLOOR_ATTACK_UP,id:MoveId.FLOOR_ATTACK_DOWN};
+
+export const MOVE_FLOOR_ATTACK_TRIP:MoveData={...MOVE_FLOOR_ATTACK_UP,id:MoveId.FLOOR_ATTACK_TRIP};

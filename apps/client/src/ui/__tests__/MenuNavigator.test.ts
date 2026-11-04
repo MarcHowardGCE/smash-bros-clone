@@ -31,7 +31,7 @@ describe('MenuNavigator', () => {
     }) as typeof requestAnimationFrame);
     vi.stubGlobal('cancelAnimationFrame', vi.fn());
 
-    const heldBits = GenericInputBits.DOWN | GenericInputBits.A;
+    const heldBits = GenericInputBits.DOWN | GenericInputBits.B;
     const poller = {
       poll: vi
         .fn()
@@ -45,8 +45,8 @@ describe('MenuNavigator', () => {
         .mockReturnValueOnce(new Map([[0, { bits: GenericInputBits.DOWN }]]))
         // Release.
         .mockReturnValueOnce(new Map([[0, { bits: 0 }]]))
-        // Fresh A press: should activate selected (second) button.
-        .mockReturnValueOnce(new Map([[0, { bits: GenericInputBits.A }]])),
+        // Fresh B press: should activate selected (second) button.
+        .mockReturnValueOnce(new Map([[0, { bits: GenericInputBits.B }]])),
     };
 
     const nav = new MenuNavigator(poller as unknown as ConstructorParameters<typeof MenuNavigator>[0]);

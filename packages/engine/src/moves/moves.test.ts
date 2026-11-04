@@ -12,7 +12,7 @@ describe('Move Definitions', () => {
 
   it('all 28 MoveId values resolve without throwing', () => {
     const moveIds = Object.values(MoveId);
-    expect(moveIds).toHaveLength(28);
+    expect(moveIds).toHaveLength(31);
     for (const id of moveIds) {
       expect(() => getMoveData(id as MoveId)).not.toThrow();
     }

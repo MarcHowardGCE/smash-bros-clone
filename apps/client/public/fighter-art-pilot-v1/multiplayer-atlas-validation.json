@@ -9,12 +9,14 @@
   "atlas": true,
   "movementObserved": [
     {
+      "ko": [],
       "packing": "atlas",
       "players": [
         {
           "slot": 0,
           "character": "all-rounder",
-          "clip": "air_rise_loop",
+          "clip": "idle",
+          "frameRect": "88,2,83,162",
           "bodyVisible": true,
           "markerVisible": true,
           "markerFacing": 1
@@ -23,6 +25,7 @@
           "slot": 1,
           "character": "all-rounder",
           "clip": "idle",
+          "frameRect": "2,2,82,162",
           "bodyVisible": true,
           "markerVisible": true,
           "markerFacing": 1
@@ -31,6 +34,7 @@
           "slot": 2,
           "character": "abe-lincoln",
           "clip": "idle",
+          "frameRect": "318,2,101,195",
           "bodyVisible": true,
           "markerVisible": true,
           "markerFacing": 1
@@ -39,6 +43,7 @@
           "slot": 3,
           "character": "swift",
           "clip": "idle",
+          "frameRect": "2,2,88,154",
           "bodyVisible": true,
           "markerVisible": true,
           "markerFacing": 1
@@ -46,12 +51,14 @@
       ]
     },
     {
+      "ko": [],
       "packing": "atlas",
       "players": [
         {
           "slot": 0,
           "character": "all-rounder",
-          "clip": "air_rise_loop",
+          "clip": "idle",
+          "frameRect": "88,2,83,162",
           "bodyVisible": true,
           "markerVisible": true,
           "markerFacing": 1
@@ -60,6 +67,7 @@
           "slot": 1,
           "character": "all-rounder",
           "clip": "idle",
+          "frameRect": "2,2,82,162",
           "bodyVisible": true,
           "markerVisible": true,
           "markerFacing": 1
@@ -68,6 +76,7 @@
           "slot": 2,
           "character": "abe-lincoln",
           "clip": "idle",
+          "frameRect": "318,2,101,195",
           "bodyVisible": true,
           "markerVisible": true,
           "markerFacing": 1
@@ -76,6 +85,7 @@
           "slot": 3,
           "character": "swift",
           "clip": "idle",
+          "frameRect": "2,2,88,154",
           "bodyVisible": true,
           "markerVisible": true,
           "markerFacing": 1
@@ -83,12 +93,14 @@
       ]
     },
     {
+      "ko": [],
       "packing": "atlas",
       "players": [
         {
           "slot": 0,
           "character": "all-rounder",
-          "clip": "air_rise_loop",
+          "clip": "idle",
+          "frameRect": "88,2,83,162",
           "bodyVisible": true,
           "markerVisible": true,
           "markerFacing": 1
@@ -97,6 +109,7 @@
           "slot": 1,
           "character": "all-rounder",
           "clip": "idle",
+          "frameRect": "2,2,82,162",
           "bodyVisible": true,
           "markerVisible": true,
           "markerFacing": 1
@@ -105,6 +118,7 @@
           "slot": 2,
           "character": "abe-lincoln",
           "clip": "idle",
+          "frameRect": "2,2,101,194",
           "bodyVisible": true,
           "markerVisible": true,
           "markerFacing": 1
@@ -113,6 +127,7 @@
           "slot": 3,
           "character": "swift",
           "clip": "idle",
+          "frameRect": "2,2,88,154",
           "bodyVisible": true,
           "markerVisible": true,
           "markerFacing": 1
@@ -120,12 +135,14 @@
       ]
     },
     {
+      "ko": [],
       "packing": "atlas",
       "players": [
         {
           "slot": 0,
           "character": "all-rounder",
-          "clip": "air_rise_loop",
+          "clip": "idle",
+          "frameRect": "88,2,83,162",
           "bodyVisible": true,
           "markerVisible": true,
           "markerFacing": 1
@@ -134,6 +151,7 @@
           "slot": 1,
           "character": "all-rounder",
           "clip": "idle",
+          "frameRect": "2,2,82,162",
           "bodyVisible": true,
           "markerVisible": true,
           "markerFacing": 1
@@ -142,6 +160,7 @@
           "slot": 2,
           "character": "abe-lincoln",
           "clip": "idle",
+          "frameRect": "318,2,101,195",
           "bodyVisible": true,
           "markerVisible": true,
           "markerFacing": 1
@@ -150,6 +169,7 @@
           "slot": 3,
           "character": "swift",
           "clip": "idle",
+          "frameRect": "94,2,88,154",
           "bodyVisible": true,
           "markerVisible": true,
           "markerFacing": 1
@@ -158,11 +178,13 @@
     }
   ],
   "pauseTicks": [
-    111,
-    111,
-    111,
-    111
+    123,
+    123,
+    123,
+    123
   ],
   "rejoin": true,
+  "independentUpReplicated": true,
+  "tauntReplicated": true,
   "pageErrors": []
 }

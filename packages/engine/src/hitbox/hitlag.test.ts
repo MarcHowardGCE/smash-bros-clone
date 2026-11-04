@@ -1,0 +1,1 @@
+import{it,expect}from'vitest';import{calculateHitlag}from'./hitlag.js';import{hitlagReferenceCases as cases}from'./hitlagReferenceCases.js';for(const c of cases)it('reference hitlag '+JSON.stringify(c),()=>expect(calculateHitlag(c.damage,c.multiplier,c.players,c.electric,c.crouch)).toBe(c.expected));

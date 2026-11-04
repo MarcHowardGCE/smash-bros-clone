@@ -30,6 +30,7 @@ export const DEFAULT_MOVE_TOTAL_FRAMES = 20;
 const MOVE_TOTAL_FRAMES: Partial<Record<MoveId, number>> = {
   [MoveId.JAB]: 15,
   [MoveId.FLOOR_ATTACK_UP]:24,
+  [MoveId.FLOOR_ATTACK_TRIP]:24,
   [MoveId.FLOOR_ATTACK_DOWN]:24,
   [MoveId.JAB_2]:15,
   [MoveId.JAB_3]:25,
@@ -49,7 +50,8 @@ const MOVE_TOTAL_FRAMES: Partial<Record<MoveId, number>> = {
   [MoveId.SIDE_SPECIAL]: 34,
   [MoveId.UP_SPECIAL]: 38,
   [MoveId.DOWN_SPECIAL]: 30,
-  [MoveId.GRAB]: 20,
+  [MoveId.GRAB]: 27,
+  [MoveId.GRAB_DASH]:32,[MoveId.GRAB_PIVOT]:35,
   [MoveId.PUMMEL]: 16,
   [MoveId.FORWARD_THROW]: 28,
   [MoveId.BACK_THROW]: 28,
@@ -61,6 +63,7 @@ const MOVE_TOTAL_FRAMES: Partial<Record<MoveId, number>> = {
 const MOVE_STARTUP_FRAMES: Partial<Record<MoveId, number>> = {
   [MoveId.JAB]: 3,
   [MoveId.FLOOR_ATTACK_UP]:6,
+  [MoveId.FLOOR_ATTACK_TRIP]:6,
   [MoveId.FLOOR_ATTACK_DOWN]:6,
   [MoveId.JAB_2]:3,
   [MoveId.JAB_3]:4,
@@ -81,6 +84,7 @@ const MOVE_STARTUP_FRAMES: Partial<Record<MoveId, number>> = {
   [MoveId.UP_SPECIAL]: 6,
   [MoveId.DOWN_SPECIAL]: 8,
   [MoveId.GRAB]: 6,
+  [MoveId.GRAB_DASH]:8,[MoveId.GRAB_PIVOT]:10,
   [MoveId.PUMMEL]: 3,
   [MoveId.FORWARD_THROW]: 4,
   [MoveId.BACK_THROW]: 4,
@@ -142,4 +146,7 @@ export function isSmashMoveId(moveId: string | null): moveId is MoveId.FORWARD_S
 }
 
 export { INPUT_BITS, PHYSICS, PlayerStateEnum };
+
+
+
 

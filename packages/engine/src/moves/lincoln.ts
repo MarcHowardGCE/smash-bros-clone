@@ -19,12 +19,12 @@ import { MoveId } from '@smash/shared';
 // and hard-coded game logic (e.g. counter-hit threshold in GameEngine.ts).
 
 const lincolnJabHitbox: HitboxData = {
-  offsetX: 58, offsetY: 0, radius: 20,
+  offsetX: 50, offsetY: 0, radius: 28,
   damage: 3, baseKnockback: 2, knockbackGrowth: 28, knockbackAngle: 30,
   hitlagFrames: 3, hitstunFrames: 8, priority: 1,
 };
 
-/** Lincoln jab — same timing as default (3/2/10), but longer reach (offsetX 58 vs 45). */
+/** Lincoln jab — same timing as default (3/2/10), but 78-unit forward extent; inward coverage prevents point-blank whiffs. */
 export const LINCOLN_JAB: MoveData = {
   id: MoveId.JAB,
   startupFrames: 3, activeFrames: 2, recoveryFrames: 10,

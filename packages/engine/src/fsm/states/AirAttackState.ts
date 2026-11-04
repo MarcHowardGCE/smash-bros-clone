@@ -1,3 +1,4 @@
+import {MoveId} from '@smash/shared';
 /**
  * @fileoverview AIR_ATTACK state — aerial attack animation playback.
  *
@@ -27,6 +28,6 @@ export class AirAttackState extends BaseState {
 
   update(ctx: FSMContext, frame: number): FSMTransition | null {
     this.totalFrames = resolveMoveTotalFrames(ctx.player.currentMoveId);
-    return frame >= this.totalFrames - 1 ? transition(PlayerStateEnum.AIRBORNE) : null;
+    return frame >= this.totalFrames - 1 ? transition(ctx.player.currentMoveId===MoveId.UP_SPECIAL?(ctx.isGrounded?PlayerStateEnum.HELPLESS_LAND:PlayerStateEnum.HELPLESS):PlayerStateEnum.AIRBORNE) : null;
   }
 }

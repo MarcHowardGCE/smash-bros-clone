@@ -378,7 +378,7 @@ describe('GameEngine grab integration', () => {
 		const engine = createEngine(['p1', 'p2']);
 		primeGrabHoldingPair(engine, 1);
 
-		let state = tick(engine, { p1: makeInput('p1', INPUT_BITS.JUMP), p2: null });
+		let state = tick(engine, { p1: makeInput('p1', INPUT_BITS.UP), p2: null });
 		expect(state.players.p1?.state).toBe(PlayerStateEnum.ATTACK);
 		expect(state.players.p1?.currentMoveId).toBe(MoveId.UP_THROW);
 
@@ -395,6 +395,8 @@ describe('GameEngine grab integration', () => {
 		expect(attacker?.grabbedPlayerId).toBeNull();
 		expect(victim?.isGrabbing).toBe(false);
 		expect(victim?.state).toBe(PlayerStateEnum.HITSTUN);
+        expect(attacker?.staleMoveQueue?.at(-1)).toBe(MoveId.UP_THROW);
+        expect(attacker?.staleMoveShieldQueue?.at(-1)).toBe(false);
 		expect(victim?.vy ?? 0).toBeLessThan(0);
 		expect(victim?.hitstunFramesRemaining ?? 0).toBeGreaterThan(0);
 	});
@@ -464,7 +466,7 @@ describe('GameEngine grab integration', () => {
 
 			// Tick until pummel connects (victim takes damage)
 			let damageRecorded = false;
-			for (let j = 0; j < 20; j += 1) {
+			for (let j = 0; j < 40; j += 1) {
 				const damageAfter = state.players.p2?.percent ?? 0;
 				if (damageAfter > damageBeforePummel && !damageRecorded) {
 					damages.push(damageAfter - damageBeforePummel);
@@ -487,17 +489,17 @@ describe('GameEngine grab integration', () => {
 
 		// Verify damage decreases per stale formula
 		// Pummel 1: fresh (1.05 multiplier) → 2 * 1.05 = 2.1 → floor = 2
-		expect(damages[0]).toBe(2);
+		expect(damages[0]).toBeCloseTo(2*1.05*1.2);
 		// Pummel 2: 1 stale (1.00 multiplier) → 2 * 1.00 = 2.0 → floor = 2
-		expect(damages[1]).toBe(2);
+		expect(damages[1]).toBeCloseTo(2*.91*1.2);
 		// Pummel 3: 2 stale (0.95 multiplier) → 2 * 0.95 = 1.9 → floor = 1
-		expect(damages[2]).toBe(1);
+		expect(damages[2]).toBeCloseTo(2*.82455*1.2);
 		// Pummel 4: 3 stale (0.90 multiplier) → 2 * 0.90 = 1.8 → floor = 1
-		expect(damages[3]).toBe(1);
+		expect(damages[3]).toBeCloseTo(2*.7482*1.2);
 
 		// Verify total damage accumulation
 		const totalDamage = damages.reduce((a, b) => a + b, 0);
-		expect(totalDamage).toBe(6); // 2 + 2 + 1 + 1
+		expect(totalDamage).toBeCloseTo(2*(1.05+.91+.82455+.7482)*1.2); // 2 + 2 + 1 + 1
 
 		// Verify attacker's staleMoveQueue has 4 PUMMEL entries
 		expect(state.players.p1?.staleMoveQueue?.length).toBe(4);

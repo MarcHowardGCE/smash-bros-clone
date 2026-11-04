@@ -1,0 +1,77 @@
+{
+  "step": 0.25,
+  "rows": [
+    {
+      "attacker": "all-rounder",
+      "defender": "all-rounder",
+      "oldJabTip": 67,
+      "newJabTip": 33.5,
+      "oldCenterContactMax": 95,
+      "newCenterContactMaxSampled": 45.25
+    },
+    {
+      "attacker": "all-rounder",
+      "defender": "abe-lincoln",
+      "oldJabTip": 67,
+      "newJabTip": 33.5,
+      "oldCenterContactMax": 98.85164807134504,
+      "newCenterContactMaxSampled": 48.25
+    },
+    {
+      "attacker": "all-rounder",
+      "defender": "swift",
+      "oldJabTip": 67,
+      "newJabTip": 33.5,
+      "oldCenterContactMax": 92.9583152331272,
+      "newCenterContactMaxSampled": 44.25
+    },
+    {
+      "attacker": "abe-lincoln",
+      "defender": "all-rounder",
+      "oldJabTip": 78,
+      "newJabTip": 39,
+      "oldCenterContactMax": 105.85696017507576,
+      "newCenterContactMaxSampled": 50.75
+    },
+    {
+      "attacker": "abe-lincoln",
+      "defender": "abe-lincoln",
+      "oldJabTip": 78,
+      "newJabTip": 39,
+      "oldCenterContactMax": 110,
+      "newCenterContactMaxSampled": 53.75
+    },
+    {
+      "attacker": "abe-lincoln",
+      "defender": "swift",
+      "oldJabTip": 78,
+      "newJabTip": 39,
+      "oldCenterContactMax": 103.66563145999496,
+      "newCenterContactMaxSampled": 49.75
+    },
+    {
+      "attacker": "swift",
+      "defender": "all-rounder",
+      "oldJabTip": 68,
+      "newJabTip": 34,
+      "oldCenterContactMax": 95.96152422706632,
+      "newCenterContactMaxSampled": 45.75
+    },
+    {
+      "attacker": "swift",
+      "defender": "abe-lincoln",
+      "oldJabTip": 68,
+      "newJabTip": 34,
+      "oldCenterContactMax": 99.67764362830022,
+      "newCenterContactMaxSampled": 48.75
+    },
+    {
+      "attacker": "swift",
+      "defender": "swift",
+      "oldJabTip": 68,
+      "newJabTip": 34,
+      "oldCenterContactMax": 94,
+      "newCenterContactMaxSampled": 44.75
+    }
+  ]
+}

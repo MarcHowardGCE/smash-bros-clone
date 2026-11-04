@@ -17,7 +17,9 @@ import type { FSMContext, FSMTransition } from '../index.js';
  * Invincibility window is handled by the hitbox layer, not this state.
  */
 export class SpotDodgeState extends BaseState {
-  update(_ctx: FSMContext, frame: number): FSMTransition | null {
+  override enter(ctx:FSMContext):void{ctx.player.vx=0;ctx.player.vy=0;}
+  update(ctx: FSMContext, frame: number): FSMTransition | null {
+    if(!ctx.isGrounded)return transition(PlayerStateEnum.AIRBORNE);
     return frame >= 19 ? transition(PlayerStateEnum.IDLE) : null;
   }
 }

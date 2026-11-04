@@ -1,0 +1,492 @@
+{
+  "url": "https://raw.githubusercontent.com/rubendal/SSBU-Calculator/master/js/formulas.js",
+  "sha256": "882fd5cf49c9cfecad39ac1807ab827350ccf9dbd62adaad8a4a0bf16a1e7133",
+  "cases": [
+    {
+      "weight": 75,
+      "percent": 0,
+      "repeats": 0,
+      "base": 3,
+      "expectedKB": 26.687925600000007,
+      "expectedDamage": 3.1500000000000004,
+      "expectedHitstun": 9
+    },
+    {
+      "weight": 75,
+      "percent": 0,
+      "repeats": 0,
+      "base": 18,
+      "expectedKB": 51.3645216,
+      "expectedDamage": 18.900000000000002,
+      "expectedHitstun": 19
+    },
+    {
+      "weight": 75,
+      "percent": 0,
+      "repeats": 1,
+      "base": 3,
+      "expectedKB": 26.522420064000002,
+      "expectedDamage": 2.73,
+      "expectedHitstun": 9
+    },
+    {
+      "weight": 75,
+      "percent": 0,
+      "repeats": 1,
+      "base": 18,
+      "expectedKB": 47.099762303999995,
+      "expectedDamage": 16.38,
+      "expectedHitstun": 17
+    },
+    {
+      "weight": 75,
+      "percent": 0,
+      "repeats": 9,
+      "base": 3,
+      "expectedKB": 26.048064784560005,
+      "expectedDamage": 1.4085,
+      "expectedHitstun": 9
+    },
+    {
+      "weight": 75,
+      "percent": 0,
+      "repeats": 9,
+      "base": 18,
+      "expectedKB": 35.35126024416,
+      "expectedDamage": 8.451,
+      "expectedHitstun": 13
+    },
+    {
+      "weight": 75,
+      "percent": 80,
+      "repeats": 0,
+      "base": 3,
+      "expectedKB": 53.80984560000001,
+      "expectedDamage": 3.1500000000000004,
+      "expectedHitstun": 20
+    },
+    {
+      "weight": 75,
+      "percent": 80,
+      "repeats": 0,
+      "base": 18,
+      "expectedKB": 160.33604160000002,
+      "expectedDamage": 18.900000000000002,
+      "expectedHitstun": 63
+    },
+    {
+      "weight": 75,
+      "percent": 80,
+      "repeats": 1,
+      "base": 3,
+      "expectedKB": 52.966964064,
+      "expectedDamage": 2.73,
+      "expectedHitstun": 20
+    },
+    {
+      "weight": 75,
+      "percent": 80,
+      "repeats": 1,
+      "base": 18,
+      "expectedKB": 152.007026304,
+      "expectedDamage": 16.38,
+      "expectedHitstun": 59
+    },
+    {
+      "weight": 75,
+      "percent": 80,
+      "repeats": 9,
+      "base": 3,
+      "expectedKB": 50.361293584559995,
+      "expectedDamage": 1.4085,
+      "expectedHitstun": 19
+    },
+    {
+      "weight": 75,
+      "percent": 80,
+      "repeats": 9,
+      "base": 18,
+      "expectedKB": 127.47063304415998,
+      "expectedDamage": 8.451,
+      "expectedHitstun": 49
+    },
+    {
+      "weight": 75,
+      "percent": 150,
+      "repeats": 0,
+      "base": 3,
+      "expectedKB": 77.54152560000001,
+      "expectedDamage": 3.1500000000000004,
+      "expectedHitstun": 30
+    },
+    {
+      "weight": 75,
+      "percent": 150,
+      "repeats": 0,
+      "base": 18,
+      "expectedKB": 255.6861216,
+      "expectedDamage": 18.900000000000002,
+      "expectedHitstun": 101
+    },
+    {
+      "weight": 75,
+      "percent": 150,
+      "repeats": 1,
+      "base": 3,
+      "expectedKB": 76.105940064,
+      "expectedDamage": 2.73,
+      "expectedHitstun": 29
+    },
+    {
+      "weight": 75,
+      "percent": 150,
+      "repeats": 1,
+      "base": 18,
+      "expectedKB": 243.800882304,
+      "expectedDamage": 16.38,
+      "expectedHitstun": 96
+    },
+    {
+      "weight": 75,
+      "percent": 150,
+      "repeats": 9,
+      "base": 3,
+      "expectedKB": 71.63536878455999,
+      "expectedDamage": 1.4085,
+      "expectedHitstun": 27
+    },
+    {
+      "weight": 75,
+      "percent": 150,
+      "repeats": 9,
+      "base": 18,
+      "expectedKB": 208.07508424415997,
+      "expectedDamage": 8.451,
+      "expectedHitstun": 82
+    },
+    {
+      "weight": 100,
+      "percent": 0,
+      "repeats": 0,
+      "base": 3,
+      "expectedKB": 26.5544349,
+      "expectedDamage": 3.1500000000000004,
+      "expectedHitstun": 9
+    },
+    {
+      "weight": 100,
+      "percent": 0,
+      "repeats": 0,
+      "base": 18,
+      "expectedKB": 48.146456400000005,
+      "expectedDamage": 18.900000000000002,
+      "expectedHitstun": 18
+    },
+    {
+      "weight": 100,
+      "percent": 0,
+      "repeats": 1,
+      "base": 3,
+      "expectedKB": 26.409617556,
+      "expectedDamage": 2.73,
+      "expectedHitstun": 9
+    },
+    {
+      "weight": 100,
+      "percent": 0,
+      "repeats": 1,
+      "base": 18,
+      "expectedKB": 44.41479201599999,
+      "expectedDamage": 16.38,
+      "expectedHitstun": 16
+    },
+    {
+      "weight": 100,
+      "percent": 0,
+      "repeats": 9,
+      "base": 3,
+      "expectedKB": 25.994556686490004,
+      "expectedDamage": 1.4085,
+      "expectedHitstun": 9
+    },
+    {
+      "weight": 100,
+      "percent": 0,
+      "repeats": 9,
+      "base": 18,
+      "expectedKB": 34.13485271364,
+      "expectedDamage": 8.451,
+      "expectedHitstun": 12
+    },
+    {
+      "weight": 100,
+      "percent": 80,
+      "repeats": 0,
+      "base": 3,
+      "expectedKB": 50.28611490000001,
+      "expectedDamage": 3.1500000000000004,
+      "expectedHitstun": 19
+    },
+    {
+      "weight": 100,
+      "percent": 80,
+      "repeats": 0,
+      "base": 18,
+      "expectedKB": 143.49653640000002,
+      "expectedDamage": 18.900000000000002,
+      "expectedHitstun": 56
+    },
+    {
+      "weight": 100,
+      "percent": 80,
+      "repeats": 1,
+      "base": 3,
+      "expectedKB": 49.548593556,
+      "expectedDamage": 2.73,
+      "expectedHitstun": 18
+    },
+    {
+      "weight": 100,
+      "percent": 80,
+      "repeats": 1,
+      "base": 18,
+      "expectedKB": 136.20864801599998,
+      "expectedDamage": 16.38,
+      "expectedHitstun": 53
+    },
+    {
+      "weight": 100,
+      "percent": 80,
+      "repeats": 9,
+      "base": 3,
+      "expectedKB": 47.268631886490006,
+      "expectedDamage": 1.4085,
+      "expectedHitstun": 17
+    },
+    {
+      "weight": 100,
+      "percent": 80,
+      "repeats": 9,
+      "base": 18,
+      "expectedKB": 114.73930391363999,
+      "expectedDamage": 8.451,
+      "expectedHitstun": 44
+    },
+    {
+      "weight": 100,
+      "percent": 150,
+      "repeats": 0,
+      "base": 3,
+      "expectedKB": 71.05133490000001,
+      "expectedDamage": 3.1500000000000004,
+      "expectedHitstun": 27
+    },
+    {
+      "weight": 100,
+      "percent": 150,
+      "repeats": 0,
+      "base": 18,
+      "expectedKB": 226.92785640000005,
+      "expectedDamage": 18.900000000000002,
+      "expectedHitstun": 89
+    },
+    {
+      "weight": 100,
+      "percent": 150,
+      "repeats": 1,
+      "base": 3,
+      "expectedKB": 69.795197556,
+      "expectedDamage": 2.73,
+      "expectedHitstun": 26
+    },
+    {
+      "weight": 100,
+      "percent": 150,
+      "repeats": 1,
+      "base": 18,
+      "expectedKB": 216.528272016,
+      "expectedDamage": 16.38,
+      "expectedHitstun": 85
+    },
+    {
+      "weight": 100,
+      "percent": 150,
+      "repeats": 9,
+      "base": 3,
+      "expectedKB": 65.88344768649,
+      "expectedDamage": 1.4085,
+      "expectedHitstun": 25
+    },
+    {
+      "weight": 100,
+      "percent": 150,
+      "repeats": 9,
+      "base": 18,
+      "expectedKB": 185.26819871363998,
+      "expectedDamage": 8.451,
+      "expectedHitstun": 73
+    },
+    {
+      "weight": 118,
+      "percent": 0,
+      "repeats": 0,
+      "base": 3,
+      "expectedKB": 26.477279724770646,
+      "expectedDamage": 3.1500000000000004,
+      "expectedHitstun": 9
+    },
+    {
+      "weight": 118,
+      "percent": 0,
+      "repeats": 0,
+      "base": 18,
+      "expectedKB": 46.2864737614679,
+      "expectedDamage": 18.900000000000002,
+      "expectedHitstun": 17
+    },
+    {
+      "weight": 118,
+      "percent": 0,
+      "repeats": 1,
+      "base": 3,
+      "expectedKB": 26.344419776146786,
+      "expectedDamage": 2.73,
+      "expectedHitstun": 9
+    },
+    {
+      "weight": 118,
+      "percent": 0,
+      "repeats": 1,
+      "base": 18,
+      "expectedKB": 42.862928455045875,
+      "expectedDamage": 16.38,
+      "expectedHitstun": 16
+    },
+    {
+      "weight": 118,
+      "percent": 0,
+      "repeats": 9,
+      "base": 3,
+      "expectedKB": 25.963629987605504,
+      "expectedDamage": 1.4085,
+      "expectedHitstun": 9
+    },
+    {
+      "weight": 118,
+      "percent": 0,
+      "repeats": 9,
+      "base": 18,
+      "expectedKB": 33.431791480403675,
+      "expectedDamage": 8.451,
+      "expectedHitstun": 12
+    },
+    {
+      "weight": 118,
+      "percent": 80,
+      "repeats": 0,
+      "base": 3,
+      "expectedKB": 48.249463211009186,
+      "expectedDamage": 3.1500000000000004,
+      "expectedHitstun": 18
+    },
+    {
+      "weight": 118,
+      "percent": 80,
+      "repeats": 0,
+      "base": 18,
+      "expectedKB": 133.76361137614683,
+      "expectedDamage": 18.900000000000002,
+      "expectedHitstun": 52
+    },
+    {
+      "weight": 118,
+      "percent": 80,
+      "repeats": 1,
+      "base": 3,
+      "expectedKB": 47.57283812477065,
+      "expectedDamage": 2.73,
+      "expectedHitstun": 18
+    },
+    {
+      "weight": 118,
+      "percent": 80,
+      "repeats": 1,
+      "base": 18,
+      "expectedKB": 127.07747524403669,
+      "expectedDamage": 16.38,
+      "expectedHitstun": 49
+    },
+    {
+      "weight": 118,
+      "percent": 80,
+      "repeats": 9,
+      "base": 3,
+      "expectedKB": 45.48113017109175,
+      "expectedDamage": 1.4085,
+      "expectedHitstun": 17
+    },
+    {
+      "weight": 118,
+      "percent": 80,
+      "repeats": 9,
+      "base": 18,
+      "expectedKB": 107.3808292785688,
+      "expectedDamage": 8.451,
+      "expectedHitstun": 41
+    },
+    {
+      "weight": 118,
+      "percent": 150,
+      "repeats": 0,
+      "base": 3,
+      "expectedKB": 67.30012376146792,
+      "expectedDamage": 3.1500000000000004,
+      "expectedHitstun": 25
+    },
+    {
+      "weight": 118,
+      "percent": 150,
+      "repeats": 0,
+      "base": 18,
+      "expectedKB": 210.3061067889909,
+      "expectedDamage": 18.900000000000002,
+      "expectedHitstun": 83
+    },
+    {
+      "weight": 118,
+      "percent": 150,
+      "repeats": 1,
+      "base": 3,
+      "expectedKB": 66.14770417981651,
+      "expectedDamage": 2.73,
+      "expectedHitstun": 25
+    },
+    {
+      "weight": 118,
+      "percent": 150,
+      "repeats": 1,
+      "base": 18,
+      "expectedKB": 200.76520368440367,
+      "expectedDamage": 16.38,
+      "expectedHitstun": 79
+    },
+    {
+      "weight": 118,
+      "percent": 150,
+      "repeats": 9,
+      "base": 3,
+      "expectedKB": 62.55894283164221,
+      "expectedDamage": 1.4085,
+      "expectedHitstun": 24
+    },
+    {
+      "weight": 118,
+      "percent": 150,
+      "repeats": 9,
+      "base": 18,
+      "expectedKB": 172.08623735196326,
+      "expectedDamage": 8.451,
+      "expectedHitstun": 67
+    }
+  ]
+}

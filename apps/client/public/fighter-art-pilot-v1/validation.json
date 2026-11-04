@@ -1,0 +1,36 @@
+{
+  "date": "2026-11-04",
+  "regressionGate": {
+    "command": "pnpm test",
+    "passed": true,
+    "shared": 71,
+    "gamepad": 31,
+    "engine": 322,
+    "engineSkipped": 1,
+    "server": 256,
+    "serverSkipped": 16,
+    "client": 562,
+    "totalPassed": 1242
+  },
+  "additionalLatestServerContextTestPassed": true,
+  "latestParryInputDamageSuite": 13,
+  "workspaceTypecheck": true,
+  "browser": {
+    "reviewAndLocal": 47,
+    "multiplayer": 1,
+    "totalPassed": 48,
+    "separateRuns": true,
+    "independentUpReplicated": true
+  },
+  "productionBuild": true,
+  "productionSmoke": {
+    "errors": [],
+    "failed": [],
+    "atlasPagesLoaded": 14,
+    "publicFilesIncluded": true
+  },
+  "seededBotMatches": 96,
+  "humanPlaytestsPerformed": false,
+  "physicalControllersTested": false,
+  "ultimateParityComplete": false
+}

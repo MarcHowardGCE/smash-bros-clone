@@ -88,7 +88,7 @@ describe('GameEngine character-aware move resolution', () => {
       });
     });
 
-    it('resolves Lincoln JAB with Lincoln hitbox stats (offsetX: 58)', () => {
+    it('resolves Lincoln JAB with Lincoln hitbox stats (offsetX: 50)', () => {
       // Prime player to be in JAB attack state, at first active frame (stateFrame 3)
       primePlayer(engine, P1, {
         y: 500,
@@ -105,10 +105,10 @@ describe('GameEngine character-aware move resolution', () => {
       const snapshot = engine.getSnapshot(0, { [P1]: 0 });
       const p1 = snapshot.players[P1]!;
 
-       // Hitbox should be Lincoln's JAB with offsetX: 58
+       // Hitbox should be Lincoln's JAB with offsetX: 50
        expect(p1.activeHitbox).not.toBeNull();
-       expect(p1.activeHitbox?.offsetX).toBe(58); // Lincoln JAB
-       expect(p1.activeHitbox?.radius).toBe(20);
+       expect(p1.activeHitbox?.offsetX).toBe(50); // Lincoln JAB
+       expect(p1.activeHitbox?.radius).toBe(28);
        expect(p1.activeHitbox?.damage).toBe(3);
     });
 

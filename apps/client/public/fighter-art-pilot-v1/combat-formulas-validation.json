@@ -1,0 +1,32 @@
+{
+  "date": "2026-11-04",
+  "workspace": {
+    "shared": 71,
+    "gamepad": 31,
+    "engine": 398,
+    "server": 258,
+    "client": 562,
+    "totalPassed": 1320,
+    "skipped": 17
+  },
+  "independentReferenceCases": 54,
+  "throwHistoryAssertionsPassed": true,
+  "workspaceTypecheck": true,
+  "browser": {
+    "reviewAndLocal": 48,
+    "multiplayer": 1,
+    "totalPassed": 49,
+    "separateRuns": true
+  },
+  "productionBuild": true,
+  "productionSmoke": {
+    "errors": [],
+    "failed": [],
+    "atlasPagesLoaded": 14,
+    "publicFilesIncluded": true
+  },
+  "seededMatches": 96,
+  "finiteState": true,
+  "humanBalanceCertified": false,
+  "fullUltimateParity": false
+}

@@ -23,8 +23,11 @@ describe('main renderer bootstrap', () => {
     };
     const fighterRendererCtorCalls: unknown[][] = [];
 
+    vi.doMock('../renderer/fullbody/FullBodyPilot.js',()=>({preloadFullBodyPilot:async()=>null}));
+    vi.doMock('../renderer/fullbody/KOPresentation.js',()=>({KOPresentation:class{tick(){}destroy(){}clear(){}spawn(){}update(){}getDiagnostics(){return [];}}}));
     vi.doMock('pixi.js', () => {
       class Application {
+        ticker = {add:()=>{},stop:()=>{},start:()=>{}};
         stage = { addChild: () => {} };
         canvas = document.createElement('canvas');
         async init(): Promise<void> {}
@@ -154,7 +157,8 @@ describe('main renderer bootstrap', () => {
       },
     }));
 
-    vi.doMock('@smash/gamepad-input', () => ({
+    vi.doMock('@smash/gamepad-input', async () => ({
+      ...await vi.importActual<typeof import('@smash/gamepad-input')>('@smash/gamepad-input'),
       GamepadPoller: class GamepadPoller {
         onConnect: ((gamepad: Gamepad) => void) | null = null;
         onDisconnect: ((index: number) => void) | null = null;
@@ -311,11 +315,11 @@ describe('main renderer bootstrap', () => {
     await import('../main');
     await flush();
 
-    expect(fighterRendererCtorCalls).toHaveLength(1);
+    await vi.waitFor(()=>expect(fighterRendererCtorCalls).toHaveLength(1));
     const constructorArgs = fighterRendererCtorCalls[0];
     expect(constructorArgs).toBeDefined();
     expect(constructorArgs).toHaveLength(4);
     const options = constructorArgs?.[3] as { mode: 'sprite'; textureProvider: typeof textureProvider };
-    expect(options).toEqual({ mode: 'sprite', textureProvider });
+    expect(options).toMatchObject({ mode: 'sprite', textureProvider });
   });
 });

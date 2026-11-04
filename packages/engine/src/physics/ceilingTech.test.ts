@@ -1,0 +1,5 @@
+import{it,expect}from'vitest';import{resolveCeilingTech}from'./ceilingTech.js';import{DEFAULT_STAGE}from'./index.js';import type{PlayerState}from'@smash/shared';
+const p={characterId:'all-rounder',x:640,y:550,vy:-12,vx:3,isGrounded:false,isTumbling:true,hitstunFramesRemaining:20,techWindowFrames:5}as PlayerState;
+it('solid ceiling tech locks contact below the underside and cancels stun',()=>{expect(resolveCeilingTech(p,{...p,y:538},DEFAULT_STAGE)).toMatchObject({state:'AIRBORNE',artCue:'ceiling_tech',vy:0,y:548,isTumbling:false,hitstunFramesRemaining:0});});
+it('missed ceiling tech bounces downward and starts lockout',()=>{const a=resolveCeilingTech(p,{...p,y:538,techWindowFrames:0},DEFAULT_STAGE);expect(a.vy).toBeGreaterThan(0);expect(a.techLockoutFrames).toBeGreaterThan(0);expect(a.artCue).toBeUndefined();});
+it('soft platform undersides do not count as ceilings',()=>{const stage={...DEFAULT_STAGE,mainPlatform:{...DEFAULT_STAGE.mainPlatform,solid:false}};const a={...p,y:538};expect(resolveCeilingTech(p,a,stage)).toBe(a);});

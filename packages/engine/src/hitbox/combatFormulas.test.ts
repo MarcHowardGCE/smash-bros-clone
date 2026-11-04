@@ -1,0 +1,5 @@
+import{it,expect}from'vitest';import{MoveId as M}from'@smash/shared';import{staleMultiplier as stale,rageMultiplier as rage,hitstunFromKnockback as stun}from'./combatFormulas.js';
+it('stale penalty depends on recency, not only count',()=>{expect(stale(M.JAB,[])).toBe(1.05);expect(stale(M.JAB,[M.JAB])).toBeCloseTo(.91);expect(stale(M.JAB,[M.JAB,M.UP_TILT])).toBeCloseTo(.91455);expect(stale(M.JAB,Array(9).fill(M.JAB))).toBeCloseTo(.4695);expect(stale(M.JAB,[M.UP_TILT])).toBe(1.05);});
+it('shield connections contribute 85 percent of each stale penalty',()=>{expect(stale(M.JAB,[M.JAB],[true])).toBeCloseTo(.9235);expect(stale(M.JAB,[M.JAB,M.UP_TILT],[true,false])).toBeCloseTo(1-.08545*.85);});
+it('rage clamps at 35 and 150 with no damage multiplier',()=>{expect(rage(0)).toBe(1);expect(rage(35)).toBe(1);expect(rage(92.5)).toBeCloseTo(1.05);expect(rage(150)).toBeCloseTo(1.1);expect(rage(999)).toBeCloseTo(1.1);});
+it('hitstun uses a one-frame offset and a four-frame minimum',()=>{expect(stun(0)).toBe(4);expect(stun(100)).toBe(39);expect(stun(200)).toBe(79);});

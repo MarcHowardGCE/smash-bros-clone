@@ -1,6 +1,6 @@
 /**
  * @fileoverview Player finite-state machine (FSM) state enumeration.
- * Defines the 25 mutually-exclusive states a fighter can occupy at any tick.
+ * Defines the mutually-exclusive states a fighter can occupy at any tick.
  * The engine's FSM module uses these values to drive all state transitions,
  * physics overrides, and animation selection.
  */
@@ -19,6 +19,8 @@
 export enum PlayerStateEnum {
   /** Standing still on the ground, accepting all inputs. */
   IDLE = 'IDLE',
+  CROUCH = 'CROUCH',
+  TAUNT = 'TAUNT',
   /** Walking left or right at WALK_SPEED. */
   WALK = 'WALK',
   /** Initial dash burst; transitions to RUN after a short window. */
@@ -29,6 +31,8 @@ export enum PlayerStateEnum {
   JUMPSQUAT = 'JUMPSQUAT',
   /** Normal airborne state after a full or short hop. */
   AIRBORNE = 'AIRBORNE',
+  HELPLESS = 'HELPLESS',
+  HELPLESS_LAND = 'HELPLESS_LAND',
   /** Second jump consumed in the air. */
   DOUBLE_JUMP = 'DOUBLE_JUMP',
   /** Executing a grounded attack move. */
@@ -51,6 +55,7 @@ export enum PlayerStateEnum {
   TECH_ROLL = 'TECH_ROLL',
   /** Missed tech; prone hard-landing lockout. */
   HARD_LANDING = 'HARD_LANDING',
+  TRIP_FALL='TRIP_FALL',TRIP_PRONE='TRIP_PRONE',TRIP_GETUP='TRIP_GETUP',TRIP_ROLL='TRIP_ROLL',JAB_LOCK='JAB_LOCK',
   GETUP = 'GETUP',
   GETUP_ROLL = 'GETUP_ROLL',
   /** Aerial-move landing lag; reduced by L-cancel. */

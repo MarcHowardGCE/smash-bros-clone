@@ -37,3 +37,13 @@ export type { BotMemory } from "./ai/botAI.js";
 export { createBotMemory, decideBotInput, selectTarget } from "./ai/botAI.js";
 
 export {advanceJabChain} from "./moves/jabChain.js";
+
+export {resolveFootstools} from './physics/footstool.js';
+
+export {withMovementArt} from './physics/movementArt.js';
+
+export {resolveCeilingTech}from'./physics/ceilingTech.js';
+
+export{resolveFloorHit}from'./physics/floorHit.js';
+
+export{isDamageImmune}from'./hitbox/immunity.js';

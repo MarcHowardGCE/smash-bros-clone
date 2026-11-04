@@ -47,7 +47,7 @@ export class GrabHoldingState extends BaseState {
     const wantsThrowDirection =
       isPressed(ctx.input, INPUT_BITS.LEFT) ||
       isPressed(ctx.input, INPUT_BITS.RIGHT) ||
-      isPressed(ctx.input, INPUT_BITS.JUMP) ||
+      isPressed(ctx.input, INPUT_BITS.UP) ||
       isPressed(ctx.input, INPUT_BITS.DOWN);
 
     if (isPressed(ctx.input, INPUT_BITS.ATTACK) || wantsThrowDirection) {

@@ -276,7 +276,7 @@ export class GameClient {
    * @param input - Partial input with only the held/pressed/released bitmasks required.
    */
   debugSendInput(
-    input: Pick<InputEvent, "held" | "pressed" | "released">,
+    input: Pick<InputEvent, "held" | "pressed" | "released" | "stickX" | "stickY" | "cStickX" | "cStickY" | "jumpButtons" | "smashAttack">,
   ): void {
     if (!this.myPlayerId) {
       return;
@@ -286,6 +286,8 @@ export class GameClient {
       tick: this.currentTick,
       seq: this.inputManager.pollInput(true)!.seq,
       playerId: this.myPlayerId,
+      ...(input.jumpButtons!==undefined?{jumpButtons:input.jumpButtons}:{}),...(input.smashAttack!==undefined?{smashAttack:input.smashAttack}:{}),
+      ...(input.stickX!==undefined?{stickX:input.stickX,stickY:input.stickY}:{}),...(input.cStickX!==undefined?{cStickX:input.cStickX,cStickY:input.cStickY}:{}),
       held: input.held,
       pressed: input.pressed,
       released: input.released,
@@ -543,7 +545,7 @@ export class GameClient {
         shieldHealth: predictedLocal.shieldHealth,
         currentMoveId: predictedLocal.currentMoveId,
         characterId: predictedLocal.characterId,
- floorOrientation:predictedLocal.floorOrientation,floorRollDirection:predictedLocal.floorRollDirection,isFastFalling:predictedLocal.isFastFalling,airDodgeDirection:predictedLocal.airDodgeDirection,hasDoubleJump:predictedLocal.hasDoubleJump,isTumbling:predictedLocal.isTumbling,chargeFrames:predictedLocal.chargeFrames,isGrabbing:predictedLocal.isGrabbing,grabbedPlayerId:predictedLocal.grabbedPlayerId,ledgeId:predictedLocal.ledgeId,
+ koVisual:predictedLocal.koVisual,tauntKind:predictedLocal.tauntKind,hitReaction:predictedLocal.hitReaction,artCue:predictedLocal.artCue,artCueFrame:predictedLocal.artCueFrame,respawnTimer:predictedLocal.respawnTimer,footstoolRole:predictedLocal.footstoolRole,footstoolPartnerId:predictedLocal.footstoolPartnerId,footstoolFrame:predictedLocal.footstoolFrame,shieldReaction:predictedLocal.shieldReaction,shieldReactionFrame:predictedLocal.shieldReactionFrame,hitstunFramesRemaining:predictedLocal.hitstunFramesRemaining,floorOrientation:predictedLocal.floorOrientation,floorRollDirection:predictedLocal.floorRollDirection,isFastFalling:predictedLocal.isFastFalling,airDodgeDirection:predictedLocal.airDodgeDirection,hasDoubleJump:predictedLocal.hasDoubleJump,isTumbling:predictedLocal.isTumbling,chargeFrames:predictedLocal.chargeFrames,isGrabbing:predictedLocal.isGrabbing,grabbedPlayerId:predictedLocal.grabbedPlayerId,ledgeId:predictedLocal.ledgeId,
       });
     }
 

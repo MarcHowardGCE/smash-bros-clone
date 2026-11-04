@@ -56,7 +56,7 @@ function clamp(value: number, min: number, max: number): number {
 
 // 18° (Melee/Brawl-style) vs. ~9.74° (Smash4/Ultimate-style)
 // Design choice: wider DI cone for more player agency in knockback direction
-const MAX_DI_ANGLE_RADIANS = 0.314159;
+const MAX_DI_ANGLE_RADIANS = 0.17;
 
 function isHeld(input: InputEvent, bit: number): boolean {
 	return (input.held & bit) !== 0;
@@ -250,7 +250,7 @@ export function applyKnockbackDecay(player: PlayerState): PlayerState {
  * @param inputX - Horizontal stick input in the range [-1, 1].
  * @param inputY - Vertical stick input in the range [-1, 1].
  * @param _facing - Attacker facing direction (reserved for future SDI use).
- * @returns Adjusted knockback angle in radians, clamped within ±18° of the original.
+ * @returns Adjusted knockback angle in radians, limited to ±0.17 radians, outside the horizontal deadzone.
  */
 export function applyDI(
 	knockbackAngle: number,
@@ -267,32 +267,19 @@ export function applyDI(
 		return knockbackAngle;
 	}
 
-	const normalizedX = inputX / inputMagnitude;
-	const normalizedY = inputY / inputMagnitude;
+	const normalizedX = inputX / Math.max(1,inputMagnitude);
+	const normalizedY = inputY / Math.max(1,inputMagnitude);
 
 	const directionX = Math.cos(knockbackAngle);
 	const directionY = Math.sin(knockbackAngle);
 	const perpendicularX = -directionY;
 	const perpendicularY = directionX;
 
-	const perpendicularProjection = normalizedX * perpendicularX + normalizedY * perpendicularY;
-	const parallelProjection = normalizedX * directionX + normalizedY * directionY;
-	const projectionSum =
-		Math.abs(perpendicularProjection) + Math.abs(parallelProjection);
-	const perpendicularComponent =
-		projectionSum === 0
-			? 0
-			: clamp(
-					perpendicularProjection / projectionSum,
-		-1,
-		1,
-			  );
-
-	const angleShift = clamp(
-		perpendicularComponent * MAX_DI_ANGLE_RADIANS,
-		-MAX_DI_ANGLE_RADIANS,
-		MAX_DI_ANGLE_RADIANS,
-	);
+	// Bit inputs are normalized to avoid stronger diagonal DI. No DI around horizontal launch.
+ const horizontalDistance=Math.min(Math.abs(Math.sin(knockbackAngle)),1);
+ if(horizontalDistance<Math.sin(MAX_DI_ANGLE_RADIANS))return knockbackAngle;
+ const projection=normalizedX*perpendicularX+normalizedY*perpendicularY;
+ const angleShift=clamp(projection,-1,1)*MAX_DI_ANGLE_RADIANS;
 
 	return knockbackAngle + angleShift;
 }

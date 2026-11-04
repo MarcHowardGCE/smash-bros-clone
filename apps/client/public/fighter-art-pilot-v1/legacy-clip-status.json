@@ -1,0 +1,16 @@
+{
+  "clip": "air_dodge_directional",
+  "status": "legacy-overview",
+  "runtimeEnabled": false,
+  "replacedBy": [
+    "air_dodge_up",
+    "air_dodge_down",
+    "air_dodge_side",
+    "air_dodge_back",
+    "air_dodge_up_diagonal",
+    "air_dodge_up_back",
+    "air_dodge_down_diagonal",
+    "air_dodge_down_back"
+  ],
+  "sourcePreserved": true
+}

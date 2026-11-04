@@ -1,7 +1,7 @@
 import { describe, it, expect, vi } from "vitest";
 import { decode } from "@msgpack/msgpack";
 import type { InputEvent, StateSnapshot } from "@smash/shared";
-import { PlayerStateEnum } from "@smash/shared";
+import { PlayerStateEnum, INPUT_BITS } from "@smash/shared";
 import { GameEngine } from "./GameEngine.js";
 import { MatchSession } from "./MatchSession.js";
 import { RoomManager } from "./RoomManager.js";
@@ -45,12 +45,13 @@ describe("fighter refinement", () => {
   });
   it("rejects invalid masks, nonfinite sequences and replayed inputs", () => {
     const { match } = session();
-    match.queueInput("p1", { ...input(), held: 256 });
+    match.queueInput("p1", { ...input(), held: 4096 });
     match.queueInput("p1", { ...input(), seq: NaN });
     match.queueInput("p1", input(2)); match.queueInput("p1", input(1));
     const queues = (match as unknown as { inputQueue: Map<string, InputEvent[]> }).inputQueue;
     expect(queues.get("p1")).toHaveLength(1); expect(queues.get("p1")?.[0]?.seq).toBe(2);
   });
+  it("accepts independent Up through the binary input validator",()=>{const{match}=session();match.queueInput("p1",{...input(3),held:INPUT_BITS.UP,pressed:INPUT_BITS.UP});const queues=(match as unknown as{inputQueue:Map<string,InputEvent[]>}).inputQueue;expect(queues.get("p1")?.[0]?.held).toBe(INPUT_BITS.UP);});
   it("bounds input bursts and preserves button edges", () => {
     const { match } = session();
     for (let seq=0;seq<500;seq++) match.queueInput("p1", { ...input(seq), pressed: seq===0 ? 4 : 0 });
@@ -101,3 +102,4 @@ it("expires held input after 250 ms without replaying press edges", () => {
   now = 251; internal.processTick(); baseline.tickGame(new Map());
   expect(internal.engine.getStateHash()).toBe(baseline.getStateHash());
 });
+it('accepts the new taunt input bits through the validated binary input path',()=>{const{match}=session();match.queueInput('p1',{...input(1),held:0x400,pressed:0x400});const queue=(match as unknown as{inputQueue:Map<string,InputEvent[]>}).inputQueue.get('p1')!;expect(queue).toHaveLength(1);expect(queue[0]!.pressed).toBe(0x400);});

@@ -1,3 +1,5 @@
+import{XBOX360_PROFILE}from'./input/xbox360Profile';
+import{KOPresentation}from'./renderer/fullbody/KOPresentation.js';
 /** @fileoverview Main entry point for the Smash Bros clone client application. */
 
 import type {
@@ -176,6 +178,7 @@ async function main() {
   app.stage.addChild(layers.game);
   app.stage.addChild(layers.ui);
 
+  const koPresenter=new KOPresentation(layers.game,fullBodyPilot);app.ticker.add(()=>koPresenter.tick());
   let stageRenderer: StageRenderer | null = new StageRenderer(
     layers.background,
   );
@@ -512,7 +515,7 @@ async function main() {
           shieldHealth: playerState.shieldHealth,
           currentMoveId: playerState.currentMoveId,
           characterId: playerState.characterId,
- floorOrientation:playerState.floorOrientation,floorRollDirection:playerState.floorRollDirection,isFastFalling:playerState.isFastFalling,airDodgeDirection:playerState.airDodgeDirection,hasDoubleJump:playerState.hasDoubleJump,isTumbling:playerState.isTumbling,chargeFrames:playerState.chargeFrames,isGrabbing:playerState.isGrabbing,grabbedPlayerId:playerState.grabbedPlayerId,ledgeId:playerState.ledgeId,
+ koVisual:playerState.koVisual,tauntKind:playerState.tauntKind,hitReaction:playerState.hitReaction,artCue:playerState.artCue,artCueFrame:playerState.artCueFrame,respawnTimer:playerState.respawnTimer,footstoolRole:playerState.footstoolRole,footstoolPartnerId:playerState.footstoolPartnerId,footstoolFrame:playerState.footstoolFrame,shieldReaction:playerState.shieldReaction,shieldReactionFrame:playerState.shieldReactionFrame,hitstunFramesRemaining:playerState.hitstunFramesRemaining,floorOrientation:playerState.floorOrientation,floorRollDirection:playerState.floorRollDirection,isFastFalling:playerState.isFastFalling,airDodgeDirection:playerState.airDodgeDirection,hasDoubleJump:playerState.hasDoubleJump,isTumbling:playerState.isTumbling,chargeFrames:playerState.chargeFrames,isGrabbing:playerState.isGrabbing,grabbedPlayerId:playerState.grabbedPlayerId,ledgeId:playerState.ledgeId,
         },
       ]),
     );
@@ -525,6 +528,8 @@ async function main() {
   };
 
   const updateRenderers = (state: RenderState): void => {
+    koPresenter.update(state.players.values());
+    if(state.matchPhase==='result')camera?.reset();
     gameplaySfxRouter.processFrame(state);
     for (const [id, playerState] of state.players.entries()) {
       let fighterRenderer = fighterRenderers.get(id);
@@ -543,7 +548,9 @@ async function main() {
         fighterRenderers.set(id, fighterRenderer);
       }
       const grabOwner=[...state.players.values()].find(p=>p.isGrabbing&&p.grabbedPlayerId===id);
- fighterRenderer.update({...playerState,grabFacing:grabOwner?.facing,grabOwner:grabOwner?{characterId:grabOwner.characterId??"all-rounder",state:grabOwner.state,frame:grabOwner.stateFrame,move:grabOwner.currentMoveId,dx:(playerState.x-grabOwner.x)*grabOwner.facing,dy:playerState.y-grabOwner.y,facing:grabOwner.facing}:undefined});
+ const footstoolPartner=playerState.footstoolPartnerId?state.players.get(playerState.footstoolPartnerId):undefined;
+ const footstoolContact=playerState.footstoolRole==='attacker'&&footstoolPartner&&(footstoolPartner.footstoolRole==='ground'||footstoolPartner.footstoolRole==='air')?{characterId:footstoolPartner.characterId??'all-rounder',role:footstoolPartner.footstoolRole,frame:footstoolPartner.footstoolFrame??0,dx:footstoolPartner.x-playerState.x,dy:footstoolPartner.y-playerState.y,facing:footstoolPartner.facing}:undefined;
+ fighterRenderer.update({...playerState,result:state.matchPhase==='result'?(id===state.winnerId?'win':'lose'):undefined,presentationVariant:playerState.slotIndex%3,footstoolContact,grabFacing:grabOwner?.facing,grabOwner:grabOwner?{characterId:grabOwner.characterId??"all-rounder",state:grabOwner.state,frame:grabOwner.stateFrame,move:grabOwner.currentMoveId,dx:(playerState.x-grabOwner.x)*grabOwner.facing,dy:playerState.y-grabOwner.y,facing:grabOwner.facing}:undefined});
     }
 
     for (const [id, fighterRenderer] of fighterRenderers.entries()) {
@@ -558,6 +565,7 @@ async function main() {
   };
 
 
+  app.ticker.add(()=>{const snapshot=isLocalMode?localMatch?.getLatestSnapshot():null;if(snapshot?.matchPhase==='result')updateRenderers(snapshotToRenderState(snapshot));});
   let networkCountdownInterval: ReturnType<typeof setInterval> | null = null;
   const clearNetworkCountdown = (): void => {
     if (networkCountdownInterval !== null) {
@@ -565,21 +573,9 @@ async function main() {
       networkCountdownInterval = null;
     }
   };
-  let onlinePadIndex = -1;
-  let onlinePadSource: GamepadInputSource | null = null;
   const gameClient = new GameClient({
     serverUrl: SERVER_URL,
-    gamepadSource: {
-      getHeldBits: () => {
-        const assignment = assignmentManager.getAssignments().get(0);
-        if (!assignment) return 0;
-        if (onlinePadIndex !== assignment.gamepadIndex || !onlinePadSource) {
-          onlinePadIndex = assignment.gamepadIndex;
-          onlinePadSource = new GamepadInputSource(poller, onlinePadIndex);
-        }
-        return onlinePadSource.getHeldBits();
-      },
-    } as GamepadInputSource,
+    gamepadSource:new GamepadInputSource(poller,-1,()=>assignmentManager.getAssignments().get(0)?.gamepadIndex??-1),
     onRejoined: () => {
       hasShownSplashOnThisPageLoad = true;
       app.canvas.style.visibility = "visible";
@@ -936,7 +932,7 @@ async function main() {
     for (const [, renderer] of fighterRenderers) {
       renderer.destroy();
     }
-    fighterRenderers.clear();
+    fighterRenderers.clear();koPresenter.clear();
     enterLocalPlayFlow();
   };
 
@@ -984,7 +980,7 @@ async function main() {
     for (const [, renderer] of fighterRenderers) {
       renderer.destroy();
     }
-    fighterRenderers.clear();
+    fighterRenderers.clear();koPresenter.clear();
 
     // Clean up active impact sparks
     for (let i = activeSparks.length - 1; i >= 0; i--) {
@@ -1041,7 +1037,7 @@ async function main() {
         const pressed = bits & ~prev;
 
         // START button (0x1000) - pause/unpause
-        if (pressed & 0x1000) {
+        if (pressed & XBOX360_PROFILE.pause) {
           const phase = uiManager.getPhase();
 
           // If paused, resume
@@ -1119,7 +1115,7 @@ async function main() {
       ? {
           forcePosition: forceDebugPosition,
           getKOEvents: getDebugKOEvents,
-          getArtState:()=>({packing:fullBodyPilot?.packing,players:[...fighterRenderers.values()].map(f=>f.getArtDiagnostics())}),
+          getArtState:()=>({ko:koPresenter.getDiagnostics(),packing:fullBodyPilot?.packing,players:[...fighterRenderers.values()].map(f=>f.getArtDiagnostics())}),
         }
       : {}),
   };
@@ -1142,3 +1138,4 @@ async function main() {
 }
 
 main().catch(console.error);
+

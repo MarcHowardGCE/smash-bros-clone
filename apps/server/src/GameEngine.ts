@@ -37,7 +37,7 @@ import{inputVector}from'@smash/shared';
  */
 import {
 	advanceJabChain,
-    isDamageImmune,
+    isDamageImmune, dodgeDurationScale, freshDodgeProfile,
     resolveFloorHit,
     resolveCeilingTech,
     withMovementArt,
@@ -216,6 +216,8 @@ function applyWallJumpVelocity(
  *   not listed default to `"all-rounder"`.
  */
 export interface GameEngineOptions {
+  /** Local training only; never enabled by room inputs. */
+  practice?:boolean;
   stageId?:string;
 	playerIds: PlayerId[];
 	characterIds?: Partial<Record<PlayerId, CharacterId>>;
@@ -242,6 +244,7 @@ export interface GameEngineOptions {
  * A Map gives O(1) lookup per tick when processing each player independently.
  */
 export class GameEngine {
+  private readonly practice:boolean;
   private readonly stage:ReturnType<typeof getStageLayout>;
   private controllerFlick=new Map<PlayerId,{x:number;y:number;h:number;v:number}>();
 	private state: GameState;
@@ -267,6 +270,7 @@ export class GameEngine {
 	 * @param options - Player IDs and optional per-player character IDs.
 	 */
 	constructor(options: GameEngineOptions) {
+    this.practice=options.practice===true;
     this.stage=getStageLayout(options.stageId);
         this.matchPlayerCount=options.playerIds.length;
 		let players = Object.fromEntries(
@@ -349,6 +353,19 @@ export class GameEngine {
 		);
 	}
 
+  /** Rebuild both practice fighters together, clearing grabs, ledges, fatigue and pending launches. */
+  resetPractice():boolean {
+    if(!this.practice)return false;
+    const ids=Object.keys(this.state.players),characters=Object.fromEntries(ids.map(id=>[id,this.state.players[id]!.characterId]));
+    const fresh=new GameEngine({playerIds:ids,characterIds:characters,stageId:this.stage.id});
+    const main=this.stage.mainPlatform,center=main.x+main.width/2;
+    this.state={...fresh.state,tick:this.tick,players:Object.fromEntries(ids.map((id,i)=>{const p=fresh.state.players[id]!;return[id,{...p,x:center+(i===0?-24:24),y:main.y-getCharacterStats(p.characterId).hurtboxRadius,state:PlayerStateEnum.IDLE,stateFrame:0,isGrounded:true,facing:i===0?1:-1,artCue:undefined}];}))};
+    this.controllerFlick.clear();this.clearHitEvents();
+    for(const id of ids){this.fsmControllers.set(id,new FSMController(PlayerStateEnum.IDLE));this.techAttemptBuffered.set(id,false);}
+    for(const ledge of this.ledgeState.values()){ledge.occupantId=null;ledge.cooldowns.clear();}
+    return true;
+  }
+
 	/**
 	 * Advances the simulation by one tick and returns the new authoritative `GameState`.
 	 *
@@ -404,7 +421,10 @@ export class GameEngine {
 		this.applyHitDetection(players, inputs);
 		this.syncGrabState(players);
 		// ─── KO CHECK + BLAST ZONE DETECTION ───────────────────────────────────────
-		this.applyKnockouts(players);
+		if(this.practice){
+          for(const p of Object.values(players)){p.percent=0;p.shieldHealth=PHYSICS.SHIELD_MAX_HEALTH;p.stocks=MATCH_CONFIG.STOCKS;}
+          if(Object.values(players).some(p=>p.isKnockedOut)){this.state={...this.state,players};this.resetPractice();return this.state;}
+        }else this.applyKnockouts(players);
 		this.tickLedgeCooldowns();
 
 		const ledgesSnapshot: Record<string, string | null> = {};
@@ -417,13 +437,13 @@ export class GameEngine {
 			(player) => player.stocks > 0,
 		);
 		const winnerId =
-			alivePlayers.length === 1 && Object.values(players).length > 1 ? (alivePlayers[0]?.id ?? null) : null;
+			!this.practice&&alivePlayers.length === 1 && Object.values(players).length > 1 ? (alivePlayers[0]?.id ?? null) : null;
 
 		this.state = {
       stageId:this.stage.id,
 			tick: this.tick,
 			players,
-			matchPhase: alivePlayers.length <= 1 && Object.values(players).length > 1 ? "result" : "match",
+			matchPhase: !this.practice&&alivePlayers.length <= 1 && Object.values(players).length > 1 ? "result" : "match",
 			winnerId,
 			ledges: ledgesSnapshot,
 		};
@@ -694,6 +714,7 @@ export class GameEngine {
 			return {
 				...player,
 				respawnTimer: player.respawnTimer - 1,
+                dodgeFatigue:0,dodgeLevel:0,dodgeRecoveryTicks:0,dodgeRefreshTicks:undefined,shieldGrabStartup:0,shieldWasHit:false,
 				activeHitbox: null,
 				currentMoveId: null,
                 jabQueued: false,
@@ -1047,6 +1068,7 @@ export class GameEngine {
 		nextPlayer = {
 			...nextPlayer,
 			currentMoveId: moveId,
+            shieldGrabStartup:previous.state===PlayerStateEnum.SHIELD&&previous.shieldWasHit&&moveId===MoveId.GRAB?4:0,
             facing:pivot?(previous.facing===1?-1:1):player.isGrounded&&Math.abs(input?.cStickX??0)>Math.abs(input?.cStickY??0)&&Math.hypot(input?.cStickX??0,input?.cStickY??0)>=.55?((input?.cStickX??0)<0?-1:1):nextPlayer.facing,
             isInvincible:floorAttack?true:nextPlayer.isInvincible,
             invincibilityFrames:floorAttack?6:nextPlayer.invincibilityFrames,
@@ -1173,7 +1195,7 @@ export class GameEngine {
   if([PlayerStateEnum.GETUP_ROLL,PlayerStateEnum.TRIP_ROLL].includes(player.state as PlayerStateEnum)){const speed=player.stateFrame>=4&&player.stateFrame<16?3:0;return checkPlatformCollision({...player,x:player.x+speed*(player.floorRollDirection??player.facing),y:player.y+.1,vy:.1,vx:speed*(player.floorRollDirection??player.facing),isGrounded:false},this.stage);}
   if(player.state===PlayerStateEnum.ATTACK&&[MoveId.FLOOR_ATTACK_UP,MoveId.FLOOR_ATTACK_DOWN,MoveId.FLOOR_ATTACK_TRIP].includes(player.currentMoveId as MoveId)&&player.isGrounded)return {...player,vx:0,vy:0};
 
-		if(player.state===PlayerStateEnum.ROLL){const speed=player.stateFrame>=PHYSICS.ROLL_TRAVEL_START&&player.stateFrame<PHYSICS.ROLL_TRAVEL_END?PHYSICS.ROLL_SPEED:0;return checkPlatformCollision({...player,x:player.x+speed*(player.floorRollDirection??player.facing),y:player.y+.1,vy:.1,vx:speed*(player.floorRollDirection??player.facing),isGrounded:false},this.stage);}
+		if(player.state===PlayerStateEnum.ROLL){const scale=dodgeDurationScale(player)*freshDodgeProfile(player).total/20,start=player.stateFrame/scale,end=(player.stateFrame+1)/scale;const speed=Math.max(0,Math.min(end,PHYSICS.ROLL_TRAVEL_END)-Math.max(start,PHYSICS.ROLL_TRAVEL_START))*PHYSICS.ROLL_SPEED;return checkPlatformCollision({...player,x:player.x+speed*(player.floorRollDirection??player.facing),y:player.y+.1,vy:.1,vx:speed*(player.floorRollDirection??player.facing),isGrounded:false},this.stage);}
         if(player.state===PlayerStateEnum.SPOT_DODGE)return{...player,vx:0,vy:0};
         if(player.state===PlayerStateEnum.TAUNT)return{...player,vx:0,vy:0};
         if(player.state===PlayerStateEnum.CROUCH){
@@ -1736,7 +1758,8 @@ export class GameEngine {
 		// `currentMoveId` may not be set yet on the very first frame of an attack (it is
 		// assigned in applyStateTransitions which runs before this). Falling back to
 		// selectMoveId ensures the hitbox is never stale for one frame.
-		const moveId = (player.currentMoveId ?? this.selectMoveId(player, input)) as MoveId;
+		if((player.shieldGrabStartup??0)>0)return {...player,activeHitbox:null};
+        const moveId = (player.currentMoveId ?? this.selectMoveId(player, input)) as MoveId;
 		const move = getMoveDataForCharacter(player.characterId, moveId);
 		const isSmashMove =
 			move.id === MoveId.FORWARD_SMASH ||
@@ -1950,6 +1973,7 @@ export class GameEngine {
 	 * @returns The resolved `MoveId` for this input context.
 	 */
 	private selectMoveId(player: PlayerState, input: InputEvent | null): MoveId {
+        if(player.isGrounded&&isHeld(input,INPUT_BITS.SHIELD)&&isPressed(input,INPUT_BITS.ATTACK)&&!isPressed(input,INPUT_BITS.GRAB)&&((input?.smashAttack&&isHeld(input,INPUT_BITS.UP))||((input?.cStickY??0)<=-.55&&Math.abs(input?.cStickY??0)>Math.abs(input?.cStickX??0))))return MoveId.UP_SMASH;
         const cx=input?.cStickX??0,cy=input?.cStickY??0,cAttack=isPressed(input,INPUT_BITS.ATTACK)&&Math.hypot(cx,cy)>=.55;
         if(input?.smashAttack&&!isHeld(input,INPUT_BITS.SHIELD)&&player.isGrounded){const up=isHeld(input,INPUT_BITS.UP),down=isHeld(input,INPUT_BITS.DOWN);return up?MoveId.UP_SMASH:down?MoveId.DOWN_SMASH:MoveId.FORWARD_SMASH;}
         if(cAttack&&!isPressed(input,INPUT_BITS.GRAB)&&!isPressed(input,INPUT_BITS.SPECIAL)&&!player.isGrabbing&&player.state!==PlayerStateEnum.GRAB_HOLDING){
@@ -2767,7 +2791,7 @@ export class GameEngine {
 			attackerId,
 			defenderId,
 			moveId,
-			damage,
+			damage:this.practice?0:damage,
 			knockbackMagnitude: Math.hypot(knockbackVx, knockbackVy),
 			worldX,
 			worldY,
@@ -2794,7 +2818,11 @@ export class GameEngine {
 	 */
 	private matchDamage(damage:number):number{return damage*(this.matchPlayerCount===2?PHYSICS.ONE_ON_ONE_DAMAGE_MULTIPLIER:1);}
 
-	private applyHit(
+	private applyHit(player:PlayerState,hit:typeof NO_HIT,attackerFacing:1|-1,floorMove?:import('@smash/shared').MoveData):PlayerState {
+      const result=this.applyHitInternal(player,hit,attackerFacing,floorMove);
+      return this.practice?{...result,percent:0}:result;
+    }
+    private applyHitInternal(
 		player: PlayerState,
 		hit: typeof NO_HIT,
 		attackerFacing: 1 | -1,
@@ -2803,7 +2831,7 @@ export class GameEngine {
         if(isDamageImmune(player))return player;
 		if (isActiveShield(player) && player.shieldHealth > 0) {
 			const shieldStunFrames = hit.shieldStunFrames??(hit.damage>0?Math.floor(hit.damage*.8)+2:0);
-			const remainingShieldHealth = player.shieldHealth - hit.damage;
+			const remainingShieldHealth = this.practice?PHYSICS.SHIELD_MAX_HEALTH:player.shieldHealth-hit.damage;
 
 			// Perfect shield: one successful block in the eligible shield-release window,
 			// skip shield stun and shield health drain
@@ -2817,11 +2845,12 @@ export class GameEngine {
 
 			return {
 				...player,
-				sdiEligible:true,sdiMode:'shield',sdiPulseCount:0,sdiLastDirection:(hit.sdiInitialDirection??0)&(INPUT_BITS.LEFT|INPUT_BITS.RIGHT),sdiBufferedDirection:0,sdiInputCooldown:0,sdiMultiplier:hit.sdiMultiplier??1,sdiGrounded:true,asdiMultiplier:0,shieldParryConsumed:player.shieldParryConsumed||isPerfectShield,
+				sdiEligible:!isPerfectShield,sdiMode:'shield',sdiPulseCount:0,sdiLastDirection:(hit.sdiInitialDirection??0)&(INPUT_BITS.LEFT|INPUT_BITS.RIGHT),sdiBufferedDirection:0,sdiInputCooldown:0,sdiMultiplier:hit.sdiMultiplier??1,sdiGrounded:true,asdiMultiplier:0,shieldParryConsumed:player.shieldParryConsumed||isPerfectShield,
                 shieldReaction:isPerfectShield?'parry':'hit',
                 shieldReactionFrame:0,
                 shieldHealth: isPerfectShield ? player.shieldHealth : remainingShieldHealth,
-				shieldStunFrames,
+                shieldWasHit:!isPerfectShield||player.shieldWasHit,
+				shieldStunFrames:isPerfectShield?0:shieldStunFrames,
 				vx: isPerfectShield?player.vx:player.vx + pushStrength * attackerFacing,
 				hitlagFramesRemaining: Math.max(player.hitlagFramesRemaining, hit.hitlagFrames),
 				activeHitbox: null,

@@ -154,6 +154,15 @@ export interface PlayerState {
 
   /** Frames of shield-hit stun remaining. */
   shieldStunFrames: number;
+  /** A blocked hit adds four startup ticks to a grab from this shield hold. */
+  shieldWasHit?: boolean;
+  shieldGrabStartup?: number;
+  /** Shared dodge fatigue; tuning is project-specific, not certified Ultimate values. */
+  dodgeFatigue?: number;
+  dodgeRecoveryTicks?: number;
+  dodgeLevel?: number;
+  dodgeKind?: "spot"|"forward"|"backward"|"air";
+  dodgeRefreshTicks?: number;
   /** True while this fighter has an opponent grabbed. */
   isGrabbing: boolean;
   /** The PlayerId of the grabbed opponent, or null if not grabbing. */

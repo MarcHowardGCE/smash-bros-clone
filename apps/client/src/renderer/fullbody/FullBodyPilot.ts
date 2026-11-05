@@ -1,3 +1,4 @@
+import {dodgeAnimationFrame} from '@smash/engine';
 import{selectResultFrame}from'./presentationTimeline.js';
 import {footstoolPoint} from './footstoolPose.js';
 import {PREPARED_LIVE_CLIPS,selectPreparedFrame,type PreparedContext} from './preparedHooks.js';
@@ -65,7 +66,7 @@ export class FullBodyPilot {
  update(state:string,frame:number,move:MoveId|null,enabled:boolean,vy?:number,hasDoubleJump=true,isTumbling=false,rollDirection:1|-1=1,chargeFrames=0,grabVictim=false,victimFlip=1,facing:1|-1=1,grabOwner?:GrabContactContext,ledgeId?:string|null,prepared:PreparedContext={}):boolean {
   enabled=enabled||Boolean(prepared.result);
   if(this.previousState==="LEDGE_HANG"&&state==="AIRBORNE")this.ledgeRelease={clip:(vy??0)<-1?"ledge_trump":"ledge_drop",start:frame};this.previousState=state;
-  let selected=enabled?selectPilotFrame(state,frame,move,vy,hasDoubleJump,isTumbling,this.characterId,chargeFrames,grabVictim):null;
+  let selected=enabled?selectPilotFrame(state,(state==='ROLL'||state==='SPOT_DODGE')?dodgeAnimationFrame({...prepared,characterId:this.characterId,state},frame):frame,move,vy,hasDoubleJump,isTumbling,this.characterId,chargeFrames,grabVictim):null;
   if(enabled)selected=selectPreparedFrame(state,frame,vy,{...prepared,facing})??selected;
   const airborne=state==='AIRBORNE'||state==='DOUBLE_JUMP';
   if(enabled&&airborne&&this.previousDoubleJump===true&&!hasDoubleJump)this.doubleJumpCue={state,frame,elapsed:0};

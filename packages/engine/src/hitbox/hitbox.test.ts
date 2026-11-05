@@ -528,3 +528,8 @@ describe('resolveHitTrade', () => {
     expect(resultB.hit).toBe(true);
   });
 });
+
+// Exception metadata must reach the real shield-contact path, not just formula helpers.
+for(const attached of[false,true])it('parried projectile owner freeze depends on attachment '+attached,()=>{const a=makePlayer(),d=makePlayer({shieldReleaseFrame:0,shieldReleaseEligible:true,state:'SHIELD',isShielding:true});const h=makeHitbox({isProjectile:true,projectileAttached:attached,direct:false});const hit=resolveHit(a,d,h);expect(hit.hit).toBe(true);expect(hit.attackerHitlagFrames).toBe(attached?19:0);expect(hit.hitlagFrames).toBe(6);expect(hit.asdiMultiplier).toBe(0);});
+it('direct and indirect parry contacts retain different freeze rules',()=>{const a=makePlayer(),d=makePlayer({shieldReleaseFrame:0,shieldReleaseEligible:true,state:'SHIELD',isShielding:true});const direct=resolveHit(a,d,makeHitbox({direct:true})),indirect=resolveHit(a,d,makeHitbox({direct:false}));expect(direct.hitlagFrames).toBeGreaterThan(indirect.hitlagFrames);expect(direct.attackerHitlagFrames!).toBeGreaterThan(indirect.attackerHitlagFrames!);});
+

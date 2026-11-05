@@ -1,3 +1,5 @@
+import{renderPracticeSetup}from'../practice/PracticeSetup.js';
+import type{PracticeConfig}from'../practice/curriculum.js';
 import {renderVisualSettingsScreen} from './VisualSettingsScreen';
 import type {StageBackdrop} from '../renderer/StageBackdrop';
 import {getStageLayout} from '@smash/shared';
@@ -42,6 +44,10 @@ export type UIPhase = 'connecting' | 'lobby' | 'waiting' | 'countdown' | 'match'
  * starts a {@link MenuNavigator} for gamepad/keyboard navigation.
  */
 export class UIManager {
+  private practiceSetupHandle:{destroy:()=>void}|null=null;
+  onPractice:(()=>void)|null=null;
+  onPracticeReset:(()=>void)|null=null;
+  onPracticeMenu:(()=>void)|null=null;
   private visualSettingsHandle:{destroy:()=>void}|null=null;
   private visualSettingsFromPause=false;
   private stageScreenHandle:{destroy:()=>void}|null=null;
@@ -107,6 +113,7 @@ export class UIManager {
   }
 
   private stopMenuNav(): void {
+    this.practiceSetupHandle?.destroy();this.practiceSetupHandle=null;
     const roomDisplay=document.getElementById('room-code-display');if(roomDisplay)roomDisplay.style.display='none';
     this.visualSettingsHandle?.destroy();this.visualSettingsHandle=null;this.visualSettingsFromPause=false;
     this.characterScreenCleanup?.(); this.characterScreenCleanup=null;
@@ -229,7 +236,7 @@ export class UIManager {
       <div class="main-menu-panel fight-cabinet">
         <img src="/branding/everybody-throws-hands-arcade.png" alt="Everybody Throws Hands">
         <div class="fight-actions">
-          <button id="local-play-btn" class="ui-btn cabinet-button cabinet-primary">Local Play</button>
+          <button id="local-play-btn" class="ui-btn cabinet-button cabinet-primary">Local Play</button><button id="practice-btn" class="ui-btn cabinet-button">Training Dojo</button>
           ${existingRoom ? `<div class="room-label">Room: <strong>${existingRoom}</strong></div><button id="ready-btn" class="ui-btn cabinet-button">Ready</button>` : `<button id="create-btn" class="ui-btn cabinet-button">Create Room</button><div class="room-join"><input id="join-code" class="ui-input" aria-label="Room code" placeholder="ROOM CODE" maxlength="6"><button id="join-btn" class="ui-btn cabinet-button">Join</button></div>`}
         </div>
         <div class="menu-utilities"><button id="controls-btn" class="ui-btn cabinet-button">Controls</button><button id="visual-settings-btn" class="ui-btn cabinet-button">Visual accessibility</button></div>
@@ -247,6 +254,7 @@ export class UIManager {
       this.onReady?.();
       this.showWaiting();
     });
+    document.getElementById('practice-btn')?.addEventListener('click',()=>this.onPractice?.());
     document.getElementById('local-play-btn')?.addEventListener('click', () => this.onLocalPlay?.());
     document.getElementById('controls-btn')?.addEventListener('click', () => this.onOpenControls?.());
     document.getElementById('join-code')?.addEventListener('keydown', (e) => {
@@ -295,6 +303,7 @@ export class UIManager {
     if (localEl) {
       navButtons.push({ id: 'local-play-btn', element: localEl, onActivate: () => this.onLocalPlay?.() });
     }
+    const practiceEl=document.getElementById('practice-btn');if(practiceEl)navButtons.push({id:'practice-btn',element:practiceEl,onActivate:()=>this.onPractice?.()});
     const controlsEl = document.getElementById('controls-btn');
     if (controlsEl) {
       navButtons.push({ id: 'controls-btn', element: controlsEl, onActivate: () => this.onOpenControls?.() });
@@ -822,6 +831,11 @@ export class UIManager {
       </div>`;
   }
 
+  showPracticeSetup(onStart:(config:PracticeConfig)=>void,onBack:()=>void):void {
+    this.stopMenuNav();this.phase='controls';this.hudPanel.style.display='none';
+    this.practiceSetupHandle=renderPracticeSetup(this.overlay,this._gamepadPoller,onStart,onBack);
+  }
+  hideCombatHUD():void{this.hudPanel.style.display='none';}
   /** Clear the overlay and show the in-match HUD panel. */
   showMatch(): void {
     this.stopMenuNav();
@@ -839,7 +853,7 @@ export class UIManager {
     this.overlay.innerHTML = `
       <div class="overlay-center pause-menu">
         <div style="font-size:40px;letter-spacing:4px;margin-bottom:16px">PAUSED</div>
-        <button id="resume-btn" class="ui-btn" style="margin-bottom:16px">Resume</button>
+        <button id="resume-btn" class="ui-btn" style="margin-bottom:16px">Resume</button>${this.onPracticeMenu?'<button id="dojo-pause-reset" class="ui-btn">Reset practice arena</button><button id="dojo-pause-menu" class="ui-btn">Dojo lessons</button>':''}
         <button id="visual-settings-btn" class="ui-btn" style="margin-bottom:16px">Visual accessibility</button>
         <button id="main-menu-btn" class="ui-btn">Main Menu</button>
         <div id="audio-settings-container"></div>
@@ -871,6 +885,7 @@ export class UIManager {
     if (resumeEl) {
       navButtons.push({ id: 'resume-btn', element: resumeEl, onActivate: () => this.onResume?.() });
     }
+    for(const[id,fn]of [['dojo-pause-reset',this.onPracticeReset],['dojo-pause-menu',this.onPracticeMenu]]as const){const el=document.getElementById(id);if(el){el.addEventListener('click',()=>fn?.());navButtons.push({id,element:el,onActivate:()=>fn?.()});}}
     const menuEl = document.getElementById('main-menu-btn');
     if (menuEl) {
       navButtons.push({ id: 'main-menu-btn', element: menuEl, onActivate: () => this.onMainMenu?.() });
@@ -936,6 +951,7 @@ export class UIManager {
     if (playAgainEl) {
       navButtons.push({ id: 'play-again-btn', element: playAgainEl, onActivate: () => this.onPlayAgain?.() });
     }
+    for(const[id,fn]of [['dojo-pause-reset',this.onPracticeReset],['dojo-pause-menu',this.onPracticeMenu]]as const){const el=document.getElementById(id);if(el){el.addEventListener('click',()=>fn?.());navButtons.push({id,element:el,onActivate:()=>fn?.()});}}
     const menuEl = document.getElementById('main-menu-btn');
     if (menuEl) {
       navButtons.push({ id: 'main-menu-btn', element: menuEl, onActivate: () => this.onMainMenu?.() });
@@ -1061,6 +1077,7 @@ export class UIManager {
     if (playAgainEl) {
       navButtons.push({ id: 'local-play-again-btn', element: playAgainEl, onActivate: () => this.onLocalPlayAgain?.() });
     }
+    for(const[id,fn]of [['dojo-pause-reset',this.onPracticeReset],['dojo-pause-menu',this.onPracticeMenu]]as const){const el=document.getElementById(id);if(el){el.addEventListener('click',()=>fn?.());navButtons.push({id,element:el,onActivate:()=>fn?.()});}}
     const menuEl = document.getElementById('main-menu-btn');
     if (menuEl) {
       navButtons.push({ id: 'main-menu-btn', element: menuEl, onActivate: () => this.onMainMenu?.() });

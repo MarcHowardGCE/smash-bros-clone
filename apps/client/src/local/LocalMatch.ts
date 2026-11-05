@@ -1,3 +1,4 @@
+import{INPUT_BITS as B}from'@smash/shared';
 /**
  * @fileoverview Local (offline) match runner.
  *
@@ -11,7 +12,7 @@
  * (e.g. on first render before the first tick fires).
  */
 import { GameEngine, type GameEngineOptions } from "@smash/server/engine";
-import type { CharacterId, KOEventData, PlayerId, StateSnapshot } from "@smash/shared";
+import type { CharacterId, KOEventData, PlayerId, StateSnapshot, GameState, InputEvent } from "@smash/shared";
 import type { LocalPlayerController } from "./LocalPlayerController.js";
 import type { ITickController } from "./types.js";
 
@@ -32,7 +33,9 @@ export class LocalMatch {
   private readonly TICK_MS = 1000 / 60;
   private latestSnapshot: StateSnapshot | null = null;
   private _paused = false;
+  private practiceInputGate=false;
 
+  onStep:((state:GameState,inputs:Map<PlayerId,InputEvent|null>)=>void)|null=null;
   onSnapshot: ((snapshot: StateSnapshot) => void) | null = null;
 
   /**
@@ -41,10 +44,11 @@ export class LocalMatch {
    * @param controllers - One controller per player (human or AI)
    * @param characterIds - Optional map of playerId to characterId for custom fighters
    */
-  constructor(controllers: ITickController[], characterIds?: Partial<Record<PlayerId, CharacterId>>, stageId:string='stage1') {
+  constructor(controllers: ITickController[], characterIds?: Partial<Record<PlayerId, CharacterId>>, stageId:string='stage1',private readonly practice=false) {
     this.controllers = controllers;
     const playerIds = controllers.map((c) => c.playerId as PlayerId);
-    this.engine = new GameEngine({ playerIds, characterIds,stageId });
+    this.engine = new GameEngine({ playerIds, characterIds,stageId,practice });
+    if(practice){this.engine.resetPractice();this.practiceInputGate=true;}
   }
 
   /** Begin the rAF loop and emit the first snapshot. */
@@ -90,6 +94,7 @@ export class LocalMatch {
   resume(): void {
     if (!this._paused) return;
     this._paused = false;
+    if(this.practice)this.practiceInputGate=true;
     this.lastTime = performance.now();
     this.accumulator = 0;
     this.loop(this.lastTime);
@@ -99,6 +104,8 @@ export class LocalMatch {
   getLatestSnapshot(): StateSnapshot | null {
     return this.latestSnapshot;
   }
+
+  resetPractice():boolean {const reset=this.engine.resetPractice();if(reset)this.practiceInputGate=true;return reset;}
 
   forcePosition(playerId: PlayerId, x: number, y: number): boolean {
     return this.engine.forcePosition(playerId, x, y);
@@ -129,7 +136,9 @@ export class LocalMatch {
     const inputs = new Map(
       this.controllers.map((c) => [c.playerId as PlayerId, c.pollInput()]),
     );
+    if(this.practiceInputGate){const human=inputs.get('local-p1');if(!human?.held&&!human?.pressed)this.practiceInputGate=false;const keep=B.LEFT|B.RIGHT|B.UP|B.DOWN|B.SHIELD;inputs.set('local-p1',human?{...human,held:human.held&keep,pressed:0,released:human.released&keep}:null);}
     const state = this.engine.tickGame(inputs);
+    this.onStep?.(state,inputs);
 
     for (const controller of this.controllers) {
       controller.observe?.(state);

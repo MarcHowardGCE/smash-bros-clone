@@ -546,7 +546,7 @@ describe('FSM - Air Dodge single-use consumption', () => {
     expect(result.hasAirDodge).toBe(false);
   });
 
-  it('AIR_DODGE → AIRBORNE after 23 frames', () => {
+  it('AIR_DODGE → AIRBORNE at neutral reference boundary', () => {
     const controller = new FSMController(PlayerStateEnum.AIR_DODGE);
     let player = makePlayer({
       state: PlayerStateEnum.AIR_DODGE,
@@ -555,15 +555,15 @@ describe('FSM - Air Dodge single-use consumption', () => {
       hasAirDodge: false,
     });
 
-    // Tick through frames 0-22 (should stay in AIR_DODGE)
-    for (let i = 0; i < 23; i += 1) {
+    // Tick through frames 0-50 (should stay in AIR_DODGE)
+    for (let i = 0; i < 51; i += 1) {
       player = controller.tick(player, makeInput());
-      if (i < 22) {
+      if (i < 50) {
         expect(player.state).toBe(PlayerStateEnum.AIR_DODGE);
       }
     }
 
-    // Frame 23 should transition to AIRBORNE
+    // Frame 51 should transition to AIRBORNE
     player = controller.tick(player, makeInput());
     expect(player.state).toBe(PlayerStateEnum.AIRBORNE);
   });
@@ -604,15 +604,15 @@ describe('FSM - Air Dodge single-use consumption', () => {
       airDodgeDirection: { x: 1, y: 1 },
     });
 
-    // Tick through frames 0-22 (should stay in AIR_DODGE with direction set)
-    for (let i = 0; i < 23; i += 1) {
+    // Tick through frames 0-75 (should stay in AIR_DODGE with direction set)
+    for (let i = 0; i < 76; i += 1) {
       player = controller.tick(player, makeInput());
-      if (i < 22) {
+      if (i < 75) {
         expect(player.airDodgeDirection).toEqual({ x: 1, y: 1 });
       }
     }
 
-    // Frame 23 should transition to AIRBORNE and clear direction
+    // Frame 76 should transition to AIRBORNE and clear direction
     player = controller.tick(player, makeInput());
     expect(player.state).toBe(PlayerStateEnum.AIRBORNE);
     expect(player.airDodgeDirection).toBeNull();

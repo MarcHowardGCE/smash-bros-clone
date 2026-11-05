@@ -1,0 +1,5 @@
+import{it,expect}from'vitest';import{PracticeDummy}from'./PracticeDummy.js';import{INPUT_BITS as B,type GameState}from'@smash/shared';
+const state={players:{'local-p1':{x:600,isGrounded:true},'local-p2':{x:640,isGrounded:true,facing:-1}}}as unknown as GameState;
+it('passive partner never initiates an attack',()=>{const d=new PracticeDummy();d.observe(state);for(let tick=0;tick<400;tick++){d.setTick(tick);expect(d.pollInput().held).toBe(0);}});
+it('jab partner produces one fresh telegraphed strike per cycle',()=>{const d=new PracticeDummy();d.mode='jab';d.observe(state);const ticks=[];for(let tick=0;tick<400;tick++){d.setTick(tick);if(d.pollInput().pressed&B.ATTACK)ticks.push(tick);}expect(ticks).toEqual([90,240,390]);});
+it('shield partner holds guard without repeated press edges',()=>{const d=new PracticeDummy();d.mode='shield';expect(d.pollInput().pressed).toBe(B.SHIELD);expect(d.pollInput().pressed).toBe(0);expect(d.pollInput().held).toBe(B.SHIELD);});

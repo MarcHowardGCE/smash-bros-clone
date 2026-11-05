@@ -57,3 +57,8 @@ export {GROUND_INPUT,horizontalMovementInput,updateGroundIntent,wantsGroundDash,
 export {airStats} from './physics/airMotion.js';
 
 export {ACTION_BUFFER_TICKS,prepareActionInput} from './physics/actionBuffer.js';
+
+export {dodgeDurationScale} from './physics/dodgeFatigue.js';
+
+export {freshDodgeProfile,DODGE_PROFILES} from './physics/dodgeProfiles.js';
+export {dodgeTiming,dodgeAnimationFrame} from './physics/dodgeFatigue.js';

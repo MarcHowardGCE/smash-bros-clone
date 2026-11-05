@@ -1,36 +1,13 @@
-/**
- * @fileoverview AIR_DODGE state — aerial invincible dodge with wavedash support.
- *
- * Lasts `AIR_DODGE_DURATION_FRAMES` (23) frames. On `enter()`, the held
- * directional input is captured into `airDodgeDirection` for wavedash-landing
- * detection. The server's GameEngine checks this vector when the fighter lands
- * to determine if a wavedash should occur.
- *
- * Wavedash: if the player holds DOWN (optionally with LEFT/RIGHT), the
- * dodge angle points into the ground. When the fighter lands during the
- * dodge window the server converts the diagonal momentum into a
- * grounded slide — the wavedash.
- *
- * `airDodgeDirection` is cleared in `exit()` so it doesn't bleed into
- * subsequent states. `FSMController.applyTransition()` propagates the
- * cleared value into the outgoing player snapshot.
- *
- * Entered from: AIRBORNE (shield pressed + hasAirDodge true).
- *
- * Transitions out to: AIRBORNE (frame >= 23 OR isGrounded becomes true).
- */
+import {beginDodge,dodgeTiming} from '../../physics/dodgeFatigue.js';
+/** Profile-driven aerial recovery. Direction capture and legacy landing movement remain separate. */
 import { BaseState, PlayerStateEnum, transition, INPUT_BITS, isHeld } from './utils.js';
 import type { FSMContext, FSMTransition } from '../index.js';
 
-const AIR_DODGE_DURATION_FRAMES = 23;
 
-/**
- * Aerial invincible dodge. Captures directional input on entry for wavedash-landing
- * detection. DOWN-angled dodges that land produce a wavedash. Clears `airDodgeDirection`
- * on exit to prevent state bleed.
- */
+
 export class AirDodgeState extends BaseState {
   override enter(ctx: FSMContext): void {
+    beginDodge(ctx.player,"air");
     // Capture directional aim independently of the jump action.
     const hasLeft = isHeld(ctx.input, INPUT_BITS.LEFT);
     const hasRight = isHeld(ctx.input, INPUT_BITS.RIGHT);
@@ -45,7 +22,7 @@ export class AirDodgeState extends BaseState {
   }
 
   update(ctx: FSMContext, frame: number): FSMTransition | null {
-    return frame >= AIR_DODGE_DURATION_FRAMES || ctx.isGrounded
+    return frame >= dodgeTiming(ctx.player).total-1 || ctx.isGrounded
       ? transition(PlayerStateEnum.AIRBORNE)
       : null;
   }

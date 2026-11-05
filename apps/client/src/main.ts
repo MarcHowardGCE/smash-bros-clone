@@ -1,3 +1,7 @@
+import './practice/practice.css';
+import{PracticePanel}from'./practice/PracticePanel.js';
+import{PracticeDummy}from'./practice/PracticeDummy.js';
+import type{PracticeConfig}from'./practice/curriculum.js';
 import {StageBackdrop} from './renderer/StageBackdrop';
 import{XBOX360_PROFILE}from'./input/xbox360Profile';
 import{KOPresentation}from'./renderer/fullbody/KOPresentation.js';
@@ -475,6 +479,7 @@ async function main() {
   let myPlayerId: PlayerId | null = null;
   let isLocalMode = false;
   let localMatch: LocalMatch | null = null;
+  let practicePanel:PracticePanel|null=null;
   let camera: Camera | null = null;
   let localCountdownInterval: number | null = null;
   let localCountdownTimeout: number | null = null;
@@ -493,6 +498,7 @@ async function main() {
   };
 
   const cleanupLocalMode = (): void => {
+    practicePanel?.destroy();practicePanel=null;uiManager.onPracticeReset=null;uiManager.onPracticeMenu=null;
     clearLocalCountdown();
     localMatch?.cleanup();
     localMatch = null;
@@ -522,7 +528,7 @@ async function main() {
           shieldHealth: playerState.shieldHealth,
           currentMoveId: playerState.currentMoveId,
           characterId: playerState.characterId,
- koVisual:playerState.koVisual,tauntKind:playerState.tauntKind,hitReaction:playerState.hitReaction,artCue:playerState.artCue,artCueFrame:playerState.artCueFrame,respawnTimer:playerState.respawnTimer,footstoolRole:playerState.footstoolRole,footstoolPartnerId:playerState.footstoolPartnerId,footstoolFrame:playerState.footstoolFrame,shieldReaction:playerState.shieldReaction,shieldReactionFrame:playerState.shieldReactionFrame,hitstunFramesRemaining:playerState.hitstunFramesRemaining,floorOrientation:playerState.floorOrientation,floorRollDirection:playerState.floorRollDirection,isFastFalling:playerState.isFastFalling,airDodgeDirection:playerState.airDodgeDirection,hasDoubleJump:playerState.hasDoubleJump,isTumbling:playerState.isTumbling,chargeFrames:playerState.chargeFrames,isGrabbing:playerState.isGrabbing,grabbedPlayerId:playerState.grabbedPlayerId,ledgeId:playerState.ledgeId,
+ dodgeLevel:playerState.dodgeLevel,dodgeKind:playerState.dodgeKind,koVisual:playerState.koVisual,tauntKind:playerState.tauntKind,hitReaction:playerState.hitReaction,artCue:playerState.artCue,artCueFrame:playerState.artCueFrame,respawnTimer:playerState.respawnTimer,footstoolRole:playerState.footstoolRole,footstoolPartnerId:playerState.footstoolPartnerId,footstoolFrame:playerState.footstoolFrame,shieldReaction:playerState.shieldReaction,shieldReactionFrame:playerState.shieldReactionFrame,hitstunFramesRemaining:playerState.hitstunFramesRemaining,floorOrientation:playerState.floorOrientation,floorRollDirection:playerState.floorRollDirection,isFastFalling:playerState.isFastFalling,airDodgeDirection:playerState.airDodgeDirection,hasDoubleJump:playerState.hasDoubleJump,isTumbling:playerState.isTumbling,chargeFrames:playerState.chargeFrames,isGrabbing:playerState.isGrabbing,grabbedPlayerId:playerState.grabbedPlayerId,ledgeId:playerState.ledgeId,
         },
       ]),
     );
@@ -769,6 +775,7 @@ async function main() {
       seats: SeatConfig[];
     },
     choices: FighterChoice[],
+    practice?:PracticeConfig,
   ): void => {
     cleanupLocalMode();
     gameplaySfxRouter.reset();
@@ -779,6 +786,7 @@ async function main() {
 
     const assignments = assignmentManager.getAssignments();
     const controllers: ITickController[] = [];
+    const practiceDummy=practice?new PracticeDummy():null;
 
     // Compute full player ID list before controller loop
     const allPlayerIds: PlayerId[] = [
@@ -804,6 +812,7 @@ async function main() {
       const slotIndex = k + 1;
       const playerId = `local-p${slotIndex + 1}`;
       if (seat.kind === "cpu") {
+        if(practiceDummy){controllers.push(practiceDummy);continue;}
         controllers.push(
           new AIPlayerController({
             playerId,
@@ -840,11 +849,16 @@ async function main() {
       }
     }
 
-    localMatch = new LocalMatch(controllers, characterIds,selectedStage.id);
+    localMatch = new LocalMatch(controllers, characterIds,selectedStage.id,Boolean(practice));
+    if(practice&&practiceDummy){
+      practicePanel=new PracticePanel(practice,practiceDummy,()=>localMatch?.resetPractice(),()=>uiManager.onPractice?.(),()=>uiManager.getPhase()==='match');
+      localMatch.onStep=(state,inputs)=>practicePanel?.observe(state,inputs);
+      uiManager.onPracticeMenu=()=>uiManager.onPractice?.();uiManager.onPracticeReset=()=>{localMatch?.resetPractice();practiceDummy.reset();uiManager.onResume?.();};
+    }
     localMatch.onSnapshot = (snapshot) => {
       const renderState = snapshotToRenderState(snapshot);
       updateRenderers(renderState);
-      uiManager.updateHUD(renderState, null);
+      if(practice)uiManager.hideCombatHUD();else uiManager.updateHUD(renderState, null);
 
       const positions = Object.values(snapshot.players).map((player) => ({
         x: player.x,
@@ -870,6 +884,7 @@ async function main() {
     };
 
     uiManager.hideRoomCode();
+    if(practice){uiManager.showMatch();uiManager.hideCombatHUD();audioManager.playTrack(selectedStage.musicTrack.replace('.mp3',''));localMatch.start();return;}
     let count = 3;
     uiManager.showCountdown(count);
     audioManager.playTrack(selectedStage.musicTrack.replace(".mp3", ""));
@@ -951,6 +966,15 @@ async function main() {
     );
   };
 
+  uiManager.onPractice=()=>{
+    if(!isLocalMode){isLocalMode=true;gameClient.disconnect();}
+    cleanupLocalMode();for(const renderer of fighterRenderers.values())renderer.destroy();fighterRenderers.clear();koPresenter.clear();
+    audioManager.playTrack('main-menu');
+    uiManager.showPracticeSetup(config=>{
+      selectedStage=STAGES.find(s=>s.id===config.stageId)??STAGES[0]!;setStageBackground(selectedStage.backgroundImage);
+      startLocalMatchWithSeats({participantCount:2,seats:[{kind:'cpu',difficulty:'easy'}]},[{id:config.fighter,displayName:config.fighter},{id:config.dummy,displayName:config.dummy}],config);
+    },()=>uiManager.onMainMenu?.());
+  };
   uiManager.onLocalPlay = () => {
     audioManager.playTrack("main-menu");
     if (!isLocalMode) {
@@ -977,7 +1001,7 @@ async function main() {
   uiManager.onResume = () => {
     if (isLocalMode) {
       if (!localMatch?.paused) return;
-      localMatch.resume();
+      localMatch.resume();practicePanel?.setVisible(true);
       uiManager.hidePauseOverlay();
       return;
     }
@@ -1052,7 +1076,7 @@ async function main() {
 
     if (isLocalMode && localMatch) {
       // Local mode: pause the local match directly
-      localMatch.pause();
+      localMatch.pause();practicePanel?.setVisible(false);
       uiManager.showPauseOverlay();
     } else if (!isLocalMode) {
       // Multiplayer: emit pause to server; overlay shows on game:paused event
@@ -1081,7 +1105,7 @@ async function main() {
           // If in match, pause
           else if (phase === "match") {
             if (isLocalMode && localMatch) {
-              localMatch.pause();
+              localMatch.pause();practicePanel?.setVisible(false);
               uiManager.showPauseOverlay();
             } else if (!isLocalMode) {
               gameClient.emitPause();

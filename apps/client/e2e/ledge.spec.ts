@@ -29,6 +29,7 @@ test('ledge grab, jump getup, and trump lifecycle', async ({ browser }) => {
   await page2.locator('.network-fighter-option[data-id="all-rounder"]').click();
   await page1.locator('#network-charselect-confirm-btn').click();
   await page2.locator('#network-charselect-confirm-btn').click();
+  await page1.locator('[data-stage-idx="0"]').click();
   
   // Wait for match to start
   console.log('Waiting for match to start');

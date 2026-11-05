@@ -45,7 +45,7 @@ import { RoomManager } from "./RoomManager.js";
  * | `room:join` | client → server | Join an existing room by code |
  * | `player:ready` | client → server | Mark self as ready; triggers character select when all ready |
  * | `character:select` | client → server | Set character choice (unconfirmed) |
- * | `character:confirm` | client → server | Lock in character; triggers 3 s countdown when all confirmed |
+ * | `character:confirm` | client → server | Lock in character; opens shared stage selection when all confirmed |
  * | `game:input` | client → server | Binary msgpack `InputEvent`; forwarded to the active session |
  * | `game:pause` | client → server | Pause the active match session |
  * | `game:resume` | client → server | Resume a paused match session |
@@ -179,6 +179,7 @@ export function createApp(): {
 					confirmed: false,
 				});
 				callback?.({ ok: true });
+                broadcastSelection(roomInfo.room.code);
 			},
 		);
 
@@ -207,17 +208,39 @@ export function createApp(): {
 				});
 				callback?.({ ok: true, allConfirmed: result.allConfirmed });
 
-				if (result.allConfirmed) {
-					console.log(`[room] all characters confirmed in ${roomInfo.room.code}, starting countdown`);
-					io.to(roomInfo.room.code).emit("game:countdown", { seconds: 3 });
+                broadcastSelection(roomInfo.room.code);
+			},
+		);
+
+    const broadcastSelection=(code:string)=>{const state=roomManager.getSelectionState(code);if(state)io.to(code).emit('room:selectionState',state);};
+    socket.on('selection:sync',()=>{const info=roomManager.getRoomBySocketId(socket.id);if(info)socket.emit('room:selectionState',roomManager.getSelectionState(info.room.code));});
+    socket.on('character:unconfirm',(_code:unknown,ack?: (result:unknown)=>void)=>{
+      const info=roomManager.getRoomBySocketId(socket.id);if(!info){if(typeof ack==='function')ack({error:'Not in room'});return;}
+      const result=roomManager.unconfirmCharacter(info.room.code,info.playerId);if(typeof ack==='function')ack(result);if(!('error'in result))broadcastSelection(info.room.code);
+    });
+    socket.on('selection:back',(_code:unknown,ack?: (result:unknown)=>void)=>{
+      const info=roomManager.getRoomBySocketId(socket.id);if(!info){if(typeof ack==='function')ack({error:'Not in room'});return;}
+      const result=roomManager.selectionBack(info.room.code,info.playerId);if(typeof ack==='function')ack(result);if(!('error'in result))broadcastSelection(info.room.code);
+    });
+    socket.on('stage:select',(_code:unknown,stage:unknown,ack?: (result:unknown)=>void)=>{
+      const info=roomManager.getRoomBySocketId(socket.id);if(!info){if(typeof ack==='function')ack({error:'Not in room'});return;}
+      const result=roomManager.selectStage(info.room.code,info.playerId,stage);if(typeof ack==='function')ack(result);if(!('error'in result))broadcastSelection(info.room.code);
+    });
+    socket.on('stage:confirm',(_code:unknown,ack?: (result:unknown)=>void)=>{
+      const roomInfo=roomManager.getRoomBySocketId(socket.id);if(!roomInfo){if(typeof ack==='function')ack({error:'Not in room'});return;}
+      const result=roomManager.confirmStage(roomInfo.room.code,roomInfo.playerId);if(typeof ack==='function')ack(result);
+      				if (!("error" in result)) {
+					console.log(`[room] all characters confirmed in ${roomInfo.room.code}, starting countdown after stage confirmation`);
+					io.to(roomInfo.room.code).emit("game:countdown", { seconds: 3, stageId:roomInfo.room.stageId });
 
 					const normalizedRoomCode = roomInfo.room.code;
 					const timer = setTimeout(() => {
 						countdownTimers.delete(normalizedRoomCode);
+						if(roomManager.getRoom(normalizedRoomCode)?.phase!=='COUNTDOWN')return;
 						roomManager.startMatch(normalizedRoomCode);
 						const playerIds = roomManager.getPlayerIds(normalizedRoomCode);
 						const characterSelections = roomManager.getCharacterSelections(normalizedRoomCode);
-						io.to(normalizedRoomCode).emit("game:start", { playerIds });
+						io.to(normalizedRoomCode).emit("game:start", { playerIds, stageId:roomInfo.room.stageId });
 
 						const session = new MatchSession({
 							playerIds,
@@ -241,8 +264,7 @@ export function createApp(): {
 
 					countdownTimers.set(normalizedRoomCode, timer);
 				}
-			},
-		);
+    });
 
 		socket.on("game:input", (data: unknown) => {
 			const roomInfo = roomManager.getRoomBySocketId(socket.id);
@@ -310,7 +332,9 @@ export function createApp(): {
     socket.join(code);
     const room = roomManager.getRoom(code)!;
     const session = matchSessions.get(code);
-    callback({ ok: true, slotIndex: result.slotIndex, phase: room.phase, paused: session?.isPaused ?? false });
+    callback({ ok: true, slotIndex: result.slotIndex, phase: room.phase, stageId:room.stageId, paused: session?.isPaused ?? false });
+    socket.emit("room:stage",{stageId:room.stageId});
+    socket.emit("room:selectionState",roomManager.getSelectionState(code));
     session?.syncState(binary => socket.emit("game:state", binary));
     io.to(code).emit("room:playerRejoined", { playerId });
   });
@@ -339,6 +363,7 @@ export function createApp(): {
       matchSessions.delete(roomCode);
     }
     io.to(roomCode).emit("room:playerLeft", { playerId });
+    broadcastSelection(roomCode);
   }
 
 	function handleDisconnect(socketId: string) {

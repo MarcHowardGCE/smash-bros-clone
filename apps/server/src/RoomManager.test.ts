@@ -97,7 +97,7 @@ describe('RoomManager character select flow', () => {
     expect(room?.phase).toBe('CHARACTER_SELECT');
   });
 
-  it('confirmCharacter transitions to COUNTDOWN when all players are confirmed', () => {
+  it('confirmCharacter transitions to STAGE_SELECT when all players are confirmed', () => {
     const manager = new RoomManager();
     const setup = createTwoPlayerRoom(manager);
 
@@ -111,7 +111,7 @@ describe('RoomManager character select flow', () => {
     expect(second).toEqual({ allConfirmed: true });
 
     const room = manager.getRoom(setup.roomCode);
-    expect(room?.phase).toBe('COUNTDOWN');
+    expect(room?.phase).toBe('STAGE_SELECT');
   });
 
   it('getCharacterSelections returns exact player-to-character map', () => {
@@ -181,6 +181,8 @@ describe('RoomManager character select flow', () => {
     manager.confirmCharacter(setup.roomCode, setup.guestPlayerId);
 
     const before = manager.getRoom(setup.roomCode);
+    expect(before?.phase).toBe('STAGE_SELECT');
+    manager.confirmStage(setup.roomCode,setup.hostPlayerId);
     expect(before?.phase).toBe('COUNTDOWN');
 
     const removed = manager.removePlayer('socket-host');

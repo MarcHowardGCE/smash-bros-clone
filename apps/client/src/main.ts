@@ -573,6 +573,25 @@ async function main() {
       networkCountdownInterval = null;
     }
   };
+  let onlineSelectionScreen:string|null=null;
+  const showOnlineFighters=(playerIds:PlayerId[]):void=>{
+      onlineSelectionScreen="fighters";
+      if (!myPlayerId) return;
+      uiManager.showNetworkCharacterSelect(
+        AVAILABLE_FIGHTERS,
+        myPlayerId,
+        playerIds,
+        (characterId) => gameClient.selectCharacter(characterId),
+        () =>
+          gameClient.confirmCharacter((result) => {
+            if ("error" in result) {
+              uiManager.showNetworkCharacterSelectConfirmError(result.error);
+            }
+          }),
+        ()=>gameClient.unconfirmCharacter(result=>{if("error"in result)uiManager.showNetworkCharacterSelectConfirmError(result.error);}),
+        ()=>gameClient.selectionBack(result=>{if("error"in result)uiManager.showNetworkCharacterSelectConfirmError(result.error);}),
+      );
+  };
   const gameClient = new GameClient({
     serverUrl: SERVER_URL,
     gamepadSource:new GamepadInputSource(poller,-1,()=>assignmentManager.getAssignments().get(0)?.gamepadIndex??-1),
@@ -661,27 +680,30 @@ async function main() {
     onResumed: () => {
       uiManager.hidePauseOverlay();
     },
-    onCharacterSelectStart: (playerIds) => {
-      if (!myPlayerId) return;
-      uiManager.showNetworkCharacterSelect(
-        AVAILABLE_FIGHTERS,
-        myPlayerId,
-        playerIds,
-        (characterId) => gameClient.selectCharacter(characterId),
-        () =>
-          gameClient.confirmCharacter((result) => {
-            if ("error" in result) {
-              uiManager.showNetworkCharacterSelectConfirmError(result.error);
-            }
-          }),
-      );
-    },
+    onCharacterSelectStart: showOnlineFighters,
     onCharacterUpdated: (data) => {
       uiManager.updateNetworkCharacterSelect(
         data.playerId,
         data.characterId,
         data.confirmed,
       );
+    },
+    onStageChanged:(id)=>{const stage=STAGES.find(s=>s.id===id);if(stage){selectedStage=stage;setStageBackground(stage.backgroundImage);}},
+    onSelectionState:(state)=>{
+      if(state.phase==='LOBBY'){onlineSelectionScreen='lobby';clearNetworkCountdown();networkMatchPhase='pre-match';uiManager.showLobby();return;}
+      if(state.phase==='CHARACTER_SELECT'){
+        if(onlineSelectionScreen!=='fighters')showOnlineFighters(state.players.map(p=>p.playerId));
+        for(const p of state.players)uiManager.updateNetworkCharacterSelect(p.playerId,p.characterId,p.confirmed);
+      }else if(state.phase==='STAGE_SELECT'){
+        const stage=STAGES.find(s=>s.id===state.stageId)??STAGES[0]!;
+        const error=(result:{ok:true}|{error:string})=>{if('error'in result){onlineSelectionScreen=null;gameClient.refreshSelectionState();uiManager.showNetworkCharacterSelectConfirmError(result.error);}};
+        if(state.hostPlayerId===myPlayerId){
+          if(onlineSelectionScreen!=='host-stage'){
+            onlineSelectionScreen='host-stage';
+            uiManager.showStageSelect(STAGES,chosen=>gameClient.selectStage(chosen.id,result=>{if('error'in result){error(result);return;}gameClient.confirmStage(error);}),()=>gameClient.selectionBack(error),preview=>gameClient.selectStage(preview.id,error),state.stageId);
+          }
+        }else{onlineSelectionScreen='guest-stage';uiManager.showNetworkStageWaiting(stage,()=>gameClient.unconfirmCharacter(error));}
+      }
     },
     onPlayerLeft: (playerId) => {
       if (networkMatchPhase !== "match" && networkMatchPhase !== "result") {
@@ -876,6 +898,7 @@ async function main() {
         ] of assignmentManager.getAssignments()) {
           gamepadSlotByIndex.set(assignment.gamepadIndex, slotIndex);
         }
+        const showFighters = (previousChoices: readonly FighterChoice[] = []): void => {
         uiManager.showCharacterSelect(
           AVAILABLE_FIGHTERS,
           result.participantCount,
@@ -893,8 +916,8 @@ async function main() {
                 startLocalMatchWithSeats(result, choices);
               },
               () => {
-                // Back from stage select → return to character select
-                enterLocalPlayFlow();
+                // Back restores the previous fighters without replaying setup.
+                showFighters(choices);
               },
             );
           },
@@ -904,7 +927,10 @@ async function main() {
             enterLocalPlayFlow();
           },
           gamepadSlotByIndex,
+          previousChoices,
         );
+        };
+        showFighters();
       },
       () => {
         // Back from setup → return to lobby

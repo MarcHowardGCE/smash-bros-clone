@@ -44,6 +44,7 @@ describe('GameClient - character select', () => {
   beforeEach(() => {
     // Create fresh mock socket for each test
     mockSocket = createMockSocket();
+    mockSocket.timeout=vi.fn(()=>mockSocket);
 
     // Create options with all callbacks
     options = {
@@ -340,4 +341,15 @@ describe('GameClient - character select', () => {
       expect(options.onPlayerLeft).toHaveBeenCalledWith('p2');
     });
   });
+  it('emits authorized selection requests and reports timeouts without faking success',()=>{
+    (gameClient as any).myRoomCode='ABC123';const callback=vi.fn();gameClient.selectStage('stage6',callback);
+    const sent=mockSocket._getEmitCalls()[0];expect(sent.event).toBe('stage:select');expect(sent.args.slice(0,2)).toEqual(['ABC123','stage6']);sent.args[2](new Error('timeout'));expect(callback).toHaveBeenCalledWith({error:'Request timed out. Please try again.'});
+    mockSocket._clearEmitCalls();gameClient.unconfirmCharacter(callback);expect(mockSocket._getEmitCalls()[0].event).toBe('character:unconfirm');gameClient.selectionBack();gameClient.confirmStage();expect(mockSocket.timeout).toHaveBeenCalledWith(5000);
+  });
+  it('applies the authoritative stage before countdown presentation',()=>{
+    const order:string[]=[];options.onStageChanged=id=>order.push(id);options.onMatchPhaseChange=phase=>order.push(phase);
+    mockSocket._triggerHandler('game:countdown',{seconds:3,stageId:'stage6'});expect(order).toEqual(['stage6','countdown']);
+    options.onSelectionState=vi.fn();mockSocket._triggerHandler('room:selectionState',{phase:'STAGE_SELECT',stageId:'stage4',hostPlayerId:'p1',players:[]});expect(options.onSelectionState).toHaveBeenCalledWith(expect.objectContaining({stageId:'stage4'}));
+  });
+
 });

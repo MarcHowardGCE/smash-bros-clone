@@ -204,6 +204,7 @@ export class MenuNavigator {
       const btn = this.buttons[i]!;
       if (i === this.selectedIndex) {
         btn.element.classList.add('menu-selected');
+        btn.element.scrollIntoView?.({ block: 'nearest', inline: 'nearest' });
       } else {
         btn.element.classList.remove('menu-selected');
       }

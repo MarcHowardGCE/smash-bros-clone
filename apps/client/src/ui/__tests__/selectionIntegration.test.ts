@@ -1,0 +1,11 @@
+import {afterEach,describe,it,expect,vi} from 'vitest';
+import {UIManager} from '../UIManager';
+import {renderStageSelectScreen} from '../StageSelectScreen';
+import {STAGES} from '../../stages/stageConfig';
+const fighters=[{id:'all-rounder',displayName:'All-Rounder'},{id:'abe-lincoln',displayName:'Abe Lincoln'},{id:'swift',displayName:'Swift'}];
+afterEach(()=>{vi.useRealTimers();document.body.innerHTML='';});
+describe('illustrated selection integration',()=>{
+ it('restores fighter identity and choice while requiring a human confirmation',()=>{vi.useFakeTimers();const el=document.createElement('div');document.body.append(el);const ui=new UIManager(el),done=vi.fn();ui.showCharacterSelect(fighters,2,done,[1],undefined,undefined,[fighters[2]!,fighters[1]!]);expect(el.querySelector<HTMLImageElement>('#p1-portrait')?.src).toContain('swift.png');vi.advanceTimersByTime(500);expect(done).not.toHaveBeenCalled();window.dispatchEvent(new KeyboardEvent('keydown',{key:'Enter',code:'Enter'}));expect(done).toHaveBeenCalledWith([fighters[2],fighters[1]]);ui.showMatch();});
+ it('cancels pending character work when switching screens',()=>{vi.useFakeTimers();const el=document.createElement('div');document.body.append(el);const ui=new UIManager(el),done=vi.fn();ui.showCharacterSelect(fighters,2,done,[1]);ui.showLobby();vi.advanceTimersByTime(1000);window.dispatchEvent(new KeyboardEvent('keydown',{key:'Enter',code:'Enter'}));expect(done).not.toHaveBeenCalled();ui.showMatch();});
+ it('browses world stories without committing and selects the focused world',()=>{const el=document.createElement('div');document.body.append(el);const done=vi.fn();renderStageSelectScreen(el,STAGES,done);expect(el.querySelector('h2')?.textContent).toBe(STAGES[0]!.displayName);window.dispatchEvent(new KeyboardEvent('keydown',{key:'ArrowRight'}));expect(el.querySelector('h2')?.textContent).toBe(STAGES[1]!.displayName);window.dispatchEvent(new KeyboardEvent('keydown',{key:'i'}));expect(el.querySelector<HTMLElement>('#stage-story')?.hidden).toBe(false);expect(done).not.toHaveBeenCalled();window.dispatchEvent(new KeyboardEvent('keydown',{key:'Enter'}));expect(done).toHaveBeenCalledOnce();expect(done).toHaveBeenCalledWith(STAGES[1]);});
+});

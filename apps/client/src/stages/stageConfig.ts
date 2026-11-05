@@ -1,3 +1,4 @@
+import { WORLD_STORIES } from '../ui/selectionContent';
 /**
  * @fileoverview Stage configuration registry.
  *
@@ -54,7 +55,7 @@ export const STAGES: StageConfig[] = [
     backgroundImage: 'stage6.png',
     musicTrack: 'stage6.mp3',
   },
-];
+].map(stage => ({...stage, displayName: WORLD_STORIES[stage.id]?.name ?? stage.displayName}));
 
 /**
  * Pick a random stage from the registry with equal probability.

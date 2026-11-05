@@ -22,6 +22,7 @@ test("online pause, browser-refresh rejoin, resume and deliberate leave", async 
     await host.locator('.network-fighter-option[data-id="abe-lincoln"]').click();
     await guest.locator('.network-fighter-option[data-id="swift"]').click();
     await Promise.all([host.locator("#network-charselect-confirm-btn").click(), guest.locator("#network-charselect-confirm-btn").click()]);
+    await host.locator('[data-stage-idx="0"]').click();
     await expect.poll(async () => (await snapshot(host))?.matchPhase).toBe("match");
     const before = await snapshot(guest);
     const guestId = Object.values(before.players).find((p: any) => p.characterId === "swift") as any;

@@ -11,12 +11,12 @@ import type { PlayerId, CharacterId } from '@smash/shared';
  * The current lifecycle phase of a room.
  *
  * Rooms advance through phases in order:
- * `LOBBY → CHARACTER_SELECT → COUNTDOWN → MATCH → RESULT`
+ * `LOBBY → CHARACTER_SELECT → STAGE_SELECT → COUNTDOWN → MATCH → RESULT`
  *
  * `READY_CHECK` is reserved for a future feature where players must
  * explicitly confirm readiness after returning from a previous match.
  */
-export type SessionPhase = 'LOBBY' | 'CHARACTER_SELECT' | 'READY_CHECK' | 'COUNTDOWN' | 'MATCH' | 'RESULT';
+export type SessionPhase = 'LOBBY' | 'CHARACTER_SELECT' | 'READY_CHECK' | 'STAGE_SELECT' | 'COUNTDOWN' | 'MATCH' | 'RESULT';
 
 /**
  * Represents a single player's slot in a room.
@@ -55,4 +55,5 @@ export interface Room {
   players: Map<PlayerId, PlayerSlot>;
   /** Unix timestamp (ms) when the room was created. */
   createdAt: number;
+  stageId: string;
 }

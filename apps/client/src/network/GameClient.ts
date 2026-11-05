@@ -52,7 +52,10 @@ extensionCodec.register({
     new Set<string>(decode(data, { extensionCodec }) as string[]),
 });
 
+export interface OnlineSelectionState {phase:string;hostPlayerId:string;stageId:string;players:{playerId:PlayerId;slotIndex:number;characterId:string;confirmed:boolean}[];}
 export interface GameClientOptions {
+  onSelectionState?:(state:OnlineSelectionState)=>void;
+  onStageChanged?:(stageId:string)=>void;
   serverUrl: string;
   gamepadSource?: GamepadInputSource;
   onRejoined?: () => void;
@@ -226,6 +229,16 @@ export class GameClient {
     this.socket.emit("character:confirm", this.myRoomCode, callback);
   }
 
+  private selectionRequest(event:string,args:unknown[],callback?:(result:{ok:true}|{error:string})=>void):void {
+    if(!this.myRoomCode){callback?.({error:'Not in a room'});return;}
+    this.socket.timeout(5000).emit(event,this.myRoomCode,...args,(error:Error|null,result:{ok:true}|{error:string})=>callback?.(error?{error:'Request timed out. Please try again.'}:result));
+  }
+  refreshSelectionState():void {this.socket.emit('selection:sync');}
+  unconfirmCharacter(callback?:(result:{ok:true}|{error:string})=>void):void {this.selectionRequest('character:unconfirm',[],callback);}
+  selectionBack(callback?:(result:{ok:true}|{error:string})=>void):void {this.selectionRequest('selection:back',[],callback);}
+  selectStage(stageId:string,callback?:(result:{ok:true}|{error:string})=>void):void {this.selectionRequest('stage:select',[stageId],callback);}
+  confirmStage(callback?:(result:{ok:true}|{error:string})=>void):void {this.selectionRequest('stage:confirm',[],callback);}
+
   /** Whether the game is currently paused. */
   get isPaused(): boolean {
     return this.paused;
@@ -317,7 +330,7 @@ export class GameClient {
       if (!saved) { this.options.onConnected?.(); return; }
       const identity = saved;
       this.socket.emit("room:rejoin", identity,
-        (response: { ok: boolean; phase?: string; paused?: boolean }) => {
+        (response: { ok: boolean; phase?: string; stageId?:string; paused?: boolean }) => {
           if (!response.ok) {
             try { sessionStorage.removeItem("smash:rejoin"); } catch {}
             this.options.onConnected?.();
@@ -327,13 +340,14 @@ export class GameClient {
           this.myRoomCode = identity.roomCode;
           this.inputManager.setPlayerId(identity.playerId);
           this.options.onPlayerAssigned?.(identity.playerId, identity.roomCode);
+          if(response.stageId)this.options.onStageChanged?.(response.stageId);
           this.paused = response.paused ?? false;
           this.options.onRejoined?.();
           if (response.phase === "MATCH") {
             this.options.onMatchPhaseChange("match");
             this.startRenderLoop();
             if (this.paused) this.options.onPaused?.();
-          } else {
+          } else if(response.phase!=="CHARACTER_SELECT"&&response.phase!=="STAGE_SELECT") {
             this.options.onConnected?.();
           }
         });
@@ -358,12 +372,16 @@ export class GameClient {
       },
     );
 
-    this.socket.on("game:countdown", (data: { seconds: number }) => {
+    this.socket.on("room:selectionState",(data:OnlineSelectionState)=>{if(!data)return;this.options.onStageChanged?.(data.stageId);this.options.onSelectionState?.(data);});
+    this.socket.on("room:stage",(data:{stageId:string})=>this.options.onStageChanged?.(data.stageId));
+    this.socket.on("game:countdown", (data: { seconds: number;stageId?:string }) => {
+      if(data.stageId)this.options.onStageChanged?.(data.stageId);
       console.log("[client] countdown:", data.seconds);
       this.options.onMatchPhaseChange("countdown");
     });
 
-    this.socket.on("game:start", (data: { playerIds: PlayerId[] }) => {
+    this.socket.on("game:start", (data: { playerIds: PlayerId[];stageId?:string }) => {
+      if(data.stageId)this.options.onStageChanged?.(data.stageId);
       console.log("[client] match started, players:", data.playerIds);
       this.interpolationBuffer.clear();
       this.predictor = null;

@@ -1,3 +1,4 @@
+import { XBOX360_PROFILE as CONTROLLER_PROFILE } from '../input/xbox360Profile';
 /**
  * @fileoverview Local Play Setup screen.
  *
@@ -187,7 +188,7 @@ export function renderLocalPlaySetupScreen(
         <button id="lps-start-btn" class="ui-btn" style="font-size:20px;padding:14px 36px">Start</button>
         ${onBack ? '<button id="lps-back-btn" class="ui-btn" style="margin-top:12px;font-size:14px;padding:8px 16px">← Back</button>' : ''}
       </div>
-      <div class="menu-hint">↑↓ Navigate • ←→ Cycle Seat • Enter/A Select${onBack ? ' • Esc/B Back' : ''}</div>`;
+      <div class="menu-hint">↑↓ Navigate • ←→ Cycle Seat • Enter / ${CONTROLLER_PROFILE.menuLabels.confirm} Select${onBack ? ` • Esc / ${CONTROLLER_PROFILE.menuLabels.cancel} Back` : ''}</div>`;
 
     container.innerHTML = html;
     wireListeners();

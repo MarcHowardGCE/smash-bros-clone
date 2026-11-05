@@ -136,16 +136,16 @@ describe('UIManager', () => {
   });
 
   describe('showLobby', () => {
-    it('should render logo image at top of page', () => {
+    it('should render the logo inside the responsive main menu panel', () => {
       uiManager.showLobby();
       const img = mockOverlay.querySelector('img[alt="Everybody Throws Hands"]') as HTMLImageElement;
       expect(img).not.toBeNull();
       expect(img.src).toContain('everybody-throws-hands-logo.png');
-      // Logo should be positioned at top (not vertically centered)
+      // Presentation is owned by the responsive menu class.
       const container = img.closest('div') as HTMLElement;
       expect(container).not.toBeNull();
-      expect(container.style.position).toBe('absolute');
-      expect(container.style.top).toBe('80px');
+      expect(container.classList.contains('main-menu-panel')).toBe(true);
+      expect(container.contains(mockOverlay.querySelector('#local-play-btn'))).toBe(true);
     });
 
     it('should not contain old SMASH CLONE text', () => {
@@ -238,7 +238,7 @@ describe('UIManager', () => {
 
         // This frame confirms P1 via B and synchronously cascades into Stage Select.
         runNextFrame();
-        expect(mockOverlay.innerHTML).toContain('SELECT STAGE');
+        expect(mockOverlay.innerHTML).toContain('Choose your world');
         expect(document.getElementById('stage-back-btn')).not.toBeNull();
 
         // First Stage Select frame sees held B baseline from priming; must NOT auto-select.
@@ -649,7 +649,7 @@ describe('UIManager', () => {
       expect(statusEl?.style.color).toMatch(/rgba\(0,\s*255,\s*0,\s*0\.8\)/);
     });
 
-    it('should update Confirm button to "Confirmed" when myPlayerId confirms', () => {
+    it('should offer server-backed change after myPlayerId confirms', () => {
       const confirmBtn = document.getElementById('network-charselect-confirm-btn') as HTMLButtonElement;
 
       // First select a fighter and click confirm
@@ -660,8 +660,8 @@ describe('UIManager', () => {
       // Now update with confirmed=true
       uiManager.updateNetworkCharacterSelect('p1' as any, 'fighter1', true);
 
-      expect(confirmBtn.disabled).toBe(true);
-      expect(confirmBtn.textContent).toBe('Confirmed');
+      expect(confirmBtn.disabled).toBe(false);
+      expect(confirmBtn.textContent).toBe('Change fighter · A');
     });
 
     it('should be no-op for unknown playerId', () => {

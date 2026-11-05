@@ -1,3 +1,4 @@
+import { WORLD_STORIES, escapeHtml } from './selectionContent';
 import{XBOX360_PROFILE as CONTROLLER_PROFILE}from'../input/xbox360Profile';
 /**
  * @fileoverview Stage Select screen with grid navigation.
@@ -14,7 +15,7 @@ import { GenericInputBits } from '@smash/gamepad-input';
 import { STAGES, getRandomStage, type StageConfig } from '../stages/stageConfig.js';
 
 /** Number of columns in the stage grid. */
-const GRID_COLS = 2;
+const GRID_COLS = 3;
 
 /**
  * Render the Stage Select screen into the given container.
@@ -25,16 +26,19 @@ export function renderStageSelectScreen(
   onSelected: (stage: StageConfig) => void,
   onBack?: () => void,
   gamepadPoller?: GamepadPoller | null,
-): void {
+  onPreview?: (stage:StageConfig)=>void,
+  initialStageId?:string,
+): {destroy:()=>void} {
   /** Total navigable items: stages + 1 random button. */
   const totalItems = stages.length + 1;
   const randomIndex = stages.length;
 
-  let selectedIndex = 0;
+  let selectedIndex = Math.max(0,stages.findIndex(s=>s.id===initialStageId));
   let keyHandler: ((e: KeyboardEvent) => void) | null = null;
   let rafId: number | null = null;
   let lastBitsPerGamepad = new Map<number, number>();
   let disposed = false;
+  let lastPreviewId:string|undefined;
 
   function cleanup(): void {
     disposed = true;
@@ -50,9 +54,11 @@ export function renderStageSelectScreen(
   }
 
   function selectStage(index: number): void {
+    if(disposed)return;
     cleanup();
     if (index === randomIndex) {
-      onSelected(getRandomStage());
+      const stage=stages[Math.floor(Math.random()*stages.length)];
+      if(stage)onSelected(stage);
     } else {
       const stage = stages[index];
       if (stage) onSelected(stage);
@@ -72,11 +78,18 @@ export function renderStageSelectScreen(
       const idx = Number(btn.dataset['stageIdx']);
       if (idx === selectedIndex) {
         btn.classList.add('menu-selected');
+        btn.scrollIntoView?.({ block: 'nearest', inline: 'nearest' });
       } else {
         btn.classList.remove('menu-selected');
       }
     });
+    const stage=stages[selectedIndex];
+    if(stage && stage.id!==lastPreviewId){lastPreviewId=stage.id;onPreview?.(stage);}
+    const info=stage?WORLD_STORIES[stage.id]:undefined;
+    const panel=container.querySelector<HTMLElement>('#stage-preview');
+    if(panel){panel.innerHTML=stage ? '<img class="world-preview-art" src="'+normalizedBaseUrl+(info?'menu-art/'+stage.id+'.webp':'backgrounds/'+stage.backgroundImage)+'" alt="'+escapeHtml(stage.displayName)+'"><div class="world-copy"><small>WORLD '+String(selectedIndex+1).padStart(2,'0')+'</small><h2>'+escapeHtml(stage.displayName)+'</h2>'+(info?'<b>'+escapeHtml(info.hook)+'</b><p>'+escapeHtml(info.text)+'</p><button id="stage-story-toggle" class="ui-btn" aria-expanded="false">Read the story · X</button><p id="stage-story" hidden>'+escapeHtml(info.story)+'</p>':'')+'<p class="world-arena-note">Shared arena layout · Static background art</p></div>' : '<div class="world-copy"><h2>Let the world choose you</h2><p>Random selects from these '+stages.length+' worlds.</p></div>';panel.querySelector('#stage-story-toggle')?.addEventListener('click',toggleStory);}
   }
+  function toggleStory():void { const story=container.querySelector<HTMLElement>('#stage-story'),button=container.querySelector('#stage-story-toggle');if(story){story.hidden=!story.hidden;button?.setAttribute('aria-expanded',String(!story.hidden));} }
 
   function moveGrid(direction: 'up' | 'down' | 'left' | 'right'): void {
     const stageCount = stages.length;
@@ -137,33 +150,14 @@ export function renderStageSelectScreen(
   const baseUrl = import.meta.env.BASE_URL || '/';
   const normalizedBaseUrl = baseUrl.endsWith('/') ? baseUrl : `${baseUrl}/`;
 
-  let gridHtml = '';
-  for (let i = 0; i < stages.length; i++) {
-    const stage = stages[i]!;
-    const imgPath = `${normalizedBaseUrl}backgrounds/${stage.backgroundImage}`;
-    gridHtml += `<button class="ui-btn stage-grid-btn" data-stage-idx="${i}" style="display:flex;flex-direction:column;align-items:center;padding:10px;min-width:200px;gap:8px;cursor:pointer">
-      <img src="${imgPath}" alt="${stage.displayName}" style="width:180px;height:100px;object-fit:cover;display:block;border-radius:6px;pointer-events:none">
-      <span style="font-size:14px;letter-spacing:1px;opacity:0.9">${stage.displayName}</span>
-    </button>`;
-  }
-
-  container.innerHTML = `
-    <div class="overlay-center" style="max-width:560px;width:100%;align-items:center">
-      <div style="font-size:32px;letter-spacing:2px;margin-bottom:24px">SELECT STAGE</div>
-      <div class="stage-grid" style="display:grid;grid-template-columns:repeat(${GRID_COLS},1fr);gap:16px;margin-bottom:20px;width:100%">
-        ${gridHtml}
-      </div>
-      <button class="ui-btn stage-grid-btn" data-stage-idx="${randomIndex}" style="display:flex;flex-direction:column;align-items:center;padding:10px 24px;min-width:200px;gap:8px;width:100%;cursor:pointer">
-        <div style="width:180px;height:100px;display:flex;align-items:center;justify-content:center;border-radius:6px;background:rgba(255,255,255,0.05);border:2px dashed rgba(255,255,255,0.3);font-size:42px;opacity:0.7">?</div>
-        <span style="font-size:14px;letter-spacing:1px;opacity:0.9">Random</span>
-      </button>
-      ${onBack ? '<button id="stage-back-btn" class="ui-btn" style="margin-top:16px;font-size:14px;padding:8px 16px">← Back</button>' : ''}
-    </div>
-    <div class="menu-hint">↑↓←→ Navigate • Enter/A Select${onBack ? ' • Esc/B Back' : ''}</div>`;
+  container.innerHTML = '<div class="overlay-center world-selection"><header><small>SIX IMPOSSIBLE WORLDS</small><h1>Choose your world</h1></header><div class="world-layout"><div><div class="stage-grid">'+stages.map((stage,i)=>'<button class="stage-grid-btn ui-btn" data-stage-idx="'+i+'" aria-label="'+escapeHtml(stage.displayName)+'"><img src="'+normalizedBaseUrl+(WORLD_STORIES[stage.id]?'menu-art/'+stage.id+'.webp':'backgrounds/'+stage.backgroundImage)+'" alt=""><span>'+escapeHtml(WORLD_STORIES[stage.id]?.short??stage.displayName)+'</span></button>').join('')+'</div><button class="ui-btn world-random" data-stage-idx="'+randomIndex+'">✦ Random world</button></div><section id="stage-preview" aria-live="polite"></section></div>'+(onBack?'<button id="stage-back-btn" class="ui-btn">← Back</button>':'')+'</div><div class="menu-hint">Arrows / D-pad · Browse • Enter / '+CONTROLLER_PROFILE.menuLabels.confirm+' Select • X / I Story'+(onBack?' • Esc / '+CONTROLLER_PROFILE.menuLabels.cancel+' Back':'')+'</div>';
 
   // --- Wire click listeners ---
   const allBtns = container.querySelectorAll<HTMLElement>('[data-stage-idx]');
   allBtns.forEach((btn) => {
+    const preview=()=>{selectedIndex=Number(btn.dataset['stageIdx']);updateVisuals();};
+    btn.addEventListener('mouseenter',preview);
+    btn.addEventListener('focus',preview);
     btn.addEventListener('click', () => {
       const idx = Number(btn.dataset['stageIdx']);
       selectStage(idx);
@@ -207,8 +201,12 @@ export function renderStageSelectScreen(
         e.preventDefault();
         moveGrid('right');
         break;
+      case 'i':
+      case 'I':
+        e.preventDefault();toggleStory();break;
       case 'Enter':
       case ' ':
+        if((e.target as HTMLElement)?.closest?.('#stage-story-toggle, #stage-back-btn'))return;
         e.preventDefault();
         selectStage(selectedIndex);
         break;
@@ -243,7 +241,9 @@ export function renderStageSelectScreen(
         if (pressed & GenericInputBits.DOWN) moveGrid('down');
         if (pressed & GenericInputBits.LEFT) moveGrid('left');
         if (pressed & GenericInputBits.RIGHT) moveGrid('right');
+        if (pressed & GenericInputBits.X) toggleStory();
         if (pressed & CONTROLLER_PROFILE.confirm) selectStage(selectedIndex);
+        if(disposed)return;
         if (pressed & CONTROLLER_PROFILE.cancel) goBack();
 
         lastBitsPerGamepad.set(gpIndex, bits);
@@ -254,4 +254,5 @@ export function renderStageSelectScreen(
     };
     rafId = requestAnimationFrame(pollGamepad);
   }
+  return {destroy:cleanup};
 }

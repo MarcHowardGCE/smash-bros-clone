@@ -249,6 +249,7 @@ describe("createApp socket integration", () => {
 			"character:confirm",
 			roomCode,
 		);
+    await emitWithAck<AckResponse>(clientA,"stage:confirm",roomCode);
 		expect(confirmAckB.ok).toBe(true);
 		expect(confirmAckB.allConfirmed).toBe(true);
 
@@ -370,6 +371,7 @@ describe("createApp socket integration", () => {
 			"character:confirm",
 			roomCode,
 		);
+    await emitWithAck<AckResponse>(clientA,"stage:confirm",roomCode);
 		await countdownA;
 
 		let gameStartReceived = false;
@@ -440,6 +442,7 @@ describe("createApp socket integration", () => {
 			"character:confirm",
 			roomCode,
 		);
+    await emitWithAck<AckResponse>(clientA,"stage:confirm",roomCode);
 		await countdownA;
 
 		// Wait for game to start
@@ -542,6 +545,7 @@ describe("createApp socket integration", () => {
 		);
 		await emitWithAck<AckResponse>(clientA, "character:confirm", roomCode);
 		await emitWithAck<AckResponse>(clientB, "character:confirm", roomCode);
+    await emitWithAck<AckResponse>(clientA,"stage:confirm",roomCode);
 		await countdownA;
 
 		// Wait for game start

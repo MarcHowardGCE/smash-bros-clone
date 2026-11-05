@@ -380,3 +380,23 @@ Profile contracts, seven authoritative combo cases, four production browser chec
 Supporting work retained from the preceding input/defense pass: optional analog transport and magnitude-aware DI/SDI; category-specific shieldstun; separately calculated parry freeze with post-freeze guardstun retained. Three hundred numeric parry/shieldstun cases agree with the calculator author implementation. This is research-source agreement, not official complete version-specific parity.
 
 Batch 36 final evidence: complete shared/gamepad/engine/server package runs passed (33/75/917/279 tests, 17 skips). Client full run passed 561/565; the four stale controller expectations/mock exports were corrected, then all 57 tests in the three affected files passed. All current known failures are resolved; this is combined evidence, not a single final full-workspace run. Four production controller/calibration browser cases and separate four-client regression passed.
+
+
+### Menu refinement — shared foundation (November 4, 2026)
+
+Selection design preview is in outputs/menu-prototype-v1. Fighter canon remains open for collaborative writing. The game now uses a scoped illustrated menu surface with readable panels and profile-derived Xbox B/A hints. Countdown/match keep the arena visible; pause uses a translucent scrim. This is the foundation pass; portrait-based character selection, story-based stage selection, state-preserving back navigation, and unified online selection remain upcoming integration work.
+
+
+### Illustrated selection integration — November 4, 2026
+
+Local fighter selection now uses approved portraits, archetype descriptions and player-colored panels. Online selection reuses those portraits and archetypes; its server-confirmation flow is retained. Six named worlds have optimized previews and source-based stories accessible through the Story button, I key or Xbox X. Stage IDs, background filenames, music and shared arena geometry are unchanged. Stage Back restores fighter picks without returning to seat setup; human slots reconfirm. Fighter canon is still open. Character polling is canceled on screen replacement, including the pending CPU timer. Host-synchronized online stage selection, unified local/online navigation, CPU fighter editing after automatic lock-in, and deeper ready/unlock interaction remain future work.
+
+
+### Selection interaction refinement — November 4, 2026
+
+Local humans can unlock their own ready choice with Xbox A, Escape for P1, or the Change fighter button while waiting for other players. Only the host controller backs out of the full local screen when its choice is not locked. CPU choices can be changed by clicking a fighter before the screen advances. Online fighter selection now uses the shared keyboard/gamepad MenuNavigator with real buttons. Confirmation remains server-authoritative; rejected confirmation resets pending state for retry, and acknowledged choices remain locked. Online unconfirm/back-to-lobby still requires an explicit server/room flow and is not simulated by the UI.
+
+
+### Online selection protocol — November 4, 2026
+
+Rooms now progress LOBBY → CHARACTER_SELECT → STAGE_SELECT → COUNTDOWN → MATCH. Every participant can server-unconfirm their own fighter before countdown; this returns the room to fighters while preserving other ready choices. Host Back from stage select returns everyone to fighters; Back from fighter selection returns the room to its lobby, clearing ready flags without removing players. The host is the lowest occupied slot and is recomputed after departures. Only the host can select a valid stage1–stage6 or start countdown. Live host previews, committed stage, countdown/start payloads and refresh/rejoin all carry the same stage ID. Geometry remains shared; this synchronizes artwork/music, not unique stage hazards. Disconnect during selection resets the room to lobby. Countdown closes selection, duplicate or wrong-phase requests are rejected, and stale countdown callbacks check the current phase. selection:sync allows client recovery after request errors. New clients and server must be deployed together.

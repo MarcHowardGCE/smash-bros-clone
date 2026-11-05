@@ -2,7 +2,7 @@
  * @fileoverview Manages room lifecycle for the matchmaking layer.
  *
  * Rooms progress through a linear state machine:
- * `LOBBY → CHARACTER_SELECT → COUNTDOWN → MATCH → RESULT`
+ * `LOBBY → CHARACTER_SELECT → STAGE_SELECT → COUNTDOWN → MATCH → RESULT`
  *
  * Each room holds up to 4 player slots identified by a 6-character
  * alphanumeric code (ambiguous characters `O`, `0`, and `I` excluded).
@@ -43,7 +43,7 @@ function generatePlayerId(): PlayerId {
  * ```
  * LOBBY
  *   └─ all players ready → CHARACTER_SELECT
- *        └─ all characters confirmed → COUNTDOWN
+ *        └─ all characters confirmed → STAGE_SELECT → host confirms stage → COUNTDOWN
  *             └─ countdown elapses → MATCH
  *                  └─ match ends / last player disconnects → RESULT
  * ```
@@ -81,6 +81,7 @@ export class RoomManager {
         [playerId, { playerId, socketId, slotIndex: 0, isReady: false, characterId: 'all-rounder', characterConfirmed: false }]
       ]),
       createdAt: Date.now(),
+      stageId: 'stage1',
     };
     this.rooms.set(roomCode, room);
     return { roomCode, playerId, slotIndex: 0 };
@@ -156,7 +157,7 @@ export class RoomManager {
 
   /**
    * Locks in a player's character selection. When all players (minimum 2)
-   * have confirmed, advances the room phase to `COUNTDOWN`.
+   * have confirmed, advances the room phase to `STAGE_SELECT`.
    *
    * Only valid during `CHARACTER_SELECT` phase.
    *
@@ -178,10 +179,43 @@ export class RoomManager {
       room.players.size >= 2 && [...room.players.values()].every((player) => player.characterConfirmed);
 
     if (allConfirmed) {
-      room.phase = 'COUNTDOWN';
+      room.phase = 'STAGE_SELECT';
     }
 
     return { allConfirmed };
+  }
+
+  getSelectionState(roomCode:string) {
+    const room=this.rooms.get(roomCode);if(!room)return null;
+    const players=[...room.players.values()].sort((a,b)=>a.slotIndex-b.slotIndex);
+    return {phase:room.phase,hostPlayerId:players[0]?.playerId,stageId:room.stageId,players:players.map(p=>({playerId:p.playerId,slotIndex:p.slotIndex,characterId:p.characterId,confirmed:p.characterConfirmed}))};
+  }
+  unconfirmCharacter(code:string,id:PlayerId):{ok:true}|{error:string}{
+    const room=this.rooms.get(code);if(!room)return {error:'Room not found'};
+    const player=room.players.get(id);if(!player)return {error:'Player not in room'};
+    if(room.phase!=='CHARACTER_SELECT'&&room.phase!=='STAGE_SELECT')return {error:'Selection is already closed'};
+    player.characterConfirmed=false;room.phase='CHARACTER_SELECT';return {ok:true};
+  }
+  selectionBack(code:string,id:PlayerId):{ok:true}|{error:string}{
+    const room=this.rooms.get(code);if(!room||!room.players.has(id))return {error:'Player not in room'};
+    if(room.phase==='STAGE_SELECT'){
+      if(this.getSelectionState(code)?.hostPlayerId!==id)return {error:'Only the host can return everyone to fighters'};
+      room.phase='CHARACTER_SELECT';for(const p of room.players.values())p.characterConfirmed=false;
+    }else if(room.phase==='CHARACTER_SELECT'){this.resetToLobby(code);}else return {error:'Cannot go back from this phase'};
+    return {ok:true};
+  }
+  selectStage(code:string,id:PlayerId,stageId:unknown):{ok:true}|{error:string}{
+    const room=this.rooms.get(code);if(!room||!room.players.has(id))return {error:'Player not in room'};
+    if(room.phase!=='STAGE_SELECT')return {error:'Not in stage select'};
+    if(this.getSelectionState(code)?.hostPlayerId!==id)return {error:'Only the host can choose the stage'};
+    if(typeof stageId!=='string'||!/^stage[1-6]$/.test(stageId))return {error:'Invalid stage'};
+    room.stageId=stageId;return {ok:true};
+  }
+  confirmStage(code:string,id:PlayerId):{ok:true}|{error:string}{
+    const room=this.rooms.get(code);if(!room||!room.players.has(id))return {error:'Player not in room'};
+    if(room.phase!=='STAGE_SELECT'||this.getSelectionState(code)?.hostPlayerId!==id)return {error:'Only the host can start from stage select'};
+    if(room.players.size<2||![...room.players.values()].every(p=>p.characterConfirmed))return {error:'Players are not ready'};
+    room.phase='COUNTDOWN';return {ok:true};
   }
 
   /**
@@ -309,7 +343,7 @@ export class RoomManager {
         if (slot.socketId === socketId) {
           this.disconnectedPlayers.delete(playerId);
           room.players.delete(playerId);
-          if (room.phase === 'CHARACTER_SELECT' || room.phase === 'COUNTDOWN') {
+          if (room.phase === 'CHARACTER_SELECT' || room.phase === 'STAGE_SELECT' || room.phase === 'COUNTDOWN') {
             room.phase = 'LOBBY';
             for (const remainingSlot of room.players.values()) {
               remainingSlot.isReady = false;

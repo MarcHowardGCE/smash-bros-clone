@@ -1,3 +1,4 @@
+import { FIGHTER_PRESENTATION, WORLD_STORIES, fighterPortrait, escapeHtml } from './selectionContent';
 import{XBOX360_PROFILE as CONTROLLER_PROFILE}from'../input/xbox360Profile';
 /**
  * @fileoverview HTML overlay UI manager for all game phases.
@@ -38,6 +39,10 @@ export type UIPhase = 'connecting' | 'lobby' | 'waiting' | 'countdown' | 'match'
  * starts a {@link MenuNavigator} for gamepad/keyboard navigation.
  */
 export class UIManager {
+  private stageScreenHandle:{destroy:()=>void}|null=null;
+  private networkRestoreChoice:((id:string)=>void)|null=null;
+  private networkSelectionState:{pending:boolean;confirmed:boolean}|null=null;
+  private characterScreenCleanup:(()=>void)|null=null;
   private controlsScreenHandle:{destroy:()=>void}|null=null;
   private overlay: HTMLElement;
   private hudPanel: HTMLElement;
@@ -96,6 +101,11 @@ export class UIManager {
   }
 
   private stopMenuNav(): void {
+    this.characterScreenCleanup?.(); this.characterScreenCleanup=null;
+    this.networkSelectionState=null;this.networkRestoreChoice=null;
+    this.stageScreenHandle?.destroy();this.stageScreenHandle=null;
+    this.overlay.classList.add('menu-shell');
+    this.overlay.dataset.menuSurface = 'menu';
     this.controlsScreenHandle?.destroy();this.controlsScreenHandle=null;
     if (this.menuNav) {
       this.menuNav.stop();
@@ -208,8 +218,8 @@ export class UIManager {
     const existingRoom = urlParams.get('room');
 
     this.overlay.innerHTML = `
-      <div style="position:absolute;top:80px;left:50%;transform:translateX(-50%);text-align:center;color:white;font-family:monospace;pointer-events:all;z-index:10;">
-        <img src="/branding/everybody-throws-hands-logo.png" alt="Everybody Throws Hands" style="max-width:min(700px,80vw);height:auto;display:block;margin:0 auto 48px auto;">
+      <div class="main-menu-panel">
+        <img src="/branding/everybody-throws-hands-logo.png" alt="Everybody Throws Hands" style="max-width:min(700px,80vw);height:auto;display:block;margin:0 auto 24px auto;">
         <div id="audio-settings-container"></div>
         ${existingRoom
           ? `<div style="font-size:18px;margin-bottom:24px">Room: <span style="font-size:24px">${existingRoom}</span></div>
@@ -223,7 +233,7 @@ export class UIManager {
         <button id="local-play-btn" class="ui-btn" style="margin-top:8px">Local Play</button>
         <button id="controls-btn" class="ui-btn" style="margin-top:12px">Controls</button>
       </div>
-      <div class="menu-hint">↑↓ Navigate • ←→ Adjust • Enter/A Select</div>
+      <div class="menu-hint">↑↓ Navigate • ←→ Adjust • Enter / ${CONTROLLER_PROFILE.menuLabels.confirm} Select</div>
       ${this.versionTag()}`;
 
     document.getElementById('create-btn')?.addEventListener('click', () => this.onCreateRoom?.());
@@ -316,6 +326,7 @@ export class UIManager {
     autoConfirmSlots: number[] = [],
     onBack?: () => void,
     gamepadSlotByIndex?: ReadonlyMap<number, number>,
+    initialChoices: readonly FighterChoice[] = [],
   ): void {
     this.stopMenuNav();
     this.hudPanel.style.display = 'none';
@@ -328,14 +339,16 @@ export class UIManager {
       ['Digit2'],
     ];
 
-    const choices: (FighterChoice | null)[] = Array(playerCount).fill(null);
+    const choices: (FighterChoice | null)[] = Array.from({length:playerCount},(_,i)=>fighters.find(f=>f.id===initialChoices[i]?.id)??null);
     const confirmed: boolean[] = Array(playerCount).fill(false);
     const autoConfirmSlotSet = new Set(autoConfirmSlots);
     // Initialize selectedFighterIndex: -1 for human slots (no selection), 0 for CPU slots
     const selectedFighterIndex: number[] = Array(playerCount).fill(0).map((_, i) => 
-      autoConfirmSlotSet.has(i) ? 0 : -1
+      initialChoices[i] ? fighters.findIndex(f=>f.id===initialChoices[i]?.id) : autoConfirmSlotSet.has(i) ? 0 : -1
     );
     const rafIds: number[] = [];
+    let disposed=false;
+    let cpuTimer:ReturnType<typeof setTimeout>|undefined;
 
     console.log('[CharSelect] autoConfirmSlots:', autoConfirmSlots, 'autoConfirmSlotSet:', Array.from(autoConfirmSlotSet));
     console.log('[CharSelect] gamepadSlotByIndex:', gamepadSlotByIndex ? Array.from(gamepadSlotByIndex.entries()) : 'undefined');
@@ -352,30 +365,33 @@ export class UIManager {
             ? 'Enter or Z'
             : i === 1
               ? 'U'
-              : CONFIRM_KEYS[i]?.[0] ?? 'Gamepad A';
+              : CONFIRM_KEYS[i]?.[0] ?? `Gamepad ${CONTROLLER_PROFILE.menuLabels.confirm}`;
         html += `
-        <div id="p${i + 1}-panel" style="text-align:center">
+        <section id="p${i + 1}-panel" class="fighter-player-panel" style="--player-color:${['#7cbab0','#db889a','#e0b567','#a796d4'][i]}">
           <div style="font-size:20px;margin-bottom:16px">P${i + 1} (${panelRole}) Choose</div>
+          <img id="p${i+1}-portrait" class="selection-portrait" src="${fighterPortrait(initialChoices[i]?.id ?? fighters[0]?.id ?? '')}" alt="${escapeHtml(initialChoices[i]?.displayName ?? fighters[0]?.displayName ?? '')}">
+          <div id="p${i+1}-identity" class="fighter-identity"></div>
           ${fighters.map(f => `
-            <div class="fighter-option" data-player="${i + 1}" data-id="${f.id}"
-                 style="border:2px solid rgba(255,255,255,0.3);padding:12px 24px;margin-bottom:8px;cursor:pointer;font-size:18px;width:200px;box-sizing:border-box;display:block">
-              ${f.displayName}
-            </div>
+            <button type="button" class="fighter-option" data-player="${i + 1}" data-id="${f.id}"
+                 style="border:2px solid rgba(255,255,255,0.3)">
+              ${escapeHtml(f.displayName)}
+            </button>
           `).join('')}
           <div id="p${i + 1}-status" style="font-size:14px;margin-top:12px;color:rgba(255,255,255,0.5)">
-            Press ${confirmHint} to confirm
+            ${isCpuSlot ? confirmHint : `Press ${confirmHint} or Gamepad ${CONTROLLER_PROFILE.menuLabels.confirm} to confirm`}
           </div>
-        </div>`;
+          ${isCpuSlot ? '' : `<button type="button" class="ui-btn fighter-ready" data-ready-slot="${i}">Ready · ${CONTROLLER_PROFILE.menuLabels.confirm}</button>`}
+        </section>`;
       }
       return html;
     })();
 
     this.overlay.innerHTML = `
-      <div class="overlay-center" style="flex-direction:row;gap:60px">
+      <div class="overlay-center character-selection" style="--players:${playerCount}">
         ${panelsHtml}
       </div>
       ${onBack ? '<button id="charsel-back-btn" class="ui-btn" style="position:absolute;top:24px;left:24px;font-size:14px;padding:8px 16px">← Back</button>' : ''}
-      <div class="menu-hint">${onBack ? 'Esc/B Back • ' : ''}Confirm to start</div>`;
+      <div class="menu-hint">${onBack ? `Esc / ${CONTROLLER_PROFILE.menuLabels.cancel} Back • ` : ''}Confirm to start</div>`;
 
     // Back button click
     if (onBack) {
@@ -385,19 +401,29 @@ export class UIManager {
       });
     }
 
+    const updateIdentity=(slot:number,fighter:FighterChoice)=>{
+      const portrait=this.overlay.querySelector<HTMLImageElement>('#p'+(slot+1)+'-portrait');
+      if(portrait){portrait.src=fighterPortrait(fighter.id);portrait.alt=fighter.displayName;}
+      const detail=this.overlay.querySelector('#p'+(slot+1)+'-identity');const info=FIGHTER_PRESENTATION[fighter.id];
+      if(detail)detail.innerHTML=info ? '<strong>'+escapeHtml(info.role)+'</strong><p>'+escapeHtml(info.pitch)+'</p>' : '';
+    };
+    for(let i=0;i<playerCount;i++){const fighter=choices[i]??fighters[0];if(fighter)updateIdentity(i,fighter);}
+    for(let i=0;i<playerCount;i++){if(initialChoices[i]){this.overlay.querySelectorAll<HTMLElement>(`[data-player="${i+1}"]`).forEach(el=>{el.style.borderColor=el.dataset.id===initialChoices[i]?.id?'white':'rgba(255,255,255,0.3)';});}}
     // Click-to-select: attach listeners to fighter options
     for (let i = 0; i < playerCount; i++) {
       const playerElements = document.querySelectorAll(`[data-player="${i + 1}"]`);
       playerElements.forEach(el => {
         (el as HTMLElement).addEventListener('click', () => {
           // Only allow selection if slot not confirmed
-          if (confirmed[i]) return;
+          if (confirmed[i] && !autoConfirmSlotSet.has(i)) return;
+          if(autoConfirmSlotSet.has(i))confirmed[i]=false;
           
           const fighterId = (el as HTMLElement).getAttribute('data-id');
           const selectedFighter = fighters.find(f => f.id === fighterId);
           
           if (selectedFighter) {
             choices[i] = selectedFighter;
+            updateIdentity(i,selectedFighter);
             selectedFighterIndex[i] = fighters.indexOf(selectedFighter);
             
             // Update border styling: clicked option gets white, others dim
@@ -405,6 +431,7 @@ export class UIManager {
               (option as HTMLElement).style.borderColor = 'rgba(255,255,255,0.3)';
             });
             (el as HTMLElement).style.borderColor = 'white';
+            if(autoConfirmSlotSet.has(i))confirmSlot(i);
           }
         });
       });
@@ -415,9 +442,9 @@ export class UIManager {
       for (let i = 0; i < playerCount; i++) {
         if (autoConfirmSlotSet.has(i)) {
           // CPU slot: auto-select first fighter
-          choices[i] = fighters[0];
+          choices[i] = choices[i] ?? fighters[0];
           const fighterElement = document.querySelector(
-            `[data-player="${i + 1}"][data-id="${fighters[0].id}"]`
+            `[data-player="${i + 1}"][data-id="${choices[i]!.id}"]`
           );
           if (fighterElement) {
             (fighterElement as HTMLElement).style.borderColor = 'white';
@@ -428,6 +455,9 @@ export class UIManager {
     }
 
     const cleanup = () => {
+      disposed=true;
+      if(cpuTimer!==undefined)clearTimeout(cpuTimer);
+      if(this.characterScreenCleanup===cleanup)this.characterScreenCleanup=null;
       window.removeEventListener('keydown', onKey);
       for (const id of rafIds) {
         cancelAnimationFrame(id);
@@ -435,6 +465,7 @@ export class UIManager {
       rafIds.length = 0;
     };
 
+    this.characterScreenCleanup=cleanup;
     const checkAllConfirmed = () => {
       // Only advance if all slots confirmed AND at least one human slot is confirmed
       const humanSlotsConfirmed = confirmed.some((c, i) => c && !autoConfirmSlotSet.has(i));
@@ -445,13 +476,23 @@ export class UIManager {
     };
 
     const confirmSlot = (slotIndex: number) => {
-      if (confirmed[slotIndex]) return;
+      if (disposed || confirmed[slotIndex]) return;
       confirmed[slotIndex] = true;
       const status = document.getElementById(`p${slotIndex + 1}-status`);
       if (status) { status.textContent = '✓ Ready!'; status.style.color = 'white'; }
+      const readyButton=this.overlay.querySelector<HTMLButtonElement>(`[data-ready-slot="${slotIndex}"]`);if(readyButton){readyButton.disabled=false;readyButton.textContent='Change fighter · A';}
       checkAllConfirmed();
     };
 
+    const unlockSlot=(slot:number):boolean=>{
+      if(disposed||!confirmed[slot]||autoConfirmSlotSet.has(slot))return false;
+      confirmed[slot]=false;
+      const status=this.overlay.querySelector<HTMLElement>('#p'+(slot+1)+'-status');
+      if(status){status.textContent='Choosing · confirm when ready';status.style.color='#e6d3b2';}
+      const button=this.overlay.querySelector<HTMLButtonElement>('[data-ready-slot="'+slot+'"]');
+      if(button){button.disabled=false;button.textContent='Ready · '+CONTROLLER_PROFILE.menuLabels.confirm;}
+      return true;
+    };
     const applySelectedChoiceForSlot = (slotIndex: number): boolean => {
       const currentIndex = selectedFighterIndex[slotIndex];
       const resolvedIndex =
@@ -465,6 +506,7 @@ export class UIManager {
 
       selectedFighterIndex[slotIndex] = resolvedIndex;
       choices[slotIndex] = selectedFighter;
+      updateIdentity(slotIndex,selectedFighter);
 
       // Keep visual highlight in sync when confirm is used before directional navigation/click.
       const playerElements = document.querySelectorAll(`[data-player="${slotIndex + 1}"]`);
@@ -476,17 +518,21 @@ export class UIManager {
       );
       if (selectedElement) {
         (selectedElement as HTMLElement).style.borderColor = 'white';
+                    updateIdentity(slotIndex,selectedFighter);
       }
 
       return true;
     };
 
+    this.overlay.querySelectorAll<HTMLElement>('[data-ready-slot]').forEach(button=>button.addEventListener('click',()=>{const slot=Number(button.dataset.readySlot);if(!unlockSlot(slot)&&applySelectedChoiceForSlot(slot))confirmSlot(slot);}));
     const onKey = (e: KeyboardEvent) => {
       if (e.repeat) {
         return;
       }
 
+      if(e.key==='Enter' && (e.target as HTMLElement)?.closest?.('button'))return;
       // Back navigation via Escape
+      if(e.key==='Escape' && unlockSlot(0)){e.preventDefault();return;}
       if (e.key === 'Escape' && onBack) {
         e.preventDefault();
         cleanup();
@@ -495,7 +541,7 @@ export class UIManager {
       }
 
       // Keyboard arrow key navigation for human slot 0 only
-      if (e.key === 'ArrowUp' || e.key === 'ArrowDown') {
+      if (e.key === 'ArrowUp' || e.key === 'ArrowDown' || e.key === 'ArrowLeft' || e.key === 'ArrowRight') {
         const slotIndex = 0; // Only human player (slot 0)
         if (!confirmed[slotIndex]) {
           const currentIndex = selectedFighterIndex[slotIndex];
@@ -503,7 +549,7 @@ export class UIManager {
             // Initialize to first fighter if not yet selected
             selectedFighterIndex[slotIndex] = 0;
           } else {
-            if (e.key === 'ArrowUp') {
+            if (e.key === 'ArrowUp' || e.key === 'ArrowLeft') {
               selectedFighterIndex[slotIndex] = (currentIndex - 1 + fighters.length) % fighters.length;
             } else {
               selectedFighterIndex[slotIndex] = (currentIndex + 1) % fighters.length;
@@ -521,6 +567,7 @@ export class UIManager {
             );
             if (selectedElement) {
               (selectedElement as HTMLElement).style.borderColor = 'white';
+                    updateIdentity(slotIndex,selectedFighter);
             }
           }
         }
@@ -557,14 +604,14 @@ export class UIManager {
           const pressed = bits & ~prev;
 
           // A button → back
-          if ((pressed & CONTROLLER_PROFILE.cancel) && onBack) {
-            cleanup();
-            onBack();
-            return;
+          if(pressed & CONTROLLER_PROFILE.cancel){
+            const slot=gamepadSlotByIndex?.get(gpIndex)??gpIndex;
+            if(unlockSlot(slot)){lastBits.set(gpIndex,bits);continue;}
+            if(slot===0&&onBack){cleanup();onBack();return;}
           }
 
             // D-pad up/down → cycle through fighters (visual highlight only, no auto-select)
-            if (pressed & GenericInputBits.UP) {
+            if (pressed & (GenericInputBits.UP | GenericInputBits.LEFT)) {
               const slotIndex = gamepadSlotByIndex?.get(gpIndex) ?? gpIndex;
               console.log('[CharSelect] Gamepad', gpIndex, 'D-pad UP pressed, mapped to slotIndex:', slotIndex);
               if (slotIndex < playerCount && !confirmed[slotIndex]) {
@@ -588,12 +635,13 @@ export class UIManager {
                   );
                   if (selectedElement) {
                     (selectedElement as HTMLElement).style.borderColor = 'white';
+                    updateIdentity(slotIndex,selectedFighter);
                   }
                 }
               }
             }
 
-            if (pressed & GenericInputBits.DOWN) {
+            if (pressed & (GenericInputBits.DOWN | GenericInputBits.RIGHT)) {
               const slotIndex = gamepadSlotByIndex?.get(gpIndex) ?? gpIndex;
               console.log('[CharSelect] Gamepad', gpIndex, 'D-pad DOWN pressed, mapped to slotIndex:', slotIndex);
               if (slotIndex < playerCount && !confirmed[slotIndex]) {
@@ -617,6 +665,7 @@ export class UIManager {
                   );
                   if (selectedElement) {
                     (selectedElement as HTMLElement).style.borderColor = 'white';
+                    updateIdentity(slotIndex,selectedFighter);
                   }
                 }
               }
@@ -639,14 +688,15 @@ export class UIManager {
         // Check if cleanup was called before scheduling next frame
         if (rafIds.length === 0) return;
         
-        rafIds.push(requestAnimationFrame(checkGamepads));
+        rafIds[0]=requestAnimationFrame(checkGamepads);
       };
       rafIds.push(requestAnimationFrame(checkGamepads));
     }
 
     // Auto-confirm CPU slots after a brief delay to allow UI to render
     if (autoConfirmSlots.length > 0) {
-      setTimeout(() => {
+      cpuTimer=setTimeout(() => {
+        if(disposed)return;
         for (const slotIndex of autoConfirmSlots) {
           if (slotIndex < playerCount && !confirmed[slotIndex]) {
             confirmSlot(slotIndex);
@@ -673,13 +723,15 @@ export class UIManager {
     stages: StageConfig[],
     onSelected: (stage: StageConfig) => void,
     onBack?: () => void,
+    onPreview?: (stage:StageConfig)=>void,
+    initialStageId?:string,
   ): void {
     this.stopMenuNav();
     this.phase = 'lobby';
     this.hudPanel.style.display = 'none';
     this.overlay.innerHTML = '';
 
-    renderStageSelectScreen(this.overlay, stages, onSelected, onBack, this._gamepadPoller);
+    this.stageScreenHandle=renderStageSelectScreen(this.overlay, stages, onSelected, onBack, this._gamepadPoller,onPreview,initialStageId);
   }
 
   /** Show the room-created screen with the 6-character code and a Ready button. */
@@ -746,6 +798,7 @@ export class UIManager {
   showCountdown(count: number): void {
     this.stopMenuNav();
     this.phase = 'countdown';
+    this.overlay.dataset.menuSurface = 'game';
     this.hudPanel.style.display = 'none';
     this.overlay.innerHTML = `
       <div class="overlay-center" style="font-size:120px;font-weight:bold;letter-spacing:8px">
@@ -757,6 +810,7 @@ export class UIManager {
   showMatch(): void {
     this.stopMenuNav();
     this.phase = 'match';
+    this.overlay.dataset.menuSurface = 'game';
     this.overlay.innerHTML = '';
     this.hudPanel.style.display = 'flex';
   }
@@ -765,6 +819,7 @@ export class UIManager {
   showPauseOverlay(): void {
     this.stopMenuNav();
     this.phase = 'paused';
+    this.overlay.dataset.menuSurface = 'pause';
     this.overlay.innerHTML = `
       <div class="overlay-center">
         <div style="font-size:48px;letter-spacing:4px;margin-bottom:40px">PAUSED</div>
@@ -772,7 +827,7 @@ export class UIManager {
         <button id="resume-btn" class="ui-btn" style="margin-bottom:16px">Resume</button>
         <button id="main-menu-btn" class="ui-btn">Main Menu</button>
       </div>
-      <div class="menu-hint">↑↓ Navigate • ←→ Adjust • Enter/A Select</div>
+      <div class="menu-hint">↑↓ Navigate • ←→ Adjust • Enter / ${CONTROLLER_PROFILE.menuLabels.confirm} Select</div>
       ${this.versionTag()}`;
 
     document.getElementById('resume-btn')?.addEventListener('click', () => this.onResume?.());
@@ -842,7 +897,7 @@ export class UIManager {
         <button id="play-again-btn" class="ui-btn">Play Again</button>
         <button id="main-menu-btn" class="ui-btn" style="margin-top:12px">Main Menu</button>
       </div>
-      <div class="menu-hint">↑↓ Navigate • Enter/A Select</div>
+      <div class="menu-hint">↑↓ Navigate • Enter / ${CONTROLLER_PROFILE.menuLabels.confirm} Select</div>
       ${this.versionTag()}`;
 
     document.getElementById('play-again-btn')?.addEventListener('click', () => {
@@ -967,7 +1022,7 @@ export class UIManager {
         <button id="local-play-again-btn" class="ui-btn">Play Again</button>
         <button id="main-menu-btn" class="ui-btn" style="margin-top:12px">Main Menu</button>
       </div>
-      <div class="menu-hint">↑↓ Navigate • Enter/A Select</div>
+      <div class="menu-hint">↑↓ Navigate • Enter / ${CONTROLLER_PROFILE.menuLabels.confirm} Select</div>
       ${this.versionTag()}`;
 
     document.getElementById('local-play-again-btn')?.addEventListener('click', () => {
@@ -998,13 +1053,16 @@ export class UIManager {
     playerIds: PlayerId[],
     onSelect: (characterId: string) => void,
     onConfirm: () => void,
+    onUnconfirm?:()=>void,
+    onBack?:()=>void,
   ): void {
     this.stopMenuNav();
     this.hudPanel.style.display = 'none';
 
     // Track selected character for local player
     let selectedCharacterId: string | null = null;
-    let confirmPending = false;
+    const selectionState={pending:false,confirmed:false};
+    this.networkSelectionState=selectionState;
 
     // Build HTML: 1 interactive panel for myPlayerId + read-only rows for others
     const myPlayerIndex = playerIds.indexOf(myPlayerId);
@@ -1014,10 +1072,11 @@ export class UIManager {
       <div id="network-charselect-panel" style="text-align:center;flex:1">
         <div style="font-size:20px;margin-bottom:16px">Your Character</div>
         ${fighters.map(f => `
-          <div class="network-fighter-option" data-id="${f.id}"
+          <button type="button" id="network-fighter-${f.id}" class="network-fighter-option" data-id="${f.id}"
                style="border:2px solid rgba(255,255,255,0.3);padding:12px 24px;margin-bottom:8px;cursor:pointer;font-size:18px;width:200px;box-sizing:border-box;display:block">
-            ${f.displayName}
-          </div>
+            <img class="network-selection-portrait" src="${fighterPortrait(f.id)}" alt="">
+            <strong>${escapeHtml(f.displayName)}</strong><small>${escapeHtml(FIGHTER_PRESENTATION[f.id]?.role ?? '')}</small>
+          </button>
         `).join('')}
         <button id="network-charselect-confirm-btn" class="ui-btn" style="margin-top:16px;width:200px">Confirm</button>
         <div id="network-charselect-error" style="color:red;font-size:14px;margin-top:8px;min-height:20px"></div>
@@ -1036,13 +1095,14 @@ export class UIManager {
         ${interactivePanelHtml}
         ${statusRowsHtml}
       </div>
-      <div class="menu-hint">Click fighter to select • Confirm to lock in</div>`;
+      <div class="menu-hint">↑↓ / D-pad · Browse • Enter / ${CONTROLLER_PROFILE.menuLabels.confirm} · Select or activate Confirm • Ready waits for server acknowledgement</div>`;
 
+    this.networkRestoreChoice=(id:string)=>{selectedCharacterId=id;this.overlay.querySelectorAll<HTMLElement>('.network-fighter-option').forEach(el=>el.style.borderColor=el.dataset.id===id?'white':'rgba(255,255,255,0.3)');};
     // Attach click listeners to fighter options
     const fighterOptions = document.querySelectorAll('.network-fighter-option');
     fighterOptions.forEach(el => {
       (el as HTMLElement).addEventListener('click', () => {
-        if (confirmPending) return;
+        if (selectionState.pending || selectionState.confirmed) return;
 
         const fighterId = (el as HTMLElement).getAttribute('data-id');
         if (!fighterId) return;
@@ -1062,25 +1122,40 @@ export class UIManager {
     const confirmBtn = document.getElementById('network-charselect-confirm-btn') as HTMLButtonElement | null;
     if (confirmBtn) {
       confirmBtn.addEventListener('click', () => {
-        if (confirmPending || !selectedCharacterId) return;
+        if(selectionState.confirmed){onUnconfirm?.();return;}
+        if (selectionState.pending || !selectedCharacterId) return;
 
-        confirmPending = true;
+        selectionState.pending = true;
         confirmBtn.disabled = true;
         confirmBtn.textContent = 'Confirming...';
 
         onConfirm();
       });
     }
+    this.menuNav=new MenuNavigator(this._gamepadPoller);
+    const entries:MenuButton[]=Array.from(this.overlay.querySelectorAll<HTMLElement>('.network-fighter-option')).map((element,index)=>({id:'network-choice-'+index,element,onActivate:()=>element.click()}));
+    if(confirmBtn)entries.push({id:'network-ready',element:confirmBtn,onActivate:()=>confirmBtn.click()});
+    this.menuNav.setButtons(entries);this.menuNav.start(()=>{if(selectionState.pending)return;if(selectionState.confirmed)onUnconfirm?.();else onBack?.();});
+  }
+
+  showNetworkStageWaiting(stage:StageConfig,onChangeFighter:()=>void):void {
+    this.stopMenuNav();this.hudPanel.style.display='none';const info=WORLD_STORIES[stage.id];
+    this.overlay.innerHTML='<div class="overlay-center"><small>HOST IS CHOOSING THE WORLD</small><img src="'+(import.meta.env.BASE_URL||'/')+'menu-art/'+stage.id+'.webp" alt="" style="width:min(640px,65vw);border-radius:4px"><h2>'+escapeHtml(stage.displayName)+'</h2><p>'+escapeHtml(info?.text??'')+'</p><button class="ui-btn" id="online-change-fighter">Change fighter · A</button><div id="network-charselect-error" role="alert"></div></div><div class="menu-hint">The host chooses for everyone • A / Esc · Change fighter</div>';
+    const button=this.overlay.querySelector<HTMLElement>('#online-change-fighter')!;button.onclick=onChangeFighter;
+    this.menuNav=new MenuNavigator(this._gamepadPoller);this.menuNav.setButtons([{id:'online-change-fighter',element:button,onActivate:onChangeFighter}]);this.menuNav.start(onChangeFighter);
   }
 
   updateNetworkCharacterSelect(playerId: PlayerId, characterId: string, confirmed: boolean): void {
-    // Update for local player (myPlayerId)
+    // Restore the authoritative choice without sending another selection request.
     if (playerId === this.myPlayerId) {
+      this.networkRestoreChoice?.(characterId);
+      if(!confirmed&&this.networkSelectionState?.confirmed){this.networkSelectionState.confirmed=false;this.networkSelectionState.pending=false;const button=this.overlay.querySelector<HTMLButtonElement>('#network-charselect-confirm-btn');if(button){button.disabled=false;button.textContent='Confirm';}}
       const confirmBtn = document.getElementById('network-charselect-confirm-btn') as HTMLButtonElement | null;
       if (confirmBtn) {
         if (confirmed) {
-          confirmBtn.disabled = true;
-          confirmBtn.textContent = 'Confirmed';
+          if(this.networkSelectionState){this.networkSelectionState.pending=false;this.networkSelectionState.confirmed=true;}
+          confirmBtn.disabled = false;
+          confirmBtn.textContent = 'Change fighter · A';
         }
         // If not confirmed, button state is already managed by showNetworkCharacterSelect
       }
@@ -1101,6 +1176,8 @@ export class UIManager {
   }
 
   showNetworkCharacterSelectConfirmError(message: string): void {
+    if(this.networkSelectionState?.confirmed){const el=this.overlay.querySelector('#network-charselect-error');if(el)el.textContent=message;return;}
+    if(this.networkSelectionState)this.networkSelectionState.pending=false;
     // Re-enable the Confirm button
     const confirmBtn = document.getElementById('network-charselect-confirm-btn') as HTMLButtonElement | null;
     if (confirmBtn) {

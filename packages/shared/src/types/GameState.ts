@@ -198,6 +198,13 @@ export interface PlayerState {
   lastHitKnockbackAngle?: number | null;
   /** Pending vx component of knockback to be applied on hitlag exit. */
   pendingKnockbackVx?: number | null;
+  /** World-space launch momentum, separate from gravity; authoritative hit reactions only. */
+  launchVx?: number;
+  launchVy?: number;
+  launchFallVy?: number;
+  /** Analog ground intent history, retained in snapshots for deterministic replay. */
+  movementStickX?: number;
+  movementFlickAge?: number;
   /** Pending vy component of knockback to be applied on hitlag exit. */
   pendingKnockbackVy?: number | null;
   /** Frames remaining before this fighter respawns after a KO. */
@@ -213,6 +220,7 @@ export interface PlayerState {
  * Owned by the server; never mutated by clients.
  */
 export interface GameState {
+  stageId?:string;
   /** Monotonically incrementing simulation tick counter (60 Hz). */
   tick: number;
   /** All active players keyed by PlayerId. */
@@ -262,6 +270,7 @@ export interface KOEventData {
  * client-side prediction reconciliation.
  */
 export interface StateSnapshot {
+  stageId?:string;
   /** Simulation tick this snapshot was captured at. */
   tick: number;
   /** Wall-clock timestamp (ms) when the snapshot was serialised. */

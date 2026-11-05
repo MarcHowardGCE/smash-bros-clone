@@ -38,6 +38,7 @@ extensionCodec.register({
  * createApp owns socket routing, disconnect expiry and shutdown cleanup.
  */
 interface MatchSessionConfig {
+  stageId?:string;
 	playerIds: PlayerId[];
 	characterIds: Record<PlayerId, CharacterId>;
 	onBroadcast: (data: Uint8Array | Buffer) => void;
@@ -70,7 +71,7 @@ export class MatchSession {
    * @param config - Player IDs, character selections, and transport callbacks.
    */
   constructor(config: MatchSessionConfig) {
-    this.engine = new GameEngine({ playerIds: config.playerIds, characterIds: config.characterIds });
+    this.engine = new GameEngine({ playerIds: config.playerIds, characterIds: config.characterIds,stageId:config.stageId });
     this.onBroadcast = config.onBroadcast;
     this.onMatchOver = config.onMatchOver;
     this.onPauseChange = config.onPauseChange;

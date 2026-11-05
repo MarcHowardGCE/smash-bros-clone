@@ -1,7 +1,8 @@
+import {horizontalMovementInput,wantsGroundDash} from '../../physics/groundIntent.js';
 /**
  * @fileoverview WALK state — brief transitional grounded movement state.
  *
- * Walk is a 1-frame bridge between IDLE and DASH. It exists so that tilt
+ * Analog walk is sustained; digital movement retains the 1-frame bridge to DASH. It exists so that tilt
  * attacks can be buffered on the very first frame of movement (input window
  * where you're walking but haven't committed to a dash yet). If no action
  * input fires within this frame, WALK auto-escalates to DASH.
@@ -31,7 +32,7 @@ export class WalkState extends BaseState {
 
     if(isPressed(ctx.input,INPUT_BITS.JUMP))return transition(PlayerStateEnum.JUMPSQUAT);
     if(isHeld(ctx.input,INPUT_BITS.DOWN)&&!isHeld(ctx.input,INPUT_BITS.LEFT)&&!isHeld(ctx.input,INPUT_BITS.RIGHT))return transition(PlayerStateEnum.CROUCH);
-    if (!isDirectionHeld(ctx.input)) {
+    if (horizontalMovementInput(ctx.input)===0) {
       return transition(PlayerStateEnum.IDLE);
     }
 
@@ -43,9 +44,9 @@ export class WalkState extends BaseState {
       return transition(PlayerStateEnum.SHIELD);
     }
 
-    // If direction is still held and no other action taken, auto-escalate to DASH.
+    // Digital movement keeps its original dash bridge; analog input requires a fresh flick.
     // This makes WALK a brief 1-frame transitional state that allows tilt attacks
     // from movement start, but quickly escalates to dash speed for normal movement.
-    return transition(PlayerStateEnum.DASH);
+    return wantsGroundDash(ctx.player,ctx.input)?transition(PlayerStateEnum.DASH):null;
   }
 }

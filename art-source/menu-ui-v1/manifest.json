@@ -1,0 +1,93 @@
+{
+  "version": 1,
+  "status": "component-pilot-not-integrated",
+  "generator": "built-in image_gen",
+  "reference": "menu-style-audit-v1/concept-components.png",
+  "assets": [
+    {
+      "name": "hero-frame",
+      "prompt": "Use case: stylized-concept. Asset type: isolated reusable raster game UI master. Reference image is STYLE ONLY, not a layout to reproduce. Match its fine dark engraved linework, worn enamel, gold/ivory/plum palette and surreal Victorian fight-cabinet craft, simplified for readable game menus. A single rectangular menu FRAME, landscape ratio 4:3, transparent open center and transparent outside. Restrained gold and aged ivory carved corners, very thin straight gold rails along four edges, tiny watchful eye crest centered top, small booklike lower corners. No towers, curtains, boxing gloves or large protrusions. Center must be completely empty transparent. Frame occupies most canvas with a safe clear margin; straight edge middles intended for nine-slice scaling. Orthographic front view, no perspective, no scene, no lettering, no labels, no symbols resembling text, no logo, no mockup. True transparent alpha background. One asset only.",
+      "source": "C:/Github/smash-bros-clone/art-source/menu-ui-v1/hero-frame.png",
+      "sourceSize": [
+        1448,
+        1086
+      ],
+      "previewSize": [
+        1200,
+        897
+      ],
+      "hasAlpha": true,
+      "transparentPixels": 911618,
+      "opaquePixels": 1156,
+      "bytes": 503861
+    },
+    {
+      "name": "primary-button",
+      "prompt": "Use case: stylized-concept. Asset type: isolated reusable raster game UI master. Reference image is STYLE ONLY, not a layout to reproduce. Match its fine dark engraved linework, worn enamel, gold/ivory/plum palette and surreal Victorian fight-cabinet craft, simplified for readable game menus. One single wide horizontal ivory enamel BUTTON PLAQUE, ratio about 5:1, with a thin antique gold rim and tiny carved corner scrolls. Large quiet unmarked ivory center for live dark text. Symmetrical horizontal rails, straight middle region suitable for three-slice stretching. Transparent outside, no external shadows. No crest, no hanging beads. Orthographic front view, no perspective, no scene, no lettering, no labels, no symbols resembling text, no logo, no mockup. True transparent alpha background. One asset only.",
+      "source": "C:/Github/smash-bros-clone/art-source/menu-ui-v1/primary-button.png",
+      "sourceSize": [
+        2172,
+        724
+      ],
+      "previewSize": [
+        900,
+        172
+      ],
+      "hasAlpha": true,
+      "transparentPixels": 22605,
+      "opaquePixels": 1331,
+      "bytes": 349753
+    },
+    {
+      "name": "secondary-button",
+      "prompt": "Use case: stylized-concept. Asset type: isolated reusable raster game UI master. Reference image is STYLE ONLY, not a layout to reproduce. Match its fine dark engraved linework, worn enamel, gold/ivory/plum palette and surreal Victorian fight-cabinet craft, simplified for readable game menus. One single wide horizontal deep aubergine enamel BUTTON PLAQUE, ratio about 5:1, thin antique gold rim and tiny carved corner scrolls. Large quiet unmarked dark plum center for live ivory text. Symmetrical horizontal rails, straight middle region suitable for three-slice stretching. Transparent outside, no external shadows. No crest, no hanging beads. Orthographic front view, no perspective, no scene, no lettering, no labels, no symbols resembling text, no logo, no mockup. True transparent alpha background. One asset only.",
+      "source": "C:/Github/smash-bros-clone/art-source/menu-ui-v1/secondary-button.png",
+      "sourceSize": [
+        2172,
+        724
+      ],
+      "previewSize": [
+        900,
+        172
+      ],
+      "hasAlpha": true,
+      "transparentPixels": 18443,
+      "opaquePixels": 1328,
+      "bytes": 301330
+    },
+    {
+      "name": "title-ribbon",
+      "prompt": "Use case: stylized-concept. Asset type: isolated reusable raster game UI master. Reference image is STYLE ONLY, not a layout to reproduce. Match its fine dark engraved linework, worn enamel, gold/ivory/plum palette and surreal Victorian fight-cabinet craft, simplified for readable game menus. One single wide horizontal aged ivory TITLE RIBBON with modest curled ends and dark plum underside, ratio about 5:1. Thin engraved gold outlines. Very quiet blank center for a live menu title. Restrained subtle paper grain, readable flat light center. Transparent outside. Orthographic front view, no perspective, no scene, no lettering, no labels, no symbols resembling text, no logo, no mockup. True transparent alpha background. One asset only.",
+      "source": "C:/Github/smash-bros-clone/art-source/menu-ui-v1/title-ribbon.png",
+      "sourceSize": [
+        2172,
+        724
+      ],
+      "previewSize": [
+        900,
+        144
+      ],
+      "hasAlpha": true,
+      "transparentPixels": 32200,
+      "opaquePixels": 1437,
+      "bytes": 271022
+    },
+    {
+      "name": "focus-eye",
+      "prompt": "Use case: stylized-concept. Asset type: isolated reusable raster game UI master. Reference image is STYLE ONLY, not a layout to reproduce. Match its fine dark engraved linework, worn enamel, gold/ivory/plum palette and surreal Victorian fight-cabinet craft, simplified for readable game menus. One single small horizontal watchful EYE MEDALLION, antique gold oval rim around an ivory eye with dark aubergine iris and pupil. Slightly funny unsettling storybook expression, clean thick silhouette readable at 28px. No rays, dangling chains, no other objects. Transparent outside. Orthographic front view, no perspective, no scene, no lettering, no labels, no symbols resembling text, no logo, no mockup. True transparent alpha background. One asset only.",
+      "source": "C:/Github/smash-bros-clone/art-source/menu-ui-v1/focus-eye.png",
+      "sourceSize": [
+        1774,
+        887
+      ],
+      "previewSize": [
+        160,
+        111
+      ],
+      "hasAlpha": true,
+      "transparentPixels": 3454,
+      "opaquePixels": 300,
+      "bytes": 50420
+    }
+  ]
+}

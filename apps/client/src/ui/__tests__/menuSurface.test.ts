@@ -10,7 +10,7 @@ describe('menu presentation boundaries', () => {
     ui.showCountdown(3);expect(overlay.dataset.menuSurface).toBe('game');
     ui.showMatch();expect(overlay.dataset.menuSurface).toBe('game');
     ui.showPauseOverlay();expect(overlay.dataset.menuSurface).toBe('pause');
-    ui.showMatch();expect(overlay.dataset.menuSurface).toBe('game');
+    ui.hidePauseOverlay();expect(overlay.dataset.menuSurface).toBe('game');
     ui.showLobby();expect(overlay.dataset.menuSurface).toBe('menu');
     ui.showMatch();
   });

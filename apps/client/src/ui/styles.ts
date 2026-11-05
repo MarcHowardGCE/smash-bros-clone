@@ -1,3 +1,6 @@
+import { illustratedMenuStyles } from './illustratedMenuStyles';
+import { mainMenuStyles } from './mainMenuStyles';
+
 /** @fileoverview Injects global CSS styles for UI overlays, buttons, inputs, and splash screen. */
 
 export function injectStyles(): void {
@@ -111,6 +114,7 @@ export function injectStyles(): void {
     .menu-shell .overlay-center.character-selection { align-items:stretch; display:grid; grid-template-columns:repeat(var(--players),minmax(0,1fr)); gap:18px; width:min(1320px,calc(100vw - 64px)); padding:22px; }
     .fighter-player-panel { min-width:0; text-align:center; border-top:3px solid var(--player-color); padding:12px; background:#372c3d; border-radius:4px; }
     .selection-portrait { width:100%; height:210px; object-fit:contain; display:block; filter:drop-shadow(0 8px 6px #0005); }
+    .fighter-player-panel [id$="-status"] {color:#eadbc3!important;}
     .fighter-identity { min-height:88px; font-size:13px; color:#e6d3b2; }
     .fighter-identity strong { color:#e0b567; text-transform:uppercase; letter-spacing:.1em; font-size:11px; }
     .fighter-identity p { margin:8px 0; }
@@ -138,6 +142,24 @@ export function injectStyles(): void {
     .world-arena-note { font-size:11px; color:#5d5046; }
     @media(max-height:800px) { .selection-portrait { height:150px; } .fighter-identity { min-height:75px; } .world-preview-art { aspect-ratio:16/6; } }
     @media(max-width:850px) { .menu-shell .overlay-center.character-selection { grid-template-columns:repeat(2,minmax(0,1fr)); } .world-layout { grid-template-columns:1fr; } }
+    .main-menu-panel .menu-utilities {display:flex;gap:12px;justify-content:center;flex-wrap:wrap;}
+    .main-menu-panel .menu-utilities .ui-btn {font-size:14px;padding:9px 15px;}
+    .menu-shell .overlay-center.visual-settings {display:block;text-align:left;width:min(1050px,calc(100vw - 48px));}
+    .visual-settings header small {color:#e0b567;letter-spacing:.15em;font-size:11px;}
+    .visual-settings h1 {font:34px/1.15 Georgia,serif;margin:8px 0 12px;}
+    .visual-settings header p {max-width:70ch;font-size:14px;color:#eadbc3;margin-bottom:22px;}
+    .visual-settings-layout {display:grid;grid-template-columns:1fr 1.1fr;gap:28px;align-items:start;}
+    .visual-settings-controls {display:flex;flex-direction:column;gap:10px;}
+    .visual-settings-controls .ui-btn {width:100%;padding:10px 14px;font-size:15px;text-align:left;}
+    .visual-adjust {display:flex;gap:10px;}
+    .visual-adjust .ui-btn {text-align:center;}
+    .visual-helper,.visual-preview-caption,#visual-motion-status {font-size:13px;color:#eadbc3;line-height:1.5;margin-top:14px;}
+    .visual-preview {position:relative;aspect-ratio:16/10;overflow:hidden;border:1px solid #b19465;border-radius:4px;background:#f3eee1;}
+    .visual-preview-art,.visual-preview-wash {position:absolute;inset:0;background-position:center;background-size:cover;}
+    .visual-preview-wash {background:#f3eee1;}
+    .visual-preview-platform {position:absolute;left:9%;width:82%;top:76%;height:18%;}
+    .visual-preview-fighter {position:absolute;left:43%;height:54%;bottom:24%;max-width:25%;object-fit:contain;}
+    @media(max-width:750px){.visual-settings-layout{grid-template-columns:1fr;}.visual-settings .visual-preview{max-height:230px;}}
     /* Splash screen */
     .splash-screen {
       position: fixed;
@@ -184,5 +206,6 @@ export function injectStyles(): void {
       to { opacity: 0.6; }
     }
   `;
+  style.textContent += illustratedMenuStyles + mainMenuStyles;
   document.head.appendChild(style);
 }

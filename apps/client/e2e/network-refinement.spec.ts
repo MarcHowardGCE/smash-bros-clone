@@ -42,6 +42,8 @@ test("online pause, browser-refresh rejoin, resume and deliberate leave", async 
     expect((await snapshot(guest)).tick).toBe(recovered.tick);
     await guest.locator("#resume-btn").click();
     await expect(host.locator("#resume-btn")).toBeHidden();
+    // Each client must receive its own resume acknowledgement before its next input.
+    await expect(guest.locator("#resume-btn")).toBeHidden();
     await expect.poll(async () => (await snapshot(guest))?.tick).toBeGreaterThan(pausedTick);
     await guest.keyboard.press("Escape");
     await expect(guest.locator("#main-menu-btn")).toBeVisible();

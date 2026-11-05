@@ -1,3 +1,4 @@
+import {horizontalMovementInput,GROUND_INPUT} from '../../physics/groundIntent.js';
 /**
  * @fileoverview RUN state — sustained full-speed directional movement.
  *
@@ -38,6 +39,7 @@ export class RunState extends BaseState {
     }
 
     if(isHeld(ctx.input,INPUT_BITS.DOWN)&&!isHeld(ctx.input,INPUT_BITS.LEFT)&&!isHeld(ctx.input,INPUT_BITS.RIGHT))return transition(PlayerStateEnum.CROUCH);
+    if(ctx.input?.stickX!==undefined&&Math.abs(horizontalMovementInput(ctx.input))<GROUND_INPUT.DASH_THRESHOLD&&horizontalMovementInput(ctx.input)!==0)return transition(PlayerStateEnum.WALK);
 		const holdingLeft = isHeld(ctx.input, INPUT_BITS.LEFT);
 		const holdingRight = isHeld(ctx.input, INPUT_BITS.RIGHT);
 		const isSingleDirection = holdingLeft !== holdingRight;
@@ -50,7 +52,7 @@ export class RunState extends BaseState {
 			return transition(PlayerStateEnum.IDLE);
 		}
 
-		if (!isDirectionHeld(ctx.input)) {
+		if (horizontalMovementInput(ctx.input)===0) {
 			return transition(PlayerStateEnum.IDLE);
 		}
 

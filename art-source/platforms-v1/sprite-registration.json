@@ -1,0 +1,134 @@
+[
+  {
+    "stage": "stage1",
+    "part": "main",
+    "rect": {
+      "left": 39,
+      "top": 228,
+      "width": 1457,
+      "height": 195
+    },
+    "file": "stage1-main.png"
+  },
+  {
+    "stage": "stage1",
+    "part": "soft",
+    "rect": {
+      "left": 302,
+      "top": 745,
+      "width": 932,
+      "height": 127
+    },
+    "file": "stage1-soft.png"
+  },
+  {
+    "stage": "stage2",
+    "part": "main",
+    "rect": {
+      "left": 51,
+      "top": 191,
+      "width": 1434,
+      "height": 229
+    },
+    "file": "stage2-main.png"
+  },
+  {
+    "stage": "stage2",
+    "part": "soft",
+    "rect": {
+      "left": 288,
+      "top": 720,
+      "width": 960,
+      "height": 144
+    },
+    "file": "stage2-soft.png"
+  },
+  {
+    "stage": "stage3",
+    "part": "main",
+    "rect": {
+      "left": 28,
+      "top": 170,
+      "width": 1482,
+      "height": 215
+    },
+    "file": "stage3-main.png"
+  },
+  {
+    "stage": "stage3",
+    "part": "soft",
+    "rect": {
+      "left": 275,
+      "top": 717,
+      "width": 984,
+      "height": 191
+    },
+    "file": "stage3-soft.png"
+  },
+  {
+    "stage": "stage4",
+    "part": "main",
+    "rect": {
+      "left": 44,
+      "top": 224,
+      "width": 1447,
+      "height": 191
+    },
+    "file": "stage4-main.png"
+  },
+  {
+    "stage": "stage4",
+    "part": "soft",
+    "rect": {
+      "left": 301,
+      "top": 718,
+      "width": 924,
+      "height": 110
+    },
+    "file": "stage4-soft.png"
+  },
+  {
+    "stage": "stage5",
+    "part": "main",
+    "rect": {
+      "left": 39,
+      "top": 228,
+      "width": 1458,
+      "height": 182
+    },
+    "file": "stage5-main.png"
+  },
+  {
+    "stage": "stage5",
+    "part": "soft",
+    "rect": {
+      "left": 304,
+      "top": 707,
+      "width": 926,
+      "height": 110
+    },
+    "file": "stage5-soft.png"
+  },
+  {
+    "stage": "stage6",
+    "part": "main",
+    "rect": {
+      "left": 48,
+      "top": 192,
+      "width": 1440,
+      "height": 247
+    },
+    "file": "stage6-main.png"
+  },
+  {
+    "stage": "stage6",
+    "part": "soft",
+    "rect": {
+      "left": 336,
+      "top": 747,
+      "width": 865,
+      "height": 139
+    },
+    "file": "stage6-soft.png"
+  }
+]

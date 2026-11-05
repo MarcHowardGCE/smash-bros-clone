@@ -137,8 +137,8 @@ describe('GameEngine Down Special counter', () => {
 
 		expect(attackerAfter?.percent).toBe(attackerBefore.percent + expectedCounterDamage*1.2);
 		expect(attackerAfter?.state).toBe(PlayerStateEnum.HITSTUN);
-		expect(attackerAfter?.vx).toBeCloseTo(expectedCounterVelocity.x, 6);
-		expect(attackerAfter?.vy).toBeCloseTo(expectedCounterVelocity.y, 6);
+		expect(attackerAfter?.vx).toBeCloseTo(expectedCounterVelocity.x*.12, 6);
+		expect(attackerAfter?.vy).toBeCloseTo(expectedCounterVelocity.y*.12, 6);
 
 		expect(defenderAfter?.percent).toBe(defenderBefore.percent);
 		expect(defenderAfter?.hitstunFramesRemaining).toBe(0);
@@ -158,8 +158,8 @@ describe('GameEngine Down Special counter', () => {
 
 		expect(defenderAfter?.percent).toBe(defenderBefore.percent + expectedNormalHit.damage*1.2);
 		expect(defenderAfter?.state).toBe(PlayerStateEnum.HITSTUN);
-		expect(defenderAfter?.vx).toBeCloseTo(expectedNormalHit.knockbackVx, 6);
-		expect(defenderAfter?.vy).toBeCloseTo(expectedNormalHit.knockbackVy, 6);
+		expect(defenderAfter?.vx).toBeCloseTo(expectedNormalHit.knockbackVx*.12, 6);
+		expect(defenderAfter?.vy).toBeCloseTo(expectedNormalHit.knockbackVy*.12, 6);
 		expect(attackerAfter?.percent).toBe(attackerBefore.percent);
 	});
 });

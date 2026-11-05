@@ -161,14 +161,13 @@ export function renderLocalPlaySetupScreen(
     stopNav();
 
     let html = `
-      <div class="overlay-center" style="max-width:600px;width:100%;align-items:stretch">
-        <div style="font-size:32px;letter-spacing:2px;margin-bottom:24px">LOCAL PLAY SETUP</div>
+      <div class="overlay-center local-setup" style="max-width:600px;width:100%;align-items:stretch">
+        <div class="setup-heading" style="font-size:32px;letter-spacing:2px;margin-bottom:24px">LOCAL PLAY SETUP</div>
         <div id="lps-player-btns" style="display:flex;gap:12px;justify-content:center;margin-bottom:24px">`;
 
     for (const count of [2, 3, 4] as const) {
       const active = participantCount === count;
-      const activeStyle = active ? 'background:#fff;color:#000;' : '';
-      html += `<button class="ui-btn lps-count-btn" data-count="${count}" style="display:inline-block;${activeStyle}">${count} Players</button>`;
+      html += `<button class="ui-btn lps-count-btn" data-count="${count}" aria-pressed="${active}" style="display:inline-block">${count} Players</button>`;
     }
 
     html += `</div><div id="lps-seats" style="margin-bottom:24px">`;
@@ -178,7 +177,7 @@ export function renderLocalPlaySetupScreen(
       const config = seats[i]!;
       const focusClass = i === focusedSeatIndex ? ' seat-focused' : '';
       html += `
-        <div style="display:flex;align-items:center;justify-content:space-between;padding:12px;border:1px solid rgba(255,255,255,0.2);border-radius:4px;margin-bottom:8px">
+        <div class="setup-seat" style="display:flex;align-items:center;justify-content:space-between;padding:12px;border:1px solid rgba(255,255,255,0.2);border-radius:4px;margin-bottom:8px">
           <span style="font-size:16px">Seat ${seatNum + 1}:</span>
           <button id="lps-cycle-${i}" class="ui-btn${focusClass}" style="font-size:14px;padding:8px 16px">${seatLabel(config)}</button>
         </div>`;

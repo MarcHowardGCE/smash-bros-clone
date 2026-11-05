@@ -1,3 +1,4 @@
+import {getStageLayout} from '@smash/shared';
 import { WORLD_STORIES, escapeHtml } from './selectionContent';
 import{XBOX360_PROFILE as CONTROLLER_PROFILE}from'../input/xbox360Profile';
 /**
@@ -87,7 +88,7 @@ export function renderStageSelectScreen(
     if(stage && stage.id!==lastPreviewId){lastPreviewId=stage.id;onPreview?.(stage);}
     const info=stage?WORLD_STORIES[stage.id]:undefined;
     const panel=container.querySelector<HTMLElement>('#stage-preview');
-    if(panel){panel.innerHTML=stage ? '<img class="world-preview-art" src="'+normalizedBaseUrl+(info?'menu-art/'+stage.id+'.webp':'backgrounds/'+stage.backgroundImage)+'" alt="'+escapeHtml(stage.displayName)+'"><div class="world-copy"><small>WORLD '+String(selectedIndex+1).padStart(2,'0')+'</small><h2>'+escapeHtml(stage.displayName)+'</h2>'+(info?'<b>'+escapeHtml(info.hook)+'</b><p>'+escapeHtml(info.text)+'</p><button id="stage-story-toggle" class="ui-btn" aria-expanded="false">Read the story · X</button><p id="stage-story" hidden>'+escapeHtml(info.story)+'</p>':'')+'<p class="world-arena-note">Shared arena layout · Static background art</p></div>' : '<div class="world-copy"><h2>Let the world choose you</h2><p>Random selects from these '+stages.length+' worlds.</p></div>';panel.querySelector('#stage-story-toggle')?.addEventListener('click',toggleStory);}
+    if(panel){panel.innerHTML=stage ? '<img class="world-preview-art" src="'+normalizedBaseUrl+(info?'menu-art/'+stage.id+'.webp':'backgrounds/'+stage.backgroundImage)+'" alt="'+escapeHtml(stage.displayName)+'"><div class="world-copy"><small>WORLD '+String(selectedIndex+1).padStart(2,'0')+'</small><h2>'+escapeHtml(stage.displayName)+'</h2>'+(info?'<b>'+escapeHtml(info.hook)+'</b><p>'+escapeHtml(info.text)+'</p><button id="stage-story-toggle" class="ui-btn" aria-expanded="false">Read the story · X</button><p id="stage-story" hidden>'+escapeHtml(info.story)+'</p>':'')+'<p class="world-arena-note">'+getStageLayout(stage.id).platforms.length+' pass-through platforms · Static layout</p></div>' : '<div class="world-copy"><h2>Let the world choose you</h2><p>Random selects from these '+stages.length+' worlds.</p></div>';panel.querySelector('#stage-story-toggle')?.addEventListener('click',toggleStory);}
   }
   function toggleStory():void { const story=container.querySelector<HTMLElement>('#stage-story'),button=container.querySelector('#stage-story-toggle');if(story){story.hidden=!story.hidden;button?.setAttribute('aria-expanded',String(!story.hidden));} }
 

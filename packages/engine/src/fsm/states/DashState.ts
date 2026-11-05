@@ -1,3 +1,4 @@
+import {horizontalMovementInput,GROUND_INPUT} from '../../physics/groundIntent.js';
 /**
  * @fileoverview DASH state — initial directional movement with a commit window.
  *
@@ -40,7 +41,7 @@ export class DashState extends BaseState {
 			return transition(PlayerStateEnum.ATTACK);
 		}
 
-		if (!isDirectionHeld(ctx.input)) {
+		if (horizontalMovementInput(ctx.input)===0) {
 			return transition(PlayerStateEnum.IDLE);
 		}
 
@@ -52,6 +53,7 @@ export class DashState extends BaseState {
 			return transition(PlayerStateEnum.SHIELD);
 		}
 
+    if(ctx.input?.stickX!==undefined&&Math.abs(horizontalMovementInput(ctx.input))<GROUND_INPUT.DASH_THRESHOLD&&horizontalMovementInput(ctx.input)!==0)return transition(PlayerStateEnum.WALK);
 		const holdingLeft = isHeld(ctx.input, INPUT_BITS.LEFT);
 		const holdingRight = isHeld(ctx.input, INPUT_BITS.RIGHT);
 		const isSingleDirection = holdingLeft !== holdingRight;

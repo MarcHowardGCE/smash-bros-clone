@@ -162,9 +162,9 @@ export function renderControlsScreen(
     for(const cleanup of calibrationCleanup)cleanup();calibrationCleanup=[];
     const currentAssignments = assignmentManager.getAssignments();
     let html = `
-      <div class="overlay-center" style="max-width:900px;width:100%;align-items:stretch;max-height:calc(100vh - 32px);overflow-y:auto;padding:16px;box-sizing:border-box;background:rgba(9,18,30,.94);border-radius:8px">
+      <div class="overlay-center controls-screen" style="max-width:900px;width:100%;align-items:stretch;max-height:calc(100vh - 32px);overflow-y:auto;padding:16px;box-sizing:border-box;background:rgba(9,18,30,.94);border-radius:8px">
         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:24px">
-          <div style="text-align:left"><div style="font-size:32px;letter-spacing:2px">CONTROLS</div><div style="font-size:12px;margin-top:6px">${XBOX360_PROFILE.name} · B confirm / A back · Start pause<br>Right stick: smash / aerial attacks · Left stick up: jump</div></div>
+          <div style="text-align:left"><div class="controls-heading" style="font-size:32px;letter-spacing:2px">CONTROLS</div><div class="controls-help" style="font-size:12px;margin-top:6px">${XBOX360_PROFILE.name} · B confirm / A back · Start pause<br>Right stick: smash / aerial attacks · Left stick up: jump</div></div>
           <button id="controls-back-btn" class="ui-btn" style="font-size:14px">Back</button>
         </div>`;
 
@@ -176,12 +176,12 @@ export function renderControlsScreen(
       const keymap = keymaps[slot]!;
 
       html += `
-        <div style="border:1px solid rgba(255,255,255,0.2);padding:16px;margin-bottom:12px;border-radius:4px">
+        <div class="controls-slot" style="border:1px solid rgba(255,255,255,0.2);padding:16px;margin-bottom:12px;border-radius:4px">
           <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
             <div style="font-size:18px">Slot ${slot + 1}: <span style="color:rgba(255,255,255,0.7)">${deviceLabel}</span></div>
             <button id="reset-slot-${slot}" class="ui-btn" style="font-size:12px;padding:4px 12px" ${isUnassigned ? 'disabled' : ''}>Reset to Default</button>
           </div>
-          <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px">`;
+          <div class="controls-binding-grid" style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px">`;
 
       for (const action of ACTION_NAMES) {
         const bit = ACTION_BITS[action];
@@ -198,7 +198,7 @@ export function renderControlsScreen(
         const rebindDisabled = isUnassigned || isGamepad;
         html += `
             <div style="display:flex;flex-direction:column;align-items:center;padding:8px;background:rgba(255,255,255,0.05);border-radius:4px">
-              <div style="font-size:11px;color:rgba(255,255,255,0.5);margin-bottom:4px">${action.replaceAll("_"," ")}</div>
+              <div class="binding-label" style="font-size:11px;color:rgba(255,255,255,0.5);margin-bottom:4px">${action.replaceAll("_"," ")}</div>
               <div id="binding-${slot}-${action}" style="font-size:14px;margin-bottom:6px;min-height:20px">${currentKey}</div>
               <button id="${btnId}" class="ui-btn" style="font-size:11px;padding:2px 8px" ${rebindDisabled ? 'disabled' : ''}>Rebind</button>
             </div>`;

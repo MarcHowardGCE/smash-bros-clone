@@ -61,6 +61,9 @@ export class MenuNavigator {
     this.updateVisuals();
   }
 
+  /** Keep native keyboard focus and controller highlight in agreement. */
+  selectIndex(index:number):void {if(index>=0&&index<this.buttons.length){this.selectedIndex=index;this.updateVisuals();}}
+
   /**
    * Start listening for keyboard and gamepad input.
    *

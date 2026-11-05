@@ -1,3 +1,5 @@
+import {horizontalMovementInput,GROUND_INPUT} from './groundIntent.js';
+import {hasLaunch,applyLaunchGravity,decayLaunch} from './launchMotion.js';
 /**
  * @fileoverview Physics subsystem for the deterministic game engine.
  *
@@ -160,6 +162,14 @@ export function applyMovement(
 	let vx = player.vx;
 
 	if (player.isGrounded) {
+    if(input.stickX!==undefined){
+      const axis=horizontalMovementInput(input),stats=getCharacterStats(player.characterId);
+      const running=player.state==='DASH'||player.state==='RUN';
+      const cap=running?stats.runSpeed*Math.abs(axis):stats.walkSpeed*Math.min(1,Math.abs(axis)/GROUND_INPUT.DASH_THRESHOLD);
+      const target=Math.sign(axis)*cap,acceleration=stats.walkSpeed*.2;
+      vx=axis===0?vx*PHYSICS.GROUND_FRICTION:vx+Math.max(-acceleration,Math.min(acceleration,target-vx));
+      return {...player,vx,x:player.x+vx,y:player.y+player.vy};
+    }
 		if (movingLeft) {
 			vx = clamp(
 				vx - getCharacterStats(player.characterId).walkSpeed * 0.2,
@@ -572,14 +582,19 @@ export function checkWallCollision(
 export function applyMovementInput(
 	player: PlayerState,
 	input: InputEvent,
+  stageGeometry:StageData=DEFAULT_STAGE,
 ): PlayerState {
 	const stage: StageData = isHeld(input, INPUT_BITS.DOWN)
 		? {
-				...DEFAULT_STAGE,
+				...stageGeometry,
 				platforms: [],
 			}
-		: DEFAULT_STAGE;
+		: stageGeometry;
 
+	if (player.hitstunFramesRemaining > 0 && hasLaunch(player)) {
+    const velocity=applyLaunchGravity(player);
+    return decayLaunch(checkPlatformCollision({...velocity,x:velocity.x+velocity.vx,y:velocity.y+velocity.vy},stage));
+  }
 	return applyKnockbackDecay(
 		checkPlatformCollision(
 			applyMovement(applyGravity(applyFastFall(player, input)), input),

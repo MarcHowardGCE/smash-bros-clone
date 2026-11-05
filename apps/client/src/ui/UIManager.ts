@@ -1,3 +1,6 @@
+import {renderVisualSettingsScreen} from './VisualSettingsScreen';
+import type {StageBackdrop} from '../renderer/StageBackdrop';
+import {getStageLayout} from '@smash/shared';
 import { FIGHTER_PRESENTATION, WORLD_STORIES, fighterPortrait, escapeHtml } from './selectionContent';
 import{XBOX360_PROFILE as CONTROLLER_PROFILE}from'../input/xbox360Profile';
 /**
@@ -39,6 +42,8 @@ export type UIPhase = 'connecting' | 'lobby' | 'waiting' | 'countdown' | 'match'
  * starts a {@link MenuNavigator} for gamepad/keyboard navigation.
  */
 export class UIManager {
+  private visualSettingsHandle:{destroy:()=>void}|null=null;
+  private visualSettingsFromPause=false;
   private stageScreenHandle:{destroy:()=>void}|null=null;
   private networkRestoreChoice:((id:string)=>void)|null=null;
   private networkSelectionState:{pending:boolean;confirmed:boolean}|null=null;
@@ -61,6 +66,7 @@ export class UIManager {
   onPlayAgain: (() => void) | null = null;
   onLocalPlay: (() => void) | null = null;
   onLocalPlayAgain: (() => void) | null = null;
+  onOpenVisualSettings:(()=>void)|null=null;
   onOpenControls: (() => void) | null = null;
   onResume: (() => void) | null = null;
   onMainMenu: (() => void) | null = null;
@@ -78,7 +84,7 @@ export class UIManager {
     this.hudPanel.style.cssText = `
       position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%);
       display: flex; gap: 40px; font-family: monospace; color: white;
-      pointer-events: none; z-index: 20;
+      pointer-events: none; z-index: 20; background:#241e2c; padding:12px 22px; border:1px solid #b19465; border-radius:6px; max-width:calc(100vw - 32px);
     `;
     document.body.appendChild(this.hudPanel);
     this.showConnecting();
@@ -101,6 +107,8 @@ export class UIManager {
   }
 
   private stopMenuNav(): void {
+    const roomDisplay=document.getElementById('room-code-display');if(roomDisplay)roomDisplay.style.display='none';
+    this.visualSettingsHandle?.destroy();this.visualSettingsHandle=null;this.visualSettingsFromPause=false;
     this.characterScreenCleanup?.(); this.characterScreenCleanup=null;
     this.networkSelectionState=null;this.networkRestoreChoice=null;
     this.stageScreenHandle?.destroy();this.stageScreenHandle=null;
@@ -218,20 +226,14 @@ export class UIManager {
     const existingRoom = urlParams.get('room');
 
     this.overlay.innerHTML = `
-      <div class="main-menu-panel">
-        <img src="/branding/everybody-throws-hands-logo.png" alt="Everybody Throws Hands" style="max-width:min(700px,80vw);height:auto;display:block;margin:0 auto 24px auto;">
-        <div id="audio-settings-container"></div>
-        ${existingRoom
-          ? `<div style="font-size:18px;margin-bottom:24px">Room: <span style="font-size:24px">${existingRoom}</span></div>
-             <button id="ready-btn" class="ui-btn">Ready</button>`
-          : `<button id="create-btn" class="ui-btn" style="margin-bottom:16px">Create Room</button>
-             <div style="display:flex;gap:8px;align-items:center;justify-content:center;margin:0 auto 16px auto;max-width:fit-content">
-               <input id="join-code" class="ui-input" placeholder="ROOM CODE" maxlength="6">
-               <button id="join-btn" class="ui-btn">Join</button>
-             </div>`
-        }
-        <button id="local-play-btn" class="ui-btn" style="margin-top:8px">Local Play</button>
-        <button id="controls-btn" class="ui-btn" style="margin-top:12px">Controls</button>
+      <div class="main-menu-panel fight-cabinet">
+        <img src="/branding/everybody-throws-hands-logo.png" alt="Everybody Throws Hands">
+        <div class="fight-actions">
+          <button id="local-play-btn" class="ui-btn cabinet-button cabinet-primary">Local Play</button>
+          ${existingRoom ? `<div class="room-label">Room: <strong>${existingRoom}</strong></div><button id="ready-btn" class="ui-btn cabinet-button">Ready</button>` : `<button id="create-btn" class="ui-btn cabinet-button">Create Room</button><div class="room-join"><input id="join-code" class="ui-input" aria-label="Room code" placeholder="ROOM CODE" maxlength="6"><button id="join-btn" class="ui-btn cabinet-button">Join</button></div>`}
+        </div>
+        <div class="menu-utilities"><button id="controls-btn" class="ui-btn cabinet-button">Controls</button><button id="visual-settings-btn" class="ui-btn cabinet-button">Visual accessibility</button></div>
+        <div class="cabinet-section-label">Sound</div><div id="audio-settings-container"></div>
       </div>
       <div class="menu-hint">↑↓ Navigate • ←→ Adjust • Enter / ${CONTROLLER_PROFILE.menuLabels.confirm} Select</div>
       ${this.versionTag()}`;
@@ -297,6 +299,11 @@ export class UIManager {
     if (controlsEl) {
       navButtons.push({ id: 'controls-btn', element: controlsEl, onActivate: () => this.onOpenControls?.() });
     }
+    const visuals=this.overlay.querySelector<HTMLElement>('#visual-settings-btn');
+    if(visuals){visuals.addEventListener('click',()=>this.onOpenVisualSettings?.());navButtons.push({id:'visual-settings-btn',element:visuals,onActivate:()=>this.onOpenVisualSettings?.()});}
+    // Match controller order to the visible DOM order, with play actions first.
+    navButtons.sort((a, b) => a.element === b.element ? 0 :
+      a.element.compareDocumentPosition(b.element) & Node.DOCUMENT_POSITION_FOLLOWING ? -1 : 1);
     this.menuNav.setButtons(navButtons);
     this.menuNav.start();
   }
@@ -306,6 +313,11 @@ export class UIManager {
    *
    * @param deps - Assignment manager and gamepad preference store needed by the controls screen
    */
+  showVisualSettings(scene:StageBackdrop,fromPause:boolean,onBack:()=>void):void {
+    this.stopMenuNav();this.phase='controls';this.visualSettingsFromPause=fromPause;this.hudPanel.style.display='none';
+    this.visualSettingsHandle=renderVisualSettingsScreen(this.overlay,scene,onBack,this._gamepadPoller);
+  }
+
   showControls(deps: { assignmentManager: ControllerAssignmentManager; preferenceStore: GamepadPreferenceStore }): void {
     this.stopMenuNav();
     this.phase = 'controls';
@@ -368,7 +380,7 @@ export class UIManager {
               : CONFIRM_KEYS[i]?.[0] ?? `Gamepad ${CONTROLLER_PROFILE.menuLabels.confirm}`;
         html += `
         <section id="p${i + 1}-panel" class="fighter-player-panel" style="--player-color:${['#7cbab0','#db889a','#e0b567','#a796d4'][i]}">
-          <div style="font-size:20px;margin-bottom:16px">P${i + 1} (${panelRole}) Choose</div>
+          <div class="fighter-seat-title">P${i + 1} (${panelRole}) Choose</div>
           <img id="p${i+1}-portrait" class="selection-portrait" src="${fighterPortrait(initialChoices[i]?.id ?? fighters[0]?.id ?? '')}" alt="${escapeHtml(initialChoices[i]?.displayName ?? fighters[0]?.displayName ?? '')}">
           <div id="p${i+1}-identity" class="fighter-identity"></div>
           ${fighters.map(f => `
@@ -388,6 +400,7 @@ export class UIManager {
 
     this.overlay.innerHTML = `
       <div class="overlay-center character-selection" style="--players:${playerCount}">
+        <header class="selection-heading"><h1>Choose your fighter</h1><p>Three fighters. Everybody throws hands.</p></header>
         ${panelsHtml}
       </div>
       ${onBack ? '<button id="charsel-back-btn" class="ui-btn" style="position:absolute;top:24px;left:24px;font-size:14px;padding:8px 16px">← Back</button>' : ''}
@@ -402,6 +415,7 @@ export class UIManager {
     }
 
     const updateIdentity=(slot:number,fighter:FighterChoice)=>{
+      this.overlay.querySelectorAll<HTMLElement>('[data-player="'+(slot+1)+'"]').forEach(option=>option.setAttribute('aria-pressed',String(option.dataset.id===fighter.id)));
       const portrait=this.overlay.querySelector<HTMLImageElement>('#p'+(slot+1)+'-portrait');
       if(portrait){portrait.src=fighterPortrait(fighter.id);portrait.alt=fighter.displayName;}
       const detail=this.overlay.querySelector('#p'+(slot+1)+'-identity');const info=FIGHTER_PRESENTATION[fighter.id];
@@ -478,6 +492,7 @@ export class UIManager {
     const confirmSlot = (slotIndex: number) => {
       if (disposed || confirmed[slotIndex]) return;
       confirmed[slotIndex] = true;
+      this.overlay.querySelector('#p'+(slotIndex+1)+'-panel')?.setAttribute('data-ready','true');
       const status = document.getElementById(`p${slotIndex + 1}-status`);
       if (status) { status.textContent = '✓ Ready!'; status.style.color = 'white'; }
       const readyButton=this.overlay.querySelector<HTMLButtonElement>(`[data-ready-slot="${slotIndex}"]`);if(readyButton){readyButton.disabled=false;readyButton.textContent='Change fighter · A';}
@@ -487,6 +502,7 @@ export class UIManager {
     const unlockSlot=(slot:number):boolean=>{
       if(disposed||!confirmed[slot]||autoConfirmSlotSet.has(slot))return false;
       confirmed[slot]=false;
+      this.overlay.querySelector('#p'+(slot+1)+'-panel')?.setAttribute('data-ready','false');
       const status=this.overlay.querySelector<HTMLElement>('#p'+(slot+1)+'-status');
       if(status){status.textContent='Choosing · confirm when ready';status.style.color='#e6d3b2';}
       const button=this.overlay.querySelector<HTMLButtonElement>('[data-ready-slot="'+slot+'"]');
@@ -821,11 +837,12 @@ export class UIManager {
     this.phase = 'paused';
     this.overlay.dataset.menuSurface = 'pause';
     this.overlay.innerHTML = `
-      <div class="overlay-center">
-        <div style="font-size:48px;letter-spacing:4px;margin-bottom:40px">PAUSED</div>
-        <div id="audio-settings-container"></div>
+      <div class="overlay-center pause-menu">
+        <div style="font-size:40px;letter-spacing:4px;margin-bottom:16px">PAUSED</div>
         <button id="resume-btn" class="ui-btn" style="margin-bottom:16px">Resume</button>
+        <button id="visual-settings-btn" class="ui-btn" style="margin-bottom:16px">Visual accessibility</button>
         <button id="main-menu-btn" class="ui-btn">Main Menu</button>
+        <div id="audio-settings-container"></div>
       </div>
       <div class="menu-hint">↑↓ Navigate • ←→ Adjust • Enter / ${CONTROLLER_PROFILE.menuLabels.confirm} Select</div>
       ${this.versionTag()}`;
@@ -858,15 +875,20 @@ export class UIManager {
     if (menuEl) {
       navButtons.push({ id: 'main-menu-btn', element: menuEl, onActivate: () => this.onMainMenu?.() });
     }
+    const visuals=this.overlay.querySelector<HTMLElement>('#visual-settings-btn');
+    if(visuals){visuals.addEventListener('click',()=>this.onOpenVisualSettings?.());navButtons.push({id:'visual-settings-btn',element:visuals,onActivate:()=>this.onOpenVisualSettings?.()});}
+    navButtons.sort((a,b)=>a.element===b.element?0:a.element.compareDocumentPosition(b.element)&Node.DOCUMENT_POSITION_FOLLOWING?-1:1);
     this.menuNav.setButtons(navButtons);
     this.menuNav.start(() => this.onResume?.());
   }
 
   /** Hide the pause overlay and restore the match HUD. No-op if not paused. */
   hidePauseOverlay(): void {
-    if (this.phase !== 'paused') return;
+    if (this.phase !== 'paused' && !this.visualSettingsFromPause) return;
+    this.visualSettingsFromPause=false;
     this.stopMenuNav();
     this.phase = 'match';
+    this.overlay.dataset.menuSurface='game';
     this.overlay.innerHTML = '';
     this.hudPanel.style.display = 'flex';
   }
@@ -976,14 +998,14 @@ export class UIManager {
       roomDisplay.id = 'room-code-display';
       roomDisplay.style.cssText = `
         position:fixed;top:12px;left:16px;font-family:monospace;font-size:12px;
-        color:rgba(255,255,255,0.5);z-index:20;pointer-events:none;
+        color:#f1e3bf;background:#241e2c;padding:6px 10px;border:1px solid #b19465;border-radius:4px;z-index:20;pointer-events:none;
       `;
       document.body.appendChild(roomDisplay);
     }
     if (this.roomCode) {
       roomDisplay.textContent = `Room: ${this.roomCode}`;
       roomDisplay.style.display = 'block';
-    }
+    }else{roomDisplay.style.display='none';roomDisplay.textContent='';}
   }
 
   /** Hide the room code display element. */
@@ -1097,7 +1119,7 @@ export class UIManager {
       </div>
       <div class="menu-hint">↑↓ / D-pad · Browse • Enter / ${CONTROLLER_PROFILE.menuLabels.confirm} · Select or activate Confirm • Ready waits for server acknowledgement</div>`;
 
-    this.networkRestoreChoice=(id:string)=>{selectedCharacterId=id;this.overlay.querySelectorAll<HTMLElement>('.network-fighter-option').forEach(el=>el.style.borderColor=el.dataset.id===id?'white':'rgba(255,255,255,0.3)');};
+    this.networkRestoreChoice=(id:string)=>{selectedCharacterId=id;this.overlay.querySelectorAll<HTMLElement>('.network-fighter-option').forEach(el=>{el.style.borderColor=el.dataset.id===id?'white':'rgba(255,255,255,0.3)';el.setAttribute('aria-pressed',String(el.dataset.id===id));});};
     // Attach click listeners to fighter options
     const fighterOptions = document.querySelectorAll('.network-fighter-option');
     fighterOptions.forEach(el => {
@@ -1108,6 +1130,7 @@ export class UIManager {
         if (!fighterId) return;
 
         selectedCharacterId = fighterId;
+        this.overlay.querySelectorAll<HTMLElement>('.network-fighter-option').forEach(option=>option.setAttribute('aria-pressed',String(option.dataset.id===fighterId)));
         onSelect(fighterId);
 
         // Update border styling: clicked option gets white, others dim

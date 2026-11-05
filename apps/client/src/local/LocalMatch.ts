@@ -41,10 +41,10 @@ export class LocalMatch {
    * @param controllers - One controller per player (human or AI)
    * @param characterIds - Optional map of playerId to characterId for custom fighters
    */
-  constructor(controllers: ITickController[], characterIds?: Partial<Record<PlayerId, CharacterId>>) {
+  constructor(controllers: ITickController[], characterIds?: Partial<Record<PlayerId, CharacterId>>, stageId:string='stage1') {
     this.controllers = controllers;
     const playerIds = controllers.map((c) => c.playerId as PlayerId);
-    this.engine = new GameEngine({ playerIds, characterIds });
+    this.engine = new GameEngine({ playerIds, characterIds,stageId });
   }
 
   /** Begin the rAF loop and emit the first snapshot. */

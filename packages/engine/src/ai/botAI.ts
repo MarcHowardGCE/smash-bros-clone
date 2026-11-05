@@ -1,3 +1,4 @@
+import {getStageLayout} from '@smash/shared';
 /**
  * @fileoverview Reactive bot AI — frame-by-frame input decision engine.
  *
@@ -107,6 +108,7 @@ export function selectTarget(
   candidateIds: PlayerId[],
   reactionDelayFrames: number
 ): PlayerId | null {
+  const stage={MAIN_PLATFORM:getStageLayout(state.stageId).mainPlatform};
   const self = state.players[botPlayerId];
   if (self === undefined) {
     throw new Error(`Bot player not found in GameState: ${botPlayerId}`);
@@ -167,6 +169,7 @@ export function decideBotInput(
   difficultyConfig: BotDifficultyConfig,
   memory: BotMemory
 ): { bits: InputBitmask; memory: BotMemory } {
+  const stage={MAIN_PLATFORM:getStageLayout(state.stageId).mainPlatform};
   const self = state.players[botPlayerId];
   const opponent = state.players[opponentPlayerId];
 
@@ -183,7 +186,7 @@ export function decideBotInput(
   }
 
   // (2)
-  if (sensors.isOffStage(self, STAGE) && self.ledgeId === null) {
+  if (sensors.isOffStage(self, stage) && self.ledgeId === null) {
     const towardCenterBits = self.x < 640 ? INPUT_BITS.RIGHT : INPUT_BITS.LEFT;
     const recoveryBits = self.hasDoubleJump ? INPUT_BITS.JUMP : (INPUT_BITS.UP|INPUT_BITS.SPECIAL);
     return applyExecutionError(
@@ -246,8 +249,8 @@ export function decideBotInput(
 
   // (5.5) edge-guard offense: challenge opponent off-stage or wait at ledge
   if (
-    sensors.isOffStage(opponent, STAGE) &&
-    !sensors.isOffStage(self, STAGE) &&
+    sensors.isOffStage(opponent, stage) &&
+    !sensors.isOffStage(self, stage) &&
     self.isGrounded
   ) {
     const decisionRoll = nextRandom(memory);

@@ -1,3 +1,4 @@
+import {updateGroundIntent} from '../physics/groundIntent.js';
 import{advanceHitstop}from'./hitstop.js';
 import{TripFallState,TripProneState,JabLockState}from'./states/TripState.js';
 import{TauntState}from'./states/TauntState.js';
@@ -152,7 +153,7 @@ export class FSMController {
     // No state machine progress occurs during hitlag; the early return skips the rest of tick().
     if(player.hitlagFramesRemaining>0)return advanceHitstop(player,input?.held??0,input);
     // Displacement belongs to hitstop; no continuous drift during hitstun.
-    const playerForStateMachine=player;
+    const playerForStateMachine=updateGroundIntent(player,input);
 
     const ctx: FSMContext = {
       player: playerForStateMachine,

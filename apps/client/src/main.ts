@@ -1,3 +1,4 @@
+import {StageBackdrop} from './renderer/StageBackdrop';
 import{XBOX360_PROFILE}from'./input/xbox360Profile';
 import{KOPresentation}from'./renderer/fullbody/KOPresentation.js';
 /** @fileoverview Main entry point for the Smash Bros clone client application. */
@@ -173,9 +174,10 @@ async function main() {
   window.addEventListener("resize", resize);
   resize();
 
+  const stageBackdrop=new StageBackdrop(document.getElementById("background-layer"));
   const layers = createLayers();
   app.stage.addChild(layers.background);
-  app.stage.addChild(layers.game);
+  layers.background.addChild(layers.game);
   app.stage.addChild(layers.ui);
 
   const koPresenter=new KOPresentation(layers.game,fullBodyPilot);app.ticker.add(()=>koPresenter.tick());
@@ -183,10 +185,14 @@ async function main() {
     layers.background,
   );
 
+  let renderedStageId="stage1";
   function setStageBackground(backgroundImage: string): void {
+    const stageId=backgroundImage.match(/^stage[1-6]/)?.[0]??"stage1";
+    if(stageId!==renderedStageId){stageRenderer?.destroy?.();stageRenderer=new StageRenderer(layers.background,stageId);renderedStageId=stageId;}
     const baseUrl = import.meta.env.BASE_URL || "/";
     const normalizedBaseUrl = baseUrl.endsWith("/") ? baseUrl : `${baseUrl}/`;
     const backgroundPath = `${normalizedBaseUrl}backgrounds/${backgroundImage}`;
+    stageBackdrop.setStage(stageId,backgroundPath);
     const bgLayer = document.getElementById("background-layer");
     if (bgLayer) {
       bgLayer.style.backgroundImage = `url('${backgroundPath}')`;
@@ -456,6 +462,7 @@ async function main() {
   }
 
   const uiManager = new UIManager(uiOverlay);
+  app.ticker.add(()=>stageBackdrop.update(uiManager.getPhase()==='match'));
   uiManager._gamepadPoller = poller;
   const audioPrefs = loadAudioPreferences(localStorage);
   const audioManager = new AudioManager(audioPrefs);
@@ -528,6 +535,7 @@ async function main() {
   };
 
   const updateRenderers = (state: RenderState): void => {
+    stageBackdrop.setFocus([...state.players.values()].filter(player=>!player.isKnockedOut));
     koPresenter.update(state.players.values());
     if(state.matchPhase==='result')camera?.reset();
     gameplaySfxRouter.processFrame(state);
@@ -766,7 +774,7 @@ async function main() {
     gameplaySfxRouter.reset();
 
     if (!camera) {
-      camera = new Camera(layers.game);
+      camera = new Camera(layers.background);
     }
 
     const assignments = assignmentManager.getAssignments();
@@ -832,7 +840,7 @@ async function main() {
       }
     }
 
-    localMatch = new LocalMatch(controllers, characterIds);
+    localMatch = new LocalMatch(controllers, characterIds,selectedStage.id);
     localMatch.onSnapshot = (snapshot) => {
       const renderState = snapshotToRenderState(snapshot);
       updateRenderers(renderState);
@@ -851,7 +859,7 @@ async function main() {
         }
       }
 
-      camera?.update(positions, window.innerWidth, window.innerHeight);
+      camera?.update(positions, STAGE.WIDTH, STAGE.HEIGHT);
 
       if (snapshot.matchPhase === "result") {
         gameplaySfxRouter.processMatchResult();
@@ -911,8 +919,7 @@ async function main() {
                 // Update CSS background with new stage
                 setStageBackground(chosenStage.backgroundImage);
                 // Destroy old stage graphics and recreate
-                layers.background.removeChildren();
-                stageRenderer = new StageRenderer(layers.background);
+                // setStageBackground has already selected matching geometry and art.
                 startLocalMatchWithSeats(result, choices);
               },
               () => {
@@ -962,6 +969,7 @@ async function main() {
     enterLocalPlayFlow();
   };
 
+  uiManager.onOpenVisualSettings=()=>{const paused=uiManager.getPhase()==='paused';uiManager.showVisualSettings(stageBackdrop,paused,()=>paused?uiManager.showPauseOverlay():uiManager.showLobby());};
   uiManager.onOpenControls = () => {
     uiManager.showControls({ assignmentManager, preferenceStore: store });
   };
@@ -1157,6 +1165,7 @@ async function main() {
   }
 
   window.addEventListener("beforeunload", () => {
+    stageBackdrop.destroy();
     cleanupLocalMode();
     sfxManager.stopAll();
     gameClient.disconnect();

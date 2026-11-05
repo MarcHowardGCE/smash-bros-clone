@@ -424,7 +424,7 @@ export class GameClient {
           }
 
           this.predictor = new LocalPredictor(this.myPlayerId);
-          this.predictor.initialize(playerState);
+          this.predictor.initialize(playerState,snapshot.stageId);
         }
       } catch (error) {
         console.error("[client] failed to decode game state:", error);

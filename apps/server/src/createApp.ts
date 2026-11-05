@@ -243,6 +243,7 @@ export function createApp(): {
 						io.to(normalizedRoomCode).emit("game:start", { playerIds, stageId:roomInfo.room.stageId });
 
 						const session = new MatchSession({
+              stageId:roomInfo.room.stageId,
 							playerIds,
 							characterIds: characterSelections as Record<PlayerId, CharacterId>,
 							onPauseChange: (paused) => {

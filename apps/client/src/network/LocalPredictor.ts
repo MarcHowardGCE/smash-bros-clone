@@ -10,8 +10,8 @@
  *
  * See the class-level JSDoc for the full reconciliation algorithm.
  */
-import { applyMovementInput, startJump } from '@smash/engine';
-import { INPUT_BITS, PlayerStateEnum, type InputEvent, type PlayerId, type PlayerState, type StateSnapshot } from '@smash/shared';
+import { applyMovementInput, startJump, updateGroundIntent, horizontalMovementInput, predictedGroundState } from '@smash/engine';
+import { getStageLayout, INPUT_BITS, PlayerStateEnum, type InputEvent, type PlayerId, type PlayerState, type StateSnapshot } from '@smash/shared';
 
 // activeHitbox is a nested object; a plain spread of `player` would copy only the
 // reference, meaning two cloned states would share the same hitbox object. Any mutation
@@ -57,6 +57,7 @@ function clonePlayerState(player: PlayerState): PlayerState {
  *   snapshot.
  */
 export class LocalPredictor {
+  private stage=getStageLayout();
   private confirmedState: PlayerState | null = null;
   private pendingInputs: InputEvent[] = [];
   private predictedState: PlayerState | null = null;
@@ -95,6 +96,7 @@ export class LocalPredictor {
    * @param snapshot - The latest authoritative state broadcast by the server.
    */
   onServerSnapshot(snapshot: StateSnapshot): void {
+    this.stage=getStageLayout(snapshot.stageId);
     const serverPlayerState = snapshot.players[this.playerId];
     if (!serverPlayerState) {
       return;
@@ -117,7 +119,8 @@ export class LocalPredictor {
    *
    * @param playerState - The first authoritative state for this player from the server.
    */
-  initialize(playerState: PlayerState): void {
+  initialize(playerState: PlayerState,stageId?:string): void {
+    this.stage=getStageLayout(stageId);
     this.confirmedState = clonePlayerState(playerState);
     this.predictedState = clonePlayerState(playerState);
     this.pendingInputs = [];
@@ -157,13 +160,14 @@ export class LocalPredictor {
     ];
     if (player.isKnockedOut || player.hitlagFramesRemaining > 0 || player.hitstunFramesRemaining > 0
       || !movementStates.includes(player.state)) return clonePlayerState(player);
-		let nextPlayer = clonePlayerState(player);
+		let nextPlayer = updateGroundIntent(clonePlayerState(player),input);
 		if ((input.pressed & INPUT_BITS.JUMP) !== 0) {
 			nextPlayer = startJump(nextPlayer, false);
 		}
-		const moved = applyMovementInput(nextPlayer, input);
-    const facing = this.getFacing(player.facing, input);
-    const nextState = this.getVisualState(moved, input);
+		if(input.stickX!==undefined&&nextPlayer.isGrounded)nextPlayer={...nextPlayer,state:predictedGroundState(nextPlayer,input)};
+		const moved = applyMovementInput(nextPlayer, input,this.stage);
+    const facing = this.getFacing(player.facing, input, moved.isGrounded);
+    const nextState = input.stickX!==undefined&&moved.isGrounded?moved.state:this.getVisualState(moved, input);
     const stateFrame = player.state === nextState ? player.stateFrame + 1 : 0;
 
     return {
@@ -174,8 +178,9 @@ export class LocalPredictor {
     };
   }
 
-  private getFacing(currentFacing: 1 | -1, input: InputEvent): 1 | -1 {
-    const movingLeft = (input.held & INPUT_BITS.LEFT) !== 0;
+  private getFacing(currentFacing: 1 | -1, input: InputEvent, grounded: boolean): 1 | -1 {
+    if(input.stickX!==undefined&&grounded){const x=horizontalMovementInput(input);return x===0?currentFacing:x<0?-1:1;}
+		const movingLeft = (input.held & INPUT_BITS.LEFT) !== 0;
     const movingRight = (input.held & INPUT_BITS.RIGHT) !== 0;
 
     if (movingLeft && !movingRight) {
@@ -214,6 +219,6 @@ export class LocalPredictor {
 
     const movingLeft = (input.held & INPUT_BITS.LEFT) !== 0;
     const movingRight = (input.held & INPUT_BITS.RIGHT) !== 0;
-    return movingLeft !== movingRight ? PlayerStateEnum.WALK : PlayerStateEnum.IDLE;
+    return input.stickX!==undefined?predictedGroundState(player,input):movingLeft !== movingRight ? PlayerStateEnum.WALK : PlayerStateEnum.IDLE;
   }
 }

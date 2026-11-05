@@ -47,3 +47,9 @@ export {resolveCeilingTech}from'./physics/ceilingTech.js';
 export{resolveFloorHit}from'./physics/floorHit.js';
 
 export{isDamageImmune}from'./hitbox/immunity.js';
+
+export { launchSpeedInfluence } from './physics/launchInfluence.js';
+
+export { LAUNCH, launchWorldSpeed, initializeLaunch, clearLaunch, hasLaunch, applyLaunchGravity, decayLaunch } from './physics/launchMotion.js';
+
+export {GROUND_INPUT,horizontalMovementInput,updateGroundIntent,wantsGroundDash,predictedGroundState} from './physics/groundIntent.js';

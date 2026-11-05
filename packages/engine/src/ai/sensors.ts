@@ -34,7 +34,7 @@ export function distanceBetween(a: PlayerState, b: PlayerState): number {
  * Fires BEFORE the fighter reaches the blast zone.
  * Pure function, no side effects.
  */
-export function isOffStage(player: PlayerState, stage: Stage): boolean {
+export function isOffStage(player: PlayerState, stage: {MAIN_PLATFORM:{x:number;y:number;width:number}}): boolean {
   const mainPlatform = stage.MAIN_PLATFORM;
   const leftBound = mainPlatform.x - 40;
   const rightBound = mainPlatform.x + mainPlatform.width + 40;

@@ -2,6 +2,8 @@
 
 Implemented November 5, 2026. Enter from **Main Menu -> Training Dojo**. This is a local practice mode using the real GameEngine, not a separate approximation of combat. No online room changes are required.
 
+**Laboratory update:** slow motion, exact stepping, collision overlays and three saved partner-routine slots are now implemented. See [Training laboratory](TRAINING-LAB.md) for controls, validation and current limits. The initial-release roadmap below is retained as history.
+
 ## The two experiences
 
 ### Free Practice: the endless rehearsal
@@ -57,7 +59,7 @@ The mode resets to a clean arena rather than continuing a KO/respawn cinematic. 
 
 Task evidence: outputs/dojo-v1/setup.png, lesson-complete.png, parry-complete.png, checks.json and controller-check.json. Logs: work/dojo-server.txt and dojo-client-final.txt. The layout was visually reviewed; a backdrop stacking issue was corrected before delivery. No environment files or bonney content were inspected.
 
-## Brainstorm and next build priorities
+## Brainstorm and next build priorities (initial release; items 1–2 now delivered)
 
 1. **Timing laboratory:** slow motion, pause plus single-frame advance, hitbox/hurtbox visibility, explicit invulnerability/recovery indicators and an input timeline. Preserve deterministic simulation when changing playback speed. These tools are planned, not present in this version.
 2. **Partner recording:** record/replay an input sequence, choose repeat delay, vary the delay within a seeded range and save multiple patterns. This supports repeatable parry, shield, dodge and punish comparisons.

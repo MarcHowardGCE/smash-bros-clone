@@ -1,3 +1,5 @@
+import{PracticeRoutine}from'./practice/PracticeRoutine.js';
+import{PracticeOverlay}from'./practice/PracticeOverlay.js';
 import './practice/practice.css';
 import{PracticePanel}from'./practice/PracticePanel.js';
 import{PracticeDummy}from'./practice/PracticeDummy.js';
@@ -480,6 +482,7 @@ async function main() {
   let isLocalMode = false;
   let localMatch: LocalMatch | null = null;
   let practicePanel:PracticePanel|null=null;
+  let practiceOverlay:PracticeOverlay|null=null;
   let camera: Camera | null = null;
   let localCountdownInterval: number | null = null;
   let localCountdownTimeout: number | null = null;
@@ -498,7 +501,7 @@ async function main() {
   };
 
   const cleanupLocalMode = (): void => {
-    practicePanel?.destroy();practicePanel=null;uiManager.onPracticeReset=null;uiManager.onPracticeMenu=null;
+    practicePanel?.destroy();practicePanel=null;practiceOverlay?.destroy();practiceOverlay=null;uiManager.onPracticeReset=null;uiManager.onPracticeMenu=null;uiManager.onPracticeLabActions=null;
     clearLocalCountdown();
     localMatch?.cleanup();
     localMatch = null;
@@ -851,13 +854,15 @@ async function main() {
 
     localMatch = new LocalMatch(controllers, characterIds,selectedStage.id,Boolean(practice));
     if(practice&&practiceDummy){
-      practicePanel=new PracticePanel(practice,practiceDummy,()=>localMatch?.resetPractice(),()=>uiManager.onPractice?.(),()=>uiManager.getPhase()==='match');
+      const routine=new PracticeRoutine();practiceDummy.routine=routine;practiceOverlay=new PracticeOverlay(layers.game);
+      practicePanel=new PracticePanel(practice,practiceDummy,()=>localMatch?.resetPractice(),()=>uiManager.onPractice?.(),()=>uiManager.getPhase()==='match',{match:localMatch,routine,overlay:practiceOverlay});
+      uiManager.onPracticeLabActions=()=>practicePanel?.labActions()??[];
       localMatch.onStep=(state,inputs)=>practicePanel?.observe(state,inputs);
-      uiManager.onPracticeMenu=()=>uiManager.onPractice?.();uiManager.onPracticeReset=()=>{localMatch?.resetPractice();practiceDummy.reset();uiManager.onResume?.();};
+      uiManager.onPracticeMenu=()=>uiManager.onPractice?.();uiManager.onPracticeReset=()=>{practicePanel?.reset();uiManager.onResume?.();};
     }
     localMatch.onSnapshot = (snapshot) => {
       const renderState = snapshotToRenderState(snapshot);
-      updateRenderers(renderState);
+      updateRenderers(renderState);practiceOverlay?.update(snapshot);
       if(practice)uiManager.hideCombatHUD();else uiManager.updateHUD(renderState, null);
 
       const positions = Object.values(snapshot.players).map((player) => ({
@@ -1094,6 +1099,9 @@ async function main() {
         const prev = lastBitsPerGamepad.get(gpIndex) ?? 0;
         const pressed = bits & ~prev;
 
+        if((pressed&0x2000)&&practicePanel&&uiManager.getPhase()==='match'){
+          if(localMatch?.paused)practicePanel.step();else practicePanel.toggleFreeze();
+        }
         // START button (0x1000) - pause/unpause
         if (pressed & XBOX360_PROFILE.pause) {
           const phase = uiManager.getPhase();

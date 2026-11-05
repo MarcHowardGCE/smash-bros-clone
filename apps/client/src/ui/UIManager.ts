@@ -48,6 +48,7 @@ export class UIManager {
   onPractice:(()=>void)|null=null;
   onPracticeReset:(()=>void)|null=null;
   onPracticeMenu:(()=>void)|null=null;
+  onPracticeLabActions:(()=>{id:string;label:string;run:()=>void;disabled?:boolean}[])|null=null;
   private visualSettingsHandle:{destroy:()=>void}|null=null;
   private visualSettingsFromPause=false;
   private stageScreenHandle:{destroy:()=>void}|null=null;
@@ -854,7 +855,7 @@ export class UIManager {
       <div class="overlay-center pause-menu">
         <div style="font-size:40px;letter-spacing:4px;margin-bottom:16px">PAUSED</div>
         <button id="resume-btn" class="ui-btn" style="margin-bottom:16px">Resume</button>${this.onPracticeMenu?'<button id="dojo-pause-reset" class="ui-btn">Reset practice arena</button><button id="dojo-pause-menu" class="ui-btn">Dojo lessons</button>':''}
-        <button id="visual-settings-btn" class="ui-btn" style="margin-bottom:16px">Visual accessibility</button>
+        ${this.onPracticeLabActions?`<details class="dojo-pause-lab" open><summary>Timing laboratory</summary>${this.onPracticeLabActions().map(a=>`<button id="pause-${a.id}" class="ui-btn" ${a.disabled?'disabled':''}>${escapeHtml(a.label)}</button>`).join('')}</details>`:''}<button id="visual-settings-btn" class="ui-btn" style="margin-bottom:16px">Visual accessibility</button>
         <button id="main-menu-btn" class="ui-btn">Main Menu</button>
         <div id="audio-settings-container"></div>
       </div>
@@ -886,6 +887,7 @@ export class UIManager {
       navButtons.push({ id: 'resume-btn', element: resumeEl, onActivate: () => this.onResume?.() });
     }
     for(const[id,fn]of [['dojo-pause-reset',this.onPracticeReset],['dojo-pause-menu',this.onPracticeMenu]]as const){const el=document.getElementById(id);if(el){el.addEventListener('click',()=>fn?.());navButtons.push({id,element:el,onActivate:()=>fn?.()});}}
+    for(const action of this.onPracticeLabActions?.()??[]){const el=document.getElementById('pause-'+action.id);if(el){const run=()=>{if(!action.disabled){action.run();this.showPauseOverlay();}};el.addEventListener('click',run);navButtons.push({id:'pause-'+action.id,element:el,onActivate:run});}}
     const menuEl = document.getElementById('main-menu-btn');
     if (menuEl) {
       navButtons.push({ id: 'main-menu-btn', element: menuEl, onActivate: () => this.onMainMenu?.() });
@@ -952,6 +954,7 @@ export class UIManager {
       navButtons.push({ id: 'play-again-btn', element: playAgainEl, onActivate: () => this.onPlayAgain?.() });
     }
     for(const[id,fn]of [['dojo-pause-reset',this.onPracticeReset],['dojo-pause-menu',this.onPracticeMenu]]as const){const el=document.getElementById(id);if(el){el.addEventListener('click',()=>fn?.());navButtons.push({id,element:el,onActivate:()=>fn?.()});}}
+    for(const action of this.onPracticeLabActions?.()??[]){const el=document.getElementById('pause-'+action.id);if(el){const run=()=>{if(!action.disabled){action.run();this.showPauseOverlay();}};el.addEventListener('click',run);navButtons.push({id:'pause-'+action.id,element:el,onActivate:run});}}
     const menuEl = document.getElementById('main-menu-btn');
     if (menuEl) {
       navButtons.push({ id: 'main-menu-btn', element: menuEl, onActivate: () => this.onMainMenu?.() });
@@ -1078,6 +1081,7 @@ export class UIManager {
       navButtons.push({ id: 'local-play-again-btn', element: playAgainEl, onActivate: () => this.onLocalPlayAgain?.() });
     }
     for(const[id,fn]of [['dojo-pause-reset',this.onPracticeReset],['dojo-pause-menu',this.onPracticeMenu]]as const){const el=document.getElementById(id);if(el){el.addEventListener('click',()=>fn?.());navButtons.push({id,element:el,onActivate:()=>fn?.()});}}
+    for(const action of this.onPracticeLabActions?.()??[]){const el=document.getElementById('pause-'+action.id);if(el){const run=()=>{if(!action.disabled){action.run();this.showPauseOverlay();}};el.addEventListener('click',run);navButtons.push({id:'pause-'+action.id,element:el,onActivate:run});}}
     const menuEl = document.getElementById('main-menu-btn');
     if (menuEl) {
       navButtons.push({ id: 'main-menu-btn', element: menuEl, onActivate: () => this.onMainMenu?.() });

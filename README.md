@@ -374,3 +374,5 @@ Fresh dodge profiles now use Mario (All-Rounder), Ganondorf (Abe Lincoln) and Fo
 ### Training Dojo
 
 Choose **Training Dojo** from the main menu for zero-damage free practice or 18 guided lessons. Practice supports all three fighters and six worlds, passive/shielding/telegraphed partners, unlimited arena resets and no win/loss. Lessons require three real successful executions and save completion per fighter on this device. R resets, F2 opens the dojo menu, and Escape/Start pauses with controller-accessible practice options. See [Training Dojo](docs/TRAINING-DOJO.md) for implementation, validation and planned simulator tools.
+
+The dojo now includes a **Timing laboratory**: 1x/0.5x/0.25x playback, F6 freeze/run, F7 single-tick stepping and F3 collision overlays. Xbox Back freezes/steps; Start opens controller-accessible lab controls. Free Practice adds F8 recording, F9 partner playback and three saved routine slots with mirroring/repeat/delay. See [Training laboratory](docs/TRAINING-LAB.md).

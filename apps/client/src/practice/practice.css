@@ -2,3 +2,5 @@
 
 .dojo-setup{pointer-events:auto}.dojo-panel[hidden]{display:none}
 .dojo-setup{position:relative;z-index:1}
+
+.dojo-lab{margin-top:14px;padding-top:12px;border-top:1px solid #b99b63}.dojo-lab summary{font-weight:700;cursor:pointer}.dojo-lab p{margin:8px 0}.dojo-pause-lab{width:100%;text-align:left}.dojo-pause-lab .ui-btn{width:100%;margin:6px 0}.dojo-panel .dojo-lab .ui-btn{min-height:36px}

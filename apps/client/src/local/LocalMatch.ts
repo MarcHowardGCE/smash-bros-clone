@@ -34,6 +34,9 @@ export class LocalMatch {
   private latestSnapshot: StateSnapshot | null = null;
   private _paused = false;
   private practiceInputGate=false;
+  private playbackSpeed=1;
+  get practiceSpeed():number{return this.playbackSpeed;}
+  get practiceTick():number{return this.engine.getCurrentTick();}
 
   onStep:((state:GameState,inputs:Map<PlayerId,InputEvent|null>)=>void)|null=null;
   onSnapshot: ((snapshot: StateSnapshot) => void) | null = null;
@@ -105,6 +108,24 @@ export class LocalMatch {
     return this.latestSnapshot;
   }
 
+  /** Playback scheduling only; physics always advances in unchanged 60 Hz ticks. */
+  setPracticeSpeed(speed:number):boolean {
+    if(!this.practice||![.25,.5,1].includes(speed))return false;
+    this.playbackSpeed=speed;this.accumulator=0;this.lastTime=performance.now();return true;
+  }
+  freezePractice():boolean {
+    if(!this.practice)return false;
+    this._paused=true;this.accumulator=0;this.stop();return true;
+  }
+  runPractice():boolean {
+    if(!this.practice||!this._paused)return false;
+    this._paused=false;this.accumulator=0;this.lastTime=performance.now();this.loop(this.lastTime);return true;
+  }
+  stepPractice(fromMenu=false):boolean {
+    if(!this.practice||!this._paused)return false;
+    if(fromMenu)this.practiceInputGate=true;
+    this.tick();return true;
+  }
   resetPractice():boolean {const reset=this.engine.resetPractice();if(reset)this.practiceInputGate=true;return reset;}
 
   forcePosition(playerId: PlayerId, x: number, y: number): boolean {
@@ -118,10 +139,10 @@ export class LocalMatch {
 
   private loop = (now: number): void => {
     this.animationFrameId = requestAnimationFrame(this.loop);
-    this.accumulator += now - this.lastTime;
+    this.accumulator += (now - this.lastTime)*this.playbackSpeed;
     this.lastTime = now;
 
-    while (this.accumulator >= this.TICK_MS) {
+    while (!this._paused&&this.accumulator >= this.TICK_MS) {
       this.tick();
       this.accumulator -= this.TICK_MS;
     }

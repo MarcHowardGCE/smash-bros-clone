@@ -452,7 +452,8 @@ describe('GameEngine ledge integration', () => {
 		const releaseTick = tick(engine, {
 			p1: makeInput('p1', INPUT_BITS.ATTACK),
 		});
-		expect(releaseTick.players.p1?.state).toBe(PlayerStateEnum.IDLE);
+		// Recovery is over: the fresh attack now executes without an idle gap.
+        expect(releaseTick.players.p1?.state).toBe(PlayerStateEnum.ATTACK);
 	});
 
 	it('AIR_ATTACK landing with missing/zero landing lag data does not crash and resolves to IDLE immediately', () => {
@@ -892,7 +893,7 @@ describe('GameEngine ledge integration', () => {
 			expect(defender.state).toBe(PlayerStateEnum.SHIELD);
 		}
 
-		for(let i=0;i<6;i++)defender=controller.tick(defender,makeInput('p2',0));
+		for(let i=0;i<12;i++)defender=controller.tick(defender,makeInput('p2',0));
 		expect(defender.state).toBe(PlayerStateEnum.IDLE);
 	});
 
@@ -915,7 +916,7 @@ describe('GameEngine ledge integration', () => {
 			expect(defender.state).toBe(PlayerStateEnum.SHIELD);
 		}
 
-		for(let i=0;i<6;i++)defender=controller.tick(defender,makeInput('p2',0));
+		for(let i=0;i<12;i++)defender=controller.tick(defender,makeInput('p2',0));
 		expect(defender.state).toBe(PlayerStateEnum.IDLE);
 	});
 
@@ -1945,4 +1946,5 @@ describe('GameEngine ledge integration', () => {
 			expect(nonSpikeAngle.state).toBe(PlayerStateEnum.HITSTUN);
 		});
 	});
+
 

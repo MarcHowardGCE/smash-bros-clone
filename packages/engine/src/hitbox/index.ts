@@ -23,7 +23,7 @@ import{isDamageImmune}from'./immunity.js';
  *   collision is detected, avoiding `null` checks at call sites.
  */
 
-import { circleOverlap, INPUT_BITS, knockbackAngleToVelocity, PHYSICS, getCharacterStats } from '@smash/shared';
+import { isActiveShield, circleOverlap, INPUT_BITS, knockbackAngleToVelocity, PHYSICS, getCharacterStats } from '@smash/shared';
 import type { PlayerState, HitboxData, Circle, InputEvent } from '@smash/shared';
 
 /**
@@ -135,7 +135,7 @@ export function getDamageHurtbox(player:PlayerState):{x:number;top:number;bottom
  return{x:player.x,top:center-h/2+radius,bottom:center+h/2-radius,radius};
 }
 function overlapsDamageHurtbox(hit:Circle,player:PlayerState):boolean{
- if(player.isShielding||player.state==='SHIELD')return circleOverlap(hit,getHurtbox(player));
+ if(isActiveShield(player))return circleOverlap(hit,getHurtbox(player));
  const body=getDamageHurtbox(player),nearY=Math.max(body.top,Math.min(body.bottom,hit.y));
  return (hit.x-body.x)**2+(hit.y-nearY)**2<(hit.radius+body.radius)**2;
 }
@@ -220,7 +220,7 @@ export function resolveHit(
 
  const multiplier=hitbox.hitlagMultiplier??(hitbox.hitlagFrames===0?0:1);
  const electric=(hitbox.effect??(hitbox.electric?'electric':'normal'))==='electric';
- const shielding=(defender.isShielding||defender.state==='SHIELD')&&defender.shieldHealth>0;
+ const shielding=isActiveShield(defender);
  const parry=shielding&&defender.shieldReleaseEligible===true&&!defender.shieldParryConsumed&&defender.shieldReleaseFrame!==undefined&&defender.shieldReleaseFrame<PHYSICS.PERFECT_SHIELD_WINDOW_FRAMES;
  const shield=calculateShieldHitlag(scaledDamage,multiplier,electric,hitbox.isProjectile,hitbox.projectileAttached);
  const parryFreeze=calculateParryHitlag(scaledDamage,multiplier,electric,hitbox.isProjectile,hitbox.projectileAttached,hitbox.direct??true);

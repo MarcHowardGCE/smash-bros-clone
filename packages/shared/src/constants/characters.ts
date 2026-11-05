@@ -14,6 +14,7 @@ import type { CharacterId, CharacterStats } from '../types/Character.js';
  * This is the baseline fighter with no modifications.
  */
 export const ALL_ROUNDER_STATS: CharacterStats = {
+  airSpeed:5,airAcceleration:.135,airBrake:.05,gravity:.65,fallSpeed:18,fastFallSpeed:28.8,doubleJumpVelocity:-14,
   fighterWeight: PHYSICS.FIGHTER_WEIGHT,
   hurtboxRadius: PHYSICS.HURTBOX_RADIUS,
   runSpeed: PHYSICS.RUN_SPEED,
@@ -27,6 +28,7 @@ export const ALL_ROUNDER_STATS: CharacterStats = {
  * Exact values: weight 118 (+18%), hurtbox 32 (+14%), run 5.8 (-11%), walk 3.1 (-11%), jump -15.2 (-5%), shortHop -9.5 (-5%)
  */
 export const ABE_LINCOLN_STATS: CharacterStats = {
+  airSpeed:4.2,airAcceleration:.11,airBrake:.06,gravity:.68,fallSpeed:19,fastFallSpeed:30.4,doubleJumpVelocity:-13.3,
   fighterWeight: 118,
   hurtboxRadius: 32,
   runSpeed: 5.8,
@@ -42,6 +44,7 @@ export const ABE_LINCOLN_STATS: CharacterStats = {
  */
 export const SWIFT_STATS: CharacterStats = {
   ...ALL_ROUNDER_STATS,
+  airSpeed:5.8,airAcceleration:.16,airBrake:.04,gravity:.62,fallSpeed:17,fastFallSpeed:27.2,doubleJumpVelocity:-14.5,
   fighterWeight: 75,
   hurtboxRadius: 26,
   runSpeed: 6.8,

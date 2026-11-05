@@ -34,10 +34,11 @@ export class RunState extends BaseState {
       return transition(PlayerStateEnum.JUMPSQUAT);
     }
 
-    if (isPressed(ctx.input, INPUT_BITS.ATTACK)||isPressed(ctx.input,INPUT_BITS.GRAB)) {
+    if (isPressed(ctx.input, INPUT_BITS.ATTACK)||isPressed(ctx.input,INPUT_BITS.GRAB)||isPressed(ctx.input,INPUT_BITS.SPECIAL)) {
       return transition(PlayerStateEnum.ATTACK);
     }
 
+    if(isHeld(ctx.input,INPUT_BITS.SHIELD))return transition(PlayerStateEnum.SHIELD);
     if(isHeld(ctx.input,INPUT_BITS.DOWN)&&!isHeld(ctx.input,INPUT_BITS.LEFT)&&!isHeld(ctx.input,INPUT_BITS.RIGHT))return transition(PlayerStateEnum.CROUCH);
     if(ctx.input?.stickX!==undefined&&Math.abs(horizontalMovementInput(ctx.input))<GROUND_INPUT.DASH_THRESHOLD&&horizontalMovementInput(ctx.input)!==0)return transition(PlayerStateEnum.WALK);
 		const holdingLeft = isHeld(ctx.input, INPUT_BITS.LEFT);

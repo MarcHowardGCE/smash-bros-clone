@@ -41,3 +41,5 @@ export {inputVector,validStickInput} from './math/input.js';
 
 export {STAGE_LAYOUTS,getStageLayout} from './constants/stageLayouts.js';
 export type {StageLayout} from './constants/stageLayouts.js';
+
+export {isActiveShield} from './math/shield.js';

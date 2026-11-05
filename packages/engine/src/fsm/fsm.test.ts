@@ -513,7 +513,7 @@ describe('FSM - Shield-grab transitions', () => {
        isShielding: true,
      });
      let result = controller.tick(player, makeInput(0, 0));
-     for(let i=0;i<5;i++)result=controller.tick(result,makeInput(0,0));
+     for(let i=0;i<11;i++)result=controller.tick(result,makeInput(0,0));
      expect(result.state).toBe(PlayerStateEnum.IDLE);
    });
 });

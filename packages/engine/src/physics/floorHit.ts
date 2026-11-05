@@ -1,8 +1,9 @@
+import {isActiveShield} from '@smash/shared';
 import{MoveId,PlayerStateEnum,type MoveData,type PlayerState}from'@smash/shared';
 export interface FloorHit{damage:number;hitlagFrames:number}
 /** Explicit roster tuning; no random rolls or client-side combat decisions. */
 export function resolveFloorHit(player:PlayerState,hit:FloorHit,move:Pick<MoveData,'id'|'tripBelowPercent'>|undefined):PlayerState|null{
- if(!move||!player.isGrounded||player.isInvincible||player.isKnockedOut||player.stocks<=0||player.respawnTimer>0||player.isShielding||player.state===PlayerStateEnum.SHIELD)return null;
+ if(!move||!player.isGrounded||player.isInvincible||player.isKnockedOut||player.stocks<=0||player.respawnTimer>0||isActiveShield(player))return null;
  const lock=[PlayerStateEnum.HARD_LANDING,PlayerStateEnum.JAB_LOCK].includes(player.state as PlayerStateEnum)&&[MoveId.JAB,MoveId.JAB_2].includes(move.id)&&hit.damage>0&&hit.damage<=5&&(player.jabLockCount??0)<2;
  const trip=move.tripBelowPercent!==undefined&&player.percent<move.tripBelowPercent&&['IDLE','WALK','DASH','RUN','CROUCH','TAUNT','ATTACK'].includes(player.state);
  if(!lock&&!trip)return null;

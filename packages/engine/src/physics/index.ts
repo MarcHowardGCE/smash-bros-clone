@@ -1,3 +1,4 @@
+import {airStats} from './airMotion.js';
 import {horizontalMovementInput,GROUND_INPUT} from './groundIntent.js';
 import {hasLaunch,applyLaunchGravity,decayLaunch} from './launchMotion.js';
 /**
@@ -122,15 +123,8 @@ export function applyGravity(player: PlayerState): PlayerState {
 		return player;
 	}
 
-	const gravityAccel = player.isFastFalling
-		? PHYSICS.GRAVITY * PHYSICS.FAST_FALL_MULTIPLIER
-		: PHYSICS.GRAVITY;
-	const vy = player.vy + gravityAccel;
-
-	return {
-		...player,
-		vy: Math.min(vy, PHYSICS.TERMINAL_VELOCITY),
-	};
+ const stats=airStats(player);
+ return {...player,vy:player.isFastFalling?stats.fastFallSpeed:Math.min(player.vy+stats.gravity,stats.fallSpeed)};
 }
 
 /**
@@ -190,23 +184,10 @@ export function applyMovement(
 			vx *= PHYSICS.GROUND_FRICTION;
 		}
 	} else {
-		const airSpeedLimit = PHYSICS.AIR_SPEED * 8;
-
-		// Air speed cap is deliberately loose (8× the acceleration factor) so the player
-		// has wide lateral freedom in the air. The tight limit only applies in rare edge
-		// cases (e.g. extreme knockback velocity); normal aerial drift never reaches it.
-
-		if (movingLeft) {
-			vx = clamp(vx - PHYSICS.AIR_SPEED * 0.15, -airSpeedLimit, airSpeedLimit);
-		}
-
-		if (movingRight) {
-			vx = clamp(vx + PHYSICS.AIR_SPEED * 0.15, -airSpeedLimit, airSpeedLimit);
-		}
-
-		if (!movingLeft && !movingRight) {
-			vx *= PHYSICS.AIR_FRICTION;
-		}
+    const stats=airStats(player),axis=horizontalMovementInput(input);
+    const target=axis*stats.speed,step=axis===0?stats.brake:stats.acceleration;
+    // Approach the target; inherited ground/recovery momentum is never snapped to the cap.
+    vx+=Math.max(-step,Math.min(step,target-vx));
 	}
 
 	return {
@@ -334,7 +315,7 @@ export function startJump(
 
 	return {
 		...player,
-		vy: PHYSICS.DOUBLE_JUMP_VELOCITY,
+		vy: airStats(player).doubleJumpVelocity,
 		hasDoubleJump: false,
 		isFastFalling: false,
 	};
@@ -369,11 +350,11 @@ export function resolveJump(
  * Latches the fast-fall flag when the player presses DOWN while falling.
  *
  * Fast fall activates only when the player is airborne, not already fast-falling,
- * holding DOWN, and moving downward (`vy >= 0`). The `vy >= 0` guard prevents
+ * a fresh DOWN press, and moving downward (`vy >= 0`). The `vy >= 0` guard prevents
  * fast fall from triggering on the way up, which would cancel the jump arc.
  *
  * Once `isFastFalling` is latched `true`, `applyGravity` applies
- * `PHYSICS.GRAVITY * PHYSICS.FAST_FALL_MULTIPLIER` per frame until landing.
+ * `the character fast-fall speed until landing.
  *
  * @param player - Current immutable player state.
  * @param input - This frame's input event.
@@ -387,7 +368,8 @@ export function applyFastFall(
 	if (
 		player.isGrounded ||
 		player.isFastFalling ||
-		!isHeld(input, INPUT_BITS.DOWN) ||
+		!isPressed(input, INPUT_BITS.DOWN) ||
+    player.hitstunFramesRemaining>0 ||
 		player.vy < 0
 	) {
 		return player;
@@ -396,6 +378,7 @@ export function applyFastFall(
 	return {
 		...player,
 		isFastFalling: true,
+    vy:airStats(player).fastFallSpeed,
 	};
 }
 

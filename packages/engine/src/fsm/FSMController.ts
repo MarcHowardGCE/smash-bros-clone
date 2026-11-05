@@ -161,7 +161,7 @@ export class FSMController {
       isGrounded: playerForStateMachine.isGrounded,
     };
 
-    const jumpAttack=!input?.smashAttack&&playerForStateMachine.isGrounded&&[PlayerStateEnum.IDLE,PlayerStateEnum.WALK,PlayerStateEnum.DASH,PlayerStateEnum.RUN,PlayerStateEnum.CROUCH,PlayerStateEnum.SHIELD].includes(playerForStateMachine.state as PlayerStateEnum)&&((input?.pressed??0)&(INPUT_BITS.JUMP|INPUT_BITS.ATTACK))===(INPUT_BITS.JUMP|INPUT_BITS.ATTACK);
+    const jumpAttack=!(playerForStateMachine.state===PlayerStateEnum.SHIELD&&(playerForStateMachine.shieldStunFrames>0||playerForStateMachine.shieldReleaseFrame!==undefined))&&!input?.smashAttack&&playerForStateMachine.isGrounded&&[PlayerStateEnum.IDLE,PlayerStateEnum.WALK,PlayerStateEnum.DASH,PlayerStateEnum.RUN,PlayerStateEnum.CROUCH,PlayerStateEnum.SHIELD].includes(playerForStateMachine.state as PlayerStateEnum)&&((input?.pressed??0)&(INPUT_BITS.JUMP|INPUT_BITS.ATTACK))===(INPUT_BITS.JUMP|INPUT_BITS.ATTACK);
     let transition = jumpAttack?{nextState:PlayerStateEnum.JUMPSQUAT}:this.currentState.update(ctx, playerForStateMachine.stateFrame);
 
     // stateFrame advances here — before any transition is applied. This is intentional:

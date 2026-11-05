@@ -53,3 +53,7 @@ export { launchSpeedInfluence } from './physics/launchInfluence.js';
 export { LAUNCH, launchWorldSpeed, initializeLaunch, clearLaunch, hasLaunch, applyLaunchGravity, decayLaunch } from './physics/launchMotion.js';
 
 export {GROUND_INPUT,horizontalMovementInput,updateGroundIntent,wantsGroundDash,predictedGroundState} from './physics/groundIntent.js';
+
+export {airStats} from './physics/airMotion.js';
+
+export {ACTION_BUFFER_TICKS,prepareActionInput} from './physics/actionBuffer.js';

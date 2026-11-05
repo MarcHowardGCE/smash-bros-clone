@@ -1,3 +1,4 @@
+import type {InputEvent} from './InputEvent.js';
 /**
  * @fileoverview Core game state types shared between the engine, server, and client.
  * Defines the canonical shape of every player, the full game world, network snapshots,
@@ -205,6 +206,8 @@ export interface PlayerState {
   /** Analog ground intent history, retained in snapshots for deterministic replay. */
   movementStickX?: number;
   movementFlickAge?: number;
+  /** Short edge buffer for grounded recovery; no repeated held actions. */
+  actionBuffer?:{input:InputEvent;framesLeft:number};
   /** Pending vy component of knockback to be applied on hitlag exit. */
   pendingKnockbackVy?: number | null;
   /** Frames remaining before this fighter respawns after a KO. */

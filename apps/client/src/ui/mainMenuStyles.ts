@@ -1,14 +1,14 @@
 /** Illustrated main-menu pilot; other screens retain their current theme. */
 export const mainMenuStyles = `
 .menu-shell .main-menu-panel.fight-cabinet {
- width:min(760px,calc(100vw - 40px));padding:88px 72px 42px;
+ width:min(760px,calc(100vw - 40px));padding:110px 72px 42px;
  max-height:calc(100dvh - 90px);border:0;border-radius:0;background:#201a27;
  border-image:none;
  scrollbar-color:#96764f #201a27;
 }
 .menu-shell .fight-cabinet::before {content:'';position:absolute;inset:0;background:url('/menu-ui/hero-frame.png') center/100% 100% no-repeat;pointer-events:none;}
 .fight-cabinet > * {position:relative;}
-.menu-shell .fight-cabinet > img {max-height:150px;margin:0 auto 20px;display:block;}
+.menu-shell .fight-cabinet > img {max-height:230px;margin:0 auto 20px;display:block;}
 .fight-cabinet .fight-actions {display:grid;gap:12px;margin-bottom:20px;}
 .menu-shell .fight-cabinet .cabinet-button {
  position:relative;isolation:isolate;background:transparent;border:0;border-radius:10px;
@@ -40,8 +40,8 @@ export const mainMenuStyles = `
 }
 .fight-cabinet .room-label {padding:12px;background:#302635;border:1px solid #96764f;}
 @media(max-height:800px){
- .menu-shell .main-menu-panel.fight-cabinet {padding:82px 64px 34px;}
- .menu-shell .fight-cabinet > img {max-height:95px;margin-bottom:12px!important;}
+ .menu-shell .main-menu-panel.fight-cabinet {padding:94px 64px 34px;}
+ .menu-shell .fight-cabinet > img {max-height:150px;margin-bottom:12px!important;}
  .fight-cabinet .fight-actions {gap:9px;margin-bottom:12px;}
  .menu-shell .fight-cabinet .cabinet-button {min-height:52px;padding:13px 32px;font-size:17px;}
  .fight-cabinet .menu-utilities {margin:12px 0;}
@@ -54,4 +54,5 @@ export const mainMenuStyles = `
  .menu-shell .fight-cabinet .cabinet-button {padding-left:24px;padding-right:24px;}
 }
 `;
+
 

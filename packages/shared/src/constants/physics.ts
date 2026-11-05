@@ -23,6 +23,8 @@ export const SMASH_CHARGE_MAX_FRAMES = 60;
  * - Jumpsquat: JUMPSQUAT_FRAMES frames of crouch before leaving the ground
  */
 export const PHYSICS = {
+  SHIELD_DROP_FRAMES:11,
+  SPOT_DODGE_ATTACK_CANCEL_FRAME:19,SPOT_DODGE_TOTAL_FRAMES:25,
   /** Digital hitstop displacement tuning; world-unit calibration is not certified Ultimate data. */
   SDI_DISTANCE_WORLD:3,SDI_COOLDOWN_TICKS:4,ASDI_EXIT_DISTANCE_WORLD:2,
   /** Prima short-hop guide / Rubendal calculator; not full formula parity. */

@@ -123,7 +123,7 @@ describe('Physics Engine - applyMovement', () => {
     const player = makePlayer({ isGrounded: false, vx: 4, vy: 2 });
     const result = applyMovement(player, makeInput());
 
-    expect(result.vx).toBeCloseTo(4 * PHYSICS.AIR_FRICTION);
+    expect(result.vx).toBeCloseTo(3.95);
   });
 });
 
@@ -207,66 +207,21 @@ describe('Physics Engine - startJump', () => {
 });
 
 describe('Physics Engine - applyFastFall', () => {
-  it('activates fast fall only while airborne and descending with down held', () => {
-    const player = makePlayer({ isGrounded: false, vy: 0.5, isFastFalling: false });
-    const input = makeInput({ held: INPUT_BITS.DOWN });
-    const result = applyFastFall(player, input);
-
-    expect(result.isFastFalling).toBe(true);
-    expect(result.vy).toBe(0.5); // vy unchanged on activation
-  });
-
-  it('applies progressive acceleration via applyGravity when fast falling', () => {
-    // Frame 1: activate fast fall
-    let player = makePlayer({ isGrounded: false, vy: 0.5, isFastFalling: false });
-    const input = makeInput({ held: INPUT_BITS.DOWN });
-    player = applyFastFall(player, input);
-    expect(player.isFastFalling).toBe(true);
-    expect(player.vy).toBe(0.5);
-
-    // Frame 2: gravity applies GRAVITY * FAST_FALL_MULTIPLIER
-    player = applyGravity(player);
-    const expectedVy2 = 0.5 + PHYSICS.GRAVITY * PHYSICS.FAST_FALL_MULTIPLIER;
-    expect(player.vy).toBeCloseTo(expectedVy2);
-
-    // Frame 3: continues accelerating
-    player = applyGravity(player);
-    const expectedVy3 = expectedVy2 + PHYSICS.GRAVITY * PHYSICS.FAST_FALL_MULTIPLIER;
-    expect(player.vy).toBeCloseTo(expectedVy3);
-
-    // Verify it's capped by TERMINAL_VELOCITY
-    expect(player.vy).toBeLessThanOrEqual(PHYSICS.TERMINAL_VELOCITY);
-  });
-
-  it('does not activate while rising', () => {
-    const player = makePlayer({ isGrounded: false, vy: -1, isFastFalling: false });
-    const input = makeInput({ held: INPUT_BITS.DOWN });
-    const result = applyFastFall(player, input);
-
-    expect(result).toBe(player);
-  });
-
-  it('applies fast-fall acceleration on activation frame and clamps to shared terminal ceiling', () => {
-    const player = makePlayer({ isGrounded: false, vy: 17.2, isFastFalling: false });
-    const input = makeInput({ held: INPUT_BITS.DOWN });
-
-    const result = applyGravity(applyFastFall(player, input));
-
-    expect(result.isFastFalling).toBe(true);
-    expect(result.vy).toBe(PHYSICS.TERMINAL_VELOCITY);
-  });
-
-  it('keeps non-fast-fall descent capped at TERMINAL_VELOCITY', () => {
-    const player = makePlayer({ isGrounded: false, vy: 17.6, isFastFalling: false });
-    const input = makeInput({ held: 0 });
-
-    const result = applyGravity(applyFastFall(player, input));
-
-    expect(result.isFastFalling).toBe(false);
-    expect(result.vy).toBe(PHYSICS.TERMINAL_VELOCITY);
-  });
+ it('starts on a fresh descending press at a distinct falling speed',()=>{
+  const p=makePlayer({isGrounded:false,vy:.5}),i=makeInput({held:INPUT_BITS.DOWN,pressed:INPUT_BITS.DOWN});
+  const next=applyFastFall(p,i);expect(next.isFastFalling).toBe(true);expect(next.vy).toBe(28.8);
+  expect(applyGravity(next).vy).toBe(28.8);
+ });
+ it('does not turn an early held down input into an automatic apex fast fall',()=>{
+  const i=makeInput({held:INPUT_BITS.DOWN,pressed:INPUT_BITS.DOWN});
+  const rising=makePlayer({isGrounded:false,vy:-1});
+  expect(applyFastFall(rising,i)).toBe(rising);
+  expect(applyFastFall({...rising,vy:1},{...i,pressed:0}).isFastFalling).toBe(false);
+ });
+ it('retains the normal fall cap when fast fall was not requested',()=>{
+  expect(applyGravity(makePlayer({isGrounded:false,vy:17.6})).vy).toBe(PHYSICS.TERMINAL_VELOCITY);
+ });
 });
-
 describe('Physics Engine - checkPlatformCollision', () => {
   it('crossing bottom blast zone sets isKnockedOut to true', () => {
     const stage = makeStage();
@@ -465,7 +420,7 @@ describe('Physics Engine - applyMovementInput', () => {
     expect(Math.abs(vxAfterHitstun)).toBeLessThan(1);
 
     player = applyMovementInput(player, input);
-    expect(player.vx).toBeCloseTo(vxAfterHitstun);
+    expect(player.vx).toBeCloseTo(vxAfterHitstun-.05);
   });
 
   it('composes gravity, movement, and collision checks for client prediction', () => {

@@ -227,7 +227,7 @@ export class UIManager {
 
     this.overlay.innerHTML = `
       <div class="main-menu-panel fight-cabinet">
-        <img src="/branding/everybody-throws-hands-logo.png" alt="Everybody Throws Hands">
+        <img src="/branding/everybody-throws-hands-arcade.png" alt="Everybody Throws Hands">
         <div class="fight-actions">
           <button id="local-play-btn" class="ui-btn cabinet-button cabinet-primary">Local Play</button>
           ${existingRoom ? `<div class="room-label">Room: <strong>${existingRoom}</strong></div><button id="ready-btn" class="ui-btn cabinet-button">Ready</button>` : `<button id="create-btn" class="ui-btn cabinet-button">Create Room</button><div class="room-join"><input id="join-code" class="ui-input" aria-label="Room code" placeholder="ROOM CODE" maxlength="6"><button id="join-btn" class="ui-btn cabinet-button">Join</button></div>`}
@@ -1215,3 +1215,4 @@ export class UIManager {
     }
   }
 }
+

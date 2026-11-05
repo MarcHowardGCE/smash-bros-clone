@@ -140,7 +140,7 @@ describe('UIManager', () => {
       uiManager.showLobby();
       const img = mockOverlay.querySelector('img[alt="Everybody Throws Hands"]') as HTMLImageElement;
       expect(img).not.toBeNull();
-      expect(img.src).toContain('everybody-throws-hands-logo.png');
+      expect(img.src).toContain('everybody-throws-hands-arcade.png');
       // Presentation is owned by the responsive menu class.
       const container = img.closest('div') as HTMLElement;
       expect(container).not.toBeNull();
@@ -838,3 +838,4 @@ describe('UIManager', () => {
     });
   });
 });
+

@@ -1,3 +1,4 @@
+import {isActiveShield} from '@smash/shared';
 import { getStageLayout } from '@smash/shared';
 import{inputVector}from'@smash/shared';
 /**
@@ -45,7 +46,7 @@ import {
 	applyGravity,
 	applyDI,
 	launchSpeedInfluence,
-	initializeLaunch, clearLaunch, hasLaunch, applyLaunchGravity, decayLaunch, horizontalMovementInput,
+	initializeLaunch, clearLaunch, hasLaunch, applyLaunchGravity, decayLaunch, horizontalMovementInput, prepareActionInput,
 	applyMovement,
 	checkHitboxCollision,
 	checkLedgeGrab,
@@ -650,6 +651,9 @@ export class GameEngine {
 	 *   the displaced occupant's state in place.
 	 * @returns The fully updated `PlayerState` for `playerId`.
 	 */
+  /** Pausing discards pending action edges; resume requires deliberate input. */
+  clearActionBuffers():void {for(const player of Object.values(this.state.players))player.actionBuffer=undefined;}
+
 	private updatePlayer(
 		playerId: PlayerId,
 		current: PlayerState,
@@ -657,6 +661,7 @@ export class GameEngine {
 		players: Record<PlayerId, PlayerState>,
 	): PlayerState {
 		let player = clonePlayer(current);
+        const prepared=prepareActionInput(player,input);player=prepared.player;input=prepared.input;
         if(player.isGrounded&&player.state!==PlayerStateEnum.JUMPSQUAT)player.shortHop=false;
         if((player.footstoolCooldownFrames??0)>0)player={...player,footstoolCooldownFrames:player.footstoolCooldownFrames!-1};
         if(player.footstoolRole){const valid=player.stocks>0&&player.respawnTimer<=0&&(player.footstoolRole==='attacker'?player.state===PlayerStateEnum.AIRBORNE:player.state===PlayerStateEnum.HITSTUN);player={...player,footstoolRole:valid?player.footstoolRole:undefined,footstoolPartnerId:valid?player.footstoolPartnerId:undefined,footstoolFrame:valid?(player.footstoolFrame??0)+(player.hitlagFramesRemaining>0?0:1):undefined};}
@@ -814,7 +819,7 @@ export class GameEngine {
 		if (nextPlayer.state === PlayerStateEnum.SHIELD) {
 			nextPlayer = {
 				...nextPlayer,
-				isShielding: true,
+				isShielding: isActiveShield(nextPlayer),
 				shieldHealth: Math.max(
 					0,
 					nextPlayer.shieldHealth - (nextPlayer.shieldReleaseFrame===undefined?PHYSICS.SHIELD_DRAIN_PER_FRAME:0),
@@ -943,7 +948,7 @@ export class GameEngine {
           const startup=getMoveDataForCharacter(player.characterId,MoveId.UP_SPECIAL).startupFrames;
           if(previous.stateFrame<startup&&player.stateFrame>=startup)nextPlayer={...nextPlayer,state:PlayerStateEnum.AIR_ATTACK,vy:PHYSICS.UP_SPECIAL_LAUNCH_VELOCITY,isGrounded:false,isFastFalling:false};
         }
-        if(previous.state===PlayerStateEnum.SHIELD&&player.state===PlayerStateEnum.IDLE)nextPlayer={...nextPlayer,shieldReaction:previous.shieldReaction==='parry'?'parry':'drop',shieldReactionFrame:previous.shieldReaction==='parry'?previous.shieldReactionFrame:0};
+        if(previous.state===PlayerStateEnum.SHIELD&&player.state===PlayerStateEnum.IDLE)nextPlayer={...nextPlayer,shieldReaction:previous.shieldReaction==='parry'?'parry':'drop',shieldReactionFrame:previous.shieldReaction==='parry'||previous.shieldReaction==='drop'?previous.shieldReactionFrame:0};
 
 		if (
 			previous.state === PlayerStateEnum.JUMPSQUAT &&
@@ -1178,7 +1183,7 @@ export class GameEngine {
         }
         if(player.state===PlayerStateEnum.HELPLESS_LAND)return{...player,vx:0,vy:0};
         if(player.state===PlayerStateEnum.HELPLESS){
-          const drift:InputEvent={playerId:player.id,tick:this.tick,seq:input?.seq??0,pressed:0,released:0,held:(input?.held??0)&(INPUT_BITS.LEFT|INPUT_BITS.RIGHT)};
+          const drift:InputEvent={playerId:player.id,tick:this.tick,seq:input?.seq??0,pressed:0,released:0,held:(input?.held??0)&(INPUT_BITS.LEFT|INPUT_BITS.RIGHT),...(input?.stickX!==undefined?{stickX:input.stickX,stickY:0}:{})};
           const fallen=checkPlatformCollision(applyMovement(applyGravity({...player,isFastFalling:false}),drift),this.stage);
           return fallen.isGrounded?{...fallen,state:PlayerStateEnum.HELPLESS_LAND,stateFrame:0,vx:0,vy:0}:fallen;
         }
@@ -1827,6 +1832,7 @@ export class GameEngine {
 		return {
 			...player,
 			state: PlayerStateEnum.LEDGE_HANG,
+            airDodgeDirection:null,actionBuffer:undefined,
 			stateFrame: 0,
 			ledgeId,
 			x: hangX,
@@ -2190,7 +2196,7 @@ export class GameEngine {
 					}
 
 					const hitShieldOnA =
-						(updatedA.state === PlayerStateEnum.SHIELD || updatedA.isShielding) &&
+						isActiveShield(updatedA) &&
 						updatedA.shieldHealth > 0;
 
 					players[playerA.id] = this.applyHit(updatedA, hitOnA, updatedB.facing,playerB.currentMoveId?getMoveDataForCharacter(playerB.characterId,playerB.currentMoveId):undefined);
@@ -2237,7 +2243,7 @@ export class GameEngine {
 					}
 
 					const hitShieldOnB =
-						(updatedB.state === PlayerStateEnum.SHIELD || updatedB.isShielding) &&
+						isActiveShield(updatedB) &&
 						updatedB.shieldHealth > 0;
 
 					players[playerB.id] = this.applyHit(updatedB, hitOnB, updatedA.facing,playerA.currentMoveId?getMoveDataForCharacter(playerA.characterId,playerA.currentMoveId):undefined);
@@ -2756,7 +2762,7 @@ export class GameEngine {
 		worldY: number,
 	): void {
 		const victim=this.state.players[defenderId];
-        damage= victim&&(victim.state===PlayerStateEnum.SHIELD||victim.isShielding)?(victim.shieldReleaseEligible&&victim.shieldReleaseFrame!==undefined&&victim.shieldReleaseFrame<PHYSICS.PERFECT_SHIELD_WINDOW_FRAMES&&!victim.shieldParryConsumed?0:damage):this.matchDamage(damage);
+        damage= victim&&isActiveShield(victim)?(victim.shieldReleaseEligible&&victim.shieldReleaseFrame!==undefined&&victim.shieldReleaseFrame<PHYSICS.PERFECT_SHIELD_WINDOW_FRAMES&&!victim.shieldParryConsumed?0:damage):this.matchDamage(damage);
         this.hitEvents.push({
 			attackerId,
 			defenderId,
@@ -2795,7 +2801,7 @@ export class GameEngine {
         floorMove?:import("@smash/shared").MoveData,
 	): PlayerState {
         if(isDamageImmune(player))return player;
-		if ((player.state === PlayerStateEnum.SHIELD || player.isShielding) && player.shieldHealth > 0) {
+		if (isActiveShield(player) && player.shieldHealth > 0) {
 			const shieldStunFrames = hit.shieldStunFrames??(hit.damage>0?Math.floor(hit.damage*.8)+2:0);
 			const remainingShieldHealth = player.shieldHealth - hit.damage;
 
@@ -2850,6 +2856,7 @@ export class GameEngine {
 
 		return {
 			...initializeLaunch(player, hit.knockbackVx, hit.knockbackVy),
+            actionBuffer:undefined,
 			footstoolRole:undefined,footstoolPartnerId:undefined,footstoolFrame:undefined,shieldReaction:undefined,shieldReactionFrame:undefined,
             jabLockCount:0,hitReaction:hit.damage>=12?'heavy':!player.isGrounded?'air':hit.knockbackVy < -Math.abs(hit.knockbackVx)?'high':hit.knockbackVy>=0?'low':undefined,
             shortHop:false,
@@ -3107,6 +3114,7 @@ export class GameEngine {
 		return null;
 	}
 }
+
 
 
 

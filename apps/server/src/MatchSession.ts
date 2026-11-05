@@ -121,6 +121,7 @@ export class MatchSession {
   pause(): void {
     if (!this.isRunning || this.paused) return;
     this.paused = true;
+    this.engine.clearActionBuffers();
     // Keep control notifications separate from snapshot data.
     // Keep the loop scheduling alive (don't call stop()), just skip tick processing.
     this.accumulator = 0;

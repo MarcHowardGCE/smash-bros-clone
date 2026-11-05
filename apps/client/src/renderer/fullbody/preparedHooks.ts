@@ -25,10 +25,11 @@ export function selectPreparedFrame(state:string,frame:number,vy:number|undefine
  const cue=Math.max(0,Math.floor(c.shieldReactionFrame??0));
  if(c.shieldReaction==='parry'&&cue<18&&(state==='SHIELD'||state==='IDLE'))return{clip:'parry',index:Math.floor(cue/3)};
  if(state==='SHIELD'){
+  if(c.shieldReaction==='drop')return{clip:'shield_drop',index:Math.min(5,Math.floor(cue*6/11))};
   if((c.shieldReaction==='hit'||c.shieldReaction==='parry')&&cue<18)return{clip:c.shieldReaction==='parry'?'parry':'shield_hit',index:Math.floor(cue/3)};
   if(frame<6)return{clip:'shield_raise',index:Math.max(0,Math.floor(frame))};
  }
- if(state==='IDLE'&&c.shieldReaction==='drop'&&cue<18)return{clip:'shield_drop',index:Math.floor(cue/3)};
+ if(state==='IDLE'&&c.shieldReaction==='drop'&&cue<11)return{clip:'shield_drop',index:Math.min(5,Math.floor(cue*6/11))};
  if(state==='HITSTUN'&&c.shieldReaction==='break'){
   if(cue<18)return{clip:'shield_break_launch',index:Math.floor(cue/3)};
   const remaining=c.hitstunFramesRemaining??19;

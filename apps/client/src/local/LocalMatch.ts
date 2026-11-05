@@ -79,6 +79,7 @@ export class LocalMatch {
   pause(): void {
     if (this._paused) return;
     this._paused = true;
+    this.engine.clearActionBuffers();
     if (this.animationFrameId !== null) {
       cancelAnimationFrame(this.animationFrameId);
       this.animationFrameId = null;

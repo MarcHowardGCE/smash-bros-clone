@@ -26,4 +26,6 @@ export interface CharacterStats {
   jumpVelocity: number;
   /** Initial vertical velocity on short hop in px/frame (negative = upward). */
   shortHopVelocity: number;
+  /** Project-tuned aerial movement in world units per 60 Hz tick. */
+  airSpeed?:number;airAcceleration?:number;airBrake?:number;gravity?:number;fallSpeed?:number;fastFallSpeed?:number;doubleJumpVelocity?:number;
 }

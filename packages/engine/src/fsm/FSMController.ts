@@ -1,4 +1,4 @@
-import {recoverDodge,finishDodge} from '../physics/dodgeFatigue.js';
+import {recoverDodge,finishDodge,dodgeTiming} from '../physics/dodgeFatigue.js';
 import {updateGroundIntent} from '../physics/groundIntent.js';
 import{advanceHitstop}from'./hitstop.js';
 import{TripFallState,TripProneState,JabLockState}from'./states/TripState.js';
@@ -154,6 +154,7 @@ export class FSMController {
     // No state machine progress occurs during hitlag; the early return skips the rest of tick().
     if(player.hitlagFramesRemaining>0)return advanceHitstop(player,input?.held??0,input);
     player=recoverDodge(player);
+    if(player.dodgeRefreshPending){player={...player};finishDodge(player);}
     if(player.state===PlayerStateEnum.ATTACK&&(player.shieldGrabStartup??0)>0)return {...player,shieldGrabStartup:player.shieldGrabStartup!-1,activeHitbox:null};
     // Displacement belongs to hitstop; no continuous drift during hitstun.
     const playerForStateMachine=updateGroundIntent(player,input);
@@ -255,7 +256,10 @@ export class FSMController {
       stateFrame: 0,
     };
 
-    if([PlayerStateEnum.ROLL,PlayerStateEnum.SPOT_DODGE,PlayerStateEnum.AIR_DODGE].includes(player.state as PlayerStateEnum)&&nextStateName!==player.state)finishDodge(nextPlayer);
+    if([PlayerStateEnum.ROLL,PlayerStateEnum.SPOT_DODGE,PlayerStateEnum.AIR_DODGE].includes(player.state as PlayerStateEnum)&&nextStateName!==player.state){
+      const timing=dodgeTiming(player),cancel=player.state===PlayerStateEnum.SPOT_DODGE&&nextStateName===PlayerStateEnum.ATTACK&&player.stateFrame>=(timing.attackCancel??timing.total)-1;
+      if(player.stateFrame>=timing.total-1||cancel)finishDodge(nextPlayer);
+    }
     // Apply any field clears from exit() to nextPlayer
     // (exit() modifies ctx.player, but we need to apply those changes to nextPlayer)
     if (ctx.player.airDodgeDirection !== player.airDodgeDirection) {

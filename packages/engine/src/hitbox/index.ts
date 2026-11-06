@@ -1,7 +1,8 @@
+import {contactStaleMultiplier} from './contactHistory.js';
 import{calculateHitlag,calculateShieldHitlag,calculateShieldStun,calculateParryHitlag}from'./hitlag.js';
 import{asdiPolicy}from'./displacement.js';
 import{directionZone,inputDirectionZone}from'../fsm/hitstop.js';
-import{staleMultiplier,rageMultiplier,hitstunFromKnockback}from'./combatFormulas.js';
+import{rageMultiplier,hitstunFromKnockback}from'./combatFormulas.js';
 import{isDamageImmune}from'./immunity.js';
 /**
  * @fileoverview Hitbox collision and knockback resolution for the deterministic game engine.
@@ -190,7 +191,7 @@ export function resolveHit(
     return NO_HIT;
   }
 
-	const stale=staleMultiplier(attacker.currentMoveId,attacker.staleMoveQueue??[],attacker.staleMoveShieldQueue);
+	const stale=contactStaleMultiplier(attacker);
  const shortHop=attacker.shortHop&&attacker.state==='AIR_ATTACK'&&['NEUTRAL_AIR','FORWARD_AIR','BACK_AIR','UP_AIR','DOWN_AIR'].includes(attacker.currentMoveId??'');
  const scaledDamage=hitbox.damage*stale*(shortHop?PHYSICS.SHORT_HOP_AERIAL_DAMAGE_MULTIPLIER:1);
  const launchBaseDamage=hitbox.damage*(1-(1-stale)*.3);

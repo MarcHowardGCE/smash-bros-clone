@@ -1,5 +1,5 @@
 import {beginDodge,dodgeTiming} from '../../physics/dodgeFatigue.js';
-/** Profile-driven aerial recovery. Direction capture and legacy landing movement remain separate. */
+/** Profile-driven aerial recovery. Direction capture and landing recovery remain separate. */
 import { BaseState, PlayerStateEnum, transition, INPUT_BITS, isHeld } from './utils.js';
 import type { FSMContext, FSMTransition } from '../index.js';
 
@@ -13,7 +13,7 @@ export class AirDodgeState extends BaseState {
     const hasRight = isHeld(ctx.input, INPUT_BITS.RIGHT);
     const hasDown = isHeld(ctx.input, INPUT_BITS.DOWN);
 
-    // Snapshot an eight-direction vector; downward landing keeps legacy wavedash rules.
+    // Snapshot an eight-direction vector; landing recovery is resolved by the game loop.
     // DOWN+RIGHT → { x: 1, y: 1 }, no direction → { x: 0, y: 0 }
     const x = Number(hasRight)-Number(hasLeft);
     const y = Number(hasDown)-Number(isHeld(ctx.input,INPUT_BITS.UP));

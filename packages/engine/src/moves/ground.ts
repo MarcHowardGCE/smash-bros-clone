@@ -86,16 +86,20 @@ export const MOVE_FORWARD_SMASH: MoveData = {
 };
 
 const upSmashHitbox: HitboxData = {
+  hitGroup:1,
   offsetX: 0, offsetY: -55, radius: 32,
   damage: 16, baseKnockback: 10, knockbackGrowth: 95, knockbackAngle: 80,
   hitlagFrames: 7, hitstunFrames: 28, priority: 2,
 };
 
-/** Up smash — 12 startup, 5 active, 22 recovery. Anti-air with 80° launch angle, chargeable up to 60 frames. */
+// Setup and finisher share existing geometry. Four plus twelve retains the 16-base-damage budget.
+const upSmashSetup:HitboxData={...upSmashHitbox,hitGroup:0,damage:4,baseKnockback:0,knockbackGrowth:0,hitlagMultiplier:.6};
+const upSmashFinisher:HitboxData={...upSmashHitbox,damage:12};
+/** Two-hit up smash — 12 startup, 5 active (2 setup + 3 finisher), 22 recovery. */
 export const MOVE_UP_SMASH: MoveData = {
   id: MoveId.UP_SMASH,
   startupFrames: 12, activeFrames: 5, recoveryFrames: 22,
-  hitboxPerActiveFrame: [upSmashHitbox, upSmashHitbox, upSmashHitbox, upSmashHitbox, upSmashHitbox],
+  hitboxPerActiveFrame: [upSmashSetup, upSmashSetup, upSmashFinisher, upSmashFinisher, upSmashFinisher],
   landingLag: 0, isAerial: false, isGrab: false, isSpecial: false,
   chargeMax: 60,
 };

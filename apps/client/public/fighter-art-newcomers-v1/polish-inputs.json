@@ -1,0 +1,24 @@
+{
+  "files": [
+    {
+      "name": "moonshine-walk-v3.png",
+      "sourceFilename": "exec-b09bea60-157e-4a58-8632-d2094933cd06.png"
+    },
+    {
+      "name": "hulk-hoagie-walk-v3.png",
+      "sourceFilename": "exec-8b4e13f7-51b2-44b3-8854-f117c0f9c71b.png"
+    },
+    {
+      "name": "hulk-hoagie-walk-v4-candidate.png",
+      "sourceFilename": "exec-c5b0186a-d4a8-4e67-90c1-9397f5171dc1.png"
+    },
+    {
+      "name": "moonshine-run-v3.png",
+      "sourceFilename": "exec-4d2bbd62-1213-406f-9450-430965df7c3c.png"
+    },
+    {
+      "name": "hulk-hoagie-run-v3.png",
+      "sourceFilename": "exec-bb5c7e0c-e174-48de-b5b9-cf589d5165ed.png"
+    }
+  ]
+}

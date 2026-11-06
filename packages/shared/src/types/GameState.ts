@@ -30,6 +30,10 @@ export interface Circle {
  * applies `attackerFacing` when computing world-space hit position.
  */
 export interface HitboxData {
+  /** Distinct hit wave within one move. Default group zero is once per victim. */
+  hitGroup?:number;
+  /** Optional action-frame gap before this group can hit the same victim again. */
+  rehitFrames?:number;
   /** Multiplier for computed body-hit freeze; defaults to one. */
   hitlagMultiplier?:number;
   shieldstunMultiplier?:number;
@@ -142,6 +146,7 @@ export interface PlayerState {
   shieldReleaseFrame?:number;
   shieldReleaseEligible?:boolean;
   shieldParryConsumed?:boolean;
+  shieldParryLockFrames?:number;
   queuedJumpAttack?:boolean;
   shieldDodgeIntent?:number;
   tauntKind?:'up'|'side'|'down';
@@ -163,6 +168,8 @@ export interface PlayerState {
   dodgeLevel?: number;
   dodgeKind?: "spot"|"forward"|"backward"|"air";
   dodgeRefreshTicks?: number;
+  /** Dodge was interrupted by a hit; arm the refresh clock after hitlag. */
+  dodgeRefreshPending?:boolean;
   /** True while this fighter has an opponent grabbed. */
   isGrabbing: boolean;
   /** The PlayerId of the grabbed opponent, or null if not grabbing. */
@@ -188,6 +195,9 @@ export interface PlayerState {
   };
   /** Set of player ids this move instance has already hit (prevents multi-hit per swing). */
   hitPlayerIds: Set<string>;
+  hitContactFrames?:Record<string,Record<string,number>>;
+  /** Capture on first contact so later waves do not stale themselves. */
+  moveStaleMultiplier?:number;
   /** Frames a smash attack has been charged (0 when not charging). */
   chargeFrames: number;
   /** Last explicitly enabled hitlag-exit displacement; retained legacy field name. */

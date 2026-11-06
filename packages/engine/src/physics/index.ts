@@ -1,3 +1,4 @@
+import {airDodgeAllowsLedge} from './airDodgeMotion.js';
 import {airStats} from './airMotion.js';
 import {horizontalMovementInput,GROUND_INPUT} from './groundIntent.js';
 import {hasLaunch,applyLaunchGravity,decayLaunch} from './launchMotion.js';
@@ -483,6 +484,7 @@ export function checkLedgeGrab(
 	player: PlayerState,
 	stage: StageData,
 ): LedgeData | null {
+	if(!airDodgeAllowsLedge(player))return null;
 	if (player.isGrounded) {
 		return null;
 	}

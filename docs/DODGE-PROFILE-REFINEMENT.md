@@ -1,5 +1,7 @@
 # Fighter dodge reference profiles
 
+Current follow-up: published intermediate observations, source conflicts, refresh interruptions and full-loop hit scheduling are tracked in [the current audit](FATIGUE-PARRY-SEQUENCE-AUDIT.md). Older timing claims below are historical where superseded.
+
 November 5, 2026. This pass replaces the shared fresh dodge timing with three explicit reference profiles. It does not finish fully fatigued timing verification.
 
 ## Reference choices

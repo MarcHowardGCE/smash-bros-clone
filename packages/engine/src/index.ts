@@ -59,7 +59,13 @@ export {airStats} from './physics/airMotion.js';
 
 export {ACTION_BUFFER_TICKS,prepareActionInput} from './physics/actionBuffer.js';
 
-export {dodgeDurationScale} from './physics/dodgeFatigue.js';
+export {dodgeDurationScale,finishDodge} from './physics/dodgeFatigue.js';
 
 export {freshDodgeProfile,DODGE_PROFILES} from './physics/dodgeProfiles.js';
 export {dodgeTiming,dodgeAnimationFrame} from './physics/dodgeFatigue.js';
+
+export{airDodgeLandingLag}from'./physics/airDodgeLanding.js';
+
+export{canHitContact,recordHitContact,contactStaleMultiplier}from'./hitbox/contactHistory.js';
+
+export {airDodgeTravelScale,airDodgeTravelSpeed,airDodgeAllowsLedge} from './physics/airDodgeMotion.js';

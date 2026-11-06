@@ -1,0 +1,264 @@
+{
+  "version": 1,
+  "tool": "built-in image_gen",
+  "status": "pilot candidates, not playable roster",
+  "files": [
+    {
+      "key": "moonshine_idle_gen",
+      "name": "moonshine-idle-v1.png",
+      "request": {
+        "transparent_background": true,
+        "prompt": "Create a production animation sprite sheet for original fighter Moonshine matching the supplied character reference. Four complete idle breathing frames in a strict 2 by 2 equal-cell grid, facing right in three-quarter fighting stance, same planted boots and baseline. Preserve tan wiry man, sleepy grin, scruffy beard, raccoon cap and long striped tail, red bandanna, ivory sleeveless shirt, brown suspenders, patched cuffed blue jeans, rope belt, cream wrist wraps and brown boots. Subtle breathing and secondary cloth motion; stable root and scale. Textured hand-inked grotesque cartoon style, controlled warm colors. Real transparent alpha, no text, shadows, ground, scenery or borders; ample margins.",
+        "recording": "Reconstructed specification of initial built-in call; original supplied reference was Moonshine pose sheet."
+      },
+      "sourceFilename": "exec-ce283646-7867-4c20-9e73-a8ef0cfc240a.png"
+    },
+    {
+      "key": "hoagie_idle_gen",
+      "name": "hulk-hoagie-idle-v1.png",
+      "request": {
+        "transparent_background": true,
+        "prompt": "Production sheet of Hulk Hoagie matching the supplied original pose reference. Four whole-body idle frames in a strict 2 by 2 equal-cell grid, facing right, same three-quarter camera, fixed planted boots and scale. Subtle shoulder breathing and fist flex. Broad muscular tan adult wrestler, angry face and black beard, brown flat cap, burgundy singlet thin cream/gold trim, white wrist wraps, dark riveted knee pads, brown wrestling boots with cream laces. Match reference inked textured grotesque-cartoon style and warm muted palette. Real transparent alpha, no text, backdrop, shadows, floor or borders; generous complete-figure margins.",
+        "recording": "Reconstructed specification of initial built-in call; original supplied reference was Hoagie pose sheet."
+      },
+      "sourceFilename": "exec-4c5e82ff-40aa-4dbb-94cd-cd1483a5c15b.png"
+    },
+    {
+      "key": "moonshine_walk_fixed",
+      "name": "moonshine-walk-v1.png",
+      "request": {
+        "transparent_background": true,
+        "prompt": "Edit this six-frame Moonshine walking sprite sheet: REMOVE THE ENTIRE brown/black background and all glow, replacing it with genuine transparent alpha. Preserve the six character illustrations, all their internal colors/details, their six positions, sizes and 3-column 2-row layout exactly. Do not redraw, reposition, add shadows or floor lines, or change any poses. There must be fully transparent empty space between the figures and around every silhouette, including between arms/legs. No opaque background, no checkerboard drawn into image. Deliver a transparent PNG sprite sheet.",
+        "references": [
+          "exec-74060c23-d0c3-4485-a557-24ef8bafdb79.png"
+        ]
+      },
+      "sourceFilename": "exec-eda1e1d8-8fed-422d-812f-8943aed92b35.png"
+    },
+    {
+      "key": "hoagie_walk_gen",
+      "name": "hulk-hoagie-walk-v1.png",
+      "request": {
+        "transparent_background": true,
+        "prompt": "Create a TRUE TRANSPARENT PNG sprite sheet (empty alpha background, no backdrop) of HULK HOAGIE matching attached reference. SIX full-body WALK frames, strict 3 columns by 2 rows equal cells, read left-to-right top-to-bottom. Screen RIGHT side/three-quarter view throughout. Full alternating walk in place: frame1 NEAR boot forward, far boot back; frame2 weight down; frame3 near foot back, FAR leg passing forward; frame4 FAR boot forward, near boot back; frame5 opposite down; frame6 far leg back, near leg passing forward. Both knees/legs visibly trade leading roles, opposed arm swing. Stable horizontal hip root, identical scale and floor baseline in each cell, grounded heavy wrestler weight, small vertical bob. Exact reference identity: broad muscular tan man, angry face, black beard, brown flat cap, burgundy singlet with cream/gold trim, white wrist wraps, dark riveted knee pads, brown tall wrestling boots and cream laces. Match hand-inked textured grotesque cartoon style and palette. Entire figures including cap and soles inside each cell with generous empty margins. No shadows, no floor, no text, no borders, no colored or gradient background. Landscape sheet.",
+        "references": [
+          "ChatGPT Image Nov 5, 2026, 10_54_56 AM.png"
+        ]
+      },
+      "sourceFilename": "exec-26cbb32c-bbc5-4bc9-88f6-0667b584300c.png"
+    },
+    {
+      "key": "moonshine_run_gen",
+      "name": "moonshine-run-v1.png",
+      "request": {
+        "transparent_background": true,
+        "prompt": "Production animation sprite sheet, exact original character identity and textured hand-inked grotesque cartoon style from attached references (first reference is character design, second is approved pilot idle). Genuine transparent alpha background, no text/shadow/floor/scenery/borders. Each complete figure including headwear, hands and boots has generous empty margin inside its own equal grid cell. Same body size and horizontal hip root throughout. All frames face screen RIGHT, side/three-quarter view. MOONSHINE RUN, exactly SIX frames arranged 3 columns x 2 rows left-to-right, a continuous alternating in-place run loop. Frame1 near foot forward contact,2 weight down/pass,3 airborne flight with far knee leading,4 FAR foot forward contact,5 opposite down/pass,6 airborne with near knee leading returning to1. Both legs exchange front/back positions; strong opposed bent-arm swing, forward torso lean; expressive wiry springy motion. Preserve raccoon cap/striped trailing tail, red bandanna, ivory shirt/brown suspenders, rope belt, patched blue cuffed jeans, wrapped bare hands and brown boots. Keep the rope loop safely attached, no weapon. No translational running across cells.",
+        "references": [
+          "ChatGPT Image Nov 5, 2026, 10_54_45 AM.png",
+          "exec-ce283646-7867-4c20-9e73-a8ef0cfc240a.png"
+        ]
+      },
+      "sourceFilename": "exec-f733fda8-c549-4cbe-88bc-95bd05691a2d.png"
+    },
+    {
+      "key": "hoagie_run_gen",
+      "name": "hulk-hoagie-run-v1.png",
+      "request": {
+        "transparent_background": true,
+        "prompt": "Production animation sprite sheet, exact original character identity and textured hand-inked grotesque cartoon style from attached references (first reference is character design, second is approved pilot idle). Genuine transparent alpha background, no text/shadow/floor/scenery/borders. Each complete figure including headwear, hands and boots has generous empty margin inside its own equal grid cell. Same body size and horizontal hip root throughout. All frames face screen RIGHT, side/three-quarter view. HULK HOAGIE RUN, exactly SIX frames arranged 3 columns x 2 rows left-to-right, complete alternating heavy wrestler run loop in place. Frame1 near foot forward contact,2 down/passing,3 short flight far knee leading,4 FAR foot forward contact,5 opposite down/passing,6 short flight near knee leading back to1. Both legs must switch leading roles; powerful bent-arm drive, forward torso lean, grounded heavy rhythm. Keep broad muscular tan adult wrestler, angry expression, dark beard, brown flat cap, burgundy singlet with thin cream trim, white wrapped wrists, dark riveted knee pads, brown wrestling boots and cream laces. No added costume pieces, no green skin. Identical costume palette across all frames.",
+        "references": [
+          "ChatGPT Image Nov 5, 2026, 10_54_56 AM.png",
+          "exec-4c5e82ff-40aa-4dbb-94cd-cd1483a5c15b.png"
+        ]
+      },
+      "sourceFilename": "exec-0690bfdc-ce04-4094-9394-556ae488d92b.png"
+    },
+    {
+      "key": "moonshine_jab_gen",
+      "name": "moonshine-jab-v1.png",
+      "request": {
+        "transparent_background": true,
+        "prompt": "Create a production nine-frame JAB animation sprite sheet, strict 3 columns x 3 rows of equal cells read left-to-right then next row, square overall sheet. Exact original fighter from references (design first, pilot idle second). All nine full figures face screen RIGHT in the same side/three-quarter camera. One quick straight LEAD-HAND punch: frames1 guard,2 small shoulder anticipation,3 fist starts forward,4 full punch contact,5 fist retracts halfway,6 retract further,7 settle,8 guard,9 guard matching1. Keep BOTH BOOTS PLANTED at identical cell-local positions, hips/root fixed, NO step, NO forward body drift. Front arm extends from shoulder anatomically, rear fist guards chin. Consistent body size, costume and palette across all cells. Textured hand-inked grotesque cartoon fighting-game art. TRUE TRANSPARENT alpha background, no scenery, floor, shadow, motion lines, lettering or borders. Ample margins around each WHOLE figure and extended punch so nothing clips or crosses cells. MOONSHINE is lean/wiry, tan sleepy-eyed grinning bearded country brawler with raccoon cap and long striped tail, red bandanna, ivory tank, brown suspenders, patched blue cuffed jeans, rope belt, wrapped hands, brown boots. A loose quick snap punch with subtle cloth followthrough, never moving the feet. Preserve scruffy grin.",
+        "references": [
+          "ChatGPT Image Nov 5, 2026, 10_54_45 AM.png",
+          "exec-ce283646-7867-4c20-9e73-a8ef0cfc240a.png"
+        ]
+      },
+      "sourceFilename": "exec-4690b2c0-5409-4373-b628-f36e69d6f78b.png"
+    },
+    {
+      "key": "hoagie_jab_gen",
+      "name": "hulk-hoagie-jab-v1.png",
+      "request": {
+        "transparent_background": true,
+        "prompt": "Create a production nine-frame JAB animation sprite sheet, strict 3 columns x 3 rows of equal cells read left-to-right then next row, square overall sheet. Exact original fighter from references (design first, pilot idle second). All nine full figures face screen RIGHT in the same side/three-quarter camera. One quick straight LEAD-HAND punch: frames1 guard,2 small shoulder anticipation,3 fist starts forward,4 full punch contact,5 fist retracts halfway,6 retract further,7 settle,8 guard,9 guard matching1. Keep BOTH BOOTS PLANTED at identical cell-local positions, hips/root fixed, NO step, NO forward body drift. Front arm extends from shoulder anatomically, rear fist guards chin. Consistent body size, costume and palette across all cells. Textured hand-inked grotesque cartoon fighting-game art. TRUE TRANSPARENT alpha background, no scenery, floor, shadow, motion lines, lettering or borders. Ample margins around each WHOLE figure and extended punch so nothing clips or crosses cells. HULK HOAGIE is a broad muscular tan wrestler with angry face, black beard, brown flat cap, burgundy singlet thin cream trim, white wrapped wrists, dark riveted knee pads and brown wrestling boots/cream laces. Heavy square planted stance, compact forceful fist extension; no changing body mass or knee-pad design. No green skin.",
+        "references": [
+          "ChatGPT Image Nov 5, 2026, 10_54_56 AM.png",
+          "exec-4c5e82ff-40aa-4dbb-94cd-cd1483a5c15b.png"
+        ]
+      },
+      "sourceFilename": "exec-228632a2-e6e9-4b76-98de-a227f31b2e0c.png"
+    },
+    {
+      "key": "moonshine_jump_gen",
+      "name": "moonshine-jump-v1.png",
+      "request": {
+        "transparent_background": true,
+        "prompt": "Production JUMP animation sprite sheet of exact fighter in reference images (design first, approved pilot idle second). SIX full-body frames, strict 3 columns by 2 rows equal cells read left-to-right then next row. All face screen RIGHT, same side/three-quarter camera, same anatomical size (tucking reduces pose height but must not shrink anatomy). Frame1 crouched anticipation feet planted,2 takeoff extending one leg,3 ascending tucked knees,4 apex compact tuck,5 descending legs extending,6 landing compression feet planted. Clear distinct phases, same horizontal hip position in each cell, no character travelling across the sheet. Empty transparent background with no floor/shadow/dust/speed lines/text/borders. Entire figures with plenty of margin on all sides including headwear and boots, never clipped or crossing cells. Match textured hand-inked grotesque cartoon game art, bold dark outlines and consistent muted colors. MOONSHINE: wiry springy tan man with scruffy beard, sleepy grinning face, brown raccoon cap and striped tail, red bandanna, ivory tank/brown suspenders, patched cuffed blue jeans, belt rope loop, cream wrist wraps, brown boots. Exuberant scrappy jump. Tail and bandanna bend with motion but stay attached, body proportions and costume details consistent.",
+        "references": [
+          "ChatGPT Image Nov 5, 2026, 10_54_45 AM.png",
+          "exec-ce283646-7867-4c20-9e73-a8ef0cfc240a.png"
+        ]
+      },
+      "sourceFilename": "exec-d9e1170e-74e3-4e17-8b5c-0024ccf5219d.png"
+    },
+    {
+      "key": "hoagie_jump_gen",
+      "name": "hulk-hoagie-jump-v1.png",
+      "request": {
+        "transparent_background": true,
+        "prompt": "Production JUMP animation sprite sheet of exact fighter in reference images (design first, approved pilot idle second). SIX full-body frames, strict 3 columns by 2 rows equal cells read left-to-right then next row. All face screen RIGHT, same side/three-quarter camera, same anatomical size (tucking reduces pose height but must not shrink anatomy). Frame1 crouched anticipation feet planted,2 takeoff extending one leg,3 ascending tucked knees,4 apex compact tuck,5 descending legs extending,6 landing compression feet planted. Clear distinct phases, same horizontal hip position in each cell, no character travelling across the sheet. Empty transparent background with no floor/shadow/dust/speed lines/text/borders. Entire figures with plenty of margin on all sides including headwear and boots, never clipped or crossing cells. Match textured hand-inked grotesque cartoon game art, bold dark outlines and consistent muted colors. HULK HOAGIE: broad muscular adult wrestler, tan skin, angry face, black beard, brown flat cap, burgundy singlet with cream/gold piping, white wrist wraps, dark riveted knee pads and brown wrestling boots with cream laces. Heavy explosive squat launch and compact tucked airborne body, powerful landing. No green skin or changed costume; mass is stable throughout.",
+        "references": [
+          "ChatGPT Image Nov 5, 2026, 10_54_56 AM.png",
+          "exec-4c5e82ff-40aa-4dbb-94cd-cd1483a5c15b.png"
+        ]
+      },
+      "sourceFilename": "exec-fd24ea0d-eda2-4310-80cf-6b6682213f49.png"
+    },
+    {
+      "key": "moonshine_walk_v2",
+      "name": "moonshine-walk-v2-candidate.png",
+      "request": {
+        "transparent_background": true,
+        "prompt": "EDIT first image: fix its six-frame WALK animation, same Moonshine character, same transparent 3-column x 2-row sheet. Second image is costume reference only. The top row shows the NEAR LEG (the leg with the prominent pink knee patch) stepping forward. Preserve that top-row half cycle. REDRAW THE ENTIRE BOTTOM ROW as the OPPOSITE leg half cycle: frame4 the NEAR pink-patched leg extends BACKWARD toward screen LEFT, while the FAR leg extends FORWARD toward screen RIGHT; frame5 near patched knee stays BACK/LEFT while far foot bears weight at right; frame6 near patched leg swings from behind through center, while far leg pushes backward. This must look like left-right alternating walking, never two identical right-leg steps. Reverse the arm swing for the bottom row too. Preserve SAME facing RIGHT, head/body/hat silhouette, fixed hip root and floor baseline, character scale and colors. Do not mirror the entire character. Brown boots, striped raccoon-cap tail, red bandanna, rope belt and all costume details remain. Each figure fully inside its equal cell with margins. Genuine transparent background, no backdrop, shadows, labels or ground lines.",
+        "references": [
+          "moonshine-walk-v1.png",
+          "ChatGPT Image Nov 5, 2026, 10_54_45 AM.png"
+        ]
+      },
+      "sourceFilename": "exec-e11c707e-b4d2-474e-b17d-050e416af8d3.png"
+    },
+    {
+      "key": "hoagie_walk_v2",
+      "name": "hulk-hoagie-walk-v2-candidate.png",
+      "request": {
+        "transparent_background": true,
+        "prompt": "EDIT first image ONLY to fix alternating legs in this HULK HOAGIE walk sprite sheet. Second image is character reference. Keep six whole figures in the same transparent 3-column x 2-row equal grid, all facing screen RIGHT, same body/camera/scale/palette. TOP ROW is the NEAR leg stepping forward; retain it. BOTTOM ROW MUST SHOW OPPOSITE PHASE: frame4 NEAR leg with the large foreground knee pad trails BEHIND toward screen LEFT, FAR leg reaches FORWARD toward screen RIGHT with smaller partly occluded knee pad. Frame5 far leg bears weight on right, near knee passes behind/left. Frame6 near knee swings forward from behind toward center and far boot pushes back, returning naturally to frame1. Reverse arm swing too. DO NOT repeat the same near-knee-forward pose in both rows and DO NOT flip the whole character. Burgundy singlet/cream trim, flat cap, beard, wraps, knee pads and brown boots unchanged. Hip position stable within each cell, common baseline, full body with ample margins. Real transparent alpha, no backdrop, floor/shadow/text/borders.",
+        "references": [
+          "hulk-hoagie-walk-v1.png",
+          "ChatGPT Image Nov 5, 2026, 10_54_56 AM.png"
+        ]
+      },
+      "sourceFilename": "exec-735fa908-4198-4afb-9b87-ddb67ca1d599.png"
+    },
+    {
+      "key": "moonshine_portrait",
+      "name": "moonshine-portrait-v1.png",
+      "request": {
+        "transparent_background": true,
+        "prompt": "A single character-select portrait of MOONSHINE from these reference images. Chest-up, three-quarter facing screen right, relaxed mischievous sleepy-eyed grin, dark scruffy beard, brown raccoon cap including the COMPLETE striped hanging tail, red bandanna, ivory sleeveless shirt and brown suspenders, one wrapped fist near chest. Exact same warm tan skin, proportions, textured hand-inked grotesque cartoon fighting-game style as references. Large readable face, bold clean dark outline, warm muted brown/red/ivory palette. Genuine transparent alpha background, no scene, no graphic frame, no text or logo. Keep whole head, hat tail, shoulders and fists with generous transparent margins inside a square canvas; crop torso cleanly at lower chest.",
+        "references": [
+          "ChatGPT Image Nov 5, 2026, 10_54_45 AM.png",
+          "moonshine-idle-v1.png"
+        ]
+      },
+      "sourceFilename": "exec-481c2728-83be-4f7e-a374-0a203f27adac.png"
+    },
+    {
+      "key": "hoagie_portrait",
+      "name": "hulk-hoagie-portrait-v1.png",
+      "request": {
+        "transparent_background": true,
+        "prompt": "A single character-select portrait of HULK HOAGIE matching references. Chest-up three-quarter facing screen right, fierce scowling dark eyebrows, strong nose, short dark beard, brown tweed flat cap. Broad muscular tan shoulders/chest, burgundy wrestling singlet with thin cream trim, white wrapped fist near chest. NOT green skin. Exact warm muted tan/burgundy/brown palette and richly textured hand-inked grotesque cartoon fighting-game illustration from references. Bold readable face and silhouette. Genuine transparent alpha background, no scene, no frame, text or logo. Entire head, cap, shoulders and fist within generous transparent margins on square canvas, torso cropped neatly at lower chest.",
+        "references": [
+          "ChatGPT Image Nov 5, 2026, 10_54_56 AM.png",
+          "hulk-hoagie-idle-v1.png"
+        ]
+      },
+      "sourceFilename": "exec-d0de0e51-2295-423b-a8d7-e0f67c3877bc.png"
+    },
+    {
+      "name": "moonshine-walk-v3.png",
+      "sourceFilename": "exec-b09bea60-157e-4a58-8632-d2094933cd06.png",
+      "request": {
+        "transparent_background": true,
+        "prompt": "Create a NEW corrected WALK LOOP sprite sheet from the reference, not a copy of its pose order. EXACTLY EIGHT full-body drawings in 4 columns by 2 rows equal cells. Read left to right, top row frames1-4, bottom row5-8. Character faces RIGHT in a STRICT SIDE VIEW (90 degrees) throughout: one visible eye, shoulders and hips keep the same orientation. Do NOT rotate torso or show back on the second row. Standard eight-phase alternating two-legged walk IN PLACE: 1 CONTACT near leg extends FORWARD RIGHT, far leg BACK LEFT; 2 DOWN near foot planted ahead; 3 PASSING near planted leg straight under hip, far knee passes forward; 4 UP far knee reaches forward, near leg trails left; 5 OPPOSITE CONTACT far leg extends FORWARD RIGHT, near leg extends BACK LEFT; 6 DOWN far foot planted ahead; 7 PASSING far planted leg under hip, near knee passes forward; 8 UP near knee reaches forward, far leg trails left. Frames1 and5 MUST be opposite legs and opposite arm swing. Do not repeat same-leg-forward across both rows. Same fixed hip origin within every cell, even scale, common floor baseline, enough clear margin around each entire silhouette. Authentic hand-inked textured cartoon style/palette of references. Genuine transparent alpha, no background, shadows, floor lines, text or borders. MOONSHINE: slim tan sleepy-eyed grinning bearded brawler, raccoon cap and long striped tail, red bandanna, ivory tank/brown suspenders, rope belt, dark blue cuffed patched jeans, cream wrist wraps, brown lace-up boots. Near trouser leg has a LARGE PINK KNEE PATCH; far leg has a SMALL ROUND TAN patch. IMPORTANT frame5 large pink-patched NEAR leg is BEHIND LEFT, small tan-patched FAR leg is AHEAD RIGHT. This identifies opposite lead unambiguously. Tail has restrained lag, cap remains stable.",
+        "references": [
+          "moonshine-reference.png",
+          "moonshine-idle-v1.png"
+        ]
+      },
+      "selected": true
+    },
+    {
+      "name": "hulk-hoagie-walk-v3.png",
+      "sourceFilename": "exec-8b4e13f7-51b2-44b3-8854-f117c0f9c71b.png",
+      "request": {
+        "transparent_background": true,
+        "prompt": "Create a NEW corrected WALK LOOP sprite sheet from the reference, not a copy of its pose order. EXACTLY EIGHT full-body drawings in 4 columns by 2 rows equal cells. Read left to right, top row frames1-4, bottom row5-8. Character faces RIGHT in a STRICT SIDE VIEW (90 degrees) throughout: one visible eye, shoulders and hips keep the same orientation. Do NOT rotate torso or show back on the second row. Standard eight-phase alternating two-legged walk IN PLACE: 1 CONTACT near leg extends FORWARD RIGHT, far leg BACK LEFT; 2 DOWN near foot planted ahead; 3 PASSING near planted leg straight under hip, far knee passes forward; 4 UP far knee reaches forward, near leg trails left; 5 OPPOSITE CONTACT far leg extends FORWARD RIGHT, near leg extends BACK LEFT; 6 DOWN far foot planted ahead; 7 PASSING far planted leg under hip, near knee passes forward; 8 UP near knee reaches forward, far leg trails left. Frames1 and5 MUST be opposite legs and opposite arm swing. Do not repeat same-leg-forward across both rows. Same fixed hip origin within every cell, even scale, common floor baseline, enough clear margin around each entire silhouette. Authentic hand-inked textured cartoon style/palette of references. Genuine transparent alpha, no background, shadows, floor lines, text or borders. HULK HOAGIE: broad muscular tan bearded wrestler, brown flat cap, angry face, burgundy singlet with cream trim, white wrist wraps, dark riveted knee pads and tall brown boots/cream laces. Near leg and its knee pad are lighter and outlined clearly; far leg darker and partially occluded. IMPORTANT frame5 lighter NEAR knee/boot trails BEHIND LEFT while the darker FAR leg reaches AHEAD RIGHT. No green skin, no change in body mass/costume.",
+        "references": [
+          "hulk-hoagie-reference.png",
+          "hulk-hoagie-idle-v1.png"
+        ]
+      },
+      "selected": true
+    },
+    {
+      "name": "hulk-hoagie-walk-v4-candidate.png",
+      "sourceFilename": "exec-c5b0186a-d4a8-4e67-90c1-9397f5171dc1.png",
+      "request": {
+        "transparent_background": true,
+        "prompt": "Use image1 ONLY AS A POSE/LAYOUT GUIDE: replace ALL EIGHT Moonshine characters with HULK HOAGIE from images2 and3. Preserve image1's 4-column 2-row eight-phase walk and the exact limb pose ordering: in frames1-4 the near leg goes from forward right to behind left, in frames5-8 the near leg goes from behind left to forward right. Frame1 near knee is FORWARD/RIGHT and near fist BACK/LEFT. Frame5 near knee is BACK/LEFT and near fist FORWARD/RIGHT. Both frames1 and5 have extended opposite legs, NOT identical silhouettes. Hoagie has broad muscular tan torso, black beard, angry face, brown flat cap, burgundy wrestling singlet cream piping, white wrist wraps, dark riveted knee pads, brown boots cream laces. NO raccoon hat/tail, rope, jeans, patches or bandanna from image1. The near leg is clearly lighter than the far leg. Fixed strictly right-facing side camera, no torso turning to back. Same identity/palette/mass all eight cells, common floor baseline. True transparent alpha, full figure and clear margins in every equal cell, no shadows/floor/text/borders. Clean richly inked textured cartoon fighting-game art matching images2/3.",
+        "references": [
+          "exec-b09bea60-157e-4a58-8632-d2094933cd06.png",
+          "hulk-hoagie-idle-v1.png",
+          "hulk-hoagie-reference.png"
+        ]
+      },
+      "selected": false
+    },
+    {
+      "name": "moonshine-run-v3.png",
+      "sourceFilename": "exec-4d2bbd62-1213-406f-9450-430965df7c3c.png",
+      "request": {
+        "transparent_background": true,
+        "prompt": "Create a NEW EIGHT-frame continuous in-place RUN sprite sheet, 4 columns x 2 rows equal cells, read row-major. ALL eight whole-body characters face screen RIGHT in the SAME strict side camera, no torso turning. Complete running cycle: 1 near-leg contact ahead right, far leg stretched back left; 2 near-leg compression; 3 near foot pushing back, far knee passing ahead; 4 flight with far leg ahead; 5 FAR-leg contact ahead right and NEAR leg back left (opposite of1); 6 far-leg compression; 7 far foot pushes back, near knee passes ahead; 8 flight near leg ahead, returning to1. Both legs must alternate contact; clear opposing arm swing. Fixed pelvis x and same anatomical scale, modest body bob; preserve airborne foot clearance in flight frames. Generous clear margins within each cell, no overlapping or clipped head/boots. Rich hand-inked textured grotesque-cartoon game style matching reference. REAL transparent alpha background, no floor/shadow/text/frame border. Moonshine has wiry tan build, sleepy grin/dark scruffy beard, raccoon cap and striped tail, red bandanna, ivory tank/brown suspenders, rope belt, patched blue cuffed jeans, cream wrist wraps, brown boots. Keep LARGE PINK PATCH on NEAR knee, SMALL TAN PATCH on FAR knee. In frame1 pink-patched knee leads RIGHT; in frame5 pink-patched knee is BEHIND LEFT and small tan knee leads RIGHT. No patch swapping between anatomical legs. Exuberant springy run, cap/tail secondary motion restrained.",
+        "references": [
+          "moonshine-reference.png",
+          "moonshine-idle-v1.png"
+        ]
+      },
+      "selected": true
+    },
+    {
+      "name": "hulk-hoagie-run-v3.png",
+      "sourceFilename": "exec-bb5c7e0c-e174-48de-b5b9-cf589d5165ed.png",
+      "request": {
+        "transparent_background": true,
+        "prompt": "Create a NEW EIGHT-frame continuous in-place RUN sprite sheet, 4 columns x 2 rows equal cells, read row-major. ALL eight whole-body characters face screen RIGHT in the SAME strict side camera, no torso turning. Complete running cycle: 1 near-leg contact ahead right, far leg stretched back left; 2 near-leg compression; 3 near foot pushing back, far knee passing ahead; 4 flight with far leg ahead; 5 FAR-leg contact ahead right and NEAR leg back left (opposite of1); 6 far-leg compression; 7 far foot pushes back, near knee passes ahead; 8 flight near leg ahead, returning to1. Both legs must alternate contact; clear opposing arm swing. Fixed pelvis x and same anatomical scale, modest body bob; preserve airborne foot clearance in flight frames. Generous clear margins within each cell, no overlapping or clipped head/boots. Rich hand-inked textured grotesque-cartoon game style matching reference. REAL transparent alpha background, no floor/shadow/text/frame border. Hulk Hoagie: broad muscular tan wrestler, brown flat cap, black beard, angry face, burgundy singlet thin cream trim, white wrist wraps, dark riveted knee pads, tall brown boots cream laces. Near leg lighter than shaded far leg. Frame1 NEAR knee is front/right with near arm behind/left; frame5 NEAR knee is back/left with near arm front/right. Heavy powerful short-flight run, body mass and costume consistent, no green skin.",
+        "references": [
+          "hulk-hoagie-reference.png",
+          "hulk-hoagie-idle-v1.png"
+        ]
+      },
+      "selected": false
+    },
+    {
+      "name": "hulk-hoagie-run-v3-alpha.png",
+      "sourceFilename": "exec-3fb79fce-ac46-49e4-9b5b-7ef80c1b44da.png",
+      "request": {
+        "transparent_background": true,
+        "prompt": "Remove ONLY the entire white/gray/noisy backdrop from this eight-frame Hoagie run sheet and replace with REAL TRANSPARENT ALPHA. Preserve the eight wrestler drawings, all their internal colors, pose order, sizes and 4-column x 2-row layout. No scene, no ground or shadow, no retained gray haze between or around figures. All empty areas including inside bent limbs must be fully transparent. Preserve burgundy singlet, tan skin, dark knee pads, brown boots and cap, cream wraps. Do not create new outlines or draw a checkerboard. Output true transparent PNG.",
+        "references": [
+          "hulk-hoagie-run-v3.png"
+        ]
+      },
+      "selected": true
+    }
+  ],
+  "knownVisualGaps": [
+    "Hoagie opposite-leg identity and torso twist remain subject to visual signoff.",
+    "Gait loop seams and idle/jab posture changes require motion review.",
+    "No new fighter is selectable yet."
+  ]
+}

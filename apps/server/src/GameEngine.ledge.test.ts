@@ -1396,7 +1396,7 @@ describe('GameEngine ledge integration', () => {
 					hitstunFramesRemaining: 0,
 					activeHitbox: null,
 					currentMoveId: MoveId.JAB,
-					hitPlayerIds: new Set<string>(),
+					hitPlayerIds: new Set<string>(),hitContactFrames:undefined,moveStaleMultiplier:undefined,
 					vx: 0,
 					vy: 0,
 				});

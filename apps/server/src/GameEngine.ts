@@ -37,7 +37,7 @@ import{inputVector}from'@smash/shared';
  */
 import {
 	advanceJabChain,
-    isDamageImmune, dodgeDurationScale, freshDodgeProfile,
+    isDamageImmune, dodgeDurationScale, freshDodgeProfile, airDodgeLandingLag, airDodgeTravelSpeed, finishDodge, canHitContact,recordHitContact,contactStaleMultiplier,
     resolveFloorHit,
     resolveCeilingTech,
     withMovementArt,
@@ -137,6 +137,7 @@ function clonePlayer(player: PlayerState): PlayerState {
 		activeHitbox: player.activeHitbox ? { ...player.activeHitbox } : null,
 		hitPlayerIds: new Set(player.hitPlayerIds),
 		staleMoveQueue: [...(player.staleMoveQueue ?? [])],
+        hitContactFrames:player.hitContactFrames?Object.fromEntries(Object.entries(player.hitContactFrames).map(([id,groups])=>[id,{...groups}])):undefined,
         staleMoveShieldQueue:[...(player.staleMoveShieldQueue??[])],
 	};
 }
@@ -315,7 +316,7 @@ export class GameEngine {
 				currentMoveId: null,
                 jabQueued: false,
 				currentMove: undefined,
-				hitPlayerIds: new Set<string>(),
+				hitPlayerIds: new Set<string>(),hitContactFrames:undefined,moveStaleMultiplier:undefined,
 					chargeFrames: 0,
 					asdiDriftAccumulated: 0,
 					staleMoveQueue: [],
@@ -353,6 +354,12 @@ export class GameEngine {
 		);
 	}
 
+  getPracticeDodgeFatigue():number|null{return this.practice?(Object.values(this.state.players)[0]?.dodgeFatigue??0):null;}
+  setPracticeDodgeFatigue(level:number):boolean{
+    if(!this.practice||!Number.isInteger(level)||level<0||level>5)return false;
+    for(const p of Object.values(this.state.players)){p.dodgeFatigue=level;p.dodgeRecoveryTicks=120;p.dodgeRefreshTicks=undefined;}
+    return true;
+  }
   /** Rebuild both practice fighters together, clearing grabs, ledges, fatigue and pending launches. */
   resetPractice():boolean {
     if(!this.practice)return false;
@@ -719,7 +726,7 @@ export class GameEngine {
 				currentMoveId: null,
                 jabQueued: false,
 				currentMove: undefined,
-				hitPlayerIds: new Set<string>(),
+				hitPlayerIds: new Set<string>(),hitContactFrames:undefined,moveStaleMultiplier:undefined,
 				chargeFrames: 0,
 				asdiDriftAccumulated: 0,
 				hitlagFramesRemaining: 0,
@@ -745,6 +752,7 @@ export class GameEngine {
 
 		// ─── LEDGE GRAB DETECTION ────────────────────────────────────────────────────
 		const ledgeEligibleStates: string[] = [
+            PlayerStateEnum.AIR_DODGE,
             PlayerStateEnum.HELPLESS,
 			PlayerStateEnum.AIRBORNE,
 			PlayerStateEnum.DOUBLE_JUMP,
@@ -786,7 +794,7 @@ export class GameEngine {
                 jabQueued: false,
 					currentMove: undefined,
 					landingLagFrames: 0,
-					hitPlayerIds: new Set<string>(),
+					hitPlayerIds: new Set<string>(),hitContactFrames:undefined,moveStaleMultiplier:undefined,
 					chargeFrames: 0,
 				};
 					player = this.snapPlayerToLedge(player, ledge.id);
@@ -1076,7 +1084,7 @@ export class GameEngine {
 				landingLag: moveData.landingLag,
 				isSpecial: moveData.isSpecial,
 			},
-			hitPlayerIds: new Set<string>(),
+			hitPlayerIds: new Set<string>(),hitContactFrames:undefined,moveStaleMultiplier:undefined,
 			chargeFrames: 0,
 		};
 		}
@@ -1094,7 +1102,7 @@ export class GameEngine {
 				currentMoveId: null,
                 jabQueued: false,
 				currentMove: undefined,
-				hitPlayerIds: new Set<string>(),
+				hitPlayerIds: new Set<string>(),hitContactFrames:undefined,moveStaleMultiplier:undefined,
 			};
 		}
 
@@ -1107,7 +1115,7 @@ export class GameEngine {
 		if (leftRegularAttackState) {
 			nextPlayer = {
 				...nextPlayer,
-				hitPlayerIds: new Set<string>(),
+				hitPlayerIds: new Set<string>(),hitContactFrames:undefined,moveStaleMultiplier:undefined,
 			};
 		}
 
@@ -1119,7 +1127,7 @@ export class GameEngine {
 				currentMoveId: null,
                 jabQueued: false,
 				currentMove: undefined,
-				hitPlayerIds: new Set<string>(),
+				hitPlayerIds: new Set<string>(),hitContactFrames:undefined,moveStaleMultiplier:undefined,
 				chargeFrames: 0,
 			};
 		}
@@ -1145,7 +1153,7 @@ export class GameEngine {
 			};
 		}
 
-        if(startJumpAttack){const move=previous.queuedJumpMoveId??MoveId.NEUTRAL_AIR;const d=getMoveDataForCharacter(nextPlayer.characterId,move);nextPlayer={...nextPlayer,state:PlayerStateEnum.AIR_ATTACK,stateFrame:0,currentMoveId:move,currentMove:{landingLag:d.landingLag,isSpecial:d.isSpecial},activeHitbox:null,hitPlayerIds:new Set<string>(),queuedJumpAttack:false};}
+        if(startJumpAttack){const move=previous.queuedJumpMoveId??MoveId.NEUTRAL_AIR;const d=getMoveDataForCharacter(nextPlayer.characterId,move);nextPlayer={...nextPlayer,state:PlayerStateEnum.AIR_ATTACK,stateFrame:0,currentMoveId:move,currentMove:{landingLag:d.landingLag,isSpecial:d.isSpecial},activeHitbox:null,hitPlayerIds:new Set<string>(),hitContactFrames:undefined,moveStaleMultiplier:undefined,queuedJumpAttack:false};}
 		const finalJabPress=nextPlayer.state===PlayerStateEnum.IDLE&&previous.state===PlayerStateEnum.ATTACK&&[MoveId.JAB,MoveId.JAB_2].includes(previous.currentMoveId as MoveId)&&isPressed(input,INPUT_BITS.ATTACK)&&nextPlayer.isGrounded;
   if(finalJabPress)nextPlayer={...nextPlayer,state:PlayerStateEnum.ATTACK,currentMoveId:previous.currentMoveId,stateFrame:previous.stateFrame+1};
   return advanceJabChain(nextPlayer,previous.state===player.state||finalJabPress?input:null,previous.hitlagFramesRemaining>0);
@@ -1216,7 +1224,7 @@ export class GameEngine {
 		const dodge=player.state===PlayerStateEnum.AIR_DODGE?player.airDodgeDirection:null;
         if(dodge&&(dodge.x!==0||dodge.y!==0)){
           const travelling=player.stateFrame>=PHYSICS.AIR_DODGE_TRAVEL_START&&player.stateFrame<PHYSICS.AIR_DODGE_TRAVEL_END,norm=Math.hypot(dodge.x,dodge.y);
-          const moving=travelling?{...nextPlayer,vx:dodge.x/norm*PHYSICS.AIR_DODGE_SPEED,vy:dodge.y/norm*PHYSICS.AIR_DODGE_SPEED}:applyGravity({...nextPlayer,vx:nextPlayer.vx*.85,vy:player.stateFrame>=PHYSICS.AIR_DODGE_TRAVEL_END?Math.max(0,nextPlayer.vy):nextPlayer.vy});
+          const moving=travelling?{...nextPlayer,vx:dodge.x/norm*airDodgeTravelSpeed(player),vy:dodge.y/norm*airDodgeTravelSpeed(player)}:applyGravity({...nextPlayer,vx:nextPlayer.vx*.85,vy:player.stateFrame>=PHYSICS.AIR_DODGE_TRAVEL_END?Math.max(0,nextPlayer.vy):nextPlayer.vy});
           nextPlayer=checkPlatformCollision({...moving,x:moving.x+moving.vx,y:moving.y+moving.vy},this.stage);
         }else if (player.state === PlayerStateEnum.JUMPSQUAT) {
 			nextPlayer = {
@@ -1355,44 +1363,11 @@ export class GameEngine {
 			};
 		}
 
-		// ─── ADVANCED TECH: WAVEDASH LANDING ────────────────────────────────────────
-		// Wavedash algorithm: an AIR_DODGE that lands with a downward + horizontal
-		// airDodgeDirection vector converts into a LANDING_LAG slide. On the landing
-		// frame vx is set to PHYSICS.WAVEDASH_INITIAL_SLIDE_VELOCITY * direction sign
-		// and the player enters LANDING_LAG for PHYSICS.WAVEDASH_LANDING_LAG_FRAMES.
-		// Each subsequent LANDING_LAG tick applies PHYSICS.GROUND_FRICTION to vx so the
-		// slide decays naturally. A neutral or upward dodge landing falls through to IDLE.
-		// Wavedash landing: AIR_DODGE with downward + horizontal component
-		// Only apply if player hasn't already been processed by resolveTumbleLanding
-		if (
-			landedThisTick &&
-			player.state === PlayerStateEnum.AIR_DODGE &&
-			player.airDodgeDirection &&
-			player.airDodgeDirection.y > 0 &&
-			player.airDodgeDirection.x !== 0
-		) {
-			nextPlayer = {
-				...nextPlayer,
-				vx: PHYSICS.WAVEDASH_INITIAL_SLIDE_VELOCITY * Math.sign(player.airDodgeDirection.x),
-				state: PlayerStateEnum.LANDING_LAG,
-				stateFrame: 0,
-				landingLagFrames: PHYSICS.WAVEDASH_LANDING_LAG_FRAMES,
-				sdiInputCooldown: 0,
-			};
-		} else if (
-			landedThisTick &&
-			player.state === PlayerStateEnum.AIR_DODGE &&
-			!player.isTumbling
-		) {
-			// Default AIR_DODGE landing (neutral or non-wavedash): transition to IDLE
-			// Only apply if player is not tumbling (tumbling players are handled by resolveTumbleLanding)
-			nextPlayer = {
-				...nextPlayer,
-				state: PlayerStateEnum.IDLE,
-				stateFrame: 0,
-				sdiInputCooldown: 0,
-			};
-		}
+        // Air-dodge landings have recovery; no synthetic diagonal speed boost.
+        if(landedThisTick&&player.state===PlayerStateEnum.AIR_DODGE&&!player.isTumbling){
+          nextPlayer={...nextPlayer,state:PlayerStateEnum.LANDING_LAG,stateFrame:0,landingLagFrames:airDodgeLandingLag(player),airDodgeDirection:null,dodgeRefreshPending:false,sdiInputCooldown:0};
+          finishDodge(nextPlayer);
+        }
 
 			if (landedThisTick && player.state !== PlayerStateEnum.AIR_ATTACK) {
 				nextPlayer = {
@@ -1856,6 +1831,7 @@ export class GameEngine {
 			...player,
 			state: PlayerStateEnum.LEDGE_HANG,
             airDodgeDirection:null,actionBuffer:undefined,
+            ...(player.state===PlayerStateEnum.AIR_DODGE?{dodgeRefreshTicks:60,dodgeRefreshPending:false}:{}),
 			stateFrame: 0,
 			ledgeId,
 			x: hangX,
@@ -2175,9 +2151,9 @@ export class GameEngine {
 				let hitOnA = NO_HIT;
 				let hitOnB = NO_HIT;
 				const playerAAlreadyHitByB =
-					!playerA.id || playerBHitPlayerIds.has(playerA.id);
+					!playerA.id || !canHitContact(playerB,playerA.id);
 				const playerBAlreadyHitByA =
-					!playerB.id || playerAHitPlayerIds.has(playerB.id);
+					!playerB.id || !canHitContact(playerA,playerB.id);
 
 				// ─── HIT-TRADE RESOLUTION ────────────────────────────────────────────────────
 			// Resolve both receiving sides once; never revive a priority-cancelled hit.
@@ -2225,7 +2201,7 @@ export class GameEngine {
 
 					players[playerA.id] = this.applyHit(updatedA, hitOnA, updatedB.facing,playerB.currentMoveId?getMoveDataForCharacter(playerB.characterId,playerB.currentMoveId):undefined);
 						const staleMoveId = playerB.currentMoveId;
-						const attackerAfterHit = this.consumeAttackOnHit(updatedB, (hitOnA.attackerHitlagFrames??hitOnA.hitlagFrames));
+						const attackerAfterHit = {...this.consumeAttackOnHit(updatedB, (hitOnA.attackerHitlagFrames??hitOnA.hitlagFrames)),hitContactFrames:recordHitContact(playerB,updatedA.id),moveStaleMultiplier:contactStaleMultiplier(playerB)};
 						const trackedHitIds = new Set(attackerAfterHit.hitPlayerIds);
 						trackedHitIds.add(updatedA.id);
 						if (hitShieldOnA) {
@@ -2233,16 +2209,16 @@ export class GameEngine {
 							players[playerB.id] = {
 								...attackerAfterHit,
 								hitPlayerIds: trackedHitIds,
-								staleMoveQueue: this.pushStaleMoveToQueue(attackerAfterHit, staleMoveId),
-                                staleMoveShieldQueue:this.pushStaleShieldQueue(attackerAfterHit,true),
+								staleMoveQueue: playerBHitPlayerIds.has(updatedA.id)?attackerAfterHit.staleMoveQueue:this.pushStaleMoveToQueue(attackerAfterHit, staleMoveId),
+                                staleMoveShieldQueue:playerBHitPlayerIds.has(updatedA.id)?attackerAfterHit.staleMoveShieldQueue:this.pushStaleShieldQueue(attackerAfterHit,true),
 								vx: attackerAfterHit.vx + -attackerPushback * updatedB.facing,
 							};
 						} else {
 							players[playerB.id] = {
 								...attackerAfterHit,
 								hitPlayerIds: trackedHitIds,
-								staleMoveQueue: this.pushStaleMoveToQueue(attackerAfterHit, staleMoveId),
-                                staleMoveShieldQueue:this.pushStaleShieldQueue(attackerAfterHit,false),
+								staleMoveQueue: playerBHitPlayerIds.has(updatedA.id)?attackerAfterHit.staleMoveQueue:this.pushStaleMoveToQueue(attackerAfterHit, staleMoveId),
+                                staleMoveShieldQueue:playerBHitPlayerIds.has(updatedA.id)?attackerAfterHit.staleMoveShieldQueue:this.pushStaleShieldQueue(attackerAfterHit,false),
 							};
 						}
 					}
@@ -2272,7 +2248,7 @@ export class GameEngine {
 
 					players[playerB.id] = this.applyHit(updatedB, hitOnB, updatedA.facing,playerA.currentMoveId?getMoveDataForCharacter(playerA.characterId,playerA.currentMoveId):undefined);
 						const staleMoveId = playerA.currentMoveId;
-						const attackerAfterHit = this.consumeAttackOnHit(updatedA, (hitOnB.attackerHitlagFrames??hitOnB.hitlagFrames));
+						const attackerAfterHit = {...this.consumeAttackOnHit(updatedA, (hitOnB.attackerHitlagFrames??hitOnB.hitlagFrames)),hitContactFrames:recordHitContact(playerA,updatedB.id),moveStaleMultiplier:contactStaleMultiplier(playerA)};
 						const trackedHitIds = new Set(attackerAfterHit.hitPlayerIds);
 						trackedHitIds.add(updatedB.id);
 						if (hitShieldOnB) {
@@ -2280,16 +2256,16 @@ export class GameEngine {
 							players[playerA.id] = {
 								...attackerAfterHit,
 								hitPlayerIds: trackedHitIds,
-								staleMoveQueue: this.pushStaleMoveToQueue(attackerAfterHit, staleMoveId),
-                                staleMoveShieldQueue:this.pushStaleShieldQueue(attackerAfterHit,true),
+								staleMoveQueue: playerAHitPlayerIds.has(updatedB.id)?attackerAfterHit.staleMoveQueue:this.pushStaleMoveToQueue(attackerAfterHit, staleMoveId),
+                                staleMoveShieldQueue:playerAHitPlayerIds.has(updatedB.id)?attackerAfterHit.staleMoveShieldQueue:this.pushStaleShieldQueue(attackerAfterHit,true),
 								vx: attackerAfterHit.vx + -attackerPushback * updatedA.facing,
 							};
 						} else {
 							players[playerA.id] = {
 								...attackerAfterHit,
 								hitPlayerIds: trackedHitIds,
-								staleMoveQueue: this.pushStaleMoveToQueue(attackerAfterHit, staleMoveId),
-                                staleMoveShieldQueue:this.pushStaleShieldQueue(attackerAfterHit,false),
+								staleMoveQueue: playerAHitPlayerIds.has(updatedB.id)?attackerAfterHit.staleMoveQueue:this.pushStaleMoveToQueue(attackerAfterHit, staleMoveId),
+                                staleMoveShieldQueue:playerAHitPlayerIds.has(updatedB.id)?attackerAfterHit.staleMoveShieldQueue:this.pushStaleShieldQueue(attackerAfterHit,false),
 							};
 						}
 					}
@@ -2820,7 +2796,9 @@ export class GameEngine {
 
 	private applyHit(player:PlayerState,hit:typeof NO_HIT,attackerFacing:1|-1,floorMove?:import('@smash/shared').MoveData):PlayerState {
       const result=this.applyHitInternal(player,hit,attackerFacing,floorMove);
-      return this.practice?{...result,percent:0}:result;
+      const interrupted=result!==player&&result.state===PlayerStateEnum.HITSTUN&&([PlayerStateEnum.ROLL,PlayerStateEnum.SPOT_DODGE,PlayerStateEnum.AIR_DODGE].includes(player.state as PlayerStateEnum)||player.dodgeRefreshPending);
+      const clean=interrupted?{...result,dodgeRefreshTicks:undefined,dodgeRefreshPending:true}:result;
+      return this.practice?{...clean,percent:0}:clean;
     }
     private applyHitInternal(
 		player: PlayerState,
@@ -2891,6 +2869,7 @@ export class GameEngine {
             shortHop:false,
             x:player.x+(hit.asdiImpactX??0),
             y:hit.asdiImpactY?checkPlatformCollision({...player,x:player.x+(hit.asdiImpactX??0),y:player.y+hit.asdiImpactY,vy:hit.asdiImpactY},this.stage).y:player.y,
+            hasAirDodge:true,
             percent: player.percent + hit.damage,
 			sdiMode:'body',sdiPulseCount:0,sdiEligible:(hit.sdiMultiplier??1)>0||(hit.asdiMultiplier??0)>0,sdiLastDirection:hit.sdiInitialDirection??0,sdiBufferedDirection:0,sdiMultiplier:hit.sdiMultiplier??1,asdiMultiplier:hit.asdiMultiplier??0,sdiGrounded:player.isGrounded,
             hitlagFramesRemaining: hit.hitlagFrames,
@@ -2952,7 +2931,7 @@ export class GameEngine {
 			currentMoveId: null,
                 jabQueued: false,
 			currentMove: undefined,
-			hitPlayerIds: new Set<string>(),
+			hitPlayerIds: new Set<string>(),hitContactFrames:undefined,moveStaleMultiplier:undefined,
 			chargeFrames: 0,
 			shieldStunFrames: 0,
 			lastHitKnockbackAngle: null,

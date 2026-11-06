@@ -1,5 +1,15 @@
 # Fighter refinement
 
+Newcomer pilot revision 2 registers 70 body frames across five clips per fighter, with eight-frame gait candidates, paired-sole idle/jab roots and original/refined plus transition review. Hoagie walk contact leg identity remains an explicit drawing defect; no visual signoff or roster integration is claimed. See the latest entry in docs/assets/FIGHTER-ART-ROSTER-V1.md.
+
+Moonshine and Hulk Hoagie production has started. Separate review pack: `apps/client/public/fighter-art-newcomers-v1/`. Ten generated sprite sheets register 62 body frames, plus two portraits. The pack includes a five-clip animated review, working identity/moveset proposals and coverage against the existing 136-clip contract. Weight/scale proposals are not live engine stats; lore remains open. Walk/run leg alternation and loop seams remain visual refinement work, including unselected v2 walk revisions. No new fighter IDs or gameplay behavior were enabled. Next: polish pilot gait/jab transitions, then complete movement and combat in paired batches.
+
+Current production multihit follow-up: all three fighters share a two-hit up-smash (4 + 12 base damage, original timing/reach), later waves retain pre-contact staleness, and Free Practice offers a telegraphed up-smash partner. Human balance review and native timing evidence remain pending. See [the current audit](FATIGUE-PARRY-SEQUENCE-AUDIT.md).
+
+Current air-dodge follow-up: captured fatigue now scales directional travel to the observed fully stale endpoint ratio (intermediates remain provisional); body hits restore spent air dodges; late directional ledge grabs are enabled. Landing interpolation and exact native movement remain open. See [the current audit](FATIGUE-PARRY-SEQUENCE-AUDIT.md).
+
+November 5 current follow-up: published intermediate All-Rounder and first-stale Swift observations replace some inferred windows; refresh clocks now follow landing/ledge/post-hitlag exits; multihit scheduling is verified through complete game ticks. Native motion-rate conversion, remaining profile fixtures, stale directional travel and narrow parry exceptions remain open. See [the current audit](FATIGUE-PARRY-SEQUENCE-AUDIT.md).
+
 Scope: apps/, packages/, fighter assets and supporting scripts only. bonney/ is a separate project and is excluded.
 
 ## Current decisions

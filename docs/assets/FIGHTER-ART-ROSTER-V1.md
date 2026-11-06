@@ -245,3 +245,25 @@ Jab 1 or jab 2 with damage at most 5 can reset a grounded missed-tech prone targ
 Validation: 319 engine tests passed, one skipped; full server run passed 215 tests with two outdated shield expectations, then both corrected shield fixtures passed in focused suites (217 server cases pass in aggregate, 16 skipped). The production-entrypoint check passed. All 46 browser checks passed in one run, including controlled local trip/jab-lock gameplay and four clients. The existing perfect-shield protection fix was retained; its two old tests now reflect protected-hit behavior and ordinary shield breaks outside the protection window.
 
 The production pack remains 17 pages total, 14 live pages / 224 MiB decoded textures, roughly 67 MB live PNG downloads. Next: gameplay and controller playtesting, balance/Ultimate-parity review, reachability/transition polish and performance checks. Completing these asset hooks does not complete those broader validations.
+
+
+## Moonshine and Hulk Hoagie pilot production
+
+A separate candidate pack now exists at `apps/client/public/fighter-art-newcomers-v1/`; the existing three-fighter manifest is untouched. Each new fighter has idle (4), walk (6), run (6), jab (9) and jump (6): 31 registered body frames, 62 combined, plus two transparent portrait candidates. Built-in image_gen used the supplied November 5 pose sheets and pilot idles as references. `prompts.json` stores provenance; initial idle specifications are explicitly marked as reconstructed records. Original user reference images remain unchanged.
+
+Rebuild the isolated review using `node scripts/assets/build-newcomer-pilot.mjs`. It checks alpha/cell boundaries and emits root/scale/frame metadata, the full coverage gap, validation JSON and HTML. The page uses the accepted 24-tick walk and 18-tick run periods, a 15-tick baseline jab pilot and an illustrative jump arc. These do not set new engine timings. Source PNGs are preserved; only registration metadata and review drawing change placement.
+
+The current three-fighter source manifest has 136 clips / 763 registered body frames each, including one legacy directional-dodge variant. `plan.json` records the complete key contract and pending paired production batches. Working proposals are weight 87/art height 78 for Moonshine and 109/88 for Hoagie, four override slots each, no invented backstories, cosmetic rope only. Character registry/selection/AI/online/dojo/atlas integration remains pending after artwork coverage and review.
+
+Validation: ten sheets / 62 cells passed transparency and clipping-margin checks; portrait alpha checked separately. Browser visited all 62 frame selections and verified loading, pause/play/step, scrubbing, both facings, three backdrops and speed controls. Production client build passed. Browser evidence lives in task workspace `outputs/newcomer-pilot-v1/`; script `work/check-newcomer-pilot.cjs`. Walk/run opposite-leg readability, loop seams and transition quality are still open; attempted v2 walk edits are preserved as unselected candidates, not falsely signed off.
+
+
+## Newcomer gait and registration revision 2
+
+Selected version-3 eight-frame walk/run candidates for Moonshine and Hoagie, retaining the 24/18 tick periods. New registered coverage is 35 body frames each / 70 combined, still five clip families each. Version-1 manifests, validation and all ten original sheets remain available; SHA-256 checks confirm source preservation. The fourth Hoagie walk attempt is retained but not selected. Hoagie run required a separate built-in alpha edit; the opaque candidate is retained only as provenance, not used in playback. Generation requests/source names are recorded in newcomer `prompts.json`.
+
+Idle/jab now use the midpoint of the two planted sole regions instead of the leftmost support cluster. This brings their root convention closer to the guided gait pelvis root. It does not prove anatomical foot lock or eliminate all generated posture changes. Added Original/Refined comparison and a 39-tick idle-to-jab-to-idle review sequence without smoothing that could conceal a discontinuity. The reviewer script is now a separate reusable file. Neither the character roster nor engine timing changed.
+
+Visual findings: Moonshine contact poses distinguish pink-patched near and tan-patched far legs more clearly. Hoagie walk poses 1/5 still do not differentiate the leading legs convincingly; this remains a known drawing issue, not merely unperformed approval. Torso twist, run identity, loop seams and jab/idle posture changes remain open for motion review. No animation signoff is claimed. Next: resolve those gait contacts and expand paired movement coverage after pilot review.
+
+Validation: selected sheets passed alpha/margin checks, production client build passed, browser checked 132 original/refined frame selections, seven transition boundaries, playback/pause/step, facing, responsive width and all ten original sheet hashes. Evidence: task workspace `outputs/newcomer-polish-v2/`; checker `work/check-newcomer-polish.cjs`, build log `work/newcomer-polish-build.log`.

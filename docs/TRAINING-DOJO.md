@@ -1,5 +1,7 @@
 # Training Dojo and practice sandbox
 
+Free Practice partner update: **Telegraphed two-hit up smash** is available in setup and through Change partner behavior. Position yourself in its upward anti-air reach and use freeze/step to inspect setup and finishing contacts. This is a practice behavior, not a new completion lesson.
+
 Implemented November 5, 2026. Enter from **Main Menu -> Training Dojo**. This is a local practice mode using the real GameEngine, not a separate approximation of combat. No online room changes are required.
 
 **Laboratory update:** slow motion, exact stepping, collision overlays and three saved partner-routine slots are now implemented. See [Training laboratory](TRAINING-LAB.md) for controls, validation and current limits. The initial-release roadmap below is retained as history.

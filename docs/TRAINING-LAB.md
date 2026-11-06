@@ -1,5 +1,9 @@
 # Training laboratory: playback, collision view and partner routines
 
+Air-dodge testing: the readout shows ready/spent and the current dodge’s captured fatigue. Compare fresh and level-five directional travel using the fatigue selector; a body hit restores air dodge but does not restore double jump. Intermediate travel scaling and landing interpolation remain provisional.
+
+Fatigue comparison: the Lab fatigue button resets both fighters and sets their next dodge fatigue from 0 to 5. Freeze and step to compare boundaries; normal recovery continues while running. See [the follow-up audit](FATIGUE-PARRY-SEQUENCE-AUDIT.md).
+
 Implemented November 5, 2026. Open **Training Dojo -> Free Practice -> Timing laboratory**. Slow motion, freeze/step and collision tools also appear in guided lessons; partner recording/playback is restricted to Free Practice so it cannot replace a lesson's prescribed partner.
 
 ## Controls

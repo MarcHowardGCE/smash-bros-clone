@@ -1,0 +1,109 @@
+{
+  "passed": true,
+  "characters": 2,
+  "clips": 10,
+  "registeredFrames": 70,
+  "checks": [
+    {
+      "fighter": "moonshine",
+      "clip": "idle",
+      "frames": 4,
+      "transparentFraction": 0.7479402435332931,
+      "cellMarginsPassed": true,
+      "sha256": "ae9b55ec1d482956aab245a9bcb452f75017f946e3e1a21b08148afad15988f9"
+    },
+    {
+      "fighter": "moonshine",
+      "clip": "walk",
+      "frames": 8,
+      "transparentFraction": 0.6276346678631212,
+      "cellMarginsPassed": true,
+      "sha256": "019d2776d3fff1cd9a0e70e58aba1c4f3ee83b13f5a234175edce09ac07f5ade"
+    },
+    {
+      "fighter": "moonshine",
+      "clip": "run",
+      "frames": 8,
+      "transparentFraction": 0.6412663691629945,
+      "cellMarginsPassed": true,
+      "sha256": "b4a60b6426f4fc9b8046b38a1b022f9596cdc6cddbbad11afdf5e190777235f5"
+    },
+    {
+      "fighter": "moonshine",
+      "clip": "jab",
+      "frames": 9,
+      "transparentFraction": 0.6244127245764113,
+      "cellMarginsPassed": true,
+      "sha256": "2133a15bd6579227c0046e16715fb1adfad2b6394a0a3fc20630a0bc428f8164"
+    },
+    {
+      "fighter": "moonshine",
+      "clip": "jump",
+      "frames": 6,
+      "transparentFraction": 0.6736183166503906,
+      "cellMarginsPassed": true,
+      "sha256": "67788e04208c2d053e001c1ad4299131a9cd282521834c8a7acf770035f711ad"
+    },
+    {
+      "fighter": "hulk-hoagie",
+      "clip": "idle",
+      "frames": 4,
+      "transparentFraction": 0.7045982362023662,
+      "cellMarginsPassed": true,
+      "sha256": "a335a2f0aca23f75ba84be266081b18e1db29763c16a6a4d448ebe08d94e58b3"
+    },
+    {
+      "fighter": "hulk-hoagie",
+      "clip": "walk",
+      "frames": 8,
+      "transparentFraction": 0.6707820211523331,
+      "cellMarginsPassed": true,
+      "sha256": "db5ddc6fd98e5b934d6c31b2dc746633335f40f6623ccdcfa03644f3540d481e"
+    },
+    {
+      "fighter": "hulk-hoagie",
+      "clip": "run",
+      "frames": 8,
+      "transparentFraction": 0.672010463045697,
+      "cellMarginsPassed": true,
+      "sha256": "7058af9d6955663da02abe045adf4d0acb7a5b0155e18646cd2686ddebbb4a14"
+    },
+    {
+      "fighter": "hulk-hoagie",
+      "clip": "jab",
+      "frames": 9,
+      "transparentFraction": 0.6681649026146633,
+      "cellMarginsPassed": true,
+      "sha256": "7bca53172debf8b2d35472a8fff8a3c27bb2d33389a65fe50053ab3d18a86b38"
+    },
+    {
+      "fighter": "hulk-hoagie",
+      "clip": "jump",
+      "frames": 6,
+      "transparentFraction": 0.7039527893066406,
+      "cellMarginsPassed": true,
+      "sha256": "49fb313d1e2dc42799f5525b4e1b421e2f787f7989de64f017f6514f741b510c"
+    }
+  ],
+  "portraits": [
+    {
+      "fighter": "moonshine",
+      "image": "moonshine-portrait-v1.png",
+      "width": 1254,
+      "height": 1254,
+      "transparentFraction": 0.45642906018126367
+    },
+    {
+      "fighter": "hulk-hoagie",
+      "image": "hulk-hoagie-portrait-v1.png",
+      "width": 1254,
+      "height": 1254,
+      "transparentFraction": 0.4045586817558613
+    }
+  ],
+  "knownVisualWork": [
+    "Hoagie walk contact poses still need stronger opposite-leg differentiation",
+    "gait seams and idle/jab posture need motion review"
+  ],
+  "visualSignoff": "pending animation review; registration is candidate metadata"
+}

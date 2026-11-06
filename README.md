@@ -1,5 +1,11 @@
 # Everybody Throws Hands
 
+Newcomer review now includes eight-frame gait revisions, original/refined comparison and idle–jab transitions. [Open the pilot](apps/client/public/fighter-art-newcomers-v1/index.html). Hoagie walk contacts and remaining motion polish are still open; the fighters are not playable yet.
+
+New fighters in production: [Moonshine and Hulk Hoagie animation pilot](apps/client/public/fighter-art-newcomers-v1/index.html) and [production plan](apps/client/public/fighter-art-newcomers-v1/plan.json). Five pilot clips and a portrait each are available for review; neither fighter is selectable yet.
+
+Dodge/parry refinement, stale air-dodge travel and the production two-hit up-smash: [current status and remaining parity gaps](docs/FATIGUE-PARRY-SEQUENCE-AUDIT.md).
+
 Browser platform fighter with online rooms and local human/CPU play. This project covers apps/, packages/, fighter assets and supporting scripts. bonney/ is a separate project and is excluded.
 
 Target mechanics: Super Smash Bros. Ultimate. Current engine parity is incomplete. Sprite production and the later engine handoff are tracked in [the Ultimate checklist](docs/assets/ULTIMATE-ANIMATION-CHECKLIST.md).

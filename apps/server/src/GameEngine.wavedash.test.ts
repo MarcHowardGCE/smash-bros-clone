@@ -9,6 +9,7 @@ import {
 	type PlayerState,
 } from '@smash/shared';
 import { GameEngine } from './GameEngine.js';
+import {airDodgeLandingLag} from '@smash/engine';
 
 function makeInput(playerId: PlayerId, bits = 0): InputEvent {
 	return {
@@ -57,8 +58,8 @@ function tick(
 	return engine.tickGame(inputMap);
 }
 
-describe('GameEngine wavedash landing', () => {
-	it('AIR_DODGE landing with downward + horizontal component sets vx and LANDING_LAG state', () => {
+describe('GameEngine air-dodge landing (replaces legacy synthetic wavedash)', () => {
+	it('diagonal landing preserves flight momentum and enters recovery', () => {
 		const engine = new GameEngine({ playerIds: ['p1'] });
 		const STAGE_MAIN_Y = 500;
 		primePlayer(engine, 'p1', {
@@ -84,9 +85,9 @@ describe('GameEngine wavedash landing', () => {
 		// Should land and transition to LANDING_LAG
 		expect(player.isGrounded).toBe(true);
 		expect(player.state).toBe(PlayerStateEnum.LANDING_LAG);
-		expect(player.landingLagFrames).toBe(PHYSICS.WAVEDASH_LANDING_LAG_FRAMES);
-		// vx should be set to WAVEDASH_INITIAL_SLIDE_VELOCITY * sign(1) = 8
-		expect(player.vx).toBe(PHYSICS.WAVEDASH_INITIAL_SLIDE_VELOCITY);
+		expect(player.landingLagFrames).toBe(airDodgeLandingLag({characterId:player.characterId,stateFrame:6,airDodgeDirection:{x:1,y:1}}));
+		// Landing preserves current directional-flight momentum.
+		expect(player.vx).toBeCloseTo(PHYSICS.AIR_DODGE_SPEED / Math.sqrt(2));
 	});
 
 	it('wavedash slide velocity decays via GROUND_FRICTION each subsequent tick', () => {
@@ -142,13 +143,13 @@ describe('GameEngine wavedash landing', () => {
 			throw new Error('Expected player p1 after neutral dodge landing');
 		}
 
-		// Should land but NOT transition to LANDING_LAG (no wavedash)
+		// Neutral dodge also has landing recovery.
 		expect(player.isGrounded).toBe(true);
 		// vx should remain 0 (no wavedash momentum)
 		expect(player.vx).toBe(0);
-		// Should transition to IDLE, not LANDING_LAG
-		expect(player.state).toBe(PlayerStateEnum.IDLE);
-		expect(player.landingLagFrames).toBe(0);
+		// Neutral dodge landing must complete its ten recovery ticks.
+		expect(player.state).toBe(PlayerStateEnum.LANDING_LAG);
+		expect(player.landingLagFrames).toBe(10);
 	});
 
 	it('horizontal AIR_DODGE recovery landing (no downward component) does not wavedash', () => {
@@ -174,14 +175,14 @@ describe('GameEngine wavedash landing', () => {
 			throw new Error('Expected player p1 after horizontal-only dodge landing');
 		}
 
-		// Should land but NOT wavedash (no downward component)
+		// Horizontal dodge also has landing recovery.
 		expect(player.isGrounded).toBe(true);
 		expect(player.vx).toBe(0);
-		expect(player.state).toBe(PlayerStateEnum.IDLE);
-		expect(player.landingLagFrames).toBe(0);
+		expect(player.state).toBe(PlayerStateEnum.LANDING_LAG);
+		expect(player.landingLagFrames).toBeGreaterThanOrEqual(11);
 	});
 
-	it('wavedash with negative x direction sets vx to negative WAVEDASH_INITIAL_SLIDE_VELOCITY', () => {
+	it('left diagonal landing preserves flight momentum without synthetic boost', () => {
 		const engine = new GameEngine({ playerIds: ['p1'] });
 		const STAGE_MAIN_Y = 500;
 		primePlayer(engine, 'p1', {
@@ -207,9 +208,9 @@ describe('GameEngine wavedash landing', () => {
 		// Should land and transition to LANDING_LAG
 		expect(player.isGrounded).toBe(true);
 		expect(player.state).toBe(PlayerStateEnum.LANDING_LAG);
-		expect(player.landingLagFrames).toBe(PHYSICS.WAVEDASH_LANDING_LAG_FRAMES);
-		// vx should be negative
-		expect(player.vx).toBe(-PHYSICS.WAVEDASH_INITIAL_SLIDE_VELOCITY);
+		expect(player.landingLagFrames).toBe(airDodgeLandingLag({characterId:player.characterId,stateFrame:6,airDodgeDirection:{x:1,y:1}}));
+		// Landing preserves leftward flight momentum.
+		expect(player.vx).toBeCloseTo(-PHYSICS.AIR_DODGE_SPEED / Math.sqrt(2));
 	});
 
 	it('regression: hasAirDodge=false blocks second directional dodge (wavedash spam prevention)', () => {
@@ -273,10 +274,10 @@ describe('GameEngine wavedash landing', () => {
 			throw new Error('Expected player p1 after wavedash landing');
 		}
 
-		// Verify landed in LANDING_LAG with wavedash momentum
+		// Verify landing recovery without synthetic momentum.
 		expect(player.isGrounded).toBe(true);
 		expect(player.state).toBe(PlayerStateEnum.LANDING_LAG);
-		expect(player.vx).toBe(PHYSICS.WAVEDASH_INITIAL_SLIDE_VELOCITY);
+		expect(player.vx).toBeCloseTo(PHYSICS.AIR_DODGE_SPEED / Math.sqrt(2));
 		// KEY REGRESSION TEST: hasAirDodge should be reset on landing
 		expect(player.hasAirDodge).toBe(true);
 
@@ -325,3 +326,25 @@ describe('GameEngine wavedash landing', () => {
 		expect(player.hasAirDodge).toBe(false); // Consumed by second dodge
 	});
 });
+
+it('air-dodge landing starts refresh immediately while actions still wait for recovery',()=>{
+ const engine=new GameEngine({playerIds:['p1']});
+ primePlayer(engine,'p1',{x:640,y:471,vx:0,vy:4,state:PlayerStateEnum.AIR_DODGE,stateFrame:5,isGrounded:false,airDodgeDirection:{x:0,y:0},dodgeFatigue:3,dodgeRecoveryTicks:120,dodgeRefreshTicks:undefined});
+ let p=tick(engine).players.p1!;expect(p.landingLagFrames).toBe(10);expect(p.dodgeRefreshPending).toBe(false);expect(p.dodgeRefreshTicks).toBe(60);
+ p=tick(engine,{p1:makeInput('p1',INPUT_BITS.ATTACK)}).players.p1!;expect(p.state).toBe(PlayerStateEnum.LANDING_LAG);expect(p.dodgeRefreshTicks).toBe(59);
+ while(p.landingLagFrames>3)p=tick(engine).players.p1!;
+ p=tick(engine,{p1:makeInput('p1',INPUT_BITS.ATTACK)}).players.p1!;
+ for(let n=0;n<5&&p.state!==PlayerStateEnum.ATTACK;n++)p=tick(engine).players.p1!;
+ expect(p.state).toBe(PlayerStateEnum.ATTACK);expect(p.dodgeRefreshPending).toBe(false);expect(p.dodgeRefreshTicks).toBeLessThan(60);
+});
+
+it('hit-interrupted dodge starts refresh after hitlag, before airborne hitstun ends',()=>{
+ const engine=new GameEngine({playerIds:['p1']});
+ primePlayer(engine,'p1',{state:PlayerStateEnum.AIR_DODGE,stateFrame:40,isGrounded:false,x:640,y:200,airDodgeDirection:{x:1,y:0},dodgeFatigue:4,dodgeRecoveryTicks:120,dodgeRefreshTicks:undefined});
+ const state=getMutableState(engine),hit={hit:true,damage:3,hitlagFrames:2,hitstunFrames:20,knockbackVx:1,knockbackVy:0};
+ state.players.p1=(engine as any).applyHit(state.players.p1,hit,1);
+ let p=state.players.p1!;expect(p.dodgeRefreshPending).toBe(true);expect(p.dodgeRefreshTicks).toBeUndefined();
+ for(let n=0;n<2;n++){p=tick(engine).players.p1!;expect(p.dodgeRefreshTicks).toBeUndefined();}
+ p=tick(engine).players.p1!;expect(p.dodgeRefreshPending).toBe(false);expect(p.dodgeRefreshTicks).toBe(60);expect(p.hitstunFramesRemaining).toBeGreaterThan(0);expect(p.isGrounded).toBe(false);
+});
+it('airdodge ledge interruption arms refresh immediately',()=>{const engine=new GameEngine({playerIds:['p1']});const p={...getMutableState(engine).players.p1!,state:PlayerStateEnum.AIR_DODGE,dodgeFatigue:3,dodgeRefreshTicks:undefined};const result=(engine as any).snapPlayerToLedge(p,'left');expect(result.state).toBe(PlayerStateEnum.LEDGE_HANG);expect(result.dodgeRefreshTicks).toBe(60);});

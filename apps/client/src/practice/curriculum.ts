@@ -1,5 +1,5 @@
 import {INPUT_BITS as B,type GameState,type InputEvent,type PlayerState} from '@smash/shared';
-export type DummyMode='still'|'shield'|'jab'|'mixed';
+export type DummyMode='still'|'shield'|'jab'|'mixed'|'up-smash';
 export interface PracticeConfig {fighter:string;dummy:string;stageId:string;lessonId:string|null;dummyMode:DummyMode}
 export interface Lesson {id:string;tier:'Basics'|'Advanced'|'Subtle';title:string;hint:string;buttons:string;arm:number;dummy:DummyMode;check:(p:PlayerState,old:PlayerState)=>boolean}
 const entered=(p:PlayerState,o:PlayerState,state:string)=>p.state===state&&o.state!==state;

@@ -35,6 +35,8 @@ export class LocalMatch {
   private _paused = false;
   private practiceInputGate=false;
   private playbackSpeed=1;
+  get practiceFatigue():number{return this.engine.getPracticeDodgeFatigue()??0;}
+  setPracticeFatigue(level:number):boolean{return this.engine.setPracticeDodgeFatigue(level);}
   get practiceSpeed():number{return this.playbackSpeed;}
   get practiceTick():number{return this.engine.getCurrentTick();}
 

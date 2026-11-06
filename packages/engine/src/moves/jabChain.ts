@@ -9,7 +9,7 @@ export function advanceJabChain(p:PlayerState,input:InputEvent|null,frozen=false
  const data=getMoveDataForCharacter(p.characterId,p.currentMoveId!);
  if(queued&&!frozen&&p.hitlagFramesRemaining<=0&&p.stateFrame>=data.startupFrames+data.activeFrames+2){
   const move=getMoveDataForCharacter(p.characterId,next);
-  return {...p,currentMoveId:next,stateFrame:0,jabQueued:false,activeHitbox:null,hitPlayerIds:new Set<string>(),chargeFrames:0,currentMove:{landingLag:move.landingLag,isSpecial:move.isSpecial}};
+  return {...p,currentMoveId:next,stateFrame:0,jabQueued:false,activeHitbox:null,hitPlayerIds:new Set<string>(),hitContactFrames:undefined,moveStaleMultiplier:undefined,chargeFrames:0,currentMove:{landingLag:move.landingLag,isSpecial:move.isSpecial}};
  }
  return {...p,jabQueued:queued};
 }

@@ -1,0 +1,1853 @@
+{
+  "version": 1,
+  "status": "review candidates; not playable roster",
+  "characters": {
+    "moonshine": {
+      "name": "Moonshine",
+      "portrait": "moonshine-portrait-v1.png",
+      "worldHeight": 78,
+      "weightProposal": 87,
+      "role": "Mobile country brawler",
+      "overrideProposals": [
+        "forward_tilt",
+        "dash_attack",
+        "side_special",
+        "up_special"
+      ],
+      "clips": {
+        "idle": {
+          "image": "moonshine-idle-v1.png",
+          "scale": 0.13333333333333333,
+          "durations": [
+            12,
+            12,
+            12,
+            12
+          ],
+          "loop": true,
+          "frames": [
+            {
+              "rect": [
+                203,
+                23,
+                263,
+                576
+              ],
+              "root": [
+                43,
+                574
+              ],
+              "sourceSize": [
+                627,
+                627
+              ],
+              "trim": [
+                203,
+                23
+              ],
+              "visibleHeight": 572,
+              "registration": "support foot"
+            },
+            {
+              "rect": [
+                830,
+                15,
+                263,
+                584
+              ],
+              "root": [
+                43,
+                582
+              ],
+              "sourceSize": [
+                627,
+                627
+              ],
+              "trim": [
+                203,
+                15
+              ],
+              "visibleHeight": 580,
+              "registration": "support foot"
+            },
+            {
+              "rect": [
+                203,
+                637,
+                263,
+                589
+              ],
+              "root": [
+                43,
+                587
+              ],
+              "sourceSize": [
+                627,
+                627
+              ],
+              "trim": [
+                203,
+                10
+              ],
+              "visibleHeight": 585,
+              "registration": "support foot"
+            },
+            {
+              "rect": [
+                831,
+                652,
+                263,
+                574
+              ],
+              "root": [
+                42.5,
+                572
+              ],
+              "sourceSize": [
+                627,
+                627
+              ],
+              "trim": [
+                204,
+                25
+              ],
+              "visibleHeight": 570,
+              "registration": "support foot"
+            }
+          ]
+        },
+        "walk": {
+          "image": "moonshine-walk-v1.png",
+          "scale": 0.1601642710472279,
+          "durations": [
+            4,
+            4,
+            4,
+            4,
+            4,
+            4
+          ],
+          "loop": true,
+          "frames": [
+            {
+              "rect": [
+                123,
+                9,
+                329,
+                489
+              ],
+              "root": [
+                147,
+                487
+              ],
+              "sourceSize": [
+                512,
+                512
+              ],
+              "trim": [
+                123,
+                9
+              ],
+              "visibleHeight": 485,
+              "registration": "manually guided torso with shared baseline"
+            },
+            {
+              "rect": [
+                608,
+                14,
+                301,
+                480
+              ],
+              "root": [
+                164,
+                482
+              ],
+              "sourceSize": [
+                512,
+                512
+              ],
+              "trim": [
+                96,
+                14
+              ],
+              "visibleHeight": 476,
+              "registration": "manually guided torso with shared baseline"
+            },
+            {
+              "rect": [
+                1109,
+                11,
+                301,
+                477
+              ],
+              "root": [
+                175,
+                485
+              ],
+              "sourceSize": [
+                512,
+                512
+              ],
+              "trim": [
+                85,
+                11
+              ],
+              "visibleHeight": 473,
+              "registration": "manually guided torso with shared baseline"
+            },
+            {
+              "rect": [
+                133,
+                514,
+                326,
+                490
+              ],
+              "root": [
+                147,
+                494
+              ],
+              "sourceSize": [
+                512,
+                512
+              ],
+              "trim": [
+                133,
+                2
+              ],
+              "visibleHeight": 486,
+              "registration": "manually guided torso with shared baseline"
+            },
+            {
+              "rect": [
+                635,
+                521,
+                269,
+                487
+              ],
+              "root": [
+                152,
+                487
+              ],
+              "sourceSize": [
+                512,
+                512
+              ],
+              "trim": [
+                123,
+                9
+              ],
+              "visibleHeight": 483,
+              "registration": "manually guided torso with shared baseline"
+            },
+            {
+              "rect": [
+                1136,
+                517,
+                271,
+                491
+              ],
+              "root": [
+                148,
+                491
+              ],
+              "sourceSize": [
+                512,
+                512
+              ],
+              "trim": [
+                112,
+                5
+              ],
+              "visibleHeight": 487,
+              "registration": "manually guided torso with shared baseline"
+            }
+          ]
+        },
+        "run": {
+          "image": "moonshine-run-v1.png",
+          "scale": 0.16216216216216217,
+          "durations": [
+            3,
+            3,
+            3,
+            3,
+            3,
+            3
+          ],
+          "loop": true,
+          "frames": [
+            {
+              "rect": [
+                79,
+                18,
+                362,
+                485
+              ],
+              "root": [
+                186,
+                483
+              ],
+              "sourceSize": [
+                512,
+                512
+              ],
+              "trim": [
+                79,
+                18
+              ],
+              "visibleHeight": 481,
+              "registration": "manually guided torso with shared baseline"
+            },
+            {
+              "rect": [
+                633,
+                42,
+                269,
+                453
+              ],
+              "root": [
+                139,
+                459
+              ],
+              "sourceSize": [
+                512,
+                512
+              ],
+              "trim": [
+                121,
+                42
+              ],
+              "visibleHeight": 449,
+              "registration": "manually guided torso with shared baseline"
+            },
+            {
+              "rect": [
+                1075,
+                10,
+                370,
+                423
+              ],
+              "root": [
+                219,
+                491
+              ],
+              "sourceSize": [
+                512,
+                512
+              ],
+              "trim": [
+                51,
+                10
+              ],
+              "visibleHeight": 419,
+              "registration": "manually guided torso with shared baseline"
+            },
+            {
+              "rect": [
+                81,
+                534,
+                372,
+                475
+              ],
+              "root": [
+                189,
+                479
+              ],
+              "sourceSize": [
+                512,
+                512
+              ],
+              "trim": [
+                81,
+                22
+              ],
+              "visibleHeight": 471,
+              "registration": "manually guided torso with shared baseline"
+            },
+            {
+              "rect": [
+                628,
+                555,
+                284,
+                454
+              ],
+              "root": [
+                154,
+                458
+              ],
+              "sourceSize": [
+                512,
+                512
+              ],
+              "trim": [
+                116,
+                43
+              ],
+              "visibleHeight": 450,
+              "registration": "manually guided torso with shared baseline"
+            },
+            {
+              "rect": [
+                1069,
+                522,
+                385,
+                441
+              ],
+              "root": [
+                220,
+                491
+              ],
+              "sourceSize": [
+                512,
+                512
+              ],
+              "trim": [
+                45,
+                10
+              ],
+              "visibleHeight": 437,
+              "registration": "manually guided torso with shared baseline"
+            }
+          ]
+        },
+        "jab": {
+          "image": "moonshine-jab-v1.png",
+          "scale": 0.195,
+          "durations": [
+            1,
+            1,
+            1,
+            2,
+            2,
+            2,
+            2,
+            2,
+            2
+          ],
+          "loop": false,
+          "frames": [
+            {
+              "rect": [
+                124,
+                8,
+                191,
+                404
+              ],
+              "root": [
+                32,
+                402
+              ],
+              "sourceSize": [
+                418,
+                418
+              ],
+              "trim": [
+                124,
+                8
+              ],
+              "visibleHeight": 400,
+              "registration": "support foot"
+            },
+            {
+              "rect": [
+                535,
+                11,
+                191,
+                401
+              ],
+              "root": [
+                32.5,
+                399
+              ],
+              "sourceSize": [
+                418,
+                418
+              ],
+              "trim": [
+                117,
+                11
+              ],
+              "visibleHeight": 397,
+              "registration": "support foot"
+            },
+            {
+              "rect": [
+                934,
+                10,
+                211,
+                402
+              ],
+              "root": [
+                46.5,
+                400
+              ],
+              "sourceSize": [
+                418,
+                418
+              ],
+              "trim": [
+                98,
+                10
+              ],
+              "visibleHeight": 398,
+              "registration": "support foot"
+            },
+            {
+              "rect": [
+                111,
+                429,
+                268,
+                401
+              ],
+              "root": [
+                45,
+                399
+              ],
+              "sourceSize": [
+                418,
+                418
+              ],
+              "trim": [
+                111,
+                11
+              ],
+              "visibleHeight": 397,
+              "registration": "support foot"
+            },
+            {
+              "rect": [
+                532,
+                427,
+                211,
+                402
+              ],
+              "root": [
+                36.5,
+                400
+              ],
+              "sourceSize": [
+                418,
+                418
+              ],
+              "trim": [
+                114,
+                9
+              ],
+              "visibleHeight": 398,
+              "registration": "support foot"
+            },
+            {
+              "rect": [
+                948,
+                428,
+                192,
+                401
+              ],
+              "root": [
+                34,
+                399
+              ],
+              "sourceSize": [
+                418,
+                418
+              ],
+              "trim": [
+                112,
+                10
+              ],
+              "visibleHeight": 397,
+              "registration": "support foot"
+            },
+            {
+              "rect": [
+                125,
+                845,
+                190,
+                402
+              ],
+              "root": [
+                33,
+                400
+              ],
+              "sourceSize": [
+                418,
+                418
+              ],
+              "trim": [
+                125,
+                9
+              ],
+              "visibleHeight": 398,
+              "registration": "support foot"
+            },
+            {
+              "rect": [
+                537,
+                848,
+                190,
+                399
+              ],
+              "root": [
+                32,
+                397
+              ],
+              "sourceSize": [
+                418,
+                418
+              ],
+              "trim": [
+                119,
+                12
+              ],
+              "visibleHeight": 395,
+              "registration": "support foot"
+            },
+            {
+              "rect": [
+                951,
+                845,
+                189,
+                402
+              ],
+              "root": [
+                32,
+                400
+              ],
+              "sourceSize": [
+                418,
+                418
+              ],
+              "trim": [
+                115,
+                9
+              ],
+              "visibleHeight": 398,
+              "registration": "support foot"
+            }
+          ],
+          "activeWindow": [
+            3,
+            5
+          ]
+        },
+        "jump": {
+          "image": "moonshine-jump-v1.png",
+          "scale": 0.16993464052287582,
+          "durations": [
+            3,
+            12,
+            8,
+            12,
+            6,
+            6
+          ],
+          "loop": false,
+          "frames": [
+            {
+              "rect": [
+                151,
+                103,
+                253,
+                388
+              ],
+              "root": [
+                109,
+                386
+              ],
+              "sourceSize": [
+                512,
+                512
+              ],
+              "trim": [
+                151,
+                103
+              ],
+              "visibleHeight": 384,
+              "registration": "manually guided torso with shared baseline"
+            },
+            {
+              "rect": [
+                623,
+                33,
+                287,
+                457
+              ],
+              "root": [
+                149,
+                456
+              ],
+              "sourceSize": [
+                512,
+                512
+              ],
+              "trim": [
+                111,
+                33
+              ],
+              "visibleHeight": 453,
+              "registration": "manually guided torso with shared baseline"
+            },
+            {
+              "rect": [
+                1125,
+                21,
+                263,
+                395
+              ],
+              "root": [
+                169,
+                468
+              ],
+              "sourceSize": [
+                512,
+                512
+              ],
+              "trim": [
+                101,
+                21
+              ],
+              "visibleHeight": 391,
+              "registration": "manually guided torso with shared baseline"
+            },
+            {
+              "rect": [
+                163,
+                530,
+                245,
+                333
+              ],
+              "root": [
+                107,
+                471
+              ],
+              "sourceSize": [
+                512,
+                512
+              ],
+              "trim": [
+                163,
+                18
+              ],
+              "visibleHeight": 329,
+              "registration": "manually guided torso with shared baseline"
+            },
+            {
+              "rect": [
+                637,
+                527,
+                286,
+                463
+              ],
+              "root": [
+                145,
+                474
+              ],
+              "sourceSize": [
+                512,
+                512
+              ],
+              "trim": [
+                125,
+                15
+              ],
+              "visibleHeight": 459,
+              "registration": "manually guided torso with shared baseline"
+            },
+            {
+              "rect": [
+                1123,
+                608,
+                265,
+                382
+              ],
+              "root": [
+                161,
+                393
+              ],
+              "sourceSize": [
+                512,
+                512
+              ],
+              "trim": [
+                99,
+                96
+              ],
+              "visibleHeight": 378,
+              "registration": "manually guided torso with shared baseline"
+            }
+          ]
+        }
+      }
+    },
+    "hulk-hoagie": {
+      "name": "“Hulk” Hoagie",
+      "portrait": "hulk-hoagie-portrait-v1.png",
+      "worldHeight": 88,
+      "weightProposal": 109,
+      "role": "Wrestling throw specialist",
+      "overrideProposals": [
+        "forward_throw",
+        "back_throw",
+        "up_throw",
+        "down_throw"
+      ],
+      "clips": {
+        "idle": {
+          "image": "hulk-hoagie-idle-v1.png",
+          "scale": 0.1509433962264151,
+          "durations": [
+            12,
+            12,
+            12,
+            12
+          ],
+          "loop": true,
+          "frames": [
+            {
+              "rect": [
+                139,
+                13,
+                335,
+                582
+              ],
+              "root": [
+                46.5,
+                580
+              ],
+              "sourceSize": [
+                627,
+                627
+              ],
+              "trim": [
+                139,
+                13
+              ],
+              "visibleHeight": 578,
+              "registration": "support foot"
+            },
+            {
+              "rect": [
+                740,
+                11,
+                336,
+                585
+              ],
+              "root": [
+                46.5,
+                583
+              ],
+              "sourceSize": [
+                627,
+                627
+              ],
+              "trim": [
+                113,
+                11
+              ],
+              "visibleHeight": 581,
+              "registration": "support foot"
+            },
+            {
+              "rect": [
+                139,
+                636,
+                335,
+                587
+              ],
+              "root": [
+                46.5,
+                585
+              ],
+              "sourceSize": [
+                627,
+                627
+              ],
+              "trim": [
+                139,
+                9
+              ],
+              "visibleHeight": 583,
+              "registration": "support foot"
+            },
+            {
+              "rect": [
+                740,
+                643,
+                336,
+                580
+              ],
+              "root": [
+                46.5,
+                578
+              ],
+              "sourceSize": [
+                627,
+                627
+              ],
+              "trim": [
+                113,
+                16
+              ],
+              "visibleHeight": 576,
+              "registration": "support foot"
+            }
+          ]
+        },
+        "walk": {
+          "image": "hulk-hoagie-walk-v1.png",
+          "scale": 0.18448637316561844,
+          "durations": [
+            4,
+            4,
+            4,
+            4,
+            4,
+            4
+          ],
+          "loop": true,
+          "frames": [
+            {
+              "rect": [
+                125,
+                14,
+                301,
+                479
+              ],
+              "root": [
+                147,
+                483
+              ],
+              "sourceSize": [
+                512,
+                512
+              ],
+              "trim": [
+                125,
+                14
+              ],
+              "visibleHeight": 475,
+              "registration": "manually guided torso with shared baseline"
+            },
+            {
+              "rect": [
+                629,
+                20,
+                273,
+                476
+              ],
+              "root": [
+                140,
+                477
+              ],
+              "sourceSize": [
+                512,
+                512
+              ],
+              "trim": [
+                117,
+                20
+              ],
+              "visibleHeight": 472,
+              "registration": "manually guided torso with shared baseline"
+            },
+            {
+              "rect": [
+                1081,
+                12,
+                325,
+                477
+              ],
+              "root": [
+                193,
+                485
+              ],
+              "sourceSize": [
+                512,
+                512
+              ],
+              "trim": [
+                57,
+                12
+              ],
+              "visibleHeight": 473,
+              "registration": "manually guided torso with shared baseline"
+            },
+            {
+              "rect": [
+                111,
+                530,
+                332,
+                474
+              ],
+              "root": [
+                159,
+                479
+              ],
+              "sourceSize": [
+                512,
+                512
+              ],
+              "trim": [
+                111,
+                18
+              ],
+              "visibleHeight": 470,
+              "registration": "manually guided torso with shared baseline"
+            },
+            {
+              "rect": [
+                614,
+                537,
+                282,
+                474
+              ],
+              "root": [
+                153,
+                472
+              ],
+              "sourceSize": [
+                512,
+                512
+              ],
+              "trim": [
+                102,
+                25
+              ],
+              "visibleHeight": 470,
+              "registration": "manually guided torso with shared baseline"
+            },
+            {
+              "rect": [
+                1079,
+                525,
+                328,
+                481
+              ],
+              "root": [
+                197,
+                484
+              ],
+              "sourceSize": [
+                512,
+                512
+              ],
+              "trim": [
+                55,
+                13
+              ],
+              "visibleHeight": 477,
+              "registration": "manually guided torso with shared baseline"
+            }
+          ]
+        },
+        "run": {
+          "image": "hulk-hoagie-run-v1.png",
+          "scale": 0.1888412017167382,
+          "durations": [
+            3,
+            3,
+            3,
+            3,
+            3,
+            3
+          ],
+          "loop": true,
+          "frames": [
+            {
+              "rect": [
+                60,
+                28,
+                387,
+                465
+              ],
+              "root": [
+                215,
+                465
+              ],
+              "sourceSize": [
+                512,
+                512
+              ],
+              "trim": [
+                60,
+                28
+              ],
+              "visibleHeight": 461,
+              "registration": "manually guided torso with shared baseline"
+            },
+            {
+              "rect": [
+                642,
+                28,
+                297,
+                467
+              ],
+              "root": [
+                150,
+                465
+              ],
+              "sourceSize": [
+                512,
+                512
+              ],
+              "trim": [
+                130,
+                28
+              ],
+              "visibleHeight": 463,
+              "registration": "manually guided torso with shared baseline"
+            },
+            {
+              "rect": [
+                1096,
+                20,
+                364,
+                420
+              ],
+              "root": [
+                206,
+                473
+              ],
+              "sourceSize": [
+                512,
+                512
+              ],
+              "trim": [
+                72,
+                20
+              ],
+              "visibleHeight": 416,
+              "registration": "manually guided torso with shared baseline"
+            },
+            {
+              "rect": [
+                39,
+                538,
+                421,
+                467
+              ],
+              "root": [
+                231,
+                467
+              ],
+              "sourceSize": [
+                512,
+                512
+              ],
+              "trim": [
+                39,
+                26
+              ],
+              "visibleHeight": 463,
+              "registration": "manually guided torso with shared baseline"
+            },
+            {
+              "rect": [
+                605,
+                537,
+                341,
+                470
+              ],
+              "root": [
+                185,
+                468
+              ],
+              "sourceSize": [
+                512,
+                512
+              ],
+              "trim": [
+                93,
+                25
+              ],
+              "visibleHeight": 466,
+              "registration": "manually guided torso with shared baseline"
+            },
+            {
+              "rect": [
+                1102,
+                531,
+                356,
+                436
+              ],
+              "root": [
+                202,
+                474
+              ],
+              "sourceSize": [
+                512,
+                512
+              ],
+              "trim": [
+                78,
+                19
+              ],
+              "visibleHeight": 432,
+              "registration": "manually guided torso with shared baseline"
+            }
+          ]
+        },
+        "jab": {
+          "image": "hulk-hoagie-jab-v1.png",
+          "scale": 0.22797927461139897,
+          "durations": [
+            1,
+            1,
+            1,
+            2,
+            2,
+            2,
+            2,
+            2,
+            2
+          ],
+          "loop": false,
+          "frames": [
+            {
+              "rect": [
+                94,
+                8,
+                232,
+                390
+              ],
+              "root": [
+                34,
+                388
+              ],
+              "sourceSize": [
+                418,
+                418
+              ],
+              "trim": [
+                94,
+                8
+              ],
+              "visibleHeight": 386,
+              "registration": "support foot"
+            },
+            {
+              "rect": [
+                511,
+                12,
+                233,
+                386
+              ],
+              "root": [
+                35,
+                384
+              ],
+              "sourceSize": [
+                418,
+                418
+              ],
+              "trim": [
+                93,
+                12
+              ],
+              "visibleHeight": 382,
+              "registration": "support foot"
+            },
+            {
+              "rect": [
+                929,
+                13,
+                240,
+                385
+              ],
+              "root": [
+                35,
+                383
+              ],
+              "sourceSize": [
+                418,
+                418
+              ],
+              "trim": [
+                93,
+                13
+              ],
+              "visibleHeight": 381,
+              "registration": "support foot"
+            },
+            {
+              "rect": [
+                94,
+                430,
+                291,
+                386
+              ],
+              "root": [
+                34,
+                384
+              ],
+              "sourceSize": [
+                418,
+                418
+              ],
+              "trim": [
+                94,
+                12
+              ],
+              "visibleHeight": 382,
+              "registration": "support foot"
+            },
+            {
+              "rect": [
+                510,
+                432,
+                246,
+                384
+              ],
+              "root": [
+                36,
+                382
+              ],
+              "sourceSize": [
+                418,
+                418
+              ],
+              "trim": [
+                92,
+                14
+              ],
+              "visibleHeight": 380,
+              "registration": "support foot"
+            },
+            {
+              "rect": [
+                926,
+                432,
+                236,
+                384
+              ],
+              "root": [
+                38,
+                382
+              ],
+              "sourceSize": [
+                418,
+                418
+              ],
+              "trim": [
+                90,
+                14
+              ],
+              "visibleHeight": 380,
+              "registration": "support foot"
+            },
+            {
+              "rect": [
+                94,
+                850,
+                232,
+                384
+              ],
+              "root": [
+                34,
+                382
+              ],
+              "sourceSize": [
+                418,
+                418
+              ],
+              "trim": [
+                94,
+                14
+              ],
+              "visibleHeight": 380,
+              "registration": "support foot"
+            },
+            {
+              "rect": [
+                512,
+                847,
+                232,
+                387
+              ],
+              "root": [
+                34,
+                385
+              ],
+              "sourceSize": [
+                418,
+                418
+              ],
+              "trim": [
+                94,
+                11
+              ],
+              "visibleHeight": 383,
+              "registration": "support foot"
+            },
+            {
+              "rect": [
+                929,
+                847,
+                233,
+                387
+              ],
+              "root": [
+                35,
+                385
+              ],
+              "sourceSize": [
+                418,
+                418
+              ],
+              "trim": [
+                93,
+                11
+              ],
+              "visibleHeight": 383,
+              "registration": "support foot"
+            }
+          ],
+          "activeWindow": [
+            3,
+            5
+          ]
+        },
+        "jump": {
+          "image": "hulk-hoagie-jump-v1.png",
+          "scale": 0.1925601750547046,
+          "durations": [
+            3,
+            12,
+            8,
+            12,
+            6,
+            6
+          ],
+          "loop": false,
+          "frames": [
+            {
+              "rect": [
+                143,
+                85,
+                275,
+                415
+              ],
+              "root": [
+                127,
+                415
+              ],
+              "sourceSize": [
+                512,
+                512
+              ],
+              "trim": [
+                143,
+                85
+              ],
+              "visibleHeight": 411,
+              "registration": "manually guided torso with shared baseline"
+            },
+            {
+              "rect": [
+                607,
+                41,
+                345,
+                461
+              ],
+              "root": [
+                165,
+                459
+              ],
+              "sourceSize": [
+                512,
+                512
+              ],
+              "trim": [
+                95,
+                41
+              ],
+              "visibleHeight": 457,
+              "registration": "manually guided torso with shared baseline"
+            },
+            {
+              "rect": [
+                1143,
+                7,
+                256,
+                444
+              ],
+              "root": [
+                151,
+                493
+              ],
+              "sourceSize": [
+                512,
+                512
+              ],
+              "trim": [
+                119,
+                7
+              ],
+              "visibleHeight": 440,
+              "registration": "manually guided torso with shared baseline"
+            },
+            {
+              "rect": [
+                144,
+                527,
+                261,
+                367
+              ],
+              "root": [
+                126,
+                485
+              ],
+              "sourceSize": [
+                512,
+                512
+              ],
+              "trim": [
+                144,
+                15
+              ],
+              "visibleHeight": 363,
+              "registration": "manually guided torso with shared baseline"
+            },
+            {
+              "rect": [
+                625,
+                526,
+                301,
+                461
+              ],
+              "root": [
+                157,
+                486
+              ],
+              "sourceSize": [
+                512,
+                512
+              ],
+              "trim": [
+                113,
+                14
+              ],
+              "visibleHeight": 457,
+              "registration": "manually guided torso with shared baseline"
+            },
+            {
+              "rect": [
+                1117,
+                596,
+                290,
+                416
+              ],
+              "root": [
+                167,
+                416
+              ],
+              "sourceSize": [
+                512,
+                512
+              ],
+              "trim": [
+                93,
+                84
+              ],
+              "visibleHeight": 412,
+              "registration": "manually guided torso with shared baseline"
+            }
+          ]
+        }
+      }
+    }
+  },
+  "notes": [
+    "Weights, scale and four overrides are working proposals, not engine stats.",
+    "Jump arc is review-only; durations are pilot timing, not native mechanics.",
+    "Legacy dodge requires compatibility mapping, not another illustration."
+  ],
+  "coverage": {
+    "moonshine": {
+      "registered": [
+        "idle",
+        "walk",
+        "run",
+        "jab",
+        "jump"
+      ],
+      "remainingKeys": [
+        "shield",
+        "dodge",
+        "roll",
+        "reaction",
+        "counter_success",
+        "grab_hold",
+        "grabbed",
+        "pummel_victim",
+        "grab_release",
+        "throw_victim",
+        "grab",
+        "pummel",
+        "forward_throw",
+        "back_throw",
+        "up_throw",
+        "down_throw",
+        "neutral_special",
+        "side_special",
+        "up_special",
+        "down_special",
+        "neutral_air",
+        "forward_air",
+        "back_air",
+        "up_air",
+        "down_air",
+        "forward_tilt",
+        "up_tilt",
+        "down_tilt",
+        "forward_smash",
+        "up_smash",
+        "down_smash",
+        "ledge_catch",
+        "ledge_hang",
+        "ledge_climb",
+        "ledge_roll",
+        "ledge_attack",
+        "ledge_jump",
+        "ledge_drop",
+        "ledge_trump",
+        "knockdown_up",
+        "knockdown_down",
+        "prone_up",
+        "prone_down",
+        "getup_up",
+        "getup_down",
+        "getup_roll_up",
+        "getup_roll_down",
+        "floor_attack_up",
+        "floor_attack_down",
+        "trip_fall",
+        "trip_prone",
+        "trip_getup",
+        "floor_attack_trip",
+        "tech_neutral",
+        "tech_roll",
+        "wall_tech",
+        "wall_tech_jump",
+        "ceiling_tech",
+        "trip_roll",
+        "dash_start",
+        "turn_stand",
+        "turn_run",
+        "brake",
+        "crouch_enter",
+        "crouch_hold",
+        "crouch_exit",
+        "jump_squat",
+        "land_soft",
+        "land_heavy",
+        "platform_drop",
+        "teeter_front",
+        "teeter_back",
+        "shield_raise",
+        "shield_hit",
+        "shield_drop",
+        "parry",
+        "air_dodge_neutral",
+        "air_dodge_directional",
+        "air_dodge_land",
+        "shield_break_launch",
+        "shield_break_dizzy",
+        "shield_break_recover",
+        "grab_dash",
+        "grab_pivot",
+        "dash_attack",
+        "hit_high",
+        "hit_mid",
+        "hit_low",
+        "hit_heavy",
+        "hit_air",
+        "tumble",
+        "tumble_recover",
+        "jab_lock_up",
+        "jab_lock_down",
+        "footstool_attacker",
+        "footstool_ground_victim",
+        "footstool_air_victim",
+        "entry",
+        "respawn_wait",
+        "respawn_drop",
+        "taunt_up",
+        "taunt_side",
+        "taunt_down",
+        "victory_1",
+        "victory_2",
+        "victory_3",
+        "defeat",
+        "ko_launch",
+        "ko_screen",
+        "ko_star",
+        "takeoff_neutral",
+        "takeoff_forward",
+        "takeoff_backward",
+        "air_rise_loop",
+        "air_apex_loop",
+        "air_fall_loop",
+        "air_fastfall_loop",
+        "double_jump_transition",
+        "air_dodge_up",
+        "air_dodge_down",
+        "air_dodge_side",
+        "air_dodge_up_diagonal",
+        "air_dodge_down_diagonal",
+        "helpless_enter",
+        "helpless_loop",
+        "helpless_land",
+        "jab_2",
+        "jab_3",
+        "air_dodge_back",
+        "air_dodge_up_back",
+        "air_dodge_down_back"
+      ],
+      "requiredKeyCount": 136
+    },
+    "hulk-hoagie": {
+      "registered": [
+        "idle",
+        "walk",
+        "run",
+        "jab",
+        "jump"
+      ],
+      "remainingKeys": [
+        "shield",
+        "dodge",
+        "roll",
+        "reaction",
+        "counter_success",
+        "grab_hold",
+        "grabbed",
+        "pummel_victim",
+        "grab_release",
+        "throw_victim",
+        "grab",
+        "pummel",
+        "forward_throw",
+        "back_throw",
+        "up_throw",
+        "down_throw",
+        "neutral_special",
+        "side_special",
+        "up_special",
+        "down_special",
+        "neutral_air",
+        "forward_air",
+        "back_air",
+        "up_air",
+        "down_air",
+        "forward_tilt",
+        "up_tilt",
+        "down_tilt",
+        "forward_smash",
+        "up_smash",
+        "down_smash",
+        "ledge_catch",
+        "ledge_hang",
+        "ledge_climb",
+        "ledge_roll",
+        "ledge_attack",
+        "ledge_jump",
+        "ledge_drop",
+        "ledge_trump",
+        "knockdown_up",
+        "knockdown_down",
+        "prone_up",
+        "prone_down",
+        "getup_up",
+        "getup_down",
+        "getup_roll_up",
+        "getup_roll_down",
+        "floor_attack_up",
+        "floor_attack_down",
+        "trip_fall",
+        "trip_prone",
+        "trip_getup",
+        "floor_attack_trip",
+        "tech_neutral",
+        "tech_roll",
+        "wall_tech",
+        "wall_tech_jump",
+        "ceiling_tech",
+        "trip_roll",
+        "dash_start",
+        "turn_stand",
+        "turn_run",
+        "brake",
+        "crouch_enter",
+        "crouch_hold",
+        "crouch_exit",
+        "jump_squat",
+        "land_soft",
+        "land_heavy",
+        "platform_drop",
+        "teeter_front",
+        "teeter_back",
+        "shield_raise",
+        "shield_hit",
+        "shield_drop",
+        "parry",
+        "air_dodge_neutral",
+        "air_dodge_directional",
+        "air_dodge_land",
+        "shield_break_launch",
+        "shield_break_dizzy",
+        "shield_break_recover",
+        "grab_dash",
+        "grab_pivot",
+        "dash_attack",
+        "hit_high",
+        "hit_mid",
+        "hit_low",
+        "hit_heavy",
+        "hit_air",
+        "tumble",
+        "tumble_recover",
+        "jab_lock_up",
+        "jab_lock_down",
+        "footstool_attacker",
+        "footstool_ground_victim",
+        "footstool_air_victim",
+        "entry",
+        "respawn_wait",
+        "respawn_drop",
+        "taunt_up",
+        "taunt_side",
+        "taunt_down",
+        "victory_1",
+        "victory_2",
+        "victory_3",
+        "defeat",
+        "ko_launch",
+        "ko_screen",
+        "ko_star",
+        "takeoff_neutral",
+        "takeoff_forward",
+        "takeoff_backward",
+        "air_rise_loop",
+        "air_apex_loop",
+        "air_fall_loop",
+        "air_fastfall_loop",
+        "double_jump_transition",
+        "air_dodge_up",
+        "air_dodge_down",
+        "air_dodge_side",
+        "air_dodge_up_diagonal",
+        "air_dodge_down_diagonal",
+        "helpless_enter",
+        "helpless_loop",
+        "helpless_land",
+        "jab_2",
+        "jab_3",
+        "air_dodge_back",
+        "air_dodge_up_back",
+        "air_dodge_down_back"
+      ],
+      "requiredKeyCount": 136
+    }
+  }
+}

@@ -21,7 +21,7 @@ import type { TextureProvider } from './parts/SpritePartRenderer.js';
 type RenderableFighterState = Pick<
   PlayerState,
   'x' | 'y' | 'facing' | 'isInvincible' | 'isKnockedOut' | 'isShielding' | 'shieldHealth' | 'state' | 'stateFrame' | 'slotIndex' | 'currentMoveId'
-> & Partial<Pick<PlayerState, 'dodgeLevel' | 'dodgeKind' | 'tauntKind' | 'hitReaction' | 'artCue' | 'artCueFrame' | 'respawnTimer' | 'footstoolRole' | 'footstoolPartnerId' | 'footstoolFrame' | 'shieldReaction' | 'shieldReactionFrame' | 'hitstunFramesRemaining' | 'floorOrientation' | 'floorRollDirection' | 'isFastFalling' | 'airDodgeDirection' | 'vy' | 'hasDoubleJump' | 'isTumbling' | 'vx' | 'chargeFrames' | 'isGrabbing' | 'grabbedPlayerId'>> & {result?:'win'|'lose';presentationVariant?:number;footstoolContact?:import('./fullbody/preparedHooks.js').PreparedContext['footstoolContact'];grabFacing?:1|-1;grabOwner?:import("./fullbody/FullBodyPilot.js").GrabContactContext;ledgeId?:string|null;ledgeContact?:{dx:number;dy:number}};
+> & Partial<Pick<PlayerState, 'stocks' | 'dodgeLevel' | 'dodgeKind' | 'tauntKind' | 'hitReaction' | 'artCue' | 'artCueFrame' | 'respawnTimer' | 'footstoolRole' | 'footstoolPartnerId' | 'footstoolFrame' | 'shieldReaction' | 'shieldReactionFrame' | 'hitstunFramesRemaining' | 'floorOrientation' | 'floorRollDirection' | 'isFastFalling' | 'airDodgeDirection' | 'vy' | 'hasDoubleJump' | 'isTumbling' | 'vx' | 'chargeFrames' | 'isGrabbing' | 'grabbedPlayerId'>> & {result?:'win'|'lose';presentationVariant?:number;footstoolContact?:import('./fullbody/preparedHooks.js').PreparedContext['footstoolContact'];grabFacing?:1|-1;grabOwner?:import("./fullbody/FullBodyPilot.js").GrabContactContext;ledgeId?:string|null;ledgeContact?:{dx:number;dy:number}};
 
 /** Hit flash: golden-yellow tint on white parts for 4 frames (67ms at 60fps). */
 const HIT_FLASH_FRAMES = 4;
@@ -140,6 +140,8 @@ export class FighterRenderer {
    * @param player - Minimal player state slice needed for rendering
    */
   update(player: RenderableFighterState): void {
+    this.container.visible = player.stocks !== 0 || Boolean(player.result);
+    if (!this.container.visible) return;
     this.container.x = player.result?([370,910,230,1050][player.slotIndex]??640):player.x;
     this.container.y = player.result?472:player.y;
     this.playerMarker.scale.x=player.facing;
@@ -160,7 +162,7 @@ export class FighterRenderer {
 
     // Pilot selection must also react to move changes and KO/shield transitions.
     const pilotVisible = this.fullBodyPilot?.update(player.state, player.stateFrame, player.currentMoveId, !player.isKnockedOut, player.vy, player.hasDoubleJump, player.isTumbling, player.state==='ROLL'?(player.floorRollDirection??player.facing)*player.facing as 1|-1:(player.vx ?? 0) * player.facing < 0 ? -1 : 1, player.chargeFrames ?? 0, player.isGrabbing===true&&!player.grabbedPlayerId, (player.grabFacing??player.facing)*player.facing, player.facing,player.grabOwner,player.ledgeId,{dodgeLevel:player.dodgeLevel,dodgeKind:player.dodgeKind,isTumbling:player.isTumbling,result:player.result,presentationVariant:player.presentationVariant,footstoolContact:player.footstoolContact,ledgeContact:player.ledgeContact,tauntKind:player.tauntKind,hitReaction:player.hitReaction,artCue:player.artCue,artCueFrame:player.artCueFrame,respawnTimer:player.respawnTimer,footstoolRole:player.footstoolRole,footstoolPartnerId:player.footstoolPartnerId,footstoolFrame:player.footstoolFrame,shieldReaction:player.shieldReaction,shieldReactionFrame:player.shieldReactionFrame,hitstunFramesRemaining:player.hitstunFramesRemaining,floorOrientation:player.floorOrientation,floorRollDirection:player.floorRollDirection,isFastFalling:player.isFastFalling,airDodgeDirection:player.airDodgeDirection}) ?? false;
-    this.partRenderer.container.visible = !pilotVisible;
+    this.partRenderer.container.visible = !pilotVisible && !(this.fullBodyPilot?.artId && player.isKnockedOut);
     if (this.fullBodyPilot) this.fullBodyPilot.sprite.tint = this.hitFlashFrames > 0 ? HIT_FLASH_TINT : DEFAULT_TINT;
 
     // Only redraw if state or frame changed

@@ -1,8 +1,8 @@
 {
   "passed": true,
   "characters": 2,
-  "clips": 262,
-  "registeredFrames": 716,
+  "clips": 286,
+  "registeredFrames": 834,
   "checks": [
     {
       "fighter": "moonshine",
@@ -47,26 +47,26 @@
     {
       "fighter": "moonshine",
       "clip": "crouch_enter",
-      "frames": 1,
-      "transparentFraction": 0.6782080332438151,
+      "frames": 2,
+      "transparentFraction": 0.6705544789632162,
       "cellMarginsPassed": true,
-      "sha256": "2d2e94d5504c72da49bd195d34237ea7d8707fe5894c193e1f4274a14560b021"
+      "sha256": "e9c881e6c9d5d0c33235456b6abee06f496b3654361fa272c6cb83fa7c62a0c9"
     },
     {
       "fighter": "moonshine",
       "clip": "crouch_hold",
-      "frames": 1,
-      "transparentFraction": 0.6782080332438151,
+      "frames": 2,
+      "transparentFraction": 0.6705544789632162,
       "cellMarginsPassed": true,
-      "sha256": "2d2e94d5504c72da49bd195d34237ea7d8707fe5894c193e1f4274a14560b021"
+      "sha256": "e9c881e6c9d5d0c33235456b6abee06f496b3654361fa272c6cb83fa7c62a0c9"
     },
     {
       "fighter": "moonshine",
       "clip": "crouch_exit",
-      "frames": 1,
-      "transparentFraction": 0.6782080332438151,
+      "frames": 2,
+      "transparentFraction": 0.6705544789632162,
       "cellMarginsPassed": true,
-      "sha256": "2d2e94d5504c72da49bd195d34237ea7d8707fe5894c193e1f4274a14560b021"
+      "sha256": "e9c881e6c9d5d0c33235456b6abee06f496b3654361fa272c6cb83fa7c62a0c9"
     },
     {
       "fighter": "moonshine",
@@ -95,42 +95,42 @@
     {
       "fighter": "moonshine",
       "clip": "double_jump_transition",
-      "frames": 1,
-      "transparentFraction": 0.6930440266927084,
+      "frames": 3,
+      "transparentFraction": 0.7339407602945963,
       "cellMarginsPassed": true,
-      "sha256": "c90c69ed9fc5a69abf20e72189b945eb070863781681c80af8f04f10c0f05f6b"
+      "sha256": "dcb9e483075f1ca10aaed7ba1c57379d726cdc40ae67c04cb652d49ab4d4338a"
     },
     {
       "fighter": "moonshine",
       "clip": "air_apex_loop",
-      "frames": 1,
-      "transparentFraction": 0.8862250515560912,
+      "frames": 2,
+      "transparentFraction": 0.6876056868085063,
       "cellMarginsPassed": true,
-      "sha256": "6ad14ad555698cfe79b363d8daa372be408c14cdfc74ebb2bd2a96990ad4e277"
+      "sha256": "db983cb9490726396880174408f5c484dd503274e1384c4733f6f803488436fa"
     },
     {
       "fighter": "moonshine",
       "clip": "air_fall_loop",
-      "frames": 1,
-      "transparentFraction": 0.6930440266927084,
+      "frames": 2,
+      "transparentFraction": 0.6876056868085063,
       "cellMarginsPassed": true,
-      "sha256": "c90c69ed9fc5a69abf20e72189b945eb070863781681c80af8f04f10c0f05f6b"
+      "sha256": "db983cb9490726396880174408f5c484dd503274e1384c4733f6f803488436fa"
     },
     {
       "fighter": "moonshine",
       "clip": "jump_squat",
-      "frames": 1,
-      "transparentFraction": 0.8102956522181225,
+      "frames": 3,
+      "transparentFraction": 0.7339407602945963,
       "cellMarginsPassed": true,
-      "sha256": "4a9a824bc83989dd9c93d7bd8ba91af47b663fb5fab804dc6bd02d6988285cce"
+      "sha256": "dcb9e483075f1ca10aaed7ba1c57379d726cdc40ae67c04cb652d49ab4d4338a"
     },
     {
       "fighter": "moonshine",
       "clip": "air_fastfall_loop",
-      "frames": 1,
-      "transparentFraction": 0.8102956522181225,
+      "frames": 2,
+      "transparentFraction": 0.6876056868085063,
       "cellMarginsPassed": true,
-      "sha256": "4a9a824bc83989dd9c93d7bd8ba91af47b663fb5fab804dc6bd02d6988285cce"
+      "sha256": "db983cb9490726396880174408f5c484dd503274e1384c4733f6f803488436fa"
     },
     {
       "fighter": "moonshine",
@@ -159,18 +159,24 @@
     {
       "fighter": "moonshine",
       "clip": "teeter_front",
-      "frames": 1,
-      "transparentFraction": 0.6899458567301432,
+      "frames": 4,
+      "transparentFraction": 0.5989467849223947,
       "cellMarginsPassed": true,
-      "sha256": "94e4b8f666777cc9c6a083cbf260cff9e91538f3e0e17bf686f16c33ece79233"
+      "sha256": "824599859b99d9e1094bae4c1a9a651c5eb017f2e916d39ad5e62ffa65f55d62",
+      "midpointSheet": {
+        "image": "moonshine-teeter-mid-v1.png",
+        "sha256": "3acd1df8fdf0baceba0960ed33d9d5ed5d4a2edb19b0bcb5b46791c65e662ce7",
+        "transparentFraction": 0.8238697052001953,
+        "cellMarginsPassed": true
+      }
     },
     {
       "fighter": "moonshine",
       "clip": "teeter_back",
-      "frames": 1,
-      "transparentFraction": 0.6899458567301432,
+      "frames": 2,
+      "transparentFraction": 0.5989467849223947,
       "cellMarginsPassed": true,
-      "sha256": "94e4b8f666777cc9c6a083cbf260cff9e91538f3e0e17bf686f16c33ece79233"
+      "sha256": "824599859b99d9e1094bae4c1a9a651c5eb017f2e916d39ad5e62ffa65f55d62"
     },
     {
       "fighter": "moonshine",
@@ -511,10 +517,16 @@
     {
       "fighter": "moonshine",
       "clip": "tumble",
-      "frames": 3,
+      "frames": 4,
       "transparentFraction": 0.570367177327474,
       "cellMarginsPassed": true,
-      "sha256": "c48c51138987b1e0200c004efad1f70a68eca701a825fb1f015db95adda71f18"
+      "sha256": "c48c51138987b1e0200c004efad1f70a68eca701a825fb1f015db95adda71f18",
+      "sidePose": {
+        "image": "moonshine-tumble-side-v1.png",
+        "sha256": "13343a6f4e11dfa75a2ded0673a53ac3badfa7d87a333914486caa458b92ec0e",
+        "transparentFraction": 0.8058579762776693,
+        "cellMarginsPassed": true
+      }
     },
     {
       "fighter": "moonshine",
@@ -567,66 +579,114 @@
     {
       "fighter": "moonshine",
       "clip": "prone_up",
-      "frames": 1,
+      "frames": 2,
       "transparentFraction": 0.7016709645589193,
       "cellMarginsPassed": true,
-      "sha256": "6fd6328eedaf98e64d8de5cbbd7ba381e63a727b2075c96505a2413caa591630"
+      "sha256": "6fd6328eedaf98e64d8de5cbbd7ba381e63a727b2075c96505a2413caa591630",
+      "holdSheet": {
+        "image": "moonshine-hold-polish-v1.png",
+        "sha256": "ae2b477cbcdfa0ed3b6d47d0c8acbf7e04e4df6107d72853d1496a6ee3efee8d",
+        "transparentFraction": 0.7790595779534609,
+        "cellMarginsPassed": true
+      }
     },
     {
       "fighter": "moonshine",
       "clip": "getup_up",
-      "frames": 4,
+      "frames": 5,
       "transparentFraction": 0.6786524454752604,
       "cellMarginsPassed": true,
-      "sha256": "d58ce58d9f1a481a37b05f9b5025755ae6428368eb71d5f4e5cebf2393128ded"
+      "sha256": "d58ce58d9f1a481a37b05f9b5025755ae6428368eb71d5f4e5cebf2393128ded",
+      "holdSheet": {
+        "image": "moonshine-hold-polish-v1.png",
+        "sha256": "ae2b477cbcdfa0ed3b6d47d0c8acbf7e04e4df6107d72853d1496a6ee3efee8d",
+        "transparentFraction": 0.7790595779534609,
+        "cellMarginsPassed": true
+      }
     },
     {
       "fighter": "moonshine",
       "clip": "getup_roll_up",
-      "frames": 5,
+      "frames": 6,
       "transparentFraction": 0.6786524454752604,
       "cellMarginsPassed": true,
-      "sha256": "d58ce58d9f1a481a37b05f9b5025755ae6428368eb71d5f4e5cebf2393128ded"
+      "sha256": "d58ce58d9f1a481a37b05f9b5025755ae6428368eb71d5f4e5cebf2393128ded",
+      "holdSheet": {
+        "image": "moonshine-hold-polish-v1.png",
+        "sha256": "ae2b477cbcdfa0ed3b6d47d0c8acbf7e04e4df6107d72853d1496a6ee3efee8d",
+        "transparentFraction": 0.7790595779534609,
+        "cellMarginsPassed": true
+      }
     },
     {
       "fighter": "moonshine",
       "clip": "floor_attack_up",
-      "frames": 5,
+      "frames": 6,
       "transparentFraction": 0.6786524454752604,
       "cellMarginsPassed": true,
-      "sha256": "d58ce58d9f1a481a37b05f9b5025755ae6428368eb71d5f4e5cebf2393128ded"
+      "sha256": "d58ce58d9f1a481a37b05f9b5025755ae6428368eb71d5f4e5cebf2393128ded",
+      "holdSheet": {
+        "image": "moonshine-hold-polish-v1.png",
+        "sha256": "ae2b477cbcdfa0ed3b6d47d0c8acbf7e04e4df6107d72853d1496a6ee3efee8d",
+        "transparentFraction": 0.7790595779534609,
+        "cellMarginsPassed": true
+      }
     },
     {
       "fighter": "moonshine",
       "clip": "prone_down",
-      "frames": 1,
+      "frames": 2,
       "transparentFraction": 0.7016709645589193,
       "cellMarginsPassed": true,
-      "sha256": "6fd6328eedaf98e64d8de5cbbd7ba381e63a727b2075c96505a2413caa591630"
+      "sha256": "6fd6328eedaf98e64d8de5cbbd7ba381e63a727b2075c96505a2413caa591630",
+      "holdSheet": {
+        "image": "moonshine-hold-polish-v1.png",
+        "sha256": "ae2b477cbcdfa0ed3b6d47d0c8acbf7e04e4df6107d72853d1496a6ee3efee8d",
+        "transparentFraction": 0.7790595779534609,
+        "cellMarginsPassed": true
+      }
     },
     {
       "fighter": "moonshine",
       "clip": "getup_down",
-      "frames": 4,
+      "frames": 5,
       "transparentFraction": 0.6786524454752604,
       "cellMarginsPassed": true,
-      "sha256": "d58ce58d9f1a481a37b05f9b5025755ae6428368eb71d5f4e5cebf2393128ded"
+      "sha256": "d58ce58d9f1a481a37b05f9b5025755ae6428368eb71d5f4e5cebf2393128ded",
+      "holdSheet": {
+        "image": "moonshine-hold-polish-v1.png",
+        "sha256": "ae2b477cbcdfa0ed3b6d47d0c8acbf7e04e4df6107d72853d1496a6ee3efee8d",
+        "transparentFraction": 0.7790595779534609,
+        "cellMarginsPassed": true
+      }
     },
     {
       "fighter": "moonshine",
       "clip": "getup_roll_down",
-      "frames": 5,
+      "frames": 6,
       "transparentFraction": 0.6786524454752604,
       "cellMarginsPassed": true,
-      "sha256": "d58ce58d9f1a481a37b05f9b5025755ae6428368eb71d5f4e5cebf2393128ded"
+      "sha256": "d58ce58d9f1a481a37b05f9b5025755ae6428368eb71d5f4e5cebf2393128ded",
+      "holdSheet": {
+        "image": "moonshine-hold-polish-v1.png",
+        "sha256": "ae2b477cbcdfa0ed3b6d47d0c8acbf7e04e4df6107d72853d1496a6ee3efee8d",
+        "transparentFraction": 0.7790595779534609,
+        "cellMarginsPassed": true
+      }
     },
     {
       "fighter": "moonshine",
       "clip": "floor_attack_down",
-      "frames": 5,
+      "frames": 6,
       "transparentFraction": 0.6786524454752604,
       "cellMarginsPassed": true,
-      "sha256": "d58ce58d9f1a481a37b05f9b5025755ae6428368eb71d5f4e5cebf2393128ded"
+      "sha256": "d58ce58d9f1a481a37b05f9b5025755ae6428368eb71d5f4e5cebf2393128ded",
+      "holdSheet": {
+        "image": "moonshine-hold-polish-v1.png",
+        "sha256": "ae2b477cbcdfa0ed3b6d47d0c8acbf7e04e4df6107d72853d1496a6ee3efee8d",
+        "transparentFraction": 0.7790595779534609,
+        "cellMarginsPassed": true
+      }
     },
     {
       "fighter": "moonshine",
@@ -671,34 +731,58 @@
     {
       "fighter": "moonshine",
       "clip": "trip_prone",
-      "frames": 1,
+      "frames": 2,
       "transparentFraction": 0.693141824347426,
       "cellMarginsPassed": true,
-      "sha256": "ba80e47feaea36f41d0e64b8a861aea3ecdffcc895ebc0ea18189d34e484aa1d"
+      "sha256": "ba80e47feaea36f41d0e64b8a861aea3ecdffcc895ebc0ea18189d34e484aa1d",
+      "holdSheet": {
+        "image": "moonshine-hold-polish-v1.png",
+        "sha256": "ae2b477cbcdfa0ed3b6d47d0c8acbf7e04e4df6107d72853d1496a6ee3efee8d",
+        "transparentFraction": 0.7790595779534609,
+        "cellMarginsPassed": true
+      }
     },
     {
       "fighter": "moonshine",
       "clip": "trip_getup",
-      "frames": 3,
+      "frames": 4,
       "transparentFraction": 0.693141824347426,
       "cellMarginsPassed": true,
-      "sha256": "ba80e47feaea36f41d0e64b8a861aea3ecdffcc895ebc0ea18189d34e484aa1d"
+      "sha256": "ba80e47feaea36f41d0e64b8a861aea3ecdffcc895ebc0ea18189d34e484aa1d",
+      "holdSheet": {
+        "image": "moonshine-hold-polish-v1.png",
+        "sha256": "ae2b477cbcdfa0ed3b6d47d0c8acbf7e04e4df6107d72853d1496a6ee3efee8d",
+        "transparentFraction": 0.7790595779534609,
+        "cellMarginsPassed": true
+      }
     },
     {
       "fighter": "moonshine",
       "clip": "trip_roll",
-      "frames": 4,
+      "frames": 5,
       "transparentFraction": 0.693141824347426,
       "cellMarginsPassed": true,
-      "sha256": "ba80e47feaea36f41d0e64b8a861aea3ecdffcc895ebc0ea18189d34e484aa1d"
+      "sha256": "ba80e47feaea36f41d0e64b8a861aea3ecdffcc895ebc0ea18189d34e484aa1d",
+      "holdSheet": {
+        "image": "moonshine-hold-polish-v1.png",
+        "sha256": "ae2b477cbcdfa0ed3b6d47d0c8acbf7e04e4df6107d72853d1496a6ee3efee8d",
+        "transparentFraction": 0.7790595779534609,
+        "cellMarginsPassed": true
+      }
     },
     {
       "fighter": "moonshine",
       "clip": "floor_attack_trip",
-      "frames": 4,
+      "frames": 5,
       "transparentFraction": 0.693141824347426,
       "cellMarginsPassed": true,
-      "sha256": "ba80e47feaea36f41d0e64b8a861aea3ecdffcc895ebc0ea18189d34e484aa1d"
+      "sha256": "ba80e47feaea36f41d0e64b8a861aea3ecdffcc895ebc0ea18189d34e484aa1d",
+      "holdSheet": {
+        "image": "moonshine-hold-polish-v1.png",
+        "sha256": "ae2b477cbcdfa0ed3b6d47d0c8acbf7e04e4df6107d72853d1496a6ee3efee8d",
+        "transparentFraction": 0.7790595779534609,
+        "cellMarginsPassed": true
+      }
     },
     {
       "fighter": "moonshine",
@@ -1125,6 +1209,102 @@
       "sha256": "ce3d6861f40dee6aa4980d1be86b53a8320e2718d112957aa3a496a25657a51b"
     },
     {
+      "fighter": "moonshine",
+      "clip": "jab_2",
+      "frames": 3,
+      "transparentFraction": 0.7491496987722108,
+      "cellMarginsPassed": true,
+      "sha256": "f8013f9753d545c1c8d16e33b7a757b82615aec1a0988f5bfa1d2306d0e905ce"
+    },
+    {
+      "fighter": "moonshine",
+      "clip": "jab_3",
+      "frames": 3,
+      "transparentFraction": 0.7491496987722108,
+      "cellMarginsPassed": true,
+      "sha256": "f8013f9753d545c1c8d16e33b7a757b82615aec1a0988f5bfa1d2306d0e905ce"
+    },
+    {
+      "fighter": "moonshine",
+      "clip": "neutral_special",
+      "frames": 3,
+      "transparentFraction": 0.7189172108968099,
+      "cellMarginsPassed": true,
+      "sha256": "53a0c4edeac12811cc04fb21b48b5ab25de68ecaedc9fcce1b2fdc460517bd55"
+    },
+    {
+      "fighter": "moonshine",
+      "clip": "side_special",
+      "frames": 3,
+      "transparentFraction": 0.7189172108968099,
+      "cellMarginsPassed": true,
+      "sha256": "53a0c4edeac12811cc04fb21b48b5ab25de68ecaedc9fcce1b2fdc460517bd55"
+    },
+    {
+      "fighter": "moonshine",
+      "clip": "up_special",
+      "frames": 3,
+      "transparentFraction": 0.7189172108968099,
+      "cellMarginsPassed": true,
+      "sha256": "53a0c4edeac12811cc04fb21b48b5ab25de68ecaedc9fcce1b2fdc460517bd55"
+    },
+    {
+      "fighter": "moonshine",
+      "clip": "down_special",
+      "frames": 3,
+      "transparentFraction": 0.7189172108968099,
+      "cellMarginsPassed": true,
+      "sha256": "53a0c4edeac12811cc04fb21b48b5ab25de68ecaedc9fcce1b2fdc460517bd55"
+    },
+    {
+      "fighter": "moonshine",
+      "clip": "counter_success",
+      "frames": 3,
+      "transparentFraction": 0.7189172108968099,
+      "cellMarginsPassed": true,
+      "sha256": "53a0c4edeac12811cc04fb21b48b5ab25de68ecaedc9fcce1b2fdc460517bd55"
+    },
+    {
+      "fighter": "moonshine",
+      "clip": "dash_start",
+      "frames": 3,
+      "transparentFraction": 0.7384732564290365,
+      "cellMarginsPassed": true,
+      "sha256": "798fc450c485669e818bd0b3dff23d5ade945cac365177321a3acd32fba7c499"
+    },
+    {
+      "fighter": "moonshine",
+      "clip": "takeoff_neutral",
+      "frames": 2,
+      "transparentFraction": 0.7384732564290365,
+      "cellMarginsPassed": true,
+      "sha256": "798fc450c485669e818bd0b3dff23d5ade945cac365177321a3acd32fba7c499"
+    },
+    {
+      "fighter": "moonshine",
+      "clip": "takeoff_forward",
+      "frames": 2,
+      "transparentFraction": 0.7384732564290365,
+      "cellMarginsPassed": true,
+      "sha256": "798fc450c485669e818bd0b3dff23d5ade945cac365177321a3acd32fba7c499"
+    },
+    {
+      "fighter": "moonshine",
+      "clip": "takeoff_backward",
+      "frames": 2,
+      "transparentFraction": 0.7384732564290365,
+      "cellMarginsPassed": true,
+      "sha256": "798fc450c485669e818bd0b3dff23d5ade945cac365177321a3acd32fba7c499"
+    },
+    {
+      "fighter": "moonshine",
+      "clip": "air_rise_loop",
+      "frames": 2,
+      "transparentFraction": 0.7384732564290365,
+      "cellMarginsPassed": true,
+      "sha256": "798fc450c485669e818bd0b3dff23d5ade945cac365177321a3acd32fba7c499"
+    },
+    {
       "fighter": "hulk-hoagie",
       "clip": "idle",
       "frames": 4,
@@ -1197,26 +1377,26 @@
     {
       "fighter": "hulk-hoagie",
       "clip": "crouch_enter",
-      "frames": 1,
-      "transparentFraction": 0.7046597798665365,
+      "frames": 2,
+      "transparentFraction": 0.7262032826741537,
       "cellMarginsPassed": true,
-      "sha256": "ba28d6abb104344dc77ececdceb357610f7548ec870fbecca4e1579cd8ed1b6b"
+      "sha256": "239480ba9d58ef868cc407ed61a5e0c0df5d3882fd705515980c80959bb62ada"
     },
     {
       "fighter": "hulk-hoagie",
       "clip": "crouch_hold",
-      "frames": 1,
-      "transparentFraction": 0.7046597798665365,
+      "frames": 2,
+      "transparentFraction": 0.7262032826741537,
       "cellMarginsPassed": true,
-      "sha256": "ba28d6abb104344dc77ececdceb357610f7548ec870fbecca4e1579cd8ed1b6b"
+      "sha256": "239480ba9d58ef868cc407ed61a5e0c0df5d3882fd705515980c80959bb62ada"
     },
     {
       "fighter": "hulk-hoagie",
       "clip": "crouch_exit",
-      "frames": 1,
-      "transparentFraction": 0.7046597798665365,
+      "frames": 2,
+      "transparentFraction": 0.7262032826741537,
       "cellMarginsPassed": true,
-      "sha256": "ba28d6abb104344dc77ececdceb357610f7548ec870fbecca4e1579cd8ed1b6b"
+      "sha256": "239480ba9d58ef868cc407ed61a5e0c0df5d3882fd705515980c80959bb62ada"
     },
     {
       "fighter": "hulk-hoagie",
@@ -1245,42 +1425,42 @@
     {
       "fighter": "hulk-hoagie",
       "clip": "double_jump_transition",
-      "frames": 1,
-      "transparentFraction": 0.682763417561849,
+      "frames": 3,
+      "transparentFraction": 0.70458984375,
       "cellMarginsPassed": true,
-      "sha256": "6419e4b798adadcf9490cd842a54fa09ff1cbf1b0dc3394a2a6e7b36fa807988"
+      "sha256": "4c10f136d6d178a69e7e3ab01175699dc3b88cb995af0b2e8fb73755c7abb491"
     },
     {
       "fighter": "hulk-hoagie",
       "clip": "air_apex_loop",
-      "frames": 1,
-      "transparentFraction": 0.682763417561849,
+      "frames": 2,
+      "transparentFraction": 0.7772636413574219,
       "cellMarginsPassed": true,
-      "sha256": "6419e4b798adadcf9490cd842a54fa09ff1cbf1b0dc3394a2a6e7b36fa807988"
+      "sha256": "7ae4aa044354bcbadb8a458b0c4fa37bd4a3e04a751623f75ee9f4ced1b6a637"
     },
     {
       "fighter": "hulk-hoagie",
       "clip": "air_fall_loop",
-      "frames": 1,
-      "transparentFraction": 0.682763417561849,
+      "frames": 2,
+      "transparentFraction": 0.7772636413574219,
       "cellMarginsPassed": true,
-      "sha256": "6419e4b798adadcf9490cd842a54fa09ff1cbf1b0dc3394a2a6e7b36fa807988"
+      "sha256": "7ae4aa044354bcbadb8a458b0c4fa37bd4a3e04a751623f75ee9f4ced1b6a637"
     },
     {
       "fighter": "hulk-hoagie",
       "clip": "jump_squat",
-      "frames": 1,
-      "transparentFraction": 0.7651724966286165,
+      "frames": 3,
+      "transparentFraction": 0.70458984375,
       "cellMarginsPassed": true,
-      "sha256": "b9d298a3a0e40a38bc7ea230b74a748a2f8ef46d9a8b760c15e74d95e7d1924c"
+      "sha256": "4c10f136d6d178a69e7e3ab01175699dc3b88cb995af0b2e8fb73755c7abb491"
     },
     {
       "fighter": "hulk-hoagie",
       "clip": "air_fastfall_loop",
-      "frames": 1,
-      "transparentFraction": 0.7651724966286165,
+      "frames": 2,
+      "transparentFraction": 0.7772636413574219,
       "cellMarginsPassed": true,
-      "sha256": "b9d298a3a0e40a38bc7ea230b74a748a2f8ef46d9a8b760c15e74d95e7d1924c"
+      "sha256": "7ae4aa044354bcbadb8a458b0c4fa37bd4a3e04a751623f75ee9f4ced1b6a637"
     },
     {
       "fighter": "hulk-hoagie",
@@ -1309,18 +1489,24 @@
     {
       "fighter": "hulk-hoagie",
       "clip": "teeter_front",
-      "frames": 1,
-      "transparentFraction": 0.7254619598388672,
+      "frames": 4,
+      "transparentFraction": 0.6329035629284566,
       "cellMarginsPassed": true,
-      "sha256": "816ecdb2dcd24ef34f598f26985141454900fc94451d448944dbd3929fbf8f2c"
+      "sha256": "edebb549c6586e936d5771a29239dd10b9c8ab1f4d8a31bc5b43141073cf4569",
+      "midpointSheet": {
+        "image": "hulk-hoagie-teeter-mid-v1.png",
+        "sha256": "bf53a0c469123b9ad900aa26427194e9e155eeb619d9e3c43231a6acf0ce8294",
+        "transparentFraction": 0.8325397067651578,
+        "cellMarginsPassed": true
+      }
     },
     {
       "fighter": "hulk-hoagie",
       "clip": "teeter_back",
-      "frames": 1,
-      "transparentFraction": 0.7254619598388672,
+      "frames": 2,
+      "transparentFraction": 0.6329035629284566,
       "cellMarginsPassed": true,
-      "sha256": "816ecdb2dcd24ef34f598f26985141454900fc94451d448944dbd3929fbf8f2c"
+      "sha256": "edebb549c6586e936d5771a29239dd10b9c8ab1f4d8a31bc5b43141073cf4569"
     },
     {
       "fighter": "hulk-hoagie",
@@ -1661,10 +1847,16 @@
     {
       "fighter": "hulk-hoagie",
       "clip": "tumble",
-      "frames": 3,
+      "frames": 4,
       "transparentFraction": 0.6785170237223307,
       "cellMarginsPassed": true,
-      "sha256": "7311d429501577d382ce2a940072a12f2bee33eda513963187b18fa2235d2285"
+      "sha256": "7311d429501577d382ce2a940072a12f2bee33eda513963187b18fa2235d2285",
+      "sidePose": {
+        "image": "hulk-hoagie-tumble-side-v1.png",
+        "sha256": "0af5a6469ace4c0a7bb76b974d2ec2a5caf107cf5d76ef0022c7b4bd2b476974",
+        "transparentFraction": 0.8748086293538412,
+        "cellMarginsPassed": true
+      }
     },
     {
       "fighter": "hulk-hoagie",
@@ -1717,66 +1909,114 @@
     {
       "fighter": "hulk-hoagie",
       "clip": "prone_up",
-      "frames": 1,
+      "frames": 2,
       "transparentFraction": 0.6879056294759115,
       "cellMarginsPassed": true,
-      "sha256": "3cd0a1c1d478dc2d80ec9aa54f36eeca8fe2e876a16e11823ee8ad7e58c34cbd"
+      "sha256": "3cd0a1c1d478dc2d80ec9aa54f36eeca8fe2e876a16e11823ee8ad7e58c34cbd",
+      "holdSheet": {
+        "image": "hulk-hoagie-hold-polish-v1.png",
+        "sha256": "1c256b41d5f5decf5476830a54bbc81e2f53c1601b2740a6fda5372858317457",
+        "transparentFraction": 0.8306014264928828,
+        "cellMarginsPassed": true
+      }
     },
     {
       "fighter": "hulk-hoagie",
       "clip": "getup_up",
-      "frames": 4,
+      "frames": 5,
       "transparentFraction": 0.7005875905354818,
       "cellMarginsPassed": true,
-      "sha256": "70ee9ecf8b43869d768d45b03d78b87d6e76ef23c48b28268eaeabc920e2778a"
+      "sha256": "70ee9ecf8b43869d768d45b03d78b87d6e76ef23c48b28268eaeabc920e2778a",
+      "holdSheet": {
+        "image": "hulk-hoagie-hold-polish-v1.png",
+        "sha256": "1c256b41d5f5decf5476830a54bbc81e2f53c1601b2740a6fda5372858317457",
+        "transparentFraction": 0.8306014264928828,
+        "cellMarginsPassed": true
+      }
     },
     {
       "fighter": "hulk-hoagie",
       "clip": "getup_roll_up",
-      "frames": 5,
+      "frames": 6,
       "transparentFraction": 0.7005875905354818,
       "cellMarginsPassed": true,
-      "sha256": "70ee9ecf8b43869d768d45b03d78b87d6e76ef23c48b28268eaeabc920e2778a"
+      "sha256": "70ee9ecf8b43869d768d45b03d78b87d6e76ef23c48b28268eaeabc920e2778a",
+      "holdSheet": {
+        "image": "hulk-hoagie-hold-polish-v1.png",
+        "sha256": "1c256b41d5f5decf5476830a54bbc81e2f53c1601b2740a6fda5372858317457",
+        "transparentFraction": 0.8306014264928828,
+        "cellMarginsPassed": true
+      }
     },
     {
       "fighter": "hulk-hoagie",
       "clip": "floor_attack_up",
-      "frames": 5,
+      "frames": 6,
       "transparentFraction": 0.7005875905354818,
       "cellMarginsPassed": true,
-      "sha256": "70ee9ecf8b43869d768d45b03d78b87d6e76ef23c48b28268eaeabc920e2778a"
+      "sha256": "70ee9ecf8b43869d768d45b03d78b87d6e76ef23c48b28268eaeabc920e2778a",
+      "holdSheet": {
+        "image": "hulk-hoagie-hold-polish-v1.png",
+        "sha256": "1c256b41d5f5decf5476830a54bbc81e2f53c1601b2740a6fda5372858317457",
+        "transparentFraction": 0.8306014264928828,
+        "cellMarginsPassed": true
+      }
     },
     {
       "fighter": "hulk-hoagie",
       "clip": "prone_down",
-      "frames": 1,
+      "frames": 2,
       "transparentFraction": 0.6879056294759115,
       "cellMarginsPassed": true,
-      "sha256": "3cd0a1c1d478dc2d80ec9aa54f36eeca8fe2e876a16e11823ee8ad7e58c34cbd"
+      "sha256": "3cd0a1c1d478dc2d80ec9aa54f36eeca8fe2e876a16e11823ee8ad7e58c34cbd",
+      "holdSheet": {
+        "image": "hulk-hoagie-hold-polish-v1.png",
+        "sha256": "1c256b41d5f5decf5476830a54bbc81e2f53c1601b2740a6fda5372858317457",
+        "transparentFraction": 0.8306014264928828,
+        "cellMarginsPassed": true
+      }
     },
     {
       "fighter": "hulk-hoagie",
       "clip": "getup_down",
-      "frames": 4,
+      "frames": 5,
       "transparentFraction": 0.7005875905354818,
       "cellMarginsPassed": true,
-      "sha256": "70ee9ecf8b43869d768d45b03d78b87d6e76ef23c48b28268eaeabc920e2778a"
+      "sha256": "70ee9ecf8b43869d768d45b03d78b87d6e76ef23c48b28268eaeabc920e2778a",
+      "holdSheet": {
+        "image": "hulk-hoagie-hold-polish-v1.png",
+        "sha256": "1c256b41d5f5decf5476830a54bbc81e2f53c1601b2740a6fda5372858317457",
+        "transparentFraction": 0.8306014264928828,
+        "cellMarginsPassed": true
+      }
     },
     {
       "fighter": "hulk-hoagie",
       "clip": "getup_roll_down",
-      "frames": 5,
+      "frames": 6,
       "transparentFraction": 0.7005875905354818,
       "cellMarginsPassed": true,
-      "sha256": "70ee9ecf8b43869d768d45b03d78b87d6e76ef23c48b28268eaeabc920e2778a"
+      "sha256": "70ee9ecf8b43869d768d45b03d78b87d6e76ef23c48b28268eaeabc920e2778a",
+      "holdSheet": {
+        "image": "hulk-hoagie-hold-polish-v1.png",
+        "sha256": "1c256b41d5f5decf5476830a54bbc81e2f53c1601b2740a6fda5372858317457",
+        "transparentFraction": 0.8306014264928828,
+        "cellMarginsPassed": true
+      }
     },
     {
       "fighter": "hulk-hoagie",
       "clip": "floor_attack_down",
-      "frames": 5,
+      "frames": 6,
       "transparentFraction": 0.7005875905354818,
       "cellMarginsPassed": true,
-      "sha256": "70ee9ecf8b43869d768d45b03d78b87d6e76ef23c48b28268eaeabc920e2778a"
+      "sha256": "70ee9ecf8b43869d768d45b03d78b87d6e76ef23c48b28268eaeabc920e2778a",
+      "holdSheet": {
+        "image": "hulk-hoagie-hold-polish-v1.png",
+        "sha256": "1c256b41d5f5decf5476830a54bbc81e2f53c1601b2740a6fda5372858317457",
+        "transparentFraction": 0.8306014264928828,
+        "cellMarginsPassed": true
+      }
     },
     {
       "fighter": "hulk-hoagie",
@@ -1821,34 +2061,58 @@
     {
       "fighter": "hulk-hoagie",
       "clip": "trip_prone",
-      "frames": 1,
+      "frames": 2,
       "transparentFraction": 0.7134934142041692,
       "cellMarginsPassed": true,
-      "sha256": "52147fbf7f6b9a93bcd52b57a27b1791040fb287c8af684f3621958729d5fd88"
+      "sha256": "52147fbf7f6b9a93bcd52b57a27b1791040fb287c8af684f3621958729d5fd88",
+      "holdSheet": {
+        "image": "hulk-hoagie-hold-polish-v1.png",
+        "sha256": "1c256b41d5f5decf5476830a54bbc81e2f53c1601b2740a6fda5372858317457",
+        "transparentFraction": 0.8306014264928828,
+        "cellMarginsPassed": true
+      }
     },
     {
       "fighter": "hulk-hoagie",
       "clip": "trip_getup",
-      "frames": 3,
+      "frames": 4,
       "transparentFraction": 0.7134934142041692,
       "cellMarginsPassed": true,
-      "sha256": "52147fbf7f6b9a93bcd52b57a27b1791040fb287c8af684f3621958729d5fd88"
+      "sha256": "52147fbf7f6b9a93bcd52b57a27b1791040fb287c8af684f3621958729d5fd88",
+      "holdSheet": {
+        "image": "hulk-hoagie-hold-polish-v1.png",
+        "sha256": "1c256b41d5f5decf5476830a54bbc81e2f53c1601b2740a6fda5372858317457",
+        "transparentFraction": 0.8306014264928828,
+        "cellMarginsPassed": true
+      }
     },
     {
       "fighter": "hulk-hoagie",
       "clip": "trip_roll",
-      "frames": 4,
+      "frames": 5,
       "transparentFraction": 0.7134934142041692,
       "cellMarginsPassed": true,
-      "sha256": "52147fbf7f6b9a93bcd52b57a27b1791040fb287c8af684f3621958729d5fd88"
+      "sha256": "52147fbf7f6b9a93bcd52b57a27b1791040fb287c8af684f3621958729d5fd88",
+      "holdSheet": {
+        "image": "hulk-hoagie-hold-polish-v1.png",
+        "sha256": "1c256b41d5f5decf5476830a54bbc81e2f53c1601b2740a6fda5372858317457",
+        "transparentFraction": 0.8306014264928828,
+        "cellMarginsPassed": true
+      }
     },
     {
       "fighter": "hulk-hoagie",
       "clip": "floor_attack_trip",
-      "frames": 4,
+      "frames": 5,
       "transparentFraction": 0.7134934142041692,
       "cellMarginsPassed": true,
-      "sha256": "52147fbf7f6b9a93bcd52b57a27b1791040fb287c8af684f3621958729d5fd88"
+      "sha256": "52147fbf7f6b9a93bcd52b57a27b1791040fb287c8af684f3621958729d5fd88",
+      "holdSheet": {
+        "image": "hulk-hoagie-hold-polish-v1.png",
+        "sha256": "1c256b41d5f5decf5476830a54bbc81e2f53c1601b2740a6fda5372858317457",
+        "transparentFraction": 0.8306014264928828,
+        "cellMarginsPassed": true
+      }
     },
     {
       "fighter": "hulk-hoagie",
@@ -2273,6 +2537,102 @@
       "transparentFraction": 0.7002010345458984,
       "cellMarginsPassed": true,
       "sha256": "0c1564902eeb8118a73487e361d48ba6af05228000d22e1b58cf2a9ac8cc848e"
+    },
+    {
+      "fighter": "hulk-hoagie",
+      "clip": "jab_2",
+      "frames": 3,
+      "transparentFraction": 0.7613569895426432,
+      "cellMarginsPassed": true,
+      "sha256": "76d4d2e8d95da2e98d3a032f06013d461116101c507b9d11d6a59f8ff0423d30"
+    },
+    {
+      "fighter": "hulk-hoagie",
+      "clip": "jab_3",
+      "frames": 3,
+      "transparentFraction": 0.7613569895426432,
+      "cellMarginsPassed": true,
+      "sha256": "76d4d2e8d95da2e98d3a032f06013d461116101c507b9d11d6a59f8ff0423d30"
+    },
+    {
+      "fighter": "hulk-hoagie",
+      "clip": "neutral_special",
+      "frames": 3,
+      "transparentFraction": 0.6530971527099609,
+      "cellMarginsPassed": true,
+      "sha256": "8b99ce970307c6c802c4b82490531eccb5c9913ea8a5bd05e7d01ee2530bf6ef"
+    },
+    {
+      "fighter": "hulk-hoagie",
+      "clip": "side_special",
+      "frames": 3,
+      "transparentFraction": 0.6530971527099609,
+      "cellMarginsPassed": true,
+      "sha256": "8b99ce970307c6c802c4b82490531eccb5c9913ea8a5bd05e7d01ee2530bf6ef"
+    },
+    {
+      "fighter": "hulk-hoagie",
+      "clip": "up_special",
+      "frames": 3,
+      "transparentFraction": 0.6530971527099609,
+      "cellMarginsPassed": true,
+      "sha256": "8b99ce970307c6c802c4b82490531eccb5c9913ea8a5bd05e7d01ee2530bf6ef"
+    },
+    {
+      "fighter": "hulk-hoagie",
+      "clip": "down_special",
+      "frames": 3,
+      "transparentFraction": 0.6530971527099609,
+      "cellMarginsPassed": true,
+      "sha256": "8b99ce970307c6c802c4b82490531eccb5c9913ea8a5bd05e7d01ee2530bf6ef"
+    },
+    {
+      "fighter": "hulk-hoagie",
+      "clip": "counter_success",
+      "frames": 3,
+      "transparentFraction": 0.6530971527099609,
+      "cellMarginsPassed": true,
+      "sha256": "8b99ce970307c6c802c4b82490531eccb5c9913ea8a5bd05e7d01ee2530bf6ef"
+    },
+    {
+      "fighter": "hulk-hoagie",
+      "clip": "dash_start",
+      "frames": 3,
+      "transparentFraction": 0.7447477976481119,
+      "cellMarginsPassed": true,
+      "sha256": "9edb0c4a0a4abcd86242ed45ef883d5b30e3ec636f81849c50f7c5785b740624"
+    },
+    {
+      "fighter": "hulk-hoagie",
+      "clip": "takeoff_neutral",
+      "frames": 2,
+      "transparentFraction": 0.7447477976481119,
+      "cellMarginsPassed": true,
+      "sha256": "9edb0c4a0a4abcd86242ed45ef883d5b30e3ec636f81849c50f7c5785b740624"
+    },
+    {
+      "fighter": "hulk-hoagie",
+      "clip": "takeoff_forward",
+      "frames": 2,
+      "transparentFraction": 0.7447477976481119,
+      "cellMarginsPassed": true,
+      "sha256": "9edb0c4a0a4abcd86242ed45ef883d5b30e3ec636f81849c50f7c5785b740624"
+    },
+    {
+      "fighter": "hulk-hoagie",
+      "clip": "takeoff_backward",
+      "frames": 2,
+      "transparentFraction": 0.7447477976481119,
+      "cellMarginsPassed": true,
+      "sha256": "9edb0c4a0a4abcd86242ed45ef883d5b30e3ec636f81849c50f7c5785b740624"
+    },
+    {
+      "fighter": "hulk-hoagie",
+      "clip": "air_rise_loop",
+      "frames": 2,
+      "transparentFraction": 0.7447477976481119,
+      "cellMarginsPassed": true,
+      "sha256": "9edb0c4a0a4abcd86242ed45ef883d5b30e3ec636f81849c50f7c5785b740624"
     }
   ],
   "portraits": [

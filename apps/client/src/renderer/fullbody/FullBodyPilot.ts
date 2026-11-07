@@ -108,6 +108,12 @@ export class FullBodyPilot {
    selected=selectPreparedFrame(state,frame,vy,{...prepared,artCue:undefined,facing})??selected;
   }
   let clip=selected?art?.[selected.clip]:undefined;
+  // A transient state without a usable pose should keep the fighter's artwork visible.
+  if(enabled&&this.artId&&(!selected||!clip?.frames.length)){
+   const fallback=state==='AIR_ATTACK'||airborne?'air_fall_loop':'idle';
+   clip=art?.[fallback]??art?.idle;
+   selected={clip:clip===art?.[fallback]?fallback:'idle',index:0};
+  }
   if(this.artId&&selected&&clip){
    if(selected.clip==='grabbed'){
     const name=frame<5?'grabbed':'grabbed_hold_preview';

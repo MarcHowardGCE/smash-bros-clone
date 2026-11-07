@@ -192,7 +192,7 @@ async function main() {
   layers.background.addChild(layers.game);
   app.stage.addChild(layers.ui);
 
-  const koPresenter=new KOPresentation(layers.game,fullBodyPilot);app.ticker.add(()=>koPresenter.tick());
+  const koPresenter=new KOPresentation(layers.game,fullBodyPilot,newcomerArt);app.ticker.add(()=>koPresenter.tick());
   let stageRenderer: StageRenderer | null = new StageRenderer(
     layers.background,
   );
@@ -555,7 +555,7 @@ async function main() {
 
   const newcomerArtId=(id?:CharacterId):DojoArtId|undefined=>id==='moonshine'||id==='hulk-hoagie'?id:undefined;
   const updateRenderers = (state: RenderState): void => {
-    stageBackdrop.setFocus([...state.players.values()].filter(player=>!player.isKnockedOut));
+    stageBackdrop.setFocus([...state.players.values()].filter(player=>player.stocks>0&&!player.isKnockedOut));
     koPresenter.update(state.players.values());
     if(state.matchPhase==='result')camera?.reset();
     gameplaySfxRouter.processFrame(state);
@@ -886,10 +886,7 @@ async function main() {
       updateRenderers(renderState);practiceOverlay?.update(snapshot);
       if(practice)uiManager.hideCombatHUD();else uiManager.updateHUD(renderState, null);
 
-      const positions = Object.values(snapshot.players).map((player) => ({
-        x: player.x,
-        y: player.y,
-      }));
+      const positions = Object.values(snapshot.players).filter(player => player.stocks > 0);
 
       // Trigger camera shake and hit effects from hit events
       if (snapshot.hitEvents && snapshot.hitEvents.length > 0) {
@@ -938,6 +935,7 @@ async function main() {
       async (result) => {
         lastLocalSetup = result;
         dojoArt=await (dojoLoad??=preloadFullBodyPilot(true));
+        koPresenter.setNewcomerAssets(dojoArt);
         if(!dojoArt)dojoLoad=undefined;
         if(!isLocalMode||lastLocalSetup!==result)return;
         const localFighters=[...AVAILABLE_FIGHTERS,...NEWCOMER_CHOICES.filter(f=>dojoArt?.characters[f.id]?.idle)];
@@ -1009,6 +1007,7 @@ async function main() {
         const status=document.querySelector('#dojo-art-status');
         if(status)status.textContent='Loading test fighter artwork…';
         dojoArt=await (dojoLoad??=preloadFullBodyPilot(true));
+        koPresenter.setNewcomerAssets(dojoArt);
         starting=false;
         if(!status?.isConnected)return;
         if(!testFighters.every(id=>dojoArt?.characters[id]?.idle)){

@@ -128,6 +128,18 @@ function getShieldBubble(renderer: FighterRenderer): Graphics {
 }
 
 describe('FighterRenderer', () => {
+  for (const rendererCase of RENDERER_CASES) {
+    it('hides the eliminated body until results in '+rendererCase.name+' mode', () => {
+      const { renderer } = createRendererForCase(rendererCase);
+      const player = makePlayerState({ isKnockedOut: true, y: 850 });
+      renderer.update({ ...player, stocks: 1 });
+      expect(renderer.container.visible).toBe(true);
+      renderer.update({ ...player, stocks: 0 });
+      expect(renderer.container.visible).toBe(false);
+      renderer.update({ ...player, stocks: 0, result: 'lose' });
+      expect(renderer.container.visible).toBe(true);
+    });
+  }
   describe('constructor wiring', () => {
     it('threads mode and provider into createPartRenderer', () => {
       const parent = new Container();

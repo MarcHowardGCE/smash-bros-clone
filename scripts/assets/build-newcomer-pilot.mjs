@@ -9,7 +9,7 @@ const gaitRoots={moonshine:{walk:[215,218,218,220,216,216,217,218],run:[220,218,
 const roster=[{id:'moonshine',name:'Moonshine',worldHeight:78,weight:87,role:'Mobile country brawler',overrides:['forward_tilt','dash_attack','side_special','up_special'],root:{walk:[270,260,260,280,275,260],run:[265,260,270,270,270,265],jump:[260,260,270,270,270,260]}},{id:'hulk-hoagie',name:'“Hulk” Hoagie',worldHeight:88,weight:109,role:'Wrestling throw specialist',overrides:['forward_throw','back_throw','up_throw','down_throw'],root:{walk:[272,257,250,270,255,252],run:[275,280,278,270,278,280],jump:[270,260,270,270,270,260]}}];
 const portraitChecks=[];
 const baseline=JSON.parse(fs.readFileSync(path.join(dir,'manifest-v1.json'),'utf8'));
-const manifest={version:1,revision:50,compatibilityAliases:{reaction:'hit_mid',air_dodge_directional:'air_dodge_side'},baselineCharacters:baseline.characters,status:'review candidates; not playable roster',characters:{},notes:['Weights, scale and four overrides are working proposals, not engine stats.','Jump arc is review-only; durations are pilot timing, not native mechanics.','Legacy dodge requires compatibility mapping, not another illustration.']},checks=[];
+const manifest={version:1,revision:51,compatibilityAliases:{reaction:'hit_mid',air_dodge_directional:'air_dodge_side'},baselineCharacters:baseline.characters,status:'review candidates; not playable roster',characters:{},notes:['Weights, scale and four overrides are working proposals, not engine stats.','Jump arc is review-only; durations are pilot timing, not native mechanics.','Legacy dodge requires compatibility mapping, not another illustration.']},checks=[];
 function frameBounds(p,c,r,i,rowSplit,colSplit,edges){const l=edges?edges[i%c]:colSplit?(i%c?colSplit:0):Math.round(i%c*p.width/c),t=rowSplit?(i<c?0:rowSplit):Math.round(Math.floor(i/c)*p.height/r),right=edges?edges[i%c+1]:colSplit?(i%c?p.width:colSplit):Math.round((i%c+1)*p.width/c),bottom=rowSplit?(i<c?rowSplit:p.height):Math.round((Math.floor(i/c)+1)*p.height/r);let x0=right,y0=bottom,x1=-1,y1=-1;for(let y=t;y<bottom;y++)for(let x=l;x<right;x++)if(p.data[(y*p.width+x)*4+3]>32){x0=Math.min(x0,x);x1=Math.max(x1,x);y0=Math.min(y0,y);y1=Math.max(y1,y);}if(x1<0||Math.min(x0-l,y0-t,right-1-x1,bottom-1-y1)<3)throw Error('Clipped/blank cell '+i);return{l,t,right,bottom,x0,y0,x1,y1,height:y1-y0+1};}
 function support(p,b){const xs=[];for(let x=b.x0;x<=b.x1;x++){let found=false;for(let y=b.y1-Math.round(b.height*.025);y<=b.y1;y++)if(p.data[(y*p.width+x)*4+3]>64){found=true;break;}if(found)xs.push(x);}const groups=[];for(const x of xs){const last=groups.at(-1);if(last&&x-last[1]<5)last[1]=x;else groups.push([x,x]);}const first=groups.find(g=>g[1]-g[0]>5);if(!first)throw Error('Missing planted support');const last=groups.filter(g=>g[1]-g[0]>5).at(-1);return(first[0]+first[1]+last[0]+last[1])/4;}
 for(const char of roster){const portrait=char.id+'-portrait-v1.png',pp=PNG.sync.read(fs.readFileSync(path.join(dir,portrait)));let alphaZero=0;for(let i=3;i<pp.data.length;i+=4)if(pp.data[i]===0)alphaZero++;const transparentFraction=alphaZero/(pp.width*pp.height);if(transparentFraction<.1)throw Error('Portrait alpha failed '+portrait);portraitChecks.push({fighter:char.id,image:portrait,width:pp.width,height:pp.height,transparentFraction});const clips={};for(const[name,baseSpec]of Object.entries(spec)){const gait=gaitSpecs[name],s=gait??baseSpec;const image=gait?(char.id+'-'+name+'-v3'+(char.id==='hulk-hoagie'&&name==='run'?'-alpha':'')+'.png'):char.id+'-'+name+'-v1.png',buffer=fs.readFileSync(path.join(dir,image)),p=PNG.sync.read(buffer);let empty=0;for(let j=3;j<p.data.length;j+=4)if(p.data[j]===0)empty++;const alpha=empty/(p.width*p.height);if(alpha<.5)throw Error(image+' lacks transparency');const bounds=s.durations.map((_,i)=>frameBounds(p,s.cols,s.rows,i)),ref=name==='jab'?bounds[0].height:Math.max(...bounds.map(b=>b.height)),floor=Math.max(...bounds.map(b=>b.y1-b.t+1));
@@ -450,7 +450,7 @@ for(const char of roster){const portrait=char.id+'-portrait-v1.png',pp=PNG.sync.
  const ledgeArt=loadCombatSheet('-footstool-ledge-v1.png',4,2);
  const ledgeScale=char.worldHeight*.91/ledgeArt.bounds[2].height;
  const ledgeRoots=isMoonshine?[242,638,1114,1528,218,660,1050,1552]:[240,648,1110,1530,244,668,1050,1547];
- const ledgePoses=ledgeRoots.map((x,i)=>combatPose(ledgeArt,i,ledgeScale,x));
+ const ledgePoses=ledgeRoots.map((x,i)=>combatPose(ledgeArt,i,ledgeScale*(i===2||i===3?1.15:1),x));
  const airReady=aerialPose(5);
  const [stomp,stooled,hang,climb,ledgeRoll,ledgeJump,ledgeAttack,ledgeDrop]=ledgePoses;
  const head=isMoonshine?[697,113]:[714,119];
@@ -472,7 +472,7 @@ for(const char of roster){const portrait=char.id+'-portrait-v1.png',pp=PNG.sync.
  }
  const ledgeContactArt=loadCombatSheet('-ledge-contact-v1.png',3,1);
  const contactScale=char.worldHeight*.74/ledgeContactArt.bounds[0].height;
- const [groundedStool,catchPose,trump]=[0,1,2].map((i)=>combatPose(ledgeContactArt,i,contactScale,
+ const [groundedStool,catchPose,trump]=[0,1,2].map((i)=>combatPose(ledgeContactArt,i,contactScale*(i===1?1.1:1),
    (isMoonshine?[380,1075,1735]:[362,1050,1740])[i]));
  function ledgeAnchor(pose,x,y){
    return [(x-pose.rect[0]-pose.root[0])*pose.scale*3.2,(y-pose.rect[1]-pose.root[1])*pose.scale*3.2];

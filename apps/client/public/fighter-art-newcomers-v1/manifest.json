@@ -1,6 +1,10 @@
 {
   "version": 1,
-  "revision": 33,
+  "revision": 51,
+  "compatibilityAliases": {
+    "reaction": "hit_mid",
+    "air_dodge_directional": "air_dodge_side"
+  },
   "baselineCharacters": {
     "moonshine": {
       "name": "Moonshine",
@@ -1890,7 +1894,7 @@
               ],
               "root": [
                 164,
-                420
+                418
               ],
               "sourceSize": [
                 444,
@@ -1901,7 +1905,7 @@
                 12
               ],
               "visibleHeight": 416,
-              "registration": "manually guided torso with shared baseline"
+              "registration": "paired stride clearance and guided torso"
             },
             {
               "rect": [
@@ -1923,7 +1927,7 @@
                 29
               ],
               "visibleHeight": 401,
-              "registration": "manually guided torso with shared baseline"
+              "registration": "paired stride clearance and guided torso"
             },
             {
               "rect": [
@@ -1934,7 +1938,7 @@
               ],
               "root": [
                 137,
-                407
+                407.6666666666667
               ],
               "sourceSize": [
                 444,
@@ -1945,7 +1949,7 @@
                 25
               ],
               "visibleHeight": 403,
-              "registration": "manually guided torso with shared baseline"
+              "registration": "paired stride clearance and guided torso"
             },
             {
               "rect": [
@@ -1956,7 +1960,7 @@
               ],
               "root": [
                 154,
-                422
+                413
               ],
               "sourceSize": [
                 443,
@@ -1967,7 +1971,7 @@
                 10
               ],
               "visibleHeight": 363,
-              "registration": "manually guided torso with shared baseline"
+              "registration": "paired stride clearance and guided torso"
             },
             {
               "rect": [
@@ -1978,7 +1982,7 @@
               ],
               "root": [
                 160,
-                419
+                418
               ],
               "sourceSize": [
                 444,
@@ -1989,7 +1993,7 @@
                 13
               ],
               "visibleHeight": 416,
-              "registration": "manually guided torso with shared baseline"
+              "registration": "paired stride clearance and guided torso"
             },
             {
               "rect": [
@@ -2000,7 +2004,7 @@
               ],
               "root": [
                 151,
-                403
+                402
               ],
               "sourceSize": [
                 443,
@@ -2011,7 +2015,7 @@
                 29
               ],
               "visibleHeight": 400,
-              "registration": "manually guided torso with shared baseline"
+              "registration": "paired stride clearance and guided torso"
             },
             {
               "rect": [
@@ -2022,7 +2026,7 @@
               ],
               "root": [
                 156,
-                408
+                409.6666666666667
               ],
               "sourceSize": [
                 444,
@@ -2033,7 +2037,7 @@
                 24
               ],
               "visibleHeight": 405,
-              "registration": "manually guided torso with shared baseline"
+              "registration": "paired stride clearance and guided torso"
             },
             {
               "rect": [
@@ -2044,7 +2048,7 @@
               ],
               "root": [
                 153,
-                424
+                433
               ],
               "sourceSize": [
                 443,
@@ -2055,7 +2059,7 @@
                 8
               ],
               "visibleHeight": 383,
-              "registration": "manually guided torso with shared baseline"
+              "registration": "paired stride clearance and guided torso"
             }
           ]
         },
@@ -2427,98 +2431,179 @@
           ]
         },
         "crouch_enter": {
-          "image": "moonshine-crouch-land-v1-candidate.png",
-          "scale": 0.17067833698030635,
+          "image": "moonshine-crouch-polish-v1.png",
+          "scale": 0.15632567849686846,
           "durations": [
-            3
+            2,
+            2
           ],
           "loop": false,
           "frames": [
             {
+              "image": "moonshine-crouch-polish-v1.png",
+              "scale": 0.15632567849686846,
               "rect": [
-                120,
-                62,
-                327,
-                401
+                125,
+                21,
+                263,
+                462
               ],
               "root": [
-                134.25,
-                399
+                130,
+                460
               ],
               "sourceSize": [
                 512,
                 512
               ],
               "trim": [
-                120,
-                62
+                125,
+                21
               ],
-              "visibleHeight": 397,
-              "registration": "planted support"
+              "visibleHeight": 458,
+              "registration": "guided stance and planted baseline"
+            },
+            {
+              "image": "moonshine-crouch-polish-v1.png",
+              "scale": 0.15632567849686846,
+              "rect": [
+                588,
+                63,
+                359,
+                418
+              ],
+              "root": [
+                150,
+                416
+              ],
+              "sourceSize": [
+                512,
+                512
+              ],
+              "trim": [
+                76,
+                63
+              ],
+              "visibleHeight": 414,
+              "registration": "guided stance and planted baseline"
             }
           ]
         },
         "crouch_hold": {
-          "image": "moonshine-crouch-land-v1-candidate.png",
-          "scale": 0.17067833698030635,
+          "image": "moonshine-crouch-polish-v1.png",
+          "scale": 0.15632567849686846,
           "durations": [
-            18
+            9,
+            9
           ],
           "loop": true,
           "frames": [
             {
+              "image": "moonshine-crouch-polish-v1.png",
+              "scale": 0.15632567849686846,
               "rect": [
-                601,
-                120,
-                325,
-                346
+                1098,
+                95,
+                346,
+                387
               ],
               "root": [
-                121,
-                344
+                172,
+                385
               ],
               "sourceSize": [
                 512,
                 512
               ],
               "trim": [
-                89,
-                120
+                74,
+                95
               ],
-              "visibleHeight": 342,
-              "registration": "planted support"
+              "visibleHeight": 383,
+              "registration": "guided stance and planted baseline"
+            },
+            {
+              "image": "moonshine-crouch-polish-v1.png",
+              "scale": 0.15632567849686846,
+              "rect": [
+                92,
+                634,
+                333,
+                370
+              ],
+              "root": [
+                171,
+                368
+              ],
+              "sourceSize": [
+                512,
+                512
+              ],
+              "trim": [
+                92,
+                122
+              ],
+              "visibleHeight": 366,
+              "registration": "guided stance and planted baseline"
             }
           ]
         },
         "crouch_exit": {
-          "image": "moonshine-crouch-land-v1-candidate.png",
-          "scale": 0.17067833698030635,
+          "image": "moonshine-crouch-polish-v1.png",
+          "scale": 0.15632567849686846,
           "durations": [
-            3
+            2,
+            2
           ],
           "loop": false,
           "frames": [
             {
+              "image": "moonshine-crouch-polish-v1.png",
+              "scale": 0.15632567849686846,
               "rect": [
-                1092,
-                55,
-                321,
-                408
+                609,
+                557,
+                304,
+                446
               ],
               "root": [
-                126.5,
-                406
+                146,
+                444
               ],
               "sourceSize": [
                 512,
                 512
               ],
               "trim": [
-                68,
-                55
+                97,
+                45
               ],
-              "visibleHeight": 404,
-              "registration": "planted support"
+              "visibleHeight": 442,
+              "registration": "guided stance and planted baseline"
+            },
+            {
+              "image": "moonshine-crouch-polish-v1.png",
+              "scale": 0.15632567849686846,
+              "rect": [
+                1121,
+                520,
+                291,
+                483
+              ],
+              "root": [
+                139,
+                481
+              ],
+              "sourceSize": [
+                512,
+                512
+              ],
+              "trim": [
+                97,
+                8
+              ],
+              "visibleHeight": 479,
+              "registration": "guided stance and planted baseline"
             }
           ]
         },
@@ -2711,161 +2796,346 @@
           ]
         },
         "double_jump_transition": {
-          "image": "moonshine-turn-air-v1.png",
-          "scale": 0.17333333333333334,
+          "image": "moonshine-jump-polish-v1.png",
+          "scale": 0.16545454545454544,
           "durations": [
-            6
+            2,
+            2,
+            2
           ],
           "loop": false,
           "frames": [
             {
+              "image": "moonshine-jump-polish-v1.png",
+              "scale": 0.16545454545454544,
               "rect": [
-                141,
-                537,
-                249,
-                394
+                185,
+                563,
+                200,
+                360
               ],
               "root": [
-                130,
-                421
+                98,
+                435.28571428571433
               ],
               "sourceSize": [
                 512,
-                512
+                534
               ],
               "trim": [
-                141,
-                25
+                185,
+                73
               ],
-              "visibleHeight": 390,
+              "visibleHeight": 356,
+              "registration": "guided pelvis"
+            },
+            {
+              "image": "moonshine-jump-polish-v1.png",
+              "scale": 0.16545454545454544,
+              "rect": [
+                624,
+                514,
+                240,
+                483
+              ],
+              "root": [
+                128,
+                453.28571428571433
+              ],
+              "sourceSize": [
+                512,
+                534
+              ],
+              "trim": [
+                112,
+                24
+              ],
+              "visibleHeight": 479,
+              "registration": "guided pelvis"
+            },
+            {
+              "image": "moonshine-jump-polish-v1.png",
+              "scale": 0.16545454545454544,
+              "rect": [
+                1105,
+                548,
+                246,
+                445
+              ],
+              "root": [
+                115,
+                457.28571428571433
+              ],
+              "sourceSize": [
+                512,
+                534
+              ],
+              "trim": [
+                81,
+                58
+              ],
+              "visibleHeight": 441,
               "registration": "guided pelvis"
             }
           ]
         },
         "air_apex_loop": {
-          "image": "moonshine-air-apex-v2.png",
-          "scale": 0.08040284360189573,
+          "image": "moonshine-air-loops-v1.png",
+          "scale": 0.13433333333333333,
           "durations": [
-            8
+            6,
+            6
           ],
           "loop": true,
           "frames": [
             {
+              "image": "moonshine-air-loops-v1.png",
+              "scale": 0.13433333333333333,
               "rect": [
-                405,
-                235,
-                323,
-                848
+                89,
+                86,
+                204,
+                509
               ],
               "root": [
-                165,
-                885.655172413793
+                99,
+                538.7096774193549
               ],
               "sourceSize": [
-                1122,
-                1402
+                374,
+                701
               ],
               "trim": [
-                405,
-                235
+                89,
+                86
               ],
-              "visibleHeight": 844,
+              "visibleHeight": 505,
+              "registration": "guided pelvis"
+            },
+            {
+              "image": "moonshine-air-loops-v1.png",
+              "scale": 0.13433333333333333,
+              "rect": [
+                86,
+                779,
+                207,
+                500
+              ],
+              "root": [
+                107,
+                528.7096774193549
+              ],
+              "sourceSize": [
+                374,
+                701
+              ],
+              "trim": [
+                86,
+                78
+              ],
+              "visibleHeight": 496,
               "registration": "guided pelvis"
             }
           ]
         },
         "air_fall_loop": {
-          "image": "moonshine-turn-air-v1.png",
-          "scale": 0.17333333333333334,
+          "image": "moonshine-air-loops-v1.png",
+          "scale": 0.13433333333333333,
           "durations": [
-            8
+            6,
+            6
           ],
           "loop": true,
           "frames": [
             {
+              "image": "moonshine-air-loops-v1.png",
+              "scale": 0.13433333333333333,
               "rect": [
-                1136,
-                544,
-                319,
-                457
+                462,
+                86,
+                191,
+                544
               ],
               "root": [
-                131,
-                439
+                105,
+                547.7096774193549
               ],
               "sourceSize": [
-                512,
-                512
+                374,
+                701
               ],
               "trim": [
-                112,
-                32
+                88,
+                86
               ],
-              "visibleHeight": 453,
+              "visibleHeight": 540,
+              "registration": "guided pelvis"
+            },
+            {
+              "image": "moonshine-air-loops-v1.png",
+              "scale": 0.13433333333333333,
+              "rect": [
+                447,
+                778,
+                232,
+                526
+              ],
+              "root": [
+                118,
+                529.7096774193549
+              ],
+              "sourceSize": [
+                374,
+                701
+              ],
+              "trim": [
+                73,
+                77
+              ],
+              "visibleHeight": 522,
               "registration": "guided pelvis"
             }
           ]
         },
         "jump_squat": {
-          "image": "moonshine-jump-squat-fastfall-v1.png",
-          "scale": 0.09411334552102377,
+          "image": "moonshine-jump-polish-v1.png",
+          "scale": 0.16545454545454544,
           "durations": [
-            3
+            1,
+            1,
+            1
           ],
           "loop": false,
           "frames": [
             {
+              "image": "moonshine-jump-polish-v1.png",
+              "scale": 0.16545454545454544,
               "rect": [
-                256,
-                257,
-                419,
-                551
+                170,
+                44,
+                214,
+                432
               ],
               "root": [
-                191,
-                549
+                115,
+                430
               ],
               "sourceSize": [
-                887,
-                887
+                512,
+                490
               ],
               "trim": [
-                256,
-                257
+                170,
+                44
               ],
-              "visibleHeight": 547,
-              "registration": "planted support"
+              "visibleHeight": 428,
+              "registration": "guided stance and planted baseline"
+            },
+            {
+              "image": "moonshine-jump-polish-v1.png",
+              "scale": 0.16545454545454544,
+              "rect": [
+                595,
+                128,
+                282,
+                348
+              ],
+              "root": [
+                145,
+                346
+              ],
+              "sourceSize": [
+                512,
+                490
+              ],
+              "trim": [
+                83,
+                128
+              ],
+              "visibleHeight": 344,
+              "registration": "guided stance and planted baseline"
+            },
+            {
+              "image": "moonshine-jump-polish-v1.png",
+              "scale": 0.16545454545454544,
+              "rect": [
+                1100,
+                10,
+                243,
+                466
+              ],
+              "root": [
+                122,
+                464
+              ],
+              "sourceSize": [
+                512,
+                490
+              ],
+              "trim": [
+                76,
+                10
+              ],
+              "visibleHeight": 462,
+              "registration": "guided stance and planted baseline"
             }
           ]
         },
         "air_fastfall_loop": {
-          "image": "moonshine-jump-squat-fastfall-v1.png",
-          "scale": 0.09648286140089418,
+          "image": "moonshine-air-loops-v1.png",
+          "scale": 0.13433333333333333,
           "durations": [
-            8
+            5,
+            5
           ],
           "loop": true,
           "frames": [
             {
+              "image": "moonshine-air-loops-v1.png",
+              "scale": 0.13433333333333333,
               "rect": [
-                1145,
-                132,
-                386,
-                675
+                834,
+                138,
+                213,
+                423
               ],
               "root": [
-                150,
-                701.0481927710844
+                106,
+                512.7096774193549
               ],
               "sourceSize": [
-                887,
-                887
+                374,
+                701
               ],
               "trim": [
-                258,
-                132
+                86,
+                138
               ],
-              "visibleHeight": 671,
+              "visibleHeight": 419,
+              "registration": "guided pelvis"
+            },
+            {
+              "image": "moonshine-air-loops-v1.png",
+              "scale": 0.13433333333333333,
+              "rect": [
+                841,
+                828,
+                206,
+                406
+              ],
+              "root": [
+                99,
+                491.7096774193548
+              ],
+              "sourceSize": [
+                374,
+                701
+              ],
+              "trim": [
+                93,
+                127
+              ],
+              "visibleHeight": 402,
               "registration": "guided pelvis"
             }
           ]
@@ -3013,66 +3283,170 @@
           ]
         },
         "teeter_front": {
-          "image": "moonshine-drop-teeter-tilts-v1.png",
-          "scale": 0.17105263157894737,
+          "image": "moonshine-teeter-polish-v1.png",
+          "scale": 0.14077348066298342,
           "durations": [
-            12
+            4,
+            3,
+            4,
+            3
           ],
-          "loop": false,
+          "loop": true,
           "frames": [
             {
+              "image": "moonshine-teeter-polish-v1.png",
+              "scale": 0.14077348066298342,
               "rect": [
-                568,
-                77,
-                370,
-                384
+                56,
+                36,
+                462,
+                547
               ],
               "root": [
-                116,
-                382
+                114,
+                545
               ],
               "sourceSize": [
-                512,
-                490
+                600,
+                656
               ],
               "trim": [
                 56,
-                77
+                36
               ],
-              "visibleHeight": 380,
-              "registration": "guided stance and planted baseline"
+              "visibleHeight": 543,
+              "registration": "supporting boot center and sole baseline"
+            },
+            {
+              "image": "moonshine-teeter-mid-v1.png",
+              "scale": 0.08686206803163254,
+              "rect": [
+                356,
+                109,
+                807,
+                820
+              ],
+              "root": [
+                194,
+                818
+              ],
+              "sourceSize": [
+                1536,
+                1024
+              ],
+              "trim": [
+                356,
+                109
+              ],
+              "visibleHeight": 816,
+              "registration": "supporting boot center and sole baseline"
+            },
+            {
+              "image": "moonshine-teeter-polish-v1.png",
+              "scale": 0.14077348066298342,
+              "rect": [
+                625,
+                115,
+                522,
+                468
+              ],
+              "root": [
+                104,
+                466
+              ],
+              "sourceSize": [
+                599,
+                656
+              ],
+              "trim": [
+                25,
+                115
+              ],
+              "visibleHeight": 464,
+              "registration": "supporting boot center and sole baseline"
+            },
+            {
+              "image": "moonshine-teeter-mid-v1.png",
+              "scale": 0.08686206803163254,
+              "rect": [
+                356,
+                109,
+                807,
+                820
+              ],
+              "root": [
+                194,
+                818
+              ],
+              "sourceSize": [
+                1536,
+                1024
+              ],
+              "trim": [
+                356,
+                109
+              ],
+              "visibleHeight": 816,
+              "registration": "supporting boot center and sole baseline"
             }
           ]
         },
         "teeter_back": {
-          "image": "moonshine-drop-teeter-tilts-v1.png",
-          "scale": 0.17105263157894737,
+          "image": "moonshine-teeter-polish-v1.png",
+          "scale": 0.14077348066298342,
           "durations": [
-            12
+            7,
+            7
           ],
-          "loop": false,
+          "loop": true,
           "frames": [
             {
+              "image": "moonshine-teeter-polish-v1.png",
+              "scale": 0.14077348066298342,
               "rect": [
-                1040,
-                37,
-                410,
-                432
+                41,
+                674,
+                438,
+                559
               ],
               "root": [
-                214,
-                430
+                330,
+                557
               ],
               "sourceSize": [
-                512,
-                490
+                600,
+                656
               ],
               "trim": [
-                16,
-                37
+                41,
+                18
               ],
-              "visibleHeight": 428,
-              "registration": "guided stance and planted baseline"
+              "visibleHeight": 555,
+              "registration": "supporting boot center and sole baseline"
+            },
+            {
+              "image": "moonshine-teeter-polish-v1.png",
+              "scale": 0.14077348066298342,
+              "rect": [
+                605,
+                699,
+                447,
+                534
+              ],
+              "root": [
+                372,
+                532
+              ],
+              "sourceSize": [
+                599,
+                656
+              ],
+              "trim": [
+                5,
+                43
+              ],
+              "visibleHeight": 530,
+              "registration": "supporting boot center and sole baseline"
             }
           ]
         },
@@ -5739,9 +6113,10 @@
           "image": "moonshine-reactions-v1.png",
           "scale": 0.1763819095477387,
           "durations": [
-            4,
-            4,
-            4
+            3,
+            3,
+            3,
+            3
           ],
           "loop": true,
           "frames": [
@@ -5791,6 +6166,30 @@
                 40
               ],
               "visibleHeight": 375,
+              "registration": "guided rotation center"
+            },
+            {
+              "image": "moonshine-tumble-side-v1.png",
+              "scale": 0.08322958073951849,
+              "rect": [
+                365,
+                206,
+                875,
+                579
+              ],
+              "root": [
+                437,
+                739.3400648824006
+              ],
+              "sourceSize": [
+                1536,
+                1024
+              ],
+              "trim": [
+                365,
+                206
+              ],
+              "visibleHeight": 575,
               "registration": "guided rotation center"
             },
             {
@@ -6127,7 +6526,8 @@
           "image": "moonshine-knockdowns-v1.png",
           "scale": 0.15864406779661017,
           "durations": [
-            18
+            9,
+            9
           ],
           "loop": true,
           "frames": [
@@ -6154,6 +6554,30 @@
               ],
               "visibleHeight": 180,
               "registration": "guided stance and planted baseline"
+            },
+            {
+              "image": "moonshine-hold-polish-v1.png",
+              "scale": 0.12102002150647753,
+              "rect": [
+                55,
+                282,
+                666,
+                252
+              ],
+              "root": [
+                335,
+                250
+              ],
+              "sourceSize": [
+                737,
+                724
+              ],
+              "trim": [
+                55,
+                282
+              ],
+              "visibleHeight": 248,
+              "registration": "guided stance and planted baseline"
             }
           ]
         },
@@ -6161,7 +6585,8 @@
           "image": "moonshine-getups-v1.png",
           "scale": 0.15864406779661017,
           "durations": [
-            8,
+            4,
+            4,
             7,
             6,
             6
@@ -6190,6 +6615,30 @@
                 232
               ],
               "visibleHeight": 180,
+              "registration": "guided stance and planted baseline"
+            },
+            {
+              "image": "moonshine-hold-polish-v1.png",
+              "scale": 0.12102002150647753,
+              "rect": [
+                55,
+                282,
+                666,
+                252
+              ],
+              "root": [
+                335,
+                250
+              ],
+              "sourceSize": [
+                737,
+                724
+              ],
+              "trim": [
+                55,
+                282
+              ],
+              "visibleHeight": 248,
               "registration": "guided stance and planted baseline"
             },
             {
@@ -6270,7 +6719,8 @@
           "image": "moonshine-getups-v1.png",
           "scale": 0.15864406779661017,
           "durations": [
-            8,
+            4,
+            4,
             4,
             8,
             5,
@@ -6300,6 +6750,30 @@
                 232
               ],
               "visibleHeight": 180,
+              "registration": "guided stance and planted baseline"
+            },
+            {
+              "image": "moonshine-hold-polish-v1.png",
+              "scale": 0.12102002150647753,
+              "rect": [
+                55,
+                282,
+                666,
+                252
+              ],
+              "root": [
+                335,
+                250
+              ],
+              "sourceSize": [
+                737,
+                724
+              ],
+              "trim": [
+                55,
+                282
+              ],
+              "visibleHeight": 248,
               "registration": "guided stance and planted baseline"
             },
             {
@@ -6404,7 +6878,8 @@
           "image": "moonshine-getups-v1.png",
           "scale": 0.15864406779661017,
           "durations": [
-            8,
+            4,
+            4,
             6,
             5,
             8,
@@ -6434,6 +6909,30 @@
                 232
               ],
               "visibleHeight": 180,
+              "registration": "guided stance and planted baseline"
+            },
+            {
+              "image": "moonshine-hold-polish-v1.png",
+              "scale": 0.12102002150647753,
+              "rect": [
+                55,
+                282,
+                666,
+                252
+              ],
+              "root": [
+                335,
+                250
+              ],
+              "sourceSize": [
+                737,
+                724
+              ],
+              "trim": [
+                55,
+                282
+              ],
+              "visibleHeight": 248,
               "registration": "guided stance and planted baseline"
             },
             {
@@ -6542,7 +7041,8 @@
           "image": "moonshine-knockdowns-v1.png",
           "scale": 0.15864406779661017,
           "durations": [
-            18
+            9,
+            9
           ],
           "loop": true,
           "frames": [
@@ -6569,6 +7069,30 @@
               ],
               "visibleHeight": 148,
               "registration": "guided stance and planted baseline"
+            },
+            {
+              "image": "moonshine-hold-polish-v1.png",
+              "scale": 0.12113334694711048,
+              "rect": [
+                760,
+                270,
+                668,
+                238
+              ],
+              "root": [
+                332,
+                236
+              ],
+              "sourceSize": [
+                713,
+                724
+              ],
+              "trim": [
+                23,
+                270
+              ],
+              "visibleHeight": 234,
+              "registration": "guided stance and planted baseline"
             }
           ]
         },
@@ -6576,7 +7100,8 @@
           "image": "moonshine-getups-v1.png",
           "scale": 0.15864406779661017,
           "durations": [
-            8,
+            4,
+            4,
             7,
             6,
             6
@@ -6605,6 +7130,30 @@
                 239
               ],
               "visibleHeight": 148,
+              "registration": "guided stance and planted baseline"
+            },
+            {
+              "image": "moonshine-hold-polish-v1.png",
+              "scale": 0.12113334694711048,
+              "rect": [
+                760,
+                270,
+                668,
+                238
+              ],
+              "root": [
+                332,
+                236
+              ],
+              "sourceSize": [
+                713,
+                724
+              ],
+              "trim": [
+                23,
+                270
+              ],
+              "visibleHeight": 234,
               "registration": "guided stance and planted baseline"
             },
             {
@@ -6685,7 +7234,8 @@
           "image": "moonshine-getups-v1.png",
           "scale": 0.15864406779661017,
           "durations": [
-            8,
+            4,
+            4,
             4,
             8,
             5,
@@ -6715,6 +7265,30 @@
                 239
               ],
               "visibleHeight": 148,
+              "registration": "guided stance and planted baseline"
+            },
+            {
+              "image": "moonshine-hold-polish-v1.png",
+              "scale": 0.12113334694711048,
+              "rect": [
+                760,
+                270,
+                668,
+                238
+              ],
+              "root": [
+                332,
+                236
+              ],
+              "sourceSize": [
+                713,
+                724
+              ],
+              "trim": [
+                23,
+                270
+              ],
+              "visibleHeight": 234,
               "registration": "guided stance and planted baseline"
             },
             {
@@ -6819,7 +7393,8 @@
           "image": "moonshine-getups-v1.png",
           "scale": 0.15864406779661017,
           "durations": [
-            8,
+            4,
+            4,
             6,
             5,
             8,
@@ -6849,6 +7424,30 @@
                 239
               ],
               "visibleHeight": 148,
+              "registration": "guided stance and planted baseline"
+            },
+            {
+              "image": "moonshine-hold-polish-v1.png",
+              "scale": 0.12113334694711048,
+              "rect": [
+                760,
+                270,
+                668,
+                238
+              ],
+              "root": [
+                332,
+                236
+              ],
+              "sourceSize": [
+                713,
+                724
+              ],
+              "trim": [
+                23,
+                270
+              ],
+              "visibleHeight": 234,
               "registration": "guided stance and planted baseline"
             },
             {
@@ -7352,7 +7951,8 @@
           "image": "moonshine-tech-trip-v1.png",
           "scale": 0.17979661016949156,
           "durations": [
-            18
+            9,
+            9
           ],
           "loop": true,
           "frames": [
@@ -7379,6 +7979,30 @@
               ],
               "visibleHeight": 282,
               "registration": "guided stance and planted baseline"
+            },
+            {
+              "image": "moonshine-hold-polish-v1.png",
+              "scale": 0.11396030495872979,
+              "rect": [
+                1571,
+                111,
+                542,
+                453
+              ],
+              "root": [
+                229,
+                451
+              ],
+              "sourceSize": [
+                722,
+                724
+              ],
+              "trim": [
+                121,
+                111
+              ],
+              "visibleHeight": 449,
+              "registration": "guided stance and planted baseline"
             }
           ]
         },
@@ -7386,7 +8010,8 @@
           "image": "moonshine-tech-trip-v1.png",
           "scale": 0.17979661016949156,
           "durations": [
-            6,
+            3,
+            3,
             7,
             6
           ],
@@ -7414,6 +8039,30 @@
                 86
               ],
               "visibleHeight": 282,
+              "registration": "guided stance and planted baseline"
+            },
+            {
+              "image": "moonshine-hold-polish-v1.png",
+              "scale": 0.11396030495872979,
+              "rect": [
+                1571,
+                111,
+                542,
+                453
+              ],
+              "root": [
+                229,
+                451
+              ],
+              "sourceSize": [
+                722,
+                724
+              ],
+              "trim": [
+                121,
+                111
+              ],
+              "visibleHeight": 449,
               "registration": "guided stance and planted baseline"
             },
             {
@@ -7470,7 +8119,8 @@
           "image": "moonshine-tech-trip-v1.png",
           "scale": 0.17979661016949156,
           "durations": [
-            6,
+            3,
+            3,
             8,
             6,
             6
@@ -7499,6 +8149,30 @@
                 86
               ],
               "visibleHeight": 282,
+              "registration": "guided stance and planted baseline"
+            },
+            {
+              "image": "moonshine-hold-polish-v1.png",
+              "scale": 0.11396030495872979,
+              "rect": [
+                1571,
+                111,
+                542,
+                453
+              ],
+              "root": [
+                229,
+                451
+              ],
+              "sourceSize": [
+                722,
+                724
+              ],
+              "trim": [
+                121,
+                111
+              ],
+              "visibleHeight": 449,
               "registration": "guided stance and planted baseline"
             },
             {
@@ -7579,7 +8253,8 @@
           "image": "moonshine-tech-trip-v1.png",
           "scale": 0.17979661016949156,
           "durations": [
-            6,
+            3,
+            3,
             5,
             8,
             6
@@ -7608,6 +8283,30 @@
                 86
               ],
               "visibleHeight": 282,
+              "registration": "guided stance and planted baseline"
+            },
+            {
+              "image": "moonshine-hold-polish-v1.png",
+              "scale": 0.11396030495872979,
+              "rect": [
+                1571,
+                111,
+                542,
+                453
+              ],
+              "root": [
+                229,
+                451
+              ],
+              "sourceSize": [
+                722,
+                724
+              ],
+              "trim": [
+                121,
+                111
+              ],
+              "visibleHeight": 449,
               "registration": "guided stance and planted baseline"
             },
             {
@@ -7972,6 +8671,12 @@
               ],
               "visibleHeight": 419,
               "registration": "guided stance and planted baseline",
+              "sockets": {
+                "grabGrip": [
+                  290,
+                  144
+                ]
+              },
               "grabContact": [
                 86.54014598540147,
                 -159.81080291970804
@@ -8000,6 +8705,12 @@
               ],
               "visibleHeight": 411,
               "registration": "guided stance and planted baseline",
+              "sockets": {
+                "grabGrip": [
+                  252,
+                  132
+                ]
+              },
               "grabContact": [
                 72.69372262773723,
                 -162.1185401459854
@@ -8064,6 +8775,16 @@
               ],
               "visibleHeight": 413,
               "registration": "guided stance and planted baseline",
+              "sockets": {
+                "gripTop": [
+                  116,
+                  141
+                ],
+                "gripBottom": [
+                  116,
+                  157
+                ]
+              },
               "grabContact": [
                 11.9455919395466,
                 -158.8763727959698
@@ -8092,6 +8813,16 @@
               ],
               "visibleHeight": 397,
               "registration": "guided stance and planted baseline",
+              "sockets": {
+                "gripTop": [
+                  102,
+                  130
+                ],
+                "gripBottom": [
+                  102,
+                  146
+                ]
+              },
               "grabContact": [
                 9.55647355163728,
                 -155.8899748110831
@@ -8130,6 +8861,12 @@
               ],
               "visibleHeight": 411,
               "registration": "guided stance and planted baseline",
+              "sockets": {
+                "grabGrip": [
+                  252,
+                  132
+                ]
+              },
               "grabContact": [
                 72.69372262773723,
                 -162.1185401459854
@@ -8168,6 +8905,16 @@
               ],
               "visibleHeight": 397,
               "registration": "guided stance and planted baseline",
+              "sockets": {
+                "gripTop": [
+                  102,
+                  130
+                ],
+                "gripBottom": [
+                  102,
+                  146
+                ]
+              },
               "grabContact": [
                 9.55647355163728,
                 -155.8899748110831
@@ -8208,6 +8955,12 @@
               ],
               "visibleHeight": 411,
               "registration": "guided stance and planted baseline",
+              "sockets": {
+                "grabGrip": [
+                  252,
+                  132
+                ]
+              },
               "grabContact": [
                 72.69372262773723,
                 -162.1185401459854
@@ -8236,6 +8989,12 @@
               ],
               "visibleHeight": 408,
               "registration": "guided stance and planted baseline",
+              "sockets": {
+                "grabGrip": [
+                  199,
+                  138
+                ]
+              },
               "grabContact": [
                 75.57839416058394,
                 -156.92613138686133
@@ -8264,11 +9023,21 @@
               ],
               "visibleHeight": 411,
               "registration": "guided stance and planted baseline",
+              "sockets": {
+                "grabGrip": [
+                  252,
+                  132
+                ]
+              },
               "grabContact": [
                 72.69372262773723,
                 -162.1185401459854
               ]
             }
+          ],
+          "activeWindow": [
+            4,
+            8
           ]
         },
         "pummel_victim": {
@@ -8304,6 +9073,16 @@
               ],
               "visibleHeight": 397,
               "registration": "guided stance and planted baseline",
+              "sockets": {
+                "gripTop": [
+                  102,
+                  130
+                ],
+                "gripBottom": [
+                  102,
+                  146
+                ]
+              },
               "grabContact": [
                 9.55647355163728,
                 -155.8899748110831
@@ -8332,6 +9111,16 @@
               ],
               "visibleHeight": 363,
               "registration": "guided stance and planted baseline",
+              "sockets": {
+                "gripTop": [
+                  101,
+                  136
+                ],
+                "gripBottom": [
+                  101,
+                  152
+                ]
+              },
               "grabContact": [
                 11.34831234256927,
                 -131.99879093198993
@@ -8360,6 +9149,16 @@
               ],
               "visibleHeight": 397,
               "registration": "guided stance and planted baseline",
+              "sockets": {
+                "gripTop": [
+                  102,
+                  130
+                ],
+                "gripBottom": [
+                  102,
+                  146
+                ]
+              },
               "grabContact": [
                 9.55647355163728,
                 -155.8899748110831
@@ -8400,6 +9199,12 @@
               ],
               "visibleHeight": 411,
               "registration": "guided stance and planted baseline",
+              "sockets": {
+                "grabGrip": [
+                  252,
+                  132
+                ]
+              },
               "grabContact": [
                 72.69372262773723,
                 -162.1185401459854
@@ -8428,6 +9233,12 @@
               ],
               "visibleHeight": 405,
               "registration": "guided stance and planted baseline",
+              "sockets": {
+                "grabGrip": [
+                  241,
+                  266
+                ]
+              },
               "grabContact": [
                 70.9629197080292,
                 -81.34773722627737
@@ -8492,6 +9303,16 @@
               ],
               "visibleHeight": 397,
               "registration": "guided stance and planted baseline",
+              "sockets": {
+                "gripTop": [
+                  102,
+                  130
+                ],
+                "gripBottom": [
+                  102,
+                  146
+                ]
+              },
               "grabContact": [
                 9.55647355163728,
                 -155.8899748110831
@@ -8520,6 +9341,16 @@
               ],
               "visibleHeight": 398,
               "registration": "guided stance and planted baseline",
+              "sockets": {
+                "gripTop": [
+                  113,
+                  137
+                ],
+                "gripBottom": [
+                  113,
+                  153
+                ]
+              },
               "grabContact": [
                 5.9727959697733,
                 -152.30629722921915
@@ -8584,6 +9415,12 @@
               ],
               "visibleHeight": 411,
               "registration": "guided stance and planted baseline",
+              "sockets": {
+                "grabGrip": [
+                  252,
+                  132
+                ]
+              },
               "grabContact": [
                 72.69372262773723,
                 -162.1185401459854
@@ -8612,6 +9449,12 @@
               ],
               "visibleHeight": 402,
               "registration": "guided stance and planted baseline",
+              "sockets": {
+                "grabGrip": [
+                  342,
+                  127
+                ]
+              },
               "grabContact": [
                 110.77138686131387,
                 -159.81080291970804
@@ -8641,6 +9484,10 @@
               "image": "moonshine-idle-v1.png",
               "scale": 0.13333333333333333
             }
+          ],
+          "activeWindow": [
+            6,
+            11
           ]
         },
         "throw_victim": {
@@ -8676,6 +9523,16 @@
               ],
               "visibleHeight": 397,
               "registration": "guided stance and planted baseline",
+              "sockets": {
+                "gripTop": [
+                  102,
+                  130
+                ],
+                "gripBottom": [
+                  102,
+                  146
+                ]
+              },
               "grabContact": [
                 9.55647355163728,
                 -155.8899748110831
@@ -8704,6 +9561,16 @@
               ],
               "visibleHeight": 322,
               "registration": "guided stance and planted baseline",
+              "sockets": {
+                "gripTop": [
+                  129,
+                  130
+                ],
+                "gripBottom": [
+                  129,
+                  146
+                ]
+              },
               "grabContact": [
                 -7.764634760705289,
                 -111.09400503778339
@@ -8768,6 +9635,12 @@
               ],
               "visibleHeight": 411,
               "registration": "guided stance and planted baseline",
+              "sockets": {
+                "grabGrip": [
+                  252,
+                  132
+                ]
+              },
               "grabContact": [
                 72.69372262773723,
                 -162.1185401459854
@@ -8796,6 +9669,12 @@
               ],
               "visibleHeight": 413,
               "registration": "guided stance and planted baseline",
+              "sockets": {
+                "grabGrip": [
+                  39,
+                  107
+                ]
+              },
               "grabContact": [
                 -90.00175182481752,
                 -177.69576642335767
@@ -8825,6 +9704,10 @@
               "image": "moonshine-idle-v1.png",
               "scale": 0.13333333333333333
             }
+          ],
+          "activeWindow": [
+            6,
+            11
           ]
         },
         "back_throw_victim_preview": {
@@ -8860,6 +9743,16 @@
               ],
               "visibleHeight": 397,
               "registration": "guided stance and planted baseline",
+              "sockets": {
+                "gripTop": [
+                  102,
+                  130
+                ],
+                "gripBottom": [
+                  102,
+                  146
+                ]
+              },
               "grabContact": [
                 9.55647355163728,
                 -155.8899748110831
@@ -8888,6 +9781,16 @@
               ],
               "visibleHeight": 342,
               "registration": "guided stance and planted baseline",
+              "sockets": {
+                "gripTop": [
+                  154,
+                  106
+                ],
+                "gripBottom": [
+                  154,
+                  122
+                ]
+              },
               "grabContact": [
                 7.167355163727959,
                 -137.3743073047859
@@ -8952,6 +9855,12 @@
               ],
               "visibleHeight": 411,
               "registration": "guided stance and planted baseline",
+              "sockets": {
+                "grabGrip": [
+                  252,
+                  132
+                ]
+              },
               "grabContact": [
                 72.69372262773723,
                 -162.1185401459854
@@ -8980,6 +9889,12 @@
               ],
               "visibleHeight": 434,
               "registration": "guided stance and planted baseline",
+              "sockets": {
+                "grabGrip": [
+                  138,
+                  34
+                ]
+              },
               "grabContact": [
                 -5.76934306569343,
                 -231.9275912408759
@@ -9009,6 +9924,10 @@
               "image": "moonshine-idle-v1.png",
               "scale": 0.13333333333333333
             }
+          ],
+          "activeWindow": [
+            6,
+            11
           ]
         },
         "up_throw_victim_preview": {
@@ -9044,6 +9963,16 @@
               ],
               "visibleHeight": 397,
               "registration": "guided stance and planted baseline",
+              "sockets": {
+                "gripTop": [
+                  102,
+                  130
+                ],
+                "gripBottom": [
+                  102,
+                  146
+                ]
+              },
               "grabContact": [
                 9.55647355163728,
                 -155.8899748110831
@@ -9072,6 +10001,16 @@
               ],
               "visibleHeight": 412,
               "registration": "guided stance and planted baseline",
+              "sockets": {
+                "gripTop": [
+                  113,
+                  99
+                ],
+                "gripBottom": [
+                  113,
+                  115
+                ]
+              },
               "grabContact": [
                 -4.18095717884131,
                 -183.3648362720403
@@ -9136,6 +10075,12 @@
               ],
               "visibleHeight": 411,
               "registration": "guided stance and planted baseline",
+              "sockets": {
+                "grabGrip": [
+                  252,
+                  132
+                ]
+              },
               "grabContact": [
                 72.69372262773723,
                 -162.1185401459854
@@ -9164,6 +10109,12 @@
               ],
               "visibleHeight": 356,
               "registration": "guided stance and planted baseline",
+              "sockets": {
+                "grabGrip": [
+                  301,
+                  223
+                ]
+              },
               "grabContact": [
                 91.1556204379562,
                 -77.88613138686132
@@ -9193,6 +10144,10 @@
               "image": "moonshine-idle-v1.png",
               "scale": 0.13333333333333333
             }
+          ],
+          "activeWindow": [
+            6,
+            11
           ]
         },
         "down_throw_victim_preview": {
@@ -9228,6 +10183,16 @@
               ],
               "visibleHeight": 397,
               "registration": "guided stance and planted baseline",
+              "sockets": {
+                "gripTop": [
+                  102,
+                  130
+                ],
+                "gripBottom": [
+                  102,
+                  146
+                ]
+              },
               "grabContact": [
                 9.55647355163728,
                 -155.8899748110831
@@ -9256,6 +10221,16 @@
               ],
               "visibleHeight": 279,
               "registration": "guided stance and planted baseline",
+              "sockets": {
+                "gripTop": [
+                  122,
+                  104
+                ],
+                "gripBottom": [
+                  122,
+                  120
+                ]
+              },
               "grabContact": [
                 -10.75103274559194,
                 -100.94025188916876
@@ -9372,6 +10347,12 @@
               ],
               "visibleHeight": 411,
               "registration": "guided stance and planted baseline",
+              "sockets": {
+                "grabGrip": [
+                  252,
+                  132
+                ]
+              },
               "grabContact": [
                 72.69372262773723,
                 -162.1185401459854
@@ -9436,6 +10417,16 @@
               ],
               "visibleHeight": 413,
               "registration": "guided stance and planted baseline",
+              "sockets": {
+                "gripTop": [
+                  116,
+                  141
+                ],
+                "gripBottom": [
+                  116,
+                  157
+                ]
+              },
               "grabContact": [
                 11.9455919395466,
                 -158.8763727959698
@@ -9464,6 +10455,16 @@
               ],
               "visibleHeight": 397,
               "registration": "guided stance and planted baseline",
+              "sockets": {
+                "gripTop": [
+                  102,
+                  130
+                ],
+                "gripBottom": [
+                  102,
+                  146
+                ]
+              },
               "grabContact": [
                 9.55647355163728,
                 -155.8899748110831
@@ -9556,6 +10557,12 @@
               ],
               "visibleHeight": 411,
               "registration": "guided stance and planted baseline",
+              "sockets": {
+                "grabGrip": [
+                  252,
+                  132
+                ]
+              },
               "grabContact": [
                 72.69372262773723,
                 -162.1185401459854
@@ -9620,6 +10627,16 @@
               ],
               "visibleHeight": 413,
               "registration": "guided stance and planted baseline",
+              "sockets": {
+                "gripTop": [
+                  116,
+                  141
+                ],
+                "gripBottom": [
+                  116,
+                  157
+                ]
+              },
               "grabContact": [
                 11.9455919395466,
                 -158.8763727959698
@@ -9648,6 +10665,16 @@
               ],
               "visibleHeight": 397,
               "registration": "guided stance and planted baseline",
+              "sockets": {
+                "gripTop": [
+                  102,
+                  130
+                ],
+                "gripBottom": [
+                  102,
+                  146
+                ]
+              },
               "grabContact": [
                 9.55647355163728,
                 -155.8899748110831
@@ -9715,7 +10742,13 @@
               "footstoolContact": [
                 0,
                 0
-              ]
+              ],
+              "sockets": {
+                "footstoolSole": [
+                  113,
+                  383
+                ]
+              }
             },
             {
               "image": "moonshine-footstool-ledge-v1.png",
@@ -9803,7 +10836,13 @@
               "footstoolContact": [
                 34.273718670076725,
                 -178.3395191815857
-              ]
+              ],
+              "sockets": {
+                "footstoolHead": [
+                  156,
+                  4.999999999999943
+                ]
+              }
             },
             {
               "image": "moonshine-reactions-v1.png",
@@ -9841,7 +10880,7 @@
           "frames": [
             {
               "image": "moonshine-footstool-ledge-v1.png",
-              "scale": 0.18153452685421995,
+              "scale": 0.20876470588235294,
               "rect": [
                 1020,
                 34,
@@ -9863,9 +10902,15 @@
               "visibleHeight": 391,
               "registration": "guided stance and planted baseline",
               "ledgeContact": [
-                23.81732992327366,
-                -216.67961125319695
-              ]
+                27.389929411764708,
+                -249.18155294117648
+              ],
+              "sockets": {
+                "ledgeGrip": [
+                  135,
+                  20
+                ]
+              }
             }
           ]
         },
@@ -9881,7 +10926,7 @@
           "frames": [
             {
               "image": "moonshine-footstool-ledge-v1.png",
-              "scale": 0.18153452685421995,
+              "scale": 0.20876470588235294,
               "rect": [
                 1020,
                 34,
@@ -9903,13 +10948,19 @@
               "visibleHeight": 391,
               "registration": "guided stance and planted baseline",
               "ledgeContact": [
-                23.81732992327366,
-                -216.67961125319695
-              ]
+                27.389929411764708,
+                -249.18155294117648
+              ],
+              "sockets": {
+                "ledgeGrip": [
+                  135,
+                  20
+                ]
+              }
             },
             {
               "image": "moonshine-footstool-ledge-v1.png",
-              "scale": 0.18153452685421995,
+              "scale": 0.20876470588235294,
               "rect": [
                 1425,
                 50,
@@ -9931,9 +10982,15 @@
               "visibleHeight": 369,
               "registration": "guided stance and planted baseline",
               "ledgeContact": [
-                40.08282352941177,
-                -90.6220358056266
-              ]
+                46.09524705882353,
+                -104.21534117647059
+              ],
+              "sockets": {
+                "ledgeGrip": [
+                  172,
+                  215
+                ]
+              }
             },
             {
               "rect": [
@@ -9974,7 +11031,7 @@
           "frames": [
             {
               "image": "moonshine-footstool-ledge-v1.png",
-              "scale": 0.18153452685421995,
+              "scale": 0.20876470588235294,
               "rect": [
                 1020,
                 34,
@@ -9996,13 +11053,19 @@
               "visibleHeight": 391,
               "registration": "guided stance and planted baseline",
               "ledgeContact": [
-                23.81732992327366,
-                -216.67961125319695
-              ]
+                27.389929411764708,
+                -249.18155294117648
+              ],
+              "sockets": {
+                "ledgeGrip": [
+                  135,
+                  20
+                ]
+              }
             },
             {
               "image": "moonshine-footstool-ledge-v1.png",
-              "scale": 0.18153452685421995,
+              "scale": 0.20876470588235294,
               "rect": [
                 1425,
                 50,
@@ -10024,9 +11087,15 @@
               "visibleHeight": 369,
               "registration": "guided stance and planted baseline",
               "ledgeContact": [
-                40.08282352941177,
-                -90.6220358056266
-              ]
+                46.09524705882353,
+                -104.21534117647059
+              ],
+              "sockets": {
+                "ledgeGrip": [
+                  172,
+                  215
+                ]
+              }
             },
             {
               "image": "moonshine-footstool-ledge-v1.png",
@@ -10090,7 +11159,7 @@
           "frames": [
             {
               "image": "moonshine-footstool-ledge-v1.png",
-              "scale": 0.18153452685421995,
+              "scale": 0.20876470588235294,
               "rect": [
                 1020,
                 34,
@@ -10112,9 +11181,15 @@
               "visibleHeight": 391,
               "registration": "guided stance and planted baseline",
               "ledgeContact": [
-                23.81732992327366,
-                -216.67961125319695
-              ]
+                27.389929411764708,
+                -249.18155294117648
+              ],
+              "sockets": {
+                "ledgeGrip": [
+                  135,
+                  20
+                ]
+              }
             },
             {
               "image": "moonshine-footstool-ledge-v1.png",
@@ -10179,7 +11254,7 @@
           "frames": [
             {
               "image": "moonshine-footstool-ledge-v1.png",
-              "scale": 0.18153452685421995,
+              "scale": 0.20876470588235294,
               "rect": [
                 1020,
                 34,
@@ -10201,13 +11276,19 @@
               "visibleHeight": 391,
               "registration": "guided stance and planted baseline",
               "ledgeContact": [
-                23.81732992327366,
-                -216.67961125319695
-              ]
+                27.389929411764708,
+                -249.18155294117648
+              ],
+              "sockets": {
+                "ledgeGrip": [
+                  135,
+                  20
+                ]
+              }
             },
             {
               "image": "moonshine-footstool-ledge-v1.png",
-              "scale": 0.18153452685421995,
+              "scale": 0.20876470588235294,
               "rect": [
                 1425,
                 50,
@@ -10229,9 +11310,15 @@
               "visibleHeight": 369,
               "registration": "guided stance and planted baseline",
               "ledgeContact": [
-                40.08282352941177,
-                -90.6220358056266
-              ]
+                46.09524705882353,
+                -104.21534117647059
+              ],
+              "sockets": {
+                "ledgeGrip": [
+                  172,
+                  215
+                ]
+              }
             },
             {
               "image": "moonshine-footstool-ledge-v1.png",
@@ -10299,7 +11386,7 @@
           "frames": [
             {
               "image": "moonshine-footstool-ledge-v1.png",
-              "scale": 0.18153452685421995,
+              "scale": 0.20876470588235294,
               "rect": [
                 1020,
                 34,
@@ -10321,9 +11408,15 @@
               "visibleHeight": 391,
               "registration": "guided stance and planted baseline",
               "ledgeContact": [
-                23.81732992327366,
-                -216.67961125319695
-              ]
+                27.389929411764708,
+                -249.18155294117648
+              ],
+              "sockets": {
+                "ledgeGrip": [
+                  135,
+                  20
+                ]
+              }
             },
             {
               "image": "moonshine-footstool-ledge-v1.png",
@@ -10435,7 +11528,13 @@
               "footstoolContact": [
                 11.566590998043054,
                 -181.4508962818004
-              ]
+              ],
+              "sockets": {
+                "footstoolHead": [
+                  202,
+                  11.000000000000057
+                ]
+              }
             },
             {
               "rect": [
@@ -10523,7 +11622,13 @@
               "footstoolContact": [
                 0,
                 0
-              ]
+              ],
+              "sockets": {
+                "footstoolSole": [
+                  113,
+                  383
+                ]
+              }
             },
             {
               "image": "moonshine-footstool-ledge-v1.png",
@@ -10562,7 +11667,7 @@
           "frames": [
             {
               "image": "moonshine-ledge-contact-v1.png",
-              "scale": 0.11295499021526419,
+              "scale": 0.12425048923679062,
               "rect": [
                 884,
                 25,
@@ -10584,13 +11689,19 @@
               "visibleHeight": 623,
               "registration": "guided stance and planted baseline",
               "ledgeContact": [
-                66.14644227005871,
-                -214.7048454011742
-              ]
+                72.76108649706458,
+                -236.1753299412916
+              ],
+              "sockets": {
+                "ledgeGrip": [
+                  374,
+                  31.000000000000114
+                ]
+              }
             },
             {
               "image": "moonshine-footstool-ledge-v1.png",
-              "scale": 0.18153452685421995,
+              "scale": 0.20876470588235294,
               "rect": [
                 1020,
                 34,
@@ -10612,9 +11723,15 @@
               "visibleHeight": 391,
               "registration": "guided stance and planted baseline",
               "ledgeContact": [
-                23.81732992327366,
-                -216.67961125319695
-              ]
+                27.389929411764708,
+                -249.18155294117648
+              ],
+              "sockets": {
+                "ledgeGrip": [
+                  135,
+                  20
+                ]
+              }
             }
           ]
         },
@@ -10630,7 +11747,7 @@
           "frames": [
             {
               "image": "moonshine-footstool-ledge-v1.png",
-              "scale": 0.18153452685421995,
+              "scale": 0.20876470588235294,
               "rect": [
                 1020,
                 34,
@@ -10652,9 +11769,15 @@
               "visibleHeight": 391,
               "registration": "guided stance and planted baseline",
               "ledgeContact": [
-                23.81732992327366,
-                -216.67961125319695
-              ]
+                27.389929411764708,
+                -249.18155294117648
+              ],
+              "sockets": {
+                "ledgeGrip": [
+                  135,
+                  20
+                ]
+              }
             },
             {
               "image": "moonshine-ledge-contact-v1.png",
@@ -11892,6 +13015,1083 @@
               "scale": 0.13333333333333333
             }
           ]
+        },
+        "jab_2": {
+          "image": "moonshine-jab-followups-v1.png",
+          "scale": 0.14800759013282733,
+          "durations": [
+            3,
+            3,
+            7
+          ],
+          "loop": false,
+          "frames": [
+            {
+              "rect": [
+                203,
+                23,
+                263,
+                576
+              ],
+              "root": [
+                121,
+                574
+              ],
+              "sourceSize": [
+                627,
+                627
+              ],
+              "trim": [
+                203,
+                23
+              ],
+              "visibleHeight": 572,
+              "registration": "paired planted soles",
+              "image": "moonshine-idle-v1.png",
+              "scale": 0.13333333333333333
+            },
+            {
+              "image": "moonshine-jab-followups-v1.png",
+              "scale": 0.14800759013282733,
+              "rect": [
+                122,
+                42,
+                447,
+                531
+              ],
+              "root": [
+                187,
+                529
+              ],
+              "sourceSize": [
+                620,
+                635
+              ],
+              "trim": [
+                122,
+                42
+              ],
+              "visibleHeight": 527,
+              "registration": "guided stance and planted baseline"
+            },
+            {
+              "image": "moonshine-jab-followups-v1.png",
+              "scale": 0.14800759013282733,
+              "rect": [
+                738,
+                42,
+                380,
+                531
+              ],
+              "root": [
+                182,
+                529
+              ],
+              "sourceSize": [
+                620,
+                635
+              ],
+              "trim": [
+                118,
+                42
+              ],
+              "visibleHeight": 527,
+              "registration": "guided stance and planted baseline"
+            }
+          ],
+          "activeWindow": [
+            3,
+            6
+          ]
+        },
+        "jab_3": {
+          "image": "moonshine-jab-followups-v1.png",
+          "scale": 0.14800759013282733,
+          "durations": [
+            4,
+            4,
+            9
+          ],
+          "loop": false,
+          "frames": [
+            {
+              "image": "moonshine-jab-followups-v1.png",
+              "scale": 0.14800759013282733,
+              "rect": [
+                738,
+                42,
+                380,
+                531
+              ],
+              "root": [
+                182,
+                529
+              ],
+              "sourceSize": [
+                620,
+                635
+              ],
+              "trim": [
+                118,
+                42
+              ],
+              "visibleHeight": 527,
+              "registration": "guided stance and planted baseline"
+            },
+            {
+              "image": "moonshine-jab-followups-v1.png",
+              "scale": 0.14800759013282733,
+              "rect": [
+                121,
+                678,
+                391,
+                530
+              ],
+              "root": [
+                205,
+                528
+              ],
+              "sourceSize": [
+                620,
+                634
+              ],
+              "trim": [
+                121,
+                43
+              ],
+              "visibleHeight": 526,
+              "registration": "guided stance and planted baseline"
+            },
+            {
+              "image": "moonshine-jab-followups-v1.png",
+              "scale": 0.14800759013282733,
+              "rect": [
+                739,
+                680,
+                379,
+                527
+              ],
+              "root": [
+                183,
+                525
+              ],
+              "sourceSize": [
+                620,
+                634
+              ],
+              "trim": [
+                119,
+                45
+              ],
+              "visibleHeight": 523,
+              "registration": "guided stance and planted baseline"
+            }
+          ],
+          "activeWindow": [
+            4,
+            8
+          ]
+        },
+        "neutral_special": {
+          "image": "moonshine-specials-v1.png",
+          "scale": 0.17727272727272725,
+          "durations": [
+            7,
+            6,
+            12
+          ],
+          "loop": false,
+          "frames": [
+            {
+              "rect": [
+                203,
+                23,
+                263,
+                576
+              ],
+              "root": [
+                121,
+                574
+              ],
+              "sourceSize": [
+                627,
+                627
+              ],
+              "trim": [
+                203,
+                23
+              ],
+              "visibleHeight": 572,
+              "registration": "paired planted soles",
+              "image": "moonshine-idle-v1.png",
+              "scale": 0.13333333333333333
+            },
+            {
+              "image": "moonshine-specials-v1.png",
+              "scale": 0.17727272727272725,
+              "rect": [
+                82,
+                57,
+                336,
+                431
+              ],
+              "root": [
+                142,
+                429
+              ],
+              "sourceSize": [
+                512,
+                512
+              ],
+              "trim": [
+                82,
+                57
+              ],
+              "visibleHeight": 427,
+              "registration": "guided stance and planted baseline"
+            },
+            {
+              "image": "moonshine-specials-v1.png",
+              "scale": 0.17727272727272725,
+              "rect": [
+                1105,
+                567,
+                330,
+                422
+              ],
+              "root": [
+                170,
+                420
+              ],
+              "sourceSize": [
+                512,
+                512
+              ],
+              "trim": [
+                81,
+                55
+              ],
+              "visibleHeight": 418,
+              "registration": "guided stance and planted baseline"
+            }
+          ],
+          "activeWindow": [
+            7,
+            13
+          ]
+        },
+        "side_special": {
+          "image": "moonshine-specials-v1.png",
+          "scale": 0.17727272727272725,
+          "durations": [
+            7,
+            7,
+            12
+          ],
+          "loop": false,
+          "frames": [
+            {
+              "image": "moonshine-moving-grabs-v1.png",
+              "scale": 0.14841437632135307,
+              "rect": [
+                76,
+                95,
+                423,
+                404
+              ],
+              "root": [
+                258,
+                402
+              ],
+              "sourceSize": [
+                620,
+                600
+              ],
+              "trim": [
+                76,
+                95
+              ],
+              "visibleHeight": 400,
+              "registration": "guided stance and planted baseline"
+            },
+            {
+              "image": "moonshine-specials-v1.png",
+              "scale": 0.17727272727272725,
+              "rect": [
+                528,
+                147,
+                401,
+                336
+              ],
+              "root": [
+                202,
+                334
+              ],
+              "sourceSize": [
+                512,
+                512
+              ],
+              "trim": [
+                16,
+                147
+              ],
+              "visibleHeight": 332,
+              "registration": "guided stance and planted baseline"
+            },
+            {
+              "image": "moonshine-specials-v1.png",
+              "scale": 0.17727272727272725,
+              "rect": [
+                1105,
+                567,
+                330,
+                422
+              ],
+              "root": [
+                170,
+                420
+              ],
+              "sourceSize": [
+                512,
+                512
+              ],
+              "trim": [
+                81,
+                55
+              ],
+              "visibleHeight": 418,
+              "registration": "guided stance and planted baseline"
+            }
+          ],
+          "activeWindow": [
+            7,
+            14
+          ]
+        },
+        "up_special": {
+          "image": "moonshine-specials-v1.png",
+          "scale": 0.17727272727272725,
+          "durations": [
+            5,
+            8,
+            12
+          ],
+          "loop": false,
+          "frames": [
+            {
+              "rect": [
+                120,
+                62,
+                327,
+                401
+              ],
+              "root": [
+                134.25,
+                399
+              ],
+              "sourceSize": [
+                512,
+                512
+              ],
+              "trim": [
+                120,
+                62
+              ],
+              "visibleHeight": 397,
+              "registration": "planted support",
+              "image": "moonshine-crouch-land-v1-candidate.png",
+              "scale": 0.17067833698030635
+            },
+            {
+              "image": "moonshine-specials-v1.png",
+              "scale": 0.17727272727272725,
+              "rect": [
+                1162,
+                5,
+                249,
+                478
+              ],
+              "root": [
+                105,
+                460.20000000000005
+              ],
+              "sourceSize": [
+                512,
+                512
+              ],
+              "trim": [
+                138,
+                5
+              ],
+              "visibleHeight": 474,
+              "registration": "guided pelvis"
+            },
+            {
+              "image": "moonshine-aerials-v1.png",
+              "scale": 0.1556338028169014,
+              "rect": [
+                1159,
+                527,
+                217,
+                430
+              ],
+              "root": [
+                121,
+                475.56470588235294
+              ],
+              "sourceSize": [
+                512,
+                544
+              ],
+              "trim": [
+                135,
+                47
+              ],
+              "visibleHeight": 426,
+              "registration": "guided pelvis"
+            }
+          ],
+          "activeWindow": [
+            5,
+            13
+          ]
+        },
+        "down_special": {
+          "image": "moonshine-specials-v1.png",
+          "scale": 0.17727272727272725,
+          "durations": [
+            5,
+            14,
+            9
+          ],
+          "loop": false,
+          "frames": [
+            {
+              "rect": [
+                203,
+                23,
+                263,
+                576
+              ],
+              "root": [
+                121,
+                574
+              ],
+              "sourceSize": [
+                627,
+                627
+              ],
+              "trim": [
+                203,
+                23
+              ],
+              "visibleHeight": 572,
+              "registration": "paired planted soles",
+              "image": "moonshine-idle-v1.png",
+              "scale": 0.13333333333333333
+            },
+            {
+              "image": "moonshine-specials-v1.png",
+              "scale": 0.17727272727272725,
+              "rect": [
+                57,
+                616,
+                396,
+                372
+              ],
+              "root": [
+                194,
+                370
+              ],
+              "sourceSize": [
+                512,
+                512
+              ],
+              "trim": [
+                57,
+                104
+              ],
+              "visibleHeight": 368,
+              "registration": "guided stance and planted baseline"
+            },
+            {
+              "image": "moonshine-specials-v1.png",
+              "scale": 0.17727272727272725,
+              "rect": [
+                1105,
+                567,
+                330,
+                422
+              ],
+              "root": [
+                170,
+                420
+              ],
+              "sourceSize": [
+                512,
+                512
+              ],
+              "trim": [
+                81,
+                55
+              ],
+              "visibleHeight": 418,
+              "registration": "guided stance and planted baseline"
+            }
+          ]
+        },
+        "counter_success": {
+          "image": "moonshine-specials-v1.png",
+          "scale": 0.17727272727272725,
+          "durations": [
+            2,
+            6,
+            12
+          ],
+          "loop": false,
+          "frames": [
+            {
+              "image": "moonshine-specials-v1.png",
+              "scale": 0.17727272727272725,
+              "rect": [
+                57,
+                616,
+                396,
+                372
+              ],
+              "root": [
+                194,
+                370
+              ],
+              "sourceSize": [
+                512,
+                512
+              ],
+              "trim": [
+                57,
+                104
+              ],
+              "visibleHeight": 368,
+              "registration": "guided stance and planted baseline"
+            },
+            {
+              "image": "moonshine-specials-v1.png",
+              "scale": 0.17727272727272725,
+              "rect": [
+                561,
+                553,
+                371,
+                436
+              ],
+              "root": [
+                176,
+                434
+              ],
+              "sourceSize": [
+                512,
+                512
+              ],
+              "trim": [
+                49,
+                41
+              ],
+              "visibleHeight": 432,
+              "registration": "guided stance and planted baseline"
+            },
+            {
+              "image": "moonshine-specials-v1.png",
+              "scale": 0.17727272727272725,
+              "rect": [
+                1105,
+                567,
+                330,
+                422
+              ],
+              "root": [
+                170,
+                420
+              ],
+              "sourceSize": [
+                512,
+                512
+              ],
+              "trim": [
+                81,
+                55
+              ],
+              "visibleHeight": 418,
+              "registration": "guided stance and planted baseline"
+            }
+          ],
+          "activeWindow": [
+            2,
+            8
+          ]
+        },
+        "dash_start": {
+          "image": "moonshine-takeoff-rise-v1.png",
+          "scale": 0.16457142857142856,
+          "durations": [
+            2,
+            4,
+            3
+          ],
+          "loop": false,
+          "frames": [
+            {
+              "rect": [
+                203,
+                23,
+                263,
+                576
+              ],
+              "root": [
+                121,
+                574
+              ],
+              "sourceSize": [
+                627,
+                627
+              ],
+              "trim": [
+                203,
+                23
+              ],
+              "visibleHeight": 572,
+              "registration": "paired planted soles",
+              "image": "moonshine-idle-v1.png",
+              "scale": 0.13333333333333333
+            },
+            {
+              "image": "moonshine-takeoff-rise-v1.png",
+              "scale": 0.16457142857142856,
+              "rect": [
+                85,
+                111,
+                382,
+                356
+              ],
+              "root": [
+                209,
+                354
+              ],
+              "sourceSize": [
+                512,
+                485
+              ],
+              "trim": [
+                85,
+                111
+              ],
+              "visibleHeight": 352,
+              "registration": "guided stance and planted baseline"
+            },
+            {
+              "rect": [
+                56,
+                12,
+                348,
+                420
+              ],
+              "root": [
+                164,
+                418
+              ],
+              "sourceSize": [
+                444,
+                444
+              ],
+              "trim": [
+                56,
+                12
+              ],
+              "visibleHeight": 416,
+              "registration": "manually guided torso with shared baseline",
+              "image": "moonshine-run-v3.png",
+              "scale": 0.1875
+            }
+          ]
+        },
+        "takeoff_neutral": {
+          "image": "moonshine-takeoff-rise-v1.png",
+          "scale": 0.16457142857142856,
+          "durations": [
+            3,
+            6
+          ],
+          "loop": false,
+          "frames": [
+            {
+              "rect": [
+                120,
+                62,
+                327,
+                401
+              ],
+              "root": [
+                134.25,
+                399
+              ],
+              "sourceSize": [
+                512,
+                512
+              ],
+              "trim": [
+                120,
+                62
+              ],
+              "visibleHeight": 397,
+              "registration": "planted support",
+              "image": "moonshine-crouch-land-v1-candidate.png",
+              "scale": 0.17067833698030635
+            },
+            {
+              "image": "moonshine-takeoff-rise-v1.png",
+              "scale": 0.16457142857142856,
+              "rect": [
+                675,
+                5,
+                179,
+                459
+              ],
+              "root": [
+                100,
+                448.5
+              ],
+              "sourceSize": [
+                512,
+                485
+              ],
+              "trim": [
+                163,
+                5
+              ],
+              "visibleHeight": 455,
+              "registration": "guided pelvis"
+            }
+          ]
+        },
+        "takeoff_forward": {
+          "image": "moonshine-takeoff-rise-v1.png",
+          "scale": 0.16457142857142856,
+          "durations": [
+            3,
+            6
+          ],
+          "loop": false,
+          "frames": [
+            {
+              "rect": [
+                120,
+                62,
+                327,
+                401
+              ],
+              "root": [
+                134.25,
+                399
+              ],
+              "sourceSize": [
+                512,
+                512
+              ],
+              "trim": [
+                120,
+                62
+              ],
+              "visibleHeight": 397,
+              "registration": "planted support",
+              "image": "moonshine-crouch-land-v1-candidate.png",
+              "scale": 0.17067833698030635
+            },
+            {
+              "image": "moonshine-takeoff-rise-v1.png",
+              "scale": 0.16457142857142856,
+              "rect": [
+                1107,
+                38,
+                337,
+                423
+              ],
+              "root": [
+                161,
+                418.5
+              ],
+              "sourceSize": [
+                512,
+                485
+              ],
+              "trim": [
+                83,
+                38
+              ],
+              "visibleHeight": 419,
+              "registration": "guided pelvis"
+            }
+          ]
+        },
+        "takeoff_backward": {
+          "image": "moonshine-takeoff-rise-v1.png",
+          "scale": 0.16457142857142856,
+          "durations": [
+            3,
+            6
+          ],
+          "loop": false,
+          "frames": [
+            {
+              "rect": [
+                120,
+                62,
+                327,
+                401
+              ],
+              "root": [
+                134.25,
+                399
+              ],
+              "sourceSize": [
+                512,
+                512
+              ],
+              "trim": [
+                120,
+                62
+              ],
+              "visibleHeight": 397,
+              "registration": "planted support",
+              "image": "moonshine-crouch-land-v1-candidate.png",
+              "scale": 0.17067833698030635
+            },
+            {
+              "image": "moonshine-takeoff-rise-v1.png",
+              "scale": 0.16457142857142856,
+              "rect": [
+                75,
+                546,
+                362,
+                446
+              ],
+              "root": [
+                163,
+                439.5
+              ],
+              "sourceSize": [
+                512,
+                539
+              ],
+              "trim": [
+                75,
+                61
+              ],
+              "visibleHeight": 442,
+              "registration": "guided pelvis"
+            }
+          ]
+        },
+        "air_rise_loop": {
+          "image": "moonshine-takeoff-rise-v1.png",
+          "scale": 0.16457142857142856,
+          "durations": [
+            6,
+            6
+          ],
+          "loop": true,
+          "frames": [
+            {
+              "image": "moonshine-takeoff-rise-v1.png",
+              "scale": 0.16457142857142856,
+              "rect": [
+                651,
+                517,
+                212,
+                401
+              ],
+              "root": [
+                107,
+                439.5
+              ],
+              "sourceSize": [
+                512,
+                539
+              ],
+              "trim": [
+                139,
+                32
+              ],
+              "visibleHeight": 397,
+              "registration": "guided pelvis"
+            },
+            {
+              "image": "moonshine-takeoff-rise-v1.png",
+              "scale": 0.16457142857142856,
+              "rect": [
+                1148,
+                505,
+                206,
+                392
+              ],
+              "root": [
+                94,
+                436.5
+              ],
+              "sourceSize": [
+                512,
+                539
+              ],
+              "trim": [
+                124,
+                20
+              ],
+              "visibleHeight": 388,
+              "registration": "guided pelvis"
+            }
+          ]
+        },
+        "reaction": {
+          "image": "moonshine-reactions-v1.png",
+          "scale": 0.1763819095477387,
+          "durations": [
+            5,
+            7
+          ],
+          "loop": false,
+          "frames": [
+            {
+              "image": "moonshine-reactions-v1.png",
+              "scale": 0.1763819095477387,
+              "rect": [
+                133,
+                109,
+                323,
+                402
+              ],
+              "root": [
+                186,
+                400
+              ],
+              "sourceSize": [
+                512,
+                540
+              ],
+              "trim": [
+                133,
+                109
+              ],
+              "visibleHeight": 398,
+              "registration": "guided stance and planted baseline"
+            },
+            {
+              "rect": [
+                203,
+                23,
+                263,
+                576
+              ],
+              "root": [
+                121,
+                574
+              ],
+              "sourceSize": [
+                627,
+                627
+              ],
+              "trim": [
+                203,
+                23
+              ],
+              "visibleHeight": 572,
+              "registration": "paired planted soles",
+              "image": "moonshine-idle-v1.png",
+              "scale": 0.13333333333333333
+            }
+          ],
+          "aliasOf": "hit_mid"
+        },
+        "air_dodge_directional": {
+          "image": "moonshine-shield-air-dodge-v1.png",
+          "scale": 0.16043763676148795,
+          "durations": [
+            3,
+            8,
+            12
+          ],
+          "loop": false,
+          "frames": [
+            {
+              "image": "moonshine-defense-v1.png",
+              "scale": 0.17148936170212767,
+              "rect": [
+                1112,
+                549,
+                271,
+                365
+              ],
+              "root": [
+                123,
+                410.3225806451612
+              ],
+              "sourceSize": [
+                512,
+                512
+              ],
+              "trim": [
+                88,
+                37
+              ],
+              "visibleHeight": 361,
+              "registration": "guided pelvis"
+            },
+            {
+              "image": "moonshine-shield-air-dodge-v1.png",
+              "scale": 0.16043763676148795,
+              "rect": [
+                505,
+                555,
+                472,
+                394
+              ],
+              "root": [
+                216,
+                429.36170212765956
+              ],
+              "sourceSize": [
+                554,
+                519
+              ],
+              "trim": [
+                35,
+                50
+              ],
+              "visibleHeight": 390,
+              "registration": "guided pelvis"
+            },
+            {
+              "image": "moonshine-aerials-v1.png",
+              "scale": 0.1556338028169014,
+              "rect": [
+                1159,
+                527,
+                217,
+                430
+              ],
+              "root": [
+                121,
+                475.56470588235294
+              ],
+              "sourceSize": [
+                512,
+                544
+              ],
+              "trim": [
+                135,
+                47
+              ],
+              "visibleHeight": 426,
+              "registration": "guided pelvis"
+            }
+          ],
+          "aliasOf": "air_dodge_side"
         }
       }
     },
@@ -12245,7 +14445,7 @@
                 21
               ],
               "visibleHeight": 410,
-              "registration": "manually guided torso with shared baseline"
+              "registration": "paired stride clearance and guided torso"
             },
             {
               "rect": [
@@ -12267,7 +14467,7 @@
                 29
               ],
               "visibleHeight": 402,
-              "registration": "manually guided torso with shared baseline"
+              "registration": "paired stride clearance and guided torso"
             },
             {
               "rect": [
@@ -12278,7 +14478,7 @@
               ],
               "root": [
                 144,
-                415
+                414.67045454545456
               ],
               "sourceSize": [
                 444,
@@ -12289,7 +14489,7 @@
                 18
               ],
               "visibleHeight": 408,
-              "registration": "manually guided torso with shared baseline"
+              "registration": "paired stride clearance and guided torso"
             },
             {
               "rect": [
@@ -12300,7 +14500,7 @@
               ],
               "root": [
                 166,
-                424
+                418.02272727272725
               ],
               "sourceSize": [
                 443,
@@ -12311,7 +14511,7 @@
                 9
               ],
               "visibleHeight": 388,
-              "registration": "manually guided torso with shared baseline"
+              "registration": "paired stride clearance and guided torso"
             },
             {
               "rect": [
@@ -12322,7 +14522,7 @@
               ],
               "root": [
                 188,
-                413
+                410
               ],
               "sourceSize": [
                 444,
@@ -12333,7 +14533,7 @@
                 20
               ],
               "visibleHeight": 408,
-              "registration": "manually guided torso with shared baseline"
+              "registration": "paired stride clearance and guided torso"
             },
             {
               "rect": [
@@ -12344,7 +14544,7 @@
               ],
               "root": [
                 152,
-                402
+                400
               ],
               "sourceSize": [
                 443,
@@ -12355,7 +14555,7 @@
                 31
               ],
               "visibleHeight": 398,
-              "registration": "manually guided torso with shared baseline"
+              "registration": "paired stride clearance and guided torso"
             },
             {
               "rect": [
@@ -12366,7 +14566,7 @@
               ],
               "root": [
                 151,
-                417
+                417.67045454545456
               ],
               "sourceSize": [
                 444,
@@ -12377,7 +14577,7 @@
                 16
               ],
               "visibleHeight": 411,
-              "registration": "manually guided torso with shared baseline"
+              "registration": "paired stride clearance and guided torso"
             },
             {
               "rect": [
@@ -12388,7 +14588,7 @@
               ],
               "root": [
                 158,
-                423
+                428.02272727272725
               ],
               "sourceSize": [
                 443,
@@ -12399,7 +14599,7 @@
                 10
               ],
               "visibleHeight": 398,
-              "registration": "manually guided torso with shared baseline"
+              "registration": "paired stride clearance and guided torso"
             }
           ]
         },
@@ -12771,98 +14971,179 @@
           ]
         },
         "crouch_enter": {
-          "image": "hulk-hoagie-crouch-land-v1-candidate.png",
-          "scale": 0.18333333333333332,
+          "image": "hulk-hoagie-crouch-polish-v1.png",
+          "scale": 0.18984269662921346,
           "durations": [
-            3
+            2,
+            2
           ],
           "loop": false,
           "frames": [
             {
+              "image": "hulk-hoagie-crouch-polish-v1.png",
+              "scale": 0.18984269662921346,
               "rect": [
-                124,
-                35,
-                271,
-                414
+                138,
+                20,
+                250,
+                446
               ],
               "root": [
-                116,
-                412
+                110,
+                444
               ],
               "sourceSize": [
                 512,
-                480
+                512
               ],
               "trim": [
-                124,
-                35
+                138,
+                20
               ],
-              "visibleHeight": 410,
-              "registration": "planted support"
+              "visibleHeight": 442,
+              "registration": "guided stance and planted baseline"
+            },
+            {
+              "image": "hulk-hoagie-crouch-polish-v1.png",
+              "scale": 0.18984269662921346,
+              "rect": [
+                620,
+                88,
+                274,
+                378
+              ],
+              "root": [
+                124,
+                376
+              ],
+              "sourceSize": [
+                512,
+                512
+              ],
+              "trim": [
+                108,
+                88
+              ],
+              "visibleHeight": 374,
+              "registration": "guided stance and planted baseline"
             }
           ]
         },
         "crouch_hold": {
-          "image": "hulk-hoagie-crouch-land-v1-candidate.png",
-          "scale": 0.18333333333333332,
+          "image": "hulk-hoagie-crouch-polish-v1.png",
+          "scale": 0.18984269662921346,
           "durations": [
-            18
+            9,
+            9
           ],
           "loop": true,
           "frames": [
             {
+              "image": "hulk-hoagie-crouch-polish-v1.png",
+              "scale": 0.18984269662921346,
               "rect": [
-                596,
-                96,
-                319,
-                358
+                1106,
+                135,
+                292,
+                336
               ],
               "root": [
                 147,
-                356
+                334
               ],
               "sourceSize": [
                 512,
-                480
+                512
               ],
               "trim": [
-                84,
-                96
+                82,
+                135
               ],
-              "visibleHeight": 354,
-              "registration": "planted support"
+              "visibleHeight": 332,
+              "registration": "guided stance and planted baseline"
+            },
+            {
+              "image": "hulk-hoagie-crouch-polish-v1.png",
+              "scale": 0.18984269662921346,
+              "rect": [
+                124,
+                638,
+                294,
+                346
+              ],
+              "root": [
+                141,
+                344
+              ],
+              "sourceSize": [
+                512,
+                512
+              ],
+              "trim": [
+                124,
+                126
+              ],
+              "visibleHeight": 342,
+              "registration": "guided stance and planted baseline"
             }
           ]
         },
         "crouch_exit": {
-          "image": "hulk-hoagie-crouch-land-v1-candidate.png",
-          "scale": 0.18333333333333332,
+          "image": "hulk-hoagie-crouch-polish-v1.png",
+          "scale": 0.18984269662921346,
           "durations": [
-            3
+            2,
+            2
           ],
           "loop": false,
           "frames": [
             {
+              "image": "hulk-hoagie-crouch-polish-v1.png",
+              "scale": 0.18984269662921346,
               "rect": [
-                1102,
-                35,
-                304,
-                413
+                621,
+                581,
+                270,
+                397
               ],
               "root": [
-                125.25,
-                411
+                125,
+                395
               ],
               "sourceSize": [
                 512,
-                480
+                512
               ],
               "trim": [
-                78,
-                35
+                109,
+                69
               ],
-              "visibleHeight": 409,
-              "registration": "planted support"
+              "visibleHeight": 393,
+              "registration": "guided stance and planted baseline"
+            },
+            {
+              "image": "hulk-hoagie-crouch-polish-v1.png",
+              "scale": 0.18984269662921346,
+              "rect": [
+                1139,
+                529,
+                251,
+                449
+              ],
+              "root": [
+                114,
+                447
+              ],
+              "sourceSize": [
+                512,
+                512
+              ],
+              "trim": [
+                115,
+                17
+              ],
+              "visibleHeight": 445,
+              "registration": "guided stance and planted baseline"
             }
           ]
         },
@@ -13055,161 +15336,346 @@
           ]
         },
         "double_jump_transition": {
-          "image": "hulk-hoagie-turn-air-v1.png",
-          "scale": 0.19954648526077098,
+          "image": "hulk-hoagie-jump-polish-v1.png",
+          "scale": 0.1878867102396514,
           "durations": [
-            6
+            2,
+            2,
+            2
           ],
           "loop": false,
           "frames": [
             {
+              "image": "hulk-hoagie-jump-polish-v1.png",
+              "scale": 0.1878867102396514,
               "rect": [
-                127,
-                558,
-                289,
-                337
+                143,
+                582,
+                253,
+                357
               ],
               "root": [
-                127,
-                380.67999999999995
+                121,
+                417.81632653061223
               ],
               "sourceSize": [
                 512,
-                512
+                534
               ],
               "trim": [
-                127,
-                46
+                143,
+                92
               ],
-              "visibleHeight": 333,
+              "visibleHeight": 353,
+              "registration": "guided pelvis"
+            },
+            {
+              "image": "hulk-hoagie-jump-polish-v1.png",
+              "scale": 0.1878867102396514,
+              "rect": [
+                615,
+                508,
+                288,
+                503
+              ],
+              "root": [
+                149,
+                470.81632653061223
+              ],
+              "sourceSize": [
+                512,
+                534
+              ],
+              "trim": [
+                103,
+                18
+              ],
+              "visibleHeight": 499,
+              "registration": "guided pelvis"
+            },
+            {
+              "image": "hulk-hoagie-jump-polish-v1.png",
+              "scale": 0.1878867102396514,
+              "rect": [
+                1127,
+                525,
+                248,
+                461
+              ],
+              "root": [
+                106,
+                456.81632653061223
+              ],
+              "sourceSize": [
+                512,
+                534
+              ],
+              "trim": [
+                103,
+                35
+              ],
+              "visibleHeight": 457,
               "registration": "guided pelvis"
             }
           ]
         },
         "air_apex_loop": {
-          "image": "hulk-hoagie-turn-air-v1.png",
-          "scale": 0.19954648526077098,
+          "image": "hulk-hoagie-air-loops-v1.png",
+          "scale": 0.17676025917926566,
           "durations": [
-            8
+            6,
+            6
           ],
           "loop": true,
           "frames": [
             {
+              "image": "hulk-hoagie-air-loops-v1.png",
+              "scale": 0.17676025917926566,
               "rect": [
-                581,
-                515,
-                307,
-                474
+                179,
+                14,
+                202,
+                433
               ],
               "root": [
-                188,
-                462.67999999999995
+                101,
+                479.96774193548384
               ],
               "sourceSize": [
                 512,
                 512
               ],
               "trim": [
-                69,
-                3
+                179,
+                14
               ],
-              "visibleHeight": 470,
+              "visibleHeight": 429,
+              "registration": "guided pelvis"
+            },
+            {
+              "image": "hulk-hoagie-air-loops-v1.png",
+              "scale": 0.17676025917926566,
+              "rect": [
+                178,
+                533,
+                206,
+                422
+              ],
+              "root": [
+                102,
+                470.96774193548384
+              ],
+              "sourceSize": [
+                512,
+                512
+              ],
+              "trim": [
+                178,
+                21
+              ],
+              "visibleHeight": 418,
               "registration": "guided pelvis"
             }
           ]
         },
         "air_fall_loop": {
-          "image": "hulk-hoagie-turn-air-v1.png",
-          "scale": 0.19954648526077098,
+          "image": "hulk-hoagie-air-loops-v1.png",
+          "scale": 0.17676025917926566,
           "durations": [
-            8
+            6,
+            6
           ],
           "loop": true,
           "frames": [
             {
+              "image": "hulk-hoagie-air-loops-v1.png",
+              "scale": 0.17676025917926566,
               "rect": [
-                1090,
-                566,
-                325,
-                423
+                670,
+                14,
+                199,
+                467
               ],
               "root": [
-                158,
-                392.67999999999995
+                104,
+                487.96774193548384
               ],
               "sourceSize": [
                 512,
                 512
               ],
               "trim": [
-                66,
-                54
+                158,
+                14
               ],
-              "visibleHeight": 419,
+              "visibleHeight": 463,
+              "registration": "guided pelvis"
+            },
+            {
+              "image": "hulk-hoagie-air-loops-v1.png",
+              "scale": 0.17676025917926566,
+              "rect": [
+                668,
+                529,
+                206,
+                455
+              ],
+              "root": [
+                104,
+                483.96774193548384
+              ],
+              "sourceSize": [
+                512,
+                512
+              ],
+              "trim": [
+                156,
+                17
+              ],
+              "visibleHeight": 451,
               "registration": "guided pelvis"
             }
           ]
         },
         "jump_squat": {
-          "image": "hulk-hoagie-jump-squat-fastfall-v1.png",
-          "scale": 0.0955263157894737,
+          "image": "hulk-hoagie-jump-polish-v1.png",
+          "scale": 0.1878867102396514,
           "durations": [
-            3
+            1,
+            1,
+            1
           ],
           "loop": false,
           "frames": [
             {
+              "image": "hulk-hoagie-jump-polish-v1.png",
+              "scale": 0.1878867102396514,
               "rect": [
-                210,
-                229,
-                462,
-                612
+                134,
+                38,
+                240,
+                433
               ],
               "root": [
-                237.75,
-                610
+                141,
+                431
               ],
               "sourceSize": [
-                887,
-                887
+                512,
+                490
               ],
               "trim": [
-                210,
-                229
+                134,
+                38
               ],
-              "visibleHeight": 608,
-              "registration": "planted support"
+              "visibleHeight": 429,
+              "registration": "guided stance and planted baseline"
+            },
+            {
+              "image": "hulk-hoagie-jump-polish-v1.png",
+              "scale": 0.1878867102396514,
+              "rect": [
+                626,
+                103,
+                245,
+                368
+              ],
+              "root": [
+                142,
+                366
+              ],
+              "sourceSize": [
+                512,
+                490
+              ],
+              "trim": [
+                114,
+                103
+              ],
+              "visibleHeight": 364,
+              "registration": "guided stance and planted baseline"
+            },
+            {
+              "image": "hulk-hoagie-jump-polish-v1.png",
+              "scale": 0.1878867102396514,
+              "rect": [
+                1116,
+                8,
+                258,
+                463
+              ],
+              "root": [
+                144,
+                461
+              ],
+              "sourceSize": [
+                512,
+                490
+              ],
+              "trim": [
+                92,
+                8
+              ],
+              "visibleHeight": 459,
+              "registration": "guided stance and planted baseline"
             }
           ]
         },
         "air_fastfall_loop": {
-          "image": "hulk-hoagie-jump-squat-fastfall-v1.png",
-          "scale": 0.10005479452054794,
+          "image": "hulk-hoagie-air-loops-v1.png",
+          "scale": 0.17676025917926566,
           "durations": [
-            8
+            5,
+            5
           ],
           "loop": true,
           "frames": [
             {
+              "image": "hulk-hoagie-air-loops-v1.png",
+              "scale": 0.17676025917926566,
               "rect": [
-                1146,
-                91,
-                439,
-                734
+                1147,
+                56,
+                212,
+                387
               ],
               "root": [
-                134,
-                741.1686746987951
+                84,
+                427.96774193548384
               ],
               "sourceSize": [
-                887,
-                887
+                512,
+                512
               ],
               "trim": [
-                259,
-                91
+                123,
+                56
               ],
-              "visibleHeight": 730,
+              "visibleHeight": 383,
+              "registration": "guided pelvis"
+            },
+            {
+              "image": "hulk-hoagie-air-loops-v1.png",
+              "scale": 0.17676025917926566,
+              "rect": [
+                1151,
+                577,
+                211,
+                384
+              ],
+              "root": [
+                82,
+                426.96774193548384
+              ],
+              "sourceSize": [
+                512,
+                512
+              ],
+              "trim": [
+                127,
+                65
+              ],
+              "visibleHeight": 380,
               "registration": "guided pelvis"
             }
           ]
@@ -13357,66 +15823,170 @@
           ]
         },
         "teeter_front": {
-          "image": "hulk-hoagie-drop-teeter-tilts-v1.png",
-          "scale": 0.19909502262443438,
+          "image": "hulk-hoagie-teeter-polish-v1.png",
+          "scale": 0.1655278310940499,
           "durations": [
-            12
+            4,
+            3,
+            4,
+            3
           ],
-          "loop": false,
+          "loop": true,
           "frames": [
             {
+              "image": "hulk-hoagie-teeter-polish-v1.png",
+              "scale": 0.1655278310940499,
               "rect": [
-                586,
-                72,
-                367,
-                389
+                40,
+                7,
+                523,
+                525
               ],
               "root": [
-                153,
-                387
+                127,
+                523
               ],
               "sourceSize": [
-                512,
-                512
+                656,
+                600
               ],
               "trim": [
-                74,
+                40,
+                7
+              ],
+              "visibleHeight": 521,
+              "registration": "supporting boot center and sole baseline"
+            },
+            {
+              "image": "hulk-hoagie-teeter-mid-v1.png",
+              "scale": 0.10430813067653401,
+              "rect": [
+                275,
+                141,
+                839,
+                780
+              ],
+              "root": [
+                178,
+                778
+              ],
+              "sourceSize": [
+                1448,
+                1086
+              ],
+              "trim": [
+                275,
+                141
+              ],
+              "visibleHeight": 776,
+              "registration": "supporting boot center and sole baseline"
+            },
+            {
+              "image": "hulk-hoagie-teeter-polish-v1.png",
+              "scale": 0.1655278310940499,
+              "rect": [
+                713,
+                72,
+                540,
+                461
+              ],
+              "root": [
+                85,
+                459
+              ],
+              "sourceSize": [
+                656,
+                600
+              ],
+              "trim": [
+                57,
                 72
               ],
-              "visibleHeight": 385,
-              "registration": "guided stance and planted baseline"
+              "visibleHeight": 457,
+              "registration": "supporting boot center and sole baseline"
+            },
+            {
+              "image": "hulk-hoagie-teeter-mid-v1.png",
+              "scale": 0.10430813067653401,
+              "rect": [
+                275,
+                141,
+                839,
+                780
+              ],
+              "root": [
+                178,
+                778
+              ],
+              "sourceSize": [
+                1448,
+                1086
+              ],
+              "trim": [
+                275,
+                141
+              ],
+              "visibleHeight": 776,
+              "registration": "supporting boot center and sole baseline"
             }
           ]
         },
         "teeter_back": {
-          "image": "hulk-hoagie-drop-teeter-tilts-v1.png",
-          "scale": 0.19909502262443438,
+          "image": "hulk-hoagie-teeter-polish-v1.png",
+          "scale": 0.1655278310940499,
           "durations": [
-            12
+            7,
+            7
           ],
-          "loop": false,
+          "loop": true,
           "frames": [
             {
+              "image": "hulk-hoagie-teeter-polish-v1.png",
+              "scale": 0.1655278310940499,
               "rect": [
-                1099,
-                26,
-                327,
-                438
+                46,
+                602,
+                467,
+                551
               ],
               "root": [
-                147,
-                436
+                391,
+                549
               ],
               "sourceSize": [
-                512,
-                512
+                656,
+                599
               ],
               "trim": [
-                75,
-                26
+                46,
+                2
               ],
-              "visibleHeight": 434,
-              "registration": "guided stance and planted baseline"
+              "visibleHeight": 547,
+              "registration": "supporting boot center and sole baseline"
+            },
+            {
+              "image": "hulk-hoagie-teeter-polish-v1.png",
+              "scale": 0.1655278310940499,
+              "rect": [
+                698,
+                613,
+                514,
+                540
+              ],
+              "root": [
+                444,
+                538
+              ],
+              "sourceSize": [
+                656,
+                599
+              ],
+              "trim": [
+                42,
+                13
+              ],
+              "visibleHeight": 536,
+              "registration": "supporting boot center and sole baseline"
             }
           ]
         },
@@ -16083,9 +18653,10 @@
           "image": "hulk-hoagie-reactions-v1.png",
           "scale": 0.1824884792626728,
           "durations": [
-            4,
-            4,
-            4
+            3,
+            3,
+            3,
+            3
           ],
           "loop": true,
           "frames": [
@@ -16135,6 +18706,30 @@
                 37
               ],
               "visibleHeight": 358,
+              "registration": "guided rotation center"
+            },
+            {
+              "image": "hulk-hoagie-tumble-side-v1.png",
+              "scale": 0.11990428925912798,
+              "rect": [
+                443,
+                273,
+                628,
+                449
+              ],
+              "root": [
+                313.5,
+                576.7809756097561
+              ],
+              "sourceSize": [
+                1536,
+                1024
+              ],
+              "trim": [
+                443,
+                273
+              ],
+              "visibleHeight": 445,
               "registration": "guided rotation center"
             },
             {
@@ -16471,7 +19066,8 @@
           "image": "hulk-hoagie-knockdowns-v1.png",
           "scale": 0.18089935760171305,
           "durations": [
-            18
+            9,
+            9
           ],
           "loop": true,
           "frames": [
@@ -16498,6 +19094,30 @@
               ],
               "visibleHeight": 148,
               "registration": "guided stance and planted baseline"
+            },
+            {
+              "image": "hulk-hoagie-hold-polish-v1.png",
+              "scale": 0.1517511222406397,
+              "rect": [
+                61,
+                314,
+                606,
+                187
+              ],
+              "root": [
+                287,
+                185
+              ],
+              "sourceSize": [
+                737,
+                724
+              ],
+              "trim": [
+                61,
+                314
+              ],
+              "visibleHeight": 183,
+              "registration": "guided stance and planted baseline"
             }
           ]
         },
@@ -16505,7 +19125,8 @@
           "image": "hulk-hoagie-getups-v1.png",
           "scale": 0.18089935760171305,
           "durations": [
-            8,
+            4,
+            4,
             7,
             6,
             6
@@ -16534,6 +19155,30 @@
                 294
               ],
               "visibleHeight": 148,
+              "registration": "guided stance and planted baseline"
+            },
+            {
+              "image": "hulk-hoagie-hold-polish-v1.png",
+              "scale": 0.1517511222406397,
+              "rect": [
+                61,
+                314,
+                606,
+                187
+              ],
+              "root": [
+                287,
+                185
+              ],
+              "sourceSize": [
+                737,
+                724
+              ],
+              "trim": [
+                61,
+                314
+              ],
+              "visibleHeight": 183,
               "registration": "guided stance and planted baseline"
             },
             {
@@ -16614,7 +19259,8 @@
           "image": "hulk-hoagie-getups-v1.png",
           "scale": 0.18089935760171305,
           "durations": [
-            8,
+            4,
+            4,
             4,
             8,
             5,
@@ -16644,6 +19290,30 @@
                 294
               ],
               "visibleHeight": 148,
+              "registration": "guided stance and planted baseline"
+            },
+            {
+              "image": "hulk-hoagie-hold-polish-v1.png",
+              "scale": 0.1517511222406397,
+              "rect": [
+                61,
+                314,
+                606,
+                187
+              ],
+              "root": [
+                287,
+                185
+              ],
+              "sourceSize": [
+                737,
+                724
+              ],
+              "trim": [
+                61,
+                314
+              ],
+              "visibleHeight": 183,
               "registration": "guided stance and planted baseline"
             },
             {
@@ -16748,7 +19418,8 @@
           "image": "hulk-hoagie-getups-v1.png",
           "scale": 0.18089935760171305,
           "durations": [
-            8,
+            4,
+            4,
             6,
             5,
             8,
@@ -16778,6 +19449,30 @@
                 294
               ],
               "visibleHeight": 148,
+              "registration": "guided stance and planted baseline"
+            },
+            {
+              "image": "hulk-hoagie-hold-polish-v1.png",
+              "scale": 0.1517511222406397,
+              "rect": [
+                61,
+                314,
+                606,
+                187
+              ],
+              "root": [
+                287,
+                185
+              ],
+              "sourceSize": [
+                737,
+                724
+              ],
+              "trim": [
+                61,
+                314
+              ],
+              "visibleHeight": 183,
               "registration": "guided stance and planted baseline"
             },
             {
@@ -16886,7 +19581,8 @@
           "image": "hulk-hoagie-knockdowns-v1.png",
           "scale": 0.18089935760171305,
           "durations": [
-            18
+            9,
+            9
           ],
           "loop": true,
           "frames": [
@@ -16913,6 +19609,30 @@
               ],
               "visibleHeight": 126,
               "registration": "guided stance and planted baseline"
+            },
+            {
+              "image": "hulk-hoagie-hold-polish-v1.png",
+              "scale": 0.14995234463718982,
+              "rect": [
+                763,
+                318,
+                647,
+                169
+              ],
+              "root": [
+                317,
+                167
+              ],
+              "sourceSize": [
+                713,
+                724
+              ],
+              "trim": [
+                26,
+                318
+              ],
+              "visibleHeight": 165,
+              "registration": "guided stance and planted baseline"
             }
           ]
         },
@@ -16920,7 +19640,8 @@
           "image": "hulk-hoagie-getups-v1.png",
           "scale": 0.18089935760171305,
           "durations": [
-            8,
+            4,
+            4,
             7,
             6,
             6
@@ -16949,6 +19670,30 @@
                 298
               ],
               "visibleHeight": 126,
+              "registration": "guided stance and planted baseline"
+            },
+            {
+              "image": "hulk-hoagie-hold-polish-v1.png",
+              "scale": 0.14995234463718982,
+              "rect": [
+                763,
+                318,
+                647,
+                169
+              ],
+              "root": [
+                317,
+                167
+              ],
+              "sourceSize": [
+                713,
+                724
+              ],
+              "trim": [
+                26,
+                318
+              ],
+              "visibleHeight": 165,
               "registration": "guided stance and planted baseline"
             },
             {
@@ -17029,7 +19774,8 @@
           "image": "hulk-hoagie-getups-v1.png",
           "scale": 0.18089935760171305,
           "durations": [
-            8,
+            4,
+            4,
             4,
             8,
             5,
@@ -17059,6 +19805,30 @@
                 298
               ],
               "visibleHeight": 126,
+              "registration": "guided stance and planted baseline"
+            },
+            {
+              "image": "hulk-hoagie-hold-polish-v1.png",
+              "scale": 0.14995234463718982,
+              "rect": [
+                763,
+                318,
+                647,
+                169
+              ],
+              "root": [
+                317,
+                167
+              ],
+              "sourceSize": [
+                713,
+                724
+              ],
+              "trim": [
+                26,
+                318
+              ],
+              "visibleHeight": 165,
               "registration": "guided stance and planted baseline"
             },
             {
@@ -17163,7 +19933,8 @@
           "image": "hulk-hoagie-getups-v1.png",
           "scale": 0.18089935760171305,
           "durations": [
-            8,
+            4,
+            4,
             6,
             5,
             8,
@@ -17193,6 +19964,30 @@
                 298
               ],
               "visibleHeight": 126,
+              "registration": "guided stance and planted baseline"
+            },
+            {
+              "image": "hulk-hoagie-hold-polish-v1.png",
+              "scale": 0.14995234463718982,
+              "rect": [
+                763,
+                318,
+                647,
+                169
+              ],
+              "root": [
+                317,
+                167
+              ],
+              "sourceSize": [
+                713,
+                724
+              ],
+              "trim": [
+                26,
+                318
+              ],
+              "visibleHeight": 165,
               "registration": "guided stance and planted baseline"
             },
             {
@@ -17696,7 +20491,8 @@
           "image": "hulk-hoagie-tech-trip-v1.png",
           "scale": 0.20216216216216218,
           "durations": [
-            18
+            9,
+            9
           ],
           "loop": true,
           "frames": [
@@ -17723,6 +20519,30 @@
               ],
               "visibleHeight": 284,
               "registration": "guided stance and planted baseline"
+            },
+            {
+              "image": "hulk-hoagie-hold-polish-v1.png",
+              "scale": 0.14607092641774724,
+              "rect": [
+                1534,
+                164,
+                523,
+                365
+              ],
+              "root": [
+                211,
+                363
+              ],
+              "sourceSize": [
+                722,
+                724
+              ],
+              "trim": [
+                84,
+                164
+              ],
+              "visibleHeight": 361,
+              "registration": "guided stance and planted baseline"
             }
           ]
         },
@@ -17730,7 +20550,8 @@
           "image": "hulk-hoagie-tech-trip-v1.png",
           "scale": 0.20216216216216218,
           "durations": [
-            6,
+            3,
+            3,
             7,
             6
           ],
@@ -17758,6 +20579,30 @@
                 81
               ],
               "visibleHeight": 284,
+              "registration": "guided stance and planted baseline"
+            },
+            {
+              "image": "hulk-hoagie-hold-polish-v1.png",
+              "scale": 0.14607092641774724,
+              "rect": [
+                1534,
+                164,
+                523,
+                365
+              ],
+              "root": [
+                211,
+                363
+              ],
+              "sourceSize": [
+                722,
+                724
+              ],
+              "trim": [
+                84,
+                164
+              ],
+              "visibleHeight": 361,
               "registration": "guided stance and planted baseline"
             },
             {
@@ -17814,7 +20659,8 @@
           "image": "hulk-hoagie-tech-trip-v1.png",
           "scale": 0.20216216216216218,
           "durations": [
-            6,
+            3,
+            3,
             8,
             6,
             6
@@ -17843,6 +20689,30 @@
                 81
               ],
               "visibleHeight": 284,
+              "registration": "guided stance and planted baseline"
+            },
+            {
+              "image": "hulk-hoagie-hold-polish-v1.png",
+              "scale": 0.14607092641774724,
+              "rect": [
+                1534,
+                164,
+                523,
+                365
+              ],
+              "root": [
+                211,
+                363
+              ],
+              "sourceSize": [
+                722,
+                724
+              ],
+              "trim": [
+                84,
+                164
+              ],
+              "visibleHeight": 361,
               "registration": "guided stance and planted baseline"
             },
             {
@@ -17923,7 +20793,8 @@
           "image": "hulk-hoagie-tech-trip-v1.png",
           "scale": 0.20216216216216218,
           "durations": [
-            6,
+            3,
+            3,
             5,
             8,
             6
@@ -17952,6 +20823,30 @@
                 81
               ],
               "visibleHeight": 284,
+              "registration": "guided stance and planted baseline"
+            },
+            {
+              "image": "hulk-hoagie-hold-polish-v1.png",
+              "scale": 0.14607092641774724,
+              "rect": [
+                1534,
+                164,
+                523,
+                365
+              ],
+              "root": [
+                211,
+                363
+              ],
+              "sourceSize": [
+                722,
+                724
+              ],
+              "trim": [
+                84,
+                164
+              ],
+              "visibleHeight": 361,
               "registration": "guided stance and planted baseline"
             },
             {
@@ -18316,6 +21211,12 @@
               ],
               "visibleHeight": 394,
               "registration": "guided stance and planted baseline",
+              "sockets": {
+                "grabGrip": [
+                  288,
+                  112
+                ]
+              },
               "grabContact": [
                 116.7853807106599,
                 -192.83167512690355
@@ -18344,6 +21245,12 @@
               ],
               "visibleHeight": 394,
               "registration": "guided stance and planted baseline",
+              "sockets": {
+                "grabGrip": [
+                  236,
+                  128
+                ]
+              },
               "grabContact": [
                 82.8361421319797,
                 -181.96791878172587
@@ -18408,6 +21315,16 @@
               ],
               "visibleHeight": 418,
               "registration": "guided stance and planted baseline",
+              "sockets": {
+                "gripTop": [
+                  114,
+                  135
+                ],
+                "gripBottom": [
+                  114,
+                  151
+                ]
+              },
               "grabContact": [
                 7.735518072289157,
                 -178.5615421686747
@@ -18436,6 +21353,16 @@
               ],
               "visibleHeight": 415,
               "registration": "guided stance and planted baseline",
+              "sockets": {
+                "gripTop": [
+                  108,
+                  134
+                ],
+                "gripBottom": [
+                  108,
+                  150
+                ]
+              },
               "grabContact": [
                 10.958650602409639,
                 -177.2722891566265
@@ -18474,6 +21401,12 @@
               ],
               "visibleHeight": 394,
               "registration": "guided stance and planted baseline",
+              "sockets": {
+                "grabGrip": [
+                  236,
+                  128
+                ]
+              },
               "grabContact": [
                 82.8361421319797,
                 -181.96791878172587
@@ -18512,6 +21445,16 @@
               ],
               "visibleHeight": 415,
               "registration": "guided stance and planted baseline",
+              "sockets": {
+                "gripTop": [
+                  108,
+                  134
+                ],
+                "gripBottom": [
+                  108,
+                  150
+                ]
+              },
               "grabContact": [
                 10.958650602409639,
                 -177.2722891566265
@@ -18552,6 +21495,12 @@
               ],
               "visibleHeight": 394,
               "registration": "guided stance and planted baseline",
+              "sockets": {
+                "grabGrip": [
+                  236,
+                  128
+                ]
+              },
               "grabContact": [
                 82.8361421319797,
                 -181.96791878172587
@@ -18580,6 +21529,12 @@
               ],
               "visibleHeight": 403,
               "registration": "guided stance and planted baseline",
+              "sockets": {
+                "grabGrip": [
+                  179,
+                  118
+                ]
+              },
               "grabContact": [
                 92.34192893401016,
                 -194.86862944162436
@@ -18608,11 +21563,21 @@
               ],
               "visibleHeight": 394,
               "registration": "guided stance and planted baseline",
+              "sockets": {
+                "grabGrip": [
+                  236,
+                  128
+                ]
+              },
               "grabContact": [
                 82.8361421319797,
                 -181.96791878172587
               ]
             }
+          ],
+          "activeWindow": [
+            4,
+            8
           ]
         },
         "pummel_victim": {
@@ -18648,6 +21613,16 @@
               ],
               "visibleHeight": 415,
               "registration": "guided stance and planted baseline",
+              "sockets": {
+                "gripTop": [
+                  108,
+                  134
+                ],
+                "gripBottom": [
+                  108,
+                  150
+                ]
+              },
               "grabContact": [
                 10.958650602409639,
                 -177.2722891566265
@@ -18676,6 +21651,16 @@
               ],
               "visibleHeight": 374,
               "registration": "guided stance and planted baseline",
+              "sockets": {
+                "gripTop": [
+                  111,
+                  111
+                ],
+                "gripBottom": [
+                  111,
+                  127
+                ]
+              },
               "grabContact": [
                 20.628048192771086,
                 -165.66901204819277
@@ -18704,6 +21689,16 @@
               ],
               "visibleHeight": 415,
               "registration": "guided stance and planted baseline",
+              "sockets": {
+                "gripTop": [
+                  108,
+                  134
+                ],
+                "gripBottom": [
+                  108,
+                  150
+                ]
+              },
               "grabContact": [
                 10.958650602409639,
                 -177.2722891566265
@@ -18744,6 +21739,12 @@
               ],
               "visibleHeight": 394,
               "registration": "guided stance and planted baseline",
+              "sockets": {
+                "grabGrip": [
+                  236,
+                  128
+                ]
+              },
               "grabContact": [
                 82.8361421319797,
                 -181.96791878172587
@@ -18772,6 +21773,12 @@
               ],
               "visibleHeight": 392,
               "registration": "guided stance and planted baseline",
+              "sockets": {
+                "grabGrip": [
+                  243,
+                  211
+                ]
+              },
               "grabContact": [
                 88.94700507614213,
                 -124.25421319796953
@@ -18836,6 +21843,16 @@
               ],
               "visibleHeight": 415,
               "registration": "guided stance and planted baseline",
+              "sockets": {
+                "gripTop": [
+                  108,
+                  134
+                ],
+                "gripBottom": [
+                  108,
+                  150
+                ]
+              },
               "grabContact": [
                 10.958650602409639,
                 -177.2722891566265
@@ -18864,6 +21881,16 @@
               ],
               "visibleHeight": 411,
               "registration": "guided stance and planted baseline",
+              "sockets": {
+                "gripTop": [
+                  140,
+                  131
+                ],
+                "gripBottom": [
+                  140,
+                  147
+                ]
+              },
               "grabContact": [
                 4.512385542168675,
                 -176.62766265060242
@@ -18928,6 +21955,12 @@
               ],
               "visibleHeight": 394,
               "registration": "guided stance and planted baseline",
+              "sockets": {
+                "grabGrip": [
+                  236,
+                  128
+                ]
+              },
               "grabContact": [
                 82.8361421319797,
                 -181.96791878172587
@@ -18956,6 +21989,12 @@
               ],
               "visibleHeight": 383,
               "registration": "guided stance and planted baseline",
+              "sockets": {
+                "grabGrip": [
+                  345,
+                  100
+                ]
+              },
               "grabContact": [
                 131.04406091370558,
                 -193.51065989847714
@@ -18985,6 +22024,10 @@
               "image": "hulk-hoagie-idle-v1.png",
               "scale": 0.1509433962264151
             }
+          ],
+          "activeWindow": [
+            6,
+            11
           ]
         },
         "throw_victim": {
@@ -19020,6 +22063,16 @@
               ],
               "visibleHeight": 415,
               "registration": "guided stance and planted baseline",
+              "sockets": {
+                "gripTop": [
+                  108,
+                  134
+                ],
+                "gripBottom": [
+                  108,
+                  150
+                ]
+              },
               "grabContact": [
                 10.958650602409639,
                 -177.2722891566265
@@ -19048,6 +22101,16 @@
               ],
               "visibleHeight": 365,
               "registration": "guided stance and planted baseline",
+              "sockets": {
+                "gripTop": [
+                  86,
+                  122
+                ],
+                "gripBottom": [
+                  86,
+                  138
+                ]
+              },
               "grabContact": [
                 -15.471036144578314,
                 -152.77648192771085
@@ -19112,6 +22175,12 @@
               ],
               "visibleHeight": 394,
               "registration": "guided stance and planted baseline",
+              "sockets": {
+                "grabGrip": [
+                  236,
+                  128
+                ]
+              },
               "grabContact": [
                 82.8361421319797,
                 -181.96791878172587
@@ -19140,6 +22209,12 @@
               ],
               "visibleHeight": 389,
               "registration": "guided stance and planted baseline",
+              "sockets": {
+                "grabGrip": [
+                  38,
+                  78
+                ]
+              },
               "grabContact": [
                 -86.91005076142132,
                 -212.52223350253809
@@ -19169,6 +22244,10 @@
               "image": "hulk-hoagie-idle-v1.png",
               "scale": 0.1509433962264151
             }
+          ],
+          "activeWindow": [
+            6,
+            11
           ]
         },
         "back_throw_victim_preview": {
@@ -19204,6 +22283,16 @@
               ],
               "visibleHeight": 415,
               "registration": "guided stance and planted baseline",
+              "sockets": {
+                "gripTop": [
+                  108,
+                  134
+                ],
+                "gripBottom": [
+                  108,
+                  150
+                ]
+              },
               "grabContact": [
                 10.958650602409639,
                 -177.2722891566265
@@ -19232,6 +22321,16 @@
               ],
               "visibleHeight": 370,
               "registration": "guided stance and planted baseline",
+              "sockets": {
+                "gripTop": [
+                  125,
+                  100
+                ],
+                "gripBottom": [
+                  125,
+                  116
+                ]
+              },
               "grabContact": [
                 -27.07431325301205,
                 -170.18139759036146
@@ -19296,6 +22395,12 @@
               ],
               "visibleHeight": 394,
               "registration": "guided stance and planted baseline",
+              "sockets": {
+                "grabGrip": [
+                  236,
+                  128
+                ]
+              },
               "grabContact": [
                 82.8361421319797,
                 -181.96791878172587
@@ -19324,6 +22429,12 @@
               ],
               "visibleHeight": 425,
               "registration": "guided stance and planted baseline",
+              "sockets": {
+                "grabGrip": [
+                  153,
+                  22
+                ]
+              },
               "grabContact": [
                 14.258680203045685,
                 -274.98883248730965
@@ -19353,6 +22464,10 @@
               "image": "hulk-hoagie-idle-v1.png",
               "scale": 0.1509433962264151
             }
+          ],
+          "activeWindow": [
+            6,
+            11
           ]
         },
         "up_throw_victim_preview": {
@@ -19388,6 +22503,16 @@
               ],
               "visibleHeight": 415,
               "registration": "guided stance and planted baseline",
+              "sockets": {
+                "gripTop": [
+                  108,
+                  134
+                ],
+                "gripBottom": [
+                  108,
+                  150
+                ]
+              },
               "grabContact": [
                 10.958650602409639,
                 -177.2722891566265
@@ -19416,6 +22541,16 @@
               ],
               "visibleHeight": 436,
               "registration": "guided stance and planted baseline",
+              "sockets": {
+                "gripTop": [
+                  142,
+                  103
+                ],
+                "gripBottom": [
+                  142,
+                  119
+                ]
+              },
               "grabContact": [
                 -7.735518072289157,
                 -210.79286746987952
@@ -19480,6 +22615,12 @@
               ],
               "visibleHeight": 394,
               "registration": "guided stance and planted baseline",
+              "sockets": {
+                "grabGrip": [
+                  236,
+                  128
+                ]
+              },
               "grabContact": [
                 82.8361421319797,
                 -181.96791878172587
@@ -19508,6 +22649,12 @@
               ],
               "visibleHeight": 313,
               "registration": "guided stance and planted baseline",
+              "sockets": {
+                "grabGrip": [
+                  298,
+                  201
+                ]
+              },
               "grabContact": [
                 117.46436548223349,
                 -77.40426395939086
@@ -19537,6 +22684,10 @@
               "image": "hulk-hoagie-idle-v1.png",
               "scale": 0.1509433962264151
             }
+          ],
+          "activeWindow": [
+            6,
+            11
           ]
         },
         "down_throw_victim_preview": {
@@ -19572,6 +22723,16 @@
               ],
               "visibleHeight": 415,
               "registration": "guided stance and planted baseline",
+              "sockets": {
+                "gripTop": [
+                  108,
+                  134
+                ],
+                "gripBottom": [
+                  108,
+                  150
+                ]
+              },
               "grabContact": [
                 10.958650602409639,
                 -177.2722891566265
@@ -19600,6 +22761,16 @@
               ],
               "visibleHeight": 311,
               "registration": "guided stance and planted baseline",
+              "sockets": {
+                "gripTop": [
+                  107,
+                  91
+                ],
+                "gripBottom": [
+                  107,
+                  107
+                ]
+              },
               "grabContact": [
                 -9.669397590361447,
                 -137.95007228915662
@@ -19716,6 +22887,12 @@
               ],
               "visibleHeight": 394,
               "registration": "guided stance and planted baseline",
+              "sockets": {
+                "grabGrip": [
+                  236,
+                  128
+                ]
+              },
               "grabContact": [
                 82.8361421319797,
                 -181.96791878172587
@@ -19780,6 +22957,16 @@
               ],
               "visibleHeight": 418,
               "registration": "guided stance and planted baseline",
+              "sockets": {
+                "gripTop": [
+                  114,
+                  135
+                ],
+                "gripBottom": [
+                  114,
+                  151
+                ]
+              },
               "grabContact": [
                 7.735518072289157,
                 -178.5615421686747
@@ -19808,6 +22995,16 @@
               ],
               "visibleHeight": 415,
               "registration": "guided stance and planted baseline",
+              "sockets": {
+                "gripTop": [
+                  108,
+                  134
+                ],
+                "gripBottom": [
+                  108,
+                  150
+                ]
+              },
               "grabContact": [
                 10.958650602409639,
                 -177.2722891566265
@@ -19900,6 +23097,12 @@
               ],
               "visibleHeight": 394,
               "registration": "guided stance and planted baseline",
+              "sockets": {
+                "grabGrip": [
+                  236,
+                  128
+                ]
+              },
               "grabContact": [
                 82.8361421319797,
                 -181.96791878172587
@@ -19964,6 +23167,16 @@
               ],
               "visibleHeight": 418,
               "registration": "guided stance and planted baseline",
+              "sockets": {
+                "gripTop": [
+                  114,
+                  135
+                ],
+                "gripBottom": [
+                  114,
+                  151
+                ]
+              },
               "grabContact": [
                 7.735518072289157,
                 -178.5615421686747
@@ -19992,6 +23205,16 @@
               ],
               "visibleHeight": 415,
               "registration": "guided stance and planted baseline",
+              "sockets": {
+                "gripTop": [
+                  108,
+                  134
+                ],
+                "gripBottom": [
+                  108,
+                  150
+                ]
+              },
               "grabContact": [
                 10.958650602409639,
                 -177.2722891566265
@@ -20059,7 +23282,13 @@
               "footstoolContact": [
                 0,
                 0
-              ]
+              ],
+              "sockets": {
+                "footstoolSole": [
+                  102,
+                  314
+                ]
+              }
             },
             {
               "image": "hulk-hoagie-footstool-ledge-v1.png",
@@ -20147,7 +23376,13 @@
               "footstoolContact": [
                 41.45317647058823,
                 -190.30776470588236
-              ]
+              ],
+              "sockets": {
+                "footstoolHead": [
+                  183,
+                  9
+                ]
+              }
             },
             {
               "image": "hulk-hoagie-reactions-v1.png",
@@ -20185,7 +23420,7 @@
           "frames": [
             {
               "image": "hulk-hoagie-footstool-ledge-v1.png",
-              "scale": 0.19627450980392155,
+              "scale": 0.22571568627450977,
               "rect": [
                 1023,
                 24,
@@ -20207,9 +23442,15 @@
               "visibleHeight": 408,
               "registration": "guided stance and planted baseline",
               "ledgeContact": [
-                28.89160784313725,
-                -242.4382745098039
-              ]
+                33.22534901960784,
+                -278.8040156862745
+              ],
+              "sockets": {
+                "ledgeGrip": [
+                  133,
+                  24
+                ]
+              }
             }
           ]
         },
@@ -20225,7 +23466,7 @@
           "frames": [
             {
               "image": "hulk-hoagie-footstool-ledge-v1.png",
-              "scale": 0.19627450980392155,
+              "scale": 0.22571568627450977,
               "rect": [
                 1023,
                 24,
@@ -20247,13 +23488,19 @@
               "visibleHeight": 408,
               "registration": "guided stance and planted baseline",
               "ledgeContact": [
-                28.89160784313725,
-                -242.4382745098039
-              ]
+                33.22534901960784,
+                -278.8040156862745
+              ],
+              "sockets": {
+                "ledgeGrip": [
+                  133,
+                  24
+                ]
+              }
             },
             {
               "image": "hulk-hoagie-footstool-ledge-v1.png",
-              "scale": 0.19627450980392155,
+              "scale": 0.22571568627450977,
               "rect": [
                 1436,
                 37,
@@ -20275,9 +23522,15 @@
               "visibleHeight": 372,
               "registration": "guided stance and planted baseline",
               "ledgeContact": [
-                37.68470588235294,
-                -92.95560784313726
-              ]
+                43.33741176470588,
+                -106.89894901960784
+              ],
+              "sockets": {
+                "ledgeGrip": [
+                  154,
+                  226
+                ]
+              }
             },
             {
               "rect": [
@@ -20318,7 +23571,7 @@
           "frames": [
             {
               "image": "hulk-hoagie-footstool-ledge-v1.png",
-              "scale": 0.19627450980392155,
+              "scale": 0.22571568627450977,
               "rect": [
                 1023,
                 24,
@@ -20340,13 +23593,19 @@
               "visibleHeight": 408,
               "registration": "guided stance and planted baseline",
               "ledgeContact": [
-                28.89160784313725,
-                -242.4382745098039
-              ]
+                33.22534901960784,
+                -278.8040156862745
+              ],
+              "sockets": {
+                "ledgeGrip": [
+                  133,
+                  24
+                ]
+              }
             },
             {
               "image": "hulk-hoagie-footstool-ledge-v1.png",
-              "scale": 0.19627450980392155,
+              "scale": 0.22571568627450977,
               "rect": [
                 1436,
                 37,
@@ -20368,9 +23627,15 @@
               "visibleHeight": 372,
               "registration": "guided stance and planted baseline",
               "ledgeContact": [
-                37.68470588235294,
-                -92.95560784313726
-              ]
+                43.33741176470588,
+                -106.89894901960784
+              ],
+              "sockets": {
+                "ledgeGrip": [
+                  154,
+                  226
+                ]
+              }
             },
             {
               "image": "hulk-hoagie-footstool-ledge-v1.png",
@@ -20434,7 +23699,7 @@
           "frames": [
             {
               "image": "hulk-hoagie-footstool-ledge-v1.png",
-              "scale": 0.19627450980392155,
+              "scale": 0.22571568627450977,
               "rect": [
                 1023,
                 24,
@@ -20456,9 +23721,15 @@
               "visibleHeight": 408,
               "registration": "guided stance and planted baseline",
               "ledgeContact": [
-                28.89160784313725,
-                -242.4382745098039
-              ]
+                33.22534901960784,
+                -278.8040156862745
+              ],
+              "sockets": {
+                "ledgeGrip": [
+                  133,
+                  24
+                ]
+              }
             },
             {
               "image": "hulk-hoagie-footstool-ledge-v1.png",
@@ -20523,7 +23794,7 @@
           "frames": [
             {
               "image": "hulk-hoagie-footstool-ledge-v1.png",
-              "scale": 0.19627450980392155,
+              "scale": 0.22571568627450977,
               "rect": [
                 1023,
                 24,
@@ -20545,13 +23816,19 @@
               "visibleHeight": 408,
               "registration": "guided stance and planted baseline",
               "ledgeContact": [
-                28.89160784313725,
-                -242.4382745098039
-              ]
+                33.22534901960784,
+                -278.8040156862745
+              ],
+              "sockets": {
+                "ledgeGrip": [
+                  133,
+                  24
+                ]
+              }
             },
             {
               "image": "hulk-hoagie-footstool-ledge-v1.png",
-              "scale": 0.19627450980392155,
+              "scale": 0.22571568627450977,
               "rect": [
                 1436,
                 37,
@@ -20573,9 +23850,15 @@
               "visibleHeight": 372,
               "registration": "guided stance and planted baseline",
               "ledgeContact": [
-                37.68470588235294,
-                -92.95560784313726
-              ]
+                43.33741176470588,
+                -106.89894901960784
+              ],
+              "sockets": {
+                "ledgeGrip": [
+                  154,
+                  226
+                ]
+              }
             },
             {
               "image": "hulk-hoagie-footstool-ledge-v1.png",
@@ -20643,7 +23926,7 @@
           "frames": [
             {
               "image": "hulk-hoagie-footstool-ledge-v1.png",
-              "scale": 0.19627450980392155,
+              "scale": 0.22571568627450977,
               "rect": [
                 1023,
                 24,
@@ -20665,9 +23948,15 @@
               "visibleHeight": 408,
               "registration": "guided stance and planted baseline",
               "ledgeContact": [
-                28.89160784313725,
-                -242.4382745098039
-              ]
+                33.22534901960784,
+                -278.8040156862745
+              ],
+              "sockets": {
+                "ledgeGrip": [
+                  133,
+                  24
+                ]
+              }
             },
             {
               "image": "hulk-hoagie-footstool-ledge-v1.png",
@@ -20779,7 +24068,13 @@
               "footstoolContact": [
                 37.38022268041237,
                 -204.9467381443299
-              ]
+              ],
+              "sockets": {
+                "footstoolHead": [
+                  267,
+                  10
+                ]
+              }
             },
             {
               "rect": [
@@ -20867,7 +24162,13 @@
               "footstoolContact": [
                 0,
                 0
-              ]
+              ],
+              "sockets": {
+                "footstoolSole": [
+                  102,
+                  314
+                ]
+              }
             },
             {
               "image": "hulk-hoagie-footstool-ledge-v1.png",
@@ -20906,7 +24207,7 @@
           "frames": [
             {
               "image": "hulk-hoagie-ledge-contact-v1.png",
-              "scale": 0.13426804123711342,
+              "scale": 0.14769484536082478,
               "rect": [
                 855,
                 39,
@@ -20928,13 +24229,19 @@
               "visibleHeight": 650,
               "registration": "guided stance and planted baseline",
               "ledgeContact": [
-                95.81367422680414,
-                -265.0988206185568
-              ]
+                105.39504164948455,
+                -291.6087026804125
+              ],
+              "sockets": {
+                "ledgeGrip": [
+                  418,
+                  34.999999999999886
+                ]
+              }
             },
             {
               "image": "hulk-hoagie-footstool-ledge-v1.png",
-              "scale": 0.19627450980392155,
+              "scale": 0.22571568627450977,
               "rect": [
                 1023,
                 24,
@@ -20956,9 +24263,15 @@
               "visibleHeight": 408,
               "registration": "guided stance and planted baseline",
               "ledgeContact": [
-                28.89160784313725,
-                -242.4382745098039
-              ]
+                33.22534901960784,
+                -278.8040156862745
+              ],
+              "sockets": {
+                "ledgeGrip": [
+                  133,
+                  24
+                ]
+              }
             }
           ]
         },
@@ -20974,7 +24287,7 @@
           "frames": [
             {
               "image": "hulk-hoagie-footstool-ledge-v1.png",
-              "scale": 0.19627450980392155,
+              "scale": 0.22571568627450977,
               "rect": [
                 1023,
                 24,
@@ -20996,9 +24309,15 @@
               "visibleHeight": 408,
               "registration": "guided stance and planted baseline",
               "ledgeContact": [
-                28.89160784313725,
-                -242.4382745098039
-              ]
+                33.22534901960784,
+                -278.8040156862745
+              ],
+              "sockets": {
+                "ledgeGrip": [
+                  133,
+                  24
+                ]
+              }
             },
             {
               "image": "hulk-hoagie-ledge-contact-v1.png",
@@ -22236,6 +25555,1083 @@
               "scale": 0.1509433962264151
             }
           ]
+        },
+        "jab_2": {
+          "image": "hulk-hoagie-jab-followups-v1.png",
+          "scale": 0.18843683083511778,
+          "durations": [
+            3,
+            3,
+            7
+          ],
+          "loop": false,
+          "frames": [
+            {
+              "rect": [
+                139,
+                13,
+                335,
+                582
+              ],
+              "root": [
+                158.25,
+                580
+              ],
+              "sourceSize": [
+                627,
+                627
+              ],
+              "trim": [
+                139,
+                13
+              ],
+              "visibleHeight": 578,
+              "registration": "paired planted soles",
+              "image": "hulk-hoagie-idle-v1.png",
+              "scale": 0.1509433962264151
+            },
+            {
+              "image": "hulk-hoagie-jab-followups-v1.png",
+              "scale": 0.18843683083511778,
+              "rect": [
+                180,
+                10,
+                484,
+                470
+              ],
+              "root": [
+                195,
+                468
+              ],
+              "sourceSize": [
+                768,
+                512
+              ],
+              "trim": [
+                180,
+                10
+              ],
+              "visibleHeight": 466,
+              "registration": "guided stance and planted baseline"
+            },
+            {
+              "image": "hulk-hoagie-jab-followups-v1.png",
+              "scale": 0.18843683083511778,
+              "rect": [
+                948,
+                9,
+                384,
+                471
+              ],
+              "root": [
+                184,
+                469
+              ],
+              "sourceSize": [
+                768,
+                512
+              ],
+              "trim": [
+                180,
+                9
+              ],
+              "visibleHeight": 467,
+              "registration": "guided stance and planted baseline"
+            }
+          ],
+          "activeWindow": [
+            3,
+            6
+          ]
+        },
+        "jab_3": {
+          "image": "hulk-hoagie-jab-followups-v1.png",
+          "scale": 0.18843683083511778,
+          "durations": [
+            4,
+            4,
+            9
+          ],
+          "loop": false,
+          "frames": [
+            {
+              "image": "hulk-hoagie-jab-followups-v1.png",
+              "scale": 0.18843683083511778,
+              "rect": [
+                948,
+                9,
+                384,
+                471
+              ],
+              "root": [
+                184,
+                469
+              ],
+              "sourceSize": [
+                768,
+                512
+              ],
+              "trim": [
+                180,
+                9
+              ],
+              "visibleHeight": 467,
+              "registration": "guided stance and planted baseline"
+            },
+            {
+              "image": "hulk-hoagie-jab-followups-v1.png",
+              "scale": 0.18843683083511778,
+              "rect": [
+                180,
+                524,
+                395,
+                478
+              ],
+              "root": [
+                196,
+                476
+              ],
+              "sourceSize": [
+                768,
+                512
+              ],
+              "trim": [
+                180,
+                12
+              ],
+              "visibleHeight": 474,
+              "registration": "guided stance and planted baseline"
+            },
+            {
+              "image": "hulk-hoagie-jab-followups-v1.png",
+              "scale": 0.18843683083511778,
+              "rect": [
+                949,
+                530,
+                385,
+                472
+              ],
+              "root": [
+                188,
+                470
+              ],
+              "sourceSize": [
+                768,
+                512
+              ],
+              "trim": [
+                181,
+                18
+              ],
+              "visibleHeight": 468,
+              "registration": "guided stance and planted baseline"
+            }
+          ],
+          "activeWindow": [
+            4,
+            8
+          ]
+        },
+        "neutral_special": {
+          "image": "hulk-hoagie-specials-v1.png",
+          "scale": 0.20047961630695443,
+          "durations": [
+            7,
+            6,
+            12
+          ],
+          "loop": false,
+          "frames": [
+            {
+              "rect": [
+                139,
+                13,
+                335,
+                582
+              ],
+              "root": [
+                158.25,
+                580
+              ],
+              "sourceSize": [
+                627,
+                627
+              ],
+              "trim": [
+                139,
+                13
+              ],
+              "visibleHeight": 578,
+              "registration": "paired planted soles",
+              "image": "hulk-hoagie-idle-v1.png",
+              "scale": 0.1509433962264151
+            },
+            {
+              "image": "hulk-hoagie-specials-v1.png",
+              "scale": 0.20047961630695443,
+              "rect": [
+                39,
+                70,
+                414,
+                421
+              ],
+              "root": [
+                181,
+                419
+              ],
+              "sourceSize": [
+                512,
+                512
+              ],
+              "trim": [
+                39,
+                70
+              ],
+              "visibleHeight": 417,
+              "registration": "guided stance and planted baseline"
+            },
+            {
+              "image": "hulk-hoagie-specials-v1.png",
+              "scale": 0.20047961630695443,
+              "rect": [
+                1126,
+                578,
+                336,
+                421
+              ],
+              "root": [
+                156,
+                419
+              ],
+              "sourceSize": [
+                512,
+                512
+              ],
+              "trim": [
+                102,
+                66
+              ],
+              "visibleHeight": 417,
+              "registration": "guided stance and planted baseline"
+            }
+          ],
+          "activeWindow": [
+            7,
+            13
+          ]
+        },
+        "side_special": {
+          "image": "hulk-hoagie-specials-v1.png",
+          "scale": 0.20047961630695443,
+          "durations": [
+            7,
+            7,
+            12
+          ],
+          "loop": false,
+          "frames": [
+            {
+              "image": "hulk-hoagie-moving-grabs-v1.png",
+              "scale": 0.1795918367346939,
+              "rect": [
+                147,
+                36,
+                444,
+                421
+              ],
+              "root": [
+                217,
+                419
+              ],
+              "sourceSize": [
+                768,
+                512
+              ],
+              "trim": [
+                147,
+                36
+              ],
+              "visibleHeight": 417,
+              "registration": "guided stance and planted baseline"
+            },
+            {
+              "image": "hulk-hoagie-specials-v1.png",
+              "scale": 0.20047961630695443,
+              "rect": [
+                557,
+                131,
+                407,
+                359
+              ],
+              "root": [
+                183,
+                357
+              ],
+              "sourceSize": [
+                512,
+                512
+              ],
+              "trim": [
+                45,
+                131
+              ],
+              "visibleHeight": 355,
+              "registration": "guided stance and planted baseline"
+            },
+            {
+              "image": "hulk-hoagie-specials-v1.png",
+              "scale": 0.20047961630695443,
+              "rect": [
+                1126,
+                578,
+                336,
+                421
+              ],
+              "root": [
+                156,
+                419
+              ],
+              "sourceSize": [
+                512,
+                512
+              ],
+              "trim": [
+                102,
+                66
+              ],
+              "visibleHeight": 417,
+              "registration": "guided stance and planted baseline"
+            }
+          ],
+          "activeWindow": [
+            7,
+            14
+          ]
+        },
+        "up_special": {
+          "image": "hulk-hoagie-specials-v1.png",
+          "scale": 0.20047961630695443,
+          "durations": [
+            5,
+            8,
+            12
+          ],
+          "loop": false,
+          "frames": [
+            {
+              "rect": [
+                124,
+                35,
+                271,
+                414
+              ],
+              "root": [
+                116,
+                412
+              ],
+              "sourceSize": [
+                512,
+                480
+              ],
+              "trim": [
+                124,
+                35
+              ],
+              "visibleHeight": 410,
+              "registration": "planted support",
+              "image": "hulk-hoagie-crouch-land-v1-candidate.png",
+              "scale": 0.18333333333333332
+            },
+            {
+              "image": "hulk-hoagie-specials-v1.png",
+              "scale": 0.20047961630695443,
+              "rect": [
+                1188,
+                9,
+                245,
+                435
+              ],
+              "root": [
+                122,
+                471.69473684210527
+              ],
+              "sourceSize": [
+                512,
+                512
+              ],
+              "trim": [
+                164,
+                9
+              ],
+              "visibleHeight": 431,
+              "registration": "guided pelvis"
+            },
+            {
+              "image": "hulk-hoagie-aerials-v1.png",
+              "scale": 0.17038724373576308,
+              "rect": [
+                1137,
+                521,
+                227,
+                443
+              ],
+              "root": [
+                104,
+                481.90588235294115
+              ],
+              "sourceSize": [
+                512,
+                544
+              ],
+              "trim": [
+                113,
+                41
+              ],
+              "visibleHeight": 439,
+              "registration": "guided pelvis"
+            }
+          ],
+          "activeWindow": [
+            5,
+            13
+          ]
+        },
+        "down_special": {
+          "image": "hulk-hoagie-specials-v1.png",
+          "scale": 0.20047961630695443,
+          "durations": [
+            5,
+            14,
+            9
+          ],
+          "loop": false,
+          "frames": [
+            {
+              "rect": [
+                139,
+                13,
+                335,
+                582
+              ],
+              "root": [
+                158.25,
+                580
+              ],
+              "sourceSize": [
+                627,
+                627
+              ],
+              "trim": [
+                139,
+                13
+              ],
+              "visibleHeight": 578,
+              "registration": "paired planted soles",
+              "image": "hulk-hoagie-idle-v1.png",
+              "scale": 0.1509433962264151
+            },
+            {
+              "image": "hulk-hoagie-specials-v1.png",
+              "scale": 0.20047961630695443,
+              "rect": [
+                43,
+                629,
+                416,
+                370
+              ],
+              "root": [
+                204,
+                368
+              ],
+              "sourceSize": [
+                512,
+                512
+              ],
+              "trim": [
+                43,
+                117
+              ],
+              "visibleHeight": 366,
+              "registration": "guided stance and planted baseline"
+            },
+            {
+              "image": "hulk-hoagie-specials-v1.png",
+              "scale": 0.20047961630695443,
+              "rect": [
+                1126,
+                578,
+                336,
+                421
+              ],
+              "root": [
+                156,
+                419
+              ],
+              "sourceSize": [
+                512,
+                512
+              ],
+              "trim": [
+                102,
+                66
+              ],
+              "visibleHeight": 417,
+              "registration": "guided stance and planted baseline"
+            }
+          ]
+        },
+        "counter_success": {
+          "image": "hulk-hoagie-specials-v1.png",
+          "scale": 0.20047961630695443,
+          "durations": [
+            2,
+            6,
+            12
+          ],
+          "loop": false,
+          "frames": [
+            {
+              "image": "hulk-hoagie-specials-v1.png",
+              "scale": 0.20047961630695443,
+              "rect": [
+                43,
+                629,
+                416,
+                370
+              ],
+              "root": [
+                204,
+                368
+              ],
+              "sourceSize": [
+                512,
+                512
+              ],
+              "trim": [
+                43,
+                117
+              ],
+              "visibleHeight": 366,
+              "registration": "guided stance and planted baseline"
+            },
+            {
+              "image": "hulk-hoagie-specials-v1.png",
+              "scale": 0.20047961630695443,
+              "rect": [
+                566,
+                567,
+                426,
+                432
+              ],
+              "root": [
+                185,
+                430
+              ],
+              "sourceSize": [
+                512,
+                512
+              ],
+              "trim": [
+                54,
+                55
+              ],
+              "visibleHeight": 428,
+              "registration": "guided stance and planted baseline"
+            },
+            {
+              "image": "hulk-hoagie-specials-v1.png",
+              "scale": 0.20047961630695443,
+              "rect": [
+                1126,
+                578,
+                336,
+                421
+              ],
+              "root": [
+                156,
+                419
+              ],
+              "sourceSize": [
+                512,
+                512
+              ],
+              "trim": [
+                102,
+                66
+              ],
+              "visibleHeight": 417,
+              "registration": "guided stance and planted baseline"
+            }
+          ],
+          "activeWindow": [
+            2,
+            8
+          ]
+        },
+        "dash_start": {
+          "image": "hulk-hoagie-takeoff-rise-v1.png",
+          "scale": 0.18485776805251639,
+          "durations": [
+            2,
+            4,
+            3
+          ],
+          "loop": false,
+          "frames": [
+            {
+              "rect": [
+                139,
+                13,
+                335,
+                582
+              ],
+              "root": [
+                158.25,
+                580
+              ],
+              "sourceSize": [
+                627,
+                627
+              ],
+              "trim": [
+                139,
+                13
+              ],
+              "visibleHeight": 578,
+              "registration": "paired planted soles",
+              "image": "hulk-hoagie-idle-v1.png",
+              "scale": 0.1509433962264151
+            },
+            {
+              "image": "hulk-hoagie-takeoff-rise-v1.png",
+              "scale": 0.18485776805251639,
+              "rect": [
+                85,
+                104,
+                386,
+                373
+              ],
+              "root": [
+                206,
+                371
+              ],
+              "sourceSize": [
+                512,
+                512
+              ],
+              "trim": [
+                85,
+                104
+              ],
+              "visibleHeight": 369,
+              "registration": "guided stance and planted baseline"
+            },
+            {
+              "rect": [
+                36,
+                21,
+                329,
+                414
+              ],
+              "root": [
+                182,
+                412
+              ],
+              "sourceSize": [
+                444,
+                444
+              ],
+              "trim": [
+                36,
+                21
+              ],
+              "visibleHeight": 410,
+              "registration": "manually guided torso with shared baseline",
+              "image": "hulk-hoagie-run-v3-alpha.png",
+              "scale": 0.2141119221411192
+            }
+          ]
+        },
+        "takeoff_neutral": {
+          "image": "hulk-hoagie-takeoff-rise-v1.png",
+          "scale": 0.18485776805251639,
+          "durations": [
+            3,
+            6
+          ],
+          "loop": false,
+          "frames": [
+            {
+              "rect": [
+                124,
+                35,
+                271,
+                414
+              ],
+              "root": [
+                116,
+                412
+              ],
+              "sourceSize": [
+                512,
+                480
+              ],
+              "trim": [
+                124,
+                35
+              ],
+              "visibleHeight": 410,
+              "registration": "planted support",
+              "image": "hulk-hoagie-crouch-land-v1-candidate.png",
+              "scale": 0.18333333333333332
+            },
+            {
+              "image": "hulk-hoagie-takeoff-rise-v1.png",
+              "scale": 0.18485776805251639,
+              "rect": [
+                658,
+                14,
+                214,
+                461
+              ],
+              "root": [
+                110,
+                467.5
+              ],
+              "sourceSize": [
+                512,
+                512
+              ],
+              "trim": [
+                146,
+                14
+              ],
+              "visibleHeight": 457,
+              "registration": "guided pelvis"
+            }
+          ]
+        },
+        "takeoff_forward": {
+          "image": "hulk-hoagie-takeoff-rise-v1.png",
+          "scale": 0.18485776805251639,
+          "durations": [
+            3,
+            6
+          ],
+          "loop": false,
+          "frames": [
+            {
+              "rect": [
+                124,
+                35,
+                271,
+                414
+              ],
+              "root": [
+                116,
+                412
+              ],
+              "sourceSize": [
+                512,
+                480
+              ],
+              "trim": [
+                124,
+                35
+              ],
+              "visibleHeight": 410,
+              "registration": "planted support",
+              "image": "hulk-hoagie-crouch-land-v1-candidate.png",
+              "scale": 0.18333333333333332
+            },
+            {
+              "image": "hulk-hoagie-takeoff-rise-v1.png",
+              "scale": 0.18485776805251639,
+              "rect": [
+                1134,
+                67,
+                335,
+                399
+              ],
+              "root": [
+                144,
+                402.5
+              ],
+              "sourceSize": [
+                512,
+                512
+              ],
+              "trim": [
+                110,
+                67
+              ],
+              "visibleHeight": 395,
+              "registration": "guided pelvis"
+            }
+          ]
+        },
+        "takeoff_backward": {
+          "image": "hulk-hoagie-takeoff-rise-v1.png",
+          "scale": 0.18485776805251639,
+          "durations": [
+            3,
+            6
+          ],
+          "loop": false,
+          "frames": [
+            {
+              "rect": [
+                124,
+                35,
+                271,
+                414
+              ],
+              "root": [
+                116,
+                412
+              ],
+              "sourceSize": [
+                512,
+                480
+              ],
+              "trim": [
+                124,
+                35
+              ],
+              "visibleHeight": 410,
+              "registration": "planted support",
+              "image": "hulk-hoagie-crouch-land-v1-candidate.png",
+              "scale": 0.18333333333333332
+            },
+            {
+              "image": "hulk-hoagie-takeoff-rise-v1.png",
+              "scale": 0.18485776805251639,
+              "rect": [
+                115,
+                538,
+                351,
+                414
+              ],
+              "root": [
+                129,
+                461.5
+              ],
+              "sourceSize": [
+                512,
+                512
+              ],
+              "trim": [
+                115,
+                26
+              ],
+              "visibleHeight": 410,
+              "registration": "guided pelvis"
+            }
+          ]
+        },
+        "air_rise_loop": {
+          "image": "hulk-hoagie-takeoff-rise-v1.png",
+          "scale": 0.18485776805251639,
+          "durations": [
+            6,
+            6
+          ],
+          "loop": true,
+          "frames": [
+            {
+              "image": "hulk-hoagie-takeoff-rise-v1.png",
+              "scale": 0.18485776805251639,
+              "rect": [
+                651,
+                534,
+                215,
+                407
+              ],
+              "root": [
+                95,
+                439.5
+              ],
+              "sourceSize": [
+                512,
+                512
+              ],
+              "trim": [
+                139,
+                22
+              ],
+              "visibleHeight": 403,
+              "registration": "guided pelvis"
+            },
+            {
+              "image": "hulk-hoagie-takeoff-rise-v1.png",
+              "scale": 0.18485776805251639,
+              "rect": [
+                1173,
+                525,
+                199,
+                365
+              ],
+              "root": [
+                79,
+                403.5
+              ],
+              "sourceSize": [
+                512,
+                512
+              ],
+              "trim": [
+                149,
+                13
+              ],
+              "visibleHeight": 361,
+              "registration": "guided pelvis"
+            }
+          ]
+        },
+        "reaction": {
+          "image": "hulk-hoagie-reactions-v1.png",
+          "scale": 0.1824884792626728,
+          "durations": [
+            5,
+            7
+          ],
+          "loop": false,
+          "frames": [
+            {
+              "image": "hulk-hoagie-reactions-v1.png",
+              "scale": 0.1824884792626728,
+              "rect": [
+                59,
+                79,
+                372,
+                438
+              ],
+              "root": [
+                191,
+                436
+              ],
+              "sourceSize": [
+                512,
+                540
+              ],
+              "trim": [
+                59,
+                79
+              ],
+              "visibleHeight": 434,
+              "registration": "guided stance and planted baseline"
+            },
+            {
+              "rect": [
+                139,
+                13,
+                335,
+                582
+              ],
+              "root": [
+                158.25,
+                580
+              ],
+              "sourceSize": [
+                627,
+                627
+              ],
+              "trim": [
+                139,
+                13
+              ],
+              "visibleHeight": 578,
+              "registration": "paired planted soles",
+              "image": "hulk-hoagie-idle-v1.png",
+              "scale": 0.1509433962264151
+            }
+          ],
+          "aliasOf": "hit_mid"
+        },
+        "air_dodge_directional": {
+          "image": "hulk-hoagie-shield-air-dodge-v1.png",
+          "scale": 0.1810065645514223,
+          "durations": [
+            3,
+            8,
+            12
+          ],
+          "loop": false,
+          "frames": [
+            {
+              "image": "hulk-hoagie-defense-v1.png",
+              "scale": 0.186,
+              "rect": [
+                1137,
+                566,
+                262,
+                365
+              ],
+              "root": [
+                108,
+                414.09677419354836
+              ],
+              "sourceSize": [
+                512,
+                512
+              ],
+              "trim": [
+                113,
+                54
+              ],
+              "visibleHeight": 361,
+              "registration": "guided pelvis"
+            },
+            {
+              "image": "hulk-hoagie-shield-air-dodge-v1.png",
+              "scale": 0.1810065645514223,
+              "rect": [
+                528,
+                565,
+                417,
+                371
+              ],
+              "root": [
+                190,
+                433.36170212765956
+              ],
+              "sourceSize": [
+                554,
+                519
+              ],
+              "trim": [
+                58,
+                60
+              ],
+              "visibleHeight": 367,
+              "registration": "guided pelvis"
+            },
+            {
+              "image": "hulk-hoagie-aerials-v1.png",
+              "scale": 0.17038724373576308,
+              "rect": [
+                1137,
+                521,
+                227,
+                443
+              ],
+              "root": [
+                104,
+                481.90588235294115
+              ],
+              "sourceSize": [
+                512,
+                544
+              ],
+              "trim": [
+                113,
+                41
+              ],
+              "visibleHeight": 439,
+              "registration": "guided pelvis"
+            }
+          ],
+          "aliasOf": "air_dodge_side"
         }
       }
     }
@@ -22378,24 +26774,23 @@
         "ko_star",
         "shield_break_launch",
         "shield_break_dizzy",
-        "shield_break_recover"
-      ],
-      "remainingKeys": [
-        "reaction",
-        "counter_success",
+        "shield_break_recover",
+        "jab_2",
+        "jab_3",
         "neutral_special",
         "side_special",
         "up_special",
         "down_special",
+        "counter_success",
         "dash_start",
-        "air_dodge_directional",
         "takeoff_neutral",
         "takeoff_forward",
         "takeoff_backward",
         "air_rise_loop",
-        "jab_2",
-        "jab_3"
+        "reaction",
+        "air_dodge_directional"
       ],
+      "remainingKeys": [],
       "requiredKeyCount": 136
     },
     "hulk-hoagie": {
@@ -22530,24 +26925,23 @@
         "ko_star",
         "shield_break_launch",
         "shield_break_dizzy",
-        "shield_break_recover"
-      ],
-      "remainingKeys": [
-        "reaction",
-        "counter_success",
+        "shield_break_recover",
+        "jab_2",
+        "jab_3",
         "neutral_special",
         "side_special",
         "up_special",
         "down_special",
+        "counter_success",
         "dash_start",
-        "air_dodge_directional",
         "takeoff_neutral",
         "takeoff_forward",
         "takeoff_backward",
         "air_rise_loop",
-        "jab_2",
-        "jab_3"
+        "reaction",
+        "air_dodge_directional"
       ],
+      "remainingKeys": [],
       "requiredKeyCount": 136
     }
   }

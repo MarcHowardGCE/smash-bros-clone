@@ -81,7 +81,7 @@ export function injectStyles(): void {
     .menu-shell { --menu-ink:#201a27; --menu-paper:#f1e3bf; --menu-gold:#e0b567; isolation:isolate; }
     .menu-shell[data-menu-surface="menu"]::before {
       content:''; position:fixed; inset:0; z-index:0; pointer-events:none;
-      background:linear-gradient(100deg,rgba(23,17,31,.96),rgba(23,17,31,.89)),url('/backgrounds/stage4.png') center/cover;
+      background:linear-gradient(100deg,rgba(23,17,31,.96),rgba(23,17,31,.89)),url('/menu-art/stage4.webp') center/cover;
     }
     .menu-shell[data-menu-surface="pause"]::before { content:''; position:fixed; inset:0; z-index:0; background:#100c18b8; pointer-events:none; }
     .menu-shell:not([data-menu-surface="game"]) .overlay-center {

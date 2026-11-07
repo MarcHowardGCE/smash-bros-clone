@@ -2,7 +2,20 @@
 import {Assets,Container,Graphics,Sprite,type Texture} from 'pixi.js';
 import {getStageLayout,type StageLayout} from '@smash/shared';
 
+// Keep a stable fallback if the connection stalls; late textures cannot swap it in mid-match.
+export async function waitForStageAsset<T>(asset:Promise<T>):Promise<T|null>{
+  let timer:ReturnType<typeof setTimeout>|undefined;
+  try{
+    return await Promise.race([asset,new Promise<null>(resolve=>{timer=setTimeout(()=>resolve(null),8000);})]);
+  }catch{
+    return null;
+  }finally{
+    clearTimeout(timer);
+  }
+}
+
 export class StageRenderer {
+  readonly ready:Promise<void>;
   private container:Container;
   private disposed=false;
   private stage:StageLayout;
@@ -11,9 +24,8 @@ export class StageRenderer {
     this.container=new Container();parentContainer.addChildAt(this.container,0);
     this.draw();
     const base=import.meta.env.BASE_URL||'/';
-    Promise.all([Assets.load<Texture>(base+'platform-art/'+this.stage.id+'-main.png'),Assets.load<Texture>(base+'platform-art/'+this.stage.id+'-soft.png')])
-      .then(([main,soft])=>{if(!this.disposed)this.draw(main,soft);})
-      .catch(()=>{ /* The readable collision-aligned fallback remains visible. */ });
+    this.ready=waitForStageAsset(Promise.all([Assets.load<Texture>(base+'platform-art/'+this.stage.id+'-main.webp'),Assets.load<Texture>(base+'platform-art/'+this.stage.id+'-soft.webp')]))
+      .then(textures=>{if(!this.disposed&&textures)this.draw(...textures);});
   }
   destroy():void {if(this.disposed)return;this.disposed=true;this.container.destroy({children:true});}
   private draw(main?:Texture,soft?:Texture):void {

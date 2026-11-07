@@ -47,7 +47,7 @@ import { FighterRenderer } from "./renderer/FighterRenderer.js";
 import { preloadFighterAssets } from "./renderer/fighterAssets.js";
 import { preloadFullBodyPilot, type DojoArtId, type FullBodyPilotAssets } from "./renderer/fullbody/FullBodyPilot.js";
 import { createLayers } from "./renderer/layers.js";
-import { StageRenderer } from "./renderer/StageRenderer.js";
+import { StageRenderer, waitForStageAsset } from "./renderer/StageRenderer.js";
 import { ImpactSpark } from "./renderer/effects/ImpactSpark.js";
 import { injectStyles, UIManager } from "./ui/index.js";
 import { AudioManager } from "./audio/AudioManager.js";
@@ -193,22 +193,34 @@ async function main() {
   app.stage.addChild(layers.ui);
 
   const koPresenter=new KOPresentation(layers.game,fullBodyPilot,newcomerArt);app.ticker.add(()=>koPresenter.tick());
-  let stageRenderer: StageRenderer | null = new StageRenderer(
-    layers.background,
-  );
+  let stageRenderer: StageRenderer | null = null;
+  let renderedStageId = "";
+  let stageReady = Promise.resolve();
+  const stageLoading = document.createElement("div");
+  stageLoading.hidden = true;
+  stageLoading.setAttribute("role", "status");
+  stageLoading.textContent = "Loading arena…";
+  stageLoading.style.cssText = "position:fixed;inset:0;z-index:2;background:#211828;color:#f3eee1;text-align:center;align-content:center;font:600 1rem system-ui;pointer-events:none";
+  document.body.append(stageLoading);
 
-  let renderedStageId="stage1";
   function setStageBackground(backgroundImage: string): void {
-    const stageId=backgroundImage.match(/^stage[1-6]/)?.[0]??"stage1";
-    if(stageId!==renderedStageId){stageRenderer?.destroy?.();stageRenderer=new StageRenderer(layers.background,stageId);renderedStageId=stageId;}
-    const baseUrl = import.meta.env.BASE_URL || "/";
-    const normalizedBaseUrl = baseUrl.endsWith("/") ? baseUrl : `${baseUrl}/`;
-    const backgroundPath = `${normalizedBaseUrl}backgrounds/${backgroundImage}`;
-    stageBackdrop.setStage(stageId,backgroundPath);
-    const bgLayer = document.getElementById("background-layer");
-    if (bgLayer) {
-      bgLayer.style.backgroundImage = `url('${backgroundPath}')`;
-    }
+    const stageId = backgroundImage.match(/^stage[1-6]/)?.[0] ?? "stage1";
+    if (stageId === renderedStageId) return;
+    renderedStageId = stageId;
+    stageLoading.hidden = false;
+    stageRenderer?.destroy?.();
+    const renderer = new StageRenderer(layers.background, stageId);
+    stageRenderer = renderer;
+    const base = import.meta.env.BASE_URL || "/";
+    const backgroundPath = base + "backgrounds/" + backgroundImage.replace(/\.png$/, ".webp");
+    const image = new Image();
+    image.src = backgroundPath;
+    const background = typeof image.decode === "function" ? waitForStageAsset(image.decode()) : Promise.resolve(null);
+    stageReady = Promise.all([background, renderer.ready]).then(([decoded]) => {
+      if (stageRenderer !== renderer) return;
+      stageBackdrop.setStage(stageId, decoded === null ? "" : backgroundPath);
+      stageLoading.hidden = true;
+    });
   }
 
   // Set initial background
@@ -792,14 +804,14 @@ async function main() {
           : DEFAULT_KEYMAP_P4;
   };
 
-  const startLocalMatchWithSeats = (
+  const startLocalMatchWithSeats = async (
     setup: {
       participantCount: 2 | 3 | 4;
       seats: SeatConfig[];
     },
     choices: FighterChoice[],
     practice?:PracticeConfig,
-  ): void => {
+  ): Promise<void> => {
     cleanupLocalMode();
     gameplaySfxRouter.reset();
     dojoMatch=practice;
@@ -907,6 +919,9 @@ async function main() {
     };
 
     uiManager.hideRoomCode();
+    const pendingMatch = localMatch;
+    await stageReady;
+    if (localMatch !== pendingMatch) return;
     if(practice){uiManager.showMatch();uiManager.hideCombatHUD();audioManager.playTrack(selectedStage.musicTrack.replace('.mp3',''));localMatch.start();return;}
     let count = 3;
     uiManager.showCountdown(count);
@@ -1237,6 +1252,7 @@ async function main() {
   }
 
   window.addEventListener("beforeunload", () => {
+    stageLoading.remove();
     stageBackdrop.destroy();
     cleanupLocalMode();
     sfxManager.stopAll();

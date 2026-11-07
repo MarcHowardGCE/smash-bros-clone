@@ -62,7 +62,7 @@ export class StageBackdrop {
    this.art=make('scene-art');this.far=make('scene-atmosphere scene-atmosphere--far');this.near=make('scene-atmosphere scene-atmosphere--near');
    for(const layer of[this.far,this.near]){const texture=document.createElement('div');texture.className='scene-atmosphere-texture';layer.append(texture);}
    make('scene-wash');
-  }this.setStage('stage1',(import.meta.env.BASE_URL||'/')+'backgrounds/stage1.png');
+  }this.setStage('stage1','');
  }
  private read():VisualPreferences {try{return normalize(JSON.parse(localStorage.getItem(VISUAL_STORAGE_KEY)??'{}')??{});}catch{return {...DEFAULT_VISUAL_PREFERENCES};}}
  getSettings():VisualPreferences{return {...this.preferences};}
@@ -72,7 +72,7 @@ export class StageBackdrop {
  reset():void {this.setSettings({...DEFAULT_VISUAL_PREFERENCES});}
  setStage(stageId:string,imagePath:string):void {this.stageId=SCENE_PROFILES[stageId]?stageId:'stage1';this.imagePath=imagePath;const profile=SCENE_PROFILES[this.stageId]!;
   if(this.root){this.root.dataset.stage=this.stageId;this.root.dataset.theme=profile.theme;this.root.style.setProperty('--scene-haze',profile.haze);this.root.style.setProperty('--scene-far-duration',profile.farSeconds+'s');this.root.style.setProperty('--scene-near-duration',profile.nearSeconds+'s');}
-  if(this.art)this.art.style.backgroundImage='url("'+imagePath+'")';this.apply();
+  if(this.art)this.art.style.backgroundImage=imagePath?'url("'+imagePath+'")':'none';this.apply();
  }
  private apply():void {
   if(this.root){this.root.style.setProperty('--scene-fade',String(this.preferences.fade/100));this.root.dataset.atmosphere=this.preferences.atmosphere?'on':'off';this.root.dataset.motionMode=this.preferences.motion;this.root.dataset.fade=String(this.preferences.fade);}

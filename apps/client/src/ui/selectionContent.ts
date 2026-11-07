@@ -26,6 +26,24 @@ export const FIGHTER_PRESENTATION: Record<string,{id:string;name:string;role:str
     "style": "A mobile fighter with faster running and higher jumps. Stay elusive: a lighter fighter is easier to launch.",
     "strength": "Mobility",
     "trade": "Lighter weight"
+  },
+  "moonshine": {
+    id: "moonshine",
+    name: "Moonshine",
+    role: "Mobile brawler",
+    pitch: "Close the gap with a fast dash attack and keep the pressure on in the air.",
+    style: "Quick grounded pokes and aerial follow-ups reward staying mobile.",
+    strength: "Fast approaches and follow-ups",
+    trade: "Lighter weight and lower launch power"
+  },
+  "hulk-hoagie": {
+    id: "hulk-hoagie",
+    name: "“Hulk” Hoagie",
+    role: "Grappler",
+    pitch: "Find a clean grab and turn it into a heavy throw.",
+    style: "A sturdy wrestler with strong forward and back throws and a higher up-special launch.",
+    strength: "Grab and throw payoff",
+    trade: "Slower movement and longer grab recovery"
   }
 };
 export const WORLD_STORIES: Record<string,{name:string;short:string;hook:string;text:string;story:string}> = {
@@ -73,4 +91,6 @@ export const WORLD_STORIES: Record<string,{name:string;short:string;hook:string;
   }
 };
 export function escapeHtml(value:string):string{return value.replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]!));}
-export function fighterPortrait(id:string):string{return FIGHTER_PRESENTATION[id] ? (import.meta.env.BASE_URL || '/')+'menu-art/'+id+'.png' : ''; }
+export function fighterPortrait(id:string):string{const base=import.meta.env.BASE_URL||'/';
+ if(id==='moonshine'||id==='hulk-hoagie')return base+'fighter-art-newcomers-v1/'+id+'-portrait-v1.png';
+ return FIGHTER_PRESENTATION[id]?base+'menu-art/'+id+'.png':''; }

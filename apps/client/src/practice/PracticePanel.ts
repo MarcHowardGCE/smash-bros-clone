@@ -1,9 +1,9 @@
+import {dodgeTiming} from '@smash/engine';
 import type{LocalMatch}from'../local/LocalMatch.js';
 import{PracticeRoutine,decodeRoutine}from'./PracticeRoutine.js';
 import type{PracticeOverlay}from'./PracticeOverlay.js';
-import type{CharacterId}from'@smash/shared';
 export interface PracticeLabAction{id:string;label:string;run:()=>void;disabled?:boolean}
-import{INPUT_BITS as B,type GameState,type InputEvent}from'@smash/shared';import{LESSONS,LessonTracker,type PracticeConfig}from'./curriculum.js';import type{PracticeDummy}from'./PracticeDummy.js';import{escapeHtml}from'../ui/selectionContent.js';
+import{INPUT_BITS as B,type GameState,type InputEvent}from'@smash/shared';import{dojoSimulationProfile,LESSONS,LessonTracker,type PracticeConfig}from'./curriculum.js';import type{PracticeDummy}from'./PracticeDummy.js';import{escapeHtml}from'../ui/selectionContent.js';
 export class PracticePanel {
  private root=document.createElement('aside');private tracker:LessonTracker|null=null;private previousMove='';private recent='';private lastTick=-1;private success='';private level=0;private routineSlot=0;
  constructor(private config:PracticeConfig,private dummy:PracticeDummy,private resetArena:()=>void,private back:()=>void,private active:()=>boolean,private lab?:{match:LocalMatch;routine:PracticeRoutine;overlay:PracticeOverlay}){
@@ -22,7 +22,7 @@ export class PracticePanel {
  private saveTape():void{if(!this.lab)return;try{localStorage.setItem('eth:dojo:routine:v1:'+this.routineSlot,JSON.stringify(this.lab.routine.tape));}catch{this.success='Routine kept for this session; device storage is unavailable.';}}
  private loadSlot():void{if(!this.lab)return;let tape=null;try{tape=decodeRoutine(localStorage.getItem('eth:dojo:routine:v1:'+this.routineSlot));}catch{}this.lab.routine.load(tape);}
  private slot():void{if(this.lab?.routine.mode==='recording'){this.lab.routine.stop();this.saveTape();}this.routineSlot=(this.routineSlot+1)%3;this.loadSlot();this.dummy.reset();}
- private toggleRecord():void{if(!this.lab||this.tracker)return;const r=this.lab.routine;if(r.mode==='recording'){r.stop();this.saveTape();this.success='Routine saved in slot '+(this.routineSlot+1)+'.';}else{this.reset();r.startRecording(this.config.fighter as CharacterId);this.success='Recording your inputs. The partner will replay them.';}}
+ private toggleRecord():void{if(!this.lab||this.tracker)return;const r=this.lab.routine;if(r.mode==='recording'){r.stop();this.saveTape();this.success='Routine saved in slot '+(this.routineSlot+1)+'.';}else{this.reset();r.startRecording(dojoSimulationProfile(this.config.fighter));this.success='Recording your inputs. The partner will replay them.';}}
  private togglePlayback():void{if(!this.lab||this.tracker)return;const r=this.lab.routine;if(r.mode==='playing'){r.stop();this.success='Playback stopped.';}else{if(r.mode==='recording'){r.stop();this.saveTape();}this.reset();this.success=r.play()?'Partner playback started.':'Record a routine first.';}}
  public labActions():PracticeLabAction[]{if(!this.lab)return[];const {match,routine:r,overlay}=this.lab;
  const actions:PracticeLabAction[]=[{id:'dojo-lab-fatigue',label:'Next dodge fatigue: '+match.practiceFatigue+' / 5',run:()=>{const next=(match.practiceFatigue+1)%6;this.reset();match.setPracticeFatigue(next);}},{id:'dojo-lab-speed',label:'Speed: '+match.practiceSpeed+'x',run:()=>this.speed()},{id:'dojo-lab-overlay',label:'Collision overlay: '+(overlay.enabled?'On':'Off'),run:()=>this.toggleOverlay()},{id:'dojo-lab-step',label:'Step one tick · '+match.practiceTick,run:()=>this.step(true)}];
@@ -53,7 +53,10 @@ export class PracticePanel {
   if(this.tracker?.observe(state,i,'local-p1')){this.success=this.tracker.count===3?'Lesson complete. Three successful repetitions.':'Correct · '+this.tracker.count+' of 3';if(this.tracker.count===3)try{localStorage.setItem('eth:dojo:v1:'+this.config.fighter+':'+this.tracker.lesson.id,'complete');}catch{}}
   this.text('#dojo-progress',this.tracker?this.tracker.count+' / 3 successful repetitions':'0% damage · Infinite lives · No win or loss');
   this.text('#dojo-feedback',this.success);this.text('#dojo-cue',this.dummy.cue);
-  this.root.querySelector('#dojo-readout')!.textContent='State: '+p.state.replace(/_/g,' ').toLowerCase()+' · frame '+p.stateFrame+'\nLast move: '+(this.previousMove||'—')+'\nDodge fatigue: '+(p.dodgeFatigue??0)+' / 5'+(['AIR_DODGE','SPOT_DODGE','ROLL'].includes(p.state)?' · current dodge '+(p.dodgeLevel??0)+' / 5':'')+'\nAir dodge: '+(p.hasAirDodge===false?'spent':'ready')+'\n'+this.recent;
+  const dodging=['AIR_DODGE','SPOT_DODGE','ROLL'].includes(p.state);
+  const timing=dodging?dodgeTiming(p):null;
+  const dodgeReadout=timing?' · '+Math.max(0,timing.total-p.stateFrame)+' / '+timing.total+' ticks to full recovery':'';
+  this.root.querySelector('#dojo-readout')!.textContent='State: '+p.state.replace(/_/g,' ').toLowerCase()+' · frame '+p.stateFrame+'\nLast move: '+(this.previousMove||'—')+'\nDodge fatigue: '+(p.dodgeFatigue??0)+' / 5'+(dodging?' · current dodge '+(p.dodgeLevel??0)+' / 5':'')+dodgeReadout+'\nAir dodge: '+(p.hasAirDodge===false?'spent':'ready')+'\n'+this.recent;
   const next=this.root.querySelector<HTMLButtonElement>('#dojo-next');if(next)next.disabled=this.tracker?.count!==3;
  }
  setVisible(visible:boolean):void{this.root.hidden=!visible;}

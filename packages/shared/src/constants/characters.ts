@@ -7,7 +7,7 @@
  */
 
 import { PHYSICS } from './physics.js';
-import type { CharacterId, CharacterStats } from '../types/Character.js';
+import type { CharacterId, CharacterStats, MatchCharacterId } from '../types/Character.js';
 
 /**
  * All-Rounder character stats — sourced directly from PHYSICS constants.
@@ -56,16 +56,34 @@ export const SWIFT_STATS: CharacterStats = {
 /**
  * Character registry mapping CharacterId to CharacterStats.
  */
+const MOONSHINE_STATS: CharacterStats = {
+  fighterWeight: 87, hurtboxRadius: 27,
+  runSpeed: 6.65, walkSpeed: 3.6,
+  jumpVelocity: -16.25, shortHopVelocity: -10.15, doubleJumpVelocity: -14.25,
+  airSpeed: 5.4, airAcceleration: .148, airBrake: .045,
+  gravity: .635, fallSpeed: 17.5, fastFallSpeed: 28,
+};
+
+const HOAGIE_STATS: CharacterStats = {
+  fighterWeight: 109, hurtboxRadius: 30,
+  runSpeed: 6.1, walkSpeed: 3.3,
+  jumpVelocity: -15.6, shortHopVelocity: -9.75, doubleJumpVelocity: -13.65,
+  airSpeed: 4.6, airAcceleration: .122, airBrake: .055,
+  gravity: .665, fallSpeed: 18.5, fastFallSpeed: 29.6,
+};
+
 export const CHARACTER_REGISTRY: Record<CharacterId, CharacterStats> = {
   'all-rounder': ALL_ROUNDER_STATS,
   'abe-lincoln': ABE_LINCOLN_STATS,
   'swift': SWIFT_STATS,
+  'moonshine': MOONSHINE_STATS,
+  'hulk-hoagie': HOAGIE_STATS,
 };
 
 /**
- * Runtime-checkable list of all valid CharacterIds.
+ * Runtime-checkable list of fighters enabled for regular matches.
  */
-export const CHARACTER_IDS: readonly CharacterId[] = ['all-rounder', 'abe-lincoln', 'swift'] as const;
+export const CHARACTER_IDS: readonly MatchCharacterId[] = ['all-rounder', 'abe-lincoln', 'swift'] as const;
 
 /**
  * Type guard to check if a value is a valid CharacterId.
@@ -73,7 +91,7 @@ export const CHARACTER_IDS: readonly CharacterId[] = ['all-rounder', 'abe-lincol
  * @param value - The value to check
  * @returns true if value is a valid CharacterId, false otherwise
  */
-export function isCharacterId(value: unknown): value is CharacterId {
+export function isCharacterId(value: unknown): value is MatchCharacterId {
   return typeof value === 'string' && (CHARACTER_IDS as readonly string[]).includes(value);
 }
 

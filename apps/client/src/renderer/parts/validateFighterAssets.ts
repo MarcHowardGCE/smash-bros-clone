@@ -2,7 +2,7 @@ import { promises as fs } from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { PNG } from 'pngjs';
-import type { CharacterId } from '@smash/shared';
+import type { MatchCharacterId } from '@smash/shared';
 import {
   FIGHTER_VISUAL_CONTRACTS,
   type FighterPartFilename,
@@ -20,7 +20,7 @@ const RAW_ASSET_ROOT = path.resolve(MODULE_DIR, '..', '..', '..', '..', '..', 'r
 
 export interface RunAssetValidationOptions {
   readonly rootDir?: string;
-  readonly contracts?: Record<CharacterId, FighterVisualContract>;
+  readonly contracts?: Record<MatchCharacterId, FighterVisualContract>;
 }
 
 export interface RunAssetValidationResult {
@@ -36,7 +36,7 @@ export class FsPngAssetProvider implements FighterAssetProvider {
     this.rootDir = rootDir;
   }
 
-  async listFilenames(characterId: CharacterId): Promise<readonly string[] | null> {
+  async listFilenames(characterId: MatchCharacterId): Promise<readonly string[] | null> {
     const directoryPath = this.characterDir(characterId);
     try {
       const dirEntries = await fs.readdir(directoryPath, { withFileTypes: true });
@@ -49,7 +49,7 @@ export class FsPngAssetProvider implements FighterAssetProvider {
     }
   }
 
-  async readPng(characterId: CharacterId, filename: FighterPartFilename): Promise<DecodedPngImage | null> {
+  async readPng(characterId: MatchCharacterId, filename: FighterPartFilename): Promise<DecodedPngImage | null> {
     const assetPath = path.join(this.characterDir(characterId), filename);
     try {
       const data = await fs.readFile(assetPath);
@@ -67,7 +67,7 @@ export class FsPngAssetProvider implements FighterAssetProvider {
     }
   }
 
-  private characterDir(characterId: CharacterId): string {
+  private characterDir(characterId: MatchCharacterId): string {
     return path.join(this.rootDir, `${characterId}{tps}`);
   }
 }

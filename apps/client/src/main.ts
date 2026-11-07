@@ -1,9 +1,10 @@
+import { getStageLayout } from '@smash/shared';
 import{PracticeRoutine}from'./practice/PracticeRoutine.js';
 import{PracticeOverlay}from'./practice/PracticeOverlay.js';
 import './practice/practice.css';
 import{PracticePanel}from'./practice/PracticePanel.js';
 import{PracticeDummy}from'./practice/PracticeDummy.js';
-import type{PracticeConfig}from'./practice/curriculum.js';
+import{dojoSimulationProfile,type PracticeConfig}from'./practice/curriculum.js';
 import {StageBackdrop} from './renderer/StageBackdrop';
 import{XBOX360_PROFILE}from'./input/xbox360Profile';
 import{KOPresentation}from'./renderer/fullbody/KOPresentation.js';
@@ -44,7 +45,7 @@ import type {
 import { Camera } from "./renderer/Camera.js";
 import { FighterRenderer } from "./renderer/FighterRenderer.js";
 import { preloadFighterAssets } from "./renderer/fighterAssets.js";
-import { preloadFullBodyPilot } from "./renderer/fullbody/FullBodyPilot.js";
+import { preloadFullBodyPilot, type DojoArtId, type FullBodyPilotAssets } from "./renderer/fullbody/FullBodyPilot.js";
 import { createLayers } from "./renderer/layers.js";
 import { StageRenderer } from "./renderer/StageRenderer.js";
 import { ImpactSpark } from "./renderer/effects/ImpactSpark.js";
@@ -118,6 +119,11 @@ export const AVAILABLE_FIGHTERS: FighterChoice[] = [
   { id: "swift", displayName: "Swift" },
 ];
 
+const NEWCOMER_CHOICES = [
+  { id: "moonshine", displayName: "Moonshine" },
+  { id: "hulk-hoagie", displayName: "“Hulk” Hoagie" },
+] as const;
+
 let networkMatchPhase: "pre-match" | "countdown" | "match" | "result" =
   "pre-match";
 
@@ -149,7 +155,7 @@ async function main() {
     ...(e2eForceWebgl ? ({ preference: "webgl" } as const) : {}),
   });
 
-  const fullBodyPilot = await preloadFullBodyPilot();
+  const [fullBodyPilot, newcomerArt] = await Promise.all([preloadFullBodyPilot(), preloadFullBodyPilot(true)]);
   let fighterAssets = await preloadFighterAssets();
   if (e2eFixtureEnabled && !e2ePolygonForced && fighterAssets.mode === "polygon") {
     fighterAssets = await preloadFighterAssets({
@@ -481,6 +487,9 @@ async function main() {
   let myPlayerId: PlayerId | null = null;
   let isLocalMode = false;
   let localMatch: LocalMatch | null = null;
+  let dojoArt:FullBodyPilotAssets|undefined=newcomerArt;
+  let dojoLoad:Promise<FullBodyPilotAssets|undefined>|undefined=newcomerArt?Promise.resolve(newcomerArt):undefined;
+  let dojoMatch:PracticeConfig|undefined;
   let practicePanel:PracticePanel|null=null;
   let practiceOverlay:PracticeOverlay|null=null;
   let camera: Camera | null = null;
@@ -501,6 +510,7 @@ async function main() {
   };
 
   const cleanupLocalMode = (): void => {
+    dojoMatch=undefined;
     practicePanel?.destroy();practicePanel=null;practiceOverlay?.destroy();practiceOverlay=null;uiManager.onPracticeReset=null;uiManager.onPracticeMenu=null;uiManager.onPracticeLabActions=null;
     clearLocalCountdown();
     localMatch?.cleanup();
@@ -543,6 +553,7 @@ async function main() {
     };
   };
 
+  const newcomerArtId=(id?:CharacterId):DojoArtId|undefined=>id==='moonshine'||id==='hulk-hoagie'?id:undefined;
   const updateRenderers = (state: RenderState): void => {
     stageBackdrop.setFocus([...state.players.values()].filter(player=>!player.isKnockedOut));
     koPresenter.update(state.players.values());
@@ -551,13 +562,15 @@ async function main() {
     for (const [id, playerState] of state.players.entries()) {
       let fighterRenderer = fighterRenderers.get(id);
       if (!fighterRenderer) {
+        const dojoArtId=newcomerArtId(playerState.characterId);
         fighterRenderer = new FighterRenderer(
           layers.game,
           playerState.slotIndex,
           playerState.characterId,
           {
             mode: fighterAssets.mode,
-          fullBodyPilot,
+            dojoArtId,
+            fullBodyPilot:dojoArt?{...dojoArt,characters:{...fullBodyPilot?.characters,...dojoArt.characters},effects:fullBodyPilot?.effects}:fullBodyPilot,
             textureProvider:
               fighterAssets.mode === "sprite" ? fighterAssets.provider : undefined,
           },
@@ -566,8 +579,10 @@ async function main() {
       }
       const grabOwner=[...state.players.values()].find(p=>p.isGrabbing&&p.grabbedPlayerId===id);
  const footstoolPartner=playerState.footstoolPartnerId?state.players.get(playerState.footstoolPartnerId):undefined;
- const footstoolContact=playerState.footstoolRole==='attacker'&&footstoolPartner&&(footstoolPartner.footstoolRole==='ground'||footstoolPartner.footstoolRole==='air')?{characterId:footstoolPartner.characterId??'all-rounder',role:footstoolPartner.footstoolRole,frame:footstoolPartner.footstoolFrame??0,dx:footstoolPartner.x-playerState.x,dy:footstoolPartner.y-playerState.y,facing:footstoolPartner.facing}:undefined;
- fighterRenderer.update({...playerState,result:state.matchPhase==='result'?(id===state.winnerId?'win':'lose'):undefined,presentationVariant:playerState.slotIndex%3,footstoolContact,grabFacing:grabOwner?.facing,grabOwner:grabOwner?{characterId:grabOwner.characterId??"all-rounder",state:grabOwner.state,frame:grabOwner.stateFrame,move:grabOwner.currentMoveId,dx:(playerState.x-grabOwner.x)*grabOwner.facing,dy:playerState.y-grabOwner.y,facing:grabOwner.facing}:undefined});
+ const footstoolContact=playerState.footstoolRole==='attacker'&&footstoolPartner&&(footstoolPartner.footstoolRole==='ground'||footstoolPartner.footstoolRole==='air')?{artId:newcomerArtId(footstoolPartner.characterId),characterId:footstoolPartner.characterId??'all-rounder',role:footstoolPartner.footstoolRole,frame:footstoolPartner.footstoolFrame??0,dx:footstoolPartner.x-playerState.x,dy:footstoolPartner.y-playerState.y,facing:footstoolPartner.facing}:undefined;
+ const edge=playerState.ledgeId?getStageLayout(selectedStage.id).ledges.find(ledge=>ledge.id===playerState.ledgeId):undefined;
+ const ledgeContact=edge?{dx:edge.x-playerState.x,dy:edge.y-playerState.y}:undefined;
+ fighterRenderer.update({...playerState,ledgeContact,result:state.matchPhase==='result'?(id===state.winnerId?'win':'lose'):undefined,presentationVariant:playerState.slotIndex%3,footstoolContact,grabFacing:grabOwner?.facing,grabOwner:grabOwner?{artId:newcomerArtId(grabOwner.characterId),characterId:grabOwner.characterId??"all-rounder",state:grabOwner.state,frame:grabOwner.stateFrame,move:grabOwner.currentMoveId,dx:(playerState.x-grabOwner.x)*grabOwner.facing,dy:playerState.y-grabOwner.y,facing:grabOwner.facing}:undefined});
     }
 
     for (const [id, fighterRenderer] of fighterRenderers.entries()) {
@@ -582,7 +597,12 @@ async function main() {
   };
 
 
-  app.ticker.add(()=>{const snapshot=isLocalMode?localMatch?.getLatestSnapshot():null;if(snapshot?.matchPhase==='result')updateRenderers(snapshotToRenderState(snapshot));});
+  app.ticker.add(() => {
+    const snapshot = isLocalMode
+      ? localMatch?.getLatestSnapshot()
+      : networkMatchPhase === 'result' ? gameClient.getLatestSnapshot() : null;
+    if (snapshot?.matchPhase === 'result') updateRenderers(snapshotToRenderState(snapshot));
+  });
   let networkCountdownInterval: ReturnType<typeof setInterval> | null = null;
   const clearNetworkCountdown = (): void => {
     if (networkCountdownInterval !== null) {
@@ -595,7 +615,7 @@ async function main() {
       onlineSelectionScreen="fighters";
       if (!myPlayerId) return;
       uiManager.showNetworkCharacterSelect(
-        AVAILABLE_FIGHTERS,
+        [...AVAILABLE_FIGHTERS,...NEWCOMER_CHOICES.filter(f=>dojoArt?.characters[f.id]?.idle)],
         myPlayerId,
         playerIds,
         (characterId) => gameClient.selectCharacter(characterId),
@@ -782,6 +802,7 @@ async function main() {
   ): void => {
     cleanupLocalMode();
     gameplaySfxRouter.reset();
+    dojoMatch=practice;
 
     if (!camera) {
       camera = new Camera(layers.background);
@@ -848,7 +869,7 @@ async function main() {
       const choice = choices[i];
       if (choice?.id) {
         characterIds[controller.playerId as PlayerId] =
-          choice.id as CharacterId;
+          practice?dojoSimulationProfile(choice.id):choice.id as CharacterId;
       }
     }
 
@@ -914,8 +935,12 @@ async function main() {
     uiManager.showLocalPlaySetup(
       { assignmentManager },
       lastLocalSetup,
-      (result) => {
+      async (result) => {
         lastLocalSetup = result;
+        dojoArt=await (dojoLoad??=preloadFullBodyPilot(true));
+        if(!dojoArt)dojoLoad=undefined;
+        if(!isLocalMode||lastLocalSetup!==result)return;
+        const localFighters=[...AVAILABLE_FIGHTERS,...NEWCOMER_CHOICES.filter(f=>dojoArt?.characters[f.id]?.idle)];
         const cpuSlotIndices = result.seats
           .map((seat, index) => (seat.kind === "cpu" ? index + 1 : null))
           .filter((slotIndex): slotIndex is number => slotIndex !== null);
@@ -928,7 +953,7 @@ async function main() {
         }
         const showFighters = (previousChoices: readonly FighterChoice[] = []): void => {
         uiManager.showCharacterSelect(
-          AVAILABLE_FIGHTERS,
+          localFighters,
           result.participantCount,
           (choices) => {
             // After character select, show stage select
@@ -975,7 +1000,23 @@ async function main() {
     if(!isLocalMode){isLocalMode=true;gameClient.disconnect();}
     cleanupLocalMode();for(const renderer of fighterRenderers.values())renderer.destroy();fighterRenderers.clear();koPresenter.clear();
     audioManager.playTrack('main-menu');
-    uiManager.showPracticeSetup(config=>{
+    let starting=false;
+    uiManager.showPracticeSetup(async config=>{
+      if(starting)return;
+      const testFighters=[config.fighter,config.dummy].filter((id):id is DojoArtId=>id==='moonshine'||id==='hulk-hoagie');
+      if(testFighters.length){
+        starting=true;
+        const status=document.querySelector('#dojo-art-status');
+        if(status)status.textContent='Loading test fighter artwork…';
+        dojoArt=await (dojoLoad??=preloadFullBodyPilot(true));
+        starting=false;
+        if(!status?.isConnected)return;
+        if(!testFighters.every(id=>dojoArt?.characters[id]?.idle)){
+          dojoLoad=undefined;
+          status.textContent='Test fighter artwork could not load. Try again or select an original fighter.';
+          return;
+        }
+      }
       selectedStage=STAGES.find(s=>s.id===config.stageId)??STAGES[0]!;setStageBackground(selectedStage.backgroundImage);
       startLocalMatchWithSeats({participantCount:2,seats:[{kind:'cpu',difficulty:'easy'}]},[{id:config.fighter,displayName:config.fighter},{id:config.dummy,displayName:config.dummy}],config);
     },()=>uiManager.onMainMenu?.());

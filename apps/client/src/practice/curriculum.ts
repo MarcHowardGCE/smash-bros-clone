@@ -1,4 +1,8 @@
-import {INPUT_BITS as B,type GameState,type InputEvent,type PlayerState} from '@smash/shared';
+import {INPUT_BITS as B,type GameState,type InputEvent,type PlayerState,type CharacterId} from '@smash/shared';
+export function dojoSimulationProfile(id:string):CharacterId{
+  if(id==='moonshine'||id==='hulk-hoagie'||id==='swift'||id==='abe-lincoln')return id;
+  return 'all-rounder';
+}
 export type DummyMode='still'|'shield'|'jab'|'mixed'|'up-smash';
 export interface PracticeConfig {fighter:string;dummy:string;stageId:string;lessonId:string|null;dummyMode:DummyMode}
 export interface Lesson {id:string;tier:'Basics'|'Advanced'|'Subtle';title:string;hint:string;buttons:string;arm:number;dummy:DummyMode;check:(p:PlayerState,old:PlayerState)=>boolean}

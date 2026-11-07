@@ -158,7 +158,7 @@ export function createApp(): {
 				const roomInfo = roomManager.getRoomBySocketId(socket.id);
 				if (!roomInfo) return;
 
-				if (!isCharacterId(characterId)) {
+				if (!isCharacterId(characterId) && characterId !== 'moonshine' && characterId !== 'hulk-hoagie') {
 					callback?.({ error: "invalid characterId" });
 					return;
 				}

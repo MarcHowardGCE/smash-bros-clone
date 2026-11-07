@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import type { CharacterId } from '@smash/shared';
+import type { MatchCharacterId } from '@smash/shared';
 import { Rectangle, Texture } from 'pixi.js';
 import { getAnimationPose, type JointPose } from '../../animations.js';
 import { PolygonPartRenderer } from '../PolygonPartRenderer.js';
@@ -29,18 +29,18 @@ function buildTexture(origWidth: number, origHeight: number): Texture {
   });
 }
 
-function createContractTextureProvider(characterId: CharacterId): TextureProvider {
+function createContractTextureProvider(characterId: MatchCharacterId): TextureProvider {
   return {
-    getTexture(_cid: CharacterId, part: FighterPart): Texture {
+    getTexture(_cid: MatchCharacterId, part: FighterPart): Texture {
       const logical = FIGHTER_VISUAL_CONTRACTS[characterId].parts[part].logicalCanvas;
       return buildTexture(logical.width, logical.height);
     },
   };
 }
 
-function createScaledDensityTextureProvider(characterId: CharacterId, scaleFactor: number): TextureProvider {
+function createScaledDensityTextureProvider(characterId: MatchCharacterId, scaleFactor: number): TextureProvider {
   return {
-    getTexture(_cid: CharacterId, part: FighterPart): Texture {
+    getTexture(_cid: MatchCharacterId, part: FighterPart): Texture {
       const logical = FIGHTER_VISUAL_CONTRACTS[characterId].parts[part].logicalCanvas;
       return buildTexture(logical.width * scaleFactor, logical.height * scaleFactor);
     },
@@ -174,7 +174,7 @@ describe('SpritePartRenderer', () => {
   it('matches polygon renderer joint world positions and reference bounds within 0.5px across representative poses', () => {
     const fixtureCases: ReadonlyArray<{
       readonly name: string;
-      readonly characterId: CharacterId;
+      readonly characterId: MatchCharacterId;
       readonly slotIndex: number;
       readonly pose: JointPose;
       readonly facing: number;
@@ -260,7 +260,7 @@ describe('SpritePartRenderer', () => {
   });
 
   it('parity check is non-vacuous: perturbing anchor by 0.1 breaks bounds parity', () => {
-    const characterId: CharacterId = 'all-rounder';
+    const characterId: MatchCharacterId = 'all-rounder';
     const slotIndex = 0;
     const pose = getAnimationPose('IDLE', 0, null, characterId);
 

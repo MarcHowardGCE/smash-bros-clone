@@ -1,4 +1,4 @@
-import type { CharacterId } from '@smash/shared';
+import type { MatchCharacterId } from '@smash/shared';
 import type {
   FighterPartFilename,
   FighterPartVisualContract,
@@ -16,12 +16,12 @@ export interface DecodedPngImage {
 }
 
 export interface FighterAssetProvider {
-  listFilenames(characterId: CharacterId): Promise<readonly string[] | null>;
-  readPng(characterId: CharacterId, filename: FighterPartFilename): Promise<DecodedPngImage | null>;
+  listFilenames(characterId: MatchCharacterId): Promise<readonly string[] | null>;
+  readPng(characterId: MatchCharacterId, filename: FighterPartFilename): Promise<DecodedPngImage | null>;
 }
 
 export interface AssetValidationViolation {
-  readonly characterId: CharacterId;
+  readonly characterId: MatchCharacterId;
   readonly part: string;
   readonly filename: string;
   readonly rule:
@@ -37,7 +37,7 @@ export interface AssetValidationViolation {
 }
 
 export interface AssetValidationSkip {
-  readonly characterId: CharacterId;
+  readonly characterId: MatchCharacterId;
   readonly message: string;
 }
 
@@ -49,7 +49,7 @@ export interface AssetValidationResult {
 
 export interface ValidateFighterAssetsOptions {
   readonly provider: FighterAssetProvider;
-  readonly contracts?: Record<CharacterId, FighterVisualContract>;
+  readonly contracts?: Record<MatchCharacterId, FighterVisualContract>;
   readonly tintTolerance?: number;
   readonly jointBandHeightPx?: number;
 }
@@ -72,7 +72,7 @@ export async function validateFighterAssets(
   const skippedCharacters: AssetValidationSkip[] = [];
 
   for (const [characterId, visualContract] of Object.entries(contracts) as readonly [
-    CharacterId,
+    MatchCharacterId,
     FighterVisualContract,
   ][]) {
     const filenames = await options.provider.listFilenames(characterId);
@@ -139,7 +139,7 @@ export async function validateFighterAssets(
 
 function validateDecodedPng(
   decoded: DecodedPngImage,
-  characterId: CharacterId,
+  characterId: MatchCharacterId,
   part: string,
   filename: FighterPartFilename,
   partContract: FighterPartVisualContract,

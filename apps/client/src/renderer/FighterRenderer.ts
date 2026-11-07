@@ -8,7 +8,7 @@
  * implementation ({@link SpritePartRenderer} with {@link PolygonPartRenderer} fallback).
  */
 import { Container, Graphics } from 'pixi.js';
-import { FullBodyPilot, type FullBodyPilotAssets } from './fullbody/FullBodyPilot.js';
+import { FullBodyPilot, type FullBodyPilotAssets, type DojoArtId } from './fullbody/FullBodyPilot.js';
 import type { PlayerState, CharacterId } from '@smash/shared';
 import { PHYSICS, lerp } from '@smash/shared';
 import { getAnimationPose } from './animations.js';
@@ -21,7 +21,7 @@ import type { TextureProvider } from './parts/SpritePartRenderer.js';
 type RenderableFighterState = Pick<
   PlayerState,
   'x' | 'y' | 'facing' | 'isInvincible' | 'isKnockedOut' | 'isShielding' | 'shieldHealth' | 'state' | 'stateFrame' | 'slotIndex' | 'currentMoveId'
-> & Partial<Pick<PlayerState, 'dodgeLevel' | 'dodgeKind' | 'tauntKind' | 'hitReaction' | 'artCue' | 'artCueFrame' | 'respawnTimer' | 'footstoolRole' | 'footstoolPartnerId' | 'footstoolFrame' | 'shieldReaction' | 'shieldReactionFrame' | 'hitstunFramesRemaining' | 'floorOrientation' | 'floorRollDirection' | 'isFastFalling' | 'airDodgeDirection' | 'vy' | 'hasDoubleJump' | 'isTumbling' | 'vx' | 'chargeFrames' | 'isGrabbing' | 'grabbedPlayerId'>> & {result?:'win'|'lose';presentationVariant?:number;footstoolContact?:import('./fullbody/preparedHooks.js').PreparedContext['footstoolContact'];grabFacing?:1|-1;grabOwner?:import("./fullbody/FullBodyPilot.js").GrabContactContext;ledgeId?:string|null};
+> & Partial<Pick<PlayerState, 'dodgeLevel' | 'dodgeKind' | 'tauntKind' | 'hitReaction' | 'artCue' | 'artCueFrame' | 'respawnTimer' | 'footstoolRole' | 'footstoolPartnerId' | 'footstoolFrame' | 'shieldReaction' | 'shieldReactionFrame' | 'hitstunFramesRemaining' | 'floorOrientation' | 'floorRollDirection' | 'isFastFalling' | 'airDodgeDirection' | 'vy' | 'hasDoubleJump' | 'isTumbling' | 'vx' | 'chargeFrames' | 'isGrabbing' | 'grabbedPlayerId'>> & {result?:'win'|'lose';presentationVariant?:number;footstoolContact?:import('./fullbody/preparedHooks.js').PreparedContext['footstoolContact'];grabFacing?:1|-1;grabOwner?:import("./fullbody/FullBodyPilot.js").GrabContactContext;ledgeId?:string|null;ledgeContact?:{dx:number;dy:number}};
 
 /** Hit flash: golden-yellow tint on white parts for 4 frames (67ms at 60fps). */
 const HIT_FLASH_FRAMES = 4;
@@ -46,6 +46,7 @@ interface FighterRendererOptions {
   readonly mode?: FighterRendererMode;
   readonly textureProvider?: TextureProvider;
   readonly fullBodyPilot?: FullBodyPilotAssets;
+  readonly dojoArtId?: DojoArtId;
 }
 
 /** Linearly interpolate between two RGB hex colors. */
@@ -110,7 +111,7 @@ export class FighterRenderer {
     this.pattern = slotToPattern(slotIndex);
     this.container.addChild(this.partRenderer.container);
     if (options.fullBodyPilot) {
-      this.fullBodyPilot = new FullBodyPilot(options.fullBodyPilot, characterId);
+      this.fullBodyPilot = new FullBodyPilot(options.fullBodyPilot, characterId, options.dojoArtId);
       this.container.addChild(this.fullBodyPilot.sprite);
       this.container.addChild(this.fullBodyPilot.effectSprite);
     }
@@ -158,7 +159,7 @@ export class FighterRenderer {
     this.updateShieldBubble(player.result?{...player,isShielding:false}:player);
 
     // Pilot selection must also react to move changes and KO/shield transitions.
-    const pilotVisible = this.fullBodyPilot?.update(player.state, player.stateFrame, player.currentMoveId, !player.isKnockedOut, player.vy, player.hasDoubleJump, player.isTumbling, player.state==='ROLL'?(player.floorRollDirection??player.facing)*player.facing as 1|-1:(player.vx ?? 0) * player.facing < 0 ? -1 : 1, player.chargeFrames ?? 0, player.isGrabbing===true&&!player.grabbedPlayerId, (player.grabFacing??player.facing)*player.facing, player.facing,player.grabOwner,player.ledgeId,{dodgeLevel:player.dodgeLevel,dodgeKind:player.dodgeKind,isTumbling:player.isTumbling,result:player.result,presentationVariant:player.presentationVariant,footstoolContact:player.footstoolContact,tauntKind:player.tauntKind,hitReaction:player.hitReaction,artCue:player.artCue,artCueFrame:player.artCueFrame,respawnTimer:player.respawnTimer,footstoolRole:player.footstoolRole,footstoolPartnerId:player.footstoolPartnerId,footstoolFrame:player.footstoolFrame,shieldReaction:player.shieldReaction,shieldReactionFrame:player.shieldReactionFrame,hitstunFramesRemaining:player.hitstunFramesRemaining,floorOrientation:player.floorOrientation,floorRollDirection:player.floorRollDirection,isFastFalling:player.isFastFalling,airDodgeDirection:player.airDodgeDirection}) ?? false;
+    const pilotVisible = this.fullBodyPilot?.update(player.state, player.stateFrame, player.currentMoveId, !player.isKnockedOut, player.vy, player.hasDoubleJump, player.isTumbling, player.state==='ROLL'?(player.floorRollDirection??player.facing)*player.facing as 1|-1:(player.vx ?? 0) * player.facing < 0 ? -1 : 1, player.chargeFrames ?? 0, player.isGrabbing===true&&!player.grabbedPlayerId, (player.grabFacing??player.facing)*player.facing, player.facing,player.grabOwner,player.ledgeId,{dodgeLevel:player.dodgeLevel,dodgeKind:player.dodgeKind,isTumbling:player.isTumbling,result:player.result,presentationVariant:player.presentationVariant,footstoolContact:player.footstoolContact,ledgeContact:player.ledgeContact,tauntKind:player.tauntKind,hitReaction:player.hitReaction,artCue:player.artCue,artCueFrame:player.artCueFrame,respawnTimer:player.respawnTimer,footstoolRole:player.footstoolRole,footstoolPartnerId:player.footstoolPartnerId,footstoolFrame:player.footstoolFrame,shieldReaction:player.shieldReaction,shieldReactionFrame:player.shieldReactionFrame,hitstunFramesRemaining:player.hitstunFramesRemaining,floorOrientation:player.floorOrientation,floorRollDirection:player.floorRollDirection,isFastFalling:player.isFastFalling,airDodgeDirection:player.airDodgeDirection}) ?? false;
     this.partRenderer.container.visible = !pilotVisible;
     if (this.fullBodyPilot) this.fullBodyPilot.sprite.tint = this.hitFlashFrames > 0 ? HIT_FLASH_TINT : DEFAULT_TINT;
 
@@ -248,7 +249,7 @@ export class FighterRenderer {
     }
   }
 
-  getArtDiagnostics():{slot:number;character:string|undefined;clip:string;frameRect:string;bodyVisible:boolean;markerVisible:boolean;markerFacing:number}{return {slot:this.slotIndex,character:this.characterId,clip:this.fullBodyPilot?.sprite.label??'',frameRect:this.fullBodyPilot?[this.fullBodyPilot.sprite.texture.frame.x,this.fullBodyPilot.sprite.texture.frame.y,this.fullBodyPilot.sprite.texture.frame.width,this.fullBodyPilot.sprite.texture.frame.height].join(','):'',bodyVisible:this.fullBodyPilot?.sprite.visible??false,markerVisible:this.playerMarker.visible,markerFacing:this.playerMarker.scale.x*this.container.scale.x};}
+  getArtDiagnostics():{slot:number;character:string|undefined;clip:string;frameRect:string;bodyVisible:boolean;markerVisible:boolean;markerFacing:number}{return {slot:this.slotIndex,character:this.fullBodyPilot?.artId??this.characterId,clip:this.fullBodyPilot?.sprite.label??'',frameRect:this.fullBodyPilot?[this.fullBodyPilot.sprite.texture.frame.x,this.fullBodyPilot.sprite.texture.frame.y,this.fullBodyPilot.sprite.texture.frame.width,this.fullBodyPilot.sprite.texture.frame.height].join(','):'',bodyVisible:this.fullBodyPilot?.sprite.visible??false,markerVisible:this.playerMarker.visible,markerFacing:this.playerMarker.scale.x*this.container.scale.x};}
   /** Release PixiJS resources. Call when the fighter leaves the scene. */
   destroy(): void {
     this.container.destroy({ children: true });

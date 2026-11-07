@@ -1,4 +1,4 @@
-import type {CharacterId,PlayerState} from '@smash/shared';
+import type {PlayerState} from '@smash/shared';
 export interface DodgeProfile {total:number;intangibleStart:number;intangibleEnd:number;attackCancel?:number}
 /** Source values are human frames: inclusive invulnerability bounds, total duration, attack cancel. */
 export const DODGE_PROFILES={
@@ -7,8 +7,11 @@ export const DODGE_PROFILES={
  'swift':{reference:'Fox',source:'https://ultimateframedata.com/fox',spot:{total:23,attackCancel:18,intangibleStart:3,intangibleEnd:14},forward:{total:26,intangibleStart:4,intangibleEnd:12},backward:{total:32,intangibleStart:4,intangibleEnd:14},neutralAir:{total:38,intangibleStart:2,intangibleEnd:26},directionalAir:{intangibleStart:2,intangibleEnd:19,totals:[54,59,64,70,75]}}
 }as const;
 export type DodgeContext=Partial<Pick<PlayerState,'characterId'|'dodgeKind'|'dodgeLevel'|'airDodgeDirection'|'state'|'floorRollDirection'|'facing'>>;
+function dodgeReference(p:DodgeContext):keyof typeof DODGE_PROFILES{
+  return p.characterId==='moonshine'?'swift':p.characterId==='hulk-hoagie'?'abe-lincoln':p.characterId??'all-rounder';
+}
 export function freshDodgeProfile(p:DodgeContext):DodgeProfile {
- const roster=DODGE_PROFILES[p.characterId??'all-rounder'];
+ const roster=DODGE_PROFILES[dodgeReference(p)];
  const kind=resolveDodgeKind(p);
  if(kind!=='air')return roster[kind];
  const d=p.airDodgeDirection;
@@ -53,7 +56,7 @@ export function observedIntermediateDodge(p:DodgeContext):DodgeProfile|null{
  const level=p.dodgeLevel??0,kind=resolveDodgeKind(p),fresh=freshDodgeProfile(p);
  if(!Number.isInteger(level)||level<1||level>4)return null;
  const directional=kind==='air'&&Boolean(p.airDodgeDirection&&(p.airDodgeDirection.x||p.airDodgeDirection.y));
- if(p.characterId==='swift'&&level===1){
+ if(dodgeReference(p)==='swift'&&level===1){
   const bounds=kind==='spot'?[3,13]:kind==='forward'?[4,11]:kind==='backward'?[4,13]:directional?[2,18]:[2,25];
   // The aerial observation was horizontal; other directional angles are not certified by it.
   if(directional&&p.airDodgeDirection!.y!==0)return null;

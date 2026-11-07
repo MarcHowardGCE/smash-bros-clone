@@ -80,6 +80,8 @@ export enum MoveId {
  * hitbox activation, and landing-lag assignment from these values.
  */
 export interface MoveData {
+  /** Initial vertical speed when a recovery move launches. Negative is upward. */
+  recoveryLaunchVelocity?: number;
   /** Which move this descriptor belongs to. */
   id: MoveId;
   /** Frames before the first active hitbox frame (windup). */

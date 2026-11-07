@@ -1,4 +1,4 @@
-import type { CharacterId } from '@smash/shared';
+import type { MatchCharacterId } from '@smash/shared';
 import { Rectangle, Texture } from 'pixi.js';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import {
@@ -9,7 +9,7 @@ import {
 import type { FighterPart } from '../parts/IPartRenderer.js';
 import { SpritePartRenderer } from '../parts/SpritePartRenderer.js';
 
-const CHARACTER_IDS: readonly CharacterId[] = ['all-rounder', 'abe-lincoln', 'swift'] as const;
+const CHARACTER_IDS: readonly MatchCharacterId[] = ['all-rounder', 'abe-lincoln', 'swift'] as const;
 const PARTS: readonly FighterPart[] = ['HEAD', 'BODY', 'ARM_L', 'ARM_R', 'LEG_L', 'LEG_R'] as const;
 
 const FRAME_NAME_BY_PART: Record<FighterPart, string> = {
@@ -56,7 +56,7 @@ function createFakeSheet(seed: number): FakeSheet {
 
 function createBundleWithSheets(): {
   readonly bundle: Record<string, unknown>;
-  readonly sheets: Record<CharacterId, FakeSheet>;
+  readonly sheets: Record<MatchCharacterId, FakeSheet>;
 } {
   const allRounder = createFakeSheet(0);
   const lincoln = createFakeSheet(100);
@@ -136,7 +136,7 @@ describe('fighterAssets preload', () => {
     }
 
     for (const [key, texture] of expected.entries()) {
-      const [characterId, part] = key.split(':') as [CharacterId, FighterPart];
+      const [characterId, part] = key.split(':') as [MatchCharacterId, FighterPart];
       expect(result.provider.getTexture(characterId, part)).toBe(texture);
     }
 

@@ -181,13 +181,14 @@ export class SpritePartRenderer implements IPartRenderer {
     this.clampedSlotIndex = clampSlotIndex(slotIndex);
     this.container = new Container();
 
-    const contract = FIGHTER_VISUAL_CONTRACTS[this.fighterCharacterId];
+    const artId = characterId === 'moonshine' ? 'swift' : characterId === 'hulk-hoagie' ? 'abe-lincoln' : characterId;
+    const contract = FIGHTER_VISUAL_CONTRACTS[artId];
     const sprites = {} as Record<FighterPart, Sprite>;
     const fitScaleByPart = {} as Record<FighterPart, number>;
 
     for (const part of PART_DRAW_ORDER) {
       const partContract = contract.parts[part];
-      const texture = textureProvider.getTexture(this.fighterCharacterId, part);
+      const texture = textureProvider.getTexture(artId, part);
       const fitScale = partContract.logicalCanvas.width / texture.orig.width;
 
       const sprite = new Sprite(texture);

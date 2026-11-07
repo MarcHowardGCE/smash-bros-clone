@@ -6,7 +6,8 @@
  */
 
 /** String union of all playable character identifiers. */
-export type CharacterId = 'all-rounder' | 'abe-lincoln' | 'swift';
+export type MatchCharacterId = 'all-rounder' | 'abe-lincoln' | 'swift';
+export type CharacterId = MatchCharacterId | 'moonshine' | 'hulk-hoagie';
 
 /**
  * Per-character physics overrides applied by the engine in place of global

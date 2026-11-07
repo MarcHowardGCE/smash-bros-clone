@@ -974,8 +974,8 @@ export class GameEngine {
         if(previous.state===PlayerStateEnum.JAB_LOCK&&player.state===PlayerStateEnum.HARD_LANDING)nextPlayer={...nextPlayer,stateFrame:18};
         if(player.state===PlayerStateEnum.TAUNT&&previous.state!==PlayerStateEnum.TAUNT)nextPlayer={...nextPlayer,tauntKind:isPressed(input,INPUT_BITS.TAUNT_UP)?'up':isPressed(input,INPUT_BITS.TAUNT_SIDE)?'side':'down'};
         if(previous.currentMoveId===MoveId.UP_SPECIAL&&player.currentMoveId===MoveId.UP_SPECIAL){
-          const startup=getMoveDataForCharacter(player.characterId,MoveId.UP_SPECIAL).startupFrames;
-          if(previous.stateFrame<startup&&player.stateFrame>=startup)nextPlayer={...nextPlayer,state:PlayerStateEnum.AIR_ATTACK,vy:PHYSICS.UP_SPECIAL_LAUNCH_VELOCITY,isGrounded:false,isFastFalling:false};
+          const move=getMoveDataForCharacter(player.characterId,MoveId.UP_SPECIAL);
+          if(previous.stateFrame<move.startupFrames&&player.stateFrame>=move.startupFrames)nextPlayer={...nextPlayer,state:PlayerStateEnum.AIR_ATTACK,vy:move.recoveryLaunchVelocity??PHYSICS.UP_SPECIAL_LAUNCH_VELOCITY,isGrounded:false,isFastFalling:false};
         }
         if(previous.state===PlayerStateEnum.SHIELD&&player.state===PlayerStateEnum.IDLE)nextPlayer={...nextPlayer,shieldReaction:previous.shieldReaction==='parry'?'parry':'drop',shieldReactionFrame:previous.shieldReaction==='parry'||previous.shieldReaction==='drop'?previous.shieldReactionFrame:0};
 

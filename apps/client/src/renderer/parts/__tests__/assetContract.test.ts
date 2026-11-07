@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import type { CharacterId } from '@smash/shared';
+import type { MatchCharacterId } from '@smash/shared';
 import {
   ASSET_DENSITY,
   FIGHTER_VISUAL_CONTRACTS,
@@ -17,7 +17,7 @@ const COATTAIL_EXTRA_BELOW = 12;
 const CLOTHING_BASE_COLOR = 0xf5f5f5;
 const LUMINANCE_DELTA_MIN = 0.12;
 
-const CHARACTER_IDS: readonly CharacterId[] = ['all-rounder', 'abe-lincoln', 'swift'];
+const CHARACTER_IDS: readonly MatchCharacterId[] = ['all-rounder', 'abe-lincoln', 'swift'];
 
 function hexToUnitRgb(color: number): readonly [number, number, number] {
   return [((color >> 16) & 0xff) / 255, ((color >> 8) & 0xff) / 255, (color & 0xff) / 255] as const;
@@ -39,7 +39,7 @@ function relativeLuminance(rgb: readonly [number, number, number]): number {
 }
 
 describe('assetContract', () => {
-  it('covers every CharacterId with a typed FighterVisualContract', () => {
+  it('covers every MatchCharacterId with a typed FighterVisualContract', () => {
     expect(Object.keys(FIGHTER_VISUAL_CONTRACTS).sort()).toEqual([...CHARACTER_IDS].sort());
     for (const id of CHARACTER_IDS) {
       expect(FIGHTER_VISUAL_CONTRACTS[id].assetDensity).toBe(ASSET_DENSITY);

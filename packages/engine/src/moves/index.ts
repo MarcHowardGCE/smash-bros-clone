@@ -99,6 +99,66 @@ export function getMoveData(id: MoveId): MoveData {
   return move;
 }
 
+const MOONSHINE_DASH_ATTACK: MoveData = {
+  ...MOVE_DASH_ATTACK,
+  startupFrames: 6,
+  activeFrames: 4,
+  recoveryFrames: 18,
+  hitboxPerActiveFrame: MOVE_DASH_ATTACK.hitboxPerActiveFrame.slice(0, 4).map(hit => ({
+    ...hit, damage: 7,
+  })),
+};
+
+const MOONSHINE_FORWARD_AIR: MoveData = {
+  ...MOVE_FORWARD_AIR,
+  startupFrames: 6,
+  recoveryFrames: 16,
+  landingLag: 5,
+  hitboxPerActiveFrame: MOVE_FORWARD_AIR.hitboxPerActiveFrame.map(hit => ({
+    ...hit, damage: 10,
+  })),
+};
+
+const MOONSHINE_DOWN_TILT: MoveData = {
+  ...MOVE_DOWN_TILT,
+  startupFrames: 4,
+  recoveryFrames: 10,
+  tripBelowPercent: 20,
+};
+
+const MOONSHINE_UP_AIR: MoveData = {
+  ...MOVE_UP_AIR,
+  startupFrames: 5,
+  activeFrames: 4,
+  hitboxPerActiveFrame: MOVE_UP_AIR.hitboxPerActiveFrame.slice(0, 4).map(hit => ({
+    ...hit, damage: 8,
+  })),
+};
+
+const HOAGIE_UP_SPECIAL: MoveData = { ...MOVE_UP_SPECIAL, recoveryLaunchVelocity: -20 };
+const HOAGIE_GRAB: MoveData = {
+  ...MOVE_GRAB,
+  startupFrames: 7,
+  recoveryFrames: 20,
+  // Grounded grab scaling puts the center at (36, -30.5), beside the drawn grip.
+  hitboxPerActiveFrame: MOVE_GRAB.hitboxPerActiveFrame.map(hit => ({
+    ...hit, offsetX: 48, offsetY: -14, radius: 12,
+  })),
+};
+const HOAGIE_FORWARD_THROW: MoveData = {
+  ...MOVE_FORWARD_THROW,
+  hitboxPerActiveFrame: MOVE_FORWARD_THROW.hitboxPerActiveFrame.map(hit => ({
+    ...hit, damage: 10, baseKnockback: 10, knockbackGrowth: 69,
+  })),
+};
+const HOAGIE_BACK_THROW: MoveData = {
+  ...MOVE_BACK_THROW,
+  hitboxPerActiveFrame: MOVE_BACK_THROW.hitboxPerActiveFrame.map(hit => ({
+    ...hit, damage: 11, baseKnockback: 11, knockbackGrowth: 74,
+  })),
+};
+
+
 /**
  * Get character-aware move data. Checks character-specific overrides first,
  * then falls back to shared MOVE_REGISTRY.
@@ -108,6 +168,18 @@ export function getMoveData(id: MoveId): MoveData {
  * @returns MoveData with character-specific hitbox stats and default frame timing
  */
 export function getMoveDataForCharacter(characterId: CharacterId | undefined, id: MoveId): MoveData {
+  if (characterId === 'moonshine') {
+    if (id === MoveId.DASH_ATTACK) return MOONSHINE_DASH_ATTACK;
+    if (id === MoveId.FORWARD_AIR) return MOONSHINE_FORWARD_AIR;
+    if (id === MoveId.DOWN_TILT) return MOONSHINE_DOWN_TILT;
+    if (id === MoveId.UP_AIR) return MOONSHINE_UP_AIR;
+  }
+  if (characterId === 'hulk-hoagie') {
+    if (id === MoveId.UP_SPECIAL) return HOAGIE_UP_SPECIAL;
+    if (id === MoveId.GRAB) return HOAGIE_GRAB;
+    if (id === MoveId.FORWARD_THROW) return HOAGIE_FORWARD_THROW;
+    if (id === MoveId.BACK_THROW) return HOAGIE_BACK_THROW;
+  }
   if (characterId === 'abe-lincoln') {
     const override = LINCOLN_MOVE_OVERRIDES.get(id);
     if (override) return override;

@@ -1,9 +1,19 @@
 import{it,expect}from'vitest';import{GameEngine}from'./GameEngine.js';import{INPUT_BITS as B,getCharacterStats,type CharacterId}from'@smash/shared';
-const fixtures=[['all-rounder',25,20,29,34,52,71,77,87,102,116],['abe-lincoln',28,23,32,37,46,66,73,79,91,103],['swift',23,18,26,32,38,54,59,64,70,75]]as const;
-function make(characterId:CharacterId,state:string,stateFrame:number,kind:string,direction={x:0,y:0}){const e=new GameEngine({playerIds:['a','b']}),s=(e as any).state;Object.assign(s.players.a,{characterId,state,stateFrame,dodgeKind:kind,dodgeLevel:0,x:600,y:state==='AIR_DODGE'?100:500-getCharacterStats(characterId).hurtboxRadius,isGrounded:state!=='AIR_DODGE',vx:0,vy:0,respawnTimer:0,isInvincible:false,airDodgeDirection:direction});s.players.b.x=1100;return e;}
+const fixtures=[['all-rounder',25,20,29,34,52,71,77,87,102,116],['abe-lincoln',28,23,32,37,46,66,73,79,91,103],['swift',23,18,26,32,38,54,59,64,70,75],['moonshine',23,18,26,32,38,54,59,64,70,75],['hulk-hoagie',28,23,32,37,46,66,73,79,91,103]]as const;
+function make(characterId:CharacterId,state:string,stateFrame:number,kind:string,direction={x:0,y:0}){const e=new GameEngine({playerIds:['a','b'],characterIds:{a:characterId},practice:true}),s=(e as any).state;Object.assign(s.players.a,{characterId,state,stateFrame,dodgeKind:kind,dodgeLevel:0,x:600,y:state==='AIR_DODGE'?100:500-getCharacterStats(characterId).hurtboxRadius,isGrounded:state!=='AIR_DODGE',vx:0,vy:0,respawnTimer:0,isInvincible:false,airDodgeDirection:direction});s.players.b.x=1100;return e;}
 const tick=(e:GameEngine,attack=false)=>e.tickGame(new Map([['a',{playerId:'a',tick:0,seq:0,pressed:attack?B.ATTACK:0,held:attack?B.ATTACK:0,released:0}]])).players.a!;
 for(const[id,spot,cancel,forward,backward,neutral,...air]of fixtures){
  for(const[state,kind,total]of[['SPOT_DODGE','spot',spot],['ROLL','forward',forward],['ROLL','backward',backward],['AIR_DODGE','air',neutral]]as const)it(id+' '+kind+' authoritative recovery boundary',()=>{const e=make(id,state,total-2,kind);expect(tick(e).state).toBe(state);expect(tick(e).state).toBe(state==='AIR_DODGE'?'AIRBORNE':'IDLE');});
  it(id+' accepts ground attack only at its own spot-cancel boundary',()=>{expect(tick(make(id,'SPOT_DODGE',cancel-2,'spot'),true).state).toBe('SPOT_DODGE');expect(tick(make(id,'SPOT_DODGE',cancel-1,'spot'),true).state).toBe('ATTACK');});
  for(const[index,d]of[[0,{x:0,y:1}],[1,{x:1,y:1}],[2,{x:1,y:0}],[3,{x:1,y:-1}],[4,{x:0,y:-1}]]as const)it(id+' directional air recovery '+index,()=>{const total=air[index]!,e=make(id,'AIR_DODGE',total-2,'air',d);expect(tick(e).state).toBe('AIR_DODGE');expect(tick(e).state).toBe('AIRBORNE');});
+}
+
+for(const [id,forward,backward] of [['moonshine',34,48],['hulk-hoagie',42,56]] as const){
+ for(const [kind,total] of [['forward',forward],['backward',backward]] as const)
+  it(id+' max-fatigue '+kind+' roll unlocks on tick '+total,()=>{
+   const e=make(id,'ROLL',total-2,kind);
+   (e as any).state.players.a.dodgeLevel=5;
+   expect(tick(e).state).toBe('ROLL');
+   expect(tick(e).state).toBe('IDLE');
+  });
 }

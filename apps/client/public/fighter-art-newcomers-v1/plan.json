@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "status": "revised pilot comparison; visual refinement pending; not playable",
+  "status": "all roster clip keys covered in preview; animation polish pending; not playable",
   "workingDecisions": {
     "moonshine": {
       "weight": 87,
@@ -73,6 +73,16 @@
       "scope": "types/stats/moves/profiles, character selection, CPU/online/dojo, packing tools, runtime loading, memory and multiplayer checks"
     }
   ],
+  "animationPolish": {
+    "state": "next pass following completed clip registration",
+    "scope": "Add in-betweens and loops for crouch entry, hold and rise, jump squat, double jump, air apex, fall, fast fall, forward and backward teeter, face-up and face-down prone, and seated trip hold. Audit the remaining clip inventory for single-pose and borrowed-frame gaps before atlas signoff."
+  },
+  "motionSignoff": {
+    "requiredBeforeAtlasPackaging": true,
+    "state": "in progress",
+    "scope": "Review every clip at full speed and quarter speed in both facings. Check repeated pose cadence, loop seams, support and pelvis anchors, transitions in action chains, and contact. Separate playback behavior from artwork issues. Track single-pose and shared drawings, and keep unresolved motion issues open until visually reviewed.",
+    "firstFindings": "Moonshine apex, fall and fast fall had incorrect second-frame vertical anchors. Standalone jump squat repeated every three ticks. Revision 42 corrects the anchors and holds the squat's final frame after one play."
+  },
   "coverageContract": {
     "referenceCharacters": [
       "all-rounder",

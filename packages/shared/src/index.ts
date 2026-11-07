@@ -10,7 +10,7 @@ export type { InputBitmask, InputEvent } from './types/InputEvent.js';
 export { INPUT_BITS } from './types/InputEvent.js';
 export type { MoveData } from './types/MoveData.js';
 export { MoveId } from './types/MoveData.js';
-export type { CharacterId, CharacterStats } from './types/Character.js';
+export type { CharacterId, CharacterStats, MatchCharacterId } from './types/Character.js';
 export { PlayerStateEnum } from './types/PlayerFSMState.js';
 
 // Constants

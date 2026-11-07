@@ -4,10 +4,10 @@ import { createPartRenderer } from '../index';
 import { PolygonPartRenderer } from '../PolygonPartRenderer';
 import { FIGHTER_VISUAL_CONTRACTS } from '../assetContract.js';
 import { SpritePartRenderer, type TextureProvider } from '../SpritePartRenderer';
-import type { CharacterId } from '@smash/shared';
+import type { MatchCharacterId } from '@smash/shared';
 import type { FighterPart } from '../IPartRenderer.js';
 
-const CHARACTER_IDS: readonly CharacterId[] = ['all-rounder', 'abe-lincoln', 'swift'] as const;
+const CHARACTER_IDS: readonly MatchCharacterId[] = ['all-rounder', 'abe-lincoln', 'swift'] as const;
 const SLOT_INDICES: readonly number[] = [0, 1, 2, 3] as const;
 
 function buildTexture(origWidth: number, origHeight: number): Texture {
@@ -20,7 +20,7 @@ function buildTexture(origWidth: number, origHeight: number): Texture {
 
 function createContractTextureProvider(): TextureProvider {
   return {
-    getTexture(characterId: CharacterId, part: FighterPart): Texture {
+    getTexture(characterId: MatchCharacterId, part: FighterPart): Texture {
       const logicalCanvas = FIGHTER_VISUAL_CONTRACTS[characterId].parts[part].logicalCanvas;
       return buildTexture(logicalCanvas.width, logicalCanvas.height);
     },

@@ -1,4 +1,4 @@
-import type { CharacterId } from '@smash/shared';
+import type { MatchCharacterId } from '@smash/shared';
 import type { FighterPart } from './IPartRenderer.js';
 
 export const ASSET_DENSITY = 2 as const;
@@ -114,7 +114,7 @@ function createDefaultContract(): FighterVisualContract {
   };
 }
 
-export const FIGHTER_VISUAL_CONTRACTS: Record<CharacterId, FighterVisualContract> = {
+export const FIGHTER_VISUAL_CONTRACTS: Record<MatchCharacterId, FighterVisualContract> = {
   'all-rounder': createDefaultContract(),
   'abe-lincoln': createDefaultContract(),
   'swift': createDefaultContract(),

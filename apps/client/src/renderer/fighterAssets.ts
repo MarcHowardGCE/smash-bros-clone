@@ -1,4 +1,4 @@
-import type { CharacterId } from '@smash/shared';
+import type { MatchCharacterId } from '@smash/shared';
 import { Assets, Texture } from 'pixi.js';
 import type { AssetInitOptions, Spritesheet } from 'pixi.js';
 import type { FighterPart } from './parts/IPartRenderer.js';
@@ -8,7 +8,7 @@ const FIGHTERS_MANIFEST_URL = '/assets/manifest.json';
 const FIGHTERS_BUNDLE_NAME = 'fighters';
 const PRELOAD_TIMEOUT_MS = 5000;
 
-const CHARACTER_IDS: readonly CharacterId[] = ['all-rounder', 'abe-lincoln', 'swift'] as const;
+const CHARACTER_IDS: readonly MatchCharacterId[] = ['all-rounder', 'abe-lincoln', 'swift'] as const;
 
 const FRAME_NAME_BY_PART: Record<FighterPart, string> = {
   HEAD: 'head.png',
@@ -134,8 +134,8 @@ function isSpritesheetLike(value: unknown): value is Spritesheet {
 
 function getCharacterSheets(
   loadedBundleAssets: BundleLoadResult,
-): { ok: true; sheets: Record<CharacterId, Spritesheet> } | { ok: false; reason: string } {
-  const sheets: Partial<Record<CharacterId, Spritesheet>> = {};
+): { ok: true; sheets: Record<MatchCharacterId, Spritesheet> } | { ok: false; reason: string } {
+  const sheets: Partial<Record<MatchCharacterId, Spritesheet>> = {};
 
   for (const characterId of CHARACTER_IDS) {
     const alias = `fighters/${characterId}`;
@@ -172,7 +172,7 @@ function getCharacterSheets(
   };
 }
 
-function findMissingFrameReason(sheets: Record<CharacterId, Spritesheet>): string | null {
+function findMissingFrameReason(sheets: Record<MatchCharacterId, Spritesheet>): string | null {
   for (const characterId of CHARACTER_IDS) {
     const sheet = sheets[characterId];
     for (const frameName of REQUIRED_FRAME_NAMES) {
@@ -185,7 +185,7 @@ function findMissingFrameReason(sheets: Record<CharacterId, Spritesheet>): strin
   return null;
 }
 
-function applyAtlasTextureSourcePreferences(sheets: Record<CharacterId, Spritesheet>): void {
+function applyAtlasTextureSourcePreferences(sheets: Record<MatchCharacterId, Spritesheet>): void {
   for (const characterId of CHARACTER_IDS) {
     const sheet = sheets[characterId] as unknown as {
       textureSource?: { scaleMode?: string; autoGenerateMipmaps?: boolean };
@@ -212,11 +212,12 @@ function applyAtlasTextureSourcePreferences(sheets: Record<CharacterId, Spritesh
   }
 }
 
-function createSheetScopedTextureProvider(sheets: Record<CharacterId, Spritesheet>): TextureProvider {
+function createSheetScopedTextureProvider(sheets: Record<MatchCharacterId, Spritesheet>): TextureProvider {
   return {
-    getTexture(characterId: CharacterId, part: FighterPart) {
+    getTexture(characterId, part: FighterPart) {
       const frameName = FRAME_NAME_BY_PART[part];
-      const texture = sheets[characterId].textures[frameName];
+      const artId = characterId === 'moonshine' ? 'swift' : characterId === 'hulk-hoagie' ? 'abe-lincoln' : characterId;
+      const texture = sheets[artId].textures[frameName];
       return texture ?? Texture.EMPTY;
     },
   };

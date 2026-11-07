@@ -1,8 +1,8 @@
 {
   "passed": true,
   "characters": 2,
-  "clips": 10,
-  "registeredFrames": 70,
+  "clips": 262,
+  "registeredFrames": 716,
   "checks": [
     {
       "fighter": "moonshine",
@@ -45,6 +45,1086 @@
       "sha256": "67788e04208c2d053e001c1ad4299131a9cd282521834c8a7acf770035f711ad"
     },
     {
+      "fighter": "moonshine",
+      "clip": "crouch_enter",
+      "frames": 1,
+      "transparentFraction": 0.6782080332438151,
+      "cellMarginsPassed": true,
+      "sha256": "2d2e94d5504c72da49bd195d34237ea7d8707fe5894c193e1f4274a14560b021"
+    },
+    {
+      "fighter": "moonshine",
+      "clip": "crouch_hold",
+      "frames": 1,
+      "transparentFraction": 0.6782080332438151,
+      "cellMarginsPassed": true,
+      "sha256": "2d2e94d5504c72da49bd195d34237ea7d8707fe5894c193e1f4274a14560b021"
+    },
+    {
+      "fighter": "moonshine",
+      "clip": "crouch_exit",
+      "frames": 1,
+      "transparentFraction": 0.6782080332438151,
+      "cellMarginsPassed": true,
+      "sha256": "2d2e94d5504c72da49bd195d34237ea7d8707fe5894c193e1f4274a14560b021"
+    },
+    {
+      "fighter": "moonshine",
+      "clip": "land_soft",
+      "frames": 3,
+      "transparentFraction": 0.6782080332438151,
+      "cellMarginsPassed": true,
+      "sha256": "2d2e94d5504c72da49bd195d34237ea7d8707fe5894c193e1f4274a14560b021"
+    },
+    {
+      "fighter": "moonshine",
+      "clip": "turn_stand",
+      "frames": 2,
+      "transparentFraction": 0.6930440266927084,
+      "cellMarginsPassed": true,
+      "sha256": "c90c69ed9fc5a69abf20e72189b945eb070863781681c80af8f04f10c0f05f6b"
+    },
+    {
+      "fighter": "moonshine",
+      "clip": "brake",
+      "frames": 2,
+      "transparentFraction": 0.6930440266927084,
+      "cellMarginsPassed": true,
+      "sha256": "c90c69ed9fc5a69abf20e72189b945eb070863781681c80af8f04f10c0f05f6b"
+    },
+    {
+      "fighter": "moonshine",
+      "clip": "double_jump_transition",
+      "frames": 1,
+      "transparentFraction": 0.6930440266927084,
+      "cellMarginsPassed": true,
+      "sha256": "c90c69ed9fc5a69abf20e72189b945eb070863781681c80af8f04f10c0f05f6b"
+    },
+    {
+      "fighter": "moonshine",
+      "clip": "air_apex_loop",
+      "frames": 1,
+      "transparentFraction": 0.8862250515560912,
+      "cellMarginsPassed": true,
+      "sha256": "6ad14ad555698cfe79b363d8daa372be408c14cdfc74ebb2bd2a96990ad4e277"
+    },
+    {
+      "fighter": "moonshine",
+      "clip": "air_fall_loop",
+      "frames": 1,
+      "transparentFraction": 0.6930440266927084,
+      "cellMarginsPassed": true,
+      "sha256": "c90c69ed9fc5a69abf20e72189b945eb070863781681c80af8f04f10c0f05f6b"
+    },
+    {
+      "fighter": "moonshine",
+      "clip": "jump_squat",
+      "frames": 1,
+      "transparentFraction": 0.8102956522181225,
+      "cellMarginsPassed": true,
+      "sha256": "4a9a824bc83989dd9c93d7bd8ba91af47b663fb5fab804dc6bd02d6988285cce"
+    },
+    {
+      "fighter": "moonshine",
+      "clip": "air_fastfall_loop",
+      "frames": 1,
+      "transparentFraction": 0.8102956522181225,
+      "cellMarginsPassed": true,
+      "sha256": "4a9a824bc83989dd9c93d7bd8ba91af47b663fb5fab804dc6bd02d6988285cce"
+    },
+    {
+      "fighter": "moonshine",
+      "clip": "turn_run",
+      "frames": 2,
+      "transparentFraction": 0.653604884151427,
+      "cellMarginsPassed": true,
+      "sha256": "e845435d56f936eff0838a080dfcf01f5cb866feceb5cb588d9cb49b8e6cff6f"
+    },
+    {
+      "fighter": "moonshine",
+      "clip": "land_heavy",
+      "frames": 2,
+      "transparentFraction": 0.653604884151427,
+      "cellMarginsPassed": true,
+      "sha256": "e845435d56f936eff0838a080dfcf01f5cb866feceb5cb588d9cb49b8e6cff6f"
+    },
+    {
+      "fighter": "moonshine",
+      "clip": "platform_drop",
+      "frames": 1,
+      "transparentFraction": 0.6899458567301432,
+      "cellMarginsPassed": true,
+      "sha256": "94e4b8f666777cc9c6a083cbf260cff9e91538f3e0e17bf686f16c33ece79233"
+    },
+    {
+      "fighter": "moonshine",
+      "clip": "teeter_front",
+      "frames": 1,
+      "transparentFraction": 0.6899458567301432,
+      "cellMarginsPassed": true,
+      "sha256": "94e4b8f666777cc9c6a083cbf260cff9e91538f3e0e17bf686f16c33ece79233"
+    },
+    {
+      "fighter": "moonshine",
+      "clip": "teeter_back",
+      "frames": 1,
+      "transparentFraction": 0.6899458567301432,
+      "cellMarginsPassed": true,
+      "sha256": "94e4b8f666777cc9c6a083cbf260cff9e91538f3e0e17bf686f16c33ece79233"
+    },
+    {
+      "fighter": "moonshine",
+      "clip": "forward_tilt",
+      "frames": 3,
+      "transparentFraction": 0.6899458567301432,
+      "cellMarginsPassed": true,
+      "sha256": "94e4b8f666777cc9c6a083cbf260cff9e91538f3e0e17bf686f16c33ece79233",
+      "transitionSheet": {
+        "image": "moonshine-tilt-transitions-v1.png",
+        "transparentFraction": 0.697973887125651,
+        "sha256": "a47feba1fa36bfb799e281c960fbe2b1e292484c76b4468768df9eeb492b7af6",
+        "cellMarginsPassed": true
+      }
+    },
+    {
+      "fighter": "moonshine",
+      "clip": "up_tilt",
+      "frames": 3,
+      "transparentFraction": 0.6899458567301432,
+      "cellMarginsPassed": true,
+      "sha256": "94e4b8f666777cc9c6a083cbf260cff9e91538f3e0e17bf686f16c33ece79233",
+      "transitionSheet": {
+        "image": "moonshine-tilt-transitions-v1.png",
+        "transparentFraction": 0.697973887125651,
+        "sha256": "a47feba1fa36bfb799e281c960fbe2b1e292484c76b4468768df9eeb492b7af6",
+        "cellMarginsPassed": true
+      }
+    },
+    {
+      "fighter": "moonshine",
+      "clip": "down_tilt",
+      "frames": 3,
+      "transparentFraction": 0.6899458567301432,
+      "cellMarginsPassed": true,
+      "sha256": "94e4b8f666777cc9c6a083cbf260cff9e91538f3e0e17bf686f16c33ece79233",
+      "transitionSheet": {
+        "image": "moonshine-tilt-transitions-v1.png",
+        "transparentFraction": 0.697973887125651,
+        "sha256": "a47feba1fa36bfb799e281c960fbe2b1e292484c76b4468768df9eeb492b7af6",
+        "cellMarginsPassed": true
+      }
+    },
+    {
+      "fighter": "moonshine",
+      "clip": "dash_attack",
+      "frames": 3,
+      "transparentFraction": 0.6784286702333245,
+      "cellMarginsPassed": true,
+      "sha256": "351b4e54f0a85dff78fcc068ca618d8ad341eba4fc6377ab93d06c3e4f51ee18",
+      "transitionSheet": {
+        "image": "moonshine-dash-smash-transitions-v1.png",
+        "transparentFraction": 0.6378320701501966,
+        "sha256": "8e27993b007c6f74dfee96f8e1cd1ee21f404e964d44031e2a8a2ddae79987ce",
+        "cellMarginsPassed": true
+      }
+    },
+    {
+      "fighter": "moonshine",
+      "clip": "forward_smash",
+      "frames": 3,
+      "transparentFraction": 0.6784286702333245,
+      "cellMarginsPassed": true,
+      "sha256": "351b4e54f0a85dff78fcc068ca618d8ad341eba4fc6377ab93d06c3e4f51ee18",
+      "transitionSheet": {
+        "image": "moonshine-dash-smash-transitions-v1.png",
+        "transparentFraction": 0.6378320701501966,
+        "sha256": "8e27993b007c6f74dfee96f8e1cd1ee21f404e964d44031e2a8a2ddae79987ce",
+        "cellMarginsPassed": true
+      }
+    },
+    {
+      "fighter": "moonshine",
+      "clip": "up_smash",
+      "frames": 3,
+      "transparentFraction": 0.6784286702333245,
+      "cellMarginsPassed": true,
+      "sha256": "351b4e54f0a85dff78fcc068ca618d8ad341eba4fc6377ab93d06c3e4f51ee18",
+      "transitionSheet": {
+        "image": "moonshine-dash-smash-transitions-v1.png",
+        "transparentFraction": 0.6378320701501966,
+        "sha256": "8e27993b007c6f74dfee96f8e1cd1ee21f404e964d44031e2a8a2ddae79987ce",
+        "cellMarginsPassed": true
+      }
+    },
+    {
+      "fighter": "moonshine",
+      "clip": "down_smash",
+      "frames": 3,
+      "transparentFraction": 0.6784286702333245,
+      "cellMarginsPassed": true,
+      "sha256": "351b4e54f0a85dff78fcc068ca618d8ad341eba4fc6377ab93d06c3e4f51ee18",
+      "transitionSheet": {
+        "image": "moonshine-dash-smash-transitions-v1.png",
+        "transparentFraction": 0.6378320701501966,
+        "sha256": "8e27993b007c6f74dfee96f8e1cd1ee21f404e964d44031e2a8a2ddae79987ce",
+        "cellMarginsPassed": true
+      }
+    },
+    {
+      "fighter": "moonshine",
+      "clip": "neutral_air",
+      "frames": 3,
+      "transparentFraction": 0.6936372121175131,
+      "cellMarginsPassed": true,
+      "sha256": "5b7428fe00f75da3af3f092dbe5aa7fed7113f00081fd2e87f0103ad7702da4a",
+      "transitionSheet": {
+        "image": "moonshine-aerial-transitions-v1.png",
+        "transparentFraction": 0.6312101793364658,
+        "sha256": "6dd5884469928a5e6c7a4d57b7d5436f42dc9a009ab48ea9d938bfda012ee16d",
+        "cellMarginsPassed": true
+      }
+    },
+    {
+      "fighter": "moonshine",
+      "clip": "forward_air",
+      "frames": 3,
+      "transparentFraction": 0.6936372121175131,
+      "cellMarginsPassed": true,
+      "sha256": "5b7428fe00f75da3af3f092dbe5aa7fed7113f00081fd2e87f0103ad7702da4a",
+      "transitionSheet": {
+        "image": "moonshine-aerial-transitions-v1.png",
+        "transparentFraction": 0.6312101793364658,
+        "sha256": "6dd5884469928a5e6c7a4d57b7d5436f42dc9a009ab48ea9d938bfda012ee16d",
+        "cellMarginsPassed": true
+      }
+    },
+    {
+      "fighter": "moonshine",
+      "clip": "back_air",
+      "frames": 3,
+      "transparentFraction": 0.6936372121175131,
+      "cellMarginsPassed": true,
+      "sha256": "5b7428fe00f75da3af3f092dbe5aa7fed7113f00081fd2e87f0103ad7702da4a",
+      "transitionSheet": {
+        "image": "moonshine-aerial-transitions-v1.png",
+        "transparentFraction": 0.6312101793364658,
+        "sha256": "6dd5884469928a5e6c7a4d57b7d5436f42dc9a009ab48ea9d938bfda012ee16d",
+        "cellMarginsPassed": true
+      }
+    },
+    {
+      "fighter": "moonshine",
+      "clip": "up_air",
+      "frames": 3,
+      "transparentFraction": 0.6936372121175131,
+      "cellMarginsPassed": true,
+      "sha256": "5b7428fe00f75da3af3f092dbe5aa7fed7113f00081fd2e87f0103ad7702da4a",
+      "transitionSheet": {
+        "image": "moonshine-aerial-transitions-v1.png",
+        "transparentFraction": 0.6312101793364658,
+        "sha256": "6dd5884469928a5e6c7a4d57b7d5436f42dc9a009ab48ea9d938bfda012ee16d",
+        "cellMarginsPassed": true
+      }
+    },
+    {
+      "fighter": "moonshine",
+      "clip": "down_air",
+      "frames": 3,
+      "transparentFraction": 0.6936372121175131,
+      "cellMarginsPassed": true,
+      "sha256": "5b7428fe00f75da3af3f092dbe5aa7fed7113f00081fd2e87f0103ad7702da4a",
+      "transitionSheet": {
+        "image": "moonshine-aerial-transitions-v1.png",
+        "transparentFraction": 0.6312101793364658,
+        "sha256": "6dd5884469928a5e6c7a4d57b7d5436f42dc9a009ab48ea9d938bfda012ee16d",
+        "cellMarginsPassed": true
+      }
+    },
+    {
+      "fighter": "moonshine",
+      "clip": "shield",
+      "frames": 1,
+      "transparentFraction": 0.7454115549723307,
+      "cellMarginsPassed": true,
+      "sha256": "15fcbc82e8a084e35e999578ddd776f338bb2753ee0bba95b09b5329be797a23"
+    },
+    {
+      "fighter": "moonshine",
+      "clip": "parry",
+      "frames": 3,
+      "transparentFraction": 0.7454115549723307,
+      "cellMarginsPassed": true,
+      "sha256": "15fcbc82e8a084e35e999578ddd776f338bb2753ee0bba95b09b5329be797a23"
+    },
+    {
+      "fighter": "moonshine",
+      "clip": "dodge",
+      "frames": 3,
+      "transparentFraction": 0.7454115549723307,
+      "cellMarginsPassed": true,
+      "sha256": "15fcbc82e8a084e35e999578ddd776f338bb2753ee0bba95b09b5329be797a23"
+    },
+    {
+      "fighter": "moonshine",
+      "clip": "roll",
+      "frames": 3,
+      "transparentFraction": 0.7454115549723307,
+      "cellMarginsPassed": true,
+      "sha256": "15fcbc82e8a084e35e999578ddd776f338bb2753ee0bba95b09b5329be797a23"
+    },
+    {
+      "fighter": "moonshine",
+      "clip": "roll_back_preview",
+      "frames": 3,
+      "transparentFraction": 0.7454115549723307,
+      "cellMarginsPassed": true,
+      "sha256": "15fcbc82e8a084e35e999578ddd776f338bb2753ee0bba95b09b5329be797a23"
+    },
+    {
+      "fighter": "moonshine",
+      "clip": "air_dodge_neutral",
+      "frames": 3,
+      "transparentFraction": 0.7454115549723307,
+      "cellMarginsPassed": true,
+      "sha256": "15fcbc82e8a084e35e999578ddd776f338bb2753ee0bba95b09b5329be797a23"
+    },
+    {
+      "fighter": "moonshine",
+      "clip": "shield_raise",
+      "frames": 3,
+      "transparentFraction": 0.7165915171305338,
+      "cellMarginsPassed": true,
+      "sha256": "cfc9b2c14b2ac59d818108009707c05a7814d5e981cb3635db3791070023f14f"
+    },
+    {
+      "fighter": "moonshine",
+      "clip": "shield_hit",
+      "frames": 3,
+      "transparentFraction": 0.7165915171305338,
+      "cellMarginsPassed": true,
+      "sha256": "cfc9b2c14b2ac59d818108009707c05a7814d5e981cb3635db3791070023f14f"
+    },
+    {
+      "fighter": "moonshine",
+      "clip": "shield_drop",
+      "frames": 3,
+      "transparentFraction": 0.7165915171305338,
+      "cellMarginsPassed": true,
+      "sha256": "cfc9b2c14b2ac59d818108009707c05a7814d5e981cb3635db3791070023f14f"
+    },
+    {
+      "fighter": "moonshine",
+      "clip": "air_dodge_up",
+      "frames": 3,
+      "transparentFraction": 0.7165915171305338,
+      "cellMarginsPassed": true,
+      "sha256": "cfc9b2c14b2ac59d818108009707c05a7814d5e981cb3635db3791070023f14f"
+    },
+    {
+      "fighter": "moonshine",
+      "clip": "air_dodge_side",
+      "frames": 3,
+      "transparentFraction": 0.7165915171305338,
+      "cellMarginsPassed": true,
+      "sha256": "cfc9b2c14b2ac59d818108009707c05a7814d5e981cb3635db3791070023f14f"
+    },
+    {
+      "fighter": "moonshine",
+      "clip": "air_dodge_land",
+      "frames": 2,
+      "transparentFraction": 0.7165915171305338,
+      "cellMarginsPassed": true,
+      "sha256": "cfc9b2c14b2ac59d818108009707c05a7814d5e981cb3635db3791070023f14f"
+    },
+    {
+      "fighter": "moonshine",
+      "clip": "air_dodge_down",
+      "frames": 3,
+      "transparentFraction": 0.7435703277587891,
+      "cellMarginsPassed": true,
+      "sha256": "1e796cbf127607d228439260202fabb64d7cd6d00f8638152f0e3c8e6e36cbdc"
+    },
+    {
+      "fighter": "moonshine",
+      "clip": "air_dodge_back",
+      "frames": 3,
+      "transparentFraction": 0.7435703277587891,
+      "cellMarginsPassed": true,
+      "sha256": "1e796cbf127607d228439260202fabb64d7cd6d00f8638152f0e3c8e6e36cbdc"
+    },
+    {
+      "fighter": "moonshine",
+      "clip": "air_dodge_up_diagonal",
+      "frames": 3,
+      "transparentFraction": 0.7435703277587891,
+      "cellMarginsPassed": true,
+      "sha256": "1e796cbf127607d228439260202fabb64d7cd6d00f8638152f0e3c8e6e36cbdc"
+    },
+    {
+      "fighter": "moonshine",
+      "clip": "air_dodge_down_diagonal",
+      "frames": 3,
+      "transparentFraction": 0.7435703277587891,
+      "cellMarginsPassed": true,
+      "sha256": "1e796cbf127607d228439260202fabb64d7cd6d00f8638152f0e3c8e6e36cbdc"
+    },
+    {
+      "fighter": "moonshine",
+      "clip": "air_dodge_up_back",
+      "frames": 3,
+      "transparentFraction": 0.7435703277587891,
+      "cellMarginsPassed": true,
+      "sha256": "1e796cbf127607d228439260202fabb64d7cd6d00f8638152f0e3c8e6e36cbdc"
+    },
+    {
+      "fighter": "moonshine",
+      "clip": "air_dodge_down_back",
+      "frames": 3,
+      "transparentFraction": 0.7435703277587891,
+      "cellMarginsPassed": true,
+      "sha256": "1e796cbf127607d228439260202fabb64d7cd6d00f8638152f0e3c8e6e36cbdc"
+    },
+    {
+      "fighter": "moonshine",
+      "clip": "hit_mid",
+      "frames": 2,
+      "transparentFraction": 0.570367177327474,
+      "cellMarginsPassed": true,
+      "sha256": "c48c51138987b1e0200c004efad1f70a68eca701a825fb1f015db95adda71f18"
+    },
+    {
+      "fighter": "moonshine",
+      "clip": "hit_air",
+      "frames": 2,
+      "transparentFraction": 0.570367177327474,
+      "cellMarginsPassed": true,
+      "sha256": "c48c51138987b1e0200c004efad1f70a68eca701a825fb1f015db95adda71f18"
+    },
+    {
+      "fighter": "moonshine",
+      "clip": "ko_launch",
+      "frames": 1,
+      "transparentFraction": 0.570367177327474,
+      "cellMarginsPassed": true,
+      "sha256": "c48c51138987b1e0200c004efad1f70a68eca701a825fb1f015db95adda71f18"
+    },
+    {
+      "fighter": "moonshine",
+      "clip": "tumble",
+      "frames": 3,
+      "transparentFraction": 0.570367177327474,
+      "cellMarginsPassed": true,
+      "sha256": "c48c51138987b1e0200c004efad1f70a68eca701a825fb1f015db95adda71f18"
+    },
+    {
+      "fighter": "moonshine",
+      "clip": "hit_high",
+      "frames": 2,
+      "transparentFraction": 0.7016709645589193,
+      "cellMarginsPassed": true,
+      "sha256": "6fd6328eedaf98e64d8de5cbbd7ba381e63a727b2075c96505a2413caa591630"
+    },
+    {
+      "fighter": "moonshine",
+      "clip": "hit_low",
+      "frames": 2,
+      "transparentFraction": 0.7016709645589193,
+      "cellMarginsPassed": true,
+      "sha256": "6fd6328eedaf98e64d8de5cbbd7ba381e63a727b2075c96505a2413caa591630"
+    },
+    {
+      "fighter": "moonshine",
+      "clip": "hit_heavy",
+      "frames": 2,
+      "transparentFraction": 0.7016709645589193,
+      "cellMarginsPassed": true,
+      "sha256": "6fd6328eedaf98e64d8de5cbbd7ba381e63a727b2075c96505a2413caa591630"
+    },
+    {
+      "fighter": "moonshine",
+      "clip": "tumble_recover",
+      "frames": 2,
+      "transparentFraction": 0.7016709645589193,
+      "cellMarginsPassed": true,
+      "sha256": "6fd6328eedaf98e64d8de5cbbd7ba381e63a727b2075c96505a2413caa591630"
+    },
+    {
+      "fighter": "moonshine",
+      "clip": "knockdown_up",
+      "frames": 1,
+      "transparentFraction": 0.7016709645589193,
+      "cellMarginsPassed": true,
+      "sha256": "6fd6328eedaf98e64d8de5cbbd7ba381e63a727b2075c96505a2413caa591630"
+    },
+    {
+      "fighter": "moonshine",
+      "clip": "knockdown_down",
+      "frames": 1,
+      "transparentFraction": 0.7016709645589193,
+      "cellMarginsPassed": true,
+      "sha256": "6fd6328eedaf98e64d8de5cbbd7ba381e63a727b2075c96505a2413caa591630"
+    },
+    {
+      "fighter": "moonshine",
+      "clip": "prone_up",
+      "frames": 1,
+      "transparentFraction": 0.7016709645589193,
+      "cellMarginsPassed": true,
+      "sha256": "6fd6328eedaf98e64d8de5cbbd7ba381e63a727b2075c96505a2413caa591630"
+    },
+    {
+      "fighter": "moonshine",
+      "clip": "getup_up",
+      "frames": 4,
+      "transparentFraction": 0.6786524454752604,
+      "cellMarginsPassed": true,
+      "sha256": "d58ce58d9f1a481a37b05f9b5025755ae6428368eb71d5f4e5cebf2393128ded"
+    },
+    {
+      "fighter": "moonshine",
+      "clip": "getup_roll_up",
+      "frames": 5,
+      "transparentFraction": 0.6786524454752604,
+      "cellMarginsPassed": true,
+      "sha256": "d58ce58d9f1a481a37b05f9b5025755ae6428368eb71d5f4e5cebf2393128ded"
+    },
+    {
+      "fighter": "moonshine",
+      "clip": "floor_attack_up",
+      "frames": 5,
+      "transparentFraction": 0.6786524454752604,
+      "cellMarginsPassed": true,
+      "sha256": "d58ce58d9f1a481a37b05f9b5025755ae6428368eb71d5f4e5cebf2393128ded"
+    },
+    {
+      "fighter": "moonshine",
+      "clip": "prone_down",
+      "frames": 1,
+      "transparentFraction": 0.7016709645589193,
+      "cellMarginsPassed": true,
+      "sha256": "6fd6328eedaf98e64d8de5cbbd7ba381e63a727b2075c96505a2413caa591630"
+    },
+    {
+      "fighter": "moonshine",
+      "clip": "getup_down",
+      "frames": 4,
+      "transparentFraction": 0.6786524454752604,
+      "cellMarginsPassed": true,
+      "sha256": "d58ce58d9f1a481a37b05f9b5025755ae6428368eb71d5f4e5cebf2393128ded"
+    },
+    {
+      "fighter": "moonshine",
+      "clip": "getup_roll_down",
+      "frames": 5,
+      "transparentFraction": 0.6786524454752604,
+      "cellMarginsPassed": true,
+      "sha256": "d58ce58d9f1a481a37b05f9b5025755ae6428368eb71d5f4e5cebf2393128ded"
+    },
+    {
+      "fighter": "moonshine",
+      "clip": "floor_attack_down",
+      "frames": 5,
+      "transparentFraction": 0.6786524454752604,
+      "cellMarginsPassed": true,
+      "sha256": "d58ce58d9f1a481a37b05f9b5025755ae6428368eb71d5f4e5cebf2393128ded"
+    },
+    {
+      "fighter": "moonshine",
+      "clip": "tech_neutral",
+      "frames": 3,
+      "transparentFraction": 0.693141824347426,
+      "cellMarginsPassed": true,
+      "sha256": "ba80e47feaea36f41d0e64b8a861aea3ecdffcc895ebc0ea18189d34e484aa1d"
+    },
+    {
+      "fighter": "moonshine",
+      "clip": "tech_roll",
+      "frames": 4,
+      "transparentFraction": 0.693141824347426,
+      "cellMarginsPassed": true,
+      "sha256": "ba80e47feaea36f41d0e64b8a861aea3ecdffcc895ebc0ea18189d34e484aa1d"
+    },
+    {
+      "fighter": "moonshine",
+      "clip": "wall_tech",
+      "frames": 2,
+      "transparentFraction": 0.693141824347426,
+      "cellMarginsPassed": true,
+      "sha256": "ba80e47feaea36f41d0e64b8a861aea3ecdffcc895ebc0ea18189d34e484aa1d"
+    },
+    {
+      "fighter": "moonshine",
+      "clip": "wall_tech_jump",
+      "frames": 3,
+      "transparentFraction": 0.693141824347426,
+      "cellMarginsPassed": true,
+      "sha256": "ba80e47feaea36f41d0e64b8a861aea3ecdffcc895ebc0ea18189d34e484aa1d"
+    },
+    {
+      "fighter": "moonshine",
+      "clip": "trip_fall",
+      "frames": 2,
+      "transparentFraction": 0.693141824347426,
+      "cellMarginsPassed": true,
+      "sha256": "ba80e47feaea36f41d0e64b8a861aea3ecdffcc895ebc0ea18189d34e484aa1d"
+    },
+    {
+      "fighter": "moonshine",
+      "clip": "trip_prone",
+      "frames": 1,
+      "transparentFraction": 0.693141824347426,
+      "cellMarginsPassed": true,
+      "sha256": "ba80e47feaea36f41d0e64b8a861aea3ecdffcc895ebc0ea18189d34e484aa1d"
+    },
+    {
+      "fighter": "moonshine",
+      "clip": "trip_getup",
+      "frames": 3,
+      "transparentFraction": 0.693141824347426,
+      "cellMarginsPassed": true,
+      "sha256": "ba80e47feaea36f41d0e64b8a861aea3ecdffcc895ebc0ea18189d34e484aa1d"
+    },
+    {
+      "fighter": "moonshine",
+      "clip": "trip_roll",
+      "frames": 4,
+      "transparentFraction": 0.693141824347426,
+      "cellMarginsPassed": true,
+      "sha256": "ba80e47feaea36f41d0e64b8a861aea3ecdffcc895ebc0ea18189d34e484aa1d"
+    },
+    {
+      "fighter": "moonshine",
+      "clip": "floor_attack_trip",
+      "frames": 4,
+      "transparentFraction": 0.693141824347426,
+      "cellMarginsPassed": true,
+      "sha256": "ba80e47feaea36f41d0e64b8a861aea3ecdffcc895ebc0ea18189d34e484aa1d"
+    },
+    {
+      "fighter": "moonshine",
+      "clip": "jab_lock_up",
+      "frames": 3,
+      "transparentFraction": 0.693141824347426,
+      "cellMarginsPassed": true,
+      "sha256": "ba80e47feaea36f41d0e64b8a861aea3ecdffcc895ebc0ea18189d34e484aa1d"
+    },
+    {
+      "fighter": "moonshine",
+      "clip": "jab_lock_down",
+      "frames": 3,
+      "transparentFraction": 0.693141824347426,
+      "cellMarginsPassed": true,
+      "sha256": "ba80e47feaea36f41d0e64b8a861aea3ecdffcc895ebc0ea18189d34e484aa1d"
+    },
+    {
+      "fighter": "moonshine",
+      "clip": "ceiling_tech",
+      "frames": 2,
+      "transparentFraction": 0.8917620867566324,
+      "cellMarginsPassed": true,
+      "sha256": "6da8130e99febd2dc3098e273017a1a99539806f537600b4bc3c198d13054802"
+    },
+    {
+      "fighter": "moonshine",
+      "clip": "grab",
+      "frames": 3,
+      "transparentFraction": 0.6323228291912873,
+      "cellMarginsPassed": true,
+      "sha256": "058ce16d5f4fc270e1fde060675856619a4cf9139608a47dc8dac86a5afb3a87"
+    },
+    {
+      "fighter": "moonshine",
+      "clip": "grabbed",
+      "frames": 3,
+      "transparentFraction": 0.6994321077724212,
+      "cellMarginsPassed": true,
+      "sha256": "4e256b33b32f859d567d87e0561369eacc4404af6448f347962111268f134a25"
+    },
+    {
+      "fighter": "moonshine",
+      "clip": "grab_hold",
+      "frames": 1,
+      "transparentFraction": 0.6323228291912873,
+      "cellMarginsPassed": true,
+      "sha256": "058ce16d5f4fc270e1fde060675856619a4cf9139608a47dc8dac86a5afb3a87"
+    },
+    {
+      "fighter": "moonshine",
+      "clip": "grabbed_hold_preview",
+      "frames": 1,
+      "transparentFraction": 0.6994321077724212,
+      "cellMarginsPassed": true,
+      "sha256": "4e256b33b32f859d567d87e0561369eacc4404af6448f347962111268f134a25"
+    },
+    {
+      "fighter": "moonshine",
+      "clip": "pummel",
+      "frames": 3,
+      "transparentFraction": 0.6323228291912873,
+      "cellMarginsPassed": true,
+      "sha256": "058ce16d5f4fc270e1fde060675856619a4cf9139608a47dc8dac86a5afb3a87"
+    },
+    {
+      "fighter": "moonshine",
+      "clip": "pummel_victim",
+      "frames": 3,
+      "transparentFraction": 0.6994321077724212,
+      "cellMarginsPassed": true,
+      "sha256": "4e256b33b32f859d567d87e0561369eacc4404af6448f347962111268f134a25"
+    },
+    {
+      "fighter": "moonshine",
+      "clip": "grab_release",
+      "frames": 3,
+      "transparentFraction": 0.6323228291912873,
+      "cellMarginsPassed": true,
+      "sha256": "058ce16d5f4fc270e1fde060675856619a4cf9139608a47dc8dac86a5afb3a87"
+    },
+    {
+      "fighter": "moonshine",
+      "clip": "grab_release_victim_preview",
+      "frames": 3,
+      "transparentFraction": 0.6994321077724212,
+      "cellMarginsPassed": true,
+      "sha256": "4e256b33b32f859d567d87e0561369eacc4404af6448f347962111268f134a25"
+    },
+    {
+      "fighter": "moonshine",
+      "clip": "forward_throw",
+      "frames": 3,
+      "transparentFraction": 0.6323228291912873,
+      "cellMarginsPassed": true,
+      "sha256": "058ce16d5f4fc270e1fde060675856619a4cf9139608a47dc8dac86a5afb3a87"
+    },
+    {
+      "fighter": "moonshine",
+      "clip": "throw_victim",
+      "frames": 3,
+      "transparentFraction": 0.6994321077724212,
+      "cellMarginsPassed": true,
+      "sha256": "4e256b33b32f859d567d87e0561369eacc4404af6448f347962111268f134a25"
+    },
+    {
+      "fighter": "moonshine",
+      "clip": "back_throw",
+      "frames": 3,
+      "transparentFraction": 0.6323228291912873,
+      "cellMarginsPassed": true,
+      "sha256": "058ce16d5f4fc270e1fde060675856619a4cf9139608a47dc8dac86a5afb3a87"
+    },
+    {
+      "fighter": "moonshine",
+      "clip": "back_throw_victim_preview",
+      "frames": 3,
+      "transparentFraction": 0.6994321077724212,
+      "cellMarginsPassed": true,
+      "sha256": "4e256b33b32f859d567d87e0561369eacc4404af6448f347962111268f134a25"
+    },
+    {
+      "fighter": "moonshine",
+      "clip": "up_throw",
+      "frames": 3,
+      "transparentFraction": 0.6323228291912873,
+      "cellMarginsPassed": true,
+      "sha256": "058ce16d5f4fc270e1fde060675856619a4cf9139608a47dc8dac86a5afb3a87"
+    },
+    {
+      "fighter": "moonshine",
+      "clip": "up_throw_victim_preview",
+      "frames": 3,
+      "transparentFraction": 0.6994321077724212,
+      "cellMarginsPassed": true,
+      "sha256": "4e256b33b32f859d567d87e0561369eacc4404af6448f347962111268f134a25"
+    },
+    {
+      "fighter": "moonshine",
+      "clip": "down_throw",
+      "frames": 3,
+      "transparentFraction": 0.6323228291912873,
+      "cellMarginsPassed": true,
+      "sha256": "058ce16d5f4fc270e1fde060675856619a4cf9139608a47dc8dac86a5afb3a87"
+    },
+    {
+      "fighter": "moonshine",
+      "clip": "down_throw_victim_preview",
+      "frames": 3,
+      "transparentFraction": 0.6994321077724212,
+      "cellMarginsPassed": true,
+      "sha256": "4e256b33b32f859d567d87e0561369eacc4404af6448f347962111268f134a25"
+    },
+    {
+      "fighter": "moonshine",
+      "clip": "grab_dash",
+      "frames": 3,
+      "transparentFraction": 0.751500233934783,
+      "cellMarginsPassed": true,
+      "sha256": "27c50eb7e5ee144b3784946705abea88686917a39f89a217654a39ee2448bf6c"
+    },
+    {
+      "fighter": "moonshine",
+      "clip": "grab_dash_victim_preview",
+      "frames": 3,
+      "transparentFraction": 0.6994321077724212,
+      "cellMarginsPassed": true,
+      "sha256": "4e256b33b32f859d567d87e0561369eacc4404af6448f347962111268f134a25"
+    },
+    {
+      "fighter": "moonshine",
+      "clip": "grab_pivot",
+      "frames": 3,
+      "transparentFraction": 0.751500233934783,
+      "cellMarginsPassed": true,
+      "sha256": "27c50eb7e5ee144b3784946705abea88686917a39f89a217654a39ee2448bf6c"
+    },
+    {
+      "fighter": "moonshine",
+      "clip": "grab_pivot_victim_preview",
+      "frames": 3,
+      "transparentFraction": 0.6994321077724212,
+      "cellMarginsPassed": true,
+      "sha256": "4e256b33b32f859d567d87e0561369eacc4404af6448f347962111268f134a25"
+    },
+    {
+      "fighter": "moonshine",
+      "clip": "footstool_attacker",
+      "frames": 3,
+      "transparentFraction": 0.7413370379361668,
+      "cellMarginsPassed": true,
+      "sha256": "75dd0cf79fd016d8ee77b491209a7ec97be02b4ae3e5ba138c6fa7124b8c6eee"
+    },
+    {
+      "fighter": "moonshine",
+      "clip": "footstool_air_victim",
+      "frames": 3,
+      "transparentFraction": 0.7413370379361668,
+      "cellMarginsPassed": true,
+      "sha256": "75dd0cf79fd016d8ee77b491209a7ec97be02b4ae3e5ba138c6fa7124b8c6eee"
+    },
+    {
+      "fighter": "moonshine",
+      "clip": "ledge_hang",
+      "frames": 1,
+      "transparentFraction": 0.7413370379361668,
+      "cellMarginsPassed": true,
+      "sha256": "75dd0cf79fd016d8ee77b491209a7ec97be02b4ae3e5ba138c6fa7124b8c6eee"
+    },
+    {
+      "fighter": "moonshine",
+      "clip": "ledge_climb",
+      "frames": 3,
+      "transparentFraction": 0.7413370379361668,
+      "cellMarginsPassed": true,
+      "sha256": "75dd0cf79fd016d8ee77b491209a7ec97be02b4ae3e5ba138c6fa7124b8c6eee"
+    },
+    {
+      "fighter": "moonshine",
+      "clip": "ledge_roll",
+      "frames": 4,
+      "transparentFraction": 0.7413370379361668,
+      "cellMarginsPassed": true,
+      "sha256": "75dd0cf79fd016d8ee77b491209a7ec97be02b4ae3e5ba138c6fa7124b8c6eee"
+    },
+    {
+      "fighter": "moonshine",
+      "clip": "ledge_jump",
+      "frames": 3,
+      "transparentFraction": 0.7413370379361668,
+      "cellMarginsPassed": true,
+      "sha256": "75dd0cf79fd016d8ee77b491209a7ec97be02b4ae3e5ba138c6fa7124b8c6eee"
+    },
+    {
+      "fighter": "moonshine",
+      "clip": "ledge_attack",
+      "frames": 4,
+      "transparentFraction": 0.7413370379361668,
+      "cellMarginsPassed": true,
+      "sha256": "75dd0cf79fd016d8ee77b491209a7ec97be02b4ae3e5ba138c6fa7124b8c6eee"
+    },
+    {
+      "fighter": "moonshine",
+      "clip": "ledge_drop",
+      "frames": 3,
+      "transparentFraction": 0.7413370379361668,
+      "cellMarginsPassed": true,
+      "sha256": "75dd0cf79fd016d8ee77b491209a7ec97be02b4ae3e5ba138c6fa7124b8c6eee"
+    },
+    {
+      "fighter": "moonshine",
+      "clip": "footstool_ground_victim",
+      "frames": 3,
+      "transparentFraction": 0.7519109357671214,
+      "cellMarginsPassed": true,
+      "sha256": "a951850fdd9408dc57d3b0b8ed21b19fc1f74da101ba0fca0dacda49ff28ac87"
+    },
+    {
+      "fighter": "moonshine",
+      "clip": "footstool_ground_preview",
+      "frames": 3,
+      "transparentFraction": 0.7519109357671214,
+      "cellMarginsPassed": true,
+      "sha256": "a951850fdd9408dc57d3b0b8ed21b19fc1f74da101ba0fca0dacda49ff28ac87"
+    },
+    {
+      "fighter": "moonshine",
+      "clip": "ledge_catch",
+      "frames": 2,
+      "transparentFraction": 0.7519109357671214,
+      "cellMarginsPassed": true,
+      "sha256": "a951850fdd9408dc57d3b0b8ed21b19fc1f74da101ba0fca0dacda49ff28ac87"
+    },
+    {
+      "fighter": "moonshine",
+      "clip": "ledge_trump",
+      "frames": 3,
+      "transparentFraction": 0.7519109357671214,
+      "cellMarginsPassed": true,
+      "sha256": "a951850fdd9408dc57d3b0b8ed21b19fc1f74da101ba0fca0dacda49ff28ac87"
+    },
+    {
+      "fighter": "moonshine",
+      "clip": "helpless_enter",
+      "frames": 2,
+      "transparentFraction": 0.6842885268738347,
+      "cellMarginsPassed": true,
+      "sha256": "80e5cb8adfebaf0d4e58f3ba5cde5adf2f107b88ec173d0623b4356d4af8aad1"
+    },
+    {
+      "fighter": "moonshine",
+      "clip": "helpless_loop",
+      "frames": 1,
+      "transparentFraction": 0.6842885268738347,
+      "cellMarginsPassed": true,
+      "sha256": "80e5cb8adfebaf0d4e58f3ba5cde5adf2f107b88ec173d0623b4356d4af8aad1"
+    },
+    {
+      "fighter": "moonshine",
+      "clip": "helpless_land",
+      "frames": 3,
+      "transparentFraction": 0.6842885268738347,
+      "cellMarginsPassed": true,
+      "sha256": "80e5cb8adfebaf0d4e58f3ba5cde5adf2f107b88ec173d0623b4356d4af8aad1"
+    },
+    {
+      "fighter": "moonshine",
+      "clip": "entry",
+      "frames": 2,
+      "transparentFraction": 0.6842885268738347,
+      "cellMarginsPassed": true,
+      "sha256": "80e5cb8adfebaf0d4e58f3ba5cde5adf2f107b88ec173d0623b4356d4af8aad1"
+    },
+    {
+      "fighter": "moonshine",
+      "clip": "respawn_wait",
+      "frames": 1,
+      "transparentFraction": 0.6842885268738347,
+      "cellMarginsPassed": true,
+      "sha256": "80e5cb8adfebaf0d4e58f3ba5cde5adf2f107b88ec173d0623b4356d4af8aad1"
+    },
+    {
+      "fighter": "moonshine",
+      "clip": "respawn_drop",
+      "frames": 3,
+      "transparentFraction": 0.6842885268738347,
+      "cellMarginsPassed": true,
+      "sha256": "80e5cb8adfebaf0d4e58f3ba5cde5adf2f107b88ec173d0623b4356d4af8aad1"
+    },
+    {
+      "fighter": "moonshine",
+      "clip": "taunt_up",
+      "frames": 3,
+      "transparentFraction": 0.6842885268738347,
+      "cellMarginsPassed": true,
+      "sha256": "80e5cb8adfebaf0d4e58f3ba5cde5adf2f107b88ec173d0623b4356d4af8aad1"
+    },
+    {
+      "fighter": "moonshine",
+      "clip": "taunt_side",
+      "frames": 3,
+      "transparentFraction": 0.6842885268738347,
+      "cellMarginsPassed": true,
+      "sha256": "80e5cb8adfebaf0d4e58f3ba5cde5adf2f107b88ec173d0623b4356d4af8aad1"
+    },
+    {
+      "fighter": "moonshine",
+      "clip": "victory_1",
+      "frames": 2,
+      "transparentFraction": 0.6842885268738347,
+      "cellMarginsPassed": true,
+      "sha256": "80e5cb8adfebaf0d4e58f3ba5cde5adf2f107b88ec173d0623b4356d4af8aad1"
+    },
+    {
+      "fighter": "moonshine",
+      "clip": "defeat",
+      "frames": 2,
+      "transparentFraction": 0.6842885268738347,
+      "cellMarginsPassed": true,
+      "sha256": "80e5cb8adfebaf0d4e58f3ba5cde5adf2f107b88ec173d0623b4356d4af8aad1"
+    },
+    {
+      "fighter": "moonshine",
+      "clip": "taunt_down",
+      "frames": 4,
+      "transparentFraction": 0.6949917584933305,
+      "cellMarginsPassed": true,
+      "sha256": "14bfd16b6442feb03cb1b248ae038070b7659d864172a97defa8d38a4134290e"
+    },
+    {
+      "fighter": "moonshine",
+      "clip": "victory_2",
+      "frames": 2,
+      "transparentFraction": 0.6949917584933305,
+      "cellMarginsPassed": true,
+      "sha256": "14bfd16b6442feb03cb1b248ae038070b7659d864172a97defa8d38a4134290e"
+    },
+    {
+      "fighter": "moonshine",
+      "clip": "victory_3",
+      "frames": 2,
+      "transparentFraction": 0.6949917584933305,
+      "cellMarginsPassed": true,
+      "sha256": "14bfd16b6442feb03cb1b248ae038070b7659d864172a97defa8d38a4134290e"
+    },
+    {
+      "fighter": "moonshine",
+      "clip": "ko_screen",
+      "frames": 2,
+      "transparentFraction": 0.5992247263590494,
+      "cellMarginsPassed": true,
+      "sha256": "ce3d6861f40dee6aa4980d1be86b53a8320e2718d112957aa3a496a25657a51b"
+    },
+    {
+      "fighter": "moonshine",
+      "clip": "ko_star",
+      "frames": 2,
+      "transparentFraction": 0.5992247263590494,
+      "cellMarginsPassed": true,
+      "sha256": "ce3d6861f40dee6aa4980d1be86b53a8320e2718d112957aa3a496a25657a51b"
+    },
+    {
+      "fighter": "moonshine",
+      "clip": "shield_break_launch",
+      "frames": 2,
+      "transparentFraction": 0.5992247263590494,
+      "cellMarginsPassed": true,
+      "sha256": "ce3d6861f40dee6aa4980d1be86b53a8320e2718d112957aa3a496a25657a51b"
+    },
+    {
+      "fighter": "moonshine",
+      "clip": "shield_break_dizzy",
+      "frames": 2,
+      "transparentFraction": 0.5992247263590494,
+      "cellMarginsPassed": true,
+      "sha256": "ce3d6861f40dee6aa4980d1be86b53a8320e2718d112957aa3a496a25657a51b"
+    },
+    {
+      "fighter": "moonshine",
+      "clip": "shield_break_recover",
+      "frames": 3,
+      "transparentFraction": 0.5992247263590494,
+      "cellMarginsPassed": true,
+      "sha256": "ce3d6861f40dee6aa4980d1be86b53a8320e2718d112957aa3a496a25657a51b"
+    },
+    {
       "fighter": "hulk-hoagie",
       "clip": "idle",
       "frames": 4,
@@ -58,7 +1138,37 @@
       "frames": 8,
       "transparentFraction": 0.6707820211523331,
       "cellMarginsPassed": true,
-      "sha256": "db5ddc6fd98e5b934d6c31b2dc746633335f40f6623ccdcfa03644f3540d481e"
+      "sha256": "db5ddc6fd98e5b934d6c31b2dc746633335f40f6623ccdcfa03644f3540d481e",
+      "replacementFrames": [
+        {
+          "index": 4,
+          "image": "hulk-hoagie-walk-far-contact-v1.png",
+          "transparentFraction": 0.6977378252202038,
+          "cellMarginsPassed": true,
+          "sha256": "2a64ada873fb1f1c3f9560b6e122ae769cb16f855629907c30a60d720d431ff0"
+        },
+        {
+          "index": 5,
+          "image": "hulk-hoagie-walk-far-down-v1.png",
+          "transparentFraction": 0.6963456589841128,
+          "cellMarginsPassed": true,
+          "sha256": "59071d7e8483f733d27b2007efedd4f3d4bab54dcf8f549ebbc37ecf13accc71"
+        },
+        {
+          "index": 6,
+          "image": "hulk-hoagie-walk-far-passing-v1.png",
+          "transparentFraction": 0.8050121798653349,
+          "cellMarginsPassed": true,
+          "sha256": "1464e3b7a72c4e73af44aa8e6934e416ead2a0bfc0a89a61f534a601ac59e1f1"
+        },
+        {
+          "index": 7,
+          "image": "hulk-hoagie-walk-far-up-v1.png",
+          "transparentFraction": 0.7994041019955654,
+          "cellMarginsPassed": true,
+          "sha256": "b08b7d3a45ec152a92957f4062a9bc0ea3873a9fe3e648c525e908952d8ca097"
+        }
+      ]
     },
     {
       "fighter": "hulk-hoagie",
@@ -83,6 +1193,1086 @@
       "transparentFraction": 0.7039527893066406,
       "cellMarginsPassed": true,
       "sha256": "49fb313d1e2dc42799f5525b4e1b421e2f787f7989de64f017f6514f741b510c"
+    },
+    {
+      "fighter": "hulk-hoagie",
+      "clip": "crouch_enter",
+      "frames": 1,
+      "transparentFraction": 0.7046597798665365,
+      "cellMarginsPassed": true,
+      "sha256": "ba28d6abb104344dc77ececdceb357610f7548ec870fbecca4e1579cd8ed1b6b"
+    },
+    {
+      "fighter": "hulk-hoagie",
+      "clip": "crouch_hold",
+      "frames": 1,
+      "transparentFraction": 0.7046597798665365,
+      "cellMarginsPassed": true,
+      "sha256": "ba28d6abb104344dc77ececdceb357610f7548ec870fbecca4e1579cd8ed1b6b"
+    },
+    {
+      "fighter": "hulk-hoagie",
+      "clip": "crouch_exit",
+      "frames": 1,
+      "transparentFraction": 0.7046597798665365,
+      "cellMarginsPassed": true,
+      "sha256": "ba28d6abb104344dc77ececdceb357610f7548ec870fbecca4e1579cd8ed1b6b"
+    },
+    {
+      "fighter": "hulk-hoagie",
+      "clip": "land_soft",
+      "frames": 3,
+      "transparentFraction": 0.7046597798665365,
+      "cellMarginsPassed": true,
+      "sha256": "ba28d6abb104344dc77ececdceb357610f7548ec870fbecca4e1579cd8ed1b6b"
+    },
+    {
+      "fighter": "hulk-hoagie",
+      "clip": "turn_stand",
+      "frames": 2,
+      "transparentFraction": 0.682763417561849,
+      "cellMarginsPassed": true,
+      "sha256": "6419e4b798adadcf9490cd842a54fa09ff1cbf1b0dc3394a2a6e7b36fa807988"
+    },
+    {
+      "fighter": "hulk-hoagie",
+      "clip": "brake",
+      "frames": 2,
+      "transparentFraction": 0.682763417561849,
+      "cellMarginsPassed": true,
+      "sha256": "6419e4b798adadcf9490cd842a54fa09ff1cbf1b0dc3394a2a6e7b36fa807988"
+    },
+    {
+      "fighter": "hulk-hoagie",
+      "clip": "double_jump_transition",
+      "frames": 1,
+      "transparentFraction": 0.682763417561849,
+      "cellMarginsPassed": true,
+      "sha256": "6419e4b798adadcf9490cd842a54fa09ff1cbf1b0dc3394a2a6e7b36fa807988"
+    },
+    {
+      "fighter": "hulk-hoagie",
+      "clip": "air_apex_loop",
+      "frames": 1,
+      "transparentFraction": 0.682763417561849,
+      "cellMarginsPassed": true,
+      "sha256": "6419e4b798adadcf9490cd842a54fa09ff1cbf1b0dc3394a2a6e7b36fa807988"
+    },
+    {
+      "fighter": "hulk-hoagie",
+      "clip": "air_fall_loop",
+      "frames": 1,
+      "transparentFraction": 0.682763417561849,
+      "cellMarginsPassed": true,
+      "sha256": "6419e4b798adadcf9490cd842a54fa09ff1cbf1b0dc3394a2a6e7b36fa807988"
+    },
+    {
+      "fighter": "hulk-hoagie",
+      "clip": "jump_squat",
+      "frames": 1,
+      "transparentFraction": 0.7651724966286165,
+      "cellMarginsPassed": true,
+      "sha256": "b9d298a3a0e40a38bc7ea230b74a748a2f8ef46d9a8b760c15e74d95e7d1924c"
+    },
+    {
+      "fighter": "hulk-hoagie",
+      "clip": "air_fastfall_loop",
+      "frames": 1,
+      "transparentFraction": 0.7651724966286165,
+      "cellMarginsPassed": true,
+      "sha256": "b9d298a3a0e40a38bc7ea230b74a748a2f8ef46d9a8b760c15e74d95e7d1924c"
+    },
+    {
+      "fighter": "hulk-hoagie",
+      "clip": "turn_run",
+      "frames": 2,
+      "transparentFraction": 0.6035741448735656,
+      "cellMarginsPassed": true,
+      "sha256": "52440f59953b560f09ed93fbdded78e31d99049a2bc4cff74fcf40e86e9559b2"
+    },
+    {
+      "fighter": "hulk-hoagie",
+      "clip": "land_heavy",
+      "frames": 2,
+      "transparentFraction": 0.6035741448735656,
+      "cellMarginsPassed": true,
+      "sha256": "52440f59953b560f09ed93fbdded78e31d99049a2bc4cff74fcf40e86e9559b2"
+    },
+    {
+      "fighter": "hulk-hoagie",
+      "clip": "platform_drop",
+      "frames": 1,
+      "transparentFraction": 0.7254619598388672,
+      "cellMarginsPassed": true,
+      "sha256": "816ecdb2dcd24ef34f598f26985141454900fc94451d448944dbd3929fbf8f2c"
+    },
+    {
+      "fighter": "hulk-hoagie",
+      "clip": "teeter_front",
+      "frames": 1,
+      "transparentFraction": 0.7254619598388672,
+      "cellMarginsPassed": true,
+      "sha256": "816ecdb2dcd24ef34f598f26985141454900fc94451d448944dbd3929fbf8f2c"
+    },
+    {
+      "fighter": "hulk-hoagie",
+      "clip": "teeter_back",
+      "frames": 1,
+      "transparentFraction": 0.7254619598388672,
+      "cellMarginsPassed": true,
+      "sha256": "816ecdb2dcd24ef34f598f26985141454900fc94451d448944dbd3929fbf8f2c"
+    },
+    {
+      "fighter": "hulk-hoagie",
+      "clip": "forward_tilt",
+      "frames": 3,
+      "transparentFraction": 0.7254619598388672,
+      "cellMarginsPassed": true,
+      "sha256": "816ecdb2dcd24ef34f598f26985141454900fc94451d448944dbd3929fbf8f2c",
+      "transitionSheet": {
+        "image": "hulk-hoagie-tilt-transitions-v1.png",
+        "transparentFraction": 0.7387332916259766,
+        "sha256": "254ec5c1fadd170aa2e45e0c0edf6b3ac890eb7cfa67bd89d2381053c4f7afac",
+        "cellMarginsPassed": true
+      }
+    },
+    {
+      "fighter": "hulk-hoagie",
+      "clip": "up_tilt",
+      "frames": 3,
+      "transparentFraction": 0.7254619598388672,
+      "cellMarginsPassed": true,
+      "sha256": "816ecdb2dcd24ef34f598f26985141454900fc94451d448944dbd3929fbf8f2c",
+      "transitionSheet": {
+        "image": "hulk-hoagie-tilt-transitions-v1.png",
+        "transparentFraction": 0.7387332916259766,
+        "sha256": "254ec5c1fadd170aa2e45e0c0edf6b3ac890eb7cfa67bd89d2381053c4f7afac",
+        "cellMarginsPassed": true
+      }
+    },
+    {
+      "fighter": "hulk-hoagie",
+      "clip": "down_tilt",
+      "frames": 3,
+      "transparentFraction": 0.7254619598388672,
+      "cellMarginsPassed": true,
+      "sha256": "816ecdb2dcd24ef34f598f26985141454900fc94451d448944dbd3929fbf8f2c",
+      "transitionSheet": {
+        "image": "hulk-hoagie-tilt-transitions-v1.png",
+        "transparentFraction": 0.7387332916259766,
+        "sha256": "254ec5c1fadd170aa2e45e0c0edf6b3ac890eb7cfa67bd89d2381053c4f7afac",
+        "cellMarginsPassed": true
+      }
+    },
+    {
+      "fighter": "hulk-hoagie",
+      "clip": "dash_attack",
+      "frames": 3,
+      "transparentFraction": 0.655730003661588,
+      "cellMarginsPassed": true,
+      "sha256": "447f3e130344bb774cfc1e2c4d6ead8d24fe48b8c664b4bc82b16246cc42aef6",
+      "transitionSheet": {
+        "image": "hulk-hoagie-dash-smash-transitions-v1.png",
+        "transparentFraction": 0.6396146772432569,
+        "sha256": "e42738061db9ef74ea003712b7933c888f9aa0ebf70152aba2ba8452716a188b",
+        "cellMarginsPassed": true
+      }
+    },
+    {
+      "fighter": "hulk-hoagie",
+      "clip": "forward_smash",
+      "frames": 3,
+      "transparentFraction": 0.655730003661588,
+      "cellMarginsPassed": true,
+      "sha256": "447f3e130344bb774cfc1e2c4d6ead8d24fe48b8c664b4bc82b16246cc42aef6",
+      "transitionSheet": {
+        "image": "hulk-hoagie-dash-smash-transitions-v1.png",
+        "transparentFraction": 0.6396146772432569,
+        "sha256": "e42738061db9ef74ea003712b7933c888f9aa0ebf70152aba2ba8452716a188b",
+        "cellMarginsPassed": true
+      }
+    },
+    {
+      "fighter": "hulk-hoagie",
+      "clip": "up_smash",
+      "frames": 3,
+      "transparentFraction": 0.655730003661588,
+      "cellMarginsPassed": true,
+      "sha256": "447f3e130344bb774cfc1e2c4d6ead8d24fe48b8c664b4bc82b16246cc42aef6",
+      "transitionSheet": {
+        "image": "hulk-hoagie-dash-smash-transitions-v1.png",
+        "transparentFraction": 0.6396146772432569,
+        "sha256": "e42738061db9ef74ea003712b7933c888f9aa0ebf70152aba2ba8452716a188b",
+        "cellMarginsPassed": true
+      }
+    },
+    {
+      "fighter": "hulk-hoagie",
+      "clip": "down_smash",
+      "frames": 3,
+      "transparentFraction": 0.655730003661588,
+      "cellMarginsPassed": true,
+      "sha256": "447f3e130344bb774cfc1e2c4d6ead8d24fe48b8c664b4bc82b16246cc42aef6",
+      "transitionSheet": {
+        "image": "hulk-hoagie-dash-smash-transitions-v1.png",
+        "transparentFraction": 0.6396146772432569,
+        "sha256": "e42738061db9ef74ea003712b7933c888f9aa0ebf70152aba2ba8452716a188b",
+        "cellMarginsPassed": true
+      }
+    },
+    {
+      "fighter": "hulk-hoagie",
+      "clip": "neutral_air",
+      "frames": 3,
+      "transparentFraction": 0.7454255421956381,
+      "cellMarginsPassed": true,
+      "sha256": "02110b388ce19f2f07341df914b354d04a22844e473bd46a061802b739d91e58",
+      "transitionSheet": {
+        "image": "hulk-hoagie-aerial-transitions-v1.png",
+        "transparentFraction": 0.6914657310976847,
+        "sha256": "bd05fe38b2cb05e7b72363a85f1f542daf431d75979c0cf586729b0df3f42d7a",
+        "cellMarginsPassed": true
+      }
+    },
+    {
+      "fighter": "hulk-hoagie",
+      "clip": "forward_air",
+      "frames": 3,
+      "transparentFraction": 0.7454255421956381,
+      "cellMarginsPassed": true,
+      "sha256": "02110b388ce19f2f07341df914b354d04a22844e473bd46a061802b739d91e58",
+      "transitionSheet": {
+        "image": "hulk-hoagie-aerial-transitions-v1.png",
+        "transparentFraction": 0.6914657310976847,
+        "sha256": "bd05fe38b2cb05e7b72363a85f1f542daf431d75979c0cf586729b0df3f42d7a",
+        "cellMarginsPassed": true
+      }
+    },
+    {
+      "fighter": "hulk-hoagie",
+      "clip": "back_air",
+      "frames": 3,
+      "transparentFraction": 0.7454255421956381,
+      "cellMarginsPassed": true,
+      "sha256": "02110b388ce19f2f07341df914b354d04a22844e473bd46a061802b739d91e58",
+      "transitionSheet": {
+        "image": "hulk-hoagie-aerial-transitions-v1.png",
+        "transparentFraction": 0.6914657310976847,
+        "sha256": "bd05fe38b2cb05e7b72363a85f1f542daf431d75979c0cf586729b0df3f42d7a",
+        "cellMarginsPassed": true
+      }
+    },
+    {
+      "fighter": "hulk-hoagie",
+      "clip": "up_air",
+      "frames": 3,
+      "transparentFraction": 0.7454255421956381,
+      "cellMarginsPassed": true,
+      "sha256": "02110b388ce19f2f07341df914b354d04a22844e473bd46a061802b739d91e58",
+      "transitionSheet": {
+        "image": "hulk-hoagie-aerial-transitions-v1.png",
+        "transparentFraction": 0.6914657310976847,
+        "sha256": "bd05fe38b2cb05e7b72363a85f1f542daf431d75979c0cf586729b0df3f42d7a",
+        "cellMarginsPassed": true
+      }
+    },
+    {
+      "fighter": "hulk-hoagie",
+      "clip": "down_air",
+      "frames": 3,
+      "transparentFraction": 0.7454255421956381,
+      "cellMarginsPassed": true,
+      "sha256": "02110b388ce19f2f07341df914b354d04a22844e473bd46a061802b739d91e58",
+      "transitionSheet": {
+        "image": "hulk-hoagie-aerial-transitions-v1.png",
+        "transparentFraction": 0.6914657310976847,
+        "sha256": "bd05fe38b2cb05e7b72363a85f1f542daf431d75979c0cf586729b0df3f42d7a",
+        "cellMarginsPassed": true
+      }
+    },
+    {
+      "fighter": "hulk-hoagie",
+      "clip": "shield",
+      "frames": 1,
+      "transparentFraction": 0.7500451405843099,
+      "cellMarginsPassed": true,
+      "sha256": "5c1ee933fd91a722b2d9d5cef4ca56b10d96051ae3a64c847080e2421fef6d05"
+    },
+    {
+      "fighter": "hulk-hoagie",
+      "clip": "parry",
+      "frames": 3,
+      "transparentFraction": 0.7500451405843099,
+      "cellMarginsPassed": true,
+      "sha256": "5c1ee933fd91a722b2d9d5cef4ca56b10d96051ae3a64c847080e2421fef6d05"
+    },
+    {
+      "fighter": "hulk-hoagie",
+      "clip": "dodge",
+      "frames": 3,
+      "transparentFraction": 0.7500451405843099,
+      "cellMarginsPassed": true,
+      "sha256": "5c1ee933fd91a722b2d9d5cef4ca56b10d96051ae3a64c847080e2421fef6d05"
+    },
+    {
+      "fighter": "hulk-hoagie",
+      "clip": "roll",
+      "frames": 3,
+      "transparentFraction": 0.7500451405843099,
+      "cellMarginsPassed": true,
+      "sha256": "5c1ee933fd91a722b2d9d5cef4ca56b10d96051ae3a64c847080e2421fef6d05"
+    },
+    {
+      "fighter": "hulk-hoagie",
+      "clip": "roll_back_preview",
+      "frames": 3,
+      "transparentFraction": 0.7500451405843099,
+      "cellMarginsPassed": true,
+      "sha256": "5c1ee933fd91a722b2d9d5cef4ca56b10d96051ae3a64c847080e2421fef6d05"
+    },
+    {
+      "fighter": "hulk-hoagie",
+      "clip": "air_dodge_neutral",
+      "frames": 3,
+      "transparentFraction": 0.7500451405843099,
+      "cellMarginsPassed": true,
+      "sha256": "5c1ee933fd91a722b2d9d5cef4ca56b10d96051ae3a64c847080e2421fef6d05"
+    },
+    {
+      "fighter": "hulk-hoagie",
+      "clip": "shield_raise",
+      "frames": 3,
+      "transparentFraction": 0.6987444559733073,
+      "cellMarginsPassed": true,
+      "sha256": "ae2570754d6a984a13c7ed0f8e904216f96fa6761236609f31032f9f5ca1bfa4"
+    },
+    {
+      "fighter": "hulk-hoagie",
+      "clip": "shield_hit",
+      "frames": 3,
+      "transparentFraction": 0.6987444559733073,
+      "cellMarginsPassed": true,
+      "sha256": "ae2570754d6a984a13c7ed0f8e904216f96fa6761236609f31032f9f5ca1bfa4"
+    },
+    {
+      "fighter": "hulk-hoagie",
+      "clip": "shield_drop",
+      "frames": 3,
+      "transparentFraction": 0.6987444559733073,
+      "cellMarginsPassed": true,
+      "sha256": "ae2570754d6a984a13c7ed0f8e904216f96fa6761236609f31032f9f5ca1bfa4"
+    },
+    {
+      "fighter": "hulk-hoagie",
+      "clip": "air_dodge_up",
+      "frames": 3,
+      "transparentFraction": 0.6987444559733073,
+      "cellMarginsPassed": true,
+      "sha256": "ae2570754d6a984a13c7ed0f8e904216f96fa6761236609f31032f9f5ca1bfa4"
+    },
+    {
+      "fighter": "hulk-hoagie",
+      "clip": "air_dodge_side",
+      "frames": 3,
+      "transparentFraction": 0.6987444559733073,
+      "cellMarginsPassed": true,
+      "sha256": "ae2570754d6a984a13c7ed0f8e904216f96fa6761236609f31032f9f5ca1bfa4"
+    },
+    {
+      "fighter": "hulk-hoagie",
+      "clip": "air_dodge_land",
+      "frames": 2,
+      "transparentFraction": 0.6987444559733073,
+      "cellMarginsPassed": true,
+      "sha256": "ae2570754d6a984a13c7ed0f8e904216f96fa6761236609f31032f9f5ca1bfa4"
+    },
+    {
+      "fighter": "hulk-hoagie",
+      "clip": "air_dodge_down",
+      "frames": 3,
+      "transparentFraction": 0.7458299001057943,
+      "cellMarginsPassed": true,
+      "sha256": "bd76a335eded473bc471dd5ded413180c52821ae2742eea21e126772a97872d1"
+    },
+    {
+      "fighter": "hulk-hoagie",
+      "clip": "air_dodge_back",
+      "frames": 3,
+      "transparentFraction": 0.7458299001057943,
+      "cellMarginsPassed": true,
+      "sha256": "bd76a335eded473bc471dd5ded413180c52821ae2742eea21e126772a97872d1"
+    },
+    {
+      "fighter": "hulk-hoagie",
+      "clip": "air_dodge_up_diagonal",
+      "frames": 3,
+      "transparentFraction": 0.7458299001057943,
+      "cellMarginsPassed": true,
+      "sha256": "bd76a335eded473bc471dd5ded413180c52821ae2742eea21e126772a97872d1"
+    },
+    {
+      "fighter": "hulk-hoagie",
+      "clip": "air_dodge_down_diagonal",
+      "frames": 3,
+      "transparentFraction": 0.7458299001057943,
+      "cellMarginsPassed": true,
+      "sha256": "bd76a335eded473bc471dd5ded413180c52821ae2742eea21e126772a97872d1"
+    },
+    {
+      "fighter": "hulk-hoagie",
+      "clip": "air_dodge_up_back",
+      "frames": 3,
+      "transparentFraction": 0.7458299001057943,
+      "cellMarginsPassed": true,
+      "sha256": "bd76a335eded473bc471dd5ded413180c52821ae2742eea21e126772a97872d1"
+    },
+    {
+      "fighter": "hulk-hoagie",
+      "clip": "air_dodge_down_back",
+      "frames": 3,
+      "transparentFraction": 0.7458299001057943,
+      "cellMarginsPassed": true,
+      "sha256": "bd76a335eded473bc471dd5ded413180c52821ae2742eea21e126772a97872d1"
+    },
+    {
+      "fighter": "hulk-hoagie",
+      "clip": "hit_mid",
+      "frames": 2,
+      "transparentFraction": 0.6785170237223307,
+      "cellMarginsPassed": true,
+      "sha256": "7311d429501577d382ce2a940072a12f2bee33eda513963187b18fa2235d2285"
+    },
+    {
+      "fighter": "hulk-hoagie",
+      "clip": "hit_air",
+      "frames": 2,
+      "transparentFraction": 0.6785170237223307,
+      "cellMarginsPassed": true,
+      "sha256": "7311d429501577d382ce2a940072a12f2bee33eda513963187b18fa2235d2285"
+    },
+    {
+      "fighter": "hulk-hoagie",
+      "clip": "ko_launch",
+      "frames": 1,
+      "transparentFraction": 0.6785170237223307,
+      "cellMarginsPassed": true,
+      "sha256": "7311d429501577d382ce2a940072a12f2bee33eda513963187b18fa2235d2285"
+    },
+    {
+      "fighter": "hulk-hoagie",
+      "clip": "tumble",
+      "frames": 3,
+      "transparentFraction": 0.6785170237223307,
+      "cellMarginsPassed": true,
+      "sha256": "7311d429501577d382ce2a940072a12f2bee33eda513963187b18fa2235d2285"
+    },
+    {
+      "fighter": "hulk-hoagie",
+      "clip": "hit_high",
+      "frames": 2,
+      "transparentFraction": 0.6879056294759115,
+      "cellMarginsPassed": true,
+      "sha256": "3cd0a1c1d478dc2d80ec9aa54f36eeca8fe2e876a16e11823ee8ad7e58c34cbd"
+    },
+    {
+      "fighter": "hulk-hoagie",
+      "clip": "hit_low",
+      "frames": 2,
+      "transparentFraction": 0.6879056294759115,
+      "cellMarginsPassed": true,
+      "sha256": "3cd0a1c1d478dc2d80ec9aa54f36eeca8fe2e876a16e11823ee8ad7e58c34cbd"
+    },
+    {
+      "fighter": "hulk-hoagie",
+      "clip": "hit_heavy",
+      "frames": 2,
+      "transparentFraction": 0.6879056294759115,
+      "cellMarginsPassed": true,
+      "sha256": "3cd0a1c1d478dc2d80ec9aa54f36eeca8fe2e876a16e11823ee8ad7e58c34cbd"
+    },
+    {
+      "fighter": "hulk-hoagie",
+      "clip": "tumble_recover",
+      "frames": 2,
+      "transparentFraction": 0.6879056294759115,
+      "cellMarginsPassed": true,
+      "sha256": "3cd0a1c1d478dc2d80ec9aa54f36eeca8fe2e876a16e11823ee8ad7e58c34cbd"
+    },
+    {
+      "fighter": "hulk-hoagie",
+      "clip": "knockdown_up",
+      "frames": 1,
+      "transparentFraction": 0.6879056294759115,
+      "cellMarginsPassed": true,
+      "sha256": "3cd0a1c1d478dc2d80ec9aa54f36eeca8fe2e876a16e11823ee8ad7e58c34cbd"
+    },
+    {
+      "fighter": "hulk-hoagie",
+      "clip": "knockdown_down",
+      "frames": 1,
+      "transparentFraction": 0.6879056294759115,
+      "cellMarginsPassed": true,
+      "sha256": "3cd0a1c1d478dc2d80ec9aa54f36eeca8fe2e876a16e11823ee8ad7e58c34cbd"
+    },
+    {
+      "fighter": "hulk-hoagie",
+      "clip": "prone_up",
+      "frames": 1,
+      "transparentFraction": 0.6879056294759115,
+      "cellMarginsPassed": true,
+      "sha256": "3cd0a1c1d478dc2d80ec9aa54f36eeca8fe2e876a16e11823ee8ad7e58c34cbd"
+    },
+    {
+      "fighter": "hulk-hoagie",
+      "clip": "getup_up",
+      "frames": 4,
+      "transparentFraction": 0.7005875905354818,
+      "cellMarginsPassed": true,
+      "sha256": "70ee9ecf8b43869d768d45b03d78b87d6e76ef23c48b28268eaeabc920e2778a"
+    },
+    {
+      "fighter": "hulk-hoagie",
+      "clip": "getup_roll_up",
+      "frames": 5,
+      "transparentFraction": 0.7005875905354818,
+      "cellMarginsPassed": true,
+      "sha256": "70ee9ecf8b43869d768d45b03d78b87d6e76ef23c48b28268eaeabc920e2778a"
+    },
+    {
+      "fighter": "hulk-hoagie",
+      "clip": "floor_attack_up",
+      "frames": 5,
+      "transparentFraction": 0.7005875905354818,
+      "cellMarginsPassed": true,
+      "sha256": "70ee9ecf8b43869d768d45b03d78b87d6e76ef23c48b28268eaeabc920e2778a"
+    },
+    {
+      "fighter": "hulk-hoagie",
+      "clip": "prone_down",
+      "frames": 1,
+      "transparentFraction": 0.6879056294759115,
+      "cellMarginsPassed": true,
+      "sha256": "3cd0a1c1d478dc2d80ec9aa54f36eeca8fe2e876a16e11823ee8ad7e58c34cbd"
+    },
+    {
+      "fighter": "hulk-hoagie",
+      "clip": "getup_down",
+      "frames": 4,
+      "transparentFraction": 0.7005875905354818,
+      "cellMarginsPassed": true,
+      "sha256": "70ee9ecf8b43869d768d45b03d78b87d6e76ef23c48b28268eaeabc920e2778a"
+    },
+    {
+      "fighter": "hulk-hoagie",
+      "clip": "getup_roll_down",
+      "frames": 5,
+      "transparentFraction": 0.7005875905354818,
+      "cellMarginsPassed": true,
+      "sha256": "70ee9ecf8b43869d768d45b03d78b87d6e76ef23c48b28268eaeabc920e2778a"
+    },
+    {
+      "fighter": "hulk-hoagie",
+      "clip": "floor_attack_down",
+      "frames": 5,
+      "transparentFraction": 0.7005875905354818,
+      "cellMarginsPassed": true,
+      "sha256": "70ee9ecf8b43869d768d45b03d78b87d6e76ef23c48b28268eaeabc920e2778a"
+    },
+    {
+      "fighter": "hulk-hoagie",
+      "clip": "tech_neutral",
+      "frames": 3,
+      "transparentFraction": 0.7134934142041692,
+      "cellMarginsPassed": true,
+      "sha256": "52147fbf7f6b9a93bcd52b57a27b1791040fb287c8af684f3621958729d5fd88"
+    },
+    {
+      "fighter": "hulk-hoagie",
+      "clip": "tech_roll",
+      "frames": 4,
+      "transparentFraction": 0.7134934142041692,
+      "cellMarginsPassed": true,
+      "sha256": "52147fbf7f6b9a93bcd52b57a27b1791040fb287c8af684f3621958729d5fd88"
+    },
+    {
+      "fighter": "hulk-hoagie",
+      "clip": "wall_tech",
+      "frames": 2,
+      "transparentFraction": 0.7134934142041692,
+      "cellMarginsPassed": true,
+      "sha256": "52147fbf7f6b9a93bcd52b57a27b1791040fb287c8af684f3621958729d5fd88"
+    },
+    {
+      "fighter": "hulk-hoagie",
+      "clip": "wall_tech_jump",
+      "frames": 3,
+      "transparentFraction": 0.7134934142041692,
+      "cellMarginsPassed": true,
+      "sha256": "52147fbf7f6b9a93bcd52b57a27b1791040fb287c8af684f3621958729d5fd88"
+    },
+    {
+      "fighter": "hulk-hoagie",
+      "clip": "trip_fall",
+      "frames": 2,
+      "transparentFraction": 0.7134934142041692,
+      "cellMarginsPassed": true,
+      "sha256": "52147fbf7f6b9a93bcd52b57a27b1791040fb287c8af684f3621958729d5fd88"
+    },
+    {
+      "fighter": "hulk-hoagie",
+      "clip": "trip_prone",
+      "frames": 1,
+      "transparentFraction": 0.7134934142041692,
+      "cellMarginsPassed": true,
+      "sha256": "52147fbf7f6b9a93bcd52b57a27b1791040fb287c8af684f3621958729d5fd88"
+    },
+    {
+      "fighter": "hulk-hoagie",
+      "clip": "trip_getup",
+      "frames": 3,
+      "transparentFraction": 0.7134934142041692,
+      "cellMarginsPassed": true,
+      "sha256": "52147fbf7f6b9a93bcd52b57a27b1791040fb287c8af684f3621958729d5fd88"
+    },
+    {
+      "fighter": "hulk-hoagie",
+      "clip": "trip_roll",
+      "frames": 4,
+      "transparentFraction": 0.7134934142041692,
+      "cellMarginsPassed": true,
+      "sha256": "52147fbf7f6b9a93bcd52b57a27b1791040fb287c8af684f3621958729d5fd88"
+    },
+    {
+      "fighter": "hulk-hoagie",
+      "clip": "floor_attack_trip",
+      "frames": 4,
+      "transparentFraction": 0.7134934142041692,
+      "cellMarginsPassed": true,
+      "sha256": "52147fbf7f6b9a93bcd52b57a27b1791040fb287c8af684f3621958729d5fd88"
+    },
+    {
+      "fighter": "hulk-hoagie",
+      "clip": "jab_lock_up",
+      "frames": 3,
+      "transparentFraction": 0.7134934142041692,
+      "cellMarginsPassed": true,
+      "sha256": "52147fbf7f6b9a93bcd52b57a27b1791040fb287c8af684f3621958729d5fd88"
+    },
+    {
+      "fighter": "hulk-hoagie",
+      "clip": "jab_lock_down",
+      "frames": 3,
+      "transparentFraction": 0.7134934142041692,
+      "cellMarginsPassed": true,
+      "sha256": "52147fbf7f6b9a93bcd52b57a27b1791040fb287c8af684f3621958729d5fd88"
+    },
+    {
+      "fighter": "hulk-hoagie",
+      "clip": "ceiling_tech",
+      "frames": 2,
+      "transparentFraction": 0.8307495592734335,
+      "cellMarginsPassed": true,
+      "sha256": "d26197ebc967dce39485ee78366961428d595c816e745dc1922d70c3314eee9b"
+    },
+    {
+      "fighter": "hulk-hoagie",
+      "clip": "grab",
+      "frames": 3,
+      "transparentFraction": 0.681487831879497,
+      "cellMarginsPassed": true,
+      "sha256": "777a69e27f3b7931db643dffb75094592bea0861c84ce4cc18a8d8d14934d8d3"
+    },
+    {
+      "fighter": "hulk-hoagie",
+      "clip": "grabbed",
+      "frames": 3,
+      "transparentFraction": 0.663199109268413,
+      "cellMarginsPassed": true,
+      "sha256": "e7474726f7917194ffe5ec3d97b3c8472e40950772a59d0bea57f66e437ea030"
+    },
+    {
+      "fighter": "hulk-hoagie",
+      "clip": "grab_hold",
+      "frames": 1,
+      "transparentFraction": 0.681487831879497,
+      "cellMarginsPassed": true,
+      "sha256": "777a69e27f3b7931db643dffb75094592bea0861c84ce4cc18a8d8d14934d8d3"
+    },
+    {
+      "fighter": "hulk-hoagie",
+      "clip": "grabbed_hold_preview",
+      "frames": 1,
+      "transparentFraction": 0.663199109268413,
+      "cellMarginsPassed": true,
+      "sha256": "e7474726f7917194ffe5ec3d97b3c8472e40950772a59d0bea57f66e437ea030"
+    },
+    {
+      "fighter": "hulk-hoagie",
+      "clip": "pummel",
+      "frames": 3,
+      "transparentFraction": 0.681487831879497,
+      "cellMarginsPassed": true,
+      "sha256": "777a69e27f3b7931db643dffb75094592bea0861c84ce4cc18a8d8d14934d8d3"
+    },
+    {
+      "fighter": "hulk-hoagie",
+      "clip": "pummel_victim",
+      "frames": 3,
+      "transparentFraction": 0.663199109268413,
+      "cellMarginsPassed": true,
+      "sha256": "e7474726f7917194ffe5ec3d97b3c8472e40950772a59d0bea57f66e437ea030"
+    },
+    {
+      "fighter": "hulk-hoagie",
+      "clip": "grab_release",
+      "frames": 3,
+      "transparentFraction": 0.681487831879497,
+      "cellMarginsPassed": true,
+      "sha256": "777a69e27f3b7931db643dffb75094592bea0861c84ce4cc18a8d8d14934d8d3"
+    },
+    {
+      "fighter": "hulk-hoagie",
+      "clip": "grab_release_victim_preview",
+      "frames": 3,
+      "transparentFraction": 0.663199109268413,
+      "cellMarginsPassed": true,
+      "sha256": "e7474726f7917194ffe5ec3d97b3c8472e40950772a59d0bea57f66e437ea030"
+    },
+    {
+      "fighter": "hulk-hoagie",
+      "clip": "forward_throw",
+      "frames": 3,
+      "transparentFraction": 0.681487831879497,
+      "cellMarginsPassed": true,
+      "sha256": "777a69e27f3b7931db643dffb75094592bea0861c84ce4cc18a8d8d14934d8d3"
+    },
+    {
+      "fighter": "hulk-hoagie",
+      "clip": "throw_victim",
+      "frames": 3,
+      "transparentFraction": 0.663199109268413,
+      "cellMarginsPassed": true,
+      "sha256": "e7474726f7917194ffe5ec3d97b3c8472e40950772a59d0bea57f66e437ea030"
+    },
+    {
+      "fighter": "hulk-hoagie",
+      "clip": "back_throw",
+      "frames": 3,
+      "transparentFraction": 0.681487831879497,
+      "cellMarginsPassed": true,
+      "sha256": "777a69e27f3b7931db643dffb75094592bea0861c84ce4cc18a8d8d14934d8d3"
+    },
+    {
+      "fighter": "hulk-hoagie",
+      "clip": "back_throw_victim_preview",
+      "frames": 3,
+      "transparentFraction": 0.663199109268413,
+      "cellMarginsPassed": true,
+      "sha256": "e7474726f7917194ffe5ec3d97b3c8472e40950772a59d0bea57f66e437ea030"
+    },
+    {
+      "fighter": "hulk-hoagie",
+      "clip": "up_throw",
+      "frames": 3,
+      "transparentFraction": 0.681487831879497,
+      "cellMarginsPassed": true,
+      "sha256": "777a69e27f3b7931db643dffb75094592bea0861c84ce4cc18a8d8d14934d8d3"
+    },
+    {
+      "fighter": "hulk-hoagie",
+      "clip": "up_throw_victim_preview",
+      "frames": 3,
+      "transparentFraction": 0.663199109268413,
+      "cellMarginsPassed": true,
+      "sha256": "e7474726f7917194ffe5ec3d97b3c8472e40950772a59d0bea57f66e437ea030"
+    },
+    {
+      "fighter": "hulk-hoagie",
+      "clip": "down_throw",
+      "frames": 3,
+      "transparentFraction": 0.681487831879497,
+      "cellMarginsPassed": true,
+      "sha256": "777a69e27f3b7931db643dffb75094592bea0861c84ce4cc18a8d8d14934d8d3"
+    },
+    {
+      "fighter": "hulk-hoagie",
+      "clip": "down_throw_victim_preview",
+      "frames": 3,
+      "transparentFraction": 0.663199109268413,
+      "cellMarginsPassed": true,
+      "sha256": "e7474726f7917194ffe5ec3d97b3c8472e40950772a59d0bea57f66e437ea030"
+    },
+    {
+      "fighter": "hulk-hoagie",
+      "clip": "grab_dash",
+      "frames": 3,
+      "transparentFraction": 0.7639115651448568,
+      "cellMarginsPassed": true,
+      "sha256": "238f480d986919637e181f0b826b117abead48c5497c98dc1bdb7dcea241b176"
+    },
+    {
+      "fighter": "hulk-hoagie",
+      "clip": "grab_dash_victim_preview",
+      "frames": 3,
+      "transparentFraction": 0.663199109268413,
+      "cellMarginsPassed": true,
+      "sha256": "e7474726f7917194ffe5ec3d97b3c8472e40950772a59d0bea57f66e437ea030"
+    },
+    {
+      "fighter": "hulk-hoagie",
+      "clip": "grab_pivot",
+      "frames": 3,
+      "transparentFraction": 0.7639115651448568,
+      "cellMarginsPassed": true,
+      "sha256": "238f480d986919637e181f0b826b117abead48c5497c98dc1bdb7dcea241b176"
+    },
+    {
+      "fighter": "hulk-hoagie",
+      "clip": "grab_pivot_victim_preview",
+      "frames": 3,
+      "transparentFraction": 0.663199109268413,
+      "cellMarginsPassed": true,
+      "sha256": "e7474726f7917194ffe5ec3d97b3c8472e40950772a59d0bea57f66e437ea030"
+    },
+    {
+      "fighter": "hulk-hoagie",
+      "clip": "footstool_attacker",
+      "frames": 3,
+      "transparentFraction": 0.7545759937160716,
+      "cellMarginsPassed": true,
+      "sha256": "5ef13716a73529315653215604d9849f63769aa21cb680bf4cdc968ae46d5d90"
+    },
+    {
+      "fighter": "hulk-hoagie",
+      "clip": "footstool_air_victim",
+      "frames": 3,
+      "transparentFraction": 0.7545759937160716,
+      "cellMarginsPassed": true,
+      "sha256": "5ef13716a73529315653215604d9849f63769aa21cb680bf4cdc968ae46d5d90"
+    },
+    {
+      "fighter": "hulk-hoagie",
+      "clip": "ledge_hang",
+      "frames": 1,
+      "transparentFraction": 0.7545759937160716,
+      "cellMarginsPassed": true,
+      "sha256": "5ef13716a73529315653215604d9849f63769aa21cb680bf4cdc968ae46d5d90"
+    },
+    {
+      "fighter": "hulk-hoagie",
+      "clip": "ledge_climb",
+      "frames": 3,
+      "transparentFraction": 0.7545759937160716,
+      "cellMarginsPassed": true,
+      "sha256": "5ef13716a73529315653215604d9849f63769aa21cb680bf4cdc968ae46d5d90"
+    },
+    {
+      "fighter": "hulk-hoagie",
+      "clip": "ledge_roll",
+      "frames": 4,
+      "transparentFraction": 0.7545759937160716,
+      "cellMarginsPassed": true,
+      "sha256": "5ef13716a73529315653215604d9849f63769aa21cb680bf4cdc968ae46d5d90"
+    },
+    {
+      "fighter": "hulk-hoagie",
+      "clip": "ledge_jump",
+      "frames": 3,
+      "transparentFraction": 0.7545759937160716,
+      "cellMarginsPassed": true,
+      "sha256": "5ef13716a73529315653215604d9849f63769aa21cb680bf4cdc968ae46d5d90"
+    },
+    {
+      "fighter": "hulk-hoagie",
+      "clip": "ledge_attack",
+      "frames": 4,
+      "transparentFraction": 0.7545759937160716,
+      "cellMarginsPassed": true,
+      "sha256": "5ef13716a73529315653215604d9849f63769aa21cb680bf4cdc968ae46d5d90"
+    },
+    {
+      "fighter": "hulk-hoagie",
+      "clip": "ledge_drop",
+      "frames": 3,
+      "transparentFraction": 0.7545759937160716,
+      "cellMarginsPassed": true,
+      "sha256": "5ef13716a73529315653215604d9849f63769aa21cb680bf4cdc968ae46d5d90"
+    },
+    {
+      "fighter": "hulk-hoagie",
+      "clip": "footstool_ground_victim",
+      "frames": 3,
+      "transparentFraction": 0.7579712412116032,
+      "cellMarginsPassed": true,
+      "sha256": "80894c4dfebfa77a3115ff1fe9e199ffe70e18e3829bd5da55a756271a844400"
+    },
+    {
+      "fighter": "hulk-hoagie",
+      "clip": "footstool_ground_preview",
+      "frames": 3,
+      "transparentFraction": 0.7579712412116032,
+      "cellMarginsPassed": true,
+      "sha256": "80894c4dfebfa77a3115ff1fe9e199ffe70e18e3829bd5da55a756271a844400"
+    },
+    {
+      "fighter": "hulk-hoagie",
+      "clip": "ledge_catch",
+      "frames": 2,
+      "transparentFraction": 0.7579712412116032,
+      "cellMarginsPassed": true,
+      "sha256": "80894c4dfebfa77a3115ff1fe9e199ffe70e18e3829bd5da55a756271a844400"
+    },
+    {
+      "fighter": "hulk-hoagie",
+      "clip": "ledge_trump",
+      "frames": 3,
+      "transparentFraction": 0.7579712412116032,
+      "cellMarginsPassed": true,
+      "sha256": "80894c4dfebfa77a3115ff1fe9e199ffe70e18e3829bd5da55a756271a844400"
+    },
+    {
+      "fighter": "hulk-hoagie",
+      "clip": "helpless_enter",
+      "frames": 2,
+      "transparentFraction": 0.6993100897467999,
+      "cellMarginsPassed": true,
+      "sha256": "2a3a3a1f62988101b5963db1ec8ac5ab161756f4b094f3c0ae0a48f06c368501"
+    },
+    {
+      "fighter": "hulk-hoagie",
+      "clip": "helpless_loop",
+      "frames": 1,
+      "transparentFraction": 0.6993100897467999,
+      "cellMarginsPassed": true,
+      "sha256": "2a3a3a1f62988101b5963db1ec8ac5ab161756f4b094f3c0ae0a48f06c368501"
+    },
+    {
+      "fighter": "hulk-hoagie",
+      "clip": "helpless_land",
+      "frames": 3,
+      "transparentFraction": 0.6993100897467999,
+      "cellMarginsPassed": true,
+      "sha256": "2a3a3a1f62988101b5963db1ec8ac5ab161756f4b094f3c0ae0a48f06c368501"
+    },
+    {
+      "fighter": "hulk-hoagie",
+      "clip": "entry",
+      "frames": 2,
+      "transparentFraction": 0.6993100897467999,
+      "cellMarginsPassed": true,
+      "sha256": "2a3a3a1f62988101b5963db1ec8ac5ab161756f4b094f3c0ae0a48f06c368501"
+    },
+    {
+      "fighter": "hulk-hoagie",
+      "clip": "respawn_wait",
+      "frames": 1,
+      "transparentFraction": 0.6993100897467999,
+      "cellMarginsPassed": true,
+      "sha256": "2a3a3a1f62988101b5963db1ec8ac5ab161756f4b094f3c0ae0a48f06c368501"
+    },
+    {
+      "fighter": "hulk-hoagie",
+      "clip": "respawn_drop",
+      "frames": 3,
+      "transparentFraction": 0.6993100897467999,
+      "cellMarginsPassed": true,
+      "sha256": "2a3a3a1f62988101b5963db1ec8ac5ab161756f4b094f3c0ae0a48f06c368501"
+    },
+    {
+      "fighter": "hulk-hoagie",
+      "clip": "taunt_up",
+      "frames": 3,
+      "transparentFraction": 0.6993100897467999,
+      "cellMarginsPassed": true,
+      "sha256": "2a3a3a1f62988101b5963db1ec8ac5ab161756f4b094f3c0ae0a48f06c368501"
+    },
+    {
+      "fighter": "hulk-hoagie",
+      "clip": "taunt_side",
+      "frames": 3,
+      "transparentFraction": 0.6993100897467999,
+      "cellMarginsPassed": true,
+      "sha256": "2a3a3a1f62988101b5963db1ec8ac5ab161756f4b094f3c0ae0a48f06c368501"
+    },
+    {
+      "fighter": "hulk-hoagie",
+      "clip": "victory_1",
+      "frames": 2,
+      "transparentFraction": 0.6993100897467999,
+      "cellMarginsPassed": true,
+      "sha256": "2a3a3a1f62988101b5963db1ec8ac5ab161756f4b094f3c0ae0a48f06c368501"
+    },
+    {
+      "fighter": "hulk-hoagie",
+      "clip": "defeat",
+      "frames": 2,
+      "transparentFraction": 0.6993100897467999,
+      "cellMarginsPassed": true,
+      "sha256": "2a3a3a1f62988101b5963db1ec8ac5ab161756f4b094f3c0ae0a48f06c368501"
+    },
+    {
+      "fighter": "hulk-hoagie",
+      "clip": "taunt_down",
+      "frames": 4,
+      "transparentFraction": 0.7002113793840237,
+      "cellMarginsPassed": true,
+      "sha256": "18f8b1047582a725d241ca0d3e4c5aa6145b8fc84796b071cd0f5fe32d65c9b8"
+    },
+    {
+      "fighter": "hulk-hoagie",
+      "clip": "victory_2",
+      "frames": 2,
+      "transparentFraction": 0.7002113793840237,
+      "cellMarginsPassed": true,
+      "sha256": "18f8b1047582a725d241ca0d3e4c5aa6145b8fc84796b071cd0f5fe32d65c9b8"
+    },
+    {
+      "fighter": "hulk-hoagie",
+      "clip": "victory_3",
+      "frames": 2,
+      "transparentFraction": 0.7002113793840237,
+      "cellMarginsPassed": true,
+      "sha256": "18f8b1047582a725d241ca0d3e4c5aa6145b8fc84796b071cd0f5fe32d65c9b8"
+    },
+    {
+      "fighter": "hulk-hoagie",
+      "clip": "ko_screen",
+      "frames": 2,
+      "transparentFraction": 0.7002010345458984,
+      "cellMarginsPassed": true,
+      "sha256": "0c1564902eeb8118a73487e361d48ba6af05228000d22e1b58cf2a9ac8cc848e"
+    },
+    {
+      "fighter": "hulk-hoagie",
+      "clip": "ko_star",
+      "frames": 2,
+      "transparentFraction": 0.7002010345458984,
+      "cellMarginsPassed": true,
+      "sha256": "0c1564902eeb8118a73487e361d48ba6af05228000d22e1b58cf2a9ac8cc848e"
+    },
+    {
+      "fighter": "hulk-hoagie",
+      "clip": "shield_break_launch",
+      "frames": 2,
+      "transparentFraction": 0.7002010345458984,
+      "cellMarginsPassed": true,
+      "sha256": "0c1564902eeb8118a73487e361d48ba6af05228000d22e1b58cf2a9ac8cc848e"
+    },
+    {
+      "fighter": "hulk-hoagie",
+      "clip": "shield_break_dizzy",
+      "frames": 2,
+      "transparentFraction": 0.7002010345458984,
+      "cellMarginsPassed": true,
+      "sha256": "0c1564902eeb8118a73487e361d48ba6af05228000d22e1b58cf2a9ac8cc848e"
+    },
+    {
+      "fighter": "hulk-hoagie",
+      "clip": "shield_break_recover",
+      "frames": 3,
+      "transparentFraction": 0.7002010345458984,
+      "cellMarginsPassed": true,
+      "sha256": "0c1564902eeb8118a73487e361d48ba6af05228000d22e1b58cf2a9ac8cc848e"
     }
   ],
   "portraits": [
@@ -102,7 +2292,7 @@
     }
   ],
   "knownVisualWork": [
-    "Hoagie walk contact poses still need stronger opposite-leg differentiation",
+    "Hoagie walk needs motion review across the new contact and passing poses",
     "gait seams and idle/jab posture need motion review"
   ],
   "visualSignoff": "pending animation review; registration is candidate metadata"

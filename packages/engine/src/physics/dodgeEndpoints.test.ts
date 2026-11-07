@@ -12,3 +12,13 @@ it('invalid fatigue inputs cannot produce NaN or fractional source lookup',()=>{
 it('neutral landing has ten ticks and directional bounds are 19 early and 11 late, independent of fatigue',()=>{for(const characterId of['all-rounder','abe-lincoln','swift']as const){expect(airDodgeLandingLag({characterId,stateFrame:0,airDodgeDirection:{x:0,y:0}})).toBe(10);expect(airDodgeLandingLag({characterId,stateFrame:0,airDodgeDirection:{x:1,y:1}})).toBe(19);expect(airDodgeLandingLag({characterId,stateFrame:999,airDodgeDirection:{x:1,y:1}})).toBe(11);}});
 
 it('all profile windows protect exactly their inclusive source-frame bounds',()=>{for(const characterId of['all-rounder','abe-lincoln','swift']as const)for(const dodgeKind of['spot','forward','backward','air']as const)for(let dodgeLevel=0;dodgeLevel<=5;dodgeLevel++){const state=dodgeKind==='spot'?'SPOT_DODGE':dodgeKind==='air'?'AIR_DODGE':'ROLL';const p={characterId,dodgeKind,dodgeLevel,state,isInvincible:false};const t=dodgeTiming(p);for(const[frame,immune]of[[t.intangibleStart-1,false],[t.intangibleStart,true],[t.intangibleEnd-1,true],[t.intangibleEnd,false]]as const)expect(isDamageImmune({...p,stateFrame:frame})).toBe(immune);}});
+
+it('newcomers inherit the full timing of their provisional references',()=>{
+ for(const [characterId,reference] of [['moonshine','swift'],['hulk-hoagie','abe-lincoln']] as const)
+  for(const dodgeKind of ['spot','forward','backward','air'] as const)
+   for(let dodgeLevel=0;dodgeLevel<=5;dodgeLevel++)
+    for(const airDodgeDirection of [{x:0,y:0},{x:1,y:0},{x:1,y:1},{x:0,y:-1}]){
+     const context={dodgeKind,dodgeLevel,airDodgeDirection};
+     expect(dodgeTiming({...context,characterId})).toEqual(dodgeTiming({...context,characterId:reference}));
+    }
+});

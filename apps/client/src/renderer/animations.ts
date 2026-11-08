@@ -157,6 +157,12 @@ export const ANIMATIONS: Record<string, Animation> = {
     { leftArmAngle: 0.8, rightArmAngle: -0.8, leftLegAngle: 0.2, rightLegAngle: -0.2, bodyScaleX: 1, bodyScaleY: 1, headOffsetX: 0, headOffsetY: 0 },
   ],
   // Ledge states
+  LEDGE_APPROACH: [
+    { leftArmAngle: -1.6, rightArmAngle: 1.6, leftLegAngle: 0.4, rightLegAngle: -0.3, bodyScaleX: 0.95, bodyScaleY: 0.95, headOffsetX: 0, headOffsetY: 2 },
+  ],
+  LEDGE_TRUMP: [
+    { leftArmAngle: -1.1, rightArmAngle: 1.2, leftLegAngle: 0.65, rightLegAngle: -0.4, bodyScaleX: 0.96, bodyScaleY: 1, headOffsetX: -3, headOffsetY: 1 },
+  ],
   LEDGE_HANG: [
     // Arms raised in gripping pose, body slightly lowered
     { leftArmAngle: -2.0, rightArmAngle: 2.0, leftLegAngle: 0.3, rightLegAngle: -0.3, bodyScaleX: 0.95, bodyScaleY: 0.9, headOffsetX: 0, headOffsetY: 5 },

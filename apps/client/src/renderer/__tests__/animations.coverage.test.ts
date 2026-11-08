@@ -29,6 +29,8 @@ const DIRECT_MAPPED_STATE_NAMES = new Set<string>([
   'HITSTUN',
   'GRAB',
   'GRAB_HOLDING',
+  'LEDGE_APPROACH',
+  'LEDGE_TRUMP',
   'LEDGE_HANG',
   'LEDGE_CLIMB',
   'LEDGE_ATTACK',
@@ -38,6 +40,8 @@ const DIRECT_MAPPED_STATE_NAMES = new Set<string>([
 
 const FALLBACK_TO_IDLE_STATE_NAMES = new Set<string>([
   'DASH',
+  'RUN_BRAKE',
+  'RUN_TURN',
   'TECH_NEUTRAL',
   'TECH_ROLL',
   'HARD_LANDING',
@@ -102,8 +106,8 @@ function classifyStateCoverage(states: readonly string[]): Classification {
 
 // Legacy polygon tables intentionally retain fallback poses; full-body coverage has separate tests.
 describe('legacy polygon animations exact coverage', () => {
-  it('Given exported enums, When deriving coverage sets, Then 36 states + 30 attack moves = 66 with LEDGE_ATTACK excluded by name', () => {
-    expect(ALL_PLAYER_STATES).toHaveLength(36);
+  it('Given exported enums, When deriving coverage sets, Then 40 states + 30 attack moves = 70 with LEDGE_ATTACK excluded by name', () => {
+    expect(ALL_PLAYER_STATES).toHaveLength(40);
     expect(ALL_MOVE_IDS).toHaveLength(31);
 
     expect(EXCLUDED_MOVE_IDS.has(MoveId.LEDGE_ATTACK)).toBe(true);
@@ -113,19 +117,19 @@ describe('legacy polygon animations exact coverage', () => {
     expect(Object.keys(ATTACK_MOVE_ANIMATIONS)).toHaveLength(22);
 
     const totalCases = ALL_PLAYER_STATES.length + ATTACK_MOVE_IDS.length;
-    expect(totalCases).toBe(66);
+    expect(totalCases).toBe(70);
   });
 
-  it('Given all PlayerStateEnum values, When classifying mapping behavior, Then classification is exactly 19 direct + 1 alias + 16 idle fallback = 36', () => {
+  it('Given all PlayerStateEnum values, When classifying mapping behavior, Then classification is exactly 21 direct + 1 alias + 18 idle fallback = 40', () => {
     const classification = classifyStateCoverage(ALL_PLAYER_STATES);
     const sum = classification.directMapped + classification.aliasMapped + classification.idleFallback;
 
-    expect(classification.directMapped).toBe(19);
+    expect(classification.directMapped).toBe(21);
     expect(classification.aliasMapped).toBe(1);
-    expect(classification.idleFallback).toBe(16);
-    expect(sum).toBe(36);
+    expect(classification.idleFallback).toBe(18);
+    expect(sum).toBe(40);
 
-    expect(FALLBACK_TO_IDLE_STATE_NAMES.size).toBe(16);
+    expect(FALLBACK_TO_IDLE_STATE_NAMES.size).toBe(18);
     for (const fallbackStateName of FALLBACK_TO_IDLE_STATE_NAMES) {
       const fallbackPose = getAnimationPose(fallbackStateName, 15, null);
       const idlePose = getAnimationPose(PlayerStateEnum.IDLE, 15, null);
@@ -133,7 +137,7 @@ describe('legacy polygon animations exact coverage', () => {
     }
   });
 
-  it('Given animation tables, When executing representative keyframes, Then every one of the 66 derived cases executes and AIR_ATTACK table entry is explicitly exercised', () => {
+  it('Given animation tables, When executing representative keyframes, Then every one of the 70 derived cases executes and AIR_ATTACK table entry is explicitly exercised', () => {
     const executedStateCases = new Set<string>();
     const executedMoveCases = new Set<MoveId>();
 
@@ -154,7 +158,7 @@ describe('legacy polygon animations exact coverage', () => {
     }
 
     const executedCaseCount = executedStateCases.size + executedMoveCases.size;
-    expect(executedCaseCount).toBe(66);
+    expect(executedCaseCount).toBe(70);
 
     const airAttackTable = ANIMATIONS.AIR_ATTACK;
     expect(airAttackTable).toBeDefined();
@@ -177,12 +181,12 @@ describe('legacy polygon animations exact coverage', () => {
   it('Given temporary derivation regressions, When one move is removed or a fake state is added, Then guardrail counts fail (QA sentinel simulation)', () => {
     const intentionallyMissingOneMove = ATTACK_MOVE_IDS.slice(0, ATTACK_MOVE_IDS.length - 1);
     expect(intentionallyMissingOneMove).toHaveLength(29);
-    expect(ALL_PLAYER_STATES.length + intentionallyMissingOneMove.length).toBe(65);
+    expect(ALL_PLAYER_STATES.length + intentionallyMissingOneMove.length).toBe(69);
 
-    const withFakeState = [...ALL_PLAYER_STATES, 'FAKE_37TH_STATE'];
+    const withFakeState = [...ALL_PLAYER_STATES, 'FAKE_41ST_STATE'];
     const classification = classifyStateCoverage(withFakeState);
     const sum = classification.directMapped + classification.aliasMapped + classification.idleFallback;
-    expect(sum).toBe(37);
-    expect(sum).not.toBe(36);
+    expect(sum).toBe(41);
+    expect(sum).not.toBe(40);
   });
 });

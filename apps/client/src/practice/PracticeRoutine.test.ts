@@ -7,3 +7,17 @@ it('one-shot playback releases the last held input when it ends',()=>{const r=ne
 it('stops recording at the bounded tick limit',()=>{const r=new PracticeRoutine();r.startRecording('abe-lincoln');for(let i=0;i<MAX_ROUTINE_TICKS-1;i++)expect(r.capture(frame())).toBe(false);expect(r.capture(frame())).toBe(true);expect(r.mode).toBe('idle');r.capture(frame());expect(r.length).toBe(MAX_ROUTINE_TICKS);});
 it('rejects corrupt storage, wrong versions and invalid input ranges',()=>{expect(decodeRoutine('{')).toBeNull();for(const data of[{version:2,fighter:'swift',frames:[]},{version:1,fighter:'unknown',frames:[]},{version:1,fighter:'swift',frames:[{held:-1,pressed:0,released:0}]},{version:1,fighter:'swift',frames:[{held:0,pressed:0,released:0,stickX:2}]},{version:1,fighter:'swift',frames:new Array(901).fill({held:0,pressed:0,released:0})}])expect(decodeRoutine(JSON.stringify(data))).toBeNull();});
 it('replays deterministic inputs independently of supplied wall-clock tick labels',()=>{const r=new PracticeRoutine();r.startRecording('swift');for(let i=0;i<20;i++)r.capture(frame(i%3?B.LEFT:0,i%3?B.LEFT:0));r.stop();r.mirror=false;r.loop=false;const play=(offset:number)=>{r.play();return Array.from({length:20},(_,i)=>{const p=r.next('b',i+offset);return[p.held,p.pressed,p.released];});};expect(play(0)).toEqual(play(200));});
+
+it('plays recorded Attack edges without inventing one after a partial stick release',()=>{
+ const r=new PracticeRoutine();
+ r.startRecording('swift');
+ r.capture({...frame(B.ATTACK),cStickX:0,cStickY:-1,faceAttackPressed:false,rightStickHeld:true});
+ r.capture({...frame(0,0,B.ATTACK),rightStickHeld:false});
+ r.capture({...frame(B.ATTACK,0),rightStickHeld:true});
+ r.capture({...frame(B.ATTACK),faceAttackPressed:true,rightStickHeld:true});
+ r.stop();r.play();
+ const replay=Array.from({length:4},(_,i)=>r.next('b',i));
+ expect(replay.map(v=>v.pressed)).toEqual([B.ATTACK,0,0,B.ATTACK]);
+ expect(replay[2]).toMatchObject({held:B.ATTACK,rightStickHeld:true});
+ expect(replay[3]?.faceAttackPressed).toBe(true);
+});

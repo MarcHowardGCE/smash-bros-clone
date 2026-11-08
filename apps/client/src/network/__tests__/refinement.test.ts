@@ -1,5 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import type { PlayerState, StateSnapshot } from "@smash/shared";
+import { decode } from "@msgpack/msgpack";
+import type { InputEvent, PlayerState, StateSnapshot } from "@smash/shared";
 import { PlayerStateEnum } from "@smash/shared";
 import { InterpolationBuffer } from "../InterpolationBuffer.js";
 import { GameClient } from "../GameClient.js";
@@ -49,6 +50,18 @@ describe("online recovery and input cadence", () => {
     internal.myPlayerId = "p1";
     for (let frame=0;frame<=hz;frame++) internal.renderTick(frame*1000/hz);
     expect(emit.mock.calls.filter(c => c[0] === "game:input")).toHaveLength(61);
+  });
+  it("omits unset controller fields from binary match input", () => {
+    const sender = client as unknown as { sendInput(event: InputEvent): void };
+    sender.sendInput({playerId:"p1",tick:1,seq:1,held:16,pressed:16,released:0,
+      cStickX:0,cStickY:-1,cStickTilt:undefined,faceAttackPressed:false,rightStickHeld:true});
+    sender.sendInput({playerId:"p1",tick:2,seq:2,held:0,pressed:0,released:16,
+      faceAttackPressed:undefined,rightStickHeld:false});
+    const packets = emit.mock.calls.filter(call => call[0] === "game:input").map(call => decode(call[1]));
+    expect(packets[0]).toMatchObject({cStickX:0,cStickY:-1,faceAttackPressed:false,rightStickHeld:true});
+    expect(packets[0]).not.toHaveProperty("cStickTilt");
+    expect(packets[1]).toMatchObject({rightStickHeld:false});
+    expect(packets[1]).not.toHaveProperty("faceAttackPressed");
   });
   it("restores identity and rendering without opening the lobby", () => {
     sessionStorage.setItem("smash:rejoin", JSON.stringify({ roomCode: "ABC123", playerId: "p1" }));

@@ -26,6 +26,7 @@ export {
 	applyKnockbackDecay,
 	applyMovement,
 	applyMovementInput,
+	advanceTrackedLaunch,
 	checkLedgeGrab,
 	checkPlatformCollision,
 	checkWallCollision,
@@ -51,9 +52,10 @@ export{isDamageImmune}from'./hitbox/immunity.js';
 
 export { launchSpeedInfluence } from './physics/launchInfluence.js';
 
-export { LAUNCH, launchWorldSpeed, initializeLaunch, clearLaunch, hasLaunch, applyLaunchGravity, decayLaunch } from './physics/launchMotion.js';
+export { findLaunchSurface, bounceFromLaunchSurface, type LaunchSurface } from './physics/launchContact.js';
+export { LAUNCH, launchWorldSpeed, strongLaunchTiming, initializeLaunch, clearLaunch, hasLaunch, applyLaunchGravity, decayLaunch } from './physics/launchMotion.js';
 
-export {GROUND_INPUT,horizontalMovementInput,updateGroundIntent,wantsGroundDash,predictedGroundState} from './physics/groundIntent.js';
+export {GROUND_INPUT,horizontalMovementInput,updateGroundIntent,wantsGroundDash,predictedGroundState,runTransitionAge,RUN_BRAKE_EARLY_AGE,RUN_TRANSITION_ACTION_AGE} from './physics/groundIntent.js';
 
 export {airStats} from './physics/airMotion.js';
 
@@ -62,7 +64,7 @@ export {ACTION_BUFFER_TICKS,prepareActionInput} from './physics/actionBuffer.js'
 export {dodgeDurationScale,finishDodge} from './physics/dodgeFatigue.js';
 
 export {freshDodgeProfile,DODGE_PROFILES} from './physics/dodgeProfiles.js';
-export {dodgeTiming,dodgeAnimationFrame} from './physics/dodgeFatigue.js';
+export {dodgeTiming,dodgeAnimationFrame,recoverDodge} from './physics/dodgeFatigue.js';
 
 export{airDodgeLandingLag}from'./physics/airDodgeLanding.js';
 

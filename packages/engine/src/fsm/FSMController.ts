@@ -35,6 +35,8 @@ import { IdleState } from './states/IdleState.js';
 import { JumpsquatState } from './states/JumpsquatState.js';
 import { RollState } from './states/RollState.js';
 import { RunState } from './states/RunState.js';
+import { RunTransitionState } from './states/RunTransitionState.js';
+import { isRunTransition } from '../physics/groundIntent.js';
 import { ShieldState } from './states/ShieldState.js';
 import { SpotDodgeState } from './states/SpotDodgeState.js';
 import { TechNeutralState } from './states/TechNeutralState.js';
@@ -94,6 +96,8 @@ export class FSMController {
       [PlayerStateEnum.WALK, new WalkState()],
       [PlayerStateEnum.DASH, new DashState()],
       [PlayerStateEnum.RUN, new RunState()],
+      [PlayerStateEnum.RUN_BRAKE, new RunTransitionState()],
+      [PlayerStateEnum.RUN_TURN, new RunTransitionState()],
       [PlayerStateEnum.JUMPSQUAT, new JumpsquatState()],
       [PlayerStateEnum.AIRBORNE, new AirborneState()],
       [PlayerStateEnum.HELPLESS,new HelplessState()],
@@ -142,7 +146,7 @@ export class FSMController {
    * @param input - Bitmask input event for this tick, or `null` if no input.
    * @returns A new `PlayerState` snapshot reflecting the tick outcome.
    */
-  tick(player: PlayerState, input: InputEvent | null): PlayerState {
+  tick(player: PlayerState, input: InputEvent | null, tumbleRecovery?: FSMContext['tumbleRecovery']): PlayerState {
     if (player.state !== this.stateName) {
       this.stateName = player.state as PlayerStateEnum;
       this.currentState = this.getState(this.stateName);
@@ -163,9 +167,13 @@ export class FSMController {
       player: playerForStateMachine,
       input,
       isGrounded: playerForStateMachine.isGrounded,
+      tumbleRecovery,
     };
 
-    const jumpAttack=!(playerForStateMachine.state===PlayerStateEnum.SHIELD&&(playerForStateMachine.shieldStunFrames>0||playerForStateMachine.shieldReleaseFrame!==undefined))&&!input?.smashAttack&&playerForStateMachine.isGrounded&&[PlayerStateEnum.IDLE,PlayerStateEnum.WALK,PlayerStateEnum.DASH,PlayerStateEnum.RUN,PlayerStateEnum.CROUCH,PlayerStateEnum.SHIELD].includes(playerForStateMachine.state as PlayerStateEnum)&&((input?.pressed??0)&(INPUT_BITS.JUMP|INPUT_BITS.ATTACK))===(INPUT_BITS.JUMP|INPUT_BITS.ATTACK);
+    const groundedHitstunReady = playerForStateMachine.state === PlayerStateEnum.HITSTUN &&
+      playerForStateMachine.hitstunFramesRemaining <= 0 && !playerForStateMachine.isTumbling &&
+      playerForStateMachine.shieldReaction !== 'break';
+    const jumpAttack=!(playerForStateMachine.state===PlayerStateEnum.SHIELD&&(playerForStateMachine.shieldStunFrames>0||playerForStateMachine.shieldReleaseFrame!==undefined))&&!input?.smashAttack&&playerForStateMachine.isGrounded&&(groundedHitstunReady||[PlayerStateEnum.IDLE,PlayerStateEnum.WALK,PlayerStateEnum.DASH,PlayerStateEnum.RUN,PlayerStateEnum.CROUCH,PlayerStateEnum.SHIELD].includes(playerForStateMachine.state as PlayerStateEnum))&&((input?.pressed??0)&(INPUT_BITS.JUMP|INPUT_BITS.ATTACK))===(INPUT_BITS.JUMP|INPUT_BITS.ATTACK);
     let transition = jumpAttack?{nextState:PlayerStateEnum.JUMPSQUAT}:this.currentState.update(ctx, playerForStateMachine.stateFrame);
 
     // stateFrame advances here — before any transition is applied. This is intentional:
@@ -180,6 +188,8 @@ export class FSMController {
       PlayerStateEnum.WALK,
       PlayerStateEnum.DASH,
       PlayerStateEnum.RUN,
+      PlayerStateEnum.RUN_BRAKE,
+      PlayerStateEnum.RUN_TURN,
       PlayerStateEnum.JUMPSQUAT,
       PlayerStateEnum.SHIELD,
       PlayerStateEnum.ATTACK,
@@ -255,6 +265,10 @@ export class FSMController {
       state: nextStateName,
       stateFrame: 0,
     };
+    if(isRunTransition(player.state)||isRunTransition(nextStateName)){
+      nextPlayer.runTransitionOffset=isRunTransition(player.state)&&isRunTransition(nextStateName)
+        ? (player.runTransitionOffset??0)+player.stateFrame : undefined;
+    }
 
     if([PlayerStateEnum.ROLL,PlayerStateEnum.SPOT_DODGE,PlayerStateEnum.AIR_DODGE].includes(player.state as PlayerStateEnum)&&nextStateName!==player.state){
       const timing=dodgeTiming(player),cancel=player.state===PlayerStateEnum.SPOT_DODGE&&nextStateName===PlayerStateEnum.ATTACK&&player.stateFrame>=(timing.attackCancel??timing.total)-1;

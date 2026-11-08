@@ -20,7 +20,7 @@ function createFixtureGameState(overrides?: Partial<GameState>): GameState {
     isTumbling: false,
     techWindowFrames: 0,
     techLockoutFrames: 0,
-    lCancelWindowFrames: 0,
+
     landingLagFrames: 0,
     isGrounded: true,
     isKnockedOut: false,
@@ -335,7 +335,7 @@ describe('AIPlayerController', () => {
             isTumbling: false,
             techWindowFrames: 0,
             techLockoutFrames: 0,
-            lCancelWindowFrames: 0,
+
             landingLagFrames: 0,
             isGrounded: true,
             isKnockedOut: false,
@@ -376,7 +376,7 @@ describe('AIPlayerController', () => {
             isTumbling: false,
             techWindowFrames: 0,
             techLockoutFrames: 0,
-            lCancelWindowFrames: 0,
+
             landingLagFrames: 0,
             isGrounded: true,
             isKnockedOut: false,
@@ -510,7 +510,7 @@ describe('AIPlayerController', () => {
             isTumbling: false,
             techWindowFrames: 0,
             techLockoutFrames: 0,
-            lCancelWindowFrames: 0,
+
             landingLagFrames: 0,
             isGrounded: true,
             isKnockedOut: false,
@@ -551,7 +551,7 @@ describe('AIPlayerController', () => {
             isTumbling: false,
             techWindowFrames: 0,
             techLockoutFrames: 0,
-            lCancelWindowFrames: 0,
+
             landingLagFrames: 0,
             isGrounded: true,
             isKnockedOut: true, // KO'd
@@ -592,7 +592,7 @@ describe('AIPlayerController', () => {
             isTumbling: false,
             techWindowFrames: 0,
             techLockoutFrames: 0,
-            lCancelWindowFrames: 0,
+
             landingLagFrames: 0,
             isGrounded: true,
             isKnockedOut: false, // Alive
@@ -662,7 +662,7 @@ describe('AIPlayerController', () => {
             isTumbling: false,
             techWindowFrames: 0,
             techLockoutFrames: 0,
-            lCancelWindowFrames: 0,
+
             landingLagFrames: 0,
             isGrounded: true,
             isKnockedOut: false,
@@ -703,7 +703,7 @@ describe('AIPlayerController', () => {
             isTumbling: false,
             techWindowFrames: 0,
             techLockoutFrames: 0,
-            lCancelWindowFrames: 0,
+
             landingLagFrames: 0,
             isGrounded: true,
             isKnockedOut: true, // KO'd
@@ -744,7 +744,7 @@ describe('AIPlayerController', () => {
             isTumbling: false,
             techWindowFrames: 0,
             techLockoutFrames: 0,
-            lCancelWindowFrames: 0,
+
             landingLagFrames: 0,
             isGrounded: true,
             isKnockedOut: true, // KO'd

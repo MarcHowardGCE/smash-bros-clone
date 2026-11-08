@@ -1,25 +1,20 @@
 /**
  * @fileoverview DOUBLE_JUMP state — single-frame aerial jump trigger.
  *
- * Consumes the fighter's double jump and immediately hands off to AIRBORNE.
- * The physics layer detects the DOUBLE_JUMP → AIRBORNE transition and applies
- * the double-jump velocity on that same tick. `hasDoubleJump` is cleared by
- * `GameEngine` when the transition fires.
+ * GameEngine applies the launch and consumes the jump on entry.
+ * The next tick hands off to AIRBORNE or starts a fresh normal aerial.
  *
  * Entered from: AIRBORNE (jump pressed + hasDoubleJump true).
  *
- * Transitions out to: AIRBORNE (immediately, every frame).
+ * Transitions out to: AIRBORNE or AIR_ATTACK.
  */
-import { BaseState, PlayerStateEnum, transition } from './utils.js';
+import { BaseState, INPUT_BITS, PlayerStateEnum, isPressed, transition } from './utils.js';
 import type { FSMContext, FSMTransition } from '../index.js';
 
-/**
- * Single-frame trigger state that consumes the double jump and immediately
- * transitions to AIRBORNE. The physics layer applies double-jump velocity on
- * the same tick this transition fires.
- */
 export class DoubleJumpState extends BaseState {
-  update(_ctx: FSMContext): FSMTransition | null {
-    return transition(PlayerStateEnum.AIRBORNE);
+  update(ctx: FSMContext): FSMTransition | null {
+    const aerial = !ctx.isGrounded && isPressed(ctx.input, INPUT_BITS.ATTACK) &&
+      !isPressed(ctx.input, INPUT_BITS.SPECIAL | INPUT_BITS.GRAB | INPUT_BITS.SHIELD);
+    return transition(aerial ? PlayerStateEnum.AIR_ATTACK : PlayerStateEnum.AIRBORNE);
   }
 }

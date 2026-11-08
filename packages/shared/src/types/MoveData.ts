@@ -97,6 +97,8 @@ export interface MoveData {
   hitboxPerActiveFrame: HitboxData[];
   /** Landing lag frames applied if this aerial move lands before recovery ends. */
   landingLag: number;
+  /** Zero-based move frames. Auto-cancel before earlyEnd or at/after lateStart. */
+  autoCancel?: {earlyEnd:number;lateStart:number};
   /** True for aerial moves; affects FSM state (AIR_ATTACK vs ATTACK). */
   isAerial: boolean;
   /** True for grab moves; triggers grab-resolution logic instead of hitbox collision. */

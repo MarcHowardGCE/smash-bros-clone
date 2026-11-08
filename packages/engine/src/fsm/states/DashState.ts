@@ -1,17 +1,17 @@
-import {horizontalMovementInput,GROUND_INPUT} from '../../physics/groundIntent.js';
+import {horizontalMovementInput,GROUND_INPUT,initialDashFrames} from '../../physics/groundIntent.js';
 /**
  * @fileoverview DASH state — initial directional movement with a commit window.
  *
- * Dash lasts `DASH_FRAMES` (15) frames. During this window the fighter moves at
+ * Analog duration comes from the fighter profile; digital dash lasts 15 frames. During this window the fighter moves at
  * dash speed. A direction reversal mid-dash restarts the state from frame 0
  * (dash-dancing). After 15 frames without interruption the fighter escalates to
  * RUN.
  *
- * Entered from: WALK (direction still held after 1-frame walk window).
+ * Entered from: a qualifying analog flick or the digital walk bridge.
  *
  * Transitions out to: ATTACK (attack/special/grab pressed), IDLE (direction
  * released), JUMPSQUAT (jump pressed), SHIELD (shield held),
- * DASH (direction reversed — dash-dance), RUN (frame >= DASH_FRAMES - 1).
+ * DASH (direction reversed — dash-dance), RUN (initial dash completes).
  */
 import {
 	BaseState,
@@ -24,10 +24,10 @@ import {
 } from './utils.js';
 import type { FSMContext, FSMTransition } from '../index.js';
 
-const DASH_FRAMES = 15;
+
 
 /**
- * Initial directional movement state. Lasts `DASH_FRAMES` (15) frames at dash speed.
+ * Initial directional movement state.
  * Direction reversal mid-dash restarts the state (dash-dancing). Escalates to RUN
  * after the commit window expires.
  */
@@ -66,7 +66,7 @@ export class DashState extends BaseState {
 			return transition(PlayerStateEnum.DASH);
 		}
 
-		if (frame >= DASH_FRAMES - 1) {
+		if (frame >= initialDashFrames(ctx.player,ctx.input) - 1) {
 			return transition(PlayerStateEnum.RUN);
 		}
 

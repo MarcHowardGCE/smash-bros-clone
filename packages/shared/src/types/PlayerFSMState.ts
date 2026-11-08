@@ -27,6 +27,8 @@ export enum PlayerStateEnum {
   DASH = 'DASH',
   /** Sustained run at RUN_SPEED. */
   RUN = 'RUN',
+  RUN_BRAKE = 'RUN_BRAKE',
+  RUN_TURN = 'RUN_TURN',
   /** Pre-jump crouch; lasts JUMPSQUAT_FRAMES before going airborne. */
   JUMPSQUAT = 'JUMPSQUAT',
   /** Normal airborne state after a full or short hop. */
@@ -64,7 +66,11 @@ export enum PlayerStateEnum {
   GRAB = 'GRAB',
   /** Opponent is pinned; accepts pummel and throw inputs. */
   GRAB_HOLDING = 'GRAB_HOLDING',
-  /** Hanging on a ledge; invincibility active for LEDGE_HANG_INVINCIBILITY_FRAMES. */
+  /** Vulnerable movement toward a ledge before ownership is granted. */
+  LEDGE_APPROACH = 'LEDGE_APPROACH',
+  /** Airborne or grounded recovery after being displaced from a ledge. */
+  LEDGE_TRUMP = 'LEDGE_TRUMP',
+  /** Forced catch followed by hanging on a ledge. */
   LEDGE_HANG = 'LEDGE_HANG',
   /** Climbing up from a ledge; locked for LEDGE_CLIMB_FRAMES. */
   LEDGE_CLIMB = 'LEDGE_CLIMB',

@@ -1,3 +1,4 @@
+import { MOVE_DOWN_AIR } from './aerial.js';
 /**
  * @fileoverview Abe Lincoln character-specific move overrides.
  *
@@ -55,6 +56,7 @@ const lincolnDownAirHitbox: HitboxData = {
 
 /** Lincoln down air — same timing as default (10/2/20), slightly lower damage (13 vs 14). Same spike angle (270°). */
 export const LINCOLN_DOWN_AIR: MoveData = {
+  autoCancel: MOVE_DOWN_AIR.autoCancel,
   id: MoveId.DOWN_AIR,
   startupFrames: 10, activeFrames: 2, recoveryFrames: 20,
   hitboxPerActiveFrame: [lincolnDownAirHitbox, lincolnDownAirHitbox],

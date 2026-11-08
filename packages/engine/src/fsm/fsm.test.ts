@@ -618,3 +618,35 @@ describe('FSM - Air Dodge single-use consumption', () => {
     expect(player.airDodgeDirection).toBeNull();
   });
 });
+
+describe('tracked launch hitstun cancels', () => {
+  const cancel = (stateFrame: number, speed: number, pressed: number, overrides: Partial<PlayerState> = {}) =>
+    new FSMController(PlayerStateEnum.HITSTUN).tick(makePlayer({
+      state: PlayerStateEnum.HITSTUN, stateFrame, isGrounded: false, isTumbling: true,
+      hitstunFramesRemaining: 8, hasAirDodge: true, launchVx: speed * 4, launchVy: 0,
+      ...overrides,
+    }), makeInput(pressed));
+
+  it.each([
+    [40, 2.5, INPUT_BITS.SHIELD, PlayerStateEnum.AIR_DODGE],
+    [45, 2, INPUT_BITS.ATTACK, PlayerStateEnum.AIR_ATTACK],
+  ] as const)('opens after %i live ticks at launch speed %f', (frame, speed, pressed, state) => {
+    expect(cancel(frame - 1, speed, pressed).state).toBe(PlayerStateEnum.HITSTUN);
+    expect(cancel(frame, speed + .001, pressed).state).toBe(PlayerStateEnum.HITSTUN);
+    expect(cancel(frame, speed, pressed).state).toBe(state);
+    expect(cancel(frame - 1, speed, pressed, {launchThawStep:true}).state).toBe(state);
+    expect(cancel(frame, speed, pressed, {launchElectric:true}).state).toBe(PlayerStateEnum.HITSTUN);
+    expect(cancel(frame + 1, speed, pressed, {launchElectric:true}).state).toBe(state);
+    expect(cancel(frame, speed, pressed, {hitlagFramesRemaining:1}).state).toBe(PlayerStateEnum.HITSTUN);
+  });
+
+  it('does not allow spent dodges, jumps or specials to cancel a tracked launch', () => {
+    expect(cancel(50, 1, INPUT_BITS.SHIELD, {hasAirDodge:false}).state).toBe(PlayerStateEnum.HITSTUN);
+    expect(cancel(50, 1, INPUT_BITS.ATTACK | INPUT_BITS.SPECIAL).state).toBe(PlayerStateEnum.HITSTUN);
+    for (const button of [INPUT_BITS.JUMP, INPUT_BITS.SPECIAL]) {
+      expect(cancel(9, 1, button, {lastHitKnockbackAngle:Math.PI * 1.5}).state).toBe(PlayerStateEnum.HITSTUN);
+      expect(cancel(50, 1, button).state).toBe(PlayerStateEnum.HITSTUN);
+    }
+  });
+});
+

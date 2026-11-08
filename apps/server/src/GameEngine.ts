@@ -1,3 +1,4 @@
+import { runTransitionAge, RUN_BRAKE_EARLY_AGE, RUN_TRANSITION_ACTION_AGE } from '@smash/engine';
 import {isActiveShield} from '@smash/shared';
 import { getStageLayout } from '@smash/shared';
 import{inputVector}from'@smash/shared';
@@ -37,7 +38,7 @@ import{inputVector}from'@smash/shared';
  */
 import {
 	advanceJabChain,
-    isDamageImmune, dodgeDurationScale, freshDodgeProfile, airDodgeLandingLag, airDodgeTravelSpeed, finishDodge, canHitContact,recordHitContact,contactStaleMultiplier,
+    isDamageImmune, dodgeDurationScale, freshDodgeProfile, airDodgeLandingLag, airDodgeTravelSpeed, finishDodge, recoverDodge, canHitContact,recordHitContact,contactStaleMultiplier,
     resolveFloorHit,
     resolveCeilingTech,
     withMovementArt,
@@ -46,7 +47,7 @@ import {
 	applyGravity,
 	applyDI,
 	launchSpeedInfluence,
-	initializeLaunch, clearLaunch, hasLaunch, applyLaunchGravity, decayLaunch, horizontalMovementInput, prepareActionInput,
+	initializeLaunch, clearLaunch, hasLaunch, advanceTrackedLaunch, strongLaunchTiming, findLaunchSurface, bounceFromLaunchSurface, horizontalMovementInput, prepareActionInput,
 	applyMovement,
 	checkHitboxCollision,
 	checkLedgeGrab,
@@ -246,6 +247,7 @@ export interface GameEngineOptions {
  */
 export class GameEngine {
   private readonly practice:boolean;
+  private readonly practicePercents = new Map<PlayerId, number>();
   private readonly stage:ReturnType<typeof getStageLayout>;
   private controllerFlick=new Map<PlayerId,{x:number;y:number;h:number;v:number}>();
 	private state: GameState;
@@ -254,6 +256,13 @@ export class GameEngine {
 	private readonly koEvents: KOEventData[] = [];
 	private readonly fsmControllers = new Map<PlayerId, FSMController>();
 	private readonly techAttemptBuffered = new Map<PlayerId, boolean>();
+	private readonly consecutiveLedgeGrabs = new Map<string, number>();
+	private readonly ledgeApproaches = new Map<PlayerId, {
+		ledgeId: string; startX: number; startY: number; ticks: number;
+		state: PlayerState['state']; stateFrame: number; input?: InputEvent;
+	}>();
+	private readonly ledgeCatches = new Map<PlayerId, { unlockTick: number; input?: InputEvent }>();
+	private readonly ledgeTrumps = new Map<PlayerId, { ledgeId: string; popTick: number }>();
 	private ledgeState: Map<
 		string,
 		{ occupantId: string | null; cooldowns: Map<string, number> }
@@ -293,7 +302,6 @@ export class GameEngine {
 				isTumbling: false,
 				techWindowFrames: 0,
 				techLockoutFrames: 0,
-				lCancelWindowFrames: 0,
 				landingLagFrames: 0,
 				percent: 0,
 				stocks: MATCH_CONFIG.STOCKS,
@@ -360,15 +368,32 @@ export class GameEngine {
     for(const p of Object.values(this.state.players)){p.dodgeFatigue=level;p.dodgeRecoveryTicks=120;p.dodgeRefreshTicks=undefined;}
     return true;
   }
+  getPracticePercent(id: PlayerId): number {
+    return this.practicePercents.get(id) ?? 0;
+  }
+
+  setPracticePercent(id: PlayerId, percent: number): boolean {
+    const player = this.state.players[id];
+    if (!this.practice || !player || !Number.isInteger(percent) || percent < 0 || percent > 999) return false;
+    this.practicePercents.set(id, percent);
+    player.percent = percent;
+    return true;
+  }
+
   /** Rebuild both practice fighters together, clearing grabs, ledges, fatigue and pending launches. */
-  resetPractice():boolean {
+  resetPractice(clearContacts = true):boolean {
     if(!this.practice)return false;
     const ids=Object.keys(this.state.players),characters=Object.fromEntries(ids.map(id=>[id,this.state.players[id]!.characterId]));
     const fresh=new GameEngine({playerIds:ids,characterIds:characters,stageId:this.stage.id});
     const main=this.stage.mainPlatform,center=main.x+main.width/2;
-    this.state={...fresh.state,tick:this.tick,players:Object.fromEntries(ids.map((id,i)=>{const p=fresh.state.players[id]!;return[id,{...p,x:center+(i===0?-24:24),y:main.y-getCharacterStats(p.characterId).hurtboxRadius,state:PlayerStateEnum.IDLE,stateFrame:0,isGrounded:true,facing:i===0?1:-1,artCue:undefined}];}))};
-    this.controllerFlick.clear();this.clearHitEvents();
+    this.state={...fresh.state,tick:this.tick,players:Object.fromEntries(ids.map((id,i)=>{const p=fresh.state.players[id]!;return[id,{...p,percent:this.getPracticePercent(id),x:center+(i===0?-24:24),y:main.y-getCharacterStats(p.characterId).hurtboxRadius,state:PlayerStateEnum.IDLE,stateFrame:0,isGrounded:true,facing:i===0?1:-1,artCue:undefined}];}))};
+    this.controllerFlick.clear();
+    if (clearContacts) this.clearHitEvents();
     for(const id of ids){this.fsmControllers.set(id,new FSMController(PlayerStateEnum.IDLE));this.techAttemptBuffered.set(id,false);}
+    this.consecutiveLedgeGrabs.clear();
+    this.ledgeApproaches.clear();
+    this.ledgeCatches.clear();
+    this.ledgeTrumps.clear();
     for(const ledge of this.ledgeState.values()){ledge.occupantId=null;ledge.cooldowns.clear();}
     return true;
   }
@@ -406,10 +431,34 @@ export class GameEngine {
           const h=Math.abs(vec.x)>=.7&&(Math.abs(old.x)<.3||Math.sign(vec.x)!==Math.sign(old.x))?0:Math.min(999,old.h+1);
           const v=Math.abs(vec.y)>=.7&&(Math.abs(old.y)<.3||Math.sign(vec.y)!==Math.sign(old.y))?0:Math.min(999,old.v+1);
           this.controllerFlick.set(id,{x:vec.x,y:vec.y,h,v});
-          const vertical=Math.abs(vec.y)>Math.abs(vec.x),flick=vertical?Math.abs(vec.y)>=.7&&v<=4:Math.abs(vec.x)>=.7&&h<=6;
-          resolvedInputs.set(id,{...input,smashAttack:input.smashAttack||((input.pressed&INPUT_BITS.ATTACK)!==0&&flick&&!input.jumpButtons)});
+          const aim = input.attackAim ? inputVector({...input,...input.attackAim}) : vec;
+          const flickAge = (value:number, previous:number, age:number) =>
+            Math.abs(previous)<.3 || Math.sign(value)!==Math.sign(previous) ? 0 : age+1;
+          const vertical = Math.abs(aim.y)>Math.abs(aim.x);
+          const sensitivity = input.smashSensitivity ?? 0;
+          const flick = vertical
+            ? Math.abs(aim.y)>=.7 && flickAge(aim.y,old.y,old.v)<=4+sensitivity
+            : Math.abs(aim.x)>=.7 && flickAge(aim.x,old.x,old.h)<=6+sensitivity;
+          resolvedInputs.set(id,{...input,smashAttack:input.smashAttack||((input.pressed&INPUT_BITS.ATTACK)!==0&&flick&&!input.jumpButtons&&Math.hypot(input.cStickX??0,input.cStickY??0)<.55)});
         }
         for(const id of footstools.consumed){const i=resolvedInputs.get(id);if(i)resolvedInputs.set(id,{...i,pressed:i.pressed&~INPUT_BITS.JUMP,held:i.held&~INPUT_BITS.JUMP});}
+        // Resolve scheduled pops before player updates so either slot order has the same recovery.
+        for (const [id, trump] of this.ledgeTrumps) {
+          const player = players[id];
+          if (trump.popTick === this.tick && player?.state === PlayerStateEnum.LEDGE_HANG) {
+            players[id] = this.popLedgeTrump(player, trump.ledgeId);
+          }
+        }
+        // Collect catch inputs before any contestant can claim the ledge this tick.
+        for (const [id, catchPhase] of this.ledgeCatches) {
+          if (players[id]?.state !== PlayerStateEnum.LEDGE_HANG) {
+            this.ledgeCatches.delete(id);
+            continue;
+          }
+          if (!this.ledgeTrumps.has(id)) {
+            catchPhase.input = this.ledgeOptionInput(resolvedInputs.get(id)) ?? catchPhase.input;
+          }
+        }
         for (const playerId of Object.keys(players) as PlayerId[]) {
 			const currentPlayer = players[playerId];
 			if (!currentPlayer) {
@@ -422,6 +471,7 @@ export class GameEngine {
 				resolvedInputs.get(playerId) ?? null,
 				players,
 			),resolvedInputs.get(playerId)??null,this.stage);
+			if (players[playerId]?.isGrounded) this.consecutiveLedgeGrabs.delete(playerId);
 		}
 
 		// ─── HIT DETECTION PASS ────────────────────────────────────────────────────
@@ -429,8 +479,24 @@ export class GameEngine {
 		this.syncGrabState(players);
 		// ─── KO CHECK + BLAST ZONE DETECTION ───────────────────────────────────────
 		if(this.practice){
-          for(const p of Object.values(players)){p.percent=0;p.shieldHealth=PHYSICS.SHIELD_MAX_HEALTH;p.stocks=MATCH_CONFIG.STOCKS;}
-          if(Object.values(players).some(p=>p.isKnockedOut)){this.state={...this.state,players};this.resetPractice();return this.state;}
+          let exited = false;
+          for (const player of Object.values(players)) {
+            player.percent = this.getPracticePercent(player.id);
+            player.shieldHealth = PHYSICS.SHIELD_MAX_HEALTH;
+            player.stocks = MATCH_CONFIG.STOCKS;
+            if (!player.isKnockedOut) continue;
+            exited = true;
+            const boundary = this.getBlastZoneBoundary(player);
+            if (boundary) this.koEvents.push({
+              playerId: player.id, boundary, tick: this.tick,
+              exitPosition: { x: player.x, y: player.y },
+            });
+          }
+          if (exited) {
+            this.state = { ...this.state, players };
+            this.resetPractice(false);
+            return this.state;
+          }
         }else this.applyKnockouts(players);
 		this.tickLedgeCooldowns();
 
@@ -548,6 +614,10 @@ export class GameEngine {
         this.fsmControllers.set(id, new FSMController(state));
       }
     }
+    this.consecutiveLedgeGrabs.delete(playerId);
+    this.ledgeApproaches.delete(playerId);
+    this.ledgeCatches.delete(playerId);
+    this.ledgeTrumps.delete(playerId);
     for (const ledge of this.ledgeState.values()) {
       if (ledge.occupantId === playerId) ledge.occupantId = null;
     }
@@ -579,7 +649,6 @@ export class GameEngine {
 			isTumbling: false,
 			techWindowFrames: 0,
 			techLockoutFrames: 0,
-			lCancelWindowFrames: 0,
 			landingLagFrames: 0,
 			activeHitbox: null,
 			currentMoveId: null,
@@ -656,7 +725,7 @@ export class GameEngine {
 	 *
 	 * Order of operations:
 	 * 1. Sanitise `chargeFrames` (NaN guard).
-	 * 2. Decrement tech/L-cancel window counters.
+	 * 2. Decrement tech window and lockout counters.
 	 * 3. Early-exit for eliminated players (stocks = 0) and respawning players.
 	 * 4. Ledge-grab detection and ledge-trump resolution.
 	 * 5. FSM tick via `FSMController`.
@@ -679,7 +748,12 @@ export class GameEngine {
 	 * @returns The fully updated `PlayerState` for `playerId`.
 	 */
   /** Pausing discards pending action edges; resume requires deliberate input. */
-  clearActionBuffers():void {for(const player of Object.values(this.state.players))player.actionBuffer=undefined;}
+  clearActionBuffers():void {
+    for(const player of Object.values(this.state.players)){
+      player.actionBuffer=undefined;
+      player.tumbleShieldPressedTick=undefined;
+    }
+  }
 
 	private updatePlayer(
 		playerId: PlayerId,
@@ -688,6 +762,15 @@ export class GameEngine {
 		players: Record<PlayerId, PlayerState>,
 	): PlayerState {
 		let player = clonePlayer(current);
+		const trump = this.ledgeTrumps.get(playerId);
+		if (player.state === PlayerStateEnum.LEDGE_TRUMP && trump) {
+			const age = this.tick - trump.popTick;
+			if (age < PHYSICS.LEDGE_TRUMP_RECOVERY_FRAMES) {
+				return age === 0 ? player : this.advanceLedgeTrump(player, input, age);
+			}
+			this.ledgeTrumps.delete(playerId);
+			player = { ...player, state: player.isGrounded ? PlayerStateEnum.IDLE : PlayerStateEnum.AIRBORNE, stateFrame: 0 };
+		}
         const prepared=prepareActionInput(player,input);player=prepared.player;input=prepared.input;
         if(player.isGrounded&&player.state!==PlayerStateEnum.JUMPSQUAT)player.shortHop=false;
         if((player.footstoolCooldownFrames??0)>0)player={...player,footstoolCooldownFrames:player.footstoolCooldownFrames!-1};
@@ -735,7 +818,6 @@ export class GameEngine {
 				isTumbling: false,
 				techWindowFrames: 0,
 				techLockoutFrames: 0,
-				lCancelWindowFrames: 0,
 				landingLagFrames: 0,
 				lastHitByFacing: null,
 				lastHitKnockbackAngle: null,
@@ -747,59 +829,94 @@ export class GameEngine {
 		}
 
 		// Capture state BEFORE ledge grab and other state changes
+        if(player.state===PlayerStateEnum.AIRBORNE&&(player.ceilingTechRecoveryFrames??0)>0){
+          const falling=applyGravity({...player,ceilingTechRecoveryFrames:player.ceilingTechRecoveryFrames!-1,stateFrame:player.stateFrame+1});
+          return this.updateInvincibility(checkPlatformCollision({...falling,y:falling.y+falling.vy},this.stage));
+        }
+
+        const wallTech=player.wallTechRecovery;
+        if(player.state===PlayerStateEnum.AIRBORNE&&wallTech){
+          if(wallTech.remaining>0){
+            const jump=wallTech.jump||isHeld(input,INPUT_BITS.JUMP|INPUT_BITS.UP);
+            return this.updateInvincibility({
+              ...player,stateFrame:player.stateFrame+1,
+              wallTechRecovery:{...wallTech,remaining:wallTech.remaining-1,jump},
+              ...(jump&&!wallTech.jump?{artCue:'wall_tech_jump',artCueFrame:0}:{}),
+            });
+          }
+          if(wallTech.jump){
+            const velocity=applyWallJumpVelocity(player,wallTech.side==='left'?'right':'left');
+            return this.updateInvincibility(checkPlatformCollision({
+              ...player,...velocity,x:player.x+velocity.vx,y:player.y+velocity.vy,
+              stateFrame:player.stateFrame+1,wallTechRecovery:undefined,
+            },this.stage));
+          }
+          if(player.invincibilityFrames<=0)player={...player,wallTechRecovery:undefined};
+        }
+
+        const impact=player.launchImpact;
+        if(player.state===PlayerStateEnum.HITSTUN&&impact&&impact.remaining>0){
+          const waiting={...player,launchImpact:{...impact,remaining:impact.remaining-1}};
+          if(waiting.launchImpact.remaining===0&&impact.techable&&player.techWindowFrames>0){
+            return this.completeLaunchTech(playerId,waiting,input??EMPTY_INPUT);
+          }
+          return waiting;
+        }
+
 		const beforeTick = clonePlayer(player);
 		const hadDoubleJumpBeforeTick = player.hasDoubleJump;
 
 		// ─── LEDGE GRAB DETECTION ────────────────────────────────────────────────────
-		const ledgeEligibleStates: string[] = [
-            PlayerStateEnum.AIR_DODGE,
-            PlayerStateEnum.HELPLESS,
-			PlayerStateEnum.AIRBORNE,
-			PlayerStateEnum.DOUBLE_JUMP,
-		];
-		if (ledgeEligibleStates.includes(player.state)) {
-			const ledge = checkLedgeGrab(player, this.stage);
-			if (ledge) {
-				const previousOccupantId = this.getLedgeOccupant(ledge.id);
-				const result = this.tryGrabLedge(player.id, ledge.id);
-	
-				if (result === "granted") {
-					player = this.snapPlayerToLedge(player, ledge.id);
-				} else if (
-					result === "trumped" &&
-					previousOccupantId &&
-					players[previousOccupantId as PlayerId]
-				) {
-					const poppedPlayer = players[previousOccupantId as PlayerId];
-					if (!poppedPlayer) {
-						return player;
-					}
-
-					const popVx =
-						ledge.id === "left"
-							? PHYSICS.LEDGE_TRUMP_POP_VX
-							: -PHYSICS.LEDGE_TRUMP_POP_VX;
-					players[previousOccupantId as PlayerId] = {
-						...poppedPlayer,
-						state: PlayerStateEnum.AIRBORNE,
-						stateFrame: 0,
-						ledgeId: null,
-						vx: popVx,
-						vy: PHYSICS.LEDGE_TRUMP_POP_VY,
-						isGrounded: false,
-					isInvincible: true,
-					invincibilityFrames: PHYSICS.LEDGE_TRUMP_INVINCIBILITY_FRAMES,
-					activeHitbox: null,
-					currentMoveId: null,
-                jabQueued: false,
-					currentMove: undefined,
-					landingLagFrames: 0,
-					hitPlayerIds: new Set<string>(),hitContactFrames:undefined,moveStaleMultiplier:undefined,
-					chargeFrames: 0,
-				};
-					player = this.snapPlayerToLedge(player, ledge.id);
-				}
+		const approach = this.ledgeApproaches.get(playerId);
+		if (approach && player.state === PlayerStateEnum.LEDGE_APPROACH) {
+			approach.input = this.ledgeOptionInput(input) ?? approach.input;
+			if (player.stateFrame + 1 < approach.ticks) {
+				return this.advanceLedgeApproach(player, approach, player.stateFrame + 1);
 			}
+			this.ledgeApproaches.delete(playerId);
+			player = { ...player, state: approach.state, stateFrame: approach.stateFrame + approach.ticks };
+			const caught = this.claimLedge(player, approach.ledgeId, approach.input, players);
+			if (caught) return caught;
+		} else if (approach) {
+			this.ledgeApproaches.delete(playerId);
+		}
+
+		const canApproach = [
+			PlayerStateEnum.AIR_DODGE, PlayerStateEnum.HELPLESS,
+			PlayerStateEnum.AIRBORNE, PlayerStateEnum.DOUBLE_JUMP,
+		].includes(player.state as PlayerStateEnum);
+		if (!approach && canApproach && player.hitlagFramesRemaining === 0 &&
+			!isHeld(input, INPUT_BITS.DOWN) &&
+			!(player.wallTechRecovery && player.stateFrame <= PHYSICS.WALL_TECH_JUMP_WINDOW_TICKS)) {
+			const ledge = checkLedgeGrab(player, this.stage);
+			if (ledge && this.canClaimLedge(player.id, ledge.id)) {
+				// Project depth bands measured relative to the existing hang anchor.
+				const depth = player.y - (ledge.y + 10);
+				const ticks = depth > 20 ? 2 : depth > 8 ? 1 : 0;
+				const option = this.ledgeOptionInput(input);
+				if (ticks > 0) {
+					const pending = {
+						ledgeId: ledge.id, startX: player.x, startY: player.y, ticks,
+						state: player.state, stateFrame: player.stateFrame, input: option,
+					};
+					this.ledgeApproaches.set(playerId, pending);
+					return this.advanceLedgeApproach(player, pending, 0);
+				}
+				const caught = this.claimLedge(player, ledge.id, option, players);
+				if (caught) return caught;
+			}
+		}
+
+		const catchPhase = this.ledgeCatches.get(playerId);
+		if (catchPhase && player.state === PlayerStateEnum.LEDGE_HANG) {
+			if (this.tick < catchPhase.unlockTick) {
+				return this.updateInvincibility(recoverDodge({ ...player, stateFrame: player.stateFrame + 1 }));
+			}
+			this.ledgeCatches.delete(playerId);
+			if (this.consecutiveLedgeGrabs.get(player.id) === 1) {
+				player = { ...player, isInvincible: true, invincibilityFrames: PHYSICS.LEDGE_HANG_INVINCIBILITY_FRAMES + 1 };
+			}
+			input = catchPhase.input ?? input;
 		}
 
 		const controller = this.fsmControllers.get(playerId);
@@ -808,10 +925,24 @@ export class GameEngine {
 		}
 
 		// ─── FSM TICK PASS ───────────────────────────────────────────────────────────
-		let nextPlayer = controller.tick(player, input);
+		const bufferedTumbleShield = isHeld(input, INPUT_BITS.SHIELD) ||
+			this.tick - (player.tumbleShieldPressedTick ?? -Infinity) <= PHYSICS.TUMBLE_DODGE_BUFFER_TICKS;
+		const recoveringTumble = player.state === PlayerStateEnum.HITSTUN && player.isTumbling &&
+			!player.isGrounded && player.lastHitKnockbackAngle != null && player.footstoolRole !== 'air' &&
+			player.hitlagFramesRemaining === 0 && player.hitstunFramesRemaining <= 0;
+		let tumbleRecovery: 'floor' | 'buffered-dodge' | undefined;
+		if (recoveringTumble && (bufferedTumbleShield || player.techWindowFrames > 0)) {
+			// Check the natural fall before a dodge can clear tumble or change the path.
+			const floor = this.applyMovementPipeline(player, input ?? EMPTY_INPUT, hadDoubleJumpBeforeTick).isGrounded;
+			tumbleRecovery = floor ? 'floor' : bufferedTumbleShield ? 'buffered-dodge' : undefined;
+		}
+		let nextPlayer = controller.tick(player, input, tumbleRecovery);
+		if(player.wallTechRecovery&&nextPlayer.state!==PlayerStateEnum.AIRBORNE){
+			nextPlayer={...nextPlayer,wallTechRecovery:undefined,isInvincible:false,invincibilityFrames:0};
+		}
         if(player.hitlagFramesRemaining>0&&nextPlayer.y!==player.y){const clipped=checkPlatformCollision({...nextPlayer,vy:nextPlayer.y-player.y},this.stage);nextPlayer={...nextPlayer,y:clipped.y};}
 		nextPlayer = this.applyStateTransitions(beforeTick, nextPlayer, input);
-		nextPlayer = this.applyDirectionalInfluenceOnHitlagEnd(player, nextPlayer, input);
+		nextPlayer = this.applyLaunchInfluence(player, nextPlayer, input);
 		nextPlayer = this.tickLandingLagCounter(nextPlayer);
 		const gainedInvincibilityThisTick =
 			!beforeTick.isInvincible &&
@@ -842,6 +973,9 @@ export class GameEngine {
 		nextPlayer = this.applyFacing(nextPlayer, input);
 		if (!gainedInvincibilityThisTick && !gainedInvincibilityFromWallJump) {
 			nextPlayer = this.updateInvincibility(nextPlayer);
+		}
+		if (player.state === PlayerStateEnum.LEDGE_HANG && nextPlayer.stateFrame === 0) {
+			nextPlayer = this.startLedgeGetupProtection(nextPlayer);
 		}
 		nextPlayer = this.withHitboxState(nextPlayer, input);
 
@@ -875,6 +1009,7 @@ export class GameEngine {
 			nextPlayer = {
 				...nextPlayer,
 				techWindowFrames: 0,
+				tumbleShieldPressedTick: undefined,
 			};
 		}
 
@@ -883,15 +1018,12 @@ export class GameEngine {
 	}
 
 	/**
-	 * Decrements per-player tech-window, tech-lockout, and L-cancel window counters
+	 * Decrements per-player tech-window and tech-lockout counters
 	 * at the start of each tick, and opens new windows when the relevant inputs fire.
 	 *
 	 * - **Tech window**: opened when SHIELD is pressed while airborne and tumbling
 	 *   with no active lockout. The buffered attempt is recorded so `resolveTumbleLanding`
-	 *   can check it on the landing frame.
-	 * - **L-cancel window**: opened when SHIELD is pressed during AIR_ATTACK state.
-	 *   If active on the landing frame, landing lag is halved.
-	 *
+	 *   can check it on the landing frame.	 *
 	 * @param playerId - ID of the player (used to write the tech-attempt buffer).
 	 * @param player - Player state entering this tick.
 	 * @param input - Input received this tick, or `null`.
@@ -906,8 +1038,25 @@ export class GameEngine {
 			...player,
 			techWindowFrames: Math.max(0, player.techWindowFrames - 1),
 			techLockoutFrames: Math.max(0, player.techLockoutFrames - 1),
-			lCancelWindowFrames: Math.max(0, player.lCancelWindowFrames - 1),
 		};
+
+
+        nextPlayer.tumbleShieldPressedTick = player.state === PlayerStateEnum.HITSTUN && player.isTumbling &&
+          player.lastHitKnockbackAngle != null && player.footstoolRole !== 'air'
+          ? isPressed(input, INPUT_BITS.SHIELD) ? this.tick : player.tumbleShieldPressedTick
+          : undefined;
+        const techPressed=isPressed(input,INPUT_BITS.SHIELD|INPUT_BITS.GRAB);
+        const canBuffer=this.tick-(player.techLastInputTick??-Infinity)>=PHYSICS.LAUNCH_TECH_REPEAT_TICKS;
+        if(techPressed){
+          nextPlayer.techLastInputTick=this.tick;
+          if(canBuffer)nextPlayer.techAcceptedInputTick=this.tick;
+        }
+
+        if(player.isTumbling&&player.lastHitKnockbackAngle!=null){
+          const buffer=PHYSICS.LAUNCH_TECH_BUFFER_TICKS+1-(this.tick-(nextPlayer.techAcceptedInputTick??-Infinity));
+          const dodge=PHYSICS.LAUNCH_TECH_AIR_DODGE_TICKS+1-(this.tick-(player.techAirDodgeTick??-Infinity));
+          return {...nextPlayer,techWindowFrames:Math.max(0,buffer,dodge)};
+        }
 
 		const shouldStartTechWindow =
 			isPressed(input, INPUT_BITS.SHIELD) &&
@@ -915,26 +1064,7 @@ export class GameEngine {
 			nextPlayer.isTumbling &&
 			nextPlayer.techLockoutFrames === 0;
 
-		if (!shouldStartTechWindow) {
-			// ─── L-CANCEL WINDOW ─────────────────────────────────────────────────────────
-			// L-cancel algorithm: pressing SHIELD within PHYSICS.L_CANCEL_WINDOW_FRAMES frames
-			// before landing while in AIR_ATTACK opens a window stored on the player. When
-			// the landing frame fires (landedThisTick && AIR_ATTACK), the raw landingLag from
-			// the move data is halved (floor division). The window only applies to non-special
-			// aerial moves — specials that land always take full lag regardless of L-cancel.
-			const shouldStartLCancelWindow =
-				isPressed(input, INPUT_BITS.SHIELD) &&
-				nextPlayer.state === PlayerStateEnum.AIR_ATTACK;
-
-			if (shouldStartLCancelWindow) {
-				nextPlayer = {
-					...nextPlayer,
-					lCancelWindowFrames: PHYSICS.L_CANCEL_WINDOW_FRAMES,
-				};
-			}
-
-			return nextPlayer;
-		}
+		if (!shouldStartTechWindow) return nextPlayer;
 
 		this.techAttemptBuffered.set(playerId, true);
 		nextPlayer = {
@@ -967,10 +1097,29 @@ export class GameEngine {
 		input: InputEvent | null,
 	): PlayerState {
 		let nextPlayer = player;
-        if(player.state!==PlayerStateEnum.HITSTUN||player.hitstunFramesRemaining<=0)nextPlayer=clearLaunch(nextPlayer);
-        const startJumpAttack=previous.state===PlayerStateEnum.JUMPSQUAT&&player.state===PlayerStateEnum.AIRBORNE&&previous.queuedJumpAttack===true;
-        if(player.state===PlayerStateEnum.JUMPSQUAT&&previous.state!==PlayerStateEnum.JUMPSQUAT)nextPlayer={...nextPlayer,queuedShortHop:input?.jumpButtons===3,queuedJumpMoveId:this.selectMoveId({...player,state:PlayerStateEnum.AIR_ATTACK,isGrounded:false},input),queuedJumpAttack:isPressed(input,INPUT_BITS.JUMP)&&isPressed(input,INPUT_BITS.ATTACK)};
-        else if(player.state!==PlayerStateEnum.JUMPSQUAT)nextPlayer={...nextPlayer,queuedJumpAttack:false};
+        if(player.state===PlayerStateEnum.AIR_DODGE&&previous.state!==PlayerStateEnum.AIR_DODGE)nextPlayer={...nextPlayer,techAirDodgeTick:this.tick};
+        if(player.state!==PlayerStateEnum.HITSTUN||(player.hitstunFramesRemaining<=0&&!player.launchTiming))nextPlayer=clearLaunch(nextPlayer);
+        const startingSquat=player.state===PlayerStateEnum.JUMPSQUAT&&previous.state!==PlayerStateEnum.JUMPSQUAT;
+        const takingOff=previous.state===PlayerStateEnum.JUMPSQUAT&&player.state===PlayerStateEnum.AIRBORNE;
+        const stickJump=startingSquat
+          ? input?.jumpButtons===0&&(input.stickY??0)<=-.7&&isPressed(input,INPUT_BITS.JUMP)
+          : previous.stickJumpSquat===true;
+        const rightStickAttack=Math.hypot(input?.cStickX??0,input?.cStickY??0)>=.55;
+        const jumpAttackInput=(player.state===PlayerStateEnum.JUMPSQUAT||takingOff)&&
+          isPressed(input,INPUT_BITS.ATTACK)&&!isPressed(input,INPUT_BITS.SPECIAL|INPUT_BITS.GRAB)&&
+          (!stickJump||rightStickAttack||takingOff);
+        const queuedJumpMove=jumpAttackInput
+          ? this.selectMoveId({...player,state:PlayerStateEnum.AIR_ATTACK,isGrounded:false},input)
+          : startingSquat?undefined:previous.queuedJumpMoveId;
+        const startJumpAttack=takingOff&&queuedJumpMove!==undefined;
+        if(player.state===PlayerStateEnum.JUMPSQUAT){
+          nextPlayer={...nextPlayer,stickJumpSquat:stickJump,
+            queuedShortHop:input?.jumpButtons===3||(!startingSquat&&previous.queuedShortHop===true),
+            queuedJumpMoveId:queuedJumpMove,
+          };
+        }else if(previous.state===PlayerStateEnum.JUMPSQUAT){
+          nextPlayer={...nextPlayer,queuedShortHop:undefined,queuedJumpMoveId:undefined,stickJumpSquat:undefined};
+        }
         if(previous.state===PlayerStateEnum.JAB_LOCK&&player.state===PlayerStateEnum.HARD_LANDING)nextPlayer={...nextPlayer,stateFrame:18};
         if(player.state===PlayerStateEnum.TAUNT&&previous.state!==PlayerStateEnum.TAUNT)nextPlayer={...nextPlayer,tauntKind:isPressed(input,INPUT_BITS.TAUNT_UP)?'up':isPressed(input,INPUT_BITS.TAUNT_SIDE)?'side':'down'};
         if(previous.currentMoveId===MoveId.UP_SPECIAL&&player.currentMoveId===MoveId.UP_SPECIAL){
@@ -983,15 +1132,21 @@ export class GameEngine {
 			previous.state === PlayerStateEnum.JUMPSQUAT &&
 			player.state === PlayerStateEnum.AIRBORNE
 		) {
-			const shortHop=startJumpAttack||previous.queuedShortHop===true||!isHeld(input,INPUT_BITS.JUMP);
+			const shortHopAttack=startJumpAttack&&(!stickJump||(jumpAttackInput?rightStickAttack:previous.queuedJumpMoveId!==undefined));
+            const shortHop=shortHopAttack||previous.queuedShortHop===true||input?.jumpButtons===3||!isHeld(input,INPUT_BITS.JUMP);
             nextPlayer = {...startJump(nextPlayer,shortHop),shortHop};
 		}
 
+		const simultaneousDoubleJumpAerial =
+			previous.state === PlayerStateEnum.AIRBORNE && !previous.isGrounded && previous.hasDoubleJump &&
+			player.state === PlayerStateEnum.AIR_ATTACK &&
+			isPressed(input, INPUT_BITS.JUMP) && isPressed(input, INPUT_BITS.ATTACK) &&
+			!isPressed(input, INPUT_BITS.SPECIAL | INPUT_BITS.GRAB | INPUT_BITS.SHIELD);
 		if (
-			player.state === PlayerStateEnum.DOUBLE_JUMP &&
-			previous.state !== PlayerStateEnum.DOUBLE_JUMP
+			simultaneousDoubleJumpAerial ||
+			(player.state === PlayerStateEnum.DOUBLE_JUMP && previous.state !== PlayerStateEnum.DOUBLE_JUMP)
 		) {
-			nextPlayer = {...startJump(nextPlayer, false),shortHop:false};
+			nextPlayer = { ...startJump(nextPlayer, false), shortHop: false };
 		}
 
 		if (
@@ -1022,7 +1177,12 @@ export class GameEngine {
 			if (previous.ledgeId) {
 				this.releaseLedge(player.id, previous.ledgeId);
 			}
-			nextPlayer = { ...nextPlayer, ledgeId: null };
+			const hadLedgeProtection = this.consecutiveLedgeGrabs.get(player.id) === 1;
+			nextPlayer = {
+				...nextPlayer,
+				ledgeId: null,
+				...(hadLedgeProtection ? { isInvincible: false, invincibilityFrames: 0 } : {}),
+			};
 		}
 
 		if (
@@ -1067,17 +1227,29 @@ export class GameEngine {
 			previous.state !== player.state
 		) {
 		
-        const dashAttack=[PlayerStateEnum.DASH,PlayerStateEnum.RUN].includes(previous.state as PlayerStateEnum)&&player.state===PlayerStateEnum.ATTACK&&isPressed(input,INPUT_BITS.ATTACK)&&!isPressed(input,INPUT_BITS.SPECIAL)&&!isPressed(input,INPUT_BITS.GRAB)&&!isHeld(input,INPUT_BITS.SHIELD)&&Math.hypot(input?.cStickX??0,input?.cStickY??0)<.55;
+        const earlyBrake=previous.state===PlayerStateEnum.RUN_BRAKE&&runTransitionAge(previous)<RUN_BRAKE_EARLY_AGE;
+        const running=[PlayerStateEnum.DASH,PlayerStateEnum.RUN].includes(previous.state as PlayerStateEnum);
+        const attackOnly=player.state===PlayerStateEnum.ATTACK&&isPressed(input,INPUT_BITS.ATTACK)&&
+          !isPressed(input,INPUT_BITS.SPECIAL)&&!isPressed(input,INPUT_BITS.GRAB)&&!isHeld(input,INPUT_BITS.SHIELD);
+        const dashAttack=attackOnly&&(
+          earlyBrake?this.selectMoveId(player,input)!==MoveId.UP_SMASH:
+          running&&!input?.smashAttack&&Math.hypot(input?.cStickX??0,input?.cStickY??0)<.55
+        );
   const floorAttack=[PlayerStateEnum.HARD_LANDING,PlayerStateEnum.TRIP_PRONE].includes(previous.state as PlayerStateEnum)&&player.state===PlayerStateEnum.ATTACK;
-  const runningGrab=[PlayerStateEnum.DASH,PlayerStateEnum.RUN].includes(previous.state as PlayerStateEnum)&&isPressed(input,INPUT_BITS.GRAB);
-  const pivot=runningGrab&&((previous.facing===1&&isHeld(input,INPUT_BITS.LEFT))||(previous.facing===-1&&isHeld(input,INPUT_BITS.RIGHT)));
+  const grab=isPressed(input,INPUT_BITS.GRAB);
+  const left=isHeld(input,INPUT_BITS.LEFT),right=isHeld(input,INPUT_BITS.RIGHT);
+  const away=left!==right&&(previous.facing===1?left:right);
+  const earlyTransition=runTransitionAge(previous)<RUN_TRANSITION_ACTION_AGE;
+  const pivotFromTurn=grab&&previous.state===PlayerStateEnum.RUN_TURN&&earlyTransition;
+  const pivot=grab&&(pivotFromTurn||(running||previous.state===PlayerStateEnum.RUN_BRAKE&&earlyTransition)&&away);
+  const runningGrab=grab&&(running||earlyBrake||pivot);
   const moveId = runningGrab?(pivot?MoveId.GRAB_PIVOT:MoveId.GRAB_DASH):floorAttack?(previous.state===PlayerStateEnum.TRIP_PRONE?MoveId.FLOOR_ATTACK_TRIP:player.floorOrientation==='down'?MoveId.FLOOR_ATTACK_DOWN:MoveId.FLOOR_ATTACK_UP):dashAttack?MoveId.DASH_ATTACK:this.selectMoveId(player, input);
 		const moveData = getMoveDataForCharacter(player.characterId, moveId);
 		nextPlayer = {
 			...nextPlayer,
 			currentMoveId: moveId,
             shieldGrabStartup:previous.state===PlayerStateEnum.SHIELD&&previous.shieldWasHit&&moveId===MoveId.GRAB?4:0,
-            facing:pivot?(previous.facing===1?-1:1):player.isGrounded&&Math.abs(input?.cStickX??0)>Math.abs(input?.cStickY??0)&&Math.hypot(input?.cStickX??0,input?.cStickY??0)>=.55?((input?.cStickX??0)<0?-1:1):nextPlayer.facing,
+            facing:pivotFromTurn?previous.facing:pivot?(previous.facing===1?-1:1):player.isGrounded&&Math.abs(input?.cStickX??0)>Math.abs(input?.cStickY??0)&&Math.hypot(input?.cStickX??0,input?.cStickY??0)>=.55?((input?.cStickX??0)<0?-1:1):nextPlayer.facing,
             isInvincible:floorAttack?true:nextPlayer.isInvincible,
             invincibilityFrames:floorAttack?6:nextPlayer.invincibilityFrames,
 			currentMove: {
@@ -1145,15 +1317,17 @@ export class GameEngine {
 
 		if (
 			previous.state === PlayerStateEnum.HITSTUN &&
-			player.state === PlayerStateEnum.AIRBORNE
+			player.state !== PlayerStateEnum.HITSTUN
 		) {
 			nextPlayer = {
 				...nextPlayer,
 				isTumbling: false,
+				actionBuffer: undefined,
+				hitstunFramesRemaining: hasLaunch(previous) ? 0 : nextPlayer.hitstunFramesRemaining,
 			};
 		}
 
-        if(startJumpAttack){const move=previous.queuedJumpMoveId??MoveId.NEUTRAL_AIR;const d=getMoveDataForCharacter(nextPlayer.characterId,move);nextPlayer={...nextPlayer,state:PlayerStateEnum.AIR_ATTACK,stateFrame:0,currentMoveId:move,currentMove:{landingLag:d.landingLag,isSpecial:d.isSpecial},activeHitbox:null,hitPlayerIds:new Set<string>(),hitContactFrames:undefined,moveStaleMultiplier:undefined,queuedJumpAttack:false};}
+        if(startJumpAttack){const move=queuedJumpMove;const d=getMoveDataForCharacter(nextPlayer.characterId,move);nextPlayer={...nextPlayer,state:PlayerStateEnum.AIR_ATTACK,stateFrame:0,currentMoveId:move,currentMove:{landingLag:d.landingLag,isSpecial:d.isSpecial},activeHitbox:null,hitPlayerIds:new Set<string>(),hitContactFrames:undefined,moveStaleMultiplier:undefined};}
 		const finalJabPress=nextPlayer.state===PlayerStateEnum.IDLE&&previous.state===PlayerStateEnum.ATTACK&&[MoveId.JAB,MoveId.JAB_2].includes(previous.currentMoveId as MoveId)&&isPressed(input,INPUT_BITS.ATTACK)&&nextPlayer.isGrounded;
   if(finalJabPress)nextPlayer={...nextPlayer,state:PlayerStateEnum.ATTACK,currentMoveId:previous.currentMoveId,stateFrame:previous.stateFrame+1};
   return advanceJabChain(nextPlayer,previous.state===player.state||finalJabPress?input:null,previous.hitlagFramesRemaining>0);
@@ -1221,6 +1395,8 @@ export class GameEngine {
 			return nextPlayer;
 		}
 
+		const trackedTumble=hasLaunch(player)&&player.isTumbling;
+		let surfaceResolved=false;
 		const dodge=player.state===PlayerStateEnum.AIR_DODGE?player.airDodgeDirection:null;
         if(dodge&&(dodge.x!==0||dodge.y!==0)){
           const travelling=player.stateFrame>=PHYSICS.AIR_DODGE_TRAVEL_START&&player.stateFrame<PHYSICS.AIR_DODGE_TRAVEL_END,norm=Math.hypot(dodge.x,dodge.y);
@@ -1231,8 +1407,23 @@ export class GameEngine {
 				...nextPlayer,
 				vx: nextPlayer.vx * PHYSICS.GROUND_FRICTION,
 			};
+		} else if (hasLaunch(nextPlayer)&&(player.hitstunFramesRemaining>0||player.launchTiming)) {
+			nextPlayer = advanceTrackedLaunch(nextPlayer,this.stage,trackedTumble?(before,after)=>{
+				const contact=findLaunchSurface(before,after,this.stage);
+				const rebound=contact&&bounceFromLaunchSurface(before,after,contact);
+				if(!rebound)return undefined;
+				surfaceResolved=true;
+				if(rebound.launchImpact?.techable&&rebound.techWindowFrames>0){
+					return this.completeLaunchTech(playerId,rebound,effectiveInput);
+				}
+				if(contact.surface==='floor'||!rebound.launchImpact?.techable){
+					this.techAttemptBuffered.set(playerId,false);
+					return {...rebound,techWindowFrames:0,techAcceptedInputTick:undefined,techAirDodgeTick:undefined};
+				}
+				return rebound;
+			}:undefined);
 		} else if (player.hitstunFramesRemaining > 0) {
-			const withGravity = hasLaunch(nextPlayer) ? applyLaunchGravity(nextPlayer) : applyGravity(nextPlayer);
+			const withGravity = applyGravity(nextPlayer);
 			nextPlayer = checkPlatformCollision(
 				{
 					...withGravity,
@@ -1241,7 +1432,6 @@ export class GameEngine {
 				},
 				this.stage,
 			);
-			nextPlayer = decayLaunch(nextPlayer);
 		} else if (
 			player.state !== PlayerStateEnum.SHIELD &&
 			player.state !== PlayerStateEnum.ROLL &&
@@ -1275,14 +1465,25 @@ export class GameEngine {
 			}
 		}
 
-		nextPlayer=resolveCeilingTech(player,nextPlayer,this.stage);
+		if(!trackedTumble)nextPlayer=resolveCeilingTech(player,nextPlayer,this.stage);
         if(nextPlayer.artCue==='ceiling_tech'&&nextPlayer.artCueFrame===0)this.techAttemptBuffered.set(playerId,false);
         const landedThisTick = !player.isGrounded && nextPlayer.isGrounded;
-		if (landedThisTick && player.isTumbling) {
+		if (landedThisTick && player.isTumbling && !surfaceResolved) {
+			if (player.launchTechRestriction) {
+				this.techAttemptBuffered.set(playerId, false);
+				nextPlayer = {...nextPlayer, launchTechRestriction:undefined, techWindowFrames:0,
+					techAcceptedInputTick:undefined, techAirDodgeTick:undefined};
+			}
 			nextPlayer = this.resolveTumbleLanding(playerId, nextPlayer, effectiveInput);
+		} else if (landedThisTick && !player.isTumbling && player.lastHitKnockbackAngle != null &&
+			player.state === PlayerStateEnum.HITSTUN && nextPlayer.state === PlayerStateEnum.HITSTUN) {
+			// Contact counts toward the landing minimum. Standing hitstun also gains one locked tick.
+			nextPlayer = {...nextPlayer, hitstunFramesRemaining:Math.max(
+				nextPlayer.hitstunFramesRemaining + 1, PHYSICS.STANDING_HITSTUN_LANDING_FRAMES - 1,
+			)};
 		}
 
-		const shouldCheckWallTech = player.isTumbling || player.hitstunFramesRemaining > 0;
+		const shouldCheckWallTech = !trackedTumble && (player.isTumbling || player.hitstunFramesRemaining > 0);
 		if (shouldCheckWallTech) {
 			// ─── ADVANCED TECH: WALL-TECH DETECTION ─────────────────────────────────────
 			// Wall-tech algorithm: a player in tumble or hitstun who makes contact with a
@@ -1350,7 +1551,13 @@ export class GameEngine {
 
 		if (landedThisTick && player.state === PlayerStateEnum.AIR_ATTACK) {
 			const rawLag = player.currentMove?.landingLag ?? 0;
-			const landingLagFrames = (!player.currentMove?.isSpecial && player.lCancelWindowFrames > 0) ? Math.floor(rawLag / 2) : rawLag;
+			const move=player.currentMoveId?getMoveDataForCharacter(player.characterId,player.currentMoveId):undefined;
+            const window=move?.autoCancel;
+            const autoCancel=window!==undefined&&(player.stateFrame<window.earlyEnd||player.stateFrame>=window.lateStart);
+            // Contact is the first tick of normal-aerial landing recovery.
+            const landingLagFrames=move?.isAerial&&!move.isSpecial
+              ? Math.max(0,(autoCancel?PHYSICS.AUTO_CANCEL_LANDING_FRAMES:rawLag)-1)
+              : rawLag;
 			nextPlayer = {
 				...nextPlayer,
 				state:
@@ -1363,9 +1570,9 @@ export class GameEngine {
 			};
 		}
 
-        // Air-dodge landings have recovery; no synthetic diagonal speed boost.
+        // Floor contact is the first locked tick of air-dodge landing recovery.
         if(landedThisTick&&player.state===PlayerStateEnum.AIR_DODGE&&!player.isTumbling){
-          nextPlayer={...nextPlayer,state:PlayerStateEnum.LANDING_LAG,stateFrame:0,landingLagFrames:airDodgeLandingLag(player),airDodgeDirection:null,dodgeRefreshPending:false,sdiInputCooldown:0};
+          nextPlayer={...nextPlayer,state:PlayerStateEnum.LANDING_LAG,stateFrame:0,landingLagFrames:airDodgeLandingLag(player)-1,airDodgeDirection:null,dodgeRefreshPending:false,sdiInputCooldown:0};
           finishDodge(nextPlayer);
         }
 
@@ -1511,11 +1718,34 @@ export class GameEngine {
 	 * @param input - Non-null input used to detect roll direction.
 	 * @returns Updated `PlayerState` in the appropriate post-landing state.
 	 */
+	private completeLaunchTech(playerId:PlayerId,player:PlayerState,input:InputEvent):PlayerState {
+		const impact=player.launchImpact!;
+		const recovered={
+			...clearLaunch(player),hitstunFramesRemaining:0,actionBuffer:undefined,techAcceptedInputTick:undefined,techAirDodgeTick:undefined,
+			launchImpact:{...impact,freeze:impact.freeze-impact.remaining,remaining:0,after:0,teched:true},
+		};
+		if(impact.surface==='floor'){
+			return this.resolveTumbleLanding(playerId,{...recovered,isGrounded:true},input);
+		}
+		this.techAttemptBuffered.set(playerId,false);
+		const wallJump=Boolean(impact.wall&&isHeld(input,INPUT_BITS.JUMP|INPUT_BITS.UP));
+		return {
+			...recovered,state:PlayerStateEnum.AIRBORNE,stateFrame:0,
+			wallTechRecovery:impact.wall?{side:impact.wall,remaining:PHYSICS.WALL_TECH_JUMP_WINDOW_TICKS,jump:wallJump}:undefined,
+			isTumbling:false,isInvincible:true,
+			invincibilityFrames:impact.surface==='ceiling'?PHYSICS.CEILING_TECH_INTANGIBILITY_FRAMES:PHYSICS.WALL_TECH_INTANGIBILITY_FRAMES,
+			ceilingTechRecoveryFrames:impact.surface==='ceiling'?PHYSICS.CEILING_TECH_FRAMES-1:undefined,
+			techWindowFrames:0,vx:0,vy:0,
+			artCue:impact.surface==='ceiling'?'ceiling_tech':wallJump?'wall_tech_jump':'wall_tech',artCueFrame:0,
+		};
+	}
+
 	private resolveTumbleLanding(
 		playerId: PlayerId,
 		player: PlayerState,
 		input: InputEvent,
 	): PlayerState {
+		player = {...player,actionBuffer:undefined};
 		if (player.techWindowFrames > 0) {
 			this.techAttemptBuffered.set(playerId, false);
 			const rollLeft = isHeld(input, INPUT_BITS.LEFT);
@@ -1533,6 +1763,8 @@ export class GameEngine {
 				invincibilityFrames,
 				isTumbling: false,
 				techWindowFrames: 0,
+				techAcceptedInputTick:undefined,
+				techAirDodgeTick:undefined,
 				landingLagFrames: 0,
 				isFastFalling: false,
 				vx: 0,
@@ -1584,7 +1816,19 @@ export class GameEngine {
 			return player;
 		}
 
-    if(input?.stickX!==undefined&&player.isGrounded&&[PlayerStateEnum.IDLE,PlayerStateEnum.WALK,PlayerStateEnum.DASH,PlayerStateEnum.RUN].includes(player.state as PlayerStateEnum)){const x=horizontalMovementInput(input);return x===0?player:{...player,facing:x<0?-1:1};}
+    // Grounded side attacks keep the direction chosen at startup. On the first
+    // tick, a right-stick side attack has already chosen facing in the transition.
+    const sideAttack = player.isGrounded && player.state === PlayerStateEnum.ATTACK &&
+      (player.currentMoveId === MoveId.FORWARD_TILT || player.currentMoveId === MoveId.FORWARD_SMASH);
+    if (sideAttack && (player.stateFrame > 0 ||
+        (isPressed(input, INPUT_BITS.ATTACK) && Math.hypot(input?.cStickX ?? 0,input?.cStickY ?? 0) >= .55 &&
+          Math.abs(input?.cStickX ?? 0) > Math.abs(input?.cStickY ?? 0)))) return player;
+
+    if (input?.stickX !== undefined && player.isGrounded &&
+        [PlayerStateEnum.IDLE, PlayerStateEnum.WALK, PlayerStateEnum.DASH, PlayerStateEnum.RUN, PlayerStateEnum.RUN_TURN].includes(player.state as PlayerStateEnum)) {
+      const x = horizontalMovementInput(input);
+      return x === 0 ? player : { ...player, facing: x < 0 ? -1 : 1 };
+    }
 		if (isHeld(input, INPUT_BITS.LEFT) && !isHeld(input, INPUT_BITS.RIGHT)) {
 			return { ...player, facing: -1 };
 		}
@@ -1618,33 +1862,19 @@ export class GameEngine {
 	}
 
 	/**
-	 * Applies Directional Influence (DI) on the exact tick hitlag ends.
-	 *
-	 * During hitlag both players are frozen and the defender holds a direction to
-	 * influence their knockback trajectory. The pending knockback vector (stored at
-	 * hit time) is rotated by `applyDI` using the held input direction, then
-	 * re-converted to velocity components and applied. The pending fields are cleared
-	 * so DI only fires once per hit.
-	 *
-	 * A no-op if hitlag did not end this frame, or if no pending knockback is stored.
-	 *
-	 * @param playerBeforeTick - Player state before the FSM tick (reads hitlag counter
-	 *   and pending knockback fields).
-	 * @param playerAfterTick - Player state after the FSM tick (target for mutation).
-	 * @param input - Input held this tick used to determine DI direction.
-	 * @returns Updated `playerAfterTick` with DI-adjusted velocity, or the original
-	 *   object unchanged when no DI applies.
+	 * Samples DI and LSI once before the pending launch's first movement.
+	 * Hits with freeze launch on thaw. Zero-hitlag tumbles launch on the next
+	 * simulation tick after contact and already advanced their FSM timer.
 	 */
-	private applyDirectionalInfluenceOnHitlagEnd(
+	private applyLaunchInfluence(
 		playerBeforeTick: PlayerState,
 		playerAfterTick: PlayerState,
 		input: InputEvent | null,
 	): PlayerState {
-		const hitlagEndedThisFrame =
-			playerBeforeTick.hitlagFramesRemaining === 1 &&
-			playerAfterTick.hitlagFramesRemaining === 0;
-
-		if (!hitlagEndedThisFrame) {
+		const thawing = playerBeforeTick.hitlagFramesRemaining === 1;
+		const immediateTumble = playerBeforeTick.hitlagFramesRemaining === 0 && playerBeforeTick.isTumbling;
+		if (playerAfterTick.hitlagFramesRemaining !== 0 || playerAfterTick.state !== PlayerStateEnum.HITSTUN ||
+			(!thawing && !immediateTumble)) {
 			return playerAfterTick;
 		}
 
@@ -1684,6 +1914,9 @@ export class GameEngine {
 			return {
 				...playerAfterTick,
 				...initializeLaunch(playerAfterTick, adjustedVelocity.x, adjustedVelocity.y),
+				launchThawStep: thawing ? true : undefined,
+				// The first accelerated movement step runs on the thaw tick.
+				hitstunFramesRemaining: playerAfterTick.hitstunFramesRemaining - (thawing && playerAfterTick.launchTiming ? 1 : 0),
 				lastHitKnockbackAngle: ((adjustedAngle % (Math.PI * 2)) + Math.PI * 2) % (Math.PI * 2),
 				pendingKnockbackVx: null,
 				pendingKnockbackVy: null,
@@ -1695,7 +1928,7 @@ export class GameEngine {
 	 *
 	 * Opposing directions cancel out (both held = 0). UP maps to `inputY = 1` (away
 	 * from gravity), DOWN maps to `inputY = -1`. The result is consumed by
-	 * `applyDI` inside `applyDirectionalInfluenceOnHitlagEnd`.
+	 * `applyDI` inside `applyLaunchInfluence`.
 	 *
 	 * @param input - Input received this tick, or `null`.
 	 * @returns Object with `inputX` and `inputY`, each one of `-1 | 0 | 1`.
@@ -1813,7 +2046,7 @@ export class GameEngine {
 	 *
 	 * The hang offset is mirrored left/right so the fighter always faces inward.
 	 * Resets velocity, restores double jump and air dodge, clears fast-fall, and
-	 * grants invincibility for `LEDGE_HANG_INVINCIBILITY_FRAMES`.
+	 * grants first-grab invincibility during the forced catch.
 	 *
 	 * @param player - Player state before the ledge snap.
 	 * @param ledgeId - Stage ledge ID (`"left"` or `"right"`).
@@ -1827,6 +2060,10 @@ export class GameEngine {
 
 		const hangX = ledgeId === "left" ? ledgeConfig.x + 15 : ledgeConfig.x - 15;
 		const hangY = ledgeConfig.y + 10;
+		const grabCount = (this.consecutiveLedgeGrabs.get(player.id) ?? 0) + 1;
+		this.consecutiveLedgeGrabs.set(player.id, grabCount);
+		const catchTicks = 19 + Math.max(0, grabCount - 2);
+		this.ledgeCatches.set(player.id, { unlockTick: this.tick + catchTicks });
 		return {
 			...player,
 			state: PlayerStateEnum.LEDGE_HANG,
@@ -1836,16 +2073,131 @@ export class GameEngine {
 			ledgeId,
 			x: hangX,
 			y: hangY,
+			facing: ledgeId === "left" ? 1 : -1,
 			vx: 0,
 			vy: 0,
 			isGrounded: false,
 			isFastFalling: false,
-			isInvincible: true,
-			invincibilityFrames: PHYSICS.LEDGE_HANG_INVINCIBILITY_FRAMES,
+			...(grabCount === 1 ? {
+				isInvincible: true,
+				invincibilityFrames: catchTicks,
+			} : {}),
 			hasDoubleJump: true,
 			hasAirDodge: true,
 			wallJumpStreak: 0,
 		};
+	}
+
+	private ledgeOptionInput(input: InputEvent | null | undefined): InputEvent | undefined {
+		if (!input) return undefined;
+		const edges = INPUT_BITS.JUMP | INPUT_BITS.ATTACK | INPUT_BITS.SHIELD | INPUT_BITS.DOWN;
+		const directions = INPUT_BITS.UP | INPUT_BITS.LEFT | INPUT_BITS.RIGHT;
+		if (!(input.pressed & edges) && !(input.held & directions)) return undefined;
+		return { ...input, pressed: input.pressed & edges, held: input.held & directions, released: 0 };
+	}
+
+	private advanceLedgeApproach(
+		player: PlayerState,
+		pending: { ledgeId: string; startX: number; startY: number; ticks: number },
+		frame: number,
+	): PlayerState {
+		const ledge = this.stage.ledges.find(entry => entry.id === pending.ledgeId)!;
+		const x = ledge.x + (ledge.id === "left" ? 15 : -15);
+		const y = ledge.y + 10;
+		const progress = (frame + 1) / (pending.ticks + 1);
+		return this.updateInvincibility(recoverDodge({
+			...player, state: PlayerStateEnum.LEDGE_APPROACH, stateFrame: frame,
+			x: pending.startX + (x - pending.startX) * progress,
+			y: pending.startY + (y - pending.startY) * progress,
+			activeHitbox: null, facing: ledge.id === "left" ? 1 : -1,
+		}));
+	}
+
+	private canClaimLedge(playerId: string, ledgeId: string): boolean {
+		const ledge = this.ledgeState.get(ledgeId);
+		return !!ledge && ledge.occupantId !== playerId && !(ledge.cooldowns.get(playerId) ?? 0) &&
+			(this.consecutiveLedgeGrabs.get(playerId) ?? 0) < PHYSICS.LEDGE_CONSECUTIVE_GRAB_LIMIT;
+	}
+
+	private claimLedge(
+		player: PlayerState,
+		ledgeId: string,
+		input: InputEvent | undefined,
+		players: Record<PlayerId, PlayerState>,
+	): PlayerState | undefined {
+		const occupantId = this.getLedgeOccupant(ledgeId);
+		const occupant = occupantId ? players[occupantId] : undefined;
+		if (occupant && (this.ledgeCatches.get(occupant.id)?.input ||
+			(isLedgeLockedState(occupant.state) && occupant.state !== PlayerStateEnum.LEDGE_HANG))) return undefined;
+
+		const result = this.tryGrabLedge(player.id, ledgeId);
+		if (result === "denied") return undefined;
+		if (result === "trumped" && occupant) {
+			const popTick = Math.max(this.tick, this.ledgeCatches.get(occupant.id)?.unlockTick ?? this.tick);
+			this.ledgeTrumps.set(occupant.id, { ledgeId, popTick });
+			if (popTick === this.tick) players[occupant.id] = this.popLedgeTrump(occupant, ledgeId);
+		}
+		const caught = this.snapPlayerToLedge(recoverDodge(player), ledgeId);
+		const catchPhase = this.ledgeCatches.get(player.id);
+		if (catchPhase) catchPhase.input = input;
+		return caught;
+	}
+
+	private popLedgeTrump(player: PlayerState, ledgeId: string): PlayerState {
+		this.ledgeCatches.delete(player.id);
+		this.releaseLedge(player.id, ledgeId);
+		return {
+			...player, state: PlayerStateEnum.LEDGE_TRUMP, stateFrame: 0,
+			ledgeId: null, vx: ledgeId === "left" ? PHYSICS.LEDGE_TRUMP_POP_VX : -PHYSICS.LEDGE_TRUMP_POP_VX,
+			vy: PHYSICS.LEDGE_TRUMP_POP_VY, isGrounded: false, isFastFalling: false,
+			isInvincible: false, invincibilityFrames: 0, actionBuffer: undefined,
+			activeHitbox: null, currentMoveId: null, currentMove: undefined, jabQueued: false,
+			landingLagFrames: 0, hitPlayerIds: new Set<string>(), hitContactFrames: undefined,
+			moveStaleMultiplier: undefined, chargeFrames: 0,
+		};
+	}
+
+	private advanceLedgeTrump(player: PlayerState, input: InputEvent | null, age: number): PlayerState {
+		const drift: InputEvent = {
+			...EMPTY_INPUT, playerId: player.id, tick: this.tick,
+			held: (input?.held ?? 0) & (INPUT_BITS.LEFT | INPUT_BITS.RIGHT),
+			...(input?.stickX !== undefined ? { stickX: input.stickX, stickY: 0 } : {}),
+		};
+		return checkPlatformCollision(
+			applyMovement(applyGravity({ ...player, stateFrame: age }), drift), this.stage,
+		);
+	}
+
+	/** Getup frame zero is the first protected tick. Hang protection ends on getup. */
+	private startLedgeGetupProtection(player: PlayerState): PlayerState {
+		let freshFrames: number;
+		switch (player.state) {
+			case PlayerStateEnum.LEDGE_CLIMB:
+				freshFrames = 33;
+				break;
+			case PlayerStateEnum.LEDGE_JUMP:
+				freshFrames = 12;
+				break;
+			case PlayerStateEnum.LEDGE_ROLL:
+				freshFrames = 25;
+				break;
+			case PlayerStateEnum.LEDGE_ATTACK: {
+				const move = getMoveDataForCharacter(player.characterId, MoveId.LEDGE_ATTACK);
+				freshFrames = move.startupFrames + move.activeFrames;
+				break;
+			}
+			default:
+				return player;
+		}
+
+		const grabs = this.consecutiveLedgeGrabs.get(player.id) ?? 1;
+		const protection = grabs === 1 ? freshFrames
+			: grabs === 2 ? Math.ceil(freshFrames * 0.8)
+			: grabs === 3 ? Math.floor(freshFrames * 0.5)
+			: 0;
+		// A regrab has no hang protection to replace, so keep any separate protection.
+		const frames = grabs === 1 ? protection : Math.max(protection, player.invincibilityFrames);
+		return { ...player, isInvincible: frames > 0, invincibilityFrames: frames };
 	}
 
 	/**
@@ -1864,7 +2216,7 @@ export class GameEngine {
 	 * - **`"granted"`**: ledge was vacant (or occupied by `playerId` — already theirs);
 	 *   `playerId` is now the occupant.
 	 * - **`"trumped"`**: ledge had a different occupant who is evicted; `playerId` takes
-	 *   over and the previous occupant receives a `LEDGE_REGRAB_COOLDOWN_FRAMES` cooldown.
+	 *   over. The displaced fighter starts their cooldown when actually ejected.
 	 * - **`"denied"`**: `playerId` has an active regrab cooldown on this ledge.
 	 *
 	 * @param playerId - The player attempting to grab the ledge.
@@ -1878,8 +2230,7 @@ export class GameEngine {
 		const ledge = this.ledgeState.get(ledgeId);
 		if (!ledge) return "denied";
 
-		const cooldown = ledge.cooldowns.get(playerId) ?? 0;
-		if (cooldown > 0) return "denied";
+		if (!this.canClaimLedge(playerId, ledgeId)) return "denied";
 
 		if (!ledge.occupantId) {
 			ledge.occupantId = playerId;
@@ -1888,12 +2239,7 @@ export class GameEngine {
 
 		if (ledge.occupantId === playerId) return "denied";
 
-		const previousOccupantId = ledge.occupantId;
 		ledge.occupantId = playerId;
-		ledge.cooldowns.set(
-			previousOccupantId,
-			PHYSICS.LEDGE_REGRAB_COOLDOWN_FRAMES,
-		);
 		return "trumped";
 	}
 
@@ -1949,18 +2295,23 @@ export class GameEngine {
 	 * @returns The resolved `MoveId` for this input context.
 	 */
 	private selectMoveId(player: PlayerState, input: InputEvent | null): MoveId {
-        if(player.isGrounded&&isHeld(input,INPUT_BITS.SHIELD)&&isPressed(input,INPUT_BITS.ATTACK)&&!isPressed(input,INPUT_BITS.GRAB)&&((input?.smashAttack&&isHeld(input,INPUT_BITS.UP))||((input?.cStickY??0)<=-.55&&Math.abs(input?.cStickY??0)>Math.abs(input?.cStickX??0))))return MoveId.UP_SMASH;
+        const attackDirection = isPressed(input,INPUT_BITS.ATTACK) &&
+          !isPressed(input,INPUT_BITS.GRAB) && (!isPressed(input,INPUT_BITS.SPECIAL)||input?.smashAttack)
+          ? input?.attackAim?.held : undefined;
+        const aimingInput = attackDirection === undefined || !input ? input : {...input,held:attackDirection};
+        if(player.isGrounded&&isHeld(input,INPUT_BITS.SHIELD)&&isPressed(input,INPUT_BITS.ATTACK)&&!isPressed(input,INPUT_BITS.GRAB)&&((input?.smashAttack&&isHeld(aimingInput,INPUT_BITS.UP))||(!input?.cStickTilt&&(input?.cStickY??0)<=-.55&&Math.abs(input?.cStickY??0)>Math.abs(input?.cStickX??0))))return MoveId.UP_SMASH;
         const cx=input?.cStickX??0,cy=input?.cStickY??0,cAttack=isPressed(input,INPUT_BITS.ATTACK)&&Math.hypot(cx,cy)>=.55;
-        if(input?.smashAttack&&!isHeld(input,INPUT_BITS.SHIELD)&&player.isGrounded){const up=isHeld(input,INPUT_BITS.UP),down=isHeld(input,INPUT_BITS.DOWN);return up?MoveId.UP_SMASH:down?MoveId.DOWN_SMASH:MoveId.FORWARD_SMASH;}
+        if(input?.smashAttack&&!isHeld(input,INPUT_BITS.SHIELD)&&player.isGrounded){const up=isHeld(aimingInput,INPUT_BITS.UP),down=isHeld(aimingInput,INPUT_BITS.DOWN);return up?MoveId.UP_SMASH:down?MoveId.DOWN_SMASH:MoveId.FORWARD_SMASH;}
         if(cAttack&&!isPressed(input,INPUT_BITS.GRAB)&&!isPressed(input,INPUT_BITS.SPECIAL)&&!player.isGrabbing&&player.state!==PlayerStateEnum.GRAB_HOLDING){
           const vertical=Math.abs(cy)>Math.abs(cx);
           if(!player.isGrounded)return vertical?(cy<0?MoveId.UP_AIR:MoveId.DOWN_AIR):(cx*player.facing<0?MoveId.BACK_AIR:MoveId.FORWARD_AIR);
+          if(input?.cStickTilt)return vertical?(cy<0?MoveId.UP_TILT:MoveId.DOWN_TILT):MoveId.FORWARD_TILT;
           return vertical?(cy<0?MoveId.UP_SMASH:MoveId.DOWN_SMASH):MoveId.FORWARD_SMASH;
         }
-		const wantsUp = isHeld(input, INPUT_BITS.UP) || isPressed(input, INPUT_BITS.UP);
-		const wantsDown = isHeld(input, INPUT_BITS.DOWN);
-		const wantsLeft = isHeld(input, INPUT_BITS.LEFT);
-		const wantsRight = isHeld(input, INPUT_BITS.RIGHT);
+		const wantsUp = isHeld(aimingInput, INPUT_BITS.UP) || (attackDirection===undefined&&isPressed(input, INPUT_BITS.UP));
+		const wantsDown = isHeld(aimingInput, INPUT_BITS.DOWN);
+		const wantsLeft = isHeld(aimingInput, INPUT_BITS.LEFT);
+		const wantsRight = isHeld(aimingInput, INPUT_BITS.RIGHT);
 		const pressedUp = isPressed(input, INPUT_BITS.UP);
 		const pressedDown = isPressed(input, INPUT_BITS.DOWN);
 		const pressedLeft = isPressed(input, INPUT_BITS.LEFT);
@@ -2098,7 +2449,6 @@ export class GameEngine {
 					players,
 					playerA.id,
 					playerB.id,
-					playerBInput,
 				);
 				if (playerAThrowConnected) {
 					continue;
@@ -2138,7 +2488,6 @@ export class GameEngine {
 					players,
 					playerB.id,
 					playerA.id,
-					playerAInput,
 				);
 				if (playerBThrowConnected) {
 					continue;
@@ -2199,7 +2548,7 @@ export class GameEngine {
 						isActiveShield(updatedA) &&
 						updatedA.shieldHealth > 0;
 
-					players[playerA.id] = this.applyHit(updatedA, hitOnA, updatedB.facing,playerB.currentMoveId?getMoveDataForCharacter(playerB.characterId,playerB.currentMoveId):undefined);
+					players[playerA.id] = this.applyHit(updatedA, hitOnA, updatedB.facing,playerB.currentMoveId?getMoveDataForCharacter(playerB.characterId,playerB.currentMoveId):undefined,playerAInput);
 						const staleMoveId = playerB.currentMoveId;
 						const attackerAfterHit = {...this.consumeAttackOnHit(updatedB, (hitOnA.attackerHitlagFrames??hitOnA.hitlagFrames)),hitContactFrames:recordHitContact(playerB,updatedA.id),moveStaleMultiplier:contactStaleMultiplier(playerB)};
 						const trackedHitIds = new Set(attackerAfterHit.hitPlayerIds);
@@ -2246,7 +2595,7 @@ export class GameEngine {
 						isActiveShield(updatedB) &&
 						updatedB.shieldHealth > 0;
 
-					players[playerB.id] = this.applyHit(updatedB, hitOnB, updatedA.facing,playerA.currentMoveId?getMoveDataForCharacter(playerA.characterId,playerA.currentMoveId):undefined);
+					players[playerB.id] = this.applyHit(updatedB, hitOnB, updatedA.facing,playerA.currentMoveId?getMoveDataForCharacter(playerA.characterId,playerA.currentMoveId):undefined,playerBInput);
 						const staleMoveId = playerA.currentMoveId;
 						const attackerAfterHit = {...this.consumeAttackOnHit(updatedA, (hitOnB.attackerHitlagFrames??hitOnB.hitlagFrames)),hitContactFrames:recordHitContact(playerA,updatedB.id),moveStaleMultiplier:contactStaleMultiplier(playerA)};
 						const trackedHitIds = new Set(attackerAfterHit.hitPlayerIds);
@@ -2364,14 +2713,12 @@ export class GameEngine {
 	 * @param players - Mutable player map; updated in place on success.
 	 * @param attackerId - Player executing the throw.
 	 * @param victimId - Player being thrown.
-	 * @param victimInput - Victim's input this tick (passed to `resolveHit` for SDI).
 	 * @returns `true` if the throw hit; `false` if preconditions are not met.
 	 */
 	private tryApplyThrowHit(
 		players: Record<PlayerId, PlayerState>,
 		attackerId: PlayerId,
 		victimId: PlayerId,
-		victimInput: InputEvent | null,
 	): boolean {
 		const attacker = players[attackerId];
 		const victim = players[victimId];
@@ -2398,7 +2745,6 @@ export class GameEngine {
 			attacker,
 			guaranteedOverlapVictim,
 			attacker.activeHitbox,
-			victimInput,
 		);
 		if (!hit.hit) {
 			return false;
@@ -2426,13 +2772,14 @@ export class GameEngine {
 				isGrabbing: false,
 				grabbedPlayerId: null,
 			},
-			hit,
+			// A throw release uses fixed victim-only hitstop. Held input is sampled at launch.
+			{...hit, hitlagFrames:attacker.activeHitbox.hitlagFrames},
 			attacker.facing,
 		);
 
 		players[attacker.id] = {
 			...attacker,
-            sdiEligible:false,asdiMultiplier:0,hitlagFramesRemaining:Math.max(attacker.hitlagFramesRemaining,hit.attackerHitlagFrames??hit.hitlagFrames),
+            sdiEligible:false,asdiMultiplier:0,
 			isGrabbing: false,
 			grabbedPlayerId: null,
 			hitPlayerIds: trackedHitIds,
@@ -2794,11 +3141,24 @@ export class GameEngine {
 	 */
 	private matchDamage(damage:number):number{return damage*(this.matchPlayerCount===2?PHYSICS.ONE_ON_ONE_DAMAGE_MULTIPLIER:1);}
 
-	private applyHit(player:PlayerState,hit:typeof NO_HIT,attackerFacing:1|-1,floorMove?:import('@smash/shared').MoveData):PlayerState {
-      const result=this.applyHitInternal(player,hit,attackerFacing,floorMove);
-      const interrupted=result!==player&&result.state===PlayerStateEnum.HITSTUN&&([PlayerStateEnum.ROLL,PlayerStateEnum.SPOT_DODGE,PlayerStateEnum.AIR_DODGE].includes(player.state as PlayerStateEnum)||player.dodgeRefreshPending);
+	private applyHit(player:PlayerState,hit:typeof NO_HIT,attackerFacing:1|-1,floorMove?:import('@smash/shared').MoveData,input:InputEvent|null=null):PlayerState {
+      let result=this.applyHitInternal(player,hit,attackerFacing,floorMove);
+      if (result.shieldParryConsumed && !player.shieldParryConsumed) {
+        result=prepareActionInput(result,input,true).player;
+      }
+      if (result !== player && result.state === PlayerStateEnum.HITSTUN && hit.hitstunFrames > 0) {
+        this.consecutiveLedgeGrabs.delete(player.id);
+      }
+      const approach = this.ledgeApproaches.get(player.id);
+      const tookBodyHit = result !== player && result.state === PlayerStateEnum.HITSTUN;
+      if (tookBodyHit) {
+        this.ledgeApproaches.delete(player.id);
+        this.ledgeCatches.delete(player.id);
+        this.ledgeTrumps.delete(player.id);
+      }
+      const interrupted=tookBodyHit&&([PlayerStateEnum.ROLL,PlayerStateEnum.SPOT_DODGE,PlayerStateEnum.AIR_DODGE].includes((approach?.state ?? player.state) as PlayerStateEnum)||player.dodgeRefreshPending);
       const clean=interrupted?{...result,dodgeRefreshTicks:undefined,dodgeRefreshPending:true}:result;
-      return this.practice?{...clean,percent:0}:clean;
+      return this.practice?{...clean,percent:this.getPracticePercent(player.id)}:clean;
     }
     private applyHitInternal(
 		player: PlayerState,
@@ -2812,7 +3172,7 @@ export class GameEngine {
 			const remainingShieldHealth = this.practice?PHYSICS.SHIELD_MAX_HEALTH:player.shieldHealth-hit.damage;
 
 			// Perfect shield: one successful block in the eligible shield-release window,
-			// skip shield stun and shield health drain
+			// skip shield health drain, then retain the separately calculated guardstun
 			const isPerfectShield = player.shieldReleaseEligible===true&&!player.shieldParryConsumed&&player.shieldReleaseFrame!==undefined&&player.shieldReleaseFrame<PHYSICS.PERFECT_SHIELD_WINDOW_FRAMES;
 
 			if (!isPerfectShield && remainingShieldHealth <= 0) {
@@ -2828,7 +3188,7 @@ export class GameEngine {
                 shieldReactionFrame:0,
                 shieldHealth: isPerfectShield ? player.shieldHealth : remainingShieldHealth,
                 shieldWasHit:!isPerfectShield||player.shieldWasHit,
-				shieldStunFrames:isPerfectShield?0:shieldStunFrames,
+				shieldStunFrames,
 				vx: isPerfectShield?player.vx:player.vx + pushStrength * attackerFacing,
 				hitlagFramesRemaining: Math.max(player.hitlagFramesRemaining, hit.hitlagFrames),
 				activeHitbox: null,
@@ -2857,6 +3217,8 @@ export class GameEngine {
 		// knockbackAngleToVelocity(). isTumbling is set when the magnitude exceeds
 		// PHYSICS.TUMBLE_THRESHOLD, enabling techs and the DI window.
 		const knockbackMagnitude = Math.hypot(hit.knockbackVx, hit.knockbackVy);
+		const tumbling = knockbackMagnitude > PHYSICS.TUMBLE_THRESHOLD;
+		const timing = tumbling ? strongLaunchTiming(knockbackMagnitude,hit.hitstunFrames) : undefined;
 		const knockbackAngleRadians =
 			((Math.atan2(-hit.knockbackVy, hit.knockbackVx) % (Math.PI * 2)) + Math.PI * 2) %
 			(Math.PI * 2);
@@ -2873,8 +3235,16 @@ export class GameEngine {
             percent: player.percent + hit.damage,
 			sdiMode:'body',sdiPulseCount:0,sdiEligible:(hit.sdiMultiplier??1)>0||(hit.asdiMultiplier??0)>0,sdiLastDirection:hit.sdiInitialDirection??0,sdiBufferedDirection:0,sdiMultiplier:hit.sdiMultiplier??1,asdiMultiplier:hit.asdiMultiplier??0,sdiGrounded:player.isGrounded,
             hitlagFramesRemaining: hit.hitlagFrames,
-			hitstunFramesRemaining: hit.hitstunFrames,
-			isTumbling: knockbackMagnitude > PHYSICS.TUMBLE_THRESHOLD,
+			hitstunFramesRemaining: timing?.ticks ?? hit.hitstunFrames,
+			launchTiming: timing?.clock,
+			launchTechRestriction: tumbling ? hit.techRestriction : undefined,
+			launchElectric: hit.launchElectric,
+			launchThawStep: undefined,
+			tumbleShieldPressedTick: undefined,
+			launchImpact:undefined,
+			ceilingTechRecoveryFrames:undefined,
+			wallTechRecovery:undefined,
+			isTumbling: tumbling,
 			techWindowFrames: 0,
 			state: PlayerStateEnum.HITSTUN,
 			stateFrame: 0,
@@ -2891,8 +3261,8 @@ export class GameEngine {
 				shieldStunFrames: 0,
 			lastHitByFacing: attackerFacing,
 			lastHitKnockbackAngle: knockbackAngleRadians,
-			pendingKnockbackVx: hit.hitlagFrames > 0 ? hit.knockbackVx : null,
-			pendingKnockbackVy: hit.hitlagFrames > 0 ? hit.knockbackVy : null,
+			pendingKnockbackVx: hit.hitlagFrames > 0 || tumbling ? hit.knockbackVx : null,
+			pendingKnockbackVy: hit.hitlagFrames > 0 || tumbling ? hit.knockbackVy : null,
 		};
 	}
 
@@ -2923,7 +3293,6 @@ export class GameEngine {
 			isTumbling: false,
 			techWindowFrames: 0,
 			techLockoutFrames: 0,
-			lCancelWindowFrames: 0,
 			landingLagFrames: 0,
 				sdiInputCooldown: 0,
 				asdiDriftAccumulated: 0,
@@ -2991,6 +3360,10 @@ export class GameEngine {
 				this.releaseLedge(player.id, player.ledgeId);
 			}
 
+			this.consecutiveLedgeGrabs.delete(playerId);
+			this.ledgeApproaches.delete(playerId);
+			this.ledgeCatches.delete(playerId);
+			this.ledgeTrumps.delete(playerId);
 			const koVisual:NonNullable<PlayerState['koVisual']>={id:this.tick,kind:boundary==='top'?(this.tick%2?'screen':'star'):'launch',x:Math.max(200,Math.min(1080,player.x)),y:Math.max(70,Math.min(480,player.y)),facing:player.facing};
             const remainingStocks = Math.max(0, player.stocks - 1);
 			if (remainingStocks === 0) {

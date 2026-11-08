@@ -221,6 +221,15 @@ describe('resolveHit', () => {
     expect(result.damage).toBeCloseTo(8*1.05);
   });
 
+  it.each(['floor', 'all'] as const)('passes a %s tech restriction only on an unshielded hit', (techRestriction) => {
+    const attacker = makePlayer({ x: 0, y: 0, facing: 1 });
+    const defender = makePlayer({ x: 50, y: 0 });
+    const hitbox = makeHitbox({ offsetX: 40, radius: 30, techRestriction });
+    const shielded = {...defender, state: 'SHIELD', isShielding: true};
+    expect(resolveHit(attacker, defender, hitbox)).toMatchObject({hit:true, techRestriction});
+    expect(resolveHit(attacker, shielded, hitbox)).toMatchObject({hit:true, techRestriction:undefined});
+  });
+
   it('derives hitlag from damage rather than the legacy frame hint', () => {
     const attacker = makePlayer({ x: 0, y: 0, facing: 1 });
     const defender = makePlayer({ x: 50, y: 0 });

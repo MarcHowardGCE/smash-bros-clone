@@ -32,6 +32,8 @@ export class InputManager {
   private lastHeld: InputBitmask = 0;
   private lastAnalogActive=false;
   private lastJumpButtons=0;
+  private lastFaceAttackHeld = false;
+  private rightStickAttackLatched = false;
   private pendingTaunts:InputBitmask=0;
   private seqCounter: number = 0;
   private playerId: PlayerId = '';
@@ -96,6 +98,8 @@ export class InputManager {
     this.keymap = keymap;
     this.resetHeld();
     this.lastHeld = 0;
+    this.lastFaceAttackHeld = false;
+    this.rightStickAttackLatched = false;
   }
 
   setSequenceNumber(seq: number): void {
@@ -215,11 +219,19 @@ export class InputManager {
     // Merge keyboard and gamepad bits BEFORE computing diff (critical for correctness)
     let gamepadBits: InputBitmask = 0;
     let sticks:Partial<InputEvent>={};
+    let gamepadFaceAttackHeld = false;
+    let rightStickNeutral: boolean | undefined;
     if (this.gamepadSource) {
       try {
         const sample=this.gamepadSource.sampleInput?.();
         gamepadBits=sample?.held??this.gamepadSource.getHeldBits();
-        if(sample){const {held:_,connected,...axes}=sample;if(connected!==false)sticks=axes;}
+        if(!sample)gamepadFaceAttackHeld=Boolean(gamepadBits&INPUT_BITS.ATTACK);
+        if(sample?.connected!==false&&sample){
+          const {held:_,connected:__,faceAttackHeld,rightStickNeutral:neutral,...axes}=sample;
+          sticks=axes;
+          gamepadFaceAttackHeld=faceAttackHeld??Boolean(sample.held&INPUT_BITS.ATTACK);
+          rightStickNeutral=neutral;
+        }
       } catch (error) {
         // Gamepad source threw (e.g., permission denied, device error)
         // Gracefully degrade: treat as no gamepad input
@@ -233,7 +245,27 @@ export class InputManager {
     const prev = this.lastHeld;
 
     const jumpButtons=sticks.jumpButtons??0,newJumpButtons=jumpButtons&~this.lastJumpButtons;this.lastJumpButtons=jumpButtons;
-    const pressed = (held & ~prev)|this.pendingTaunts|(newJumpButtons?INPUT_BITS.JUMP:0);this.pendingTaunts=0;   // newly pressed this frame
+    const faceAttackHeld = gamepadFaceAttackHeld || Boolean(this.currentHeld & INPUT_BITS.ATTACK);
+    const rightStickAttackHeld = Math.hypot(sticks.cStickX ?? 0, sticks.cStickY ?? 0) >= .55;
+    const faceAttackPressed = faceAttackHeld && !this.lastFaceAttackHeld;
+    const rightStickAttackPressed = rightStickAttackHeld && !this.rightStickAttackLatched;
+    this.lastFaceAttackHeld = faceAttackHeld;
+    // A partial release can end the held bit without rearming a new press.
+    if (rightStickNeutral ?? !rightStickAttackHeld) this.rightStickAttackLatched = false;
+    else if (rightStickAttackPressed) this.rightStickAttackLatched = true;
+
+    // Right-stick aim belongs to its own press, never to a subsequent face-button press.
+    if (!rightStickAttackPressed) {
+      delete sticks.cStickX;
+      delete sticks.cStickY;
+      delete sticks.cStickTilt;
+    } else {
+      sticks.smashAttack = false;
+    }
+    const attackPressed = faceAttackPressed || rightStickAttackPressed;
+    const pressed = (held & ~prev & ~INPUT_BITS.ATTACK) | this.pendingTaunts |
+      (newJumpButtons ? INPUT_BITS.JUMP : 0) | (attackPressed ? INPUT_BITS.ATTACK : 0);
+    this.pendingTaunts = 0;
     const released = prev & ~held;  // newly released this frame
 
     // Update with merged value (not keyboard-only) so next frame's diff is correct
@@ -246,6 +278,9 @@ export class InputManager {
 
     const event: InputEvent = {
       ...sticks,
+      faceAttackHeld,
+      faceAttackPressed: attackPressed ? faceAttackPressed : undefined,
+      rightStickHeld: rightStickAttackHeld,
       tick: this.currentTick,
       seq: this.seqCounter++,
       playerId: this.playerId,

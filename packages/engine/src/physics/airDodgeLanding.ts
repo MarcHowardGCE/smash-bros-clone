@@ -1,5 +1,5 @@
 import type{PlayerState}from'@smash/shared';import{freshDodgeProfile}from'./dodgeProfiles.js';
-/** Neutral 10 and directional 11-19 bounds are measured. Directional interpolation remains provisional. */
+/** Total recovery including contact. Neutral uses 10 ticks. The directional 11–19 range and interpolation are provisional. */
 export function airDodgeLandingLag(p:Pick<PlayerState,'stateFrame'|'characterId'|'airDodgeDirection'>):number{
  const d=p.airDodgeDirection;if(!d||(!d.x&&!d.y))return 10;
  const total=freshDodgeProfile({...p,dodgeKind:'air'}).total;

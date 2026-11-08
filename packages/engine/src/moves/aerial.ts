@@ -18,6 +18,7 @@ const neutralAirHitbox: HitboxData = {
 /** Neutral air — 5 startup, 6 active, 16 recovery, 4 landing lag. Full-body hitbox (radius 34) at 45°. Longest active window of the aerials. */
 export const MOVE_NEUTRAL_AIR: MoveData = {
   id: MoveId.NEUTRAL_AIR,
+  autoCancel: {earlyEnd:3,lateStart:20},
   startupFrames: 5, activeFrames: 6, recoveryFrames: 16,
   hitboxPerActiveFrame: Array(6).fill(neutralAirHitbox),
   landingLag: 4, isAerial: true, isGrab: false, isSpecial: false,
@@ -32,6 +33,7 @@ const forwardAirHitbox: HitboxData = {
 /** Forward air — 8 startup, 4 active, 18 recovery, 6 landing lag. Forward-reaching hitbox at 30°, solid edgeguard tool. */
 export const MOVE_FORWARD_AIR: MoveData = {
   id: MoveId.FORWARD_AIR,
+  autoCancel: {earlyEnd:4,lateStart:23},
   startupFrames: 8, activeFrames: 4, recoveryFrames: 18,
   hitboxPerActiveFrame: Array(4).fill(forwardAirHitbox),
   landingLag: 6, isAerial: true, isGrab: false, isSpecial: false,
@@ -46,6 +48,7 @@ const backAirHitbox: HitboxData = {
 /** Back air — 7 startup, 3 active, 14 recovery, 5 landing lag. Rear hitbox at 150°, fast punish behind the character. */
 export const MOVE_BACK_AIR: MoveData = {
   id: MoveId.BACK_AIR,
+  autoCancel: {earlyEnd:3,lateStart:18},
   startupFrames: 7, activeFrames: 3, recoveryFrames: 14,
   hitboxPerActiveFrame: Array(3).fill(backAirHitbox),
   landingLag: 5, isAerial: true, isGrab: false, isSpecial: false,
@@ -60,6 +63,7 @@ const upAirHitbox: HitboxData = {
 /** Up air — 7 startup, 5 active, 16 recovery, 6 landing lag. Overhead hitbox at 80°, juggle extender. */
 export const MOVE_UP_AIR: MoveData = {
   id: MoveId.UP_AIR,
+  autoCancel: {earlyEnd:4,lateStart:20},
   startupFrames: 7, activeFrames: 5, recoveryFrames: 16,
   hitboxPerActiveFrame: Array(5).fill(upAirHitbox),
   landingLag: 6, isAerial: true, isGrab: false, isSpecial: false,
@@ -74,6 +78,7 @@ const downAirHitbox: HitboxData = {
 /** Down air — 10 startup, 2 active, 20 recovery, 10 landing lag. Spike at 270°; high landing lag punishes mistimed use. */
 export const MOVE_DOWN_AIR: MoveData = {
   id: MoveId.DOWN_AIR,
+  autoCancel: {earlyEnd:5,lateStart:26},
   startupFrames: 10, activeFrames: 2, recoveryFrames: 20,
   hitboxPerActiveFrame: Array(2).fill(downAirHitbox),
   landingLag: 10, isAerial: true, isGrab: false, isSpecial: false,

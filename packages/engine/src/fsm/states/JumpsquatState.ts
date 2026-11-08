@@ -15,7 +15,7 @@
  *
  * Transitions out to: AIRBORNE (frame >= PHYSICS.JUMPSQUAT_FRAMES - 1).
  */
-import { BaseState, PHYSICS, PlayerStateEnum, transition } from './utils.js';
+import { BaseState, INPUT_BITS, PHYSICS, PlayerStateEnum, isPressed, transition } from './utils.js';
 import type { FSMContext, FSMTransition } from '../index.js';
 
 /**
@@ -24,7 +24,15 @@ import type { FSMContext, FSMTransition } from '../index.js';
  * is deferred to the physics layer on AIRBORNE entry.
  */
 export class JumpsquatState extends BaseState {
-  update(_ctx: FSMContext, frame: number): FSMTransition | null {
+  update(ctx: FSMContext, frame: number): FSMTransition | null {
+    const input = ctx.input;
+    const upHeld = Boolean(((input?.attackAim ?? input)?.held ?? 0) & INPUT_BITS.UP);
+    const faceAttack = Math.hypot(input?.cStickX ?? 0, input?.cStickY ?? 0) < .55;
+    if (ctx.player.stickJumpSquat && frame < PHYSICS.JUMPSQUAT_FRAMES - 1 &&
+      input?.smashAttack && upHeld && faceAttack && !input.jumpButtons &&
+      isPressed(input, INPUT_BITS.ATTACK) && !isPressed(input, INPUT_BITS.SPECIAL | INPUT_BITS.GRAB)) {
+      return transition(PlayerStateEnum.ATTACK);
+    }
     return frame >= PHYSICS.JUMPSQUAT_FRAMES - 1 ? transition(PlayerStateEnum.AIRBORNE) : null;
   }
 }

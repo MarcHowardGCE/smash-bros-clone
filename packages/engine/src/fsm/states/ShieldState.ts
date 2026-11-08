@@ -10,11 +10,11 @@ export class ShieldState extends BaseState {
    ctx.player.shieldReleaseFrame++;
    return ctx.player.shieldReleaseFrame>=PHYSICS.SHIELD_DROP_FRAMES?transition(S.IDLE):null;
   }
-  const cUp=isPressed(ctx.input,B.ATTACK)&&(ctx.input?.cStickY??0)<=-.55&&Math.abs(ctx.input?.cStickY??0)>Math.abs(ctx.input?.cStickX??0);
-  const upSmash=isPressed(ctx.input,B.ATTACK)&&!isPressed(ctx.input,B.GRAB)&&(cUp||(ctx.input?.smashAttack===true&&isHeld(ctx.input,B.UP)));
+  const cUp=!ctx.input?.cStickTilt&&isPressed(ctx.input,B.ATTACK)&&(ctx.input?.cStickY??0)<=-.55&&Math.abs(ctx.input?.cStickY??0)>Math.abs(ctx.input?.cStickX??0);
+  const upSmash=isPressed(ctx.input,B.ATTACK)&&!isPressed(ctx.input,B.GRAB)&&(cUp||(ctx.input?.smashAttack===true&&Boolean((ctx.input.attackAim?.held??ctx.input.held)&B.UP)));
   if(upSmash)return transition(S.ATTACK);
   if(isPressed(ctx.input,B.JUMP))return transition(S.JUMPSQUAT);
-  if(isPressed(ctx.input,B.GRAB)||(isHeld(ctx.input,B.SHIELD)&&isPressed(ctx.input,B.ATTACK)))return transition(S.ATTACK);
+  if(isPressed(ctx.input,B.GRAB)||(isHeld(ctx.input,B.SHIELD)&&isPressed(ctx.input,B.ATTACK)&&!ctx.input?.cStickTilt))return transition(S.ATTACK);
   if(isHeld(ctx.input,B.UP)&&isPressed(ctx.input,B.SPECIAL))return transition(S.ATTACK);
   if(!isHeld(ctx.input,B.SHIELD)){
    ctx.player.shieldReleaseFrame=0;ctx.player.shieldReleaseEligible=frame>=PHYSICS.SHIELD_PARRY_MIN_HOLD_FRAMES&&(ctx.player.shieldParryLockFrames??0)===0;

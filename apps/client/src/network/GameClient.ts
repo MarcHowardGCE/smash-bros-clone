@@ -563,7 +563,7 @@ export class GameClient {
         shieldHealth: predictedLocal.shieldHealth,
         currentMoveId: predictedLocal.currentMoveId,
         characterId: predictedLocal.characterId,
- koVisual:predictedLocal.koVisual,tauntKind:predictedLocal.tauntKind,hitReaction:predictedLocal.hitReaction,artCue:predictedLocal.artCue,artCueFrame:predictedLocal.artCueFrame,respawnTimer:predictedLocal.respawnTimer,footstoolRole:predictedLocal.footstoolRole,footstoolPartnerId:predictedLocal.footstoolPartnerId,footstoolFrame:predictedLocal.footstoolFrame,shieldReaction:predictedLocal.shieldReaction,shieldReactionFrame:predictedLocal.shieldReactionFrame,hitstunFramesRemaining:predictedLocal.hitstunFramesRemaining,floorOrientation:predictedLocal.floorOrientation,floorRollDirection:predictedLocal.floorRollDirection,isFastFalling:predictedLocal.isFastFalling,airDodgeDirection:predictedLocal.airDodgeDirection,hasDoubleJump:predictedLocal.hasDoubleJump,isTumbling:predictedLocal.isTumbling,chargeFrames:predictedLocal.chargeFrames,isGrabbing:predictedLocal.isGrabbing,grabbedPlayerId:predictedLocal.grabbedPlayerId,ledgeId:predictedLocal.ledgeId,
+ dodgeLevel:predictedLocal.dodgeLevel,dodgeKind:predictedLocal.dodgeKind,koVisual:predictedLocal.koVisual,tauntKind:predictedLocal.tauntKind,hitReaction:predictedLocal.hitReaction,artCue:predictedLocal.artCue,artCueFrame:predictedLocal.artCueFrame,respawnTimer:predictedLocal.respawnTimer,footstoolRole:predictedLocal.footstoolRole,footstoolPartnerId:predictedLocal.footstoolPartnerId,footstoolFrame:predictedLocal.footstoolFrame,shieldReaction:predictedLocal.shieldReaction,shieldReactionFrame:predictedLocal.shieldReactionFrame,hitstunFramesRemaining:predictedLocal.hitstunFramesRemaining,floorOrientation:predictedLocal.floorOrientation,floorRollDirection:predictedLocal.floorRollDirection,isFastFalling:predictedLocal.isFastFalling,airDodgeDirection:predictedLocal.airDodgeDirection,hasDoubleJump:predictedLocal.hasDoubleJump,isTumbling:predictedLocal.isTumbling,chargeFrames:predictedLocal.chargeFrames,isGrabbing:predictedLocal.isGrabbing,grabbedPlayerId:predictedLocal.grabbedPlayerId,ledgeId:predictedLocal.ledgeId,
       });
     }
 
@@ -571,7 +571,7 @@ export class GameClient {
   }
 
   private sendInput(inputEvent: InputEvent): void {
-    const encoded = encode(inputEvent);
+    const encoded = encode(inputEvent, { ignoreUndefined: true });
     this.socket.emit("game:input", encoded);
   }
 

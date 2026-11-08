@@ -1,3 +1,4 @@
+import { MOVE_NEUTRAL_AIR, MOVE_FORWARD_AIR, MOVE_UP_AIR } from './aerial.js';
 /**
  * @fileoverview Swift character-specific move overrides.
  *
@@ -54,6 +55,7 @@ const swiftNeutralAirHitbox: HitboxData = {
 
 /** Swift neutral air — same timing as default (5/6/16), LARGER hitbox (radius 36 vs 34), lower damage (6 vs 8), weaker knockback. */
 export const SWIFT_NEUTRAL_AIR: MoveData = {
+  autoCancel: MOVE_NEUTRAL_AIR.autoCancel,
   id: MoveId.NEUTRAL_AIR,
   startupFrames: 5, activeFrames: 6, recoveryFrames: 16,
   hitboxPerActiveFrame: Array(6).fill(swiftNeutralAirHitbox),
@@ -68,6 +70,7 @@ const swiftForwardAirHitbox: HitboxData = {
 
 /** Swift forward air — same timing as default (8/4/18), EXTENDED reach (offsetX 60 vs 55), lower damage (9 vs 12), weaker knockback. */
 export const SWIFT_FORWARD_AIR: MoveData = {
+  autoCancel: MOVE_FORWARD_AIR.autoCancel,
   id: MoveId.FORWARD_AIR,
   startupFrames: 8, activeFrames: 4, recoveryFrames: 18,
   hitboxPerActiveFrame: Array(4).fill(swiftForwardAirHitbox),
@@ -82,6 +85,7 @@ const swiftUpAirHitbox: HitboxData = {
 
 /** Swift up air — same timing as default (7/5/16), EXTENDED reach (offsetY -50 vs -40, radius 30 vs 28), lower damage (7 vs 9). Juggle-friendly: reaches higher for anti-air. */
 export const SWIFT_UP_AIR: MoveData = {
+  autoCancel: MOVE_UP_AIR.autoCancel,
   id: MoveId.UP_AIR,
   startupFrames: 7, activeFrames: 5, recoveryFrames: 16,
   hitboxPerActiveFrame: Array(5).fill(swiftUpAirHitbox),

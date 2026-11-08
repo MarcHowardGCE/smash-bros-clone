@@ -19,6 +19,8 @@ export interface CharacterStats {
   fighterWeight: number;
   /** Fighter collision sphere radius in px; used for both hurt and platform checks. */
   hurtboxRadius: number;
+  /** Analog initial-dash ticks before transitioning to sustained run. */
+  dashFrames?:number;
   /** Maximum horizontal ground speed in px/frame during run. */
   runSpeed: number;
   /** Maximum horizontal ground speed in px/frame during walk. */

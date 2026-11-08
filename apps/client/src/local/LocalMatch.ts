@@ -12,7 +12,7 @@ import{INPUT_BITS as B}from'@smash/shared';
  * (e.g. on first render before the first tick fires).
  */
 import { GameEngine, type GameEngineOptions } from "@smash/server/engine";
-import type { CharacterId, KOEventData, PlayerId, StateSnapshot, GameState, InputEvent } from "@smash/shared";
+import type { CharacterId, HitEventData, KOEventData, PlayerId, StateSnapshot, GameState, InputEvent } from "@smash/shared";
 import type { LocalPlayerController } from "./LocalPlayerController.js";
 import type { ITickController } from "./types.js";
 
@@ -40,7 +40,10 @@ export class LocalMatch {
   get practiceSpeed():number{return this.playbackSpeed;}
   get practiceTick():number{return this.engine.getCurrentTick();}
 
-  onStep:((state:GameState,inputs:Map<PlayerId,InputEvent|null>)=>void)|null=null;
+  getPracticePercent(id: PlayerId): number { return this.engine.getPracticePercent(id); }
+  setPracticePercent(id: PlayerId, percent: number): boolean { return this.engine.setPracticePercent(id, percent); }
+
+  onStep: ((state: GameState, inputs: Map<PlayerId, InputEvent | null>, hits: HitEventData[], exits: KOEventData[]) => void) | null = null;
   onSnapshot: ((snapshot: StateSnapshot) => void) | null = null;
 
   /**
@@ -161,13 +164,13 @@ export class LocalMatch {
     );
     if(this.practiceInputGate){const human=inputs.get('local-p1');if(!human?.held&&!human?.pressed)this.practiceInputGate=false;const keep=B.LEFT|B.RIGHT|B.UP|B.DOWN|B.SHIELD;inputs.set('local-p1',human?{...human,held:human.held&keep,pressed:0,released:human.released&keep}:null);}
     const state = this.engine.tickGame(inputs);
-    this.onStep?.(state,inputs);
+    const snapshot: StateSnapshot = this.engine.getSnapshot(performance.now(), {});
+    if (this.onStep) this.onStep(state, inputs, snapshot.hitEvents, this.practice ? this.engine.getKOEvents() : []);
 
     for (const controller of this.controllers) {
       controller.observe?.(state);
     }
 
-    const snapshot: StateSnapshot = this.engine.getSnapshot(performance.now(), {});
     this.engine.clearHitEvents();
     this.latestSnapshot = snapshot;
     this.onSnapshot?.(snapshot);

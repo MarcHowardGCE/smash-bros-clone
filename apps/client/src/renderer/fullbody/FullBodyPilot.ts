@@ -108,12 +108,6 @@ export class FullBodyPilot {
    selected=selectPreparedFrame(state,frame,vy,{...prepared,artCue:undefined,facing})??selected;
   }
   let clip=selected?art?.[selected.clip]:undefined;
-  // A transient state without a usable pose should keep the fighter's artwork visible.
-  if(enabled&&this.artId&&(!selected||!clip?.frames.length)){
-   const fallback=state==='AIR_ATTACK'||airborne?'air_fall_loop':'idle';
-   clip=art?.[fallback]??art?.idle;
-   selected={clip:clip===art?.[fallback]?fallback:'idle',index:0};
-  }
   if(this.artId&&selected&&clip){
    if(selected.clip==='grabbed'){
     const name=frame<5?'grabbed':'grabbed_hold_preview';
@@ -169,7 +163,15 @@ export class FullBodyPilot {
     selected={...selected,index:Math.round(selected.index*(clip.frames.length-1)/Math.max(1,reference-1))};
    }
   }
-  const drawing=selected&&clip?clip.frames[this.artId?Math.max(0,Math.min(clip.frames.length-1,selected.index)):selected.index]:undefined;
+  let drawing=selected&&clip?clip.frames[Math.max(0,Math.min(clip.frames.length-1,selected.index))]:undefined;
+  if(enabled&&!drawing){
+   // Keep the equipped art during incomplete transition snapshots.
+   const fallback=state==='AIR_ATTACK'||airborne?'air_fall_loop':'idle';
+   const fallbackClip=art?.[fallback]?.frames.length?fallback:'idle';
+   selected={clip:fallbackClip,index:0};
+   clip=art?.[fallbackClip];
+   drawing=clip?.frames[0];
+  }
   this.sprite.visible=Boolean(drawing);
   if(!selected||!clip||!drawing){this.contactExit=undefined;return false;}
   this.sprite.label=selected.clip;

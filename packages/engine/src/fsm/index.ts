@@ -16,6 +16,7 @@ export interface FSMContext {
   player: PlayerState;
   input: InputEvent | null;
   isGrounded: boolean;
+  tumbleRecovery?: 'floor' | 'buffered-dodge';
 }
 
 export interface FSMTransition {

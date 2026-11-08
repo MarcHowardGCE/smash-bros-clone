@@ -156,7 +156,7 @@ export class LocalPredictor {
   private applyLocalMovement(player: PlayerState, input: InputEvent): PlayerState {
     const movementStates: string[] = [
       PlayerStateEnum.IDLE, PlayerStateEnum.WALK, PlayerStateEnum.DASH,
-      PlayerStateEnum.RUN, PlayerStateEnum.AIRBORNE, PlayerStateEnum.DOUBLE_JUMP,
+      PlayerStateEnum.RUN, PlayerStateEnum.RUN_BRAKE, PlayerStateEnum.RUN_TURN, PlayerStateEnum.AIRBORNE, PlayerStateEnum.DOUBLE_JUMP,
     ];
     if (player.isKnockedOut || player.hitlagFramesRemaining > 0 || player.hitstunFramesRemaining > 0
       || !movementStates.includes(player.state)) return clonePlayerState(player);

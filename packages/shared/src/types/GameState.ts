@@ -32,6 +32,8 @@ export interface Circle {
 export interface HitboxData {
   /** Distinct hit wave within one move. Default group zero is once per victim. */
   hitGroup?:number;
+  /** Blocks tech on the first launch collision. Floor-only still permits wall and ceiling tech. */
+  techRestriction?: 'floor' | 'all';
   /** Optional action-frame gap before this group can hit the same victim again. */
   rehitFrames?:number;
   /** Multiplier for computed body-hit freeze; defaults to one. */
@@ -60,7 +62,7 @@ export interface HitboxData {
   knockbackGrowth: number;
   /** Launch angle in degrees (0 = horizontal, 90 = straight up). */
   knockbackAngle: number;
-  /** Legacy hitlag hint: zero opts out unless hitlagMultiplier is supplied; nonzero duration is computed. */
+  /** Fixed victim-only freeze for throw releases. For strikes, zero opts out unless a multiplier is supplied. */
   hitlagFrames: number;
   /**
    * Optional override for hitstun duration in frames.
@@ -104,11 +106,17 @@ export interface PlayerState {
   isTumbling: boolean;
   /** Remaining frames inside the tech-input buffer window before landing. */
   techWindowFrames: number;
+  /** Physical tech input history survives the start of a new hit. */
+  techLastInputTick?: number;
+  techAcceptedInputTick?: number;
+  /** Last physical Shield edge during this tumble, independent of tech lockout. */
+  tumbleShieldPressedTick?: number;
+  techAirDodgeTick?: number;
+  ceilingTechRecoveryFrames?: number;
+  wallTechRecovery?: { side: 'left' | 'right'; remaining: number; jump: boolean };
   /** Cooldown frames after a failed tech before another buffer is accepted. */
   techLockoutFrames: number;
-  /** Remaining frames in the L-cancel window after an aerial. */
-  lCancelWindowFrames: number;
-  /** Landing lag frames locked in when an aerial move lands without L-cancel. */
+  /** Remaining locked ticks after an aerial attack or air-dodge landing. */
   landingLagFrames: number;
   /** Accumulated percent damage (no cap; higher = more knockback taken). */
   percent: number;
@@ -147,7 +155,10 @@ export interface PlayerState {
   shieldReleaseEligible?:boolean;
   shieldParryConsumed?:boolean;
   shieldParryLockFrames?:number;
-  queuedJumpAttack?:boolean;
+  /** Completed brake or turn ticks before switching to the current run transition. */
+  runTransitionOffset?:number;
+  /** The current jump squat started from a controller stick jump. */
+  stickJumpSquat?:boolean;
   shieldDodgeIntent?:number;
   tauntKind?:'up'|'side'|'down';
   hitReaction?:'high'|'low'|'heavy'|'air';
@@ -222,11 +233,19 @@ export interface PlayerState {
   launchVx?: number;
   launchVy?: number;
   launchFallVy?: number;
+  /** Virtual launch trajectory clock, advanced only on live physics ticks. */
+  launchTiming?: { strength: number; end: number; elapsed: number; sampled?: number; lost?: number };
+  /** Electric body hits delay the earliest launch cancel by one tick. */
+  launchElectric?: true;
+  /** Launch physics already ran on the hitlag exit tick before stateFrame advanced. */
+  launchThawStep?: true;
+  launchTechRestriction?: HitboxData['techRestriction'];
+  launchImpact?: {surface: 'floor' | 'wall' | 'ceiling'; wall?: 'left' | 'right'; freeze: number; remaining: number; before: number; after: number; techable: boolean; teched: boolean; blockedByHitbox?: true};
   /** Analog ground intent history, retained in snapshots for deterministic replay. */
   movementStickX?: number;
   movementFlickAge?: number;
   /** Short edge buffer for grounded recovery; no repeated held actions. */
-  actionBuffer?:{input:InputEvent;framesLeft:number};
+  actionBuffer?:{input:InputEvent;framesLeft:number;landingHold?:number;parryStickDirectionTicks?:number};
   /** Pending vy component of knockback to be applied on hitlag exit. */
   pendingKnockbackVy?: number | null;
   /** Frames remaining before this fighter respawns after a KO. */
@@ -283,6 +302,8 @@ export interface KOEventData {
   boundary: 'left' | 'right' | 'top' | 'bottom';
   /** Tick on which the KO occurred. */
   tick: number;
+  /** Practice diagnostics capture the exit position before the arena resets. */
+  exitPosition?: { x: number; y: number };
 }
 
 /**

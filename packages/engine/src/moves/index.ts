@@ -111,6 +111,7 @@ const MOONSHINE_DASH_ATTACK: MoveData = {
 
 const MOONSHINE_FORWARD_AIR: MoveData = {
   ...MOVE_FORWARD_AIR,
+  autoCancel: {earlyEnd:3,lateStart:20},
   startupFrames: 6,
   recoveryFrames: 16,
   landingLag: 5,
@@ -128,6 +129,7 @@ const MOONSHINE_DOWN_TILT: MoveData = {
 
 const MOONSHINE_UP_AIR: MoveData = {
   ...MOVE_UP_AIR,
+  autoCancel: {earlyEnd:3,lateStart:17},
   startupFrames: 5,
   activeFrames: 4,
   hitboxPerActiveFrame: MOVE_UP_AIR.hitboxPerActiveFrame.slice(0, 4).map(hit => ({

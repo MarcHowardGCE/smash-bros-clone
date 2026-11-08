@@ -1,7 +1,7 @@
 import {airDodgeAllowsLedge} from './airDodgeMotion.js';
 import {airStats} from './airMotion.js';
 import {horizontalMovementInput,GROUND_INPUT} from './groundIntent.js';
-import {hasLaunch,applyLaunchGravity,decayLaunch} from './launchMotion.js';
+import {clearLaunch,hasLaunch,applyLaunchGravity,decayLaunch,nextLaunchTime,sampleLaunchTime} from './launchMotion.js';
 /**
  * @fileoverview Physics subsystem for the deterministic game engine.
  *
@@ -159,10 +159,11 @@ export function applyMovement(
 	if (player.isGrounded) {
     if(input.stickX!==undefined){
       const axis=horizontalMovementInput(input),stats=getCharacterStats(player.characterId);
-      const running=player.state==='DASH'||player.state==='RUN';
+      const running=player.state==='DASH'||player.state==='RUN'||player.state==='RUN_TURN';
       const cap=running?stats.runSpeed*Math.abs(axis):stats.walkSpeed*Math.min(1,Math.abs(axis)/GROUND_INPUT.DASH_THRESHOLD);
       const target=Math.sign(axis)*cap,acceleration=stats.walkSpeed*.2;
       vx=axis===0?vx*PHYSICS.GROUND_FRICTION:vx+Math.max(-acceleration,Math.min(acceleration,target-vx));
+      if(player.state==='RUN_BRAKE'&&axis===0&&Math.abs(vx)<=.1)vx=0;
       return {...player,vx,x:player.x+vx,y:player.y+player.vy};
     }
 		if (movingLeft) {
@@ -548,6 +549,45 @@ export function checkWallCollision(
 }
 
 /**
+ * Sample the normal launch trajectory at the virtual time reached this tick.
+ * Collision checks still run at each simulated step.
+ */
+export function advanceTrackedLaunch(
+ player: PlayerState,
+ stage: StageData,
+ onContact?: (before:PlayerState, after:PlayerState)=>PlayerState|undefined,
+): PlayerState {
+ const timing=player.launchTiming;
+ if(!timing){
+  const motion=applyLaunchGravity(player);
+  const moved={...motion,x:motion.x+motion.vx,y:motion.y+motion.vy};
+  return onContact?.(player,moved) ?? decayLaunch(checkPlatformCollision(moved,stage));
+ }
+
+ const elapsed=nextLaunchTime(timing);
+ const end=sampleLaunchTime(elapsed);
+ let cursor=timing.sampled??sampleLaunchTime(timing.elapsed);
+ let result=player;
+ while(cursor<end-1e-9){
+  const boundary=Math.floor(cursor+1e-9)+1;
+  const toBoundary=boundary-cursor;
+  const next=Math.min(boundary,end);
+  const fraction=next-cursor;
+  const velocity=decayLaunch(applyLaunchGravity(result,toBoundary),toBoundary);
+  const momentum=decayLaunch(applyLaunchGravity(result,fraction),fraction);
+  const moved={...momentum,x:result.x+velocity.vx*fraction,y:result.y+velocity.vy*fraction,
+   launchTiming:{...timing,elapsed:Math.min(next,elapsed),sampled:next}};
+  const contact=onContact?.(result,moved);
+  if(contact)return contact;
+  result=checkPlatformCollision(moved,stage);
+  if(result.isGrounded)return clearLaunch(result);
+  if(result.isKnockedOut)return result;
+  cursor=next;
+ }
+ return {...result,launchTiming:{...timing,elapsed,sampled:end}};
+}
+
+/**
  * Convenience pipeline that composes the per-tick physics steps in order.
  *
  * Execution sequence:
@@ -577,8 +617,7 @@ export function applyMovementInput(
 		: stageGeometry;
 
 	if (player.hitstunFramesRemaining > 0 && hasLaunch(player)) {
-    const velocity=applyLaunchGravity(player);
-    return decayLaunch(checkPlatformCollision({...velocity,x:velocity.x+velocity.vx,y:velocity.y+velocity.vy},stage));
+    return advanceTrackedLaunch(player,stage);
   }
 	return applyKnockbackDecay(
 		checkPlatformCollision(

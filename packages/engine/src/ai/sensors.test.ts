@@ -28,7 +28,7 @@ function createPlayerFixture(overrides: Partial<PlayerState> = {}): PlayerState 
     isTumbling: false,
     techWindowFrames: 0,
     techLockoutFrames: 0,
-    lCancelWindowFrames: 0,
+
     landingLagFrames: 0,
     percent: 0,
     stocks: 3,

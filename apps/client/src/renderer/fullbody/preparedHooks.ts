@@ -9,6 +9,7 @@ export function selectPreparedFrame(state:string,frame:number,vy:number|undefine
  if(state==='JAB_LOCK')return{clip:c.floorOrientation==='down'?'jab_lock_down':'jab_lock_up',index:Math.min(3,Math.floor(floorTick/4))};
  if(state==='TAUNT'){const t=Math.max(0,Math.floor(frame)),ends=[8,16,28,46,54,64];return{clip:c.tauntKind==='side'?'taunt_side':c.tauntKind==='down'?'taunt_down':'taunt_up',index:t>=64?5:Math.max(0,ends.findIndex(n=>t<n))};}
  if((c.respawnTimer??0)>0)return{clip:'respawn_wait',index:Math.floor((c.respawnTimer??0)/12)%4};
+ if(state==='RUN_BRAKE'||state==='RUN_TURN')return{clip:state==='RUN_BRAKE'?'brake':'turn_run',index:Math.min(5,Math.floor(floorTick/3))};
  if(state==='CROUCH'){const t=Math.max(0,Math.floor(frame));return t<18?{clip:'crouch_enter',index:Math.floor(t/3)}:{clip:'crouch_hold',index:Math.floor((t-18)/6)%4};}
  const age=Math.max(0,Math.floor(c.artCueFrame??0));
  if(c.artCue&&['IDLE','WALK','DASH','RUN','AIRBORNE','CROUCH'].includes(state)){
@@ -37,7 +38,7 @@ export function selectPreparedFrame(state:string,frame:number,vy:number|undefine
   return{clip:'shield_break_dizzy',index:Math.floor((cue-18)/6)%4};
  }
  if(state==='HITSTUN'&&!c.isTumbling&&c.hitReaction)return{clip:c.hitReaction==='heavy'?'hit_heavy':c.hitReaction==='air'?'hit_air':c.hitReaction==='high'?'hit_high':'hit_low',index:Math.min(c.hitReaction==='heavy'||c.hitReaction==='air'?5:3,Math.floor(Math.max(0,frame)/4))};
- if(state==='AIRBORNE'&&['wall_tech','wall_tech_jump','ceiling_tech','tumble_recover'].includes(c.artCue??'')&&(c.artCueFrame??0)<24)return{clip:c.artCue as PilotClip,index:Math.min(5,Math.floor(Math.max(0,c.artCueFrame??0)/4))};
+ if(state==='AIRBORNE'&&['wall_tech','wall_tech_jump','ceiling_tech','tumble_recover'].includes(c.artCue??'')&&(c.artCueFrame??0)<(c.artCue==='ceiling_tech'?26:24))return{clip:c.artCue as PilotClip,index:Math.min(5,Math.floor(Math.max(0,c.artCueFrame??0)/4))};
  if(c.artCue==='air_dodge_land'&&['IDLE','LANDING_LAG'].includes(state)&&(c.artCueFrame??0)<24)return{clip:'air_dodge_land',index:Math.min(5,Math.floor(Math.max(0,c.artCueFrame??0)/4))};
  const down=c.floorOrientation==='down';
  if(state==='HARD_LANDING'&&down){const t=Math.max(0,Math.floor(frame));if(t>=18)return{clip:'prone_down',index:Math.floor((t-18)/6)%4};const ends=[2,4,6,9,12,18];return{clip:'knockdown_down',index:ends.findIndex(n=>t<n)};}

@@ -48,7 +48,7 @@ export const MOVE_PUMMEL: MoveData = {
 const forwardThrowHitbox: HitboxData = {
   offsetX: 50, offsetY: 0, radius: 30,
   damage: 8, baseKnockback: 8, knockbackGrowth: 65, knockbackAngle: 30,
-  hitlagFrames: 5, hitstunFrames: 18, priority: 1,
+  hitlagFrames: 0, hitstunFrames: 18, priority: 1,
 };
 
 /** Forward throw — 10 startup, 1 active, 15 recovery. Launches at 30°, solid horizontal kill option at high percent. */
@@ -62,7 +62,7 @@ export const MOVE_FORWARD_THROW: MoveData = {
 const backThrowHitbox: HitboxData = {
   offsetX: -50, offsetY: 0, radius: 30,
   damage: 9, baseKnockback: 9, knockbackGrowth: 70, knockbackAngle: 150,
-  hitlagFrames: 5, hitstunFrames: 18, priority: 1,
+  hitlagFrames: 0, hitstunFrames: 18, priority: 1,
 };
 
 /** Back throw — 12 startup, 1 active, 15 recovery. Launches at 150°, strongest horizontal throw; kills earlier than forward throw. */
@@ -76,7 +76,7 @@ export const MOVE_BACK_THROW: MoveData = {
 const upThrowHitbox: HitboxData = {
   offsetX: 0, offsetY: -50, radius: 30,
   damage: 8, baseKnockback: 7, knockbackGrowth: 60, knockbackAngle: 85,
-  hitlagFrames: 5, hitstunFrames: 18, priority: 1,
+  hitlagFrames: 0, hitstunFrames: 18, priority: 1,
 };
 
 /** Up throw — 12 startup, 1 active, 15 recovery. Launches at 85°; sets up juggle situations. */
@@ -90,7 +90,7 @@ export const MOVE_UP_THROW: MoveData = {
 const downThrowHitbox: HitboxData = {
   offsetX: 0, offsetY: 30, radius: 28,
   damage: 6, baseKnockback: 4, knockbackGrowth: 45, knockbackAngle: 60,
-  hitlagFrames: 5, hitstunFrames: 12, priority: 1,
+  hitlagFrames: 0, hitstunFrames: 12, priority: 1,
 };
 
 /** Down throw — 14 startup, 1 active, 18 recovery. Launches at 60°; lowest damage throw, best for follow-ups at low percent. */

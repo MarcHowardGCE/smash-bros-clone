@@ -82,3 +82,9 @@ Evidence: task workspace outputs/dojo-lab-v1/checks.json, frozen-collision.png a
 2. Input/state timeline, cancel-window annotations, and early/late coaching for failed parries or dodges.
 3. Named routines, trimming, explicit reset-per-loop scenarios and import/export using the existing validated schema.
 4. More dojo chapters for ledges, techs, other throws and fighter-specific sequences.
+
+
+### Dojo launch and KO lab
+
+In Free Practice, open **Timing laboratory → Launch and KO lab**. Set your fighter and partner independently to 0%, 50%, 100%, 150%, or 200%. Presets stay fixed through hits and arena resets and start at 0% in each new session. The lab reports the last launch for each fighter, including knockback, hitstun, tumble, base launch speed before directional influence, and maximum displacement during the tracked reaction. A real blast-zone crossing records the boundary before the arena resets. Screen and star KO previews use the selected fighter's existing art without moving fighters or using stocks.
+

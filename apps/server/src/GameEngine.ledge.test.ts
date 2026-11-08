@@ -11,7 +11,7 @@ import {
 	type PlayerId,
 	type PlayerState,
 } from '@smash/shared';
-import { FSMController } from '@smash/engine';
+import { FSMController, getMoveDataForCharacter } from '@smash/engine';
 import { GameEngine } from './GameEngine.js';
 
 function makeInput(playerId: PlayerId, bits = 0): InputEvent {
@@ -405,9 +405,10 @@ describe('GameEngine ledge integration', () => {
 		expect(landedPlayer.state).not.toBe(PlayerStateEnum.LANDING_LAG);
 	});
 
-	it('AIR_ATTACK landing applies landing-lag lockout for move landingLag frames before IDLE', () => {
+	it('AIR_ATTACK landing applies the canonical move landing lag before accepting an attack', () => {
 		const engine = createEngine(['p1', 'p2']);
-		const landingLagFrames = 15;
+		const move = getMoveDataForCharacter('all-rounder', MoveId.DOWN_AIR);
+		const landingLagFrames = move.landingLag - 1;
 
 		primePlayer(engine, 'p1', {
 			x: 640,
@@ -415,17 +416,11 @@ describe('GameEngine ledge integration', () => {
 			vx: 0,
 			vy: 4,
 			state: PlayerStateEnum.AIR_ATTACK,
-			stateFrame: 0,
+			stateFrame: 6,
 			isGrounded: false,
-			currentMoveId: MoveId.NEUTRAL_AIR,
-			currentMove: { landingLag: landingLagFrames, isSpecial: false },
+			currentMoveId: MoveId.DOWN_AIR,
+			currentMove: move,
 		});
-		const mutable = getMutableState(engine);
-		const primed = mutable.players.p1;
-		if (!primed) {
-			throw new Error('Expected player p1 after prime');
-		}
-		primed.currentMove = { landingLag: landingLagFrames, isSpecial: false };
 
 		const landing = tick(engine, { p1: null });
 		const landed = landing.players.p1;
@@ -456,7 +451,7 @@ describe('GameEngine ledge integration', () => {
         expect(releaseTick.players.p1?.state).toBe(PlayerStateEnum.ATTACK);
 	});
 
-	it('AIR_ATTACK landing with missing/zero landing lag data does not crash and resolves to IDLE immediately', () => {
+	it('AIR_ATTACK landing uses the canonical early auto-cancel window with missing or zero cached lag', () => {
 		const runLanding = (
 			currentMove: PlayerState['currentMove'],
 		): PlayerStateEnum | undefined => {
@@ -476,8 +471,8 @@ describe('GameEngine ledge integration', () => {
 			return tick(engine, { p1: null }).players.p1?.state as PlayerStateEnum | undefined;
 		};
 
-		expect(runLanding(undefined)).toBe(PlayerStateEnum.IDLE);
-		expect(runLanding({ landingLag: 0, isSpecial: false })).toBe(PlayerStateEnum.IDLE);
+		expect(runLanding(undefined)).toBe(PlayerStateEnum.LANDING_LAG);
+		expect(runLanding({ landingLag: 0, isSpecial: false })).toBe(PlayerStateEnum.LANDING_LAG);
 	});
 
 	it.skip('BASELINE CHARACTERIZATION (pre-smash-charge): holding ATTACK during forward smash dealt identical damage to tap', () => {
@@ -524,7 +519,8 @@ describe('GameEngine ledge integration', () => {
 		}
 
 		expectHangingOnLeftLedge(player);
-		expect(player.invincibilityFrames).toBe(PHYSICS.LEDGE_HANG_INVINCIBILITY_FRAMES);
+		expect(player.invincibilityFrames).toBe(19);
+		expect(advance(engine, 19).players.p1?.invincibilityFrames).toBe(PHYSICS.LEDGE_HANG_INVINCIBILITY_FRAMES);
 		expect(player.isInvincible).toBe(true);
 		expect(state.ledges.left).toBe('p1');
 	});
@@ -629,12 +625,21 @@ describe('GameEngine ledge integration', () => {
 		const player1 = state.players.p1;
 		const player2 = state.players.p2;
 
-		expect(player1?.state).toBe(PlayerStateEnum.AIRBORNE);
-		expect(player1?.ledgeId).toBeNull();
-		expect(player1?.vx).toBe(PHYSICS.LEDGE_TRUMP_POP_VX);
-		expect(player1?.vy).toBe(PHYSICS.LEDGE_TRUMP_POP_VY);
-		expect(player1?.isInvincible).toBe(true);
-		expect(player1?.invincibilityFrames).toBe(PHYSICS.LEDGE_TRUMP_INVINCIBILITY_FRAMES);
+		expect(player1?.state).toBe(PlayerStateEnum.LEDGE_HANG);
+		expect(player1?.ledgeId).toBe('left');
+		expect(advance(engine, 17).players.p1?.state).toBe(PlayerStateEnum.LEDGE_HANG);
+		expect(tick(engine).players.p1).toMatchObject({
+			state: PlayerStateEnum.LEDGE_TRUMP, stateFrame: 0, ledgeId: null,
+			vx: PHYSICS.LEDGE_TRUMP_POP_VX, vy: PHYSICS.LEDGE_TRUMP_POP_VY,
+			isInvincible: false, invincibilityFrames: 0,
+		});
+		for (let age = 1; age < PHYSICS.LEDGE_TRUMP_RECOVERY_FRAMES; age++) {
+			primePlayer(engine, 'p1', { x: 640, y: 100, isGrounded: false });
+			expect(tick(engine, { p1: makeInput('p1', INPUT_BITS.JUMP) }).players.p1).toMatchObject({
+				state: PlayerStateEnum.LEDGE_TRUMP, stateFrame: age,
+			});
+		}
+		expect(tick(engine, { p1: makeInput('p1', INPUT_BITS.JUMP) }).players.p1?.state).toBe(PlayerStateEnum.DOUBLE_JUMP);
 
 		expect(player2).toBeDefined();
 		if (!player2) {
@@ -656,9 +661,11 @@ describe('GameEngine ledge integration', () => {
 		});
 
 		tick(engine);
-		const dropState = tick(engine, { p1: makeInput('p1', INPUT_BITS.DOWN) });
+		expect(tick(engine, { p1: makeInput('p1', INPUT_BITS.DOWN) }).players.p1?.state).toBe(PlayerStateEnum.LEDGE_HANG);
+		const dropState = advance(engine, 18);
 		expect(dropState.ledges.left).toBeNull();
 		expect(dropState.players.p1?.state).toBe(PlayerStateEnum.AIRBORNE);
+		expect(dropState.players.p1?.invincibilityFrames).toBe(0);
 
 		primePlayer(engine, 'p1', {
 			x: 150,
@@ -686,7 +693,10 @@ describe('GameEngine ledge integration', () => {
 			isKnockedOut: false,
 			ledgeId: null,
 		});
-		advance(engine, PHYSICS.LEDGE_REGRAB_COOLDOWN_FRAMES);
+		for (let elapsed = 0; elapsed < PHYSICS.LEDGE_REGRAB_COOLDOWN_FRAMES; elapsed++) {
+			primePlayer(engine, 'p1', { y: 100, vy: 0 });
+			tick(engine);
+		}
 		primePlayer(engine, 'p1', {
 			x: 150,
 			y: 505,
@@ -702,6 +712,7 @@ describe('GameEngine ledge integration', () => {
 		expect(regrabState.players.p1?.state).toBe(PlayerStateEnum.LEDGE_HANG);
 		expect(regrabState.players.p1?.ledgeId).toBe('left');
 		expect(regrabState.ledges.left).toBe('p1');
+		expect(regrabState.players.p1?.invincibilityFrames).toBe(0);
 	});
 
 	it('supports 4-player chain trumping on one ledge', () => {
@@ -725,7 +736,7 @@ describe('GameEngine ledge integration', () => {
 		});
 		const secondState = tick(engine);
 		expect(secondState.ledges.left).toBe('p2');
-		expect(secondState.players.p1?.state).toBe(PlayerStateEnum.AIRBORNE);
+		expect(secondState.players.p1?.state).toBe(PlayerStateEnum.LEDGE_HANG);
 
 		primePlayer(engine, 'p3', {
 			x: 150,
@@ -737,8 +748,12 @@ describe('GameEngine ledge integration', () => {
 		const thirdState = tick(engine);
 
 		expect(thirdState.ledges.left).toBe('p3');
-		expect(thirdState.players.p2?.state).toBe(PlayerStateEnum.AIRBORNE);
-		expect(thirdState.players.p2?.ledgeId).toBeNull();
+		expect(thirdState.players.p2?.state).toBe(PlayerStateEnum.LEDGE_HANG);
+		expect(thirdState.players.p2?.ledgeId).toBe('left');
+		expect(advance(engine, 17).players.p1?.state).toBe(PlayerStateEnum.LEDGE_TRUMP);
+		const secondPop = tick(engine);
+		expect(secondPop.players.p2?.state).toBe(PlayerStateEnum.LEDGE_TRUMP);
+		expect(secondPop.ledges.left).toBe('p3');
 		expect(thirdState.players.p3?.state).toBe(PlayerStateEnum.LEDGE_HANG);
 		expect(thirdState.players.p4?.state).not.toBe(PlayerStateEnum.LEDGE_HANG);
 	});
@@ -1948,3 +1963,88 @@ describe('GameEngine ledge integration', () => {
 	});
 
 
+
+it('caps consecutive grabs across both ledges and resets on landing', () => {
+	const engine = createEngine();
+	const approach = (left: boolean) => primePlayer(engine, 'p1', {
+		x: left ? 150 : 1130, y: 505, vx: 0, vy: 0,
+		state: PlayerStateEnum.AIRBORNE, isGrounded: false, ledgeId: null,
+	});
+	for (let grab = 0; grab < PHYSICS.LEDGE_CONSECUTIVE_GRAB_LIMIT; grab++) {
+		approach(grab % 2 === 0);
+		expect(tick(engine).players.p1).toMatchObject({
+			state: PlayerStateEnum.LEDGE_HANG,
+			invincibilityFrames: grab === 0 ? 19 : 0,
+		});
+		tick(engine, { p1: makeInput('p1', INPUT_BITS.DOWN) });
+		expect(advance(engine, 18 + Math.max(0, grab - 1)).players.p1?.state).toBe(PlayerStateEnum.AIRBORNE);
+		for (let elapsed = 1; elapsed < PHYSICS.LEDGE_REGRAB_COOLDOWN_FRAMES; elapsed++) {
+			primePlayer(engine, 'p1', { x: 640, y: 100, vx: 0, vy: 0 });
+			tick(engine);
+		}
+	}
+	approach(true);
+	expect(tick(engine).players.p1?.state).toBe(PlayerStateEnum.AIRBORNE);
+	primePlayer(engine, 'p1', { x: 640, y: 471, vy: 4 });
+	expect(tick(engine).players.p1?.isGrounded).toBe(true);
+	approach(true);
+	expect(tick(engine).players.p1).toMatchObject({
+		state: PlayerStateEnum.LEDGE_HANG,
+		invincibilityFrames: 19,
+	});
+});
+it.each([
+	[INPUT_BITS.UP, PlayerStateEnum.LEDGE_CLIMB, 33, 27],
+	[INPUT_BITS.JUMP, PlayerStateEnum.LEDGE_JUMP, 12, 10],
+	[INPUT_BITS.SHIELD, PlayerStateEnum.LEDGE_ROLL, 25, 20],
+	[INPUT_BITS.ATTACK, PlayerStateEnum.LEDGE_ATTACK, 28, 23],
+] as const)('starts a dedicated protection window for %i after a fresh grab and regrab', (button, option, fresh, regrab) => {
+	for (const repeat of [false, true]) {
+		const engine = createEngine();
+		const approach = () => {
+			primePlayer(engine, 'p1', {
+				x: 150, y: 505, vx: 0, vy: 0, state: PlayerStateEnum.AIRBORNE,
+				isGrounded: false, ledgeId: null,
+			});
+			expect(tick(engine).players.p1?.state).toBe(PlayerStateEnum.LEDGE_HANG);
+		};
+		approach();
+		if (repeat) {
+			tick(engine, { p1: makeInput('p1', INPUT_BITS.DOWN) });
+			advance(engine, 18);
+			for (let elapsed = 1; elapsed < PHYSICS.LEDGE_REGRAB_COOLDOWN_FRAMES; elapsed++) {
+				primePlayer(engine, 'p1', { x: 640, y: 100, vx: 0, vy: 0 });
+				tick(engine);
+			}
+			approach();
+		}
+		const protectedTicks = repeat ? regrab : fresh;
+		expect(tick(engine, { p1: makeInput('p1', button) }).players.p1?.state).toBe(PlayerStateEnum.LEDGE_HANG);
+		expect(advance(engine, 18).players.p1).toMatchObject({
+			state: option, stateFrame: 0, isInvincible: true, invincibilityFrames: protectedTicks,
+		});
+		expect(advance(engine, protectedTicks - 1).players.p1?.isInvincible).toBe(true);
+		expect(tick(engine).players.p1?.isInvincible).toBe(false);
+	}
+});
+it('keeps resources spent and occupancy empty for both vulnerable approach ticks', () => {
+	const engine = createEngine();
+	primePlayer(engine, 'p1', {
+		x: 190, y: 536, vx: 0, vy: 0, state: PlayerStateEnum.AIRBORNE,
+		isGrounded: false, hasDoubleJump: false, hasAirDodge: false,
+	});
+	for (let age = 0; age < 2; age++) {
+		const snapshot = tick(engine);
+		expect(snapshot.ledges.left).toBeNull();
+		expect(snapshot.players.p1).toMatchObject({
+			state: PlayerStateEnum.LEDGE_APPROACH, stateFrame: age, isInvincible: false,
+			hasDoubleJump: false, hasAirDodge: false,
+		});
+	}
+	const caught = tick(engine);
+	expect(caught.ledges.left).toBe('p1');
+	expect(caught.players.p1).toMatchObject({
+		state: PlayerStateEnum.LEDGE_HANG, stateFrame: 0, isInvincible: true,
+		hasDoubleJump: true, hasAirDodge: true,
+	});
+});

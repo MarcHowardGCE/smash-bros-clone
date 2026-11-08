@@ -35,6 +35,8 @@ import type { PlayerState, HitboxData, Circle, InputEvent } from '@smash/shared'
  * `result.hit` before consuming the other fields.
  */
 export interface HitResult {
+  techRestriction?: HitboxData['techRestriction'];
+  launchElectric?: true;
   attackerHitlagFrames?:number;
   shieldStunFrames?:number;
   asdiImpactX?:number;
@@ -229,6 +231,8 @@ export function resolveHit(
  const displacement=asdiPolicy(hitbox,defenderInput?.held??0,defender.isGrounded,isHeldContact(attacker)||shielding);
 	return {
 		hit: true,
+		techRestriction: shielding ? undefined : hitbox.techRestriction,
+		launchElectric: !shielding && electric ? true : undefined,
 		damage: scaledDamage,
 		knockbackVx: vx,
 		knockbackVy: vy,

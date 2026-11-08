@@ -146,7 +146,7 @@ describe('Perfect Shield (Powershield)', () => {
 		expect(PHYSICS.PERFECT_SHIELD_WINDOW_FRAMES).toBe(5);
 	});
 
-	it('hit landing at release-frame 2 (within perfect-shield window) produces shieldStunFrames === 0 and unchanged shieldHealth', () => {
+	it('hit landing at release-frame 2 (within perfect-shield window) retains guardstun and preserves shield health', () => {
 		const engine = createEngine();
 		const damage = 10;
 
@@ -158,12 +158,12 @@ describe('Perfect Shield (Powershield)', () => {
 			defenderStateFrame: 2, // within PERFECT_SHIELD_WINDOW_FRAMES (0-4)
 		});
 
-		// Perfect shield: ordinary guardstun skipped, no health drain
-		expect(defender.shieldStunFrames).toBe(0);
+		// Perfect shield: guardstun is retained and shield health is preserved
+		expect(defender.shieldStunFrames).toBe(10);
 		expect(defender.shieldHealth).toBe(100); // unchanged
 	});
 
-	it('hit landing at release-frame 0 (first frame of perfect-shield window) produces shieldStunFrames === 0 and unchanged shieldHealth', () => {
+	it('hit landing at release-frame 0 (first frame of perfect-shield window) retains guardstun and preserves shield health', () => {
 		const engine = createEngine();
 		const damage = 15;
 
@@ -175,11 +175,11 @@ describe('Perfect Shield (Powershield)', () => {
 			defenderStateFrame: 0, // first frame of window
 		});
 
-		expect(defender.shieldStunFrames).toBe(0);
+		expect(defender.shieldStunFrames).toBe(14);
 		expect(defender.shieldHealth).toBe(100);
 	});
 
-	it('hit landing at release-frame 3 (fourth frame of perfect-shield window) produces shieldStunFrames === 0 and unchanged shieldHealth', () => {
+	it('hit landing at release-frame 3 (fourth frame of perfect-shield window) retains guardstun and preserves shield health', () => {
 		const engine = createEngine();
 		const damage = 8;
 
@@ -191,7 +191,7 @@ describe('Perfect Shield (Powershield)', () => {
 			defenderStateFrame: 3, // fourth frame of window
 		});
 
-		expect(defender.shieldStunFrames).toBe(0);
+		expect(defender.shieldStunFrames).toBe(8);
 		expect(defender.shieldHealth).toBe(100);
 	});
 
@@ -250,10 +250,10 @@ describe('Perfect Shield (Powershield)', () => {
 		// Protected hits do not drain shield health or cause a break.
 		expect(defender.state).toBe(PlayerStateEnum.SHIELD);
 		expect(defender.shieldHealth).toBe(100);
-        expect(defender.shieldStunFrames).toBe(0);
+        expect(defender.shieldStunFrames).toBe(122);
 	});
 
-	it('perfect shield with high damage (but not breaking shield) skips ordinary guardstun and prevents drain', () => {
+	it('perfect shield with high damage (but not breaking shield) retains guardstun and prevents drain', () => {
 		const engine = createEngine();
 		const damage = 50; // high but not breaking
 
@@ -265,8 +265,8 @@ describe('Perfect Shield (Powershield)', () => {
 			defenderStateFrame: 1, // within perfect-shield window
 		});
 
-		// Perfect shield: ordinary guardstun skipped, no health drain (even with high damage)
-		expect(defender.shieldStunFrames).toBe(0);
+		// Perfect shield: guardstun is retained and shield health is preserved (even with high damage)
+		expect(defender.shieldStunFrames).toBe(42);
 		expect(defender.shieldHealth).toBe(100);
 	});
 

@@ -77,6 +77,12 @@ export const PHYSICS = {
   TUMBLE_THRESHOLD: 80,
   /** Buffered tech-input window in frames before landing while tumbling. */
   TECH_WINDOW_FRAMES: 20,
+  LAUNCH_TECH_BUFFER_TICKS: 12,
+  LAUNCH_TECH_REPEAT_TICKS: 28,
+  LAUNCH_TECH_AIR_DODGE_TICKS: 15,
+  WALL_TECH_JUMP_WINDOW_TICKS: 5,
+  CEILING_TECH_FRAMES: 26,
+  CEILING_TECH_INTANGIBILITY_FRAMES: 17,
   /** Total frames locked in neutral tech (invincible during the animation). */
   TECH_NEUTRAL_FRAMES: 26,
   /** Total animation duration in frames for a directional tech roll. */
@@ -104,8 +110,10 @@ export const PHYSICS = {
   LEDGE_GRAB_VERTICAL_TOLERANCE: 40,
   /** Frames of invincibility granted on ledge grab (flat, not percent-scaled). */
   LEDGE_HANG_INVINCIBILITY_FRAMES: 45,
-  /** Frames before the same player can regrab the same ledge after dropping (~0.5 s). */
-  LEDGE_REGRAB_COOLDOWN_FRAMES: 30,
+  /** Minimum ticks from leaving a ledge to the next grab of that edge. */
+  LEDGE_REGRAB_COOLDOWN_FRAMES: 44,
+  /** Total grabs, including the first, before landing or taking a reaction hit. */
+  LEDGE_CONSECUTIVE_GRAB_LIMIT: 6,
   /** Total animation and lock frames for the ledge climb getup option. */
   LEDGE_CLIMB_FRAMES: 40,
   /** Frames before a ledge jump becomes fully airborne-controllable. */
@@ -124,8 +132,8 @@ export const PHYSICS = {
   LEDGE_TRUMP_POP_VX: 3,
   /** Upward velocity in px/frame applied to a ledge-trumped player (negative = upward). */
   LEDGE_TRUMP_POP_VY: -6,
-  /** Brief invincibility grace-period frames granted to the trumped player after being popped. */
-  LEDGE_TRUMP_INVINCIBILITY_FRAMES: 20,
+  /** Action lock after the displaced fighter is ejected. Horizontal drift remains available. */
+  LEDGE_TRUMP_RECOVERY_FRAMES: 28,
   /** Scales reflected damage when the Down Special counter window is active. */
   COUNTER_DAMAGE_MULTIPLIER: 1.3,
   /** Scales reflected knockback magnitude for a successful counter hit. */
@@ -150,8 +158,10 @@ export const PHYSICS = {
   WALL_JUMP_INTANGIBILITY_FRAMES: 10,
   /** Frames of intangibility after a wall tech. */
   WALL_TECH_INTANGIBILITY_FRAMES: 12,
-  /** L-cancel input window in frames before landing; Melee spec (SmashWiki/Liquipedia-verified). */
-  L_CANCEL_WINDOW_FRAMES: 7,
+  /** Standard landing duration when an aerial auto-cancels, including contact. */
+  AUTO_CANCEL_LANDING_FRAMES: 4,
+  STANDING_HITSTUN_LANDING_FRAMES: 4,
+  TUMBLE_DODGE_BUFFER_TICKS: 9,
   /** Initial horizontal slide velocity in px/frame on a wavedash; decays via GROUND_FRICTION each frame. */
   WAVEDASH_INITIAL_SLIDE_VELOCITY: 8,
   /** Landing lag frames from an air-dodge landing (wavedash); Melee spec-verified. */

@@ -382,3 +382,89 @@ Fresh dodge profiles now use Mario (All-Rounder), Ganondorf (Abe Lincoln) and Fo
 Choose **Training Dojo** from the main menu for zero-damage free practice or 18 guided lessons. Practice supports all three fighters and six worlds, passive/shielding/telegraphed partners, unlimited arena resets and no win/loss. Lessons require three real successful executions and save completion per fighter on this device. R resets, F2 opens the dojo menu, and Escape/Start pauses with controller-accessible practice options. See [Training Dojo](docs/TRAINING-DOJO.md) for implementation, validation and planned simulator tools.
 
 The dojo now includes a **Timing laboratory**: 1x/0.5x/0.25x playback, F6 freeze/run, F7 single-tick stepping and F3 collision overlays. Xbox Back freezes/steps; Start opens controller-accessible lab controls. Free Practice adds F8 recording, F9 partner playback and three saved routine slots with mirroring/repeat/delay. See [Training laboratory](docs/TRAINING-LAB.md).
+
+## Ultimate controls refinement — independent attack presses
+
+Xbox B and the right stick now have separate attack press detection. A held input no longer masks a new press from the other source or supplies its aim. If multiple attack presses reach the same server tick, the latest attack sample supplies the attack aim and shortcut while the newest input sample still drives movement. If both sources activate in one sample, right-stick aim takes precedence.
+
+Next are real-controller checks against Ultimate 13.0.5, including right-stick neutral rearm, simultaneous input priority, and the existing smash-flick windows. Movement and landing timing still need their own parity pass.
+
+The Dojo Timing laboratory includes an Input trace. It keeps the last eight input or state changes, with simulation ticks, presses/releases, stick aim and the move or state the engine entered. Use freeze and frame stepping to compare attack and jump sequences on a real controller.
+
+Up smash now accepts a face-button press on the first two ticks after a grounded stick jump begins, following the older Ultimate Training measurements at https://w.atwiki.jp/smashsp_kensyou/pages/45.html. The simultaneous input still works. This cancel applies only to stick jump; hardware verification on Ultimate 13.0.5 remains open.
+
+Right-stick attacks now rearm only after a sample inside the right-stick neutral deadzone. The current raw radial cutoff is 0.20, chosen from the existing controller deadzone; the attack threshold remains 0.55 after calibration. Physical-controller comparison against Ultimate 13.0.5 is still pending.
+
+Controller stick settings now expose stick jump and Low/Normal/High smash-input sensitivity. Sensitivity changes the left-stick flick window by one tick in either direction without changing movement thresholds, following https://w.atwiki.jp/smashsp_kensyou/pages/45.html. The selected sensitivity is shown in the Dojo input trace and retained in new partner recordings. Hardware validation on Ultimate 13.0.5 remains open.
+
+Controller Stick Settings also offers right-stick Smash or Tilt and an A+B Smash toggle. Tilt mode selects ground tilts and directional aerials and does not bypass shield drop. The selected right-stick mode is preserved with the attack through online input merging, buffering and Dojo recordings.
+
+Analog dash now starts on the first qualifying horizontal flick or when the stick crosses the dash threshold on the following tick. Sustained analog dash uses a provisional 10-tick initial dash with a per-fighter duration field. The original keyboard dash timing still applies to digital input. Run brake and turnaround action windows remain the next movement pass.
+
+Analog run release and reversal now use separate brake and turnaround states with matching sprite cues. Neutral braking retains forward drift until stopping, while reversal preserves the original velocity and accelerates against it. Early brake attacks become dash attack, and ordinary attacks reopen on the fifth combined brake/turn tick. Jump and up smash remain available early. Specialized grab, dodge, and special-cancel cases and console measurements remain open.
+
+Analog run transitions now include early dash grab, pivot grab, backward roll during braking, and forward roll from the fifth brake tick. A grab or special pressed on the third or fourth brake tick is saved for the fifth; early turnaround up-special requires jump plus up-special. These are project implementations of the published movement reference and still need physical-controller signoff.
+
+Button-jump squat now accepts later attack presses and starts the queued short-hop aerial on takeoff. A second held jump button can force a short hop during squat. A face-button attack on stick-jump takeoff can start a full-hop aerial, and right-stick attacks can still trigger the short-hop route. Right-stick direction expiry during the shortcut and version-matched hardware checks remain open. Reference: https://w.atwiki.jp/smashsp_kensyou/pages/75.html.
+
+Aerial landing now uses move-specific early and late auto-cancel windows. Shield no longer shortens aerial landing lag. The current auto-cancel duration is four ticks including contact, while normal aerials use their existing move-specific durations counted from contact. Special and air-dodge landing recovery remain separate. The Dojo input trace shows remaining locked ticks and the first action after landing. Window endpoints are project tuning, using the Ultimate mechanic as the reference: https://w.atwiki.jp/smashsp_kensyou/pages/136.html.
+
+
+Landing recovery now accepts jump and face-button attack presses up to nine ticks before the first actionable tick. An earlier press can still queue once if held through the third tick before recovery ends. Releasing before that cutoff lets the old press expire. The hold can start during an aerial already in progress. Right-stick presses and Shield retain their existing buffer rules. The timings follow published Ultimate input measurements (https://w.atwiki.jp/smashsp_kensyou/pages/111.html).
+
+
+### Dojo launch and KO lab
+
+In Free Practice, open **Timing laboratory → Launch and KO lab**. Set your fighter and partner independently to 0%, 50%, 100%, 150%, or 200%. Presets stay fixed through hits and arena resets and start at 0% in each new session. The lab reports the last launch for each fighter, including knockback, hitstun, tumble, base launch speed before directional influence, and maximum displacement during the tracked reaction. A real blast-zone crossing records the boundary before the arena resets. Screen and star KO previews use the selected fighter's existing art without moving fighters or using stocks.
+
+
+
+### Steep upward launch tuning
+
+Dojo testing across all five fighters found that steep up-smash launches were falling short of the top boundary until extreme damage. Tracked steep upward tumbles now use weight-scaled launch gravity and a dedicated fall cap. All-Rounder's center-stage mirror up-smash top KO moved from 238% to 161% on Stage 1 under neutral input. See docs/LAUNCH-MOTION-REFINEMENT.md for the five-fighter matrix and remaining hitstun timing work.
+
+
+
+### Strong-hit launch timing
+
+Strong tumble hits now traverse the early launch path faster and spend fewer real ticks in hitstun. The Dojo reports base and compressed hitstun side by side. The five-fighter browser timing results and KO regression matrix are in docs/LAUNCH-MOTION-REFINEMENT.md.
+
+
+
+Gentle analog run reversals now update facing on the first turnaround tick, even below the stick threshold for digital Left/Right. Hoagie turns symmetrically while his remaining momentum carries him briefly in the old direction.
+
+
+Tracked strong launches now sample tenths of a virtual frame and resolve bounces against solid floors, sides and ceilings. Floor rebounds are immediate. Wall and ceiling rebounds have contact freeze, and all three shorten remaining virtual hitstun. The Dojo records the contact, freeze, and hitstun change. See docs/LAUNCH-MOTION-REFINEMENT.md for reference limits and five-fighter verification.
+
+
+
+Tracked tumble techs now use a 12-tick pre-contact input window, a 28-tick repeat lockout, and a 15-tick window for a recent air dodge. Ceiling tech has a 26-tick recovery and 17 intangible ticks. A tracked wall tech can select a wall jump through tick five, with movement on tick six. The Dojo shows both ceiling-tech timings. Authored hitboxes can block tech on the first launch collision, either on the floor only or on any surface. The Dojo identifies when a hitbox blocked a tech. Collision-freeze rounding, the disputed upper clamp, and cinematic tech timing remain provisional. See docs/LAUNCH-MOTION-REFINEMENT.md.
+
+
+Tracked body launches now allow an air-dodge cancel after 40 live hitstun ticks at reference launch speed 2.5 or lower, or a regular aerial after 45 ticks at speed 2.0 or lower. Electric hits add one tick to either gate. These gates use remaining launch momentum without gravity. Jump and special wait for recovery during tracked body launches, including spikes. See docs/LAUNCH-MOTION-REFINEMENT.md.
+
+Zero-hitlag tumbles now apply directional influence and launch-speed influence from the stick on the first movement tick. Weak launches, existing throw hitlag values, and hitstop displacement rules keep their current behavior. See docs/LAUNCH-MOTION-REFINEMENT.md.
+
+Ordinary throw releases have zero hitlag. An explicitly authored release can freeze the victim only, and a tumbling throw samples DI and LSI when the victim starts moving. The current checkpoint and next grounded-recovery audit are recorded in [Refinement](docs/REFINEMENT.md#current-combat-parity-checkpoint).
+
+Grounded fighters can act on the first unlocked hitstun tick. A standing launch that lands before recovery ends accounts for its landing lock separately from the action transition. See [the combat parity checkpoint](docs/REFINEMENT.md#current-combat-parity-checkpoint).
+
+Shield now starts a first-tick air dodge after ordinary body-hit tumble, including held input and recent taps. Same-tick floor contact routes to the existing tech check. See [the combat parity checkpoint](docs/REFINEMENT.md#current-combat-parity-checkpoint).
+
+During airborne body-hit stun, Jump, aerial Attack and Special can buffer for the first unlocked tick. The [combat parity checkpoint](docs/REFINEMENT.md#current-combat-parity-checkpoint) records the tested windows and air-dodge landing follow-up.
+
+Air-dodge landing counts floor contact as the first recovery tick. Neutral dodge unlocks grounded actions 10 ticks after contact. During a directional air dodge, holding Down prevents a ledge grab until you release it. Directional air dodges still land on soft platforms with Down held. The directional recovery curve and soft-platform behavior remain provisional. See [Air-dodge contact verification](docs/LAUNCH-MOTION-REFINEMENT.md#directional-air-dodge-platform-and-ledge-contacts).
+
+A same-edge ledge regrab opens 44 ticks after leaving. Regrabs before landing or taking a reaction hit grant no fresh hang intangibility, and the seventh consecutive grab is denied. See [Ledge regrab verification](docs/LAUNCH-MOTION-REFINEMENT.md#ledge-regrab-cooldown-and-intangibility).
+
+Neutral ledge getup, jump, roll, and attack now each grant their own protection window. Successive grabs shorten those windows and the fourth grab onward grants none. See [Ledge getup and catch timing](docs/LAUNCH-MOTION-REFINEMENT.md#ledge-getup-intangibility-and-catch-window).
+
+Ledge grabs can now have up to two vulnerable approach ticks. A successful catch claims the edge, restores aerial resources, and locks getups for 19–23 ticks. A getup input during the lock plays on the first unlocked tick. See [Ledge approach and forced catch](docs/LAUNCH-MOTION-REFINEMENT.md#ledge-approach-and-forced-catch).
+
+A ledge trump transfers ownership immediately. A displaced fighter finishes any forced catch before being ejected into 28 ticks of vulnerable recovery with horizontal steering. Their same-edge regrab cooldown starts at ejection. See [Ledge trump timing](docs/LAUNCH-MOTION-REFINEMENT.md#ledge-trump-displacement-and-recovery).
+
+A fresh normal aerial can start with a double jump or on the next tick. The combined input applies the same launch and spends the same jump as Jump alone. See [Double-jump aerial input timing](docs/LAUNCH-MOTION-REFINEMENT.md#double-jump-aerial-input-timing).
+
+Dodge fatigue recovery continues during ledge approach and forced catch. The one-shot refresh starts on the catch, on an air-dodge landing, or on the first unfrozen tick after an interrupted dodge. See [Five-fighter dodge fatigue audit](docs/FATIGUE-PARRY-SEQUENCE-AUDIT.md#five-fighter-fatigue-and-recovery-audit).
+
+A successful parry preserves the attack's guardstun after parry hitstop. The defender is protected through both and can act on the first unlocked tick. Jump, face Attack, Special, and Grab can be tapped up to 29 ticks before unlock or qualified by an earlier hold through the three-tick cutoff. Shield re-raises if held at unlock. Right-stick tilts and smashes can also queue. For side attacks, the left stick chooses facing after the right-stick direction expires. Online input omits unset controller fields so they pass server validation. A tilt-only flick while face Attack stays held preserves a fresh face press in the same server tick. Dojo routines replay recorded Attack presses. The Dojo input trace shows face Attack and right-stick releases separately and reports the tick smash charge stops. See [Post-parry action buffer](docs/FATIGUE-PARRY-SEQUENCE-AUDIT.md#post-parry-action-buffer) and [two-client right-stick replay](docs/FATIGUE-PARRY-SEQUENCE-AUDIT.md#two-client-right-stick-replay).

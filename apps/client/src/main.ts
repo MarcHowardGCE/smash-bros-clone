@@ -888,9 +888,17 @@ async function main() {
     localMatch = new LocalMatch(controllers, characterIds,selectedStage.id,Boolean(practice));
     if(practice&&practiceDummy){
       const routine=new PracticeRoutine();practiceDummy.routine=routine;practiceOverlay=new PracticeOverlay(layers.game);
-      practicePanel=new PracticePanel(practice,practiceDummy,()=>localMatch?.resetPractice(),()=>uiManager.onPractice?.(),()=>uiManager.getPhase()==='match',{match:localMatch,routine,overlay:practiceOverlay});
-      uiManager.onPracticeLabActions=()=>practicePanel?.labActions()??[];
-      localMatch.onStep=(state,inputs)=>practicePanel?.observe(state,inputs);
+      practicePanel=new PracticePanel(practice,practiceDummy,()=>{koPresenter.clear();localMatch?.resetPractice();},()=>uiManager.onPractice?.(),()=>uiManager.getPhase()==='match',{
+        match:localMatch,routine,overlay:practiceOverlay,
+        previewKO:(kind,side)=>{
+          const player=localMatch?.getLatestSnapshot()?.players[side==='you'?'local-p1':'local-p2'];
+          return player ? koPresenter.preview(kind,dojoSimulationProfile(side==='you'?practice.fighter:practice.dummy),{
+            x:player.x,y:player.y-60,facing:player.facing,
+          }) : false;
+        },
+      });
+      uiManager.onPracticeLabActions=()=>practicePanel?.labActions(false)??[];
+      localMatch.onStep=(state,inputs,hits,exits)=>practicePanel?.observe(state,inputs,hits,exits);
       uiManager.onPracticeMenu=()=>uiManager.onPractice?.();uiManager.onPracticeReset=()=>{practicePanel?.reset();uiManager.onResume?.();};
     }
     localMatch.onSnapshot = (snapshot) => {

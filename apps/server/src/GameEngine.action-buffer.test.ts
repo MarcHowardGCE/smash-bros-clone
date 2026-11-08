@@ -30,3 +30,36 @@ it('an available double jump executes in air rather than being saved for landing
 });
 
 it('zero landing lag routes a fresh jump without an idle flash',()=>{expect(tick(make('LANDING_LAG',0),input(B.JUMP)).state).toBe('JUMPSQUAT');});
+
+it.each([
+ [B.JUMP, 'JUMPSQUAT', null],
+ [B.ATTACK, 'ATTACK', M.JAB],
+ [B.SHIELD, 'SHIELD', null],
+ [B.SPECIAL, 'ATTACK', M.NEUTRAL_SPECIAL],
+ [B.JUMP | B.ATTACK, 'JUMPSQUAT', null],
+] as const)('accepts grounded input %i on the first unlocked tick', (bits, state, move) => {
+ const e=make('HITSTUN',0);
+ Object.assign((e as any).state.players.a,{hitstunFramesRemaining:2});
+ expect(tick(e,input(bits))).toMatchObject({state:'HITSTUN',hitstunFramesRemaining:1});
+ expect(tick(e)).toMatchObject({state:'HITSTUN',hitstunFramesRemaining:0});
+ const recovered=tick(e,input(bits));
+ expect(recovered).toMatchObject({state,stateFrame:0,currentMoveId:move});
+ if(bits===(B.JUMP|B.ATTACK))expect(recovered.queuedJumpMoveId).toBe(M.NEUTRAL_AIR);
+});
+
+it.each([[1,3],[8,8]])('counts landing recovery explicitly with %i ticks before contact', (stun, remaining) => {
+ const e=make('HITSTUN',0);
+ Object.assign((e as any).state.players.a,{isGrounded:false,y:471,vy:2,lastHitKnockbackAngle:0,hitstunFramesRemaining:stun});
+ expect(tick(e)).toMatchObject({state:'HITSTUN',isGrounded:true,hitstunFramesRemaining:remaining});
+ expect(tick(e,input(B.JUMP)).state).toBe('HITSTUN');
+ for(let i=1;i<remaining;i++)expect(tick(e).state).toBe('HITSTUN');
+ expect(tick(e,input(B.JUMP)).state).toBe('JUMPSQUAT');
+});
+
+it('finishes grounded hitstun without an airborne transition or a stale press', () => {
+ const e=make('HITSTUN',0);
+ Object.assign((e as any).state.players.a,{hitstunFramesRemaining:1});
+ expect(tick(e,input(B.ATTACK)).state).toBe('HITSTUN');
+ expect(tick(e,input(0,B.ATTACK))).toMatchObject({state:'IDLE',currentMoveId:null});
+});
+

@@ -116,6 +116,9 @@ describe('full-body pilot timing', () => {
 });
 
 it('matches ledge catch, hang and getup timing without looping recovery',()=>{
+ expect(selectPilotFrame(S.LEDGE_APPROACH,0,null)).toEqual({clip:'ledge_catch',index:0});
+ expect(selectPilotFrame(S.LEDGE_TRUMP,0,null)).toEqual({clip:'ledge_trump',index:0});
+ expect(selectPilotFrame(S.LEDGE_TRUMP,27,null)).toEqual({clip:'ledge_trump',index:3});
  expect(selectPilotFrame(S.LEDGE_HANG,0,null)).toEqual({clip:'ledge_catch',index:0});
  expect(selectPilotFrame(S.LEDGE_HANG,7,null)).toEqual({clip:'ledge_catch',index:3});
  expect(selectPilotFrame(S.LEDGE_HANG,8,null)).toEqual({clip:'ledge_hang',index:0});

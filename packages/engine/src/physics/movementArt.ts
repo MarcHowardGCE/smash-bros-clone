@@ -8,15 +8,19 @@ export function withMovementArt(before:PlayerState,after:PlayerState,input:Input
  const set=(name:string)=>{cue=name;age=0;};
  if(!neutral||after.respawnTimer>0)return{...after,artCue:after.artCue==='respawn_drop'?after.artCue:undefined,artCueFrame:after.artCue==='respawn_drop'?after.artCueFrame:undefined};
  if(before.respawnTimer>0&&after.respawnTimer===0)set('respawn_drop');
- else if(before.isGrounded&&!after.isGrounded&&((input?.held??0)&INPUT_BITS.DOWN))set('platform_drop');
  else if(before.state==='JUMPSQUAT'&&after.state==='AIRBORNE')set(Math.abs(after.vx)<.5?'takeoff_neutral':after.vx*after.facing>0?'takeoff_forward':'takeoff_backward');
+ else if(before.isGrounded&&!after.isGrounded&&((input?.held??0)&INPUT_BITS.DOWN)){
+  const feet=before.y+getCharacterStats(before.characterId).hurtboxRadius;
+  if(stage.platforms.some(p=>before.x>=p.x&&before.x<=p.x+p.width&&Math.abs(feet-p.y)<=2))set('platform_drop');
+ }
  else if(before.state==='AIR_DODGE'&&after.isGrounded)set('air_dodge_land');
  else if(before.state==='HITSTUN'&&before.isTumbling&&after.state==='AIRBORNE'&&!after.isTumbling&&!['wall_tech','wall_tech_jump','ceiling_tech'].includes(cue??''))set('tumble_recover');
  else if(before.state==='CROUCH'&&after.state==='IDLE')set('crouch_exit');
  else if(!before.isGrounded&&after.isGrounded&&before.vy>10&&['IDLE','AIRBORNE'].includes(after.state))set('land_heavy');
+ else if(input?.stickX!==undefined&&after.state==='DASH'&&(before.state==='IDLE'||before.state==='WALK')){cue=undefined;age=0;}
  else if(before.facing!==after.facing&&['IDLE','WALK','DASH','RUN'].includes(after.state))set(before.state==='RUN'?'turn_run':'turn_stand');
  else if(before.state==='RUN'&&after.state==='IDLE'&&Math.abs(before.vx)>.3)set('brake');
- if(cue&&age>=(cue==='entry'?54:cue==='respawn_drop'?36:['wall_tech','wall_tech_jump','ceiling_tech','air_dodge_land','tumble_recover'].includes(cue)?24:18)){cue=undefined;age=0;}
+ if(cue&&age>=(cue==='entry'?54:cue==='respawn_drop'?36:cue==='ceiling_tech'?26:['wall_tech','wall_tech_jump','ceiling_tech','air_dodge_land','tumble_recover'].includes(cue)?24:18)){cue=undefined;age=0;}
  if(!cue&&after.state==='IDLE'&&Math.abs(after.vx)<.3){const bottom=after.y+getCharacterStats(after.characterId).hurtboxRadius;for(const p of[stage.mainPlatform,...stage.platforms]){if(Math.abs(bottom-p.y)>2)continue;const edge=after.x-p.x<12?-1:p.x+p.width-after.x<12?1:0;if(edge&&after.x>=p.x&&after.x<=p.x+p.width){cue=edge===after.facing?'teeter_front':'teeter_back';age=before.artCue===cue?(before.artCueFrame??0)+1:0;break;}}}
  return{...after,artCue:cue,artCueFrame:cue?age:undefined};
 }

@@ -1,4 +1,4 @@
-import{validStickInput}from'@smash/shared';
+import{INPUT_BITS,validStickInput}from'@smash/shared';
 /**
  * @fileoverview Authoritative fixed-timestep game loop for a single match.
  *
@@ -178,7 +178,8 @@ export class MatchSession {
       const merged = this.consumeLatestInput(queue);
       if (merged) queue.push(merged);
     }
-    queue.push({ ...input, playerId });
+    // Only the server may attach press-time aim from a previous queue drain.
+    queue.push({ ...input, playerId, attackAim: undefined });
     this.inputReceivedAt.set(playerId, this.inputNow());
   }
 
@@ -386,11 +387,20 @@ export class MatchSession {
 		// is sufficient for positional intent.
 		let pressed = 0;
 		let released = 0;
-        let cAttack:InputEvent|undefined;let dualJump=false,smash=false;
+        let attack:InputEvent|undefined;
+        let sawFacePress=false;
+        let dualJump=false;
 		for (const input of queue) {
 			pressed |= input.pressed;
-            dualJump||=!!((input.pressed&4)&&input.jumpButtons===3);smash||=!!((input.pressed&16)&&input.smashAttack);
-            if((input.pressed&0x10)&&Math.hypot(input.cStickX??0,input.cStickY??0)>=.55)cAttack=input;
+            dualJump||=!!((input.pressed&INPUT_BITS.JUMP)&&input.jumpButtons===3);
+            if(input.pressed&INPUT_BITS.ATTACK){
+              // A tilt-only flick while face Attack is held cannot replace a fresh face command in this batch.
+              const faceHeldAtPress=input.attackAim?.faceAttackHeld??input.faceAttackHeld;
+              const blockedTilt=input.cStickTilt===true&&input.faceAttackPressed===false&&faceHeldAtPress&&
+                Math.hypot(input.cStickX??0,input.cStickY??0)>=.55;
+              if(!sawFacePress||!blockedTilt)attack=input;
+              sawFacePress ||= input.faceAttackPressed===true;
+            }
 			released |= input.released;
 		}
 
@@ -398,8 +408,12 @@ export class MatchSession {
 		queue.length = 0;
 		return {
 			...latest,
-            ...(dualJump?{jumpButtons:3}:{}),...(smash?{smashAttack:true}:{}),
-            ...(cAttack?{cStickX:cAttack.cStickX,cStickY:cAttack.cStickY}:{}),
+            ...(dualJump?{jumpButtons:3}:{}),
+            attackAim: attack ? attack.attackAim ?? {held:attack.held,stickX:attack.stickX,stickY:attack.stickY,faceAttackHeld:attack.faceAttackHeld} : undefined,
+            cStickX: attack?.cStickX, cStickY: attack?.cStickY, cStickTilt: attack?.cStickTilt,
+            faceAttackPressed: attack?.faceAttackPressed,
+            smashAttack: attack?.smashAttack,
+            smashSensitivity: attack?.smashSensitivity ?? latest.smashSensitivity,
 			pressed,
 			released,
 		};

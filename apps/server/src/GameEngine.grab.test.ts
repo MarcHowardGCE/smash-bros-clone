@@ -9,6 +9,7 @@ import {
 	type PlayerState,
 	PlayerStateEnum,
 } from '@smash/shared';
+import { getMoveData } from '@smash/engine';
 import { GameEngine } from './GameEngine.js';
 
 function makeInput(playerId: PlayerId, bits = 0): InputEvent {
@@ -506,3 +507,52 @@ describe('GameEngine grab integration', () => {
 		expect(state.players.p1?.staleMoveQueue?.every((moveId) => moveId === MoveId.PUMMEL)).toBe(true);
 	});
 });
+
+describe('throw release timing', () => {
+  const fighters = ['all-rounder','abe-lincoln','swift','moonshine','hulk-hoagie'] as const;
+  const throws = [
+    [MoveId.FORWARD_THROW, INPUT_BITS.RIGHT],
+    [MoveId.BACK_THROW, INPUT_BITS.LEFT],
+    [MoveId.UP_THROW, INPUT_BITS.UP],
+    [MoveId.DOWN_THROW, INPUT_BITS.DOWN],
+  ] as const;
+
+  for (const fighter of fighters) {
+    it.each(throws)(fighter + ' %s releases and starts motion without hitlag', (move, direction) => {
+      const engine = new GameEngine({playerIds:['p1','p2'], characterIds:{p1:fighter,p2:fighter}, practice:true});
+      engine.resetPractice();
+      engine.setPracticePercent('p2',150);
+      const groundY = getMutableState(engine).players.p1!.y;
+      primeGrabHoldingPair(engine);
+      primePlayer(engine,'p1',{y:groundY});
+      primePlayer(engine,'p2',{y:groundY});
+      expect(tick(engine, {p1:makeInput('p1',direction)}).players.p1?.currentMoveId).toBe(move);
+      const release = tickUntil(engine, state => state.players.p2?.state === PlayerStateEnum.HITSTUN && !state.players.p2.isGrabbing);
+      const attacker = release.players.p1!;
+      const victim = release.players.p2!;
+      expect(attacker.hitlagFramesRemaining).toBe(0);
+      expect(victim.hitlagFramesRemaining).toBe(0);
+      expect(victim.isGrabbing).toBe(false);
+      const after = tick(engine);
+      expect(after.players.p1?.stateFrame).toBe(attacker.stateFrame + 1);
+      expect(after.players.p2?.hitstunFramesRemaining).toBe(victim.hitstunFramesRemaining - 1);
+      expect(after.players.p2?.y).not.toBe(victim.y);
+    });
+  }
+
+  it('applies an explicitly authored throw freeze to the victim only', () => {
+    const engine = createEngine();
+    primeGrabHoldingPair(engine);
+    const hitbox = getMoveData(MoveId.FORWARD_THROW).hitboxPerActiveFrame[0]!;
+    primePlayer(engine,'p1',{currentMoveId:MoveId.FORWARD_THROW,activeHitbox:{...hitbox,hitlagFrames:3}});
+    const players = getMutableState(engine).players;
+    const throwEngine = engine as unknown as {
+      tryApplyThrowHit(players: GameState['players'], attackerId: PlayerId, victimId: PlayerId): boolean;
+    };
+    expect(throwEngine.tryApplyThrowHit(players,'p1','p2')).toBe(true);
+    expect(players.p1?.hitlagFramesRemaining).toBe(0);
+    expect(players.p2?.hitlagFramesRemaining).toBe(3);
+    expect(players.p2?.sdiEligible).toBe(false);
+  });
+});
+

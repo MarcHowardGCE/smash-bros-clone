@@ -55,8 +55,20 @@ export const INPUT_BITS = {
 export interface InputEvent {
   /** Controller shortcuts; absent on legacy/keyboard packets. */
   jumpButtons?:number;smashAttack?:boolean;
+  /** Distinguishes a held attack button from a held right stick. */
+  faceAttackHeld?:boolean;
+  /** Marks the face-button edge even when the right stick also presses Attack. */
+  faceAttackPressed?:boolean;
+  /** Active right-stick deflection, including when its press has already been emitted. */
+  rightStickHeld?:boolean;
+  /** Offset in ticks from the Normal smash-flick window. */
+  smashSensitivity?:-1|0|1;
+  /** True when this right-stick attack uses the tilt setting. */
+  cStickTilt?:boolean;
   /** Optional calibrated sticks, -1..1; screen coordinates (down is positive). Old digital clients remain valid. */
   stickX?:number;stickY?:number;cStickX?:number;cStickY?:number;
+  /** Server-captured direction of a merged attack press. Movement keeps the latest sample. */
+  attackAim?: Pick<InputEvent, "held" | "stickX" | "stickY" | "faceAttackHeld">;
   /** Server tick this input targets (used for rollback alignment). */
   tick: number;
   /** Monotonically incrementing sequence number per player; never resets. */

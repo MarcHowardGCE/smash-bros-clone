@@ -13,6 +13,8 @@ export function selectPilotFrame(state: string, frame: number, move: MoveId | nu
   if(tick<d.startupFrames+d.activeFrames)return {clip,index:3};
   return {clip,index:tick<d.startupFrames+d.activeFrames+Math.ceil(d.recoveryFrames/2)?4:5};
  }
+ if(state===PlayerStateEnum.LEDGE_APPROACH)return {clip:'ledge_catch',index:0};
+ if(state===PlayerStateEnum.LEDGE_TRUMP)return {clip:'ledge_trump',index:Math.min(3,Math.floor(tick/3))};
  if(state===PlayerStateEnum.LEDGE_HANG)return tick<8?{clip:'ledge_catch',index:Math.floor(tick/2)}:{clip:'ledge_hang',index:Math.floor((tick-8)/12)%4};
  const ledgeStates:Record<string,[PilotClip,number[]]>={
  LEDGE_CLIMB:['ledge_climb',[6,6,8,8,6,6]],LEDGE_ROLL:['ledge_roll',[6,6,8,8,8,9]],

@@ -85,7 +85,7 @@ describe('GameEngine air-dodge landing (replaces legacy synthetic wavedash)', ()
 		// Should land and transition to LANDING_LAG
 		expect(player.isGrounded).toBe(true);
 		expect(player.state).toBe(PlayerStateEnum.LANDING_LAG);
-		expect(player.landingLagFrames).toBe(airDodgeLandingLag({characterId:player.characterId,stateFrame:6,airDodgeDirection:{x:1,y:1}}));
+		expect(player.landingLagFrames).toBe(airDodgeLandingLag({characterId:player.characterId,stateFrame:6,airDodgeDirection:{x:1,y:1}})-1);
 		// Landing preserves current directional-flight momentum.
 		expect(player.vx).toBeCloseTo(PHYSICS.AIR_DODGE_SPEED / Math.sqrt(2));
 	});
@@ -149,7 +149,7 @@ describe('GameEngine air-dodge landing (replaces legacy synthetic wavedash)', ()
 		expect(player.vx).toBe(0);
 		// Neutral dodge landing must complete its ten recovery ticks.
 		expect(player.state).toBe(PlayerStateEnum.LANDING_LAG);
-		expect(player.landingLagFrames).toBe(10);
+		expect(player.landingLagFrames).toBe(9);
 	});
 
 	it('horizontal AIR_DODGE recovery landing (no downward component) does not wavedash', () => {
@@ -208,7 +208,7 @@ describe('GameEngine air-dodge landing (replaces legacy synthetic wavedash)', ()
 		// Should land and transition to LANDING_LAG
 		expect(player.isGrounded).toBe(true);
 		expect(player.state).toBe(PlayerStateEnum.LANDING_LAG);
-		expect(player.landingLagFrames).toBe(airDodgeLandingLag({characterId:player.characterId,stateFrame:6,airDodgeDirection:{x:1,y:1}}));
+		expect(player.landingLagFrames).toBe(airDodgeLandingLag({characterId:player.characterId,stateFrame:6,airDodgeDirection:{x:1,y:1}})-1);
 		// Landing preserves leftward flight momentum.
 		expect(player.vx).toBeCloseTo(-PHYSICS.AIR_DODGE_SPEED / Math.sqrt(2));
 	});
@@ -330,7 +330,7 @@ describe('GameEngine air-dodge landing (replaces legacy synthetic wavedash)', ()
 it('air-dodge landing starts refresh immediately while actions still wait for recovery',()=>{
  const engine=new GameEngine({playerIds:['p1']});
  primePlayer(engine,'p1',{x:640,y:471,vx:0,vy:4,state:PlayerStateEnum.AIR_DODGE,stateFrame:5,isGrounded:false,airDodgeDirection:{x:0,y:0},dodgeFatigue:3,dodgeRecoveryTicks:120,dodgeRefreshTicks:undefined});
- let p=tick(engine).players.p1!;expect(p.landingLagFrames).toBe(10);expect(p.dodgeRefreshPending).toBe(false);expect(p.dodgeRefreshTicks).toBe(60);
+ let p=tick(engine).players.p1!;expect(p.landingLagFrames).toBe(9);expect(p.dodgeRefreshPending).toBe(false);expect(p.dodgeRefreshTicks).toBe(60);
  p=tick(engine,{p1:makeInput('p1',INPUT_BITS.ATTACK)}).players.p1!;expect(p.state).toBe(PlayerStateEnum.LANDING_LAG);expect(p.dodgeRefreshTicks).toBe(59);
  while(p.landingLagFrames>3)p=tick(engine).players.p1!;
  p=tick(engine,{p1:makeInput('p1',INPUT_BITS.ATTACK)}).players.p1!;

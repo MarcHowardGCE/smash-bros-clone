@@ -445,6 +445,8 @@ Tracked body launches now allow an air-dodge cancel after 40 live hitstun ticks 
 
 Zero-hitlag tumbles now apply directional influence and launch-speed influence from the stick on the first movement tick. Weak launches, existing throw hitlag values, and hitstop displacement rules keep their current behavior. See docs/LAUNCH-MOTION-REFINEMENT.md.
 
+Grounded grabs and pummels align fighters by their feet so mixed-size opponents stay above the main platform. See [Grounded grab floor contact](docs/LAUNCH-MOTION-REFINEMENT.md#grounded-grabs-and-main-platform-contact).
+
 Ordinary throw releases have zero hitlag. An explicitly authored release can freeze the victim only, and a tumbling throw samples DI and LSI when the victim starts moving. The current checkpoint and next grounded-recovery audit are recorded in [Refinement](docs/REFINEMENT.md#current-combat-parity-checkpoint).
 
 Grounded fighters can act on the first unlocked hitstun tick. A standing launch that lands before recovery ends accounts for its landing lock separately from the action transition. See [the combat parity checkpoint](docs/REFINEMENT.md#current-combat-parity-checkpoint).

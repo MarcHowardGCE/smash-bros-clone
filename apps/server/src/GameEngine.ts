@@ -2690,8 +2690,7 @@ export class GameEngine {
 			state: PlayerStateEnum.GRAB_HOLDING,
 			stateFrame: 0,
 			isGrabbing: true,
-			x: attacker.x + PHYSICS.GRAB_OFFSET_X * attacker.facing,
-			y: attacker.y,
+			...this.grabVictimPosition(attacker, victim),
 			vx: 0,
 			vy: 0,
 			activeHitbox: null,
@@ -2855,8 +2854,7 @@ export class GameEngine {
 			hitlagFramesRemaining: Math.max(victim.hitlagFramesRemaining, hit.hitlagFrames),
 			state: PlayerStateEnum.GRAB_HOLDING,
 			isGrabbing: true,
-			x: attacker.x + PHYSICS.GRAB_OFFSET_X * attacker.facing,
-			y: attacker.y,
+			...this.grabVictimPosition(attacker, victim),
 			vx: 0,
 			vy: 0,
 			activeHitbox: null,
@@ -2890,6 +2888,14 @@ export class GameEngine {
 			victim.state !== PlayerStateEnum.GRAB_HOLDING &&
 			!victim.isGrabbing
 		);
+	}
+
+	private grabVictimPosition(attacker: PlayerState, victim: PlayerState): Pick<PlayerState, 'x' | 'y'> {
+		// Grounded centers are measured from each fighter's own feet.
+		const heightOffset = attacker.isGrounded
+			? getCharacterStats(attacker.characterId).hurtboxRadius - getCharacterStats(victim.characterId).hurtboxRadius
+			: 0;
+		return { x: attacker.x + PHYSICS.GRAB_OFFSET_X * attacker.facing, y: attacker.y + heightOffset };
 	}
 
 	/**
@@ -2928,8 +2934,7 @@ export class GameEngine {
 			if (bothHolding) {
 				players[victim.id] = {
 					...victim,
-					x: attacker.x + PHYSICS.GRAB_OFFSET_X * attacker.facing,
-					y: attacker.y,
+					...this.grabVictimPosition(attacker, victim),
 					vx: 0,
 					vy: 0,
 				};

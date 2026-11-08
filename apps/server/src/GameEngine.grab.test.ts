@@ -1,6 +1,8 @@
 import { describe, expect, it } from 'vitest';
 import {
 	INPUT_BITS,
+	getCharacterStats,
+	getStageLayout,
 	MoveId,
 	PHYSICS,
 	type GameState,
@@ -556,3 +558,48 @@ describe('throw release timing', () => {
   });
 });
 
+
+describe('grounded grab floor contact', () => {
+  it.each([
+    ['swift', 'abe-lincoln', 1, false],
+    ['swift', 'abe-lincoln', -1, true],
+    ['abe-lincoln', 'swift', 1, true],
+    ['moonshine', 'hulk-hoagie', -1, false],
+  ] as const)('%s holds %s above the main floor (facing %i, pummel %s)', (holder, grabbed, facing, pummel) => {
+    const engine = new GameEngine({ playerIds: ['p1', 'p2'], characterIds: { p1: holder, p2: grabbed }, stageId: 'stage1' });
+    const floor = getStageLayout('stage1').mainPlatform;
+    const center = floor.x + floor.width / 2;
+    const victimRadius = getCharacterStats(grabbed).hurtboxRadius;
+    for (const [id, fighter, x, direction] of [
+      ['p1', holder, center, facing], ['p2', grabbed, center + 24 * facing, -facing],
+    ] as const) {
+      primePlayer(engine, id, {
+        x, y: floor.y - getCharacterStats(fighter).hurtboxRadius, facing: direction < 0 ? -1 : 1,
+        state: PlayerStateEnum.IDLE, isGrounded: true, isInvincible: false, invincibilityFrames: 0,
+      });
+    }
+    const initialStocks = getMutableState(engine).players.p2!.stocks;
+    tick(engine, { p1: makeInput('p1', INPUT_BITS.GRAB) });
+    const held = tickUntil(engine, state => state.players.p1?.grabbedPlayerId === 'p2');
+    expect(held.players.p1?.grabbedPlayerId).toBe('p2');
+    expect(held.players.p2!.y + victimRadius).toBe(floor.y);
+    if (pummel) {
+      const state = tick(engine, { p1: makeInput('p1', INPUT_BITS.ATTACK) });
+      expect(state.players.p1?.currentMoveId).toBe(MoveId.PUMMEL);
+      const afterPummel = tickUntil(engine, s => s.players.p1?.state === PlayerStateEnum.GRAB_HOLDING);
+      expect(afterPummel.players.p2!.percent).toBeGreaterThan(0);
+      expect(afterPummel.players.p2!.y + victimRadius).toBe(floor.y);
+    }
+    const throwStart = tick(engine, { p1: makeInput('p1', INPUT_BITS.DOWN) });
+    expect(throwStart.players.p1?.currentMoveId).toBe(MoveId.DOWN_THROW);
+    const released = tickUntil(engine, state => state.players.p2?.state === PlayerStateEnum.HITSTUN);
+    expect(released.players.p2?.state).toBe(PlayerStateEnum.HITSTUN);
+    expect(released.players.p2?.vy).toBeLessThan(0);
+    for (let frame = 0; frame < 100; frame++) {
+      const victim = tick(engine).players.p2!;
+      expect(victim.stocks).toBe(initialStocks);
+      expect(victim.y + victimRadius).toBeLessThanOrEqual(floor.y + 0.001);
+    }
+    expect(getMutableState(engine).players.p2?.isGrounded).toBe(true);
+  });
+});

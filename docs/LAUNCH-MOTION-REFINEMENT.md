@@ -570,3 +570,17 @@ Another 240 soft-platform controls confirmed that ordinary falls and neutral dod
 The [Ultimate ledge measurements](https://w.atwiki.jp/smashsp_kensyou/pages/34.html) support Down suppressing ledge grab and directional eligibility from action frame 25. The [landing measurements](https://w.atwiki.jp/smashsp_kensyou/pages/136.html) describe landing recovery without establishing directional pass-through while Down is held or a simultaneous floor/ledge tie. This pass records current project behavior and changes documentation only. Directional soft-platform pass-through, same-tick floor/ledge priority, and the native directional recovery endpoint remain provisional.
 
 **Resume here.** Audit fresh through fully fatigued dodge windows, spot cancel and travel, and the refresh clock after floor landing, ledge catch, and body-hit interruption. Start with the project Dojo matrix across all five fighters and use measured native fixtures only where the versions and conditions are known.
+
+## Grounded grabs and main-platform contact
+
+A grounded grab used the holder's center height for both fighters. Swift's collision radius is 26 world units and Abe Lincoln's is 32, so a Swift grab placed Lincoln's feet six units inside the solid main platform. Main-platform landing checks require a crossing from above, which cannot catch a victim who starts below the surface. On low-percent down throws the victim could fail to rise clear of that overlap and fall to the bottom blast zone. A pummel followed by grab timeout could produce the same symptom. The authored down throw launches upward.
+
+Grab contact, held position, and pummel contact now use the victim's own collision radius to align their feet with the grounded holder's. The horizontal grab offset, airborne grab positioning, and throw launch values retain their existing behavior. The fix changes the position before the throw resolves, so the ordinary floor crossing still handles the landing.
+
+| Center-stage sequence | Replays before fix | Bottom KOs before fix | Replays after fix | Bottom KOs after fix |
+| --- | ---: | ---: | ---: | ---: |
+| Grab into down throw | 300 | 120 | 300 | 0 |
+| Grab, pummel, then timeout | 300 | 96 | 300 | 0 |
+| Grab, pummel, then down throw | — | — | 300 | 0 |
+
+The low-percent matrix used all 25 ordered fighter pairings, both facings, and all six main platforms. Every grab connected. After the fix, none of the 900 cases placed the victim below the surface. Twelve separate forward throws at 180% still carried the victim past the stage edge and took a stock. The committed regression covers both facings, smaller and larger grabbers, and a pummel before a down throw.

@@ -4,7 +4,8 @@ import {renderVisualSettingsScreen} from './VisualSettingsScreen';
 import type {StageBackdrop} from '../renderer/StageBackdrop';
 import {getStageLayout} from '@smash/shared';
 import { FIGHTER_PRESENTATION, WORLD_STORIES, fighterPortrait, escapeHtml } from './selectionContent';
-import{XBOX360_PROFILE as CONTROLLER_PROFILE}from'../input/xbox360Profile';
+import { ULTIMATE_MENU, getControllerProfile } from '../input/controllerProfiles';
+import { controllerPrompt, refreshControllerPrompts, type PromptAction } from './controllerPrompts';
 /**
  * @fileoverview HTML overlay UI manager for all game phases.
  *
@@ -64,6 +65,28 @@ export class UIManager {
   private playerCount: number = 0;
   private menuNav: MenuNavigator | null = null;
   _gamepadPoller: GamepadPoller | null = null;
+  controllerIdForSlot?: (slot: number) => string | undefined;
+  private activeControllerId: string | undefined;
+
+  getControllerPromptProfile(slot?: number) {
+    const id = slot === undefined
+      ? this.activeControllerId ?? this.controllerIdForSlot?.(0)
+      : this.controllerIdForSlot?.(slot);
+    return getControllerProfile(id ?? '');
+  }
+
+  setActiveController(id?: string): void {
+    if (this.activeControllerId === id) return;
+    this.activeControllerId = id;
+    this.refreshControllerHints();
+  }
+
+  refreshControllerHints(): void {
+    refreshControllerPrompts(this.overlay, slot => this.getControllerPromptProfile(slot));
+  }
+
+  private prompt = (action: PromptAction, slot?: number): string =>
+    controllerPrompt(action, this.getControllerPromptProfile(slot), slot);
   private audioManager: AudioManager | null = null;
   private onAudioChanged: (() => void) | null = null;
 
@@ -243,7 +266,7 @@ export class UIManager {
         <div class="menu-utilities"><button id="controls-btn" class="ui-btn cabinet-button">Controls</button><button id="visual-settings-btn" class="ui-btn cabinet-button">Visual accessibility</button></div>
         <div class="cabinet-section-label">Sound</div><div id="audio-settings-container"></div>
       </div>
-      <div class="menu-hint">↑↓ Navigate • ←→ Adjust • Enter / ${CONTROLLER_PROFILE.menuLabels.confirm} Select</div>
+      <div class="menu-hint">↑↓ Navigate • ←→ Adjust • Enter / ${this.prompt('confirm')} Select</div>
       ${this.versionTag()}`;
 
     document.getElementById('create-btn')?.addEventListener('click', () => this.onCreateRoom?.());
@@ -325,7 +348,7 @@ export class UIManager {
    */
   showVisualSettings(scene:StageBackdrop,fromPause:boolean,onBack:()=>void):void {
     this.stopMenuNav();this.phase='controls';this.visualSettingsFromPause=fromPause;this.hudPanel.style.display='none';
-    this.visualSettingsHandle=renderVisualSettingsScreen(this.overlay,scene,onBack,this._gamepadPoller);
+    this.visualSettingsHandle=renderVisualSettingsScreen(this.overlay,scene,onBack,this._gamepadPoller,this.prompt);
   }
 
   showControls(deps: { assignmentManager: ControllerAssignmentManager; preferenceStore: GamepadPreferenceStore }): void {
@@ -347,7 +370,7 @@ export class UIManager {
     onSelected: (choices: FighterChoice[]) => void,
     autoConfirmSlots: number[] = [],
     onBack?: () => void,
-    gamepadSlotByIndex?: ReadonlyMap<number, number>,
+    gamepadSlotByIndex?: ReadonlyMap<number, number> | (() => ReadonlyMap<number, number>),
     initialChoices: readonly FighterChoice[] = [],
   ): void {
     this.stopMenuNav();
@@ -373,7 +396,7 @@ export class UIManager {
     let cpuTimer:ReturnType<typeof setTimeout>|undefined;
 
     console.log('[CharSelect] autoConfirmSlots:', autoConfirmSlots, 'autoConfirmSlotSet:', Array.from(autoConfirmSlotSet));
-    console.log('[CharSelect] gamepadSlotByIndex:', gamepadSlotByIndex ? Array.from(gamepadSlotByIndex.entries()) : 'undefined');
+    console.log('[CharSelect] gamepadSlotByIndex:', typeof gamepadSlotByIndex === 'function' ? 'live assignments' : Array.from(gamepadSlotByIndex ?? []));
 
     // Render N panels dynamically
     const panelsHtml = (() => {
@@ -387,7 +410,7 @@ export class UIManager {
             ? 'Enter or Z'
             : i === 1
               ? 'U'
-              : CONFIRM_KEYS[i]?.[0] ?? `Gamepad ${CONTROLLER_PROFILE.menuLabels.confirm}`;
+              : CONFIRM_KEYS[i]?.[0] ?? `keyboard`;
         html += `
         <section id="p${i + 1}-panel" class="fighter-player-panel" style="--player-color:${['#7cbab0','#db889a','#e0b567','#a796d4'][i]}">
           <div class="fighter-seat-title">P${i + 1} (${panelRole}) Choose</div>
@@ -400,9 +423,9 @@ export class UIManager {
             </button>
           `).join('')}
           <div id="p${i + 1}-status" style="font-size:14px;margin-top:12px;color:rgba(255,255,255,0.5)">
-            ${isCpuSlot ? confirmHint : `Press ${confirmHint} or Gamepad ${CONTROLLER_PROFILE.menuLabels.confirm} to confirm`}
+            ${isCpuSlot ? confirmHint : `Press ${confirmHint} or ${this.prompt('confirm',i)} to confirm`}
           </div>
-          ${isCpuSlot ? '' : `<button type="button" class="ui-btn fighter-ready" data-ready-slot="${i}">Ready · ${CONTROLLER_PROFILE.menuLabels.confirm}</button>`}
+          ${isCpuSlot ? '' : `<button type="button" class="ui-btn fighter-ready" data-ready-slot="${i}">Ready · ${this.prompt('confirm',i)}</button>`}
         </section>`;
       }
       return html;
@@ -414,7 +437,7 @@ export class UIManager {
         ${panelsHtml}
       </div>
       ${onBack ? '<button id="charsel-back-btn" class="ui-btn" style="position:absolute;top:24px;left:24px;font-size:14px;padding:8px 16px">← Back</button>' : ''}
-      <div class="menu-hint">${onBack ? `Esc / ${CONTROLLER_PROFILE.menuLabels.cancel} Back • ` : ''}Confirm to start</div>`;
+      <div class="menu-hint">${onBack ? `Esc / ${this.prompt('cancel',0)} Back • ` : ''}Confirm to start</div>`;
 
     // Back button click
     if (onBack) {
@@ -505,7 +528,7 @@ export class UIManager {
       this.overlay.querySelector('#p'+(slotIndex+1)+'-panel')?.setAttribute('data-ready','true');
       const status = document.getElementById(`p${slotIndex + 1}-status`);
       if (status) { status.textContent = '✓ Ready!'; status.style.color = 'white'; }
-      const readyButton=this.overlay.querySelector<HTMLButtonElement>(`[data-ready-slot="${slotIndex}"]`);if(readyButton){readyButton.disabled=false;readyButton.textContent='Change fighter · A';}
+      const readyButton=this.overlay.querySelector<HTMLButtonElement>(`[data-ready-slot="${slotIndex}"]`);if(readyButton){readyButton.disabled=false;readyButton.innerHTML='Change fighter · '+this.prompt('cancel',slotIndex);}
       checkAllConfirmed();
     };
 
@@ -516,7 +539,7 @@ export class UIManager {
       const status=this.overlay.querySelector<HTMLElement>('#p'+(slot+1)+'-status');
       if(status){status.textContent='Choosing · confirm when ready';status.style.color='#e6d3b2';}
       const button=this.overlay.querySelector<HTMLButtonElement>('[data-ready-slot="'+slot+'"]');
-      if(button){button.disabled=false;button.textContent='Ready · '+CONTROLLER_PROFILE.menuLabels.confirm;}
+      if(button){button.disabled=false;button.innerHTML='Ready · '+this.prompt('confirm',slot);}
       return true;
     };
     const applySelectedChoiceForSlot = (slotIndex: number): boolean => {
@@ -624,21 +647,25 @@ export class UIManager {
 
       const checkGamepads = (): void => {
         const states = poller.poll();
+        const slots = typeof gamepadSlotByIndex === 'function' ? gamepadSlotByIndex() : gamepadSlotByIndex;
+        for (const index of lastBits.keys()) if (!states.has(index)) lastBits.delete(index);
         for (const [gpIndex, state] of states) {
+          const slotForPad = slots?.get(gpIndex) ?? (typeof gamepadSlotByIndex === 'function' ? undefined : gpIndex);
+          if (slotForPad === undefined) continue;
           const bits = state.bits;
           const prev = lastBits.get(gpIndex) ?? 0;
           const pressed = bits & ~prev;
 
           // A button → back
-          if(pressed & CONTROLLER_PROFILE.cancel){
-            const slot=gamepadSlotByIndex?.get(gpIndex)??gpIndex;
+          if(pressed & ULTIMATE_MENU.cancel){
+            const slot=slotForPad;
             if(unlockSlot(slot)){lastBits.set(gpIndex,bits);continue;}
             if(slot===0&&onBack){cleanup();onBack();return;}
           }
 
             // D-pad up/down → cycle through fighters (visual highlight only, no auto-select)
             if (pressed & (GenericInputBits.UP | GenericInputBits.LEFT)) {
-              const slotIndex = gamepadSlotByIndex?.get(gpIndex) ?? gpIndex;
+              const slotIndex = slotForPad;
               console.log('[CharSelect] Gamepad', gpIndex, 'D-pad UP pressed, mapped to slotIndex:', slotIndex);
               if (slotIndex < playerCount && !confirmed[slotIndex]) {
                 // Decrement index, wrap to last fighter if at first
@@ -668,7 +695,7 @@ export class UIManager {
             }
 
             if (pressed & (GenericInputBits.DOWN | GenericInputBits.RIGHT)) {
-              const slotIndex = gamepadSlotByIndex?.get(gpIndex) ?? gpIndex;
+              const slotIndex = slotForPad;
               console.log('[CharSelect] Gamepad', gpIndex, 'D-pad DOWN pressed, mapped to slotIndex:', slotIndex);
               if (slotIndex < playerCount && !confirmed[slotIndex]) {
                 // Increment index, wrap to first fighter if at last
@@ -698,8 +725,8 @@ export class UIManager {
             }
 
            // B button → set choice and confirm for matching slot
-            if (pressed & CONTROLLER_PROFILE.confirm) {
-              const slotIndex = gamepadSlotByIndex?.get(gpIndex) ?? gpIndex;
+            if (pressed & ULTIMATE_MENU.confirm) {
+              const slotIndex = slotForPad;
               console.log('[CharSelect] Gamepad', gpIndex, 'A button pressed, mapped to slotIndex:', slotIndex);
               if (slotIndex < playerCount && !confirmed[slotIndex]) {
                 if (applySelectedChoiceForSlot(slotIndex)) {
@@ -742,7 +769,7 @@ export class UIManager {
     this.hudPanel.style.display = 'none';
     this.overlay.innerHTML = '';
 
-    renderLocalPlaySetupScreen(this.overlay, deps, initial, onConfirm, onBack, this._gamepadPoller);
+    renderLocalPlaySetupScreen(this.overlay, deps, initial, onConfirm, onBack, this._gamepadPoller, this.prompt);
   }
 
   showStageSelect(
@@ -757,7 +784,7 @@ export class UIManager {
     this.hudPanel.style.display = 'none';
     this.overlay.innerHTML = '';
 
-    this.stageScreenHandle=renderStageSelectScreen(this.overlay, stages, onSelected, onBack, this._gamepadPoller,onPreview,initialStageId);
+    this.stageScreenHandle=renderStageSelectScreen(this.overlay, stages, onSelected, onBack, this._gamepadPoller,onPreview,initialStageId,this.prompt);
   }
 
   /** Show the room-created screen with the 6-character code and a Ready button. */
@@ -834,7 +861,7 @@ export class UIManager {
 
   showPracticeSetup(onStart:(config:PracticeConfig)=>void,onBack:()=>void):void {
     this.stopMenuNav();this.phase='controls';this.hudPanel.style.display='none';
-    this.practiceSetupHandle=renderPracticeSetup(this.overlay,this._gamepadPoller,onStart,onBack);
+    this.practiceSetupHandle=renderPracticeSetup(this.overlay,this._gamepadPoller,onStart,onBack,this.prompt);
   }
   hideCombatHUD():void{this.hudPanel.style.display='none';}
   /** Clear the overlay and show the in-match HUD panel. */
@@ -854,12 +881,12 @@ export class UIManager {
     this.overlay.innerHTML = `
       <div class="overlay-center pause-menu">
         <div style="font-size:40px;letter-spacing:4px;margin-bottom:16px">PAUSED</div>
-        <button id="resume-btn" class="ui-btn" style="margin-bottom:16px">Resume</button>${this.onPracticeMenu?'<button id="dojo-pause-reset" class="ui-btn">Reset practice arena</button><button id="dojo-pause-menu" class="ui-btn">Dojo lessons</button>':''}
+        <button id="resume-btn" class="ui-btn" style="margin-bottom:16px">Resume · ${this.prompt('pause')}</button>${this.onPracticeMenu?'<button id="dojo-pause-reset" class="ui-btn">Reset practice arena</button><button id="dojo-pause-menu" class="ui-btn">Dojo lessons</button>':''}
         ${this.onPracticeLabActions?`<details class="dojo-pause-lab" open><summary>Timing laboratory</summary>${this.onPracticeLabActions().map(a=>`<button id="pause-${a.id}" class="ui-btn" ${a.disabled?'disabled':''}>${escapeHtml(a.label)}</button>`).join('')}</details>`:''}<button id="visual-settings-btn" class="ui-btn" style="margin-bottom:16px">Visual accessibility</button>
         <button id="main-menu-btn" class="ui-btn">Main Menu</button>
         <div id="audio-settings-container"></div>
       </div>
-      <div class="menu-hint">↑↓ Navigate • ←→ Adjust • Enter / ${CONTROLLER_PROFILE.menuLabels.confirm} Select</div>
+      <div class="menu-hint">↑↓ Navigate • ←→ Adjust • Enter / ${this.prompt('confirm')} Select</div>
       ${this.versionTag()}`;
 
     document.getElementById('resume-btn')?.addEventListener('click', () => this.onResume?.());
@@ -936,7 +963,7 @@ export class UIManager {
         <button id="play-again-btn" class="ui-btn">Play Again</button>
         <button id="main-menu-btn" class="ui-btn" style="margin-top:12px">Main Menu</button>
       </div>
-      <div class="menu-hint">↑↓ Navigate • Enter / ${CONTROLLER_PROFILE.menuLabels.confirm} Select</div>
+      <div class="menu-hint">↑↓ Navigate • Enter / ${this.prompt('confirm')} Select</div>
       ${this.versionTag()}`;
 
     document.getElementById('play-again-btn')?.addEventListener('click', () => {
@@ -1063,7 +1090,7 @@ export class UIManager {
         <button id="local-play-again-btn" class="ui-btn">Play Again</button>
         <button id="main-menu-btn" class="ui-btn" style="margin-top:12px">Main Menu</button>
       </div>
-      <div class="menu-hint">↑↓ Navigate • Enter / ${CONTROLLER_PROFILE.menuLabels.confirm} Select</div>
+      <div class="menu-hint">↑↓ Navigate • Enter / ${this.prompt('confirm')} Select</div>
       ${this.versionTag()}`;
 
     document.getElementById('local-play-again-btn')?.addEventListener('click', () => {
@@ -1138,7 +1165,7 @@ export class UIManager {
         ${interactivePanelHtml}
         ${statusRowsHtml}
       </div>
-      <div class="menu-hint">↑↓ / D-pad · Browse • Enter / ${CONTROLLER_PROFILE.menuLabels.confirm} · Select or activate Confirm • Ready waits for server acknowledgement</div>`;
+      <div class="menu-hint">↑↓ / D-pad · Browse • Enter / ${this.prompt('confirm')} · Select or activate Confirm • Ready waits for server acknowledgement</div>`;
 
     this.networkRestoreChoice=(id:string)=>{selectedCharacterId=id;this.overlay.querySelectorAll<HTMLElement>('.network-fighter-option').forEach(el=>{el.style.borderColor=el.dataset.id===id?'white':'rgba(255,255,255,0.3)';el.setAttribute('aria-pressed',String(el.dataset.id===id));});};
     // Attach click listeners to fighter options
@@ -1184,7 +1211,7 @@ export class UIManager {
 
   showNetworkStageWaiting(stage:StageConfig,onChangeFighter:()=>void):void {
     this.stopMenuNav();this.hudPanel.style.display='none';const info=WORLD_STORIES[stage.id];
-    this.overlay.innerHTML='<div class="overlay-center"><small>HOST IS CHOOSING THE WORLD</small><img src="'+(import.meta.env.BASE_URL||'/')+'menu-art/'+stage.id+'.webp" alt="" style="width:min(640px,65vw);border-radius:4px"><h2>'+escapeHtml(stage.displayName)+'</h2><p>'+escapeHtml(info?.text??'')+'</p><button class="ui-btn" id="online-change-fighter">Change fighter · A</button><div id="network-charselect-error" role="alert"></div></div><div class="menu-hint">The host chooses for everyone • A / Esc · Change fighter</div>';
+    this.overlay.innerHTML='<div class="overlay-center"><small>HOST IS CHOOSING THE WORLD</small><img src="'+(import.meta.env.BASE_URL||'/')+'menu-art/'+stage.id+'.webp" alt="" style="width:min(640px,65vw);border-radius:4px"><h2>'+escapeHtml(stage.displayName)+'</h2><p>'+escapeHtml(info?.text??'')+'</p><button class="ui-btn" id="online-change-fighter">Change fighter · '+this.prompt('cancel')+'</button><div id="network-charselect-error" role="alert"></div></div><div class="menu-hint">The host chooses for everyone • '+this.prompt('cancel')+' / Esc · Change fighter</div>';
     const button=this.overlay.querySelector<HTMLElement>('#online-change-fighter')!;button.onclick=onChangeFighter;
     this.menuNav=new MenuNavigator(this._gamepadPoller);this.menuNav.setButtons([{id:'online-change-fighter',element:button,onActivate:onChangeFighter}]);this.menuNav.start(onChangeFighter);
   }
@@ -1199,7 +1226,7 @@ export class UIManager {
         if (confirmed) {
           if(this.networkSelectionState){this.networkSelectionState.pending=false;this.networkSelectionState.confirmed=true;}
           confirmBtn.disabled = false;
-          confirmBtn.textContent = 'Change fighter · A';
+          confirmBtn.innerHTML = 'Change fighter · '+this.prompt('cancel');
         }
         // If not confirmed, button state is already managed by showNetworkCharacterSelect
       }

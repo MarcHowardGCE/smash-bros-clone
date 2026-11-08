@@ -16,6 +16,7 @@ describe('menu presentation boundaries', () => {
   });
   it('uses profile labels in the lobby, pause and result hints', () => {
     const overlay=document.createElement('div');document.body.append(overlay);const ui=new UIManager(overlay);
+    ui.setActiveController('Xbox 360 Controller');
     for(const show of [()=>ui.showLobby(),()=>ui.showPauseOverlay(),()=>ui.showLocalResult(null)]){
       show();expect(overlay.querySelector('.menu-hint')?.textContent).toContain(`Enter / ${XBOX360_PROFILE.menuLabels.confirm} Select`);
     }

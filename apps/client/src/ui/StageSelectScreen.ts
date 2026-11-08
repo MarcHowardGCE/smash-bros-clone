@@ -1,6 +1,7 @@
 import {getStageLayout} from '@smash/shared';
 import { WORLD_STORIES, escapeHtml } from './selectionContent';
-import{XBOX360_PROFILE as CONTROLLER_PROFILE}from'../input/xbox360Profile';
+import { ULTIMATE_MENU } from '../input/controllerProfiles';
+import { controllerPrompt, type PromptRenderer } from './controllerPrompts';
 /**
  * @fileoverview Stage Select screen with grid navigation.
  *
@@ -29,6 +30,7 @@ export function renderStageSelectScreen(
   gamepadPoller?: GamepadPoller | null,
   onPreview?: (stage:StageConfig)=>void,
   initialStageId?:string,
+  prompt: PromptRenderer = controllerPrompt,
 ): {destroy:()=>void} {
   /** Total navigable items: stages + 1 random button. */
   const totalItems = stages.length + 1;
@@ -151,7 +153,7 @@ export function renderStageSelectScreen(
   const baseUrl = import.meta.env.BASE_URL || '/';
   const normalizedBaseUrl = baseUrl.endsWith('/') ? baseUrl : `${baseUrl}/`;
 
-  container.innerHTML = '<div class="overlay-center world-selection"><header><small>SIX IMPOSSIBLE WORLDS</small><h1>Choose your world</h1></header><div class="world-layout"><div><div class="stage-grid">'+stages.map((stage,i)=>'<button class="stage-grid-btn ui-btn" data-stage-idx="'+i+'" aria-label="'+escapeHtml(stage.displayName)+'"><img src="'+normalizedBaseUrl+(WORLD_STORIES[stage.id]?'menu-art/'+stage.id+'.webp':'backgrounds/'+stage.backgroundImage)+'" alt=""><span>'+escapeHtml(WORLD_STORIES[stage.id]?.short??stage.displayName)+'</span></button>').join('')+'</div><button class="ui-btn world-random" data-stage-idx="'+randomIndex+'">✦ Random world</button></div><section id="stage-preview" aria-live="polite"></section></div>'+(onBack?'<button id="stage-back-btn" class="ui-btn">← Back</button>':'')+'</div><div class="menu-hint">Arrows / D-pad · Browse • Enter / '+CONTROLLER_PROFILE.menuLabels.confirm+' Select • X / I Story'+(onBack?' • Esc / '+CONTROLLER_PROFILE.menuLabels.cancel+' Back':'')+'</div>';
+  container.innerHTML = '<div class="overlay-center world-selection"><header><small>SIX IMPOSSIBLE WORLDS</small><h1>Choose your world</h1></header><div class="world-layout"><div><div class="stage-grid">'+stages.map((stage,i)=>'<button class="stage-grid-btn ui-btn" data-stage-idx="'+i+'" aria-label="'+escapeHtml(stage.displayName)+'"><img src="'+normalizedBaseUrl+(WORLD_STORIES[stage.id]?'menu-art/'+stage.id+'.webp':'backgrounds/'+stage.backgroundImage)+'" alt=""><span>'+escapeHtml(WORLD_STORIES[stage.id]?.short??stage.displayName)+'</span></button>').join('')+'</div><button class="ui-btn world-random" data-stage-idx="'+randomIndex+'">✦ Random world</button></div><section id="stage-preview" aria-live="polite"></section></div>'+(onBack?'<button id="stage-back-btn" class="ui-btn">← Back</button>':'')+'</div><div class="menu-hint">Arrows / D-pad · Browse • Enter / '+prompt('confirm')+' Select • '+prompt('story')+' / I Story'+(onBack?' • Esc / '+prompt('cancel')+' Back':'')+'</div>';
 
   // --- Wire click listeners ---
   const allBtns = container.querySelectorAll<HTMLElement>('[data-stage-idx]');
@@ -243,9 +245,9 @@ export function renderStageSelectScreen(
         if (pressed & GenericInputBits.LEFT) moveGrid('left');
         if (pressed & GenericInputBits.RIGHT) moveGrid('right');
         if (pressed & GenericInputBits.X) toggleStory();
-        if (pressed & CONTROLLER_PROFILE.confirm) selectStage(selectedIndex);
+        if (pressed & ULTIMATE_MENU.confirm) selectStage(selectedIndex);
         if(disposed)return;
-        if (pressed & CONTROLLER_PROFILE.cancel) goBack();
+        if (pressed & ULTIMATE_MENU.cancel) goBack();
 
         lastBitsPerGamepad.set(gpIndex, bits);
       }

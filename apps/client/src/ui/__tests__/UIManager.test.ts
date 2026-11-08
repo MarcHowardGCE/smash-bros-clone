@@ -661,7 +661,7 @@ describe('UIManager', () => {
       uiManager.updateNetworkCharacterSelect('p1' as any, 'fighter1', true);
 
       expect(confirmBtn.disabled).toBe(false);
-      expect(confirmBtn.textContent).toBe('Change fighter · A');
+      expect(confirmBtn.textContent).toBe('Change fighter · Bottom face');
     });
 
     it('should be no-op for unknown playerId', () => {

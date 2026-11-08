@@ -46,9 +46,32 @@ describe('ControlsScreen', () => {
     });
 
     expect(container.innerHTML).toContain('Keyboard');
-    expect(container.innerHTML).toContain('Xbox Controller');
+    expect(container.innerHTML).toContain('Xbox 360 Controller');
     expect(container.innerHTML).toContain('Unassigned'); // slots 2,3
 
+    destroy();
+  });
+
+  it('shows per-slot labels and applies a manual profile when the device name is ambiguous', () => {
+    const id = 'Unknown standard pad for Controls';
+    const assignments = new Map<number, SlotAssignment>([
+      [0, { gamepadId: 'Pro Controller', gamepadIndex: 0 }],
+      [1, { gamepadId: 'DualSense Wireless Controller', gamepadIndex: 1 }],
+      [2, { gamepadId: id, gamepadIndex: 2 }],
+    ]);
+    const { destroy } = renderControlsScreen(container, {
+      assignmentManager: createMockAssignmentManager(assignments),
+      preferenceStore: createMockPreferenceStore(), onBack,
+    });
+    const binding = (slot: number) => container.querySelector('#binding-'+slot+'-ATTACK')?.textContent;
+    expect([binding(0), binding(1), binding(2)]).toEqual(['A', 'Circle', 'Right face']);
+    const select = container.querySelector<HTMLSelectElement>('#controller-profile-2')!;
+    select.value = 'xbox360';
+    select.dispatchEvent(new Event('change'));
+    expect(binding(2)).toBe('B');
+    expect(localStorage.getItem('smash:controller-profile:v1:'+id)).toBe('xbox360');
+    container.querySelector<HTMLButtonElement>('#reset-slot-2')!.click();
+    expect(binding(2)).toBe('Right face');
     destroy();
   });
 

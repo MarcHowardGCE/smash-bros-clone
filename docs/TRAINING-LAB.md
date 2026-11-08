@@ -18,7 +18,7 @@ Implemented November 5, 2026. Open **Training Dojo -> Free Practice -> Timing la
 | Play / stop partner routine | F9 in Free Practice | Start -> Timing laboratory -> Play / Stop |
 | Routine slot, mirror, loop, delay | Laboratory buttons | Same options in the pause laboratory |
 
-The controller shortcuts use the existing Xbox-style Back and Start positions. Buttons held for a frozen step are sampled by the normal input controller, so a player can hold Attack and advance it frame by frame. Steps issued through the pause menu suppress menu action presses. F6 inspector freeze preserves pending simulation buffers; the ordinary Escape/Start menu keeps its existing pause behavior.
+The controller freeze and step shortcut uses Back on Xbox 360, Minus on Switch Pro, and Create on DualSense. Pause and resume use Start, Plus, and Options respectively. The Dojo shows the labels for Player 1's assigned controller. Buttons held for a frozen step are sampled by the normal input controller, so a player can hold Attack and advance it frame by frame. Steps issued through the pause menu suppress menu action presses. F6 inspector freeze preserves pending simulation buffers; the ordinary Escape/Start menu keeps its existing pause behavior.
 
 ## Timing behavior
 

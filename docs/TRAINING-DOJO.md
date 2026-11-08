@@ -20,7 +20,7 @@ Action presses carried from a menu, reset or resume are suppressed until control
 
 ### Guided lessons: learn one technique
 
-The same sandbox runs a focused instruction card with default Xbox and keyboard prompts. The partner automatically uses the behavior appropriate to the selected drill. Complete a technique correctly three separate times; mistakes do not erase successful repetitions. Completion is saved per fighter on this browser/device. Completed drills remain replayable and any lesson can be selected directly. Next lesson advances after completion.
+The same sandbox runs a focused instruction card with keyboard prompts and the button labels for Player 1's assigned Xbox 360, Nintendo Switch Pro, or PlayStation DualSense controller. The partner automatically uses the behavior appropriate to the selected drill. Complete a technique correctly three separate times; mistakes do not erase successful repetitions. Completion is saved per fighter on this browser/device. Completed drills remain replayable and any lesson can be selected directly. Next lesson advances after completion.
 
 Success requires a recent relevant input and an observed engine outcome. Buttons alone, the wrong move, repeated frames of one animation and hitlag do not inflate progress. Contact lessons require contact: a missed grab is not a successful grab, a blocked attack is not a release parry, and holding one parry pose is not three parries. Basic dodge lessons grade execution; they do not yet grade whether a strike was actually evaded.
 

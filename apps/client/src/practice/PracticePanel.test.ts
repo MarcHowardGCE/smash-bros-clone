@@ -1,6 +1,7 @@
+import { CONTROLLER_PROFILES, type ControllerProfile } from '../input/controllerProfiles';
 import{it,expect,vi,afterEach}from'vitest';import{PracticePanel}from'./PracticePanel.js';import{PracticeRoutine,decodeRoutine}from'./PracticeRoutine.js';import{PracticeDummy}from'./PracticeDummy.js';import type{LocalMatch}from'../local/LocalMatch.js';import type{PracticeOverlay}from'./PracticeOverlay.js';import{INPUT_BITS as B,MoveId as M,SMASH_CHARGE_MAX_FRAMES,type GameState,type InputEvent,type HitEventData,type KOEventData}from'@smash/shared';
 let panel:PracticePanel|null=null;afterEach(()=>{panel?.destroy();panel=null;document.body.innerHTML='';localStorage.clear();});
-function make(lessonId:string|null=null){localStorage.clear();const routine=new PracticeRoutine(),dummy=new PracticeDummy();dummy.routine=routine;const presets=new Map<string,number>(),previewKO=vi.fn(()=>true);const match={paused:false,practiceSpeed:1,practiceFatigue:0,getPracticePercent:(id:string)=>presets.get(id)??0,setPracticePercent:(id:string,value:number)=>presets.set(id,value),setPracticeFatigue:vi.fn(),practiceTick:0,setPracticeSpeed:vi.fn(),freezePractice:vi.fn(),runPractice:vi.fn(),stepPractice:vi.fn()},overlay={enabled:false,setEnabled:vi.fn()};panel=new PracticePanel({fighter:'all-rounder',dummy:'all-rounder',stageId:'stage1',lessonId,dummyMode:'still'},dummy,vi.fn(),vi.fn(),()=>true,{match:match as unknown as LocalMatch,routine,overlay:overlay as unknown as PracticeOverlay,previewKO});return{routine,previewKO};}
+function make(lessonId:string|null=null,profile?:()=>ControllerProfile){localStorage.clear();const routine=new PracticeRoutine(),dummy=new PracticeDummy();dummy.routine=routine;const presets=new Map<string,number>(),previewKO=vi.fn(()=>true);const match={paused:false,practiceSpeed:1,practiceFatigue:0,getPracticePercent:(id:string)=>presets.get(id)??0,setPracticePercent:(id:string,value:number)=>presets.set(id,value),setPracticeFatigue:vi.fn(),practiceTick:0,setPracticeSpeed:vi.fn(),freezePractice:vi.fn(),runPractice:vi.fn(),stepPractice:vi.fn()},overlay={enabled:false,setEnabled:vi.fn()};panel=new PracticePanel({fighter:'all-rounder',dummy:'all-rounder',stageId:'stage1',lessonId,dummyMode:'still'},dummy,vi.fn(),vi.fn(),()=>true,{match:match as unknown as LocalMatch,routine,overlay:overlay as unknown as PracticeOverlay,previewKO},profile);return{routine,previewKO};}
 it('recording enables playback immediately and all three slots persist independently',()=>{const{routine}=make();const click=(id:string)=>(document.getElementById(id)as HTMLButtonElement).click();expect((document.getElementById('dojo-lab-play')as HTMLButtonElement).disabled).toBe(true);click('dojo-lab-record');const input:InputEvent={playerId:'local-p1',tick:1,seq:1,held:B.ATTACK,pressed:B.ATTACK,released:0};panel!.observe({tick:1,players:{'local-p1':{state:'IDLE',stateFrame:0,dodgeFatigue:0}}}as unknown as GameState,new Map([['local-p1',input]]));click('dojo-lab-record');expect(decodeRoutine(localStorage.getItem('eth:dojo:routine:v1:0'))!.frames).toHaveLength(1);expect((document.getElementById('dojo-lab-play')as HTMLButtonElement).disabled).toBe(false);click('dojo-lab-play');expect(routine.mode).toBe('playing');click('dojo-lab-slot');expect(routine.length).toBe(0);click('dojo-lab-slot');click('dojo-lab-slot');expect(routine.length).toBe(1);});
 it('guided lessons cannot start a recording and toolbar navigation does not leak gameplay key events',()=>{const{routine}=make('jab');expect(document.getElementById('dojo-lab-record')).toBeNull();window.dispatchEvent(new KeyboardEvent('keydown',{code:'F8'}));expect(routine.mode).toBe('idle');const bubbled=vi.fn();window.addEventListener('keydown',bubbled);document.getElementById('dojo-lab-freeze')!.dispatchEvent(new KeyboardEvent('keydown',{code:'Space',bubbles:true}));expect(bubbled).not.toHaveBeenCalled();window.removeEventListener('keydown',bubbled);});
 
@@ -94,4 +95,24 @@ it('marks the charge cap once even if the player releases afterward',()=>{
  expect(trace).toContain('Tick '+(SMASH_CHARGE_MAX_FRAMES+1)+' · Smash charge stopped · '+SMASH_CHARGE_MAX_FRAMES+' ticks · cap');
  expect(trace).toContain('Tick '+(SMASH_CHARGE_MAX_FRAMES+2)+' · Release right stick');
  expect(trace.match(/Smash charge stopped/g)).toHaveLength(1);
+});
+
+it('updates the Dojo lesson and timing shortcuts for the assigned controller',()=>{
+ let profile:ControllerProfile=CONTROLLER_PROFILES.xbox360;
+ make('short-hop',()=>profile);
+ const guide=()=>document.getElementById('dojo-controller-guide')!.textContent;
+ expect(guide()).toContain('Tap X / Y, or X + Y');
+ const observe=(tick:number)=>{
+  const input={playerId:'local-p1',tick,seq:tick,held:B.JUMP,pressed:B.JUMP,released:0,jumpButtons:3};
+  panel!.observe({tick,players:{'local-p1':{state:'IDLE',stateFrame:tick}}}as unknown as GameState,new Map([['local-p1',input]]));
+ };
+ profile=CONTROLLER_PROFILES.switchPro;observe(1);
+ expect(guide()).toContain('Tap Y / X, or Y + X');
+ expect(document.getElementById('practice-panel')!.textContent).toContain('− freezes, then steps');
+ expect(document.getElementById('dojo-input-trace')!.textContent).toContain('Y + X');
+ profile=CONTROLLER_PROFILES.dualSense;observe(2);
+ expect(guide()).toContain('Tap Square / Triangle, or Square + Triangle');
+ expect(document.getElementById('practice-panel')!.textContent).toContain('Create freezes, then steps');
+ expect(document.getElementById('practice-panel')!.textContent).toContain('Escape / Options pauses');
+ expect(document.getElementById('dojo-input-trace')!.textContent).toContain('Square + Triangle');
 });

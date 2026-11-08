@@ -540,6 +540,39 @@ Zero-hitlag tumbles now apply directional influence and launch-speed influence f
 - **Verified:** the server retains eligible face Attack across same-tick tilt overlap, and Dojo playback uses recorded Attack presses after partial stick release. All 1,280 tick-aligned and 115 paced loopback cases passed. See [same-tick Attack and recorded rearm fixes](FATIGUE-PARRY-SEQUENCE-AUDIT.md#same-tick-attack-and-recorded-rearm-fixes).
 - **Verified in the project:** a right-stick Up Smash keeps charging while either face Attack or the stick stays held. Both release orders matched across the roster. The audit passed 100 browser Dojo runs, 350 tick-aligned two-client runs, and 75 paced two-client runs. See [smash charge release with mixed inputs](FATIGUE-PARRY-SEQUENCE-AUDIT.md#smash-charge-release-with-mixed-inputs).
 - **Verified in the Dojo:** the input trace reports face Attack and right-stick releases separately and shows the exact smash charge-stop tick and charge count. All 100 browser checks passed across the roster. See [Dojo trace for mixed-input charge](FATIGUE-PARRY-SEQUENCE-AUDIT.md#dojo-trace-for-mixed-input-charge).
-- **Next:** compare the two release orders with a physical Xbox 360 controller using the new trace. Keep exact 13.0.5 mixed-input charge behavior, expiry and command priority, third-party and projectile automatic follow-ups, stale motion rounding, directional contact parity, and native trump timing provisional pending versioned evidence.
-- **Deferred:** the collision-freeze cap, fractional rounding and blue/red zoom tech timing need 13.0.5 captures. Controller comparisons still need a physical pad. The measured fixtures and rerun command are in [Launch motion refinement](LAUNCH-MOTION-REFINEMENT.md#throw-release-timing-audit).
+- **Implemented and tested:** Xbox 360, Nintendo Switch Pro, and PlayStation DualSense profiles share Ultimate-style positions. Controls, menus, selection, pause, and Dojo show device-specific prompts. Mixed local fighter selection follows live seat assignments. Next is the physical signoff in the [three-controller support plan](#three-controller-support-plan). Keep exact 13.0.5 mixed-input charge behavior, expiry and command priority, third-party and projectile automatic follow-ups, stale motion rounding, directional contact parity, and native trump timing provisional pending versioned evidence.
+- **Deferred:** the collision-freeze cap, fractional rounding and blue/red zoom tech timing need 13.0.5 captures. The measured fixtures and rerun command are in [Launch motion refinement](LAUNCH-MOTION-REFINEMENT.md#throw-release-timing-audit).
+
+### Three-controller support plan
+
+The browser detects Microsoft Xbox 360, Nintendo Switch Pro Controller, and Sony PlayStation DualSense by recognized device names or vendor/product IDs. In **Controls**, each assigned device has its own labels and an **Auto detect** option. Manual selection is saved by browser device ID and restored on reconnect. An unrecognized standard device uses positional labels. The input path requires the browser's standard mapping, so the manual picker changes the profile for an assigned device and cannot convert a raw, unmapped report. The browser standard defines the indices by physical position, which avoids swapping Nintendo's face buttons a second time. [W3C Gamepad standard](https://www.w3.org/TR/gamepad/#remapping) · [Nintendo controller diagram](https://en-americas-support.nintendo.com/app/answers/detail/a_id/27538/) · [Chromium Windows mappings](https://chromium.googlesource.com/chromium/src/%2B/413fd1606bc99bb77bae372b1a8103594806c4cc/device/gamepad/gamepad_standard_mappings_win.cc)
+
+| Action | Xbox 360 | Switch Pro | DualSense |
+| --- | --- | --- | --- |
+| Attack / menu confirm | B | A | Circle |
+| Special / menu back | A | B | Cross |
+| Jump | X / Y | Y / X | Square / Triangle |
+| Shield | LT / RT | ZL / ZR | L2 / R2 |
+| Grab | LB / RB | L / R | L1 / R1 |
+| Pause | Start | + | Options |
+
+All three profiles use the left stick for movement, the right stick for smash or tilt according to the selected setting, and the D-pad for gameplay taunts. The right stick still selects aerial direction in either mode. Automated checks used simulated standard browser reports and covered the three profiles, button and stick inputs, menu positions, override/reset, calibration labels, and mixed assigned devices. The focused client run passed 116 tests and the gamepad package passed 75. Hardware signoff remains pending for all three.
+
+1. **Hardware detection and mapping.** Record device IDs, standard mapping status, axes, trigger activation, and every button on Windows with the intended browser. Check Xbox 360 USB or its receiver, and Switch Pro and DualSense over USB and Bluetooth where available. Confirm automatic detection, the manual fallback, and both jump buttons. Record any nonstandard report for a separate adapter decision.
+2. **Hardware prompts and assignment.** Confirm that the last-used controller updates shared prompts and that fighter-select buttons stay with the assigned seat. Check hot-plug, reconnect, and changing devices while on selection and pause screens. Verify drift calibration, neutral rearm, and mixed-family assignments in local and two-client online matches with physical devices.
+3. **Physical Dojo timing.** On each controller, replay right-stick Up Smash after a parry across all five fighters. Test both release orders, simultaneous release, neutral rearm, and partial release. Record move start, both release ticks, charge-stop tick, and first active hitbox. Compare direct input, saved Dojo playback, and online input with the same action schedule.
+4. **Signoff.** Record the tested controller, connection, browser, and outcome for each physical run. Sign off each controller independently after its menu, gameplay, and multiplayer checks pass. Track exact Ultimate 13.0.5 timing separately from support in this game.
+
+#### Prompt and assignment verification
+
+The most recently used connected controller supplies shared prompts on the main and setup menus, online character selection, stage selection, and pause. Local character selection shows Confirm and Change fighter per assigned seat. The local Back prompt belongs to Player 1. The Dojo setup follows the shared controller, while its in-arena guides, lesson cards, timing shortcuts, and jump trace use Player 1's assigned controller. Screens without a controller can show keyboard and generic position labels.
+
+| Prompt | Xbox 360 | Switch Pro | DualSense |
+| --- | --- | --- | --- |
+| Select / Back | B / A | A / B | Circle / Cross |
+| Stage Story | X | Y | Square |
+| Pause / Resume | Start | + | Options |
+| Dojo freeze or step | Back | − | Create |
+
+The focused client run passed 302 tests and the client typecheck passed. The mixed-seat regression connected three simulated controller families with browser indices out of seat order, confirmed and unconfirmed each seat, then reassigned a device and verified its prompt and input moved together. A browser smoke test switched the lobby among all three profiles, switched the Dojo setup prompts to Switch Pro, verified its in-arena guide still followed Player 1's Xbox profile, and paused with DualSense to see Options. These runs used simulated standard browser reports. Physical connection modes, browser device reports, hardware drift and triggers, reconnects, mixed-controller online play, and both physical Dojo charge release orders still need verification.
 

@@ -6,7 +6,7 @@ import{PracticePanel}from'./practice/PracticePanel.js';
 import{PracticeDummy}from'./practice/PracticeDummy.js';
 import{dojoSimulationProfile,type PracticeConfig}from'./practice/curriculum.js';
 import {StageBackdrop} from './renderer/StageBackdrop';
-import{XBOX360_PROFILE}from'./input/xbox360Profile';
+import { ULTIMATE_MENU } from './input/controllerProfiles';
 import{KOPresentation}from'./renderer/fullbody/KOPresentation.js';
 /** @fileoverview Main entry point for the Smash Bros clone client application. */
 
@@ -488,6 +488,8 @@ async function main() {
   const uiManager = new UIManager(uiOverlay);
   app.ticker.add(()=>stageBackdrop.update(uiManager.getPhase()==='match'));
   uiManager._gamepadPoller = poller;
+  uiManager.controllerIdForSlot = slot => assignmentManager.getAssignments().get(slot)?.gamepadId;
+  assignmentManager.onAssignmentChanged = () => uiManager.refreshControllerHints();
   const audioPrefs = loadAudioPreferences(localStorage);
   const audioManager = new AudioManager(audioPrefs);
   const sfxManager = new SfxManager(audioManager);
@@ -896,7 +898,7 @@ async function main() {
             x:player.x,y:player.y-60,facing:player.facing,
           }) : false;
         },
-      });
+      },()=>uiManager.getControllerPromptProfile(0));
       uiManager.onPracticeLabActions=()=>practicePanel?.labActions(false)??[];
       localMatch.onStep=(state,inputs,hits,exits)=>practicePanel?.observe(state,inputs,hits,exits);
       uiManager.onPracticeMenu=()=>uiManager.onPractice?.();uiManager.onPracticeReset=()=>{practicePanel?.reset();uiManager.onResume?.();};
@@ -965,13 +967,9 @@ async function main() {
         const cpuSlotIndices = result.seats
           .map((seat, index) => (seat.kind === "cpu" ? index + 1 : null))
           .filter((slotIndex): slotIndex is number => slotIndex !== null);
-        const gamepadSlotByIndex = new Map<number, number>();
-        for (const [
-          slotIndex,
-          assignment,
-        ] of assignmentManager.getAssignments()) {
-          gamepadSlotByIndex.set(assignment.gamepadIndex, slotIndex);
-        }
+        const gamepadSlotByIndex = () => new Map(
+          Array.from(assignmentManager.getAssignments(), ([slot, assignment]) => [assignment.gamepadIndex, slot]),
+        );
         const showFighters = (previousChoices: readonly FighterChoice[] = []): void => {
         uiManager.showCharacterSelect(
           localFighters,
@@ -1155,18 +1153,29 @@ async function main() {
   // Gamepad pause handler - START button only
   if (typeof requestAnimationFrame !== "undefined" && poller) {
     let lastBitsPerGamepad = new Map<number, number>();
+    let activePadId: string | undefined;
     const checkPauseButton = (): void => {
       const states = poller.poll();
+      for (const index of lastBitsPerGamepad.keys()) if (!states.has(index)) lastBitsPerGamepad.delete(index);
+      if (activePadId && !Array.from(states.values()).some(state => state.gamepad?.id === activePadId)) {
+        activePadId = undefined;
+        uiManager.setActiveController();
+      }
       for (const [gpIndex, state] of states) {
         const bits = state.bits;
         const prev = lastBitsPerGamepad.get(gpIndex) ?? 0;
         const pressed = bits & ~prev;
 
+        if (pressed && state.gamepad?.id && activePadId !== state.gamepad.id) {
+          activePadId = state.gamepad.id;
+          uiManager.setActiveController(activePadId);
+        }
+
         if((pressed&0x2000)&&practicePanel&&uiManager.getPhase()==='match'){
           if(localMatch?.paused)practicePanel.step();else practicePanel.toggleFreeze();
         }
         // START button (0x1000) - pause/unpause
-        if (pressed & XBOX360_PROFILE.pause) {
+        if (pressed & ULTIMATE_MENU.pause) {
           const phase = uiManager.getPhase();
 
           // If paused, resume

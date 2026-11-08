@@ -1,6 +1,6 @@
 import{MenuNavigator}from'./MenuNavigator';
 import{resetStickCalibration,type GamepadPoller}from'@smash/gamepad-input';
-import{xboxBindingLabel,XBOX360_PROFILE}from'../input/xbox360Profile';
+import { CONTROLLER_PROFILES, controllerBindingLabel, getControllerProfile, getControllerProfileOverride, setControllerProfileOverride } from '../input/controllerProfiles';
 import { renderControllerCalibration } from './ControllerCalibration';
 /**
  * @fileoverview Controls screen: per-slot device bindings with live rebind.
@@ -74,7 +74,7 @@ function getDeviceLabel(slotIndex: number, assignments: ReadonlyMap<number, Slot
     }
     return 'Unassigned';
   }
-  return parseGamepadName(assignment.gamepadId);
+  return getControllerProfile(assignment.gamepadId).name;
 }
 
 function isUnassignedSlot(slotIndex: number, assignments: ReadonlyMap<number, SlotAssignment>): boolean {
@@ -101,14 +101,7 @@ function getGamepadButtonName(
   const assignment = assignments.get(slotIndex);
   if (!assignment) return '—';
 
-  return xboxBindingLabel(action);
-}
-
-function parseGamepadName(id: string): string {
-  if (id.toLowerCase().includes('xbox')) return 'Xbox Controller';
-  if (id.toLowerCase().includes('playstation') || id.toLowerCase().includes('dualshock')) return 'PlayStation Controller';
-  // Truncate long names
-  return id.length > 30 ? id.substring(0, 27) + '...' : id;
+  return controllerBindingLabel(getControllerProfile(assignment.gamepadId), action);
 }
 
 /**
@@ -164,7 +157,7 @@ export function renderControlsScreen(
     let html = `
       <div class="overlay-center controls-screen" style="max-width:900px;width:100%;align-items:stretch;max-height:calc(100vh - 32px);overflow-y:auto;padding:16px;box-sizing:border-box;background:rgba(9,18,30,.94);border-radius:8px">
         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:24px">
-          <div style="text-align:left"><div class="controls-heading" style="font-size:32px;letter-spacing:2px">CONTROLS</div><div class="controls-help" style="font-size:12px;margin-top:6px">${XBOX360_PROFILE.name} · B confirm / A back · Start pause<br>Right stick: smash / aerial attacks · Left stick up: jump</div></div>
+          <div style="text-align:left"><div class="controls-heading" style="font-size:32px;letter-spacing:2px">CONTROLS</div><div class="controls-help" style="font-size:12px;margin-top:6px">Ultimate-style controller layout · Right face confirms · Bottom face goes back<br>Right stick: smash / aerial attacks · Left stick up: jump</div></div>
           <button id="controls-back-btn" class="ui-btn" style="font-size:14px">Back</button>
         </div>`;
 
@@ -174,6 +167,13 @@ export function renderControlsScreen(
       const isGamepad = !!assignment;
       const isUnassigned = isUnassignedSlot(slot, currentAssignments);
       const keymap = keymaps[slot]!;
+      const override = assignment && getControllerProfileOverride(assignment.gamepadId);
+      const profilePicker = assignment ? `<label for="controller-profile-${slot}">Controller profile</label>
+        <select id="controller-profile-${slot}">
+          <option value="" ${!override ? 'selected' : ''}>Auto detect</option>
+          ${Object.entries(CONTROLLER_PROFILES).map(([key, profile]) =>
+            `<option value="${key}" ${override === key ? 'selected' : ''}>${profile.name}</option>`).join('')}
+        </select>` : '';
 
       html += `
         <div class="controls-slot" style="border:1px solid rgba(255,255,255,0.2);padding:16px;margin-bottom:12px;border-radius:4px">
@@ -181,6 +181,7 @@ export function renderControlsScreen(
             <div style="font-size:18px">Slot ${slot + 1}: <span style="color:rgba(255,255,255,0.7)">${deviceLabel}</span></div>
             <button id="reset-slot-${slot}" class="ui-btn" style="font-size:12px;padding:4px 12px" ${isUnassigned ? 'disabled' : ''}>Reset to Default</button>
           </div>
+          ${profilePicker}
           <div class="controls-binding-grid" style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px">`;
 
       for (const action of ACTION_NAMES) {
@@ -213,6 +214,16 @@ export function renderControlsScreen(
     container.innerHTML = html;
     for(const [slot,assignment] of currentAssignments){const row=container.querySelector('#reset-slot-'+slot)?.parentElement?.parentElement;if(row){const host=document.createElement('div');host.dataset.controllerCalibration=String(slot);row.appendChild(host);calibrationCleanup.push(renderControllerCalibration(host,assignment.gamepadId,assignment.gamepadIndex));}}
 
+    for (const [slot, assignment] of currentAssignments) {
+      const id = 'controller-profile-' + slot;
+      const select = container.querySelector<HTMLSelectElement>('#' + id);
+      select?.addEventListener('change', () => {
+        setControllerProfileOverride(assignment.gamepadId, select.value);
+        render();
+        container.querySelector<HTMLSelectElement>('#' + id)?.focus();
+      });
+    }
+
     controllerNav=new MenuNavigator(deps.gamepadPoller);controllerNav.setButtons([{id:'controls-back-btn',element:container.querySelector('#controls-back-btn') as HTMLElement,onActivate:onBack}]);controllerNav.start(onBack);
     // Wire back button
     const backBtn = document.getElementById('controls-back-btn');
@@ -228,7 +239,11 @@ export function renderControlsScreen(
       if (resetBtn) {
         const s = slot;
         const handler = () => {
-          const assignment=currentAssignments.get(s);if(assignment)resetStickCalibration(assignment.gamepadId);
+          const assignment=currentAssignments.get(s);
+          if(assignment){
+            resetStickCalibration(assignment.gamepadId);
+            setControllerProfileOverride(assignment.gamepadId, '');
+          }
           keymaps[s] = { ...DEFAULT_KEYMAPS[s]! };
           saveKeymap(s, keymaps[s]!);
           render();

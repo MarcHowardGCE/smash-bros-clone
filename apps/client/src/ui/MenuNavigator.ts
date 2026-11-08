@@ -1,4 +1,4 @@
-import{XBOX360_PROFILE as CONTROLLER_PROFILE}from'../input/xbox360Profile';
+import { ULTIMATE_MENU } from '../input/controllerProfiles';
 /**
  * @fileoverview Unified keyboard + gamepad menu navigation.
  *
@@ -80,7 +80,8 @@ export class MenuNavigator {
       // Don't intercept when an input field is focused
       if (
         document.activeElement instanceof HTMLInputElement ||
-        document.activeElement instanceof HTMLTextAreaElement
+        document.activeElement instanceof HTMLTextAreaElement ||
+        document.activeElement instanceof HTMLSelectElement
       ) {
         return;
       }
@@ -159,10 +160,10 @@ export class MenuNavigator {
            if (pressed & GenericInputBits.RIGHT) {
              this.buttons[this.selectedIndex]?.onAdjust?.(1);
            }
-           if (pressed & CONTROLLER_PROFILE.confirm) {
+           if (pressed & ULTIMATE_MENU.confirm) {
              this.activateSelected();
            }
-           if ((pressed & CONTROLLER_PROFILE.cancel) && onBack) {
+           if ((pressed & ULTIMATE_MENU.cancel) && onBack) {
              onBack();
            }
 

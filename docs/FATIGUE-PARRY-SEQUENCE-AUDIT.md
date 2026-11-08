@@ -336,4 +336,4 @@ All 100 browser checks passed across All-Rounder, Abe Lincoln, Swift, Moonshine,
 
 The inputs came from a simulated Xbox pad. This pass added Dojo diagnostics and left charge mechanics untouched. The separate release and stop lines are now available for a physical-controller run. Exact Ultimate 13.0.5 behavior still needs versioned evidence.
 
-**Resume here.** Compare the two release orders with a physical Xbox 360 controller using the new trace. Use the same attack and record the move start, both release ticks, the charge-stop tick, and the first active hitbox. Keep native charge ownership provisional until a versioned Ultimate run is available.
+**Resume here.** Compare the two release orders on a physical Xbox 360, Nintendo Switch Pro Controller, and PlayStation DualSense. Use the same attack and record the move start, both release ticks, the charge-stop tick, and the first active hitbox for each. Follow the [three-controller support plan](REFINEMENT.md#three-controller-support-plan) for mapping and signoff. Keep native charge ownership provisional until a versioned Ultimate run is available.

@@ -1372,6 +1372,9 @@ export class GameEngine {
 		let nextPlayer = player;
         
 
+  if(player.state===PlayerStateEnum.GRAB_HOLDING&&player.isGrabbing&&!player.grabbedPlayerId){
+   return {...player,vx:0,vy:0,isFastFalling:false};
+  }
   if([PlayerStateEnum.TRIP_FALL,PlayerStateEnum.TRIP_PRONE,PlayerStateEnum.JAB_LOCK].includes(player.state as PlayerStateEnum))return{...player,vx:0,vy:0};
   if([PlayerStateEnum.GETUP,PlayerStateEnum.TRIP_GETUP].includes(player.state as PlayerStateEnum))return {...player,vx:0,vy:0};
   if([PlayerStateEnum.GETUP_ROLL,PlayerStateEnum.TRIP_ROLL].includes(player.state as PlayerStateEnum)){const speed=player.stateFrame>=4&&player.stateFrame<16?3:0;return checkPlatformCollision({...player,x:player.x+speed*(player.floorRollDirection??player.facing),y:player.y+.1,vy:.1,vx:speed*(player.floorRollDirection??player.facing),isGrounded:false},this.stage);}
@@ -2730,7 +2733,8 @@ export class GameEngine {
 			return false;
 		}
 
-		if (!isThrowMoveId(attacker.currentMoveId) || !attacker.activeHitbox) {
+		if (!isThrowMoveId(attacker.currentMoveId) || !attacker.activeHitbox ||
+			!victim.isGrabbing || victim.state !== PlayerStateEnum.GRAB_HOLDING) {
 			return false;
 		}
 
@@ -2819,6 +2823,7 @@ export class GameEngine {
 			!attacker.isGrabbing ||
 			attacker.grabbedPlayerId !== victim.id ||
 			attacker.currentMoveId !== MoveId.PUMMEL ||
+			!victim.isGrabbing || victim.state !== PlayerStateEnum.GRAB_HOLDING ||
 			!attacker.activeHitbox
 		) {
 			return false;
@@ -2898,66 +2903,44 @@ export class GameEngine {
 		return { x: attacker.x + PHYSICS.GRAB_OFFSET_X * attacker.facing, y: attacker.y + heightOffset };
 	}
 
-	/**
-	 * Keeps grabbed-victim positions locked to the attacker each tick and cleans up
-	 * stale grab state when a player exits GRAB_HOLDING without going through a throw.
-	 *
-	 * Three cases handled per grabbing attacker:
-	 * - **Missing victim**: victim no longer in the player map; release the attacker.
-	 * - **Both GRAB_HOLDING**: pin victim to the attacker's grab-offset position.
-	 * - **Both IDLE**: the grab sequence ended cleanly; clear `isGrabbing` on both.
-	 *
-	 * @param players - Mutable player map; updated in place.
-	 */
+	/** Keeps a victim attached through the hold and windup, then clears interrupted pairs. */
 	private syncGrabState(players: Record<PlayerId, PlayerState>): void {
+		const heldVictims = new Set<PlayerId>();
+		const release = (player: PlayerState): PlayerState => ({
+			...player,
+			...(player.state === PlayerStateEnum.GRAB_HOLDING
+				? { state: player.isGrounded ? PlayerStateEnum.IDLE : PlayerStateEnum.AIRBORNE, stateFrame: 0 }
+				: {}),
+			isGrabbing: false,
+			grabbedPlayerId: null,
+		});
+
 		for (const attacker of Object.values(players)) {
-			if (!attacker.isGrabbing || !attacker.grabbedPlayerId) {
+			if (!attacker.isGrabbing || !attacker.grabbedPlayerId) continue;
+			const victim = players[attacker.grabbedPlayerId];
+			const windingUp = attacker.state === PlayerStateEnum.ATTACK &&
+				(attacker.currentMoveId === MoveId.PUMMEL || isThrowMoveId(attacker.currentMoveId));
+			if (attacker.isKnockedOut || !victim?.isGrabbing || victim.isKnockedOut ||
+				victim.state !== PlayerStateEnum.GRAB_HOLDING ||
+				(attacker.state !== PlayerStateEnum.GRAB_HOLDING && !windingUp)) {
+				players[attacker.id] = release(attacker);
 				continue;
 			}
 
-			const victim = players[attacker.grabbedPlayerId as PlayerId];
-			if (!victim) {
-				players[attacker.id] = {
-					...attacker,
-					state: PlayerStateEnum.IDLE,
-					stateFrame: 0,
-					isGrabbing: false,
-					grabbedPlayerId: null,
-				};
-				continue;
-			}
-
-			const bothHolding =
-				attacker.state === PlayerStateEnum.GRAB_HOLDING &&
-				victim.state === PlayerStateEnum.GRAB_HOLDING;
-
-			if (bothHolding) {
-				players[victim.id] = {
-					...victim,
-					...this.grabVictimPosition(attacker, victim),
-					vx: 0,
-					vy: 0,
-				};
-				continue;
-			}
-
-			const bothIdle =
-				attacker.state === PlayerStateEnum.IDLE &&
-				victim.state === PlayerStateEnum.IDLE;
-
-			if (!bothIdle) {
-				continue;
-			}
-
-			players[attacker.id] = {
-				...attacker,
-				isGrabbing: false,
-				grabbedPlayerId: null,
-			};
+			heldVictims.add(victim.id);
 			players[victim.id] = {
 				...victim,
-				isGrabbing: false,
+				...this.grabVictimPosition(attacker, victim),
+				vx: 0,
+				vy: 0,
+				isFastFalling: false,
 			};
+		}
+
+		for (const victim of Object.values(players)) {
+			if (victim.isGrabbing && !victim.grabbedPlayerId && !heldVictims.has(victim.id)) {
+				players[victim.id] = release(victim);
+			}
 		}
 	}
 

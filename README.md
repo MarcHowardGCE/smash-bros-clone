@@ -445,7 +445,7 @@ Tracked body launches now allow an air-dodge cancel after 40 live hitstun ticks 
 
 Zero-hitlag tumbles now apply directional influence and launch-speed influence from the stick on the first movement tick. Weak launches, existing throw hitlag values, and hitstop displacement rules keep their current behavior. See docs/LAUNCH-MOTION-REFINEMENT.md.
 
-Grounded grabs and pummels align fighters by their feet so mixed-size opponents stay above the main platform. See [Grounded grab floor contact](docs/LAUNCH-MOTION-REFINEMENT.md#grounded-grabs-and-main-platform-contact).
+Grounded grabs align fighters by their feet. The victim stays attached through pummel and throw startup, preventing a fall through the main platform before release. See [grab windup and platform crossing](docs/LAUNCH-MOTION-REFINEMENT.md#grab-windup-and-platform-crossing).
 
 Ordinary throw releases have zero hitlag. An explicitly authored release can freeze the victim only, and a tumbling throw samples DI and LSI when the victim starts moving. The current checkpoint and next grounded-recovery audit are recorded in [Refinement](docs/REFINEMENT.md#current-combat-parity-checkpoint).
 

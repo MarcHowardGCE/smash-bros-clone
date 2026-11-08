@@ -584,3 +584,14 @@ Grab contact, held position, and pummel contact now use the victim's own collisi
 | Grab, pummel, then down throw | — | — | 300 | 0 |
 
 The low-percent matrix used all 25 ordered fighter pairings, both facings, and all six main platforms. Every grab connected. After the fix, none of the 900 cases placed the victim below the surface. Twelve separate forward throws at 180% still carried the victim past the stage edge and took a stock. The committed regression covers both facings, smaller and larger grabbers, and a pummel before a down throw.
+
+## Grab windup and platform crossing
+
+A follow-up report reproduced the drop with human and CPU grabbers. The first fix aligned mixed-size fighters when a grounded grab connected. During throw startup, the holder entered its attack state and the victim stopped being pinned. At the ledge, a victim held just outside the lip fell before release. An inward back throw could then send the victim underneath the main platform. In a separate CPU replay, the victim's Attack and retained fast fall moved them during throw startup. Reconstructing the previous foot position from velocity could also round it slightly past the surface and miss the collision.
+
+The victim now stays attached through pummel and throw startup, with independent actions and falling suspended until release. An interrupted holder releases the victim. Platform collision uses the previous position for tracked launches and tolerates floating-point error at exact surface contact.
+
+- Replayed 288 near-ledge sequences across six stages and both sides. Before the fix, the victim sank during startup in 240 replays. After the fix, none sank while held and none of these low-percent replays lost a stock.
+- Replayed 900 center-stage grab, pummel, and down-throw sequences across the full roster and six stages. All stayed at or above the surface while held, with zero stock losses.
+- Replayed 450 seeded matches with CPU input. The original grab-through-floor trace no longer occurred. One remaining apparent crossing near a recent grab was a later ledge snap, with neither fighter grabbed on that tick.
+- Automated regressions cover inward ledge throws on both sides, grab interruption, and exact floor contact versus an approach from below.

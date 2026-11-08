@@ -603,3 +603,49 @@ describe('grounded grab floor contact', () => {
     expect(getMutableState(engine).players.p2?.isGrounded).toBe(true);
   });
 });
+
+it.each([-1, 1] as const)('holds the victim at floor height during an inward throw from ledge %i', facing => {
+  const engine = new GameEngine({ playerIds: ['p1', 'p2'], characterIds: { p1: 'swift', p2: 'abe-lincoln' } });
+  const floor = getStageLayout().mainPlatform;
+  const edge = facing === 1 ? floor.x + floor.width : floor.x;
+  const x = edge - 30 * facing;
+  const victimFloorY = floor.y - getCharacterStats('abe-lincoln').hurtboxRadius;
+  primePlayer(engine, 'p1', {
+    x, y: floor.y - getCharacterStats('swift').hurtboxRadius, facing, state: PlayerStateEnum.IDLE,
+    isGrounded: true, isInvincible: false, invincibilityFrames: 0,
+  });
+  primePlayer(engine, 'p2', {
+    x: x + 18 * facing, y: victimFloorY, state: PlayerStateEnum.IDLE,
+    isGrounded: true, isInvincible: false, invincibilityFrames: 0,
+  });
+  const initialStocks = getMutableState(engine).players.p2!.stocks;
+  tick(engine, { p1: makeInput('p1', INPUT_BITS.GRAB) });
+  const grabbed = tickUntil(engine, state => state.players.p1?.grabbedPlayerId === 'p2');
+  expect((grabbed.players.p2!.x - edge) * facing).toBeGreaterThan(0);
+  const first = tick(engine, {
+    p1: makeInput('p1', facing === 1 ? INPUT_BITS.LEFT : INPUT_BITS.RIGHT),
+    p2: makeInput('p2', INPUT_BITS.ATTACK | INPUT_BITS.DOWN),
+  });
+  expect(first.players.p1?.currentMoveId).toBe(MoveId.BACK_THROW);
+  expect(first.players.p2?.state).toBe(PlayerStateEnum.GRAB_HOLDING);
+  expect(first.players.p2?.y).toBe(victimFloorY);
+  const released = tickUntil(engine, state => state.players.p2?.state === PlayerStateEnum.HITSTUN);
+  expect(released.players.p2?.state).toBe(PlayerStateEnum.HITSTUN);
+  expect(released.players.p2?.y).toBe(victimFloorY);
+  expect(released.players.p2!.vx * facing).toBeLessThan(0);
+  for (let frame = 0; frame < 100; frame++) {
+    const victim = tick(engine).players.p2!;
+    expect(victim.stocks).toBe(initialStocks);
+    expect(victim.y).toBeLessThanOrEqual(victimFloorY + 1e-7);
+  }
+  expect(getMutableState(engine).players.p2?.isGrounded).toBe(true);
+});
+
+it('releases a held victim when the grabber is interrupted', () => {
+  const engine = createEngine();
+  primeGrabHoldingPair(engine);
+  primePlayer(engine, 'p1', { state: PlayerStateEnum.HITSTUN, hitstunFramesRemaining: 5 });
+  const state = tick(engine);
+  expect(state.players.p1).toMatchObject({ state: PlayerStateEnum.HITSTUN, isGrabbing: false, grabbedPlayerId: null });
+  expect(state.players.p2).toMatchObject({ state: PlayerStateEnum.IDLE, isGrabbing: false });
+});

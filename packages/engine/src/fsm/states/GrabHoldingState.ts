@@ -40,6 +40,9 @@ export class GrabHoldingState extends BaseState {
       return transition(PlayerStateEnum.IDLE);
     }
 
+    // Only the holder can act or time out. The paired grab releases the victim.
+    if (!ctx.player.grabbedPlayerId) return null;
+
     if (frame >= 89) {
       return transition(PlayerStateEnum.IDLE);
     }

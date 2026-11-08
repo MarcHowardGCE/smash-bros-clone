@@ -101,11 +101,12 @@ function landOnPlatform(player: PlayerState, platformY: number): PlayerState {
 // surface between the previous frame and this frame, rather than just checking current
 // position. Without this, a fast-moving player (high vy) can pass entirely through a
 // thin platform in a single tick and never trigger the landing check.
-function crossesPlatformTop(player: PlayerState, platformY: number): boolean {
-	const playerBottom = player.y + getCharacterStats(player.characterId).hurtboxRadius;
-	const previousBottom = playerBottom - player.vy;
+function crossesPlatformTop(player: PlayerState, platformY: number, previousY: number): boolean {
+	const radius = getCharacterStats(player.characterId).hurtboxRadius;
+	const previousBottom = previousY + radius;
 
-	return previousBottom <= platformY && playerBottom >= platformY;
+	// Reconstructing the previous position from velocity can leave roundoff at an exact floor contact.
+	return previousBottom <= platformY + 1e-7 && player.y + radius >= platformY;
 }
 
 /**
@@ -407,6 +408,7 @@ export function applyFastFall(
 export function checkPlatformCollision(
 	player: PlayerState,
 	stage: StageData,
+	previousY = player.y - player.vy,
 ): PlayerState {
 	if (
 		player.y > stage.blastBottom ||
@@ -442,7 +444,7 @@ export function checkPlatformCollision(
 
 	if (
 		isWithinLandingBounds(player.x, stage.mainPlatform) &&
-		crossesPlatformTop(player, stage.mainPlatform.y)
+		crossesPlatformTop(player, stage.mainPlatform.y, previousY)
 	) {
 		return landOnPlatform(player, stage.mainPlatform.y);
 	}
@@ -454,7 +456,7 @@ export function checkPlatformCollision(
 
 		if (
 			isWithinLandingBounds(player.x, platform) &&
-			crossesPlatformTop(player, platform.y)
+			crossesPlatformTop(player, platform.y, previousY)
 		) {
 			return landOnPlatform(player, platform.y);
 		}
@@ -561,7 +563,7 @@ export function advanceTrackedLaunch(
  if(!timing){
   const motion=applyLaunchGravity(player);
   const moved={...motion,x:motion.x+motion.vx,y:motion.y+motion.vy};
-  return onContact?.(player,moved) ?? decayLaunch(checkPlatformCollision(moved,stage));
+  return onContact?.(player,moved) ?? decayLaunch(checkPlatformCollision(moved,stage,player.y));
  }
 
  const elapsed=nextLaunchTime(timing);
@@ -579,7 +581,7 @@ export function advanceTrackedLaunch(
    launchTiming:{...timing,elapsed:Math.min(next,elapsed),sampled:next}};
   const contact=onContact?.(result,moved);
   if(contact)return contact;
-  result=checkPlatformCollision(moved,stage);
+  result=checkPlatformCollision(moved,stage,result.y);
   if(result.isGrounded)return clearLaunch(result);
   if(result.isKnockedOut)return result;
   cursor=next;

@@ -146,7 +146,7 @@ describe('FSM - Grab states', () => {
 
   it('GrabHolding → Idle after 90 frames', () => {
     const controller = new FSMController(PlayerStateEnum.GRAB_HOLDING);
-    let player = makePlayer({ state: PlayerStateEnum.GRAB_HOLDING, isGrabbing: true, stateFrame: 0 });
+    let player = makePlayer({ state: PlayerStateEnum.GRAB_HOLDING, isGrabbing: true, grabbedPlayerId: 'victim', stateFrame: 0 });
 
     for (let i = 0; i < 90; i += 1) {
       player = controller.tick(player, makeInput());

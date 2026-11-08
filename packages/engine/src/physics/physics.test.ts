@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { INPUT_BITS, PHYSICS, STAGE, type InputEvent, type PlayerState } from '@smash/shared';
+import { INPUT_BITS, PHYSICS, STAGE, getStageLayout, type InputEvent, type PlayerState } from '@smash/shared';
 import { applyDI, applyFastFall, applyGravity, applyKnockbackDecay, applyMovement, applyMovementInput, checkLedgeGrab, checkPlatformCollision, checkWallCollision, startJump } from './index.js';
 
 function makePlayer(overrides: Partial<PlayerState> = {}): PlayerState {
@@ -658,4 +658,12 @@ describe('Physics Engine - Character-Specific Stats', () => {
     expect(result.vy).toBe(PHYSICS.JUMP_VELOCITY);
     expect(result.vy).toBe(-16);
   });
+});
+
+it('catches a fall from exact main-floor height but preserves an approach from below', () => {
+  const stage = getStageLayout();
+  const floorY = stage.mainPlatform.y - PHYSICS.HURTBOX_RADIUS;
+  const player = makePlayer({ x:640, y:floorY + 27.2, vy:27.2, isGrounded:false });
+  expect(checkPlatformCollision(player, stage)).toMatchObject({ y:floorY, isGrounded:true, vy:0 });
+  expect(checkPlatformCollision({ ...player, y:player.y + 0.01 }, stage).isGrounded).toBe(false);
 });

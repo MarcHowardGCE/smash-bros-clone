@@ -188,7 +188,7 @@ export class RoomManager {
   getSelectionState(roomCode:string) {
     const room=this.rooms.get(roomCode);if(!room)return null;
     const players=[...room.players.values()].sort((a,b)=>a.slotIndex-b.slotIndex);
-    return {phase:room.phase,hostPlayerId:players[0]?.playerId,stageId:room.stageId,players:players.map(p=>({playerId:p.playerId,slotIndex:p.slotIndex,characterId:p.characterId,confirmed:p.characterConfirmed}))};
+    return {phase:room.phase,hostPlayerId:players[0]?.playerId,stageId:room.stageId,players:players.map(p=>({playerId:p.playerId,slotIndex:p.slotIndex,characterId:p.characterId,confirmed:p.characterConfirmed,ready:p.isReady}))};
   }
   unconfirmCharacter(code:string,id:PlayerId):{ok:true}|{error:string}{
     const room=this.rooms.get(code);if(!room)return {error:'Room not found'};

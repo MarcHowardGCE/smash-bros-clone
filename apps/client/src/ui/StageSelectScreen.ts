@@ -1,4 +1,4 @@
-import {getStageLayout} from '@smash/shared';
+import { renderWorldPreview, toggleWorldStory, worldArtwork } from './WorldPreview';
 import { WORLD_STORIES, escapeHtml } from './selectionContent';
 import { ULTIMATE_MENU } from '../input/controllerProfiles';
 import { controllerPrompt, type PromptRenderer } from './controllerPrompts';
@@ -14,7 +14,7 @@ import { controllerPrompt, type PromptRenderer } from './controllerPrompts';
 
 import type { GamepadPoller } from '@smash/gamepad-input';
 import { GenericInputBits } from '@smash/gamepad-input';
-import { STAGES, getRandomStage, type StageConfig } from '../stages/stageConfig.js';
+import type { StageConfig } from '../stages/stageConfig.js';
 
 /** Number of columns in the stage grid. */
 const GRID_COLS = 3;
@@ -81,19 +81,19 @@ export function renderStageSelectScreen(
       const idx = Number(btn.dataset['stageIdx']);
       if (idx === selectedIndex) {
         btn.classList.add('menu-selected');
+        btn.setAttribute('aria-pressed', 'true');
         btn.scrollIntoView?.({ block: 'nearest', inline: 'nearest' });
       } else {
         btn.classList.remove('menu-selected');
+        btn.setAttribute('aria-pressed', 'false');
       }
     });
     const stage=stages[selectedIndex];
     if(stage && stage.id!==lastPreviewId){lastPreviewId=stage.id;onPreview?.(stage);}
-    const info=stage?WORLD_STORIES[stage.id]:undefined;
-    const panel=container.querySelector<HTMLElement>('#stage-preview');
-    if(panel){panel.innerHTML=stage ? '<img class="world-preview-art" src="'+normalizedBaseUrl+(info?'menu-art/'+stage.id+'.webp':'backgrounds/'+stage.backgroundImage)+'" alt="'+escapeHtml(stage.displayName)+'"><div class="world-copy"><small>WORLD '+String(selectedIndex+1).padStart(2,'0')+'</small><h2>'+escapeHtml(stage.displayName)+'</h2>'+(info?'<b>'+escapeHtml(info.hook)+'</b><p>'+escapeHtml(info.text)+'</p><button id="stage-story-toggle" class="ui-btn" aria-expanded="false">Read the story · X</button><p id="stage-story" hidden>'+escapeHtml(info.story)+'</p>':'')+'<p class="world-arena-note">'+getStageLayout(stage.id).platforms.length+' pass-through platforms · Static layout</p></div>' : '<div class="world-copy"><h2>Let the world choose you</h2><p>Random selects from these '+stages.length+' worlds.</p></div>';panel.querySelector('#stage-story-toggle')?.addEventListener('click',toggleStory);}
+    const panel = container.querySelector<HTMLElement>('#stage-preview')!;
+    renderWorldPreview(panel, stages, selectedIndex, prompt);
+    container.querySelector('#stage-confirm-btn')!.textContent = stage ? 'Choose World' : 'Choose Random World';
   }
-  function toggleStory():void { const story=container.querySelector<HTMLElement>('#stage-story'),button=container.querySelector('#stage-story-toggle');if(story){story.hidden=!story.hidden;button?.setAttribute('aria-expanded',String(!story.hidden));} }
-
   function moveGrid(direction: 'up' | 'down' | 'left' | 'right'): void {
     const stageCount = stages.length;
     const rows = Math.ceil(stageCount / GRID_COLS);
@@ -149,12 +149,23 @@ export function renderStageSelectScreen(
     updateVisuals();
   }
 
-  // --- Render HTML ---
-  const baseUrl = import.meta.env.BASE_URL || '/';
-  const normalizedBaseUrl = baseUrl.endsWith('/') ? baseUrl : `${baseUrl}/`;
 
-  container.innerHTML = '<div class="overlay-center world-selection"><header><small>SIX IMPOSSIBLE WORLDS</small><h1>Choose your world</h1></header><div class="world-layout"><div><div class="stage-grid">'+stages.map((stage,i)=>'<button class="stage-grid-btn ui-btn" data-stage-idx="'+i+'" aria-label="'+escapeHtml(stage.displayName)+'"><img src="'+normalizedBaseUrl+(WORLD_STORIES[stage.id]?'menu-art/'+stage.id+'.webp':'backgrounds/'+stage.backgroundImage)+'" alt=""><span>'+escapeHtml(WORLD_STORIES[stage.id]?.short??stage.displayName)+'</span></button>').join('')+'</div><button class="ui-btn world-random" data-stage-idx="'+randomIndex+'">✦ Random world</button></div><section id="stage-preview" aria-live="polite"></section></div>'+(onBack?'<button id="stage-back-btn" class="ui-btn">← Back</button>':'')+'</div><div class="menu-hint">Arrows / D-pad · Browse • Enter / '+prompt('confirm')+' Select • '+prompt('story')+' / I Story'+(onBack?' • Esc / '+prompt('cancel')+' Back':'')+'</div>';
-
+  container.innerHTML = `
+    <section class="menu-workspace world-selection" aria-labelledby="world-select-title">
+      <header class="picker-header"><div><span class="menu-kicker">Arena / ${stages.length} worlds</span><h1 id="world-select-title">Choose your world</h1></div>
+        ${onBack ? '<button id="stage-back-btn" class="menu-quiet">← Back</button>' : ''}</header>
+      <div class="world-browser">
+        <div class="world-catalog">
+          <div class="world-tiles">${stages.map((stage,index) => `<button type="button" class="world-tile menu-quiet" data-stage-idx="${index}" aria-label="${escapeHtml(stage.displayName)}">
+            <img src="${escapeHtml(worldArtwork(stage))}" alt=""><span><small>${String(index+1).padStart(2,'0')}</small>${escapeHtml(WORLD_STORIES[stage.id]?.short ?? stage.displayName)}</span>
+          </button>`).join('')}</div>
+          <button type="button" class="menu-quiet world-random-choice" data-stage-idx="${randomIndex}"><span aria-hidden="true">✦</span> Random world</button>
+        </div>
+        <section id="stage-preview" class="world-preview-panel" aria-label="World preview"></section>
+      </div>
+      <footer class="workspace-footer"><p class="picker-help">Arrows / D-pad browse · Enter / ${prompt('confirm')} Select · ${prompt('story')} / I Story${onBack ? ' · Esc / '+prompt('cancel')+' Back' : ''}</p>
+        <button type="button" class="menu-quiet workspace-primary" id="stage-confirm-btn">Choose World</button></footer>
+    </section>`;
   // --- Wire click listeners ---
   const allBtns = container.querySelectorAll<HTMLElement>('[data-stage-idx]');
   allBtns.forEach((btn) => {
@@ -170,6 +181,8 @@ export function renderStageSelectScreen(
   if (onBack) {
     document.getElementById('stage-back-btn')?.addEventListener('click', goBack);
   }
+
+  container.querySelector('#stage-confirm-btn')?.addEventListener('click', () => selectStage(selectedIndex));
 
   // Initial visual highlight
   updateVisuals();
@@ -187,6 +200,7 @@ export function renderStageSelectScreen(
       return;
     }
 
+    if (document.activeElement?.id === 'stage-story' && e.key.startsWith('Arrow')) return;
     switch (e.key) {
       case 'ArrowUp':
         e.preventDefault();
@@ -206,10 +220,10 @@ export function renderStageSelectScreen(
         break;
       case 'i':
       case 'I':
-        e.preventDefault();toggleStory();break;
+        e.preventDefault();toggleWorldStory(container);break;
       case 'Enter':
       case ' ':
-        if((e.target as HTMLElement)?.closest?.('#stage-story-toggle, #stage-back-btn'))return;
+        if((e.target as HTMLElement)?.closest?.('#stage-story-toggle, #stage-story, #stage-back-btn, #stage-confirm-btn'))return;
         e.preventDefault();
         selectStage(selectedIndex);
         break;
@@ -244,7 +258,7 @@ export function renderStageSelectScreen(
         if (pressed & GenericInputBits.DOWN) moveGrid('down');
         if (pressed & GenericInputBits.LEFT) moveGrid('left');
         if (pressed & GenericInputBits.RIGHT) moveGrid('right');
-        if (pressed & GenericInputBits.X) toggleStory();
+        if (pressed & GenericInputBits.X) toggleWorldStory(container);
         if (pressed & ULTIMATE_MENU.confirm) selectStage(selectedIndex);
         if(disposed)return;
         if (pressed & ULTIMATE_MENU.cancel) goBack();

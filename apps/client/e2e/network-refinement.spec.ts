@@ -13,6 +13,7 @@ test("online pause, browser-refresh rejoin, resume and deliberate leave", async 
   try {
     await host.goto(baseURL!);
     await host.locator("#splash-screen").click();
+    await host.locator("#online-play-btn").click();
     await host.locator("#create-btn").click();
     await expect(host).toHaveURL(/room=/);
     const roomUrl = host.url();
@@ -48,7 +49,7 @@ test("online pause, browser-refresh rejoin, resume and deliberate leave", async 
     await guest.keyboard.press("Escape");
     await expect(guest.locator("#main-menu-btn")).toBeVisible();
     await guest.locator("#main-menu-btn").click();
-    await expect(guest.locator("#create-btn")).toBeVisible();
+    await expect(guest.locator("#online-play-btn")).toBeVisible();
     await expect(host.locator("#play-again-btn")).toBeVisible();
     expect(await guest.evaluate(() => sessionStorage.getItem("smash:rejoin"))).toBeNull();
     expect(errors).toEqual([]);

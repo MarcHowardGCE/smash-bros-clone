@@ -142,9 +142,9 @@ describe('UIManager', () => {
       expect(img).not.toBeNull();
       expect(img.src).toContain('everybody-throws-hands-arcade.png');
       // Presentation is owned by the responsive menu class.
-      const container = img.closest('div') as HTMLElement;
+      const container = img.closest('.home-menu') as HTMLElement;
       expect(container).not.toBeNull();
-      expect(container.classList.contains('main-menu-panel')).toBe(true);
+      expect(container.classList.contains('menu-workspace')).toBe(true);
       expect(container.contains(mockOverlay.querySelector('#local-play-btn'))).toBe(true);
     });
 
@@ -496,7 +496,7 @@ describe('UIManager', () => {
 
       // Should have 1 interactive panel
       expect(mockOverlay.innerHTML).toContain('id="network-charselect-panel"');
-      expect(mockOverlay.innerHTML).toContain('Your Character');
+      expect(mockOverlay.innerHTML).toContain('Choose your fighter');
 
       // Should have 2 read-only status rows (for p2 and p3)
       expect(mockOverlay.innerHTML).toContain('id="network-charselect-row-p2"');
@@ -504,8 +504,8 @@ describe('UIManager', () => {
       expect(mockOverlay.innerHTML).toContain('id="network-charselect-status-p2"');
       expect(mockOverlay.innerHTML).toContain('id="network-charselect-status-p3"');
 
-      // Status rows should show "Waiting..."
-      expect(mockOverlay.innerHTML).toContain('Waiting...');
+      // Other seats should show their selection status.
+      expect(mockOverlay.innerHTML).toContain('Choosing…');
     });
 
     it('should render all fighter options in interactive panel', () => {
@@ -632,11 +632,11 @@ describe('UIManager', () => {
 
     it('should update status for other player without full re-render', () => {
       const statusEl = document.getElementById('network-charselect-status-p2') as HTMLElement;
-      expect(statusEl?.textContent).toBe('Waiting...');
+      expect(statusEl?.textContent).toBe('Choosing…');
 
       uiManager.updateNetworkCharacterSelect('p2' as any, 'fighter1', false);
 
-      expect(statusEl?.textContent).toBe('Selected: fighter1');
+      expect(statusEl?.textContent).toBe('Selected · fighter1');
       // Interactive panel should still exist (not re-rendered)
       expect(document.getElementById('network-charselect-panel')).not.toBeNull();
     });
@@ -645,7 +645,7 @@ describe('UIManager', () => {
       uiManager.updateNetworkCharacterSelect('p2' as any, 'fighter1', true);
 
       const statusEl = document.getElementById('network-charselect-status-p2') as HTMLElement;
-      expect(statusEl?.textContent).toBe('Selected: fighter1');
+      expect(statusEl?.textContent).toBe('Ready · fighter1');
       expect(statusEl?.style.color).toMatch(/rgba\(0,\s*255,\s*0,\s*0\.8\)/);
     });
 

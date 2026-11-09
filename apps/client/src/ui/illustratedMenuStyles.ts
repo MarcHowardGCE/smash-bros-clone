@@ -8,24 +8,24 @@ export const illustratedMenuStyles = `
  box-shadow:0 12px 50px #0008,inset 0 0 0 5px #241c2b,inset 0 0 0 6px #695239;
  padding:32px;
 }
-.menu-shell:not([data-menu-surface="game"]) .ui-btn:not(.stage-grid-btn) {
+.menu-shell:not([data-menu-surface="game"]) .ui-btn {
  background:#302635 url('/menu-ui/secondary-button.png') center/100% 100% no-repeat;
  color:#f1e3bf;border:0;border-radius:10px;min-height:46px;
  padding:12px 26px;line-height:1.35;font-weight:650;
 }
-.menu-shell:not([data-menu-surface="game"]) .ui-btn:not(.stage-grid-btn):disabled {
+.menu-shell:not([data-menu-surface="game"]) .ui-btn:disabled {
  opacity:1;color:#c5b9bc;filter:saturate(.2);cursor:not-allowed;
 }
 .menu-shell:not([data-menu-surface="game"]) :is(.ui-btn,.audio-volume-row,.fighter-option,.network-fighter-option):is(.menu-selected,.seat-focused,:focus-visible) {
  outline:3px solid var(--menu-focus);outline-offset:4px;
 }
 .menu-shell:not([data-menu-surface="game"]) :is(.ui-btn,.fighter-option,.network-fighter-option):hover {filter:brightness(1.1);}
-.menu-shell :is(#lps-start-btn,#resume-btn,#play-again-btn,#local-play-again-btn,#network-charselect-confirm-btn,.fighter-ready) {
+.menu-shell :is(#resume-btn,#play-again-btn,#local-play-again-btn,#network-charselect-confirm-btn,.fighter-ready) {
  background-image:url('/menu-ui/primary-button.png')!important;color:#201a27!important;
 }
 .menu-shell .menu-hint {border:2px double #96764f;border-radius:8px;}
 .menu-shell .selection-heading {grid-column:1/-1;text-align:center;}
-.menu-shell .selection-heading h1,.menu-shell .world-selection h1 {
+.menu-shell .selection-heading h1 {
  display:inline-flex;align-items:center;justify-content:center;
  background:url('/menu-ui/title-ribbon.png') center/100% 100% no-repeat;
  min-height:68px;width:min(460px,100%);padding:16px 36px;color:#201a27;
@@ -57,18 +57,6 @@ export const illustratedMenuStyles = `
  box-shadow:inset 0 0 0 3px #241c2b;
 }
 .menu-shell .network-fighter-option[aria-pressed="true"] {background:#594051;border-color:#e0b567!important;}
-.menu-shell .world-selection header {padding-right:110px;}
-.menu-shell .world-selection header small {display:block;margin:0 0 8px;}
-.menu-shell .world-layout .stage-grid-btn {
- border:3px double #b19465;border-radius:10px;background:#302635;overflow:hidden;
- box-shadow:0 4px 12px #0005;
-}
-.menu-shell .stage-grid-btn.menu-selected {outline:3px solid #95d1c6;outline-offset:4px;background:#453047;}
-.menu-shell .stage-grid-btn span {font-size:17px;color:#f1e3bf;padding:10px;min-height:64px;}
-.menu-shell #stage-preview {border:3px double #b19465;border-radius:10px;background:#f1e3bf;}
-.menu-shell .world-copy {line-height:1.55;}
-.menu-shell .world-copy .ui-btn {color:#f1e3bf;}
-.menu-shell .world-random {min-width:240px;}
 .menu-shell .controls-screen {background:#241c2b!important;border-radius:12px!important;padding:28px!important;}
 .controls-screen .controls-heading,.setup-heading {font:700 30px Georgia,serif;letter-spacing:.02em!important;}
 .controls-screen .controls-help {font-size:14px!important;line-height:1.5;}
@@ -80,7 +68,7 @@ export const illustratedMenuStyles = `
 .menu-shell #network-charselect-error {color:#ffb5ac!important;}
 @media(max-height:800px){
  .menu-shell:not([data-menu-surface="game"]) .overlay-center {padding:24px;}
- .menu-shell .selection-heading h1,.menu-shell .world-selection h1 {min-height:54px;font-size:24px;padding:12px 30px;}
+ .menu-shell .selection-heading h1 {min-height:54px;font-size:24px;padding:12px 30px;}
  .selection-heading p {display:none;}
  .menu-shell .overlay-center.character-selection {gap:10px;}
  .menu-shell .fighter-seat-title {font-size:17px;margin-bottom:8px;}
@@ -90,11 +78,8 @@ export const illustratedMenuStyles = `
  .menu-shell .fighter-identity {min-height:58px;}
  .menu-shell .fighter-player-panel {padding:12px;}
  .menu-shell .fighter-player-panel .fighter-option {margin:6px 0;min-height:36px;padding:6px 20px;}
- .menu-shell .world-preview-art {aspect-ratio:16/6;}
 }
 @media(max-width:750px){
- .menu-shell .world-selection header {padding-right:0;padding-top:44px;}
- .menu-shell .world-selection h1 {font-size:23px;}
  .menu-shell .overlay-center.character-selection {gap:14px;padding:22px;}
  .menu-shell .controls-binding-grid {grid-template-columns:repeat(2,minmax(0,1fr))!important;}
 }
@@ -106,21 +91,5 @@ export const illustratedMenuStyles = `
  background-size:100% 100%;background-position:center;background-repeat:no-repeat;
 }
 .menu-shell #lps-player-btns .lps-count-btn[aria-pressed="true"] {color:#201a27;}
-/* Fixed outer shell; content scrolls inside it instead of moving the whole menu. */
-.menu-shell .overlay-center.world-selection {
- height:calc(100dvh - 120px);max-height:calc(100dvh - 120px);
- display:flex;flex-direction:column;align-items:stretch;overflow:hidden;
-}
-.menu-shell .world-selection > header {flex:0 0 auto;}
-.menu-shell .world-selection > .world-layout {
- flex:1 1 0;min-height:0;align-items:stretch;overflow:auto;padding:6px;
-}
-.menu-shell .world-layout > div {min-width:0;}
-.menu-shell .world-layout #stage-preview {height:100%;min-height:0;overflow-y:auto;scrollbar-gutter:stable;}
-.menu-shell .world-layout .world-preview-art {flex-shrink:0;}
-@media(max-width:850px) {
- .menu-shell .world-layout #stage-preview {height:auto;min-height:360px;overflow:visible;}
-}
-
 `;
 

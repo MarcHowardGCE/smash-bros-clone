@@ -1,9 +1,14 @@
 import{renderPracticeSetup}from'../practice/PracticeSetup.js';
 import type{PracticeConfig}from'../practice/curriculum.js';
+import type { PracticeLabAction } from '../practice/PracticePanel';
 import {renderVisualSettingsScreen} from './VisualSettingsScreen';
 import type {StageBackdrop} from '../renderer/StageBackdrop';
-import {getStageLayout} from '@smash/shared';
-import { FIGHTER_PRESENTATION, WORLD_STORIES, fighterPortrait, escapeHtml } from './selectionContent';
+import { fighterComparison, fighterTile } from './FighterComparison';
+import { renderDojoPause } from './DojoPause';
+import { homeMenu, onlineEntry, roomLobby, roomSeats, type LobbySeat } from './EntryMenus';
+import { FIGHTER_PRESENTATION, escapeHtml } from './selectionContent';
+import { STAGES } from '../stages/stageConfig';
+import { matchIntro, renderWorldPreview, toggleWorldStory, type MatchIntro } from './WorldPreview';
 import { ULTIMATE_MENU, getControllerProfile } from '../input/controllerProfiles';
 import { controllerPrompt, refreshControllerPrompts, type PromptAction } from './controllerPrompts';
 /**
@@ -45,11 +50,12 @@ export type UIPhase = 'connecting' | 'lobby' | 'waiting' | 'countdown' | 'match'
  * starts a {@link MenuNavigator} for gamepad/keyboard navigation.
  */
 export class UIManager {
+  private dojoPauseTab = 0;
   private practiceSetupHandle:{destroy:()=>void}|null=null;
   onPractice:(()=>void)|null=null;
   onPracticeReset:(()=>void)|null=null;
   onPracticeMenu:(()=>void)|null=null;
-  onPracticeLabActions:(()=>{id:string;label:string;run:()=>void;disabled?:boolean}[])|null=null;
+  onPracticeLabActions: (() => PracticeLabAction[]) | null = null;
   private visualSettingsHandle:{destroy:()=>void}|null=null;
   private visualSettingsFromPause=false;
   private stageScreenHandle:{destroy:()=>void}|null=null;
@@ -62,6 +68,8 @@ export class UIManager {
   private phase: UIPhase = 'connecting';
   private myPlayerId: PlayerId | null = null;
   private roomCode: string | null = null;
+  private roomPlayers: readonly LobbySeat[] = [];
+  private roomHost?: string;
   private playerCount: number = 0;
   private menuNav: MenuNavigator | null = null;
   _gamepadPoller: GamepadPoller | null = null;
@@ -248,97 +256,135 @@ export class UIManager {
     }
   }
 
-  /** Show the main lobby with Create Room / Join Room / Local Play / Controls buttons. */
+
+  /** Route into the room when returning from selection, otherwise show Home. */
   showLobby(): void {
+    if (this.roomCode && new URL(window.location.href).searchParams.has('room') && this.roomPlayers.length) {
+      this.showRoomLobby();
+      return;
+    }
+    this.roomCode = null;
+    this.roomPlayers = [];
     this.stopMenuNav();
     this.phase = 'lobby';
     this.hudPanel.style.display = 'none';
-    const urlParams = new URLSearchParams(window.location.search);
-    const existingRoom = urlParams.get('room');
+    this.overlay.innerHTML = homeMenu() +
+      `<div class="menu-hint">↑↓ Navigate · ←→ Adjust · Enter / ${this.prompt('confirm')} Select</div>` +
+      this.versionTag();
 
-    this.overlay.innerHTML = `
-      <div class="main-menu-panel fight-cabinet">
-        <img src="/branding/everybody-throws-hands-arcade.png" alt="Everybody Throws Hands">
-        <div class="fight-actions">
-          <button id="local-play-btn" class="ui-btn cabinet-button cabinet-primary">Local Play</button><button id="practice-btn" class="ui-btn cabinet-button">Training Dojo</button>
-          ${existingRoom ? `<div class="room-label">Room: <strong>${existingRoom}</strong></div><button id="ready-btn" class="ui-btn cabinet-button">Ready</button>` : `<button id="create-btn" class="ui-btn cabinet-button">Create Room</button><div class="room-join"><input id="join-code" class="ui-input" aria-label="Room code" placeholder="ROOM CODE" maxlength="6"><button id="join-btn" class="ui-btn cabinet-button">Join</button></div>`}
-        </div>
-        <div class="menu-utilities"><button id="controls-btn" class="ui-btn cabinet-button">Controls</button><button id="visual-settings-btn" class="ui-btn cabinet-button">Visual accessibility</button></div>
-        <div class="cabinet-section-label">Sound</div><div id="audio-settings-container"></div>
-      </div>
-      <div class="menu-hint">↑↓ Navigate • ←→ Adjust • Enter / ${this.prompt('confirm')} Select</div>
-      ${this.versionTag()}`;
-
-    document.getElementById('create-btn')?.addEventListener('click', () => this.onCreateRoom?.());
-    document.getElementById('join-btn')?.addEventListener('click', () => {
-      const code = (document.getElementById('join-code') as HTMLInputElement)?.value?.trim().toUpperCase();
-      if (code?.length === 6) this.onJoinRoom?.(code);
-    });
-    document.getElementById('ready-btn')?.addEventListener('click', () => {
-      this.onReady?.();
-      this.showWaiting();
-    });
-    document.getElementById('practice-btn')?.addEventListener('click',()=>this.onPractice?.());
-    document.getElementById('local-play-btn')?.addEventListener('click', () => this.onLocalPlay?.());
-    document.getElementById('controls-btn')?.addEventListener('click', () => this.onOpenControls?.());
-    document.getElementById('join-code')?.addEventListener('keydown', (e) => {
-      if (e.repeat) {
-        return;
-      }
-      if (e.key === 'Enter') document.getElementById('join-btn')?.click();
-    });
-
-    // Menu navigation
-    this.menuNav = new MenuNavigator(this._gamepadPoller);
-    const navButtons: MenuButton[] = [];
-
-    // Add audio settings rows if audioManager is set
+    const actions: Record<string, () => void> = {
+      'local-play-btn': () => this.onLocalPlay?.(),
+      'online-play-btn': () => this.showOnlineEntry(),
+      'practice-btn': () => this.onPractice?.(),
+      'controls-btn': () => this.onOpenControls?.(),
+      'visual-settings-btn': () => this.onOpenVisualSettings?.(),
+    };
+    const entries = this.bindMenuActions(actions);
+    const audio = this.overlay.querySelector<HTMLElement>('#audio-settings-container')!;
+    const audioButton = this.overlay.querySelector<HTMLButtonElement>('#home-audio-btn')!;
     if (this.audioManager) {
-      const { container: audioContainer, buttons: audioButtons } = createAudioSettingsRows({
+      const rows = createAudioSettingsRows({
         audioManager: this.audioManager,
         onChanged: () => this.onAudioChanged?.(),
       });
-      const audioSettingsContainer = document.getElementById('audio-settings-container');
-      if (audioSettingsContainer) {
-        audioSettingsContainer.appendChild(audioContainer);
-      }
-      navButtons.push(...audioButtons);
-    }
-
-    if (existingRoom) {
-      const readyEl = document.getElementById('ready-btn');
-      if (readyEl) {
-        navButtons.push({ id: 'ready-btn', element: readyEl, onActivate: () => { this.onReady?.(); this.showWaiting(); } });
-      }
+      audio.append(rows.container);
+      const toggle = () => {
+        audio.hidden = !audio.hidden;
+        audioButton.setAttribute('aria-expanded', String(!audio.hidden));
+        this.menuNav?.setButtons(audio.hidden ? entries : [...entries, ...rows.buttons]);
+        this.menuNav?.selectIndex(entries.length - 1);
+      };
+      audioButton.setAttribute('aria-expanded', 'false');
+      audioButton.setAttribute('aria-controls', audio.id);
+      audioButton.addEventListener('click', toggle);
+      entries.push({ id: audioButton.id, element: audioButton, onActivate: toggle });
     } else {
-      const createEl = document.getElementById('create-btn');
-      if (createEl) {
-        navButtons.push({ id: 'create-btn', element: createEl, onActivate: () => this.onCreateRoom?.() });
+      audioButton.hidden = true;
+    }
+    this.startEntryNav(entries);
+  }
+
+  showOnlineEntry(code = '', joining = false): void {
+    this.stopMenuNav();
+    this.phase = 'lobby';
+    this.hudPanel.style.display = 'none';
+    this.overlay.innerHTML = onlineEntry(code);
+    const form = this.overlay.querySelector<HTMLFormElement>('#online-join-form')!;
+    const input = form.querySelector<HTMLInputElement>('#join-code')!;
+    const status = this.overlay.querySelector<HTMLElement>('#online-entry-status')!;
+    const goBack = () => {
+      if (input.readOnly) return;
+      const url = new URL(window.location.href);
+      url.searchParams.delete('room');
+      window.history.replaceState({}, '', url);
+      this.showLobby();
+    };
+    const create = () => {
+      this.setOnlinePending('Creating room…');
+      this.onCreateRoom?.();
+    };
+    form.addEventListener('submit', event => {
+      event.preventDefault();
+      if (input.readOnly) return;
+      const roomCode = input.value.trim().toUpperCase();
+      if (!/^[A-Z0-9]{6}$/.test(roomCode)) {
+        status.textContent = 'Enter a six-character room code.';
+        input.setAttribute('aria-invalid', 'true');
+        input.focus();
+        return;
       }
-      const joinEl = document.getElementById('join-btn');
-      if (joinEl) {
-        navButtons.push({ id: 'join-btn', element: joinEl, onActivate: () => {
-          const code = (document.getElementById('join-code') as HTMLInputElement)?.value?.trim().toUpperCase();
-          if (code?.length === 6) this.onJoinRoom?.(code);
-        } });
-      }
-    }
-    const localEl = document.getElementById('local-play-btn');
-    if (localEl) {
-      navButtons.push({ id: 'local-play-btn', element: localEl, onActivate: () => this.onLocalPlay?.() });
-    }
-    const practiceEl=document.getElementById('practice-btn');if(practiceEl)navButtons.push({id:'practice-btn',element:practiceEl,onActivate:()=>this.onPractice?.()});
-    const controlsEl = document.getElementById('controls-btn');
-    if (controlsEl) {
-      navButtons.push({ id: 'controls-btn', element: controlsEl, onActivate: () => this.onOpenControls?.() });
-    }
-    const visuals=this.overlay.querySelector<HTMLElement>('#visual-settings-btn');
-    if(visuals){visuals.addEventListener('click',()=>this.onOpenVisualSettings?.());navButtons.push({id:'visual-settings-btn',element:visuals,onActivate:()=>this.onOpenVisualSettings?.()});}
-    // Match controller order to the visible DOM order, with play actions first.
-    navButtons.sort((a, b) => a.element === b.element ? 0 :
-      a.element.compareDocumentPosition(b.element) & Node.DOCUMENT_POSITION_FOLLOWING ? -1 : 1);
-    this.menuNav.setButtons(navButtons);
-    this.menuNav.start();
+      this.setOnlinePending('Joining room…');
+      this.onJoinRoom?.(roomCode);
+    });
+    input.addEventListener('keydown', event => {
+      if (event.key === 'Escape') goBack();
+    });
+    input.addEventListener('input', () => {
+      input.removeAttribute('aria-invalid');
+      status.textContent = '';
+    });
+    this.startEntryNav(this.bindMenuActions({
+      'create-btn': create,
+      'join-btn': null,
+      'online-back-btn': goBack,
+    }), goBack);
+    if (joining) this.setOnlinePending('Joining room…');
+  }
+
+  private setOnlinePending(message: string): void {
+    const status = this.overlay.querySelector('#online-entry-status');
+    if (!status) return;
+    status.textContent = message;
+    this.overlay.querySelector<HTMLInputElement>('#join-code')!.readOnly = true;
+    for (const button of this.overlay.querySelectorAll<HTMLButtonElement>('.online-entry button')) button.disabled = true;
+  }
+
+  showRoomJoinError(message: string): void {
+    const status = this.overlay.querySelector('#online-entry-status');
+    if (!status) return;
+    status.textContent = message;
+    const input = this.overlay.querySelector<HTMLInputElement>('#join-code')!;
+    input.readOnly = false;
+    input.setAttribute('aria-invalid', 'true');
+    for (const button of this.overlay.querySelectorAll<HTMLButtonElement>('.online-entry button')) button.disabled = false;
+  }
+
+  private bindMenuActions(actions: Record<string, (() => void) | null>): MenuButton[] {
+    return Object.entries(actions).map(([id, run]) => {
+      const element = this.overlay.querySelector<HTMLButtonElement>('#'+id)!;
+      if (run) element.addEventListener('click', run);
+      return { id, element, onActivate: () => element.click() };
+    });
+  }
+
+  private startEntryNav(entries: MenuButton[], back?: () => void): void {
+    const nav = new MenuNavigator(this._gamepadPoller);
+    this.menuNav = nav;
+    this.overlay.querySelector('.menu-workspace')?.addEventListener('focusin', event => {
+      nav.selectIndex(entries.findIndex(entry => entry.element === event.target));
+    });
+    nav.setButtons(entries);
+    nav.start(back);
   }
 
   /**
@@ -413,15 +459,9 @@ export class UIManager {
               : CONFIRM_KEYS[i]?.[0] ?? `keyboard`;
         html += `
         <section id="p${i + 1}-panel" class="fighter-player-panel" style="--player-color:${['#7cbab0','#db889a','#e0b567','#a796d4'][i]}">
-          <div class="fighter-seat-title">P${i + 1} (${panelRole}) Choose</div>
-          <img id="p${i+1}-portrait" class="selection-portrait" src="${fighterPortrait(initialChoices[i]?.id ?? fighters[0]?.id ?? '')}" alt="${escapeHtml(initialChoices[i]?.displayName ?? fighters[0]?.displayName ?? '')}">
-          <div id="p${i+1}-identity" class="fighter-identity"></div>
-          ${fighters.map(f => `
-            <button type="button" class="fighter-option" data-player="${i + 1}" data-id="${f.id}"
-                 style="border:2px solid rgba(255,255,255,0.3)">
-              ${escapeHtml(f.displayName)}
-            </button>
-          `).join('')}
+          <button type="button" class="menu-quiet fighter-seat-title" data-inspect-seat="${i}" aria-pressed="${i===0}">
+            <span>P${i+1} · ${panelRole}</span><strong id="p${i+1}-identity"></strong>
+          </button>
           <div id="p${i + 1}-status" style="font-size:14px;margin-top:12px;color:rgba(255,255,255,0.5)">
             ${isCpuSlot ? confirmHint : `Press ${confirmHint} or ${this.prompt('confirm',i)} to confirm`}
           </div>
@@ -432,12 +472,18 @@ export class UIManager {
     })();
 
     this.overlay.innerHTML = `
-      <div class="overlay-center character-selection" style="--players:${playerCount}">
-        <header class="selection-heading"><h1>Choose your fighter</h1><p>Three fighters. Everybody throws hands.</p></header>
-        ${panelsHtml}
-      </div>
-      ${onBack ? '<button id="charsel-back-btn" class="ui-btn" style="position:absolute;top:24px;left:24px;font-size:14px;padding:8px 16px">← Back</button>' : ''}
-      <div class="menu-hint">${onBack ? `Esc / ${this.prompt('cancel',0)} Back • ` : ''}Confirm to start</div>`;
+      <section class="fighter-picker" aria-label="Fighter selection">
+        <header class="picker-header"><div><span class="menu-kicker">Local play / ${fighters.length} fighters</span><h1>Choose your fighter</h1></div>
+          ${onBack ? '<button id="charsel-back-btn" class="menu-quiet">← Back</button>' : ''}</header>
+        <div class="fighter-comparison"></div>
+        <div class="fighter-rosters">
+          ${choices.map((_, slot) => `<div class="fighter-roster" data-roster-seat="${slot}" ${slot===0?'':'hidden'}>
+            ${fighters.map(f => `<button type="button" class="fighter-option" data-player="${slot+1}" data-id="${escapeHtml(f.id)}">${fighterTile(f)}</button>`).join('')}
+          </div>`).join('')}
+        </div>
+        <footer><div class="fighter-seats" style="--players:${playerCount}">${panelsHtml}</div>
+          <p class="picker-help">Arrows / D-pad browse · I / ${this.prompt('story',0)} cycles comparison · Select a seat to edit it</p></footer>
+      </section>`;
 
     // Back button click
     if (onBack) {
@@ -447,12 +493,24 @@ export class UIManager {
       });
     }
 
-    const updateIdentity=(slot:number,fighter:FighterChoice)=>{
-      this.overlay.querySelectorAll<HTMLElement>('[data-player="'+(slot+1)+'"]').forEach(option=>option.setAttribute('aria-pressed',String(option.dataset.id===fighter.id)));
-      const portrait=this.overlay.querySelector<HTMLImageElement>('#p'+(slot+1)+'-portrait');
-      if(portrait){portrait.src=fighterPortrait(fighter.id);portrait.alt=fighter.displayName;}
-      const detail=this.overlay.querySelector('#p'+(slot+1)+'-identity');const info=FIGHTER_PRESENTATION[fighter.id];
-      if(detail)detail.innerHTML=info ? '<strong>'+escapeHtml(info.role)+'</strong><p>'+escapeHtml(info.pitch)+'</p>' : '';
+    const comparison = fighterComparison(this.overlay, fighters);
+    const inspectSeat = (slot: number) => {
+      this.overlay.querySelectorAll<HTMLElement>('[data-roster-seat]').forEach(row => { row.hidden = Number(row.dataset.rosterSeat) !== slot; });
+      this.overlay.querySelectorAll<HTMLElement>('[data-inspect-seat]').forEach(button => {
+        button.setAttribute('aria-pressed', String(Number(button.dataset.inspectSeat) === slot));
+      });
+      const fighter = fighters[selectedFighterIndex[slot]!] ?? fighters[0];
+      if (fighter) comparison.show(fighter);
+    };
+    this.overlay.querySelectorAll<HTMLElement>('[data-inspect-seat]').forEach(button => {
+      button.addEventListener('click', () => inspectSeat(Number(button.dataset.inspectSeat)));
+    });
+    const updateIdentity = (slot: number, fighter: FighterChoice) => {
+      this.overlay.querySelectorAll<HTMLElement>('[data-player="'+(slot+1)+'"]').forEach(option =>
+        option.setAttribute('aria-pressed', String(option.dataset.id === fighter.id)));
+      const name = this.overlay.querySelector('#p'+(slot+1)+'-identity');
+      if (name) name.textContent = fighter.displayName;
+      if (!this.overlay.querySelector<HTMLElement>('[data-roster-seat="'+slot+'"]')?.hidden) comparison.show(fighter);
     };
     for(let i=0;i<playerCount;i++){const fighter=choices[i]??fighters[0];if(fighter)updateIdentity(i,fighter);}
     for(let i=0;i<playerCount;i++){if(initialChoices[i]){this.overlay.querySelectorAll<HTMLElement>(`[data-player="${i+1}"]`).forEach(el=>{el.style.borderColor=el.dataset.id===initialChoices[i]?.id?'white':'rgba(255,255,255,0.3)';});}}
@@ -470,8 +528,9 @@ export class UIManager {
           
           if (selectedFighter) {
             choices[i] = selectedFighter;
-            updateIdentity(i,selectedFighter);
             selectedFighterIndex[i] = fighters.indexOf(selectedFighter);
+            inspectSeat(i);
+            updateIdentity(i,selectedFighter);
             
             // Update border styling: clicked option gets white, others dim
             playerElements.forEach(option => {
@@ -579,6 +638,7 @@ export class UIManager {
         return;
       }
 
+      if (e.code === 'KeyI') { e.preventDefault(); comparison.cycle(); return; }
       if(e.key==='Enter' && (e.target as HTMLElement)?.closest?.('button'))return;
       // Back navigation via Escape
       if(e.key==='Escape' && unlockSlot(0)){e.preventDefault();return;}
@@ -591,7 +651,9 @@ export class UIManager {
 
       // Keyboard arrow key navigation for human slot 0 only
       if (e.key === 'ArrowUp' || e.key === 'ArrowDown' || e.key === 'ArrowLeft' || e.key === 'ArrowRight') {
-        const slotIndex = 0; // Only human player (slot 0)
+        e.preventDefault();
+        const slotIndex = 0; // Keyboard browsing remains assigned to player 1.
+        inspectSeat(slotIndex);
         if (!confirmed[slotIndex]) {
           const currentIndex = selectedFighterIndex[slotIndex];
           if (currentIndex === undefined || currentIndex < 0) {
@@ -651,10 +713,14 @@ export class UIManager {
         for (const index of lastBits.keys()) if (!states.has(index)) lastBits.delete(index);
         for (const [gpIndex, state] of states) {
           const slotForPad = slots?.get(gpIndex) ?? (typeof gamepadSlotByIndex === 'function' ? undefined : gpIndex);
-          if (slotForPad === undefined) continue;
+          if (slotForPad === undefined || slotForPad < 0 || slotForPad >= playerCount) continue;
           const bits = state.bits;
           const prev = lastBits.get(gpIndex) ?? 0;
           const pressed = bits & ~prev;
+          if (pressed & GenericInputBits.X) { inspectSeat(slotForPad); comparison.cycle(); }
+          if (pressed & (GenericInputBits.UP | GenericInputBits.DOWN | GenericInputBits.LEFT | GenericInputBits.RIGHT)) {
+            inspectSeat(slotForPad);
+          }
 
           // A button → back
           if(pressed & ULTIMATE_MENU.cancel){
@@ -787,59 +853,76 @@ export class UIManager {
     this.stageScreenHandle=renderStageSelectScreen(this.overlay, stages, onSelected, onBack, this._gamepadPoller,onPreview,initialStageId,this.prompt);
   }
 
-  /** Show the room-created screen with the 6-character code and a Ready button. */
+
+  /** Enter the room after the server assigns an invite code. */
   showRoomCreated(code: string): void {
-    this.phase = 'lobby';
     this.roomCode = code;
     this.playerCount = 1;
-    this.hudPanel.style.display = 'none';
-
-    const url = new URL(window.location.href);
-    url.searchParams.set('room', code);
-    window.history.replaceState({}, '', url.toString());
-
-    this.overlay.innerHTML = `
-      <div class="overlay-center">
-        <div style="font-size:18px;margin-bottom:8px">Room Created</div>
-        <div style="font-size:56px;letter-spacing:8px;margin-bottom:8px">${code}</div>
-        <button id="copy-btn" class="ui-btn" style="margin-bottom:24px;font-size:14px">Copy Link</button>
-        <div id="player-list" style="font-size:14px;margin-bottom:24px">
-          <div>P1: You (waiting to ready...)</div>
-        </div>
-        <button id="ready-btn" class="ui-btn">Ready</button>
-      </div>`;
-
-    document.getElementById('copy-btn')?.addEventListener('click', () => {
-      navigator.clipboard.writeText(window.location.href).catch(() => {});
-      const copyBtn = document.getElementById('copy-btn') as HTMLButtonElement;
-      if (copyBtn) copyBtn.textContent = 'Copied!';
-    });
-    document.getElementById('ready-btn')?.addEventListener('click', () => {
-      this.onReady?.();
-      this.showWaiting();
-    });
+    const playerId = this.myPlayerId;
+    this.roomPlayers = playerId ? [{ playerId, slotIndex: 0 }] : [];
+    this.roomHost = playerId ?? undefined;
+    this.showRoomLobby();
   }
 
-  /** Add a joined-player row to the room-created waiting screen. */
+  updateRoomLobby(players: readonly LobbySeat[], hostId?: string): void {
+    this.roomPlayers = players;
+    this.roomHost = hostId;
+    if (!this.roomCode) return;
+    if (!this.overlay.querySelector('.online-room')) this.showRoomLobby();
+    else this.refreshRoomLobby();
+  }
+
+  private showRoomLobby(): void {
+    if (!this.roomCode) return;
+    this.stopMenuNav();
+    this.phase = 'lobby';
+    this.hudPanel.style.display = 'none';
+    const url = new URL(window.location.href);
+    url.searchParams.set('room', this.roomCode);
+    window.history.replaceState({}, '', url);
+    this.overlay.innerHTML = roomLobby(this.roomCode);
+    const copyStatus = this.overlay.querySelector('#copy-room-status')!;
+    this.startEntryNav(this.bindMenuActions({
+      'ready-btn': () => { this.onReady?.(); this.showWaiting(); },
+      'copy-btn': async () => {
+        try {
+          await navigator.clipboard.writeText(window.location.href);
+          copyStatus.textContent = 'Invite link copied.';
+        } catch {
+          copyStatus.textContent = 'Could not copy the link. Share the room code above.';
+        }
+      },
+      'leave-room-btn': () => this.onMainMenu?.(),
+    }));
+    this.refreshRoomLobby();
+  }
+
+  private refreshRoomLobby(): void {
+    const list = this.overlay.querySelector('#player-list');
+    if (!list) return;
+    list.innerHTML = roomSeats(this.roomPlayers, this.myPlayerId, this.roomHost);
+    this.overlay.querySelector('#room-seat-count')!.textContent = this.roomPlayers.length + ' / 4';
+    const ready = this.roomPlayers.find(player => player.playerId === this.myPlayerId)?.ready ?? false;
+    const button = this.overlay.querySelector<HTMLButtonElement>('#ready-btn')!;
+    button.disabled = ready;
+    button.textContent = ready ? 'Ready ✓' : 'Ready';
+    this.phase = ready ? 'waiting' : 'lobby';
+    this.overlay.querySelector('#room-ready-status')!.textContent = ready
+      ? 'Waiting for other players.'
+      : 'Mark yourself ready when you’re set.';
+  }
+
+  /** Update the legacy player count used by the match HUD. */
   showPlayerJoined(slotIndex: number): void {
     this.playerCount = Math.max(this.playerCount, slotIndex + 1);
-    const playerList = document.getElementById('player-list');
-    if (playerList) {
-      playerList.innerHTML = '';
-      for (let i = 0; i < this.playerCount; i++) {
-        playerList.innerHTML += `<div>P${i + 1}: ${i === 0 ? 'You' : 'Player ' + (i + 1)} ✓</div>`;
-      }
-    }
   }
 
-  /** Disable the Ready button and show "Waiting for others…" text. */
   showWaiting(): void {
     this.phase = 'waiting';
-    const readyBtn = document.getElementById('ready-btn') as HTMLButtonElement | null;
-    if (readyBtn) {
-      readyBtn.textContent = 'Waiting for others...';
-      readyBtn.disabled = true;
-      readyBtn.style.opacity = '0.5';
+    const button = this.overlay.querySelector<HTMLButtonElement>('#ready-btn');
+    if (button) {
+      button.textContent = 'Setting ready…';
+      button.disabled = true;
     }
   }
 
@@ -848,28 +931,38 @@ export class UIManager {
    *
    * @param count - Countdown value; 0 renders "GO!"
    */
-  showCountdown(count: number): void {
-    this.stopMenuNav();
-    this.phase = 'countdown';
-    this.overlay.dataset.menuSurface = 'game';
-    this.hudPanel.style.display = 'none';
-    this.overlay.innerHTML = `
-      <div class="overlay-center" style="font-size:120px;font-weight:bold;letter-spacing:8px">
-        ${count > 0 ? count : 'GO!'}
-      </div>`;
-  }
 
+  showCountdown(count: number | null, intro?: MatchIntro): void {
+    let panel = this.overlay.querySelector<HTMLElement>('.match-intro');
+    if (this.phase !== 'countdown' || !panel || !intro) {
+      this.stopMenuNav();
+      this.phase = 'countdown';
+      this.overlay.dataset.menuSurface = 'game';
+      this.hudPanel.style.display = 'none';
+      this.overlay.innerHTML = intro ? matchIntro(intro) : '<div class="overlay-center match-countdown-fallback" role="status"></div>';
+      panel = this.overlay.querySelector('.match-intro');
+    }
+    const countNode = panel?.querySelector('.match-intro-count') ?? this.overlay.querySelector('.match-countdown-fallback');
+    if (countNode) {
+      countNode.textContent = count === null ? 'Loading arena…' : count === 0 ? 'GO!' : String(count);
+      countNode.classList.toggle('match-intro-loading', count === null);
+    }
+  }
   showPracticeSetup(onStart:(config:PracticeConfig)=>void,onBack:()=>void):void {
     this.stopMenuNav();this.phase='controls';this.hudPanel.style.display='none';
     this.practiceSetupHandle=renderPracticeSetup(this.overlay,this._gamepadPoller,onStart,onBack,this.prompt);
   }
   hideCombatHUD():void{this.hudPanel.style.display='none';}
   /** Clear the overlay and show the in-match HUD panel. */
-  showMatch(): void {
+  showMatch(showFightCue = false): void {
     this.stopMenuNav();
     this.phase = 'match';
     this.overlay.dataset.menuSurface = 'game';
-    this.overlay.innerHTML = '';
+    this.overlay.innerHTML = showFightCue ? '<div class="match-fight-cue" role="status">GO!</div>' : '';
+    if (showFightCue) {
+      const cue = this.overlay.querySelector('.match-fight-cue');
+      setTimeout(() => cue?.remove(), 450);
+    }
     this.hudPanel.style.display = 'flex';
   }
 
@@ -878,6 +971,26 @@ export class UIManager {
     this.stopMenuNav();
     this.phase = 'paused';
     this.overlay.dataset.menuSurface = 'pause';
+    if (this.onPracticeMenu) {
+      this.menuNav = new MenuNavigator(this._gamepadPoller);
+      renderDojoPause(this.overlay, this.menuNav, {
+        tab: this.dojoPauseTab,
+        selectTab: tab => { this.dojoPauseTab = tab; },
+        actions: () => this.onPracticeLabActions?.() ?? [],
+        reset: () => this.onPracticeReset?.(),
+        lessons: () => this.onPracticeMenu?.(),
+        visuals: () => this.onOpenVisualSettings?.(),
+        resume: () => this.onResume?.(),
+        leave: () => this.onMainMenu?.(),
+        pausePrompt: this.prompt('pause'),
+        confirmPrompt: this.prompt('confirm'),
+        settings: () => this.audioManager ? createAudioSettingsRows({
+          audioManager: this.audioManager,
+          onChanged: () => this.onAudioChanged?.(),
+        }) : undefined,
+      });
+      return;
+    }
     this.overlay.innerHTML = `
       <div class="overlay-center pause-menu">
         <div style="font-size:40px;letter-spacing:4px;margin-bottom:16px">PAUSED</div>
@@ -1134,40 +1247,36 @@ export class UIManager {
     const selectionState={pending:false,confirmed:false};
     this.networkSelectionState=selectionState;
 
-    // Build HTML: 1 interactive panel for myPlayerId + read-only rows for others
+    // One interactive roster and read-only status cards for other players.
     const myPlayerIndex = playerIds.indexOf(myPlayerId);
     const otherPlayerIds = playerIds.filter(id => id !== myPlayerId);
 
-    const interactivePanelHtml = `
-      <div id="network-charselect-panel" style="text-align:center;flex:1">
-        <div style="font-size:20px;margin-bottom:16px">Your Character</div>
-        ${fighters.map(f => `
-          <button type="button" id="network-fighter-${f.id}" class="network-fighter-option" data-id="${f.id}"
-               style="border:2px solid rgba(255,255,255,0.3);padding:12px 24px;margin-bottom:8px;cursor:pointer;font-size:18px;width:200px;box-sizing:border-box;display:block">
-            <img class="network-selection-portrait" src="${fighterPortrait(f.id)}" alt="">
-            <strong>${escapeHtml(f.displayName)}</strong><small>${escapeHtml(FIGHTER_PRESENTATION[f.id]?.role ?? '')}</small>
-          </button>
-        `).join('')}
-        <button id="network-charselect-confirm-btn" class="ui-btn" style="margin-top:16px;width:200px">Confirm</button>
-        <div id="network-charselect-error" style="color:red;font-size:14px;margin-top:8px;min-height:20px"></div>
-      </div>
-    `;
-
-    const statusRowsHtml = otherPlayerIds.map(playerId => `
-      <div id="network-charselect-row-${playerId}" style="text-align:center;flex:1;border-left:1px solid rgba(255,255,255,0.2);padding-left:20px">
-        <div style="font-size:16px;margin-bottom:12px">${playerId}</div>
-        <div id="network-charselect-status-${playerId}" style="font-size:14px;color:rgba(255,255,255,0.7)">Waiting...</div>
+    const statusRowsHtml = otherPlayerIds.map((playerId, index) => `
+      <div id="network-charselect-row-${escapeHtml(playerId)}" class="network-seat-status">
+        <strong>Player ${index >= myPlayerIndex ? index + 2 : index + 1}</strong>
+        <span id="network-charselect-status-${escapeHtml(playerId)}">Choosing…</span>
       </div>
     `).join('');
-
     this.overlay.innerHTML = `
-      <div class="overlay-center" style="flex-direction:row;gap:40px;align-items:flex-start">
-        ${interactivePanelHtml}
-        ${statusRowsHtml}
-      </div>
-      <div class="menu-hint">↑↓ / D-pad · Browse • Enter / ${this.prompt('confirm')} · Select or activate Confirm • Ready waits for server acknowledgement</div>`;
+      <section class="fighter-picker" aria-label="Online fighter selection">
+        <header class="picker-header"><div><span class="menu-kicker">Online / ${fighters.length} fighters</span><h1>Choose your fighter</h1></div></header>
+        <div class="fighter-comparison"></div>
+        <div id="network-charselect-panel" class="fighter-roster">
+          ${fighters.map(f => `<button type="button" id="network-fighter-${escapeHtml(f.id)}" class="network-fighter-option" data-id="${escapeHtml(f.id)}">${fighterTile(f)}</button>`).join('')}
+        </div>
+        <footer class="network-picker-footer"><div class="network-seats">${statusRowsHtml}</div>
+          <div id="network-charselect-error" role="status"></div>
+          <button id="network-charselect-confirm-btn" class="ui-btn picker-primary">Confirm</button>
+          <p class="picker-help">Arrows / D-pad browse · Enter / ${this.prompt('confirm')} select · Esc / ${this.prompt('cancel')} back</p>
+        </footer>
+      </section>`;
+    const comparison = fighterComparison(this.overlay, fighters);
+    const preview = (id?: string) => {
+      const fighter = fighters.find(f => f.id === id);
+      if (fighter) comparison.show(fighter);
+    };
 
-    this.networkRestoreChoice=(id:string)=>{selectedCharacterId=id;this.overlay.querySelectorAll<HTMLElement>('.network-fighter-option').forEach(el=>{el.style.borderColor=el.dataset.id===id?'white':'rgba(255,255,255,0.3)';el.setAttribute('aria-pressed',String(el.dataset.id===id));});};
+    this.networkRestoreChoice=(id:string)=>{selectedCharacterId=id;preview(id);this.overlay.querySelectorAll<HTMLElement>('.network-fighter-option').forEach(el=>{el.style.borderColor=el.dataset.id===id?'white':'rgba(255,255,255,0.3)';el.setAttribute('aria-pressed',String(el.dataset.id===id));});};
     // Attach click listeners to fighter options
     const fighterOptions = document.querySelectorAll('.network-fighter-option');
     fighterOptions.forEach(el => {
@@ -1178,6 +1287,7 @@ export class UIManager {
         if (!fighterId) return;
 
         selectedCharacterId = fighterId;
+        preview(fighterId);
         this.overlay.querySelectorAll<HTMLElement>('.network-fighter-option').forEach(option=>option.setAttribute('aria-pressed',String(option.dataset.id===fighterId)));
         onSelect(fighterId);
 
@@ -1204,18 +1314,60 @@ export class UIManager {
       });
     }
     this.menuNav=new MenuNavigator(this._gamepadPoller);
-    const entries:MenuButton[]=Array.from(this.overlay.querySelectorAll<HTMLElement>('.network-fighter-option')).map((element,index)=>({id:'network-choice-'+index,element,onActivate:()=>element.click()}));
+    const entries: MenuButton[] = Array.from(this.overlay.querySelectorAll<HTMLElement>('.network-fighter-option')).map((element,index) => ({
+      id: 'network-choice-'+index, element, onActivate: () => element.click(), onHighlight: () => preview(element.dataset.id),
+    }));
     if(confirmBtn)entries.push({id:'network-ready',element:confirmBtn,onActivate:()=>confirmBtn.click()});
-    this.menuNav.setButtons(entries);this.menuNav.start(()=>{if(selectionState.pending)return;if(selectionState.confirmed)onUnconfirm?.();else onBack?.();});
+    entries.push({id:'fighter-compare-next',element:comparison.next,onActivate:()=>comparison.cycle(),onAdjust:comparison.cycle});
+    this.overlay.querySelector('.fighter-picker')?.addEventListener('focusin', event => {
+      this.menuNav?.selectIndex(entries.findIndex(entry => entry.element === event.target));
+    });
+    this.menuNav.setButtons(entries);
+    this.menuNav.start(() => {
+      if (selectionState.pending) return;
+      if (selectionState.confirmed) onUnconfirm?.();
+      else onBack?.();
+    });
   }
 
-  showNetworkStageWaiting(stage:StageConfig,onChangeFighter:()=>void):void {
-    this.stopMenuNav();this.hudPanel.style.display='none';const info=WORLD_STORIES[stage.id];
-    this.overlay.innerHTML='<div class="overlay-center"><small>HOST IS CHOOSING THE WORLD</small><img src="'+(import.meta.env.BASE_URL||'/')+'menu-art/'+stage.id+'.webp" alt="" style="width:min(640px,65vw);border-radius:4px"><h2>'+escapeHtml(stage.displayName)+'</h2><p>'+escapeHtml(info?.text??'')+'</p><button class="ui-btn" id="online-change-fighter">Change fighter · '+this.prompt('cancel')+'</button><div id="network-charselect-error" role="alert"></div></div><div class="menu-hint">The host chooses for everyone • '+this.prompt('cancel')+' / Esc · Change fighter</div>';
-    const button=this.overlay.querySelector<HTMLElement>('#online-change-fighter')!;button.onclick=onChangeFighter;
-    this.menuNav=new MenuNavigator(this._gamepadPoller);this.menuNav.setButtons([{id:'online-change-fighter',element:button,onActivate:onChangeFighter}]);this.menuNav.start(onChangeFighter);
-  }
 
+  showNetworkStageWaiting(stage: StageConfig, onChangeFighter: () => void): void {
+    const stageIndex = STAGES.findIndex(world => world.id === stage.id);
+    const stages = stageIndex < 0 ? [stage] : STAGES;
+    let panel = this.overlay.querySelector<HTMLElement>('#guest-world-preview');
+    if (!panel) {
+      this.stopMenuNav();
+      this.hudPanel.style.display = 'none';
+      this.overlay.innerHTML = `
+        <section class="menu-workspace world-selection world-guest" aria-labelledby="guest-world-title">
+          <header class="picker-header"><div><span class="menu-kicker">Online / Guest preview</span><h1 id="guest-world-title">Host is choosing</h1></div>
+            <span class="world-live-label">● Live preview</span></header>
+          <section id="guest-world-preview" class="world-preview-panel" aria-label="Host’s highlighted world"></section>
+          <p id="network-charselect-error" role="alert"></p>
+          <footer class="workspace-footer"><p class="picker-help">The host chooses the arena for everyone.</p>
+            <button type="button" class="menu-quiet" id="online-change-fighter">Change fighter · ${this.prompt('cancel')}</button></footer>
+        </section>`;
+      panel = this.overlay.querySelector('#guest-world-preview')!;
+      this.menuNav = new MenuNavigator(this._gamepadPoller);
+      this.menuNav.start(onChangeFighter);
+      const change = this.overlay.querySelector('#online-change-fighter')!;
+      change.addEventListener('click', onChangeFighter);
+      change.addEventListener('focus', () => this.menuNav?.selectIndex(0));
+    }
+    if (panel.dataset.worldPreview === stage.id) return;
+    const storyFocused = panel.contains(document.activeElement);
+    const storyOpen = panel.querySelector('#stage-story-toggle')?.getAttribute('aria-expanded') === 'true';
+    renderWorldPreview(panel, stages, Math.max(0, stageIndex), this.prompt, false);
+    if (storyOpen) toggleWorldStory(panel);
+    const change = this.overlay.querySelector<HTMLButtonElement>('#online-change-fighter')!;
+    const story = panel.querySelector<HTMLButtonElement>('#stage-story-toggle');
+    this.menuNav?.setButtons([
+      { id: change.id, element: change, onActivate: () => change.click() },
+      ...(story ? [{ id: story.id, element: story, onActivate: () => story.click() }] : []),
+    ]);
+    story?.addEventListener('focus', () => this.menuNav?.selectIndex(1));
+    if (storyFocused) story?.focus();
+  }
   updateNetworkCharacterSelect(playerId: PlayerId, characterId: string, confirmed: boolean): void {
     // Restore the authoritative choice without sending another selection request.
     if (playerId === this.myPlayerId) {
@@ -1237,10 +1389,10 @@ export class UIManager {
     const statusEl = document.getElementById(`network-charselect-status-${playerId}`);
     if (statusEl) {
       if (confirmed) {
-        statusEl.textContent = `Selected: ${characterId}`;
+        statusEl.textContent = (confirmed ? 'Ready · ' : 'Selected · ') + (FIGHTER_PRESENTATION[characterId]?.name ?? characterId);
         statusEl.style.color = 'rgba(0,255,0,0.8)';
       } else {
-        statusEl.textContent = `Selected: ${characterId}`;
+        statusEl.textContent = (confirmed ? 'Ready · ' : 'Selected · ') + (FIGHTER_PRESENTATION[characterId]?.name ?? characterId);
         statusEl.style.color = 'rgba(255,255,255,0.7)';
       }
     }

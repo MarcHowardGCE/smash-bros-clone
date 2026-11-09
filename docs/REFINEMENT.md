@@ -392,6 +392,16 @@ Supporting work retained from the preceding input/defense pass: optional analog 
 Batch 36 final evidence: complete shared/gamepad/engine/server package runs passed (33/75/917/279 tests, 17 skips). Client full run passed 561/565; the four stale controller expectations/mock exports were corrected, then all 57 tests in the three affected files passed. All current known failures are resolved; this is combined evidence, not a single final full-workspace run. Four production controller/calibration browser cases and separate four-client regression passed.
 
 
+### Menu polish audit and redesign (November 8, 2026)
+
+World Select, online guest preview, and the match intro now use the shared menu style. The platform diagram comes from shared collision geometry. Guests can read stories while the host browses. Local match intro covers arena loading and countdown, and the online GO cue follows the server start. Browser review covered 1280×720 and 1024×600, fixed preview dimensions for all six worlds and Random, and synchronized selection and match entry in two clients.
+
+Home, Local Play setup, and the online room lobby now use the shared menu layout. Local setup preserves choices when returning from fighter selection. Online rooms show authoritative seat and ready states, and joining by invite or typed code opens the same lobby. Next is World Select and the match handoff.
+
+First in-game review build is available. Local and online fighter selection share the portrait and stat layout. Dojo pause groups the current practice actions in four tabs and keeps the session actions visible. Review at 1280×720 and 1024×600 before continuing into the surrounding menu flow.
+
+The [menu polish plan](MENU-POLISH-PLAN.md) records the current screen audit, design targets, asset scope, and signoff. Start with shared fighter selection with engine-backed stats and a wide, tabbed Dojo pause menu.
+
 ### Menu refinement — shared foundation (November 4, 2026)
 
 Selection design preview is in outputs/menu-prototype-v1. Fighter canon remains open for collaborative writing. The game now uses a scoped illustrated menu surface with readable panels and profile-derived Xbox B/A hints. Countdown/match keep the arena visible; pause uses a translucent scrim. This is the foundation pass; portrait-based character selection, story-based stage selection, state-preserving back navigation, and unified online selection remain upcoming integration work.

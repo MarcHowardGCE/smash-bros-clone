@@ -1,5 +1,5 @@
 import { illustratedMenuStyles } from './illustratedMenuStyles';
-import { mainMenuStyles } from './mainMenuStyles';
+import menuPolishStyles from './menuPolish.css?inline';
 
 /** @fileoverview Injects global CSS styles for UI overlays, buttons, inputs, and splash screen. */
 
@@ -123,25 +123,8 @@ export function injectStyles(): void {
     .network-selection-portrait { grid-row:span 2; max-height:85px;
  height:125px; width:100%; object-fit:contain; display:block; }
     .network-fighter-option small { display:block; color:#e0b567; }
-    .menu-shell .overlay-center.world-selection { display:block; width:min(1320px,calc(100vw - 64px)); text-align:left; padding:24px; }
-    .world-selection header small { color:#e0b567; font-size:11px; letter-spacing:.17em; }
-    .world-selection h1 { margin:5px 0 22px; font:36px Georgia,serif; }
-    .world-layout { display:grid; grid-template-columns:1fr 1fr; gap:24px; align-items:start; }
-    .world-layout .stage-grid { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:10px; }
-    .world-layout .stage-grid-btn { padding:0; margin:0; min-width:0; overflow:hidden; width:100%; text-align:left; }
-    .stage-grid-btn img { display:block; width:100%; aspect-ratio:16/10; object-fit:cover; }
-    .stage-grid-btn span { display:block; padding:9px; font:16px/1.2 Georgia,serif; min-height:57px; }
-    #stage-back-btn { position:absolute; top:18px; right:24px; }
-    .world-random { margin:16px 0!important; }
-    #stage-preview { background:#f1e3bf; color:#201a27; border-radius:4px; overflow:hidden; }
-    .world-preview-art { display:block; width:100%; aspect-ratio:16/8; object-fit:cover; }
-    .world-copy { padding:20px; font-size:14px; }
-    .world-copy h2 { font:30px/1.1 Georgia,serif; margin:8px 0 16px; }
-    .world-copy small { color:#79583d; letter-spacing:.12em; }
-    .world-copy .ui-btn { background:transparent; color:#201a27; margin:12px 0; border-color:#8f7250; font-size:14px; }
-    .world-arena-note { font-size:11px; color:#5d5046; }
-    @media(max-height:800px) { .selection-portrait { height:150px; } .fighter-identity { min-height:75px; } .world-preview-art { aspect-ratio:16/6; } }
-    @media(max-width:850px) { .menu-shell .overlay-center.character-selection { grid-template-columns:repeat(2,minmax(0,1fr)); } .world-layout { grid-template-columns:1fr; } }
+    @media(max-height:800px) { .selection-portrait { height:150px; } .fighter-identity { min-height:75px; } }
+    @media(max-width:850px) { .menu-shell .overlay-center.character-selection { grid-template-columns:repeat(2,minmax(0,1fr)); } }
     .main-menu-panel .menu-utilities {display:flex;gap:12px;justify-content:center;flex-wrap:wrap;}
     .main-menu-panel .menu-utilities .ui-btn {font-size:14px;padding:9px 15px;}
     .menu-shell .overlay-center.visual-settings {display:block;text-align:left;width:min(1050px,calc(100vw - 48px));}
@@ -206,6 +189,6 @@ export function injectStyles(): void {
       to { opacity: 0.6; }
     }
   `;
-  style.textContent += illustratedMenuStyles + mainMenuStyles;
+  style.textContent += illustratedMenuStyles + menuPolishStyles;
   document.head.appendChild(style);
 }

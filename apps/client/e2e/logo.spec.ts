@@ -1,7 +1,7 @@
 import { dismissSplash } from "./helpers/flow";
 import { expect, test } from '@playwright/test';
 
-test('logo loads without 404 and renders at top of page', async ({ page }) => {
+test('logo loads without 404 and fits in the Home artwork panel', async ({ page }) => {
 	const consoleErrors: string[] = [];
 
 	page.on('console', (msg) => {
@@ -30,9 +30,12 @@ test('logo loads without 404 and renders at top of page', async ({ page }) => {
 	const boundingBox = await logoImg.boundingBox();
 	expect(boundingBox).not.toBeNull();
 	expect(boundingBox!.width).toBeGreaterThan(0);
-
-	// Assert: logo is positioned at top of page (not vertically centered)
-	expect(boundingBox!.y).toBeLessThan(200); // Should be near top, not center
+  const panel = await page.locator('.home-brand').boundingBox();
+  expect(panel).not.toBeNull();
+  expect(boundingBox!.x).toBeGreaterThanOrEqual(panel!.x);
+  expect(boundingBox!.y).toBeGreaterThanOrEqual(panel!.y);
+  expect(boundingBox!.x + boundingBox!.width).toBeLessThanOrEqual(panel!.x + panel!.width);
+  expect(boundingBox!.y + boundingBox!.height).toBeLessThanOrEqual(panel!.y + panel!.height);
 
 	// Take screenshot for evidence
 	await page.screenshot({ path: '.omo/evidence/logo-lobby-screen.png' });

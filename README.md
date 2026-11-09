@@ -346,6 +346,12 @@ Batch 36 final evidence: complete shared/gamepad/engine/server package runs pass
 
 ### Menu refinement — shared foundation (November 4, 2026)
 
+World Select shows arena art, a collision-based platform diagram, and an optional story. Random uses the same preview size. Online guests follow the host's highlighted world and can read its story. The match intro shows the selected world, fighters, and countdown.
+
+The main menu separates Local Play, Online Play, and Training Dojo. Local Play shows two to four seat cards with controller and CPU information. Use Online Play to create a private room or join with a six-character code. The room lobby displays the invite link, connected seats, and server-confirmed readiness.
+
+Local and online fighter selection now share a portrait roster and engine-backed weight, run speed, and air speed comparisons. Select a local seat to edit its choice, and use Next fighter to change the comparison independently. In Training Dojo, Escape or the controller pause button opens a wide console with Session, Timing & Display, Recordings, and Settings tabs. See the [menu polish plan](docs/MENU-POLISH-PLAN.md).
+
 Selection design preview is in outputs/menu-prototype-v1. Fighter canon remains open for collaborative writing. The game now uses a scoped illustrated menu surface with readable panels and profile-derived Xbox B/A hints. Countdown/match keep the arena visible; pause uses a translucent scrim. This is the foundation pass; portrait-based character selection, story-based stage selection, state-preserving back navigation, and unified online selection remain upcoming integration work.
 
 

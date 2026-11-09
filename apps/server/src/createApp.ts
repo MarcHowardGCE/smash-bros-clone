@@ -106,6 +106,7 @@ export function createApp(): {
 			if (typeof callback === "function") {
 				callback(result);
 			}
+      broadcastSelection(result.roomCode);
 		});
 
 		socket.on(
@@ -127,6 +128,7 @@ export function createApp(): {
 					slotIndex: result.slotIndex,
 				});
 				if (typeof callback === "function") callback(result);
+        broadcastSelection(roomCode.toUpperCase());
 			},
 		);
 
@@ -149,7 +151,9 @@ export function createApp(): {
 				io.to(roomCode.toUpperCase()).emit("room:characterSelectStart", {
 					playerIds: roomManager.getPlayerIds(roomCode.toUpperCase()),
 				});
-			}
+			} else {
+        broadcastSelection(roomCode.toUpperCase());
+      }
 		});
 
 		socket.on(

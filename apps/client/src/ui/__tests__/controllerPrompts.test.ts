@@ -66,12 +66,12 @@ it('refreshes shared prompts as different controllers take over without rebuildi
   expect(text('.menu-hint')).toContain('Enter / Circle Select');
   expect(root.querySelector('#local-play-btn')).toBe(localPlay);
   ui.showStageSelect(STAGES,vi.fn(),vi.fn());
-  expect(text('.menu-hint')).toContain('Square / I Story');
-  expect(text('.menu-hint')).toContain('Esc / Cross Back');
+  expect(text('.world-selection .picker-help')).toContain('Square / I Story');
+  expect(text('.world-selection .picker-help')).toContain('Esc / Cross Back');
   ui.setActiveController(pro);
-  expect(text('.menu-hint')).toContain('Enter / A Select');
-  expect(text('.menu-hint')).toContain('Y / I Story');
-  expect(text('.menu-hint')).toContain('Esc / B Back');
+  expect(text('.world-selection .picker-help')).toContain('Enter / A Select');
+  expect(text('.world-selection .picker-help')).toContain('Y / I Story');
+  expect(text('.world-selection .picker-help')).toContain('Esc / B Back');
   ui.showPauseOverlay();
   expect(text('#resume-btn')).toBe('Resume · +');
   ui.setActiveController(dual);

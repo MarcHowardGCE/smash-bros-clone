@@ -52,7 +52,7 @@ extensionCodec.register({
     new Set<string>(decode(data, { extensionCodec }) as string[]),
 });
 
-export interface OnlineSelectionState {phase:string;hostPlayerId:string;stageId:string;players:{playerId:PlayerId;slotIndex:number;characterId:string;confirmed:boolean}[];}
+export interface OnlineSelectionState {phase:string;hostPlayerId:string;stageId:string;players:{playerId:PlayerId;slotIndex:number;characterId:string;confirmed:boolean;ready?:boolean}[];}
 export interface GameClientOptions {
   onSelectionState?:(state:OnlineSelectionState)=>void;
   onStageChanged?:(stageId:string)=>void;
@@ -63,6 +63,7 @@ export interface GameClientOptions {
   onPlayerAssigned?: (playerId: PlayerId, roomCode: string) => void;
   onRenderState: (state: RenderState, localPlayerId: PlayerId) => void;
   onMatchPhaseChange: (phase: string, winnerId?: PlayerId | null) => void;
+  onRoomJoinError?: (message: string) => void;
   onRoomCreated: (roomCode: string, playerId: PlayerId) => void;
   onPlayerJoined: (slotIndex: number) => void;
   onHitEvents?: (hitEvents: HitEventData[]) => void;
@@ -169,7 +170,7 @@ export class GameClient {
       roomCode,
       (data: { playerId: PlayerId; slotIndex: number } | { error: string }) => {
         if ("error" in data) {
-          console.error("[client] join error:", data.error);
+          this.options.onRoomJoinError?.(data.error);
           return;
         }
 

@@ -282,6 +282,7 @@ test.describe('T26: Full pause/resume/main-menu flow', () => {
     await page.waitForSelector('#local-play-btn', { timeout: 5000 });
 
     // Verify the multiplayer UI entry points exist (Create Room / Join)
+    await page.click('#online-play-btn');
     const createRoomBtn = await page.$('#create-btn');
     const joinInput = await page.$('#join-code');
     expect(createRoomBtn).not.toBeNull();

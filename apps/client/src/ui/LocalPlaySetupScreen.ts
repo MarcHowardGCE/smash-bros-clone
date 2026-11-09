@@ -1,3 +1,5 @@
+import { getControllerProfile } from '../input/controllerProfiles';
+import { escapeHtml } from './selectionContent';
 import { controllerPrompt, type PromptRenderer } from './controllerPrompts';
 /**
  * @fileoverview Local Play Setup screen.
@@ -140,10 +142,7 @@ export function renderLocalPlaySetupScreen(
     if (seatIdx >= 0 && seatIdx < seats.length) {
       const slotIndex = seatIdx + 1;
       seats[seatIdx] = nextCycleOption(seats[seatIdx]!, slotIndex, deps);
-      const cycleBtn = document.getElementById(`lps-cycle-${seatIdx}`);
-      if (cycleBtn) {
-        cycleBtn.textContent = seatLabel(seats[seatIdx]!);
-      }
+      updateSeatLabel(seatIdx);
     }
   }
 
@@ -151,48 +150,46 @@ export function renderLocalPlaySetupScreen(
     if (seatIdx >= 0 && seatIdx < seats.length) {
       const slotIndex = seatIdx + 1;
       seats[seatIdx] = prevCycleOption(seats[seatIdx]!, slotIndex, deps);
-      const cycleBtn = document.getElementById(`lps-cycle-${seatIdx}`);
-      if (cycleBtn) {
-        cycleBtn.textContent = seatLabel(seats[seatIdx]!);
-      }
+      updateSeatLabel(seatIdx);
     }
   }
 
-  function render(): void {
+  function seatDevice(index: number): string {
+    const assignment = deps.assignmentManager.getAssignments().get(index+1);
+    if (!assignment) return 'CPU opponent';
+    const name = getControllerProfile(assignment.gamepadId).name;
+    return seats[index]?.kind === 'human-gamepad' ? name : 'Gamepad available · '+name;
+  }
+
+  function updateSeatLabel(index: number): void {
+    container.querySelector('#lps-cycle-'+index)!.textContent = seatLabel(seats[index]!);
+    container.querySelector('#lps-seat-device-'+index)!.textContent = seatDevice(index);
+  }
+
+  function render(focusId?: string): void {
     stopNav();
 
-    let html = `
-      <div class="overlay-center local-setup" style="max-width:600px;width:100%;align-items:stretch">
-        <div class="setup-heading" style="font-size:32px;letter-spacing:2px;margin-bottom:24px">LOCAL PLAY SETUP</div>
-        <div id="lps-player-btns" style="display:flex;gap:12px;justify-content:center;margin-bottom:24px">`;
 
-    for (const count of [2, 3, 4] as const) {
-      const active = participantCount === count;
-      html += `<button class="ui-btn lps-count-btn" data-count="${count}" aria-pressed="${active}" style="display:inline-block">${count} Players</button>`;
-    }
-
-    html += `</div><div id="lps-seats" style="margin-bottom:24px">`;
-
-    for (let i = 0; i < seats.length; i++) {
-      const seatNum = i + 1;
-      const config = seats[i]!;
-      const focusClass = i === focusedSeatIndex ? ' seat-focused' : '';
-      html += `
-        <div class="setup-seat" style="display:flex;align-items:center;justify-content:space-between;padding:12px;border:1px solid rgba(255,255,255,0.2);border-radius:4px;margin-bottom:8px">
-          <span style="font-size:16px">Seat ${seatNum + 1}:</span>
-          <button id="lps-cycle-${i}" class="ui-btn${focusClass}" style="font-size:14px;padding:8px 16px">${seatLabel(config)}</button>
-        </div>`;
-    }
-
-    html += `</div>
-        <button id="lps-start-btn" class="ui-btn" style="font-size:20px;padding:14px 36px">Start</button>
-        ${onBack ? '<button id="lps-back-btn" class="ui-btn" style="margin-top:12px;font-size:14px;padding:8px 16px">← Back</button>' : ''}
-      </div>
-      <div class="menu-hint">↑↓ Navigate • ←→ Cycle Seat • Enter / ${prompt('confirm')} Select${onBack ? ` • Esc / ${prompt('cancel')} Back` : ''}</div>`;
-
-    container.innerHTML = html;
+    const host = deps.assignmentManager.getAssignments().get(0);
+    const device = host ? getControllerProfile(host.gamepadId).name : 'Keyboard';
+    container.innerHTML = `
+      <section class="menu-workspace local-setup" aria-labelledby="local-setup-title">
+        <header class="picker-header"><div><span class="menu-kicker">Local play / Setup</span><h1 id="local-setup-title">Set up the match</h1></div>
+          ${onBack ? '<button id="lps-back-btn" class="menu-quiet">← Back</button>' : ''}</header>
+        <div class="setup-count"><span class="menu-kicker">Match size</span><div id="lps-player-btns" role="group" aria-label="Number of players">
+          ${([2,3,4] as const).map(count => `<button class="menu-quiet lps-count-btn" data-count="${count}" aria-pressed="${count===participantCount}">${count} Players</button>`).join('')}
+        </div></div>
+        <div id="lps-seats">
+          <section class="setup-seat"><span class="room-seat-number">P1</span><h2>Seat 1</h2><strong>You</strong><small>${escapeHtml(device)}</small></section>
+          ${seats.map((config,i) => `<section class="setup-seat"><span class="room-seat-number">P${i+2}</span><h2>Seat ${i+2}</h2>
+            <button id="lps-cycle-${i}" class="menu-quiet${i===focusedSeatIndex?' seat-focused':''}">${seatLabel(config)}</button>
+            <small id="lps-seat-device-${i}">${escapeHtml(seatDevice(i))}</small></section>`).join('')}
+        </div>
+        <footer class="workspace-footer"><p class="picker-help">↑↓ Navigate · ←→ Change seat · Enter / ${prompt('confirm')} Select${onBack ? ` · Esc / ${prompt('cancel')} Back` : ''}</p>
+          <button id="lps-start-btn" class="menu-quiet workspace-primary">Choose Fighters</button></footer>
+      </section>`;
     wireListeners();
-    wireNav();
+    wireNav(focusId);
   }
 
   function wireListeners(): void {
@@ -208,7 +205,8 @@ export function renderLocalPlaySetupScreen(
           seats.push({ kind: 'cpu', difficulty: 'medium' });
         }
         seats = seats.slice(0, participantCount - 1);
-        render();
+        focusedSeatIndex = Math.min(focusedSeatIndex, seats.length - 1);
+        render('count-'+newCount);
       });
     });
 
@@ -218,9 +216,9 @@ export function renderLocalPlaySetupScreen(
       if (cycleBtn) {
         const idx = i;
         cycleBtn.addEventListener('click', () => {
-          const slotIndex = idx + 1;
-          seats[idx] = nextCycleOption(seats[idx]!, slotIndex, deps);
-          render();
+          focusedSeatIndex = idx;
+          cycleSeatRight(idx);
+          updateSeatFocus();
         });
       }
     }
@@ -273,7 +271,7 @@ export function renderLocalPlaySetupScreen(
     window.addEventListener('keydown', keyHandler);
   }
 
-  function wireNav(): void {
+  function wireNav(focusId?: string): void {
     menuNav = new MenuNavigator(gamepadPoller);
     const navButtons: MenuButton[] = [];
 
@@ -296,6 +294,7 @@ export function renderLocalPlaySetupScreen(
           id: `cycle-${i}`,
           element: cycleBtn,
           onActivate: () => cycleBtn.click(),
+          onHighlight: () => { focusedSeatIndex = i; updateSeatFocus(); },
         });
       }
     }
@@ -322,7 +321,11 @@ export function renderLocalPlaySetupScreen(
       }
     }
 
+    container.querySelector('.local-setup')?.addEventListener('focusin', event => {
+      menuNav?.selectIndex(navButtons.findIndex(entry => entry.element === event.target));
+    });
     menuNav.setButtons(navButtons);
+    if (focusId) menuNav.selectIndex(navButtons.findIndex(entry => entry.id === focusId));
     menuNav.start(onBack ? () => { stopNav(); onBack(); } : undefined);
 
     // Gamepad polling for left/right seat cycling

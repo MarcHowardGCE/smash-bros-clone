@@ -16,6 +16,7 @@ export interface MenuButton {
   id: string;
   element: HTMLElement;
   onActivate: () => void;
+  onHighlight?: () => void;
   /** Optional callback for left/right adjustment (e.g., volume slider). Called with -1 for left, +1 for right. */
   onAdjust?: (delta: -1 | 1) => void;
 }
@@ -208,6 +209,7 @@ export class MenuNavigator {
       const btn = this.buttons[i]!;
       if (i === this.selectedIndex) {
         btn.element.classList.add('menu-selected');
+        btn.onHighlight?.();
         btn.element.scrollIntoView?.({ block: 'nearest', inline: 'nearest' });
       } else {
         btn.element.classList.remove('menu-selected');

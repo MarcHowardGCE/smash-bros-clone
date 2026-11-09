@@ -29,5 +29,5 @@ test("F3: staged local movement, hit, pause, KO and result lifecycle", async ({ 
   }
   await expect(page.locator("#local-play-again-btn")).toBeVisible();
   await page.locator("#main-menu-btn").click();
-  await expect(page.locator("#create-btn")).toBeVisible();
+  await expect(page.locator("#online-play-btn")).toBeVisible();
 });

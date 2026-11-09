@@ -50,6 +50,8 @@ import { createLayers } from "./renderer/layers.js";
 import { StageRenderer, waitForStageAsset } from "./renderer/StageRenderer.js";
 import { ImpactSpark } from "./renderer/effects/ImpactSpark.js";
 import { injectStyles, UIManager } from "./ui/index.js";
+import { FIGHTER_PRESENTATION } from "./ui/selectionContent";
+import type { MatchIntro } from "./ui/WorldPreview";
 import { AudioManager } from "./audio/AudioManager.js";
 import {
   loadAudioPreferences,
@@ -625,6 +627,7 @@ async function main() {
     }
   };
   let onlineSelectionScreen:string|null=null;
+  let networkIntroFighters: MatchIntro["fighters"] = [];
   const showOnlineFighters=(playerIds:PlayerId[]):void=>{
       onlineSelectionScreen="fighters";
       if (!myPlayerId) return;
@@ -654,9 +657,8 @@ async function main() {
       const enterLobby = (): void => {
         const roomCodeFromUrl = new URLSearchParams(window.location.search).get("room");
         if (roomCodeFromUrl) {
-          uiManager.setRoomCode(roomCodeFromUrl.toUpperCase());
+          uiManager.showOnlineEntry(roomCodeFromUrl.toUpperCase(), true);
           gameClient.joinRoom(roomCodeFromUrl);
-          uiManager.showLobby();
           audioManager.playTrack("main-menu");
           return;
         }
@@ -691,19 +693,21 @@ async function main() {
         gameplaySfxRouter.reset();
         networkMatchPhase = "countdown";
         clearNetworkCountdown();
+        const intro = { stage: selectedStage, fighters: networkIntroFighters };
         let count = 3;
-        uiManager.showCountdown(count);
+        uiManager.showCountdown(count, intro);
         audioManager.playTrack(selectedStage.musicTrack.replace(".mp3", ""));
         networkCountdownInterval = setInterval(() => {
           if (networkMatchPhase !== "countdown") { clearNetworkCountdown(); return; }
           count--;
-          uiManager.showCountdown(Math.max(0, count));
+          uiManager.showCountdown(Math.max(0, count), intro);
           if (count <= 0) clearNetworkCountdown();
         }, 1000);
       } else if (phase === "match") {
         clearNetworkCountdown();
+        const enteredFromCountdown = networkMatchPhase === "countdown";
         networkMatchPhase = "match";
-        uiManager.showMatch();
+        uiManager.showMatch(enteredFromCountdown);
         audioManager.playTrack(selectedStage.musicTrack.replace(".mp3", ""));
       } else if (phase === "result") {
         clearNetworkCountdown();
@@ -713,6 +717,7 @@ async function main() {
         audioManager.playTrack("game-over");
       }
     },
+    onRoomJoinError: message => uiManager.showRoomJoinError(message),
     onRoomCreated: (roomCode: string) => {
       uiManager.showRoomCreated(roomCode);
     },
@@ -741,7 +746,12 @@ async function main() {
     },
     onStageChanged:(id)=>{const stage=STAGES.find(s=>s.id===id);if(stage){selectedStage=stage;setStageBackground(stage.backgroundImage);}},
     onSelectionState:(state)=>{
-      if(state.phase==='LOBBY'){onlineSelectionScreen='lobby';clearNetworkCountdown();networkMatchPhase='pre-match';uiManager.showLobby();return;}
+      networkIntroFighters = state.players.map(player => ({
+        id: player.characterId,
+        displayName: FIGHTER_PRESENTATION[player.characterId]?.name ?? player.characterId,
+        slotIndex: player.slotIndex,
+      }));
+      if(state.phase==='LOBBY'){onlineSelectionScreen='lobby';clearNetworkCountdown();networkMatchPhase='pre-match';uiManager.updateRoomLobby(state.players,state.hostPlayerId);return;}
       if(state.phase==='CHARACTER_SELECT'){
         if(onlineSelectionScreen!=='fighters')showOnlineFighters(state.players.map(p=>p.playerId));
         for(const p of state.players)uiManager.updateNetworkCharacterSelect(p.playerId,p.characterId,p.confirmed);
@@ -780,7 +790,6 @@ async function main() {
       return;
     }
     audioManager.playTrack("main-menu");
-    uiManager.setRoomCode(code);
     gameClient.joinRoom(code);
   };
 
@@ -899,7 +908,7 @@ async function main() {
           }) : false;
         },
       },()=>uiManager.getControllerPromptProfile(0));
-      uiManager.onPracticeLabActions=()=>practicePanel?.labActions(false)??[];
+      uiManager.onPracticeLabActions=()=>practicePanel?.labActions()??[];
       localMatch.onStep=(state,inputs,hits,exits)=>practicePanel?.observe(state,inputs,hits,exits);
       uiManager.onPracticeMenu=()=>uiManager.onPractice?.();uiManager.onPracticeReset=()=>{practicePanel?.reset();uiManager.onResume?.();};
     }
@@ -930,20 +939,22 @@ async function main() {
 
     uiManager.hideRoomCode();
     const pendingMatch = localMatch;
+    const intro = { stage: selectedStage, fighters: choices.map((fighter, slotIndex) => ({ ...fighter, slotIndex })) };
+    if (!practice) uiManager.showCountdown(null, intro);
     await stageReady;
     if (localMatch !== pendingMatch) return;
     if(practice){uiManager.showMatch();uiManager.hideCombatHUD();audioManager.playTrack(selectedStage.musicTrack.replace('.mp3',''));localMatch.start();return;}
     let count = 3;
-    uiManager.showCountdown(count);
+    uiManager.showCountdown(count, intro);
     audioManager.playTrack(selectedStage.musicTrack.replace(".mp3", ""));
     localCountdownInterval = window.setInterval(() => {
       count -= 1;
       if (count > 0) {
-        uiManager.showCountdown(count);
+        uiManager.showCountdown(count, intro);
         return;
       }
 
-      uiManager.showCountdown(0);
+      uiManager.showCountdown(0, intro);
       clearLocalCountdown();
       localCountdownTimeout = window.setTimeout(() => {
         localCountdownTimeout = null;

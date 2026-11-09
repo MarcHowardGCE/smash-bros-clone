@@ -13,6 +13,7 @@ test('ledge grab, jump getup, and trump lifecycle', async ({ browser }) => {
   await dismissSplash(page1);
   
   // Create room on page1
+  await page1.click('#online-play-btn');
   await page1.click('#create-btn');
   // Wait for the URL to update with ?room=...
   await page1.waitForURL(/room=/);

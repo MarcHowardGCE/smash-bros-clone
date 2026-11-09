@@ -81,5 +81,61 @@ Keep the live Dojo strip small, with lesson cue and three-rep progress in lesson
 - In Dojo, complete a three-rep lesson and run a full record → playback → freeze → frame-step loop without losing the active setting or focus. Confirm controls remain reachable without scrolling the whole pause dialog.
 - Require stable geometry when moving between fighters, all six worlds, Random, and loading placeholders. Verify artwork is present when entering the match and no menu decor delays accepting input. Capture the actual selection and start flows for comparison.
 
-Review World Select, the online guest preview, and the match handoff in game. Then continue with standard match pause and results. Random stays local to the host while browsing. Guests see the arena resolved by the host when it is confirmed. The build uses existing portraits and live stats. The live Dojo HUD, in-console diagnostic readouts, fighter Details and bios, and the rest of the menu rollout remain future work.
+Review the Settings tabs, per-seat Controls, and Training Dojo library in game. The next pass is cross-screen polish and signoff at desktop and compact sizes, including physical controllers, accessibility, and cold production loads. Local matches can rematch or return to fighter selection. Online results offer a route back to Create or Join Room. Random stays local to the host while browsing. Guests see the arena resolved by the host when it is confirmed. The build uses existing portraits and live stats. The live Dojo HUD, in-console diagnostic readouts, and fighter Details and bios remain future work. The current signoff results are recorded below.
 
+## Cross-screen signoff pass — November 9, 2026
+
+### Implemented corrections
+
+- Native Tab focus now updates the shared menu highlight, so Enter activates the focused control. The focus listener is removed when the menu closes.
+- Settings keeps its header, section navigation and help visible while the body scrolls. Short-window layouts reduce the header spacing.
+- The initial HTML displays a readable loading status before JavaScript and fighter sheets finish. A failed application bootstrap offers Reload game.
+- The home logo is decoded before menu entry. Original fighter portraits are prefetched for later screens. Existing image dimensions reserve their layout slots.
+- Fallback fighter assets initialize the shared Pixi asset manager before full-body loading starts. This fixes the production-only bootstrap warning and invalid fallback bundle access found during the cold-load test.
+- Local-flow regression fixtures now await the existing asynchronous fighter-art load and verify direct rematches. The KO presentation browser fixture uses the current viewport constructor and effect durations.
+
+### Verification
+
+| Check | Result |
+| --- | --- |
+| Layout matrix | 64 screen/size checks passed across Home, Settings sections, Dojo library and pause, four-seat setup and fighter selection, World Select, online lobby/fighter selection/guest preview, both match pauses and local results. |
+| Tested sizes | 1920×1080, 1280×720, 1024×600 and 640×360. The last size tests the layout area equivalent to 200% zoom on a 1280×720 display. Native browser-zoom behavior still needs signoff. |
+| Basic accessibility | The first 40 checks found no horizontal overflow, unlabeled visible controls, clipped control text or active controls below 24×24 CSS pixels. Keyboard focus and reduced-motion rendering were reviewed. This does not certify screen-reader or forced-colors behavior. |
+| Palette contrast | Body text 13.42:1, secondary text 7.86:1 and primary-button text 10.74:1 for the sampled solid color pairs. Image-backed and translucent combinations still need individual review. |
+| Controller simulation | Xbox 360, Switch Pro and DualSense each passed profile prompts, Confirm/Back, Dojo entry and pause/resume. Mixed seats displayed B, A and Circle respectively. |
+| Physical controllers | The user reported that initial tests were fine. Extended mixed-controller sessions, reconnects and wireless behavior remain open. |
+| Online handoff | Two real local clients reached shared character selection, host World Select, the guest preview and online pause. |
+| World preview geometry | All six worlds and Random retained the same 1160×629.86 panel at 1280×720. |
+| Dojo workflow | Record → playback → freeze → frame step passed. One step advanced the simulation by exactly one tick. |
+| Regression gates | 175 targeted menu, controller and application-flow tests passed. Client type check and isolated production build passed. |
+
+The cold production-build test ran against a local Vite preview, with a fresh browser context, 20 Mbps download, 60 ms latency and 2× CPU slowdown. Cold menu entry took 36.3 seconds and warm reload took 24.7 seconds. The loading status remained visible, the logo was complete at menu entry, all five fighters were available, and the run reported no fighter-loader or application errors. The match screenshot showed the fighter sprites, platform skin and background in place.
+
+Evidence is saved in the working session under outputs/menu-signoff-20261109. The production build was staged separately from the repository's normal dist output, with environment loading directed to an empty directory.
+
+### Remaining release checks and next step
+
+1. Reduce startup transfer and decode cost. The current roster-wide preload remains expensive even with readable loading feedback. Measure the critical startup requests and move nonessential or unselected artwork behind deliberate preloading boundaries.
+2. Repeat cold and warm tests on the deployed host, including a slower network and interrupted requests. The local production preview does not verify hosting cache headers, compression or CDN behavior.
+3. Finish native 200% browser zoom, screen-reader and forced-colors checks, plus image-backed contrast states.
+4. Complete longer physical-controller sessions, mixed seats, disconnect/reconnect and rematch navigation.
+
+Fighter canon, detailed move profiles and a compact live Dojo HUD remain separate follow-ups. The initial audit above is retained as historical evidence.
+
+## Startup loading follow-up — November 9, 2026
+
+The previous production-preview run spent 36.3 seconds cold and 24.7 seconds warm before reaching Home. The startup path waited for every fighter's full-body atlases. Home now waits for its logo and UI, while the lightweight fallback art initializes separately.
+
+- Local fighter selection shows the whole roster without reading its combat atlases. Confirming the lineup begins loading its unique fighters and shared effects while the player browses worlds. A local match waits for that artwork and the selected arena before the countdown. Dojo uses the same per-fighter cache and keeps its retry message for missing newcomer art.
+- Online Ready waits for the roster's artwork, with an in-lobby status message. This preserves the existing server countdown and avoids starting a normal online match while a client is still loading fighter art. Restored room sessions retain eager artwork preparation, so their reconnect timing needs a separate pass.
+- The selected arena background is fetched at high priority. During the first throttled run, the old eight-second deadline caused the arena to fall back to a flat background while fighter pages were transferring. The arena now allows up to 30 seconds for art and keeps the stable fallback for failures.
+
+| Local production preview at 20 Mbps, 60 ms latency, 2× CPU slowdown | Previous | Updated |
+| --- | ---: | ---: |
+| Cold Home entry | 36.3 s | 3.4 s |
+| Warm Home entry | 24.7 s | 1.4 s |
+| Full-body atlas requests before Home | Roster-wide | 0 |
+
+The cold Moonshine versus All-Rounder test reached live play in 19.6 seconds from lineup confirmation, including the countdown. It requested those two fighters and the shared effects atlas. The rendered first fight showed both sprite fighters, the platform skins and the stage background. A two-client test held one atlas request and verified the lobby waited to advance, then both clients displayed the selected newcomer sprites. A separate Dojo check loaded Moonshine, Hoagie and shared effects without downloading any original fighter sheets.
+
+Next loading priority is the first fight and online readiness. Measure atlas transfer and decode costs, then evaluate smaller production pages and an online preflight scoped to confirmed lineups. Repeat the cold and warm measurements on the deployed host. Full accessibility and extended hardware signoff are still open.

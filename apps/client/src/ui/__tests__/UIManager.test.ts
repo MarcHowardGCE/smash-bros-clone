@@ -50,10 +50,10 @@ describe('UIManager', () => {
       expect(mockOverlay.innerHTML).toContain('remote-xyz Wins!');
     });
 
-    it('should render Play Again button', () => {
+    it('should render the primary result action', () => {
       uiManager.showLocalResult('local-p1');
       expect(mockOverlay.innerHTML).toContain('id="local-play-again-btn"');
-      expect(mockOverlay.innerHTML).toContain('Play Again');
+      expect(mockOverlay.innerHTML).toContain('Rematch');
     });
 
     it('should render Main Menu button', () => {
@@ -93,10 +93,10 @@ describe('UIManager', () => {
   });
 
   describe('showResult', () => {
-    it('should render Play Again button', () => {
+    it('should render the primary result action', () => {
       uiManager.showResult('p1', 'p1');
       expect(mockOverlay.innerHTML).toContain('id="play-again-btn"');
-      expect(mockOverlay.innerHTML).toContain('Play Again');
+      expect(mockOverlay.innerHTML).toContain('Online Play');
     });
 
     it('should render Main Menu button', () => {
@@ -757,14 +757,14 @@ describe('UIManager', () => {
       const onAudioChanged = vi.fn();
 
       uiManager.setAudioManager(mockAudioManager as any, onAudioChanged);
-      uiManager.showLobby();
+      uiManager.showSoundSettings(false, vi.fn());
 
       expect(mockOverlay.querySelector('#mute-btn')).not.toBeNull();
       expect(mockOverlay.querySelector('#volume-row')).not.toBeNull();
     });
 
     it('should not render audio settings rows when audioManager is not set', () => {
-      uiManager.showLobby();
+      uiManager.showSoundSettings(false, vi.fn());
 
       expect(mockOverlay.querySelector('#mute-btn')).toBeNull();
       expect(mockOverlay.querySelector('#volume-row')).toBeNull();
@@ -780,7 +780,7 @@ describe('UIManager', () => {
       const onAudioChanged = vi.fn();
 
       uiManager.setAudioManager(mockAudioManager as any, onAudioChanged);
-      uiManager.showLobby();
+      uiManager.showSoundSettings(false, vi.fn());
 
       const muteBtn = mockOverlay.querySelector('#mute-btn') as HTMLButtonElement;
       muteBtn.click();
@@ -799,7 +799,7 @@ describe('UIManager', () => {
       const onAudioChanged = vi.fn();
 
       uiManager.setAudioManager(mockAudioManager as any, onAudioChanged);
-      uiManager.showLobby();
+      uiManager.showSoundSettings(false, vi.fn());
 
       // Verify volume row is in navButtons by checking it's rendered
       expect(mockOverlay.querySelector('#volume-row')).not.toBeNull();

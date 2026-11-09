@@ -292,3 +292,26 @@ describe('MenuNavigator', () => {
     });
   });
 });
+
+it('Tab focus determines which button Enter activates and stops listening on cleanup', () => {
+  const root = document.createElement('div');
+  document.body.appendChild(root);
+  const entries = ['first', 'second'].map(id => {
+    const element = root.appendChild(document.createElement('button'));
+    element.textContent = id;
+    return { id, element, onActivate: vi.fn() };
+  });
+  const nav = new MenuNavigator();
+  nav.setButtons(entries);
+  nav.start();
+  entries[1]!.element.focus();
+  expect(entries[1]!.element.classList.contains('menu-selected')).toBe(true);
+  window.dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter', cancelable: true }));
+  expect(entries[0]!.onActivate).not.toHaveBeenCalled();
+  expect(entries[1]!.onActivate).toHaveBeenCalledTimes(1);
+  nav.stop();
+  entries[0]!.element.focus();
+  window.dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter' }));
+  expect(entries[0]!.onActivate).not.toHaveBeenCalled();
+  root.remove();
+});

@@ -6,7 +6,7 @@ import type{LocalMatch}from'../local/LocalMatch.js';
 import{PracticeRoutine,decodeRoutine}from'./PracticeRoutine.js';
 import type{PracticeOverlay}from'./PracticeOverlay.js';
 export interface PracticeLabAction{id:string;label:string;run:()=>void;disabled?:boolean}
-import{INPUT_BITS as B,MoveId,SMASH_CHARGE_MAX_FRAMES,type GameState,type InputEvent,type HitEventData,type KOEventData}from'@smash/shared';import{dojoButtonGuide,dojoSimulationProfile,LESSONS,LessonTracker,type PracticeConfig}from'./curriculum.js';import type{PracticeDummy}from'./PracticeDummy.js';import{escapeHtml}from'../ui/selectionContent.js';
+import{INPUT_BITS as B,MoveId,SMASH_CHARGE_MAX_FRAMES,type GameState,type InputEvent,type HitEventData,type KOEventData,type PlayerState}from'@smash/shared';import{dojoButtonGuide,dojoSimulationProfile,KO_LESSON_PERCENT,LESSONS,LessonTracker,type PracticeConfig}from'./curriculum.js';import type{PracticeDummy}from'./PracticeDummy.js';import{escapeHtml}from'../ui/selectionContent.js';
 type PracticeSide = 'you' | 'partner';
 const PRACTICE_IDS = {you:'local-p1',partner:'local-p2'} as const;
 const PERCENT_PRESETS = [0,50,100,150,200];
@@ -20,7 +20,7 @@ export class PracticePanel {
   faceHeld?:boolean;stickHeld?:boolean;charge:number;charging:boolean;
  };
  private root=document.createElement('aside');private tracker:LessonTracker|null=null;private previousMove='';private recent='';private lastTick=-1;private success='';private level=0;private routineSlot=0;
- constructor(private config:PracticeConfig,private dummy:PracticeDummy,private resetArena:()=>void,private back:()=>void,private active:()=>boolean,private lab?:{match:LocalMatch;routine:PracticeRoutine;overlay:PracticeOverlay;previewKO?:(kind:'screen'|'star',side:PracticeSide)=>boolean},private readonly controllerProfile:()=>ControllerProfile=()=>getControllerProfile('')){
+ constructor(private config:PracticeConfig,private dummy:PracticeDummy,private resetArena:()=>void,private back:()=>void,private active:()=>boolean,private lab?:{match:LocalMatch;routine:PracticeRoutine;overlay:PracticeOverlay;previewKO?:(kind:'screen'|'star',side:PracticeSide,anchor?:Pick<PlayerState,'x'|'y'|'facing'>)=>boolean},private readonly controllerProfile:()=>ControllerProfile=()=>getControllerProfile('')){
   this.root.addEventListener('keydown',this.interactiveKey);this.root.addEventListener('keyup',this.interactiveKey);this.root.id='practice-panel';this.root.className='dojo-panel';document.body.appendChild(this.root);this.level=Math.max(0,LESSONS.findIndex(l=>l.id===config.lessonId));this.loadSlot();this.setLesson(config.lessonId);window.addEventListener('keydown',this.key);
  }
  private interactiveKey=(e:KeyboardEvent)=>{if((e.target as Element)?.closest?.('button,summary,input,select')&&['Space','Enter','ArrowUp','ArrowDown','ArrowLeft','ArrowRight'].includes(e.code))e.stopPropagation();};
@@ -28,7 +28,7 @@ export class PracticePanel {
  const fn:Record<string,()=>void>={KeyR:()=>this.reset(),F2:this.back,F3:()=>this.toggleOverlay(),F6:()=>this.toggleFreeze(),F7:()=>this.step(),F8:()=>this.toggleRecord(),F9:()=>this.togglePlayback()};
  if(fn[e.code]){e.preventDefault();fn[e.code]!();this.refreshLab();}
  };
- public reset():void{this.launchReadout.clear();this.refreshLaunch();this.trace=[];this.lastTracePose=undefined;this.refreshTrace();if(this.lab?.routine.mode==='recording'){this.lab.routine.stop();this.saveTape();}else this.lab?.routine.rewind();this.resetArena();this.dummy.reset();this.success='Arena reset. Progress kept.';this.refreshLab();}
+ public reset():void{this.tracker?.resetAttempt();this.launchReadout.clear();this.refreshLaunch();this.trace=[];this.lastTracePose=undefined;this.refreshTrace();if(this.lab?.routine.mode==='recording'){this.lab.routine.stop();this.saveTape();}else this.lab?.routine.rewind();this.resetArena();this.dummy.reset();this.success='Arena reset. Progress kept.';this.refreshLab();}
  public toggleFreeze():void{if(!this.lab)return;if(this.lab.match.paused)this.lab.match.runPractice();else this.lab.match.freezePractice();this.refreshLab();}
  public step(fromMenu=false):void{this.lab?.match.stepPractice(fromMenu);this.refreshLab();}
  private toggleOverlay():void{if(this.lab)this.lab.overlay.setEnabled(!this.lab.overlay.enabled);}
@@ -80,7 +80,12 @@ export class PracticePanel {
  const routine=this.root.querySelector('#dojo-routine-status');if(routine)routine.textContent='Slot '+(this.routineSlot+1)+': '+r.status+(r.length?' · recorded as '+r.sourceFighter:'');
  }
 
- private setLesson(id:string|null):void{if(this.lab?.routine.mode==='recording'){this.lab.routine.stop();this.saveTape();}this.lab?.routine.stop();const l=LESSONS.find(l=>l.id===id);this.config.lessonId=l?.id??null;this.tracker=l?new LessonTracker(l):null;this.dummy.mode=l?.dummy??this.config.dummyMode;this.dummy.reset();this.success='';this.render();}
+ private setLesson(id:string|null):void{if(this.lab?.routine.mode==='recording'){this.lab.routine.stop();this.saveTape();}this.lab?.routine.stop();const l=LESSONS.find(l=>l.id===id);this.config.lessonId=l?.id??null;this.tracker=l?new LessonTracker(l):null;this.dummy.mode=l?.dummy??this.config.dummyMode;
+  if (this.lab && l) {
+    this.lab.match.setPracticeSpawn(l.setup ?? 'center');
+    this.lab.match.setPracticePercent('local-p2', l.ko ? KO_LESSON_PERCENT : 0);
+    if (l.setup) this.resetArena();
+  }this.dummy.reset();this.success='';this.render();}
  private render():void{
   const l=this.tracker?.lesson;
   const profile=this.promptProfile=this.controllerProfile();
@@ -150,7 +155,20 @@ export class PracticePanel {
   if(this.lab?.routine.capture(i)){this.saveTape();this.success='Recording limit reached. Routine saved.';}this.refreshLab();
   if(i?.pressed||i?.released)this.recent='Pressed: '+this.buttons(i.pressed)+' · Released: '+this.buttons(i.released);
   if(p.currentMoveId)this.previousMove=p.currentMoveId.replace(/_/g,' ').toLowerCase();
-  if(this.tracker?.observe(state,i,'local-p1')){this.success=this.tracker.count===3?'Lesson complete. Three successful repetitions.':'Correct · '+this.tracker.count+' of 3';if(this.tracker.count===3)try{localStorage.setItem('eth:dojo:v1:'+this.config.fighter+':'+this.tracker.lesson.id,'complete');}catch{}}
+  const previousCount=this.tracker?.count;
+  if(this.tracker?.observe(state,i,'local-p1',hits,exits)){
+    const {lesson,count}=this.tracker;
+    this.success=count===3?'Lesson complete. Three successful repetitions.':'Correct · '+count+' of 3';
+    if(lesson.ko){
+      const exit=exits.find(event=>event.playerId==='local-p2'&&event.boundary==='top');
+      const partner=state.players['local-p2'];
+      const anchor=exit?.exitPosition&&partner?{...exit.exitPosition,facing:partner.facing}:undefined;
+      const displayed=this.lab?.previewKO?.(lesson.ko,'partner',anchor);
+      this.success=lesson.title+' confirmed at the top blast zone. '+this.success+
+        (displayed?'':' KO artwork unavailable.');
+    }
+    if(count===3&&previousCount!==3)try{localStorage.setItem('eth:dojo:v1:'+this.config.fighter+':'+lesson.id,'complete');}catch{}
+  }
   this.text('#dojo-progress',this.tracker?this.tracker.count+' / 3 successful repetitions':'Fixed damage · Infinite lives · No win or loss');
   this.text('#dojo-feedback',this.success);this.text('#dojo-cue',this.dummy.cue);
   const dodging=['AIR_DODGE','SPOT_DODGE','ROLL'].includes(p.state);

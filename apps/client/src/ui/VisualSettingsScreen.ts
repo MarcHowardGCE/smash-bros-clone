@@ -1,11 +1,27 @@
+import { settingsHeader, settingsHint, settingsTabEntries, type SettingsRoute } from './SettingsShell';
 import type{GamepadPoller}from'@smash/gamepad-input';
 import{StageBackdrop,type VisualPreferences}from'../renderer/StageBackdrop';
 import{MenuNavigator,type MenuButton}from'./MenuNavigator';
 import { controllerPrompt, type PromptRenderer } from './controllerPrompts';
 import{WORLD_STORIES}from'./selectionContent';
 /** All adjustments are presentation preferences local to this browser. */
-export function renderVisualSettingsScreen(container:HTMLElement,scene:StageBackdrop,onBack:()=>void,poller?:GamepadPoller|null,prompt:PromptRenderer=controllerPrompt):{destroy:()=>void}{
- container.innerHTML=`<div class="overlay-center visual-settings"><header><small>VISUAL ACCESSIBILITY</small><h1>Keep the fight in focus</h1><p id="visual-description">Lighten and quiet distant scenery. Fighters and platforms keep their original artwork.</p></header><div class="visual-settings-layout"><div class="visual-settings-controls"><button class="ui-btn" id="visual-fade" aria-describedby="visual-description"></button><div class="visual-adjust"><button class="ui-btn" id="visual-fade-less" aria-label="Decrease background fade">−</button><button class="ui-btn" id="visual-fade-more" aria-label="Increase background fade">+</button></div><button class="ui-btn" id="visual-color"></button><button class="ui-btn" id="visual-motion"></button><button class="ui-btn" id="visual-atmosphere"></button><button class="ui-btn" id="visual-reset">Restore defaults</button><button class="ui-btn" id="visual-back">← Back</button><p class="visual-helper">Left / right adjusts the highlighted setting. Motion follows your system preference by default and stops while paused.</p></div><section><div class="visual-preview" aria-label="Preview of the selected world with an unchanged fighter and platform"><div class="visual-preview-art"></div><div class="visual-preview-wash"></div><img class="visual-preview-platform" src="${import.meta.env.BASE_URL||'/'}platform-art/${scene.stageId}-main.png" alt=""><img class="visual-preview-fighter" src="${import.meta.env.BASE_URL||'/'}menu-art/abe-lincoln.png" alt="Abe Lincoln remains in the foreground"></div><p class="visual-preview-caption"></p><p id="visual-motion-status" role="status"></p></section></div></div><div class="menu-hint">↑↓ Navigate • ←→ Adjust • Enter / ${prompt('confirm')} Activate • Esc / ${prompt('cancel')} Back</div>`;
+export function renderVisualSettingsScreen(container:HTMLElement,scene:StageBackdrop,onBack:()=>void,poller?:GamepadPoller|null,prompt:PromptRenderer=controllerPrompt,route?:SettingsRoute):{destroy:()=>void}{
+
+ container.innerHTML=`<section class="menu-workspace settings-workspace visual-settings">
+   ${settingsHeader('visual','visual-back',route)}
+   <div class="settings-body visual-settings-layout">
+     <section class="settings-detail visual-settings-controls">
+       <span class="menu-kicker">Accessibility</span><h2>Keep the fight in focus</h2>
+       <p id="visual-description">Adjust the scenery while keeping fighters and platforms clear.</p>
+       <div class="visual-adjust"><button class="menu-quiet" id="visual-fade" aria-describedby="visual-description"></button><button class="menu-quiet" id="visual-fade-less" aria-label="Decrease background fade">−</button><button class="menu-quiet" id="visual-fade-more" aria-label="Increase background fade">+</button></div>
+       <button class="menu-quiet" id="visual-color"></button><button class="menu-quiet" id="visual-motion"></button>
+       <button class="menu-quiet" id="visual-atmosphere"></button><button class="menu-quiet" id="visual-reset">Restore defaults</button>
+     </section>
+     <section class="settings-detail"><span class="menu-kicker">Live preview</span><div class="visual-preview" aria-label="Preview with an unchanged fighter and platform">
+       <div class="visual-preview-art"></div><div class="visual-preview-wash"></div><img class="visual-preview-platform" src="${import.meta.env.BASE_URL||'/'}platform-art/${scene.stageId}-main.webp" alt=""><img class="visual-preview-fighter" src="${import.meta.env.BASE_URL||'/'}menu-art/abe-lincoln.png" alt="Abe Lincoln remains in the foreground"></div>
+       <p class="visual-preview-caption"></p><p id="visual-motion-status" role="status"></p>
+     </section>
+   </div>${settingsHint(prompt)}</section>`;
  const nav=new MenuNavigator(poller);const settings=()=>scene.getSettings();
  const change=(key:'fade'|'saturation',amount:number)=>scene.setSettings({[key]:Math.max(0,Math.min(100,settings()[key]+amount))});
  const cycleMotion=(direction=1)=>{const modes:VisualPreferences['motion'][]=['system','off','on'];scene.setSettings({motion:modes[(modes.indexOf(settings().motion)+direction+3)%3]!});};
@@ -20,7 +36,9 @@ export function renderVisualSettingsScreen(container:HTMLElement,scene:StageBack
   {id:'visual-back',activate:onBack},
  ];
  const buttons:MenuButton[]=actions.map((action,index)=>{const element=container.querySelector<HTMLElement>('#'+action.id)!;element.addEventListener('click',action.activate);element.addEventListener('focus',()=>nav.selectIndex(index));return{id:action.id,element,onActivate:action.activate,onAdjust:action.adjust};});
- function update():void {const p=settings();container.querySelector('#visual-fade')!.textContent='Background fade: '+p.fade+'%';container.querySelector('#visual-color')!.textContent='Background color: '+p.saturation+'%';container.querySelector('#visual-motion')!.textContent='Scenery motion: '+p.motion[0]!.toUpperCase()+p.motion.slice(1);const atmosphere=container.querySelector('#visual-atmosphere')!;atmosphere.textContent='Atmosphere layers: '+(p.atmosphere?'On':'Off');atmosphere.setAttribute('aria-pressed',String(p.atmosphere));const art=container.querySelector<HTMLElement>('.visual-preview-art')!;art.style.backgroundImage='url("'+scene.imagePath+'")';art.style.filter='saturate('+p.saturation/100+') blur('+Math.min(1,p.fade/75)+'px)';container.querySelector<HTMLElement>('.visual-preview-wash')!.style.opacity=String(p.fade/100);container.querySelector('.visual-preview-caption')!.textContent=WORLD_STORIES[scene.stageId]?.name??'Stage preview';container.querySelector('#visual-motion-status')!.textContent=scene.motionEnabled?'Motion may run during matches. This preview is still.':'Scenery motion is disabled. Gameplay animation is unchanged.';}
+ function update():void {const p=settings();container.querySelector('#visual-fade')!.textContent='Background fade: '+p.fade+'%';container.querySelector('#visual-color')!.textContent='Background color: '+p.saturation+'%';container.querySelector('#visual-motion')!.textContent='Scenery motion: '+p.motion[0]!.toUpperCase()+p.motion.slice(1);const atmosphere=container.querySelector('#visual-atmosphere')!;atmosphere.textContent='Atmosphere layers: '+(p.atmosphere?'On':'Off');atmosphere.setAttribute('aria-pressed',String(p.atmosphere));const art=container.querySelector<HTMLElement>('.visual-preview-art')!;art.style.backgroundImage='url("'+(scene.imagePath||import.meta.env.BASE_URL+'menu-art/'+scene.stageId+'.webp')+'")';art.style.filter='saturate('+p.saturation/100+') blur('+Math.min(1,p.fade/75)+'px)';container.querySelector<HTMLElement>('.visual-preview-wash')!.style.opacity=String(p.fade/100);container.querySelector('.visual-preview-caption')!.textContent=WORLD_STORIES[scene.stageId]?.name??'Stage preview';container.querySelector('#visual-motion-status')!.textContent=scene.motionEnabled?'Motion may run during matches. This preview is still.':'Scenery motion is disabled. Gameplay animation is unchanged.';}
+ buttons.push(...settingsTabEntries(container,route));
+ buttons.forEach((entry,index)=>entry.element.addEventListener('focus',()=>nav.selectIndex(index)));
  update();const unsubscribe=scene.subscribe(update);nav.setButtons(buttons);nav.start(onBack);
  return{destroy:()=>{nav.stop();unsubscribe();}};
 }

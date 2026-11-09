@@ -248,6 +248,7 @@ export interface GameEngineOptions {
 export class GameEngine {
   private readonly practice:boolean;
   private readonly practicePercents = new Map<PlayerId, number>();
+  private practiceSpawn: 'center' | 'close' | 'ko-launch' | 'ledge' | 'floor-tech' = 'center';
   private readonly stage:ReturnType<typeof getStageLayout>;
   private controllerFlick=new Map<PlayerId,{x:number;y:number;h:number;v:number}>();
 	private state: GameState;
@@ -380,16 +381,43 @@ export class GameEngine {
     return true;
   }
 
+
+  /** Select a deterministic opening for the next practice reset. */
+  setPracticeSpawn(spawn: 'center' | 'close' | 'ko-launch' | 'ledge' | 'floor-tech'): void {
+    if (this.practice) this.practiceSpawn = spawn;
+  }
+
+  private practicePlayer(player: PlayerState, index: number): PlayerState {
+    const main = this.stage.mainPlatform;
+    const center = main.x + main.width/2;
+    const groundY = main.y - getCharacterStats(player.characterId).hurtboxRadius;
+    const gap = this.practiceSpawn === 'ko-launch' ? 9 : this.practiceSpawn === 'close' ? 15 : 24;
+    const base: PlayerState = {
+      ...player, percent: this.getPracticePercent(player.id), x: center + (index===0 ? -gap : gap),
+      y: groundY, state: PlayerStateEnum.IDLE, stateFrame: 0, isGrounded: true,
+      facing: index===0 ? 1 : -1, artCue: undefined,
+    };
+    if (index !== 0) return base;
+    if (this.practiceSpawn === 'ledge') {
+      return { ...base, x: main.x-12, y: main.y-5, vy: 1, state: PlayerStateEnum.AIRBORNE, isGrounded: false };
+    }
+    if (this.practiceSpawn === 'floor-tech') {
+      return { ...base, x: center-90, y: groundY-50, state: PlayerStateEnum.AIRBORNE, isGrounded: false, isTumbling: true };
+    }
+    return base;
+  }
+
   /** Rebuild both practice fighters together, clearing grabs, ledges, fatigue and pending launches. */
   resetPractice(clearContacts = true):boolean {
     if(!this.practice)return false;
     const ids=Object.keys(this.state.players),characters=Object.fromEntries(ids.map(id=>[id,this.state.players[id]!.characterId]));
     const fresh=new GameEngine({playerIds:ids,characterIds:characters,stageId:this.stage.id});
-    const main=this.stage.mainPlatform,center=main.x+main.width/2;
-    this.state={...fresh.state,tick:this.tick,players:Object.fromEntries(ids.map((id,i)=>{const p=fresh.state.players[id]!;return[id,{...p,percent:this.getPracticePercent(id),x:center+(i===0?-24:24),y:main.y-getCharacterStats(p.characterId).hurtboxRadius,state:PlayerStateEnum.IDLE,stateFrame:0,isGrounded:true,facing:i===0?1:-1,artCue:undefined}];}))};
+    this.state = { ...fresh.state, tick: this.tick, players: Object.fromEntries(
+      ids.map((id,i) => [id,this.practicePlayer(fresh.state.players[id]!,i)]),
+    ) };
     this.controllerFlick.clear();
     if (clearContacts) this.clearHitEvents();
-    for(const id of ids){this.fsmControllers.set(id,new FSMController(PlayerStateEnum.IDLE));this.techAttemptBuffered.set(id,false);}
+    for(const id of ids){this.fsmControllers.set(id,new FSMController(this.state.players[id]!.state as PlayerStateEnum));this.techAttemptBuffered.set(id,false);}
     this.consecutiveLedgeGrabs.clear();
     this.ledgeApproaches.clear();
     this.ledgeCatches.clear();

@@ -45,7 +45,7 @@ test('pause freezes fighters and resume restores movement', async ({ page }) => 
 
   // Verify overlay appeared
   await page.waitForSelector('#resume-btn', { timeout: 2000 });
-  const pauseText = await page.textContent('.overlay-center');
+  const pauseText = await page.textContent('.pause-menu');
   expect(pauseText).toContain('PAUSED');
 
   // Capture positions at T+0

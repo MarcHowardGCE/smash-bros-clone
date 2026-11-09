@@ -1,16 +1,126 @@
-import{MenuNavigator,type MenuButton}from'../ui/MenuNavigator.js';import { controllerPrompt, type PromptRenderer } from '../ui/controllerPrompts';
-import type{GamepadPoller}from'@smash/gamepad-input';
-import{LESSONS,type PracticeConfig,type DummyMode}from'./curriculum.js';import{STAGES}from'../stages/stageConfig.js';import{WORLD_STORIES,escapeHtml}from'../ui/selectionContent.js';
-const fighters=[['all-rounder','All-Rounder'],['abe-lincoln','Abe Lincoln'],['swift','Swift'],['moonshine','Moonshine (test)'],['hulk-hoagie','Hulk Hoagie (test)']]as const;
-export function renderPracticeSetup(root:HTMLElement,poller:GamepadPoller|null,onStart:(c:PracticeConfig)=>void,onBack:()=>void,prompt:PromptRenderer=controllerPrompt):{destroy:()=>void}{
- let fighter=0,dummy=0,stage=0,mode=0;const modes:DummyMode[]=['still','shield','jab','mixed','up-smash'];
- root.innerHTML=`<section class="dojo-setup"><p class="dojo-eyebrow">EVERYBODY THROWS HANDS</p><h1>Training Dojo</h1><p>A place to learn. No damage, no defeat, no pressure.</p><div class="dojo-settings"><button id="dojo-fighter" class="ui-btn"></button><button id="dojo-partner" class="ui-btn"></button><button id="dojo-stage" class="ui-btn"></button><button id="dojo-behavior" class="ui-btn"></button></div><button id="practice-free" class="ui-btn cabinet-primary">Enter Free Practice</button><p id="dojo-art-status" role="status"></p><h2>Guided lessons</h2><p>Perform the actual technique correctly three times. Repetitions need not be consecutive. Completion is saved on this device for each fighter.</p><div class="dojo-lessons">${(['Basics','Advanced','Subtle']as const).map(tier=>`<section><h3>${tier}</h3>${LESSONS.filter(l=>l.tier===tier).map(l=>`<button class="ui-btn dojo-lesson" id="practice-lesson-${l.id}" data-lesson="${l.id}">${escapeHtml(l.title)}<span data-completion="${l.id}"></span></button>`).join('')}</section>`).join('')}</div><button id="dojo-back" class="ui-btn">Main Menu</button><p class="dojo-footnote">Arrow keys / D-pad navigate · Enter / ${prompt('confirm')} select · Escape / ${prompt('cancel')} back</p></section>`;
- const label=(id:string,text:string)=>{root.querySelector('#'+id)!.textContent=text;};
- const refresh=()=>{label('dojo-fighter','Fighter: '+fighters[fighter]![1]);label('dojo-partner','Partner: '+fighters[dummy]![1]);label('dojo-stage','World: '+(WORLD_STORIES[STAGES[stage]!.id]?.name??STAGES[stage]!.displayName));label('dojo-behavior','Free-practice partner: '+['Passive','Shield','Telegraphed jab','Alternating attack / special','Telegraphed two-hit up smash'][mode]);for(const l of LESSONS){let done=false;try{done=localStorage.getItem('eth:dojo:v1:'+fighters[fighter]![0]+':'+l.id)==='complete';}catch{}root.querySelector('[data-completion="'+l.id+'"]')!.textContent=done?' · Completed':'';}};
- const start=(lessonId:string|null)=>onStart({fighter:fighters[fighter]![0],dummy:fighters[dummy]![0],stageId:STAGES[stage]!.id,lessonId,dummyMode:modes[mode]!});
- const buttons:MenuButton[]=[];
- const bind=(id:string,action:()=>void,adjust?:(d:-1|1)=>void)=>{const element=root.querySelector<HTMLElement>('#'+id)!;element.addEventListener('click',action);buttons.push({id,element,onActivate:action,onAdjust:adjust});};
- const cycle=(which:string,d:number)=>{if(which==='fighter')fighter=(fighter+d+fighters.length)%fighters.length;if(which==='partner')dummy=(dummy+d+fighters.length)%fighters.length;if(which==='stage')stage=(stage+d+STAGES.length)%STAGES.length;if(which==='behavior')mode=(mode+d+modes.length)%modes.length;refresh();};
- for(const k of['fighter','partner','stage','behavior'])bind('dojo-'+k,()=>cycle(k,1),d=>cycle(k,d));bind('practice-free',()=>start(null));for(const l of LESSONS)bind('practice-lesson-'+l.id,()=>start(l.id));bind('dojo-back',onBack);refresh();
- const nav=new MenuNavigator(poller);nav.setButtons(buttons);nav.start(onBack);return{destroy:()=>nav.stop()};
+import { MenuNavigator, type MenuButton } from '../ui/MenuNavigator';
+import { controllerPrompt, type PromptRenderer } from '../ui/controllerPrompts';
+import { getControllerProfile, type ControllerProfile } from '../input/controllerProfiles';
+import type { GamepadPoller } from '@smash/gamepad-input';
+import { dojoButtonGuide, LESSONS, type PracticeConfig, type DummyMode } from './curriculum';
+import { STAGES } from '../stages/stageConfig';
+import { escapeHtml, fighterPortrait } from '../ui/selectionContent';
+
+const fighters = [
+  ['all-rounder','All-Rounder'], ['abe-lincoln','Abe Lincoln'], ['swift','Swift'],
+  ['moonshine','Moonshine'], ['hulk-hoagie','“Hulk” Hoagie'],
+] as const;
+const modes: readonly DummyMode[] = ['still','shield','jab','mixed','up-smash'];
+const behaviorNames = ['Passive','Shield','Telegraphed jab','Alternating attack / special','Telegraphed two-hit up smash'];
+const tiers = ['Basics','Advanced','Subtle'] as const;
+const selectionKey = 'eth:dojo:setup:v1';
+
+export function renderPracticeSetup(
+  root: HTMLElement, poller: GamepadPoller | null, onStart: (config: PracticeConfig) => void, onBack: () => void,
+  prompt: PromptRenderer = controllerPrompt, getProfile: () => ControllerProfile = () => getControllerProfile(''),
+): { destroy: () => void } {
+  let saved: Partial<PracticeConfig> = {};
+  try { saved = JSON.parse(localStorage.getItem(selectionKey) ?? '{}') ?? {}; } catch { /* use defaults */ }
+  let fighter = Math.max(0, fighters.findIndex(([id]) => id===saved.fighter));
+  let partner = Math.max(0, fighters.findIndex(([id]) => id===saved.dummy));
+  let stage = Math.max(0, STAGES.findIndex(world => world.id===saved.stageId));
+  let mode = Math.max(0, modes.findIndex(behavior => behavior===saved.dummyMode));
+  let lesson = LESSONS.find(entry => entry.id===saved.lessonId) ?? LESSONS[0]!;
+  let tier = lesson.tier;
+  let guided = Boolean(saved.lessonId && LESSONS.some(entry => entry.id===saved.lessonId));
+
+  root.innerHTML = `<section class="menu-workspace dojo-library" aria-labelledby="dojo-title">
+    <header class="picker-header"><div><span class="menu-kicker">Practice / Training Dojo</span><h1 id="dojo-title">Training Dojo</h1></div>
+      <button type="button" id="dojo-back" class="menu-quiet">← Main Menu</button></header>
+    <div class="settings-tabs" role="group" aria-label="Practice mode">
+      <button type="button" id="dojo-mode-free" class="menu-quiet">Free Practice</button>
+      <button type="button" id="dojo-mode-lessons" class="menu-quiet">Guided Lessons</button>
+    </div>
+    <div class="dojo-library-body">
+      <section class="settings-detail dojo-session"><span class="menu-kicker">Session setup</span><h2>Make it yours</h2>
+        <div class="dojo-fighter-pair"><img id="dojo-fighter-art" alt=""><img id="dojo-partner-art" alt=""></div>
+        <div class="dojo-session-options">${['fighter','partner','stage','behavior'].map(id=>`<button type="button" id="dojo-${id}" class="menu-quiet"></button>`).join('')}</div>
+        <p id="dojo-partner-rule">Lessons set the partner’s behavior for each technique.</p></section>
+      <section id="dojo-free-pane" class="settings-detail"><span class="menu-kicker">Open sandbox</span><h2>Free Practice</h2>
+        <p>Practice inputs, test launch distances, or record partner routines at your own pace.</p>
+        <ul class="dojo-free-rules"><li>Damage stays fixed</li><li>Unlimited resets</li><li>No wins or losses</li></ul></section>
+      <section id="dojo-lessons-pane" class="settings-detail dojo-curriculum"><span class="menu-kicker">Lesson library</span>
+        <div class="settings-tabs" role="group" aria-label="Lesson difficulty">${tiers.map(name=>`<button type="button" id="dojo-tier-${name}" class="menu-quiet">${name}</button>`).join('')}</div>
+        <div class="dojo-lesson-browser"><div class="dojo-lesson-list">${LESSONS.map(entry=>`<button type="button" class="menu-quiet dojo-lesson-card" id="practice-lesson-${entry.id}" data-lesson="${entry.id}">
+          ${escapeHtml(entry.title)}<small data-completion="${entry.id}"></small></button>`).join('')}</div>
+          <div class="dojo-lesson-detail"><span class="menu-kicker" id="dojo-lesson-tier"></span><h2 id="dojo-lesson-name"></h2>
+            <p id="dojo-lesson-hint"></p><p id="dojo-lesson-input"></p><strong id="dojo-lesson-progress"></strong></div></div></section>
+    </div>
+    <p id="dojo-art-status" role="status"></p>
+    <footer class="workspace-footer"><p class="picker-help dojo-footnote">↑↓ Navigate · ←→ Adjust · Enter / ${prompt('confirm')} select · Escape / ${prompt('cancel')} back</p>
+      <button type="button" id="practice-free" class="menu-quiet workspace-primary">Enter Free Practice</button>
+      <button type="button" id="dojo-start-lesson" class="menu-quiet workspace-primary">Start Lesson</button></footer>
+  </section>`;
+  const nav = new MenuNavigator(poller);
+  const all = new Map<string, MenuButton>();
+  let visible: MenuButton[] = [];
+  const get = <T extends HTMLElement = HTMLElement>(id: string) => root.querySelector<T>('#'+id)!;
+  const label = (id: string, value: string) => { get(id).textContent = value; };
+  const config = (lessonId: string | null): PracticeConfig => ({
+    fighter: fighters[fighter]![0], dummy: fighters[partner]![0], stageId: STAGES[stage]!.id, dummyMode: modes[mode]!, lessonId,
+  });
+  const completed = (id: string) => {
+    try { return localStorage.getItem('eth:dojo:v1:'+fighters[fighter]![0]+':'+id)==='complete'; }
+    catch { return false; }
+  };
+  function refresh(highlight = 'dojo-mode-free'): void {
+    try { localStorage.setItem(selectionKey, JSON.stringify(config(guided ? lesson.id : null))); } catch { /* session still works */ }
+    label('dojo-fighter','Fighter · '+fighters[fighter]![1]);
+    label('dojo-partner','Partner · '+fighters[partner]![1]);
+    label('dojo-stage','World · '+STAGES[stage]!.displayName);
+    label('dojo-behavior','Partner behavior · '+behaviorNames[mode]);
+    get<HTMLImageElement>('dojo-fighter-art').src = fighterPortrait(fighters[fighter]![0]);
+    get<HTMLImageElement>('dojo-partner-art').src = fighterPortrait(fighters[partner]![0]);
+    get('dojo-mode-free').setAttribute('aria-pressed', String(!guided));
+    get('dojo-mode-lessons').setAttribute('aria-pressed', String(guided));
+    for (const id of ['dojo-free-pane','dojo-behavior','practice-free']) get(id).hidden = guided;
+    for (const id of ['dojo-lessons-pane','dojo-partner-rule','dojo-start-lesson']) get(id).hidden = !guided;
+    for (const name of tiers) get('dojo-tier-'+name).setAttribute('aria-pressed', String(name===tier));
+    for (const entry of LESSONS) {
+      const button = get('practice-lesson-'+entry.id);
+      button.hidden = entry.tier!==tier;
+      button.setAttribute('aria-pressed', String(entry.id===lesson.id));
+      button.querySelector('small')!.textContent = completed(entry.id) ? 'Completed' : '';
+    }
+    label('dojo-lesson-tier', lesson.tier);
+    label('dojo-lesson-name', lesson.title);
+    label('dojo-lesson-hint', lesson.hint);
+    label('dojo-lesson-input', dojoButtonGuide(getProfile(),lesson));
+    label('dojo-lesson-progress', completed(lesson.id) ? 'Completed · 3 of 3' : 'Goal · 3 successful repetitions');
+    visible = [...all.values()].filter(entry => !entry.element.closest('[hidden]'));
+    nav.setButtons(visible);
+    nav.selectIndex(visible.findIndex(entry => entry.id===highlight));
+  }
+  function bind(id: string, action: () => void, adjust?: (delta: -1 | 1) => void): void {
+    const element = get(id);
+    element.addEventListener('click',action);
+    element.addEventListener('focus',()=>nav.selectIndex(visible.findIndex(entry=>entry.id===id)));
+    all.set(id,{id,element,onActivate:action,onAdjust:adjust});
+  }
+  function cycle(id: string, length: number, read: () => number, write: (value: number) => void): void {
+    const adjust = (delta: -1 | 1) => { write((read()+delta+length)%length); refresh(id); };
+    bind(id,()=>adjust(1),adjust);
+  }
+  bind('dojo-mode-free',()=>{guided=false;refresh('dojo-mode-free');});
+  bind('dojo-mode-lessons',()=>{guided=true;refresh('dojo-mode-lessons');});
+  cycle('dojo-fighter',fighters.length,()=>fighter,value=>{fighter=value;});
+  cycle('dojo-partner',fighters.length,()=>partner,value=>{partner=value;});
+  cycle('dojo-stage',STAGES.length,()=>stage,value=>{stage=value;});
+  cycle('dojo-behavior',modes.length,()=>mode,value=>{mode=value;});
+  for (const name of tiers) bind('dojo-tier-'+name,()=>{
+    if (tier!==name) { tier=name; lesson=LESSONS.find(entry=>entry.tier===name)!; }
+    refresh('dojo-tier-'+name);
+  });
+  for (const entry of LESSONS) bind('practice-lesson-'+entry.id,()=>{lesson=entry;refresh('practice-lesson-'+entry.id);});
+  bind('practice-free',()=>onStart(config(null)));
+  bind('dojo-start-lesson',()=>onStart(config(lesson.id)));
+  bind('dojo-back',onBack);
+  refresh(guided ? 'dojo-mode-lessons' : 'dojo-mode-free');
+  nav.start(onBack);
+  return { destroy:()=>nav.stop() };
 }

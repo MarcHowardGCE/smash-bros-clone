@@ -20,7 +20,7 @@ export const illustratedMenuStyles = `
  outline:3px solid var(--menu-focus);outline-offset:4px;
 }
 .menu-shell:not([data-menu-surface="game"]) :is(.ui-btn,.fighter-option,.network-fighter-option):hover {filter:brightness(1.1);}
-.menu-shell :is(#resume-btn,#play-again-btn,#local-play-again-btn,#network-charselect-confirm-btn,.fighter-ready) {
+.menu-shell :is(#network-charselect-confirm-btn,.fighter-ready) {
  background-image:url('/menu-ui/primary-button.png')!important;color:#201a27!important;
 }
 .menu-shell .menu-hint {border:2px double #96764f;border-radius:8px;}
@@ -57,14 +57,8 @@ export const illustratedMenuStyles = `
  box-shadow:inset 0 0 0 3px #241c2b;
 }
 .menu-shell .network-fighter-option[aria-pressed="true"] {background:#594051;border-color:#e0b567!important;}
-.menu-shell .controls-screen {background:#241c2b!important;border-radius:12px!important;padding:28px!important;}
-.controls-screen .controls-heading,.setup-heading {font:700 30px Georgia,serif;letter-spacing:.02em!important;}
-.controls-screen .controls-help {font-size:14px!important;line-height:1.5;}
-.controls-screen .binding-label {font-size:13px!important;color:#eadbc3!important;}
-.menu-shell .controls-screen .ui-btn {font-size:14px!important;min-height:44px;}
-.menu-shell .controls-slot,.menu-shell .setup-seat {border:1px solid #96764f!important;background:#302635;border-radius:10px!important;}
+.menu-shell .setup-seat {border:1px solid #96764f!important;background:#302635;border-radius:10px!important;}
 .menu-shell .lps-count-btn[aria-pressed="true"] {background-image:url('/menu-ui/primary-button.png')!important;color:#201a27;font-weight:bold;}
-.menu-shell .visual-settings h1 {color:#e0b567;}
 .menu-shell #network-charselect-error {color:#ffb5ac!important;}
 @media(max-height:800px){
  .menu-shell:not([data-menu-surface="game"]) .overlay-center {padding:24px;}
@@ -81,7 +75,6 @@ export const illustratedMenuStyles = `
 }
 @media(max-width:750px){
  .menu-shell .overlay-center.character-selection {gap:14px;padding:22px;}
- .menu-shell .controls-binding-grid {grid-template-columns:repeat(2,minmax(0,1fr))!important;}
 }
 
 /* Keep count selection in CSS: inline background shorthand reset the plaque sizing. */

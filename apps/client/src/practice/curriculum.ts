@@ -1,4 +1,4 @@
-import {INPUT_BITS as B,type GameState,type InputEvent,type PlayerState,type CharacterId} from '@smash/shared';
+import {INPUT_BITS as B,type GameState,type InputEvent,type PlayerState,type CharacterId,type HitEventData,type KOEventData} from '@smash/shared';
 import { controllerBindingLabel, type ControllerProfile } from '../input/controllerProfiles';
 
 export function dojoButtonGuide(profile: ControllerProfile, lesson?: Lesson): string {
@@ -17,7 +17,10 @@ export function dojoSimulationProfile(id:string):CharacterId{
 }
 export type DummyMode='still'|'shield'|'jab'|'mixed'|'up-smash';
 export interface PracticeConfig {fighter:string;dummy:string;stageId:string;lessonId:string|null;dummyMode:DummyMode}
-export interface Lesson {id:string;tier:'Basics'|'Advanced'|'Subtle';title:string;hint:string;buttons:string;arm:number;dummy:DummyMode;check:(p:PlayerState,old:PlayerState)=>boolean}
+export const KO_LESSON_PERCENT = 350;
+export type LessonSetup = 'center' | 'close' | 'ko-launch' | 'ledge' | 'floor-tech';
+interface LessonContact {hits:readonly HitEventData[];playerId:string}
+export interface Lesson {setup?:LessonSetup;ko?:'star'|'screen';id:string;tier:'Basics'|'Advanced'|'Subtle';title:string;hint:string;buttons:string;arm:number;dummy:DummyMode;check:(p:PlayerState,old:PlayerState,context?:LessonContact)=>boolean}
 const entered=(p:PlayerState,o:PlayerState,state:string)=>p.state===state&&o.state!==state;
 const move=(name:string)=>(p:PlayerState,o:PlayerState)=>p.currentMoveId===name&&(o.currentMoveId!==p.currentMoveId||p.state!==o.state);
 export const LESSONS:Lesson[]=[
@@ -40,17 +43,108 @@ export const LESSONS:Lesson[]=[
  {id:'oos-special',tier:'Subtle',title:'Recover out of shield',hint:'From a held, unstunned shield, aim Up and press Special. Dropping shield first does not count.',buttons:'Hold {shield}, Up + {special} · Shift, Up + S',arm:B.SPECIAL,dummy:'still',check:(p,o)=>o.state==='SHIELD'&&move('UP_SPECIAL')(p,o)},
  {id:'oos-smash',tier:'Subtle',title:'Punish from guard',hint:'From held Shield, flick the right stick Up. Confirm UP SMASH rather than grab or jump.',buttons:'Hold {shield} + right stick Up · Shift + Up + Z',arm:B.ATTACK,dummy:'still',check:(p,o)=>o.state==='SHIELD'&&move('UP_SMASH')(p,o)}
 ];
-/** Counts separate armed engine outcomes, never held poses or buttons alone. */
+
+const smashLessons = [
+ ['forward-smash','Forward smash','FORWARD_SMASH','Side'],
+ ['up-smash','Up smash','UP_SMASH','Up'],
+ ['down-smash','Down smash','DOWN_SMASH','Down'],
+] as const;
+const aerialLessons = [
+ ['neutral-air','Neutral aerial','NEUTRAL_AIR','Release directions before attacking.'],
+ ['forward-air','Forward aerial','FORWARD_AIR','Aim toward the direction you are facing.'],
+ ['back-air','Back aerial','BACK_AIR','Aim behind you without turning around first.'],
+ ['up-air','Up aerial','UP_AIR','Aim up as you attack.'],
+ ['down-air','Down aerial','DOWN_AIR','Aim down as you attack.'],
+] as const;
+const throwLessons = [
+ ['back-throw','Back throw','BACK_THROW',B.LEFT|B.RIGHT,'away from the partner'],
+ ['up-throw','Up throw','UP_THROW',B.UP,'up'],
+ ['down-throw','Down throw','DOWN_THROW',B.DOWN,'down'],
+] as const;
+const ledgeLessons = [
+ ['ledge-climb','Neutral ledge climb','LEDGE_CLIMB',B.RIGHT,'Toward the stage'],
+ ['ledge-roll','Ledge roll','LEDGE_ROLL',B.SHIELD,'{shield}'],
+ ['ledge-jump','Ledge jump','LEDGE_JUMP',B.JUMP,'{jump}'],
+ ['ledge-attack','Ledge attack','LEDGE_ATTACK',B.ATTACK,'{attack}'],
+] as const;
+LESSONS.push(
+ ...smashLessons.map(([id,title,moveId,direction]):Lesson=>({
+  id,title,tier:'Advanced',hint:'Start from the ground. Flick the direction with Attack, then release Attack to finish the smash.',
+  buttons:'Right stick '+direction+' (Smash mode) · Shift + '+direction+' + Z, then release Z',arm:B.ATTACK,dummy:'still',
+  check:(p,o)=>p.currentMoveId===moveId&&Boolean(p.activeHitbox)&&(!o.activeHitbox||o.currentMoveId!==moveId),
+ })),
+ ...aerialLessons.map(([id,title,moveId,hint]):Lesson=>({
+  id,title,tier:'Advanced',hint:'Jump, then attack in the air. '+hint,
+  buttons:id==='neutral-air'?'{jump}, then {attack} · Space, then Z':'{jump}, then direction + {attack} · Space, then direction + Z',arm:B.ATTACK,dummy:'still',check:move(moveId),
+ })),
+ {id:'neutral-air-dodge',tier:'Advanced',title:'Neutral air dodge',hint:'Jump, return the stick to neutral, then press Shield in the air. Land before repeating.',
+  buttons:'{jump}, then {shield} without a direction · Space, then Shift',arm:B.SHIELD,dummy:'still',
+  check:(p,o)=>entered(p,o,'AIR_DODGE')&&!p.airDodgeDirection?.x&&!p.airDodgeDirection?.y},
+ {id:'directional-air-dodge',tier:'Advanced',title:'Directional air dodge',hint:'Jump, hold a direction, then press Shield in the air. Land before repeating.',
+  buttons:'{jump}, then direction + {shield} · Space, then direction + Shift',arm:B.SHIELD,dummy:'still',
+  check:(p,o)=>entered(p,o,'AIR_DODGE')&&Boolean(p.airDodgeDirection?.x||p.airDodgeDirection?.y)},
+ {id:'pummel',tier:'Advanced',title:'Pummel from a grab',hint:'Grab the nearby partner, then press Attack while holding them. A pummel must connect.',
+  buttons:'{grab}, then {attack} · C, then Z',arm:B.ATTACK,dummy:'still',setup:'close',
+  check:(_p,_o,context)=>Boolean(context?.hits.some(hit=>hit.attackerId===context.playerId&&hit.moveId==='PUMMEL'))},
+ ...throwLessons.map(([id,title,moveId,arm,direction]):Lesson=>({
+  id,title,tier:'Advanced',hint:'Grab the nearby partner, then aim '+direction+'.',
+  buttons:'{grab}, then '+direction+' · C, then direction',arm,dummy:'still',setup:'close',
+  check:(_p,_o,context)=>Boolean(context?.hits.some(hit=>hit.attackerId===context.playerId&&hit.defenderId==='local-p2'&&hit.moveId===moveId)),
+ })),
+ ...ledgeLessons.map(([id,title,state,arm,input]):Lesson=>({
+  id,title,tier:'Subtle',hint:'Wait for the ledge catch, then use the indicated option. Press R or Reset arena to start the next attempt.',
+  buttons:input+' while hanging',arm,dummy:'still',setup:'ledge',check:(p,o)=>o.state==='LEDGE_HANG'&&entered(p,o,state),
+ })),
+ ...(['neutral','roll'] as const).map((kind):Lesson=>({
+  id:'floor-tech-'+kind,tier:'Subtle',title:kind==='neutral'?'Neutral floor tech':'Floor tech roll',
+  hint:'You start tumbling above the floor. Press Shield shortly before contact. '+(kind==='neutral'?'Keep direction neutral.':'Press Shield first, then hold left or right through impact.')+' Reset the arena between attempts.',
+  buttons:kind==='neutral'?'{shield} · Shift':'{shield}, then direction · Shift, then Left/Right',arm:B.SHIELD,dummy:'still',setup:'floor-tech',
+  check:(p,o)=>entered(p,o,kind==='neutral'?'TECH_NEUTRAL':'TECH_ROLL'),
+ })),
+ ...(['star','screen'] as const).map((kind):Lesson=>({
+  id:kind+'-ko',tier:'Subtle',title:kind==='star'?'Star KO':'Screen KO',setup:'ko-launch',dummy:'still',ko:kind,arm:B.ATTACK,
+  hint:'The partner starts at '+KO_LESSON_PERCENT+'%. Connect with an up smash and launch them through the top blast zone. The arena resets after each launch. Keep practicing after three successful repetitions.',
+  buttons:'Right stick Up (Smash mode) · Shift + Up + Z, then release Z',check:()=>false,
+ })),
+);
+
+/** Counts fresh inputs followed by real state transitions, contacts or blast-zone exits. */
 export class LessonTracker {
- count=0;private previous:PlayerState|null=null;private armedUntil=-1;
- constructor(readonly lesson:Lesson){}
- observe(state:GameState,input:InputEvent|null|undefined,id:string):boolean {
-  const p=state.players[id];if(!p)return false;
-  const bits=this.lesson.id==='parry'?(input?.released??0):(input?.pressed??0);
-  if(bits&this.lesson.arm)this.armedUntil=state.tick+180;
-  const credit=this.count<3&&this.previous!==null&&state.tick<=this.armedUntil&&this.lesson.check(p,this.previous);
-  this.previous=p;
-  if(credit){this.count++;this.armedUntil=-1;}return credit;
- }
- reset():void{this.count=0;this.previous=null;this.armedUntil=-1;}
+  count = 0;
+  private previous: PlayerState | null = null;
+  private armedUntil = -1;
+  private launchUntil = -1;
+
+  constructor(readonly lesson: Lesson) {}
+
+  observe(
+    state: GameState, input: InputEvent | null | undefined, playerId: string,
+    hits: readonly HitEventData[] = [], exits: readonly KOEventData[] = [],
+  ): boolean {
+    const player = state.players[playerId];
+    if (!player) return false;
+    const bits = this.lesson.id==='parry' ? input?.released ?? 0 : input?.pressed ?? 0;
+    if (bits & this.lesson.arm) this.armedUntil = state.tick + 180;
+    let outcome = false;
+    if (this.lesson.ko) {
+      for (const hit of hits) {
+        if (hit.defenderId==='local-p2') {
+          this.launchUntil = hit.attackerId===playerId && hit.moveId==='UP_SMASH' && state.tick<=this.armedUntil
+            ? state.tick+180 : -1;
+        }
+      }
+      outcome = state.tick<=this.launchUntil && exits.some(event=>event.playerId==='local-p2'&&event.boundary==='top');
+      if (exits.length) this.launchUntil = -1;
+    } else if (this.previous && state.tick<=this.armedUntil) {
+      outcome = this.lesson.check(player,this.previous,{hits,playerId});
+    }
+    this.previous = player;
+    if (!outcome || (this.count===3 && !this.lesson.ko)) return false;
+    this.count = Math.min(this.count + 1, 3);
+    this.armedUntil = -1;
+    return true;
+  }
+
+  resetAttempt(): void { this.previous=null; this.armedUntil=-1; this.launchUntil=-1; }
+  reset(): void { this.count=0; this.resetAttempt(); }
 }

@@ -4,11 +4,20 @@
   <meta charset="UTF-8" />
    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Everybody Throws Hands</title>
+    <link rel="preload" as="image" href="/branding/everybody-throws-hands-arcade.png" fetchpriority="high" />
+    <link rel="prefetch" as="image" href="/menu-art/all-rounder.png" />
+    <link rel="prefetch" as="image" href="/menu-art/abe-lincoln.png" />
+    <link rel="prefetch" as="image" href="/menu-art/swift.png" />
    <link rel="icon" type="image/x-icon" href="/favicon.ico" />
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
     body { background: #000; overflow: hidden; width: 100vw; height: 100vh; }
     #game-canvas { display: block; }
+    #startup-loading {position:fixed;inset:0;z-index:30;display:grid;align-content:center;justify-items:center;gap:14px;padding:24px;background:#211828;color:#fbedd3;text-align:center;font:500 16px/1.5 system-ui,sans-serif}
+    #startup-loading strong {font:700 clamp(24px,5vw,42px)/1.2 Georgia,serif;color:#f0c579}
+    #startup-loading small {color:#d4c2d0}
+    #startup-loading button {font:inherit;background:#f0c579;color:#211626;border:2px solid #f7d997;padding:10px 20px;border-radius:7px;cursor:pointer}
+    #startup-loading button:focus-visible {outline:3px solid #a5e2d5;outline-offset:4px}
     #ui-overlay {
       position: fixed; top: 0; left: 0; width: 100%; height: 100%;
       pointer-events: none; z-index: 10;
@@ -17,6 +26,11 @@
   </style>
 </head>
 <body>
+  <section id="startup-loading" role="status" aria-live="polite" aria-label="Loading game">
+    <strong>Everybody Throws Hands</strong>
+    <p>Opening the arcade…</p>
+    <small>The first visit can take longer. Please keep this page open.</small>
+  </section>
   <div id="background-layer" style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background-size: cover; background-position: center; background-repeat: no-repeat; z-index: 0;"></div>
   <div id="ui-overlay"></div>
   <script type="module" src="/src/main.ts"></script>

@@ -5,7 +5,7 @@ import { test, expect } from '@playwright/test';
  * T25: Main Menu button on result screens — visual evidence + navigation test.
  *
  * Starts a local match, KOs one player to trigger result screen,
- * verifies both Play Again and Main Menu buttons are present,
+ * verifies both Rematch and Main Menu buttons are present,
  * then clicks Main Menu and asserts navigation back to lobby.
  */
 test('result screen shows Main Menu button and navigates to lobby on click', async ({ page }) => {
@@ -93,7 +93,7 @@ test('result screen shows Main Menu button and navigates to lobby on click', asy
   // Verify button text
   const playAgainText = await playAgainBtn!.textContent();
   const mainMenuText = await mainMenuBtn!.textContent();
-  expect(playAgainText).toBe('Play Again');
+  expect(playAgainText).toBe('Rematch');
   expect(mainMenuText).toBe('Main Menu');
 
   // Screenshot result screen with both buttons

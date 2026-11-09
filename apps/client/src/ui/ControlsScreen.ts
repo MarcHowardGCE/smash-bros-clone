@@ -1,4 +1,6 @@
-import{MenuNavigator}from'./MenuNavigator';
+import { MenuNavigator, type MenuButton } from './MenuNavigator';
+import { settingsHeader, settingsHint, settingsTabEntries, type SettingsRoute } from './SettingsShell';
+import { escapeHtml } from './selectionContent';
 import{resetStickCalibration,type GamepadPoller}from'@smash/gamepad-input';
 import { CONTROLLER_PROFILES, controllerBindingLabel, getControllerProfile, getControllerProfileOverride, setControllerProfileOverride } from '../input/controllerProfiles';
 import { renderControllerCalibration } from './ControllerCalibration';
@@ -58,6 +60,7 @@ interface ControlsScreenDeps {
   assignmentManager: ControllerAssignmentManager;
   preferenceStore: GamepadPreferenceStore;
   onBack: () => void;
+  route?: SettingsRoute;
 }
 
 /**
@@ -136,211 +139,164 @@ function findKeyForAction(keymap: Record<string, InputBitmask>, actionBit: Input
   return '—';
 }
 
-/**
- * Render the controls/settings screen.
- */
-export function renderControlsScreen(
-  container: HTMLElement,
-  deps: ControlsScreenDeps,
-): { destroy: () => void } {
-  const { assignmentManager, onBack } = deps;
-  const keymaps: Record<string, InputBitmask>[] = [0, 1, 2, 3].map(i => loadKeymap(i));
-  const listeners: Array<() => void> = [];
-  let listeningState: { slotIndex: number; action: ActionName; cleanup: () => void } | null = null;
 
-  let controllerNav:MenuNavigator|null=null;
-  let calibrationCleanup:Array<()=>void>=[];
-  function render(): void {
-    controllerNav?.stop();
-    for(const cleanup of calibrationCleanup)cleanup();calibrationCleanup=[];
-    const currentAssignments = assignmentManager.getAssignments();
-    let html = `
-      <div class="overlay-center controls-screen" style="max-width:900px;width:100%;align-items:stretch;max-height:calc(100vh - 32px);overflow-y:auto;padding:16px;box-sizing:border-box;background:rgba(9,18,30,.94);border-radius:8px">
-        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:24px">
-          <div style="text-align:left"><div class="controls-heading" style="font-size:32px;letter-spacing:2px">CONTROLS</div><div class="controls-help" style="font-size:12px;margin-top:6px">Ultimate-style controller layout · Right face confirms · Bottom face goes back<br>Right stick: smash / aerial attacks · Left stick up: jump</div></div>
-          <button id="controls-back-btn" class="ui-btn" style="font-size:14px">Back</button>
-        </div>`;
+export function renderControlsScreen(container: HTMLElement, deps: ControlsScreenDeps): {
+  destroy: () => void; refresh: () => void;
+} {
+  const slots = [0, 1, 2, 3];
+  const keymaps = slots.map(loadKeymap);
+  let activeSlot = 0;
+  let calibrating = false;
+  let nav: MenuNavigator | undefined;
+  let stopCalibration: (() => void) | undefined;
+  let stopRebind: (() => void) | undefined;
 
-    for (let slot = 0; slot < 4; slot++) {
-      const deviceLabel = getDeviceLabel(slot, currentAssignments);
-      const assignment = currentAssignments.get(slot);
-      const isGamepad = !!assignment;
-      const isUnassigned = isUnassignedSlot(slot, currentAssignments);
-      const keymap = keymaps[slot]!;
-      const override = assignment && getControllerProfileOverride(assignment.gamepadId);
-      const profilePicker = assignment ? `<label for="controller-profile-${slot}">Controller profile</label>
-        <select id="controller-profile-${slot}">
-          <option value="" ${!override ? 'selected' : ''}>Auto detect</option>
-          ${Object.entries(CONTROLLER_PROFILES).map(([key, profile]) =>
-            `<option value="${key}" ${override === key ? 'selected' : ''}>${profile.name}</option>`).join('')}
-        </select>` : '';
+  function render(focusId?: string): void {
+    stopRebind?.();
+    nav?.stop();
+    stopCalibration?.();
+    stopCalibration = undefined;
+    const assignments = deps.assignmentManager.getAssignments();
+    const assignment = assignments.get(activeSlot);
+    if (!assignment) calibrating = false;
 
-      html += `
-        <div class="controls-slot" style="border:1px solid rgba(255,255,255,0.2);padding:16px;margin-bottom:12px;border-radius:4px">
-          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
-            <div style="font-size:18px">Slot ${slot + 1}: <span style="color:rgba(255,255,255,0.7)">${deviceLabel}</span></div>
-            <button id="reset-slot-${slot}" class="ui-btn" style="font-size:12px;padding:4px 12px" ${isUnassigned ? 'disabled' : ''}>Reset to Default</button>
-          </div>
-          ${profilePicker}
-          <div class="controls-binding-grid" style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px">`;
+    const seats = slots.map(slot => `<button type="button" class="menu-quiet" id="control-seat-${slot}"
+      aria-pressed="${slot===activeSlot}"><strong>P${slot+1}</strong><small>${escapeHtml(getDeviceLabel(slot, assignments))}</small></button>`).join('');
+    const panels = slots.map(slot => {
+      const pad = assignments.get(slot);
+      const unassigned = isUnassignedSlot(slot, assignments);
+      const override = pad && getControllerProfileOverride(pad.gamepadId);
+      const profilePicker = pad ? `<label for="controller-profile-${slot}">Controller profile</label>
+        <select id="controller-profile-${slot}"><option value="" ${!override ? 'selected' : ''}>Auto detect</option>
+        ${Object.entries(CONTROLLER_PROFILES).map(([key, profile]) =>
+          `<option value="${key}" ${override===key?'selected':''}>${profile.name}</option>`).join('')}</select>` : '';
+      return `<section class="settings-detail controls-seat-panel" ${slot!==activeSlot || calibrating ? 'hidden' : ''}>
+        <div class="picker-header"><div><span class="menu-kicker">Player ${slot+1}</span><h2>${escapeHtml(getDeviceLabel(slot, assignments))}</h2></div>
+          <button id="reset-slot-${slot}" class="menu-quiet" ${unassigned ? 'disabled' : ''}>Reset to Default</button></div>
+        ${pad ? `<div class="settings-device-row">${profilePicker}<button id="calibrate-slot-${slot}" class="menu-quiet">Stick settings</button></div>` : ''}
+        ${unassigned ? '<p>Connect a controller to configure this seat.</p>' : ''}
+        <div class="settings-bindings" ${unassigned ? 'hidden' : ''}>${ACTION_NAMES.map(action => {
+          const binding = unassigned ? '—' : pad ? getGamepadButtonName(slot, assignments, action) : findKeyForAction(keymaps[slot]!, ACTION_BITS[action]);
+          return `<div class="settings-binding"><span class="binding-label">${action.replaceAll('_',' ')}</span>
+            <kbd id="binding-${slot}-${action}">${escapeHtml(binding)}</kbd>
+            ${!pad && !unassigned ? `<button id="rebind-${slot}-${action}" class="menu-quiet" aria-label="Rebind ${action.toLowerCase().replaceAll('_',' ')}">Rebind</button>` : ''}</div>`;
+        }).join('')}</div></section>`;
+    }).join('');
+    container.innerHTML = `<section class="menu-workspace settings-workspace controls-screen">
+      ${settingsHeader('controls','controls-back-btn',deps.route)}
+      <div class="settings-body"><div class="settings-seats" role="group" aria-label="Controller seat">${seats}</div>${panels}
+      ${calibrating ? `<section class="settings-detail settings-calibration"><div class="picker-header"><h2>Player ${activeSlot+1} · Stick settings</h2>
+      <button id="controls-calibration-back" class="menu-quiet">← Bindings</button></div><div data-controller-calibration="${activeSlot}"></div></section>` : ''}</div>
+      ${settingsHint(deps.route?.prompt)}</section>`;
 
-      for (const action of ACTION_NAMES) {
-        const bit = ACTION_BITS[action];
-        let currentKey: string;
-        if (isUnassigned) {
-          currentKey = '—';
-        } else if (isGamepad) {
-          currentKey = getGamepadButtonName(slot, currentAssignments, action);
-        } else {
-          currentKey = findKeyForAction(keymap, bit);
-        }
-
-        const btnId = `rebind-${slot}-${action}`;
-        const rebindDisabled = isUnassigned || isGamepad;
-        html += `
-            <div style="display:flex;flex-direction:column;align-items:center;padding:8px;background:rgba(255,255,255,0.05);border-radius:4px">
-              <div class="binding-label" style="font-size:11px;color:rgba(255,255,255,0.5);margin-bottom:4px">${action.replaceAll("_"," ")}</div>
-              <div id="binding-${slot}-${action}" style="font-size:14px;margin-bottom:6px;min-height:20px">${currentKey}</div>
-              <button id="${btnId}" class="ui-btn" style="font-size:11px;padding:2px 8px" ${rebindDisabled ? 'disabled' : ''}>Rebind</button>
-            </div>`;
-      }
-
-      html += `
-          </div>
-        </div>`;
-    }
-
-    html += '</div>';
-    container.innerHTML = html;
-    for(const [slot,assignment] of currentAssignments){const row=container.querySelector('#reset-slot-'+slot)?.parentElement?.parentElement;if(row){const host=document.createElement('div');host.dataset.controllerCalibration=String(slot);row.appendChild(host);calibrationCleanup.push(renderControllerCalibration(host,assignment.gamepadId,assignment.gamepadIndex));}}
-
-    for (const [slot, assignment] of currentAssignments) {
-      const id = 'controller-profile-' + slot;
-      const select = container.querySelector<HTMLSelectElement>('#' + id);
-      select?.addEventListener('change', () => {
-        setControllerProfileOverride(assignment.gamepadId, select.value);
-        render();
-        container.querySelector<HTMLSelectElement>('#' + id)?.focus();
+    const navigator = new MenuNavigator(deps.gamepadPoller);
+    nav = navigator;
+    const entries: MenuButton[] = [];
+    const add = (id: string, action: () => void, navigate = true) => {
+      const button = container.querySelector<HTMLButtonElement>('#'+id);
+      if (!button) return;
+      button.addEventListener('click',action);
+      if (navigate && !button.disabled) entries.push({id,element:button,onActivate:action});
+    };
+    for (const slot of slots) {
+      const id = 'control-seat-'+slot;
+      add(id, () => {
+        if (activeSlot===slot && !calibrating) return;
+        activeSlot=slot;
+        calibrating=false;
+        render(id);
       });
     }
-
-    controllerNav=new MenuNavigator(deps.gamepadPoller);controllerNav.setButtons([{id:'controls-back-btn',element:container.querySelector('#controls-back-btn') as HTMLElement,onActivate:onBack}]);controllerNav.start(onBack);
-    // Wire back button
-    const backBtn = document.getElementById('controls-back-btn');
-    if (backBtn) {
-      const handler = () => onBack();
-      backBtn.addEventListener('click', handler);
-      listeners.push(() => backBtn.removeEventListener('click', handler));
-    }
-
-    // Wire reset buttons
-    for (let slot = 0; slot < 4; slot++) {
-      const resetBtn = document.getElementById(`reset-slot-${slot}`);
-      if (resetBtn) {
-        const s = slot;
-        const handler = () => {
-          const assignment=currentAssignments.get(s);
-          if(assignment){
-            resetStickCalibration(assignment.gamepadId);
-            setControllerProfileOverride(assignment.gamepadId, '');
-          }
-          keymaps[s] = { ...DEFAULT_KEYMAPS[s]! };
-          saveKeymap(s, keymaps[s]!);
-          render();
-        };
-        resetBtn.addEventListener('click', handler);
-        listeners.push(() => resetBtn.removeEventListener('click', handler));
+    for (const slot of slots) {
+      const active = slot===activeSlot && !calibrating;
+      const pad = assignments.get(slot);
+      const profile = container.querySelector<HTMLSelectElement>('#controller-profile-'+slot);
+      if (profile && pad) {
+        profile.addEventListener('change',()=>{setControllerProfileOverride(pad.gamepadId,profile.value);render(profile.id);});
+        if (active) entries.push(settingField(profile));
       }
-    }
-
-    // Wire rebind buttons
-    for (let slot = 0; slot < 4; slot++) {
-      const assignment = currentAssignments.get(slot);
-      const isGamepad = !!assignment;
-      const isUnassigned = isUnassignedSlot(slot, currentAssignments);
-      if (isGamepad || isUnassigned) continue;
-
-      for (const action of ACTION_NAMES) {
-        const btn = document.getElementById(`rebind-${slot}-${action}`);
-        if (btn) {
-          const s = slot;
-          const a = action;
-          const handler = () => startListening(s, a);
-          btn.addEventListener('click', handler);
-          listeners.push(() => btn.removeEventListener('click', handler));
+      add('calibrate-slot-'+slot,()=>{calibrating=true;render('controls-calibration-back');},active);
+      for (const action of ACTION_NAMES) add('rebind-'+slot+'-'+action,()=>listen(slot,action),active);
+      add('reset-slot-'+slot,()=>{
+        if (pad) {
+          resetStickCalibration(pad.gamepadId);
+          setControllerProfileOverride(pad.gamepadId,'');
         }
+        keymaps[slot]={...DEFAULT_KEYMAPS[slot]!};
+        saveKeymap(slot,keymaps[slot]!);
+        render('reset-slot-'+slot);
+      },active);
+    }
+    const back = () => {
+      if (calibrating) { calibrating=false; render('calibrate-slot-'+activeSlot); }
+      else deps.onBack();
+    };
+    const calibration = container.querySelector<HTMLElement>('[data-controller-calibration]');
+    if (calibration && assignment) {
+      stopCalibration = renderControllerCalibration(calibration,assignment.gamepadId,assignment.gamepadIndex);
+      calibration.querySelector('details')!.open=true;
+      add('controls-calibration-back',back);
+      for (const [index,field] of Array.from(calibration.querySelectorAll<HTMLInputElement|HTMLSelectElement|HTMLButtonElement>('input,select,button')).entries()) {
+        field.id='calibration-field-'+index;
+        entries.push(field instanceof HTMLButtonElement
+          ? {id:field.id,element:field,onActivate:()=>field.click()} : settingField(field));
       }
     }
-  }
-
-  function startListening(slotIndex: number, action: ActionName): void {
-    // Cancel any existing listening
-    if (listeningState) listeningState.cleanup();
-
-    const bindingEl = document.getElementById(`binding-${slotIndex}-${action}`);
-    const btnEl = document.getElementById(`rebind-${slotIndex}-${action}`);
-    if (bindingEl) bindingEl.textContent = '...';
-    if (btnEl) btnEl.textContent = 'Press a key or button...';
-
-    const onKeyDown = (e: KeyboardEvent): void => {
-      e.preventDefault();
-      e.stopPropagation();
-
-      if (e.code === 'Escape') {
-        // Cancel without changing
-        cleanup();
-        render();
-        return;
-      }
-
-      // Apply binding: remove any existing mapping with same key (last-bind-wins)
-      const keymap = keymaps[slotIndex]!;
-      const targetBit = ACTION_BITS[action];
-
-      // Remove old key for this action
-      for (const [key, bit] of Object.entries(keymap)) {
-        if (bit === targetBit) {
-          delete keymap[key];
-        }
-      }
-      // Remove any action already using this key (last-bind-wins)
-      delete keymap[e.code];
-
-      // Set new binding
-      keymap[e.code] = targetBit;
-      saveKeymap(slotIndex, keymap);
-
-      cleanup();
-      render();
-    };
-
-    const cleanup = (): void => {
-      window.removeEventListener('keydown', onKeyDown, true);
-      listeningState = null;
-    };
-
-    window.addEventListener('keydown', onKeyDown, true);
-    listeningState = { slotIndex, action, cleanup };
-  }
-
-  function cleanupAll(): void {
-    controllerNav?.stop();controllerNav=null;
-    for(const cleanup of calibrationCleanup)cleanup();calibrationCleanup=[];
-    if (listeningState) {
-      listeningState.cleanup();
-      listeningState = null;
+    add('controls-back-btn',deps.onBack);
+    entries.push(...settingsTabEntries(container,deps.route));
+    entries.forEach((entry,index)=>{
+      entry.element.addEventListener('focus',()=>navigator.selectIndex(index));
+      if (entry.element.matches('input,select')) entry.element.addEventListener('keydown', event => {
+        if (event.key==='Escape') { event.stopPropagation(); back(); }
+      });
+    });
+    navigator.setButtons(entries);
+    if (focusId) {
+      const index=entries.findIndex(entry=>entry.id===focusId);
+      navigator.selectIndex(index);
+      entries[index]?.element.focus();
     }
-    for (const unsub of listeners) unsub();
-    listeners.length = 0;
+    navigator.start(back);
   }
 
-  // Initial render
+  function settingField(element: HTMLInputElement | HTMLSelectElement): MenuButton {
+    const adjust = (delta: -1 | 1) => {
+      if (element instanceof HTMLSelectElement) {
+        element.selectedIndex=(element.selectedIndex+delta+element.length)%element.length;
+        element.dispatchEvent(new Event('change'));
+      } else if (element.type==='range') {
+        if (delta>0) element.stepUp(); else element.stepDown();
+        element.dispatchEvent(new Event('input'));
+      } else element.click();
+    };
+    return {id:element.id,element,onActivate:()=>adjust(1),onAdjust:adjust};
+  }
+
+  function listen(slot: number, action: ActionName): void {
+    stopRebind?.();
+    const id='rebind-'+slot+'-'+action;
+    container.querySelector('#binding-'+slot+'-'+action)!.textContent='...';
+    container.querySelector('#'+id)!.textContent='Press a key or button...';
+    const onKey = (event: KeyboardEvent) => {
+      event.preventDefault();
+      event.stopImmediatePropagation();
+      if (event.code!=='Escape') {
+        const keymap=keymaps[slot]!;
+        const bit=ACTION_BITS[action];
+        for (const [key,value] of Object.entries(keymap)) if (value===bit) delete keymap[key];
+        keymap[event.code]=bit;
+        saveKeymap(slot,keymap);
+      }
+      stopRebind?.();
+      render(id);
+    };
+    stopRebind=()=>{window.removeEventListener('keydown',onKey,true);stopRebind=undefined;};
+    window.addEventListener('keydown',onKey,true);
+  }
+
   render();
-
   return {
-    destroy(): void {
-      cleanupAll();
-      container.innerHTML = '';
-    },
+    refresh:()=>render(document.activeElement?.id),
+    destroy:()=>{nav?.stop();stopCalibration?.();stopRebind?.();container.replaceChildren();},
   };
 }

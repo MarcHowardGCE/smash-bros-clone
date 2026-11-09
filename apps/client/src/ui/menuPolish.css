@@ -255,3 +255,135 @@ body:has(.dojo-console) .dojo-panel {visibility:hidden}
  .world-tile img {height:58px}
  .world-guest .world-preview-panel {grid-template-columns:1fr;grid-template-rows:145px minmax(0,1fr);height:385px}
 }
+
+/* Match pause and results */
+.menu-workspace.pause-menu {width:min(570px,calc(100% - 40px));background:linear-gradient(145deg,#2a2033fa,#191421f7)}
+.pause-action-row,.result-actions {display:flex;flex-wrap:wrap;gap:8px}
+.pause-action-row > button {flex:1 0 auto}
+.pause-menu #audio-settings {flex-direction:row;flex-wrap:wrap;align-items:stretch;margin:0;gap:8px}
+.menu-shell .pause-menu #audio-settings :is(.ui-btn,.audio-volume-row) {
+  font-size:13px;min-height:36px;padding:6px 10px;margin:0;background:#382a43;border:1px solid #745e79;border-radius:7px;
+}
+.menu-shell .pause-menu .menu-hint {position:static;transform:none;width:auto;max-width:none;text-align:left;border:0;background:none;padding:0;font-size:11px}
+.pause-menu footer {border-top:1px solid var(--screen-line);padding-top:10px;text-align:right}
+.pause-menu #main-menu-btn,.pause-menu #confirm-leave-match-btn {border-color:#956b79;color:#ffd0cb!important}
+.match-result {width:min(1020px,calc(100% - 48px))}
+.result-feature {
+  position:relative;isolation:isolate;display:flex;gap:clamp(12px,4vw,52px);align-items:center;justify-content:center;
+  text-align:left;padding:18px;min-height:180px;overflow:hidden;border:1px solid var(--screen-line);border-radius:10px;
+  background:linear-gradient(90deg,#21182adc,#21182aec),var(--result-art,none) center/cover,#2a2033;
+}
+.result-feature img {width:clamp(104px,24vw,265px);height:clamp(130px,32dvh,245px);object-fit:contain;filter:drop-shadow(0 8px 12px #120b18d9)}
+.result-feature p.result-fighter-name {font:700 clamp(23px,3vw,38px)/1.1 Georgia,serif;color:var(--screen-gold);margin:5px 0 8px}
+.result-feature h1 {font-size:clamp(32px,6vw,72px)}
+.result-lineup {display:flex;flex-wrap:wrap;gap:7px}
+.result-seat {
+  flex:1 1 130px;display:grid;gap:2px;padding:7px 10px;
+  border:1px solid var(--screen-line);border-radius:8px;background:#2b2034;
+}
+.result-seat small {color:var(--screen-muted)}
+.result-seat[data-winner="true"] {border-color:var(--screen-gold)}
+.result-seat[data-winner="true"] small {color:var(--screen-gold)}
+.match-result .workspace-footer p {font-size:13px}
+.match-result .result-actions {justify-content:flex-end}
+@media(max-width:660px) {
+  .match-result .workspace-footer {flex-direction:column;align-items:flex-start}
+  .match-result .result-actions {justify-content:flex-start}
+}
+
+/* Settings and Training Dojo library */
+.settings-workspace,.dojo-library {width:min(1080px,calc(100% - 48px))}
+.settings-workspace {height:min(640px,calc(100dvh - 40px));overflow:hidden}
+.settings-workspace .settings-body {flex:1}
+.settings-tabs,.settings-seats {display:flex;flex-wrap:wrap;gap:7px}
+.settings-tabs .menu-quiet[aria-current],.settings-tabs .menu-quiet[aria-pressed="true"],
+.settings-seats .menu-quiet[aria-pressed="true"],.dojo-lesson-card[aria-pressed="true"] {
+  border-color:var(--screen-gold);background:#4a3652!important;
+}
+.settings-body {min-height:0;overflow:auto;padding:4px;scrollbar-gutter:stable}
+.settings-detail {min-width:0;padding:12px;border:1px solid var(--screen-line);background:#251b2d;border-radius:9px}
+.settings-detail p {font-size:13px}
+.settings-seats {margin-bottom:8px}
+.settings-seats button {display:grid;gap:2px;flex:1 1 125px;text-align:left}
+.settings-seats button small {color:var(--screen-muted);font-size:11px}
+.settings-device-row {display:flex;align-items:center;gap:7px;flex-wrap:wrap;margin-bottom:9px}
+.settings-workspace select {
+  font:inherit;color:var(--screen-paper);background:#382a43;border:1px solid #745e79;border-radius:6px;
+  padding:7px;max-width:100%;
+}
+.settings-workspace select.menu-selected,.settings-workspace input.menu-selected {outline:2px solid var(--screen-focus);outline-offset:2px}
+.settings-bindings {display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;margin-top:6px}
+.settings-binding {
+  display:grid;grid-template-columns:minmax(0,1fr) auto auto;align-items:center;gap:5px;
+  padding:5px 7px;border:1px solid #55415a;background:#30233a;border-radius:6px;min-height:37px;
+}
+.settings-binding .binding-label {font-size:10px;color:var(--screen-muted);font-weight:800}
+.settings-binding kbd {color:#ffe3a3;background:#21192a;border-radius:4px;padding:3px 5px;font:700 12px/1.3 system-ui,sans-serif}
+.settings-binding .menu-quiet {padding:3px 6px;min-height:27px;font-size:10px}
+.settings-calibration summary {display:none}
+.settings-calibration details[open] {display:grid}
+.settings-calibration details label {display:inline-flex;align-items:center;gap:6px;margin:5px}
+.settings-calibration details > p {margin:6px 0}
+.settings-calibration :is(input[type=range],input[type=checkbox]) {accent-color:var(--screen-focus)}
+.settings-calibration pre {margin:4px 0;padding:6px;background:#1d1625;border-radius:5px}
+.menu-shell .settings-calibration details .ui-btn,.menu-shell .sound-settings #audio-settings :is(.ui-btn,.audio-volume-row) {
+  display:inline-flex;min-height:36px;margin:0;padding:6px 10px;background:#382a43;border:1px solid #745e79;border-radius:7px;font-size:13px;
+}
+.sound-settings #audio-settings {margin:12px 0 0;align-items:flex-start}
+.sound-settings .audio-volume-row {min-width:min(330px,100%);justify-content:space-between}
+.menu-workspace .visual-settings-layout {gap:10px;align-items:stretch}
+.menu-workspace .visual-settings-controls {gap:6px}
+.visual-settings-controls > button {text-align:left}
+.visual-settings-controls .visual-adjust {display:grid;grid-template-columns:minmax(0,1fr) auto auto;gap:6px}
+.visual-settings-controls .visual-adjust button:first-child {text-align:left}
+.visual-settings .visual-preview {margin:6px 0;border-radius:8px}
+.visual-settings .visual-preview-caption {color:var(--screen-gold);font-weight:800}
+.dojo-library {min-height:min(535px,calc(100dvh - 40px))}
+.dojo-library-body {display:grid;grid-template-columns:minmax(250px,.85fr) minmax(0,1.5fr);gap:10px;flex:1;min-height:0}
+.dojo-session-options {display:grid;gap:6px;margin:7px 0}
+.dojo-session-options button {text-align:left}
+.dojo-fighter-pair {display:flex;justify-content:center;gap:14px;background:#31233a;border:1px solid #55415a;border-radius:8px}
+.dojo-fighter-pair img {height:82px;width:42%;object-fit:contain;padding:4px;box-sizing:border-box}
+.dojo-free-rules {padding-inline-start:18px;color:var(--screen-gold);font-weight:700}
+.dojo-free-rules li {margin:7px 0}
+.dojo-curriculum > .settings-tabs {margin:5px 0 8px}
+.dojo-lesson-browser {display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.05fr);gap:8px}
+.dojo-lesson-list {display:grid;gap:5px;max-height:265px;overflow:auto;padding:3px 5px 3px 3px}
+.dojo-lesson-list .dojo-lesson-card {text-align:left;min-height:30px;padding:5px 7px}
+.dojo-lesson-card small {display:block;color:var(--screen-focus);font-size:10px}
+.dojo-lesson-detail {background:#30223a;border:1px solid #55415a;padding:8px;border-radius:7px}
+.dojo-lesson-detail h2 {font-size:21px}
+.dojo-lesson-detail p {margin:5px 0}
+#dojo-lesson-input {padding:5px 7px;background:#21182b;border-radius:5px;color:var(--screen-gold)}
+#dojo-lesson-progress {font-size:12px;color:var(--screen-focus)}
+.dojo-library #dojo-art-status:empty {display:none}
+.dojo-library .dojo-footnote {font-size:11px}
+@media(max-height:660px) {
+  .settings-workspace,.dojo-library {gap:8px}
+  .dojo-fighter-pair img {height:66px}
+  .dojo-lesson-list {max-height:233px}
+}
+@media(max-width:760px) {
+  .settings-workspace,.dojo-library {width:calc(100% - 24px)}
+  .settings-bindings {grid-template-columns:repeat(2,minmax(0,1fr))}
+  .dojo-library-body {grid-template-columns:1fr}
+}
+@media(max-width:480px) {
+  .settings-bindings,.dojo-lesson-browser {grid-template-columns:1fr}
+}
+
+/* Compact layouts retain navigation while utility content scrolls. */
+.settings-workspace > :is(.picker-header,.settings-tabs,.picker-help) {flex-shrink:0}
+.menu-workspace :is(button,input,select):focus-visible {
+  outline:2px solid var(--screen-focus)!important;outline-offset:2px;
+}
+@media(max-height:450px) {
+  .settings-workspace {gap:6px}
+  .settings-workspace h1 {font-size:26px}
+  .settings-workspace .picker-help {margin:0;font-size:11px}
+  .settings-tabs .menu-quiet {padding:6px 9px;min-height:30px}
+  .dojo-console {gap:8px}
+  .dojo-console h1 {font-size:25px}
+  .dojo-console .dojo-paused-badge {padding:4px 8px}
+  .workspace-footer {flex-wrap:wrap}
+}

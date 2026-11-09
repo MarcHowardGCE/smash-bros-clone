@@ -20,7 +20,7 @@ export function homeMenu(): string {
         <button class="menu-quiet" id="visual-settings-btn">Accessibility</button>
         <button class="menu-quiet" id="home-audio-btn">Sound</button>
       </div>
-      <div id="audio-settings-container" hidden></div>
+
     </div>
   </section>`;
 }

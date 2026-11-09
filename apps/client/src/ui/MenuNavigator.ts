@@ -41,6 +41,12 @@ export class MenuNavigator {
   private rafId: number | null = null;
   private keyHandler: ((e: KeyboardEvent) => void) | null = null;
   private lastBitsPerGamepad = new Map<number, number>();
+  private focusHandler = (event: FocusEvent): void => {
+    const target = event.target;
+    if (!(target instanceof HTMLElement)) return;
+    const index = this.buttons.findIndex(button => button.element === target || button.element.contains(target));
+    if (index >= 0) this.selectIndex(index);
+  };
 
   /**
    * Create a navigator, optionally backed by a gamepad poller.
@@ -130,6 +136,7 @@ export class MenuNavigator {
       }
     };
     window.addEventListener('keydown', this.keyHandler);
+    window.addEventListener('focusin', this.focusHandler);
 
     if (this.poller) {
       this.lastBitsPerGamepad.clear();
@@ -182,6 +189,7 @@ export class MenuNavigator {
 
   /** Stop listening for input and cancel any active gamepad polling. */
   stop(): void {
+    window.removeEventListener('focusin', this.focusHandler);
     if (this.keyHandler) {
       window.removeEventListener('keydown', this.keyHandler);
       this.keyHandler = null;

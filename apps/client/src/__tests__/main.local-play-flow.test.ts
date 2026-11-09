@@ -1,4 +1,4 @@
-import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi, type Mock } from "vitest";
 
 type SetupResult = {
   participantCount: 2 | 3 | 4;
@@ -15,6 +15,7 @@ interface BootResult {
     onMainMenu: (() => void) | null;
   };
   triggerLocalPlaySetupBack: () => void;
+  loadPilot: Mock<[], Promise<null>>;
   showLocalPlaySetupCalls: Array<{ initial: SetupResult | null }>;
   getShowLobbyCalls: () => number;
   showCharacterSelectCalls: Array<{
@@ -96,8 +97,9 @@ const bootMainWithMocks = async (
     destroy(): void {}
   }
 
-  vi.doMock('../renderer/fullbody/FullBodyPilot.js',()=>({preloadFullBodyPilot:async()=>null}));
-    vi.doMock('../renderer/fullbody/KOPresentation.js',()=>({KOPresentation:class{tick(){}destroy(){}clear(){}spawn(){}update(){}getDiagnostics(){return [];}}}));
+  const loadPilot = vi.fn(async () => null);
+  vi.doMock('../renderer/fullbody/FullBodyPilot.js', () => ({ preloadFullBodyPilot: loadPilot }));
+    vi.doMock('../renderer/fullbody/KOPresentation.js',()=>({KOPresentation:class{tick(){}destroy(){}clear(){}spawn(){}update(){}setAssets(){}getDiagnostics(){return [];}}}));
     vi.doMock("pixi.js", () => {
     class Application {
         ticker = {add:()=>{},stop:()=>{},start:()=>{}};
@@ -335,13 +337,13 @@ const bootMainWithMocks = async (
         onSelected: (choices: unknown[]) => void,
         autoConfirmSlots: number[] = [],
         _onBack?: () => void,
-        gamepadSlotByIndex?: ReadonlyMap<number, number>,
+        gamepadSlotByIndex?: ReadonlyMap<number, number> | (() => ReadonlyMap<number, number>),
       ): void {
         showCharacterSelectCalls.push({
           playerCount,
           onSelected,
           autoConfirmSlots,
-          gamepadSlotByIndex,
+          gamepadSlotByIndex: typeof gamepadSlotByIndex === 'function' ? gamepadSlotByIndex() : gamepadSlotByIndex,
         });
       }
 
@@ -371,6 +373,7 @@ const bootMainWithMocks = async (
       }
       localPlaySetupBack();
     },
+    loadPilot,
     showLocalPlaySetupCalls,
     getShowLobbyCalls: () => showLobbyCalls,
     showCharacterSelectCalls,
@@ -402,6 +405,7 @@ describe("main local play flow wiring", () => {
     const runtime = await bootMainWithMocks([setup]);
 
     runtime.uiInstance.onLocalPlay?.();
+    await flush();
 
     expect(runtime.showCharacterSelectCalls).toHaveLength(1);
     expect(runtime.showCharacterSelectCalls[0]?.playerCount).toBe(2);
@@ -440,6 +444,7 @@ describe("main local play flow wiring", () => {
     const runtime = await bootMainWithMocks([setup]);
 
     runtime.uiInstance.onLocalPlay?.();
+    await flush();
     runtime.showCharacterSelectCalls[0]?.onSelected([]);
 
     const controllers = runtime.localMatchCtorCalls[0]?.controllers ?? [];
@@ -455,7 +460,7 @@ describe("main local play flow wiring", () => {
     expect(runtime.gamepadInputSourceCtorCalls.some(call => call.gamepadIndex === 0)).toBe(true);
   });
 
-  it("passes remembered lastLocalSetup as initial on local play again", async () => {
+  it("rematches the same setup directly without reopening player setup", async () => {
     const setup: SetupResult = {
       participantCount: 2,
       seats: [{ kind: "cpu", difficulty: "medium" }],
@@ -464,11 +469,21 @@ describe("main local play flow wiring", () => {
     const runtime = await bootMainWithMocks([setup, setup]);
 
     runtime.uiInstance.onLocalPlay?.();
+    await flush();
+    runtime.showCharacterSelectCalls[0]?.onSelected([
+      { id: 'all-rounder', displayName: 'All-Rounder' },
+      { id: 'swift', displayName: 'Swift' },
+    ]);
+    await flush();
+    expect(runtime.localMatchCtorCalls).toHaveLength(1);
     runtime.uiInstance.onLocalPlayAgain?.();
+    await flush();
 
-    expect(runtime.showLocalPlaySetupCalls).toHaveLength(2);
-    expect(runtime.showLocalPlaySetupCalls[0]?.initial).toBeNull();
-    expect(runtime.showLocalPlaySetupCalls[1]?.initial).toEqual(setup);
+    expect(runtime.showLocalPlaySetupCalls).toHaveLength(1);
+    expect(runtime.localMatchCtorCalls).toHaveLength(2);
+    expect(runtime.localMatchCtorCalls[1]?.characterIds).toEqual(
+      runtime.localMatchCtorCalls[0]?.characterIds,
+    );
   });
 
   it("reconnects network client when backing out of local play setup to lobby", async () => {
@@ -480,6 +495,7 @@ describe("main local play flow wiring", () => {
     const runtime = await bootMainWithMocks([setup]);
 
     runtime.uiInstance.onLocalPlay?.();
+    await flush();
     expect(runtime.getGameClientDisconnectCalls()).toBe(1);
     expect(runtime.getGameClientConnectCalls()).toBe(0);
 
@@ -498,6 +514,7 @@ describe("main local play flow wiring", () => {
     const runtime = await bootMainWithMocks([setup]);
 
     runtime.uiInstance.onLocalPlay?.();
+    await flush();
     expect(runtime.getGameClientDisconnectCalls()).toBe(1);
     expect(runtime.getGameClientConnectCalls()).toBe(0);
 
@@ -521,6 +538,7 @@ describe("main local play flow wiring", () => {
 
     // Enter local mode (disconnect), then return to main menu (reconnect).
     runtime.uiInstance.onLocalPlay?.();
+    await flush();
     runtime.uiInstance.onMainMenu?.();
 
     // Reconnect should go straight to lobby without splash replay.
@@ -538,12 +556,17 @@ describe("main local play flow wiring", () => {
     const runtime = await bootMainWithMocks([setup]);
 
     runtime.uiInstance.onLocalPlay?.();
+    await flush();
+    expect(runtime.loadPilot).not.toHaveBeenCalled();
     runtime.showCharacterSelectCalls[0]?.onSelected([
       { id: "abe-lincoln", displayName: "Abe Lincoln" },
       { id: "all-rounder", displayName: "All-Rounder" },
     ]);
 
     expect(runtime.localMatchCtorCalls).toHaveLength(1);
+    await vi.waitFor(() => expect(runtime.loadPilot).toHaveBeenCalledWith(false, ["abe-lincoln"], false));
+    expect(runtime.loadPilot).toHaveBeenCalledWith(false, ["all-rounder"], false);
+    expect(runtime.loadPilot).not.toHaveBeenCalledWith(false, ["swift"], false);
     const call = runtime.localMatchCtorCalls[0];
     expect(call?.characterIds).toBeDefined();
     expect(call?.characterIds).toEqual({
@@ -561,6 +584,7 @@ describe("main local play flow wiring", () => {
     const runtime = await bootMainWithMocks([setup]);
 
     runtime.uiInstance.onLocalPlay?.();
+    await flush();
     runtime.showCharacterSelectCalls[0]?.onSelected([
       { id: "abe-lincoln", displayName: "Abe Lincoln" },
     ]);
@@ -585,6 +609,7 @@ describe("main local play flow wiring", () => {
     const runtime = await bootMainWithMocks([setup]);
 
     runtime.uiInstance.onLocalPlay?.();
+    await flush();
     runtime.showCharacterSelectCalls[0]?.onSelected([]);
 
     expect(runtime.localMatchCtorCalls).toHaveLength(1);
@@ -637,6 +662,7 @@ describe("main local play flow wiring", () => {
     const runtime = await bootMainWithMocks([setup]);
 
     runtime.uiInstance.onLocalPlay?.();
+    await flush();
     runtime.showCharacterSelectCalls[0]?.onSelected([]);
 
     expect(runtime.localMatchCtorCalls).toHaveLength(1);

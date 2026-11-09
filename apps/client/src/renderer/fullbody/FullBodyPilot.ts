@@ -21,22 +21,41 @@ export interface FullBodyPilotAssets {
  readonly characters: Partial<Record<FighterArtId, Partial<Record<PilotClip, LoadedClip>>>>;
 }
 
-/** Default sprite renderer: a missing clip uses the existing articulated renderer. */
-export async function preloadFullBodyPilot(dojo=false): Promise<FullBodyPilotAssets | undefined> {
+const manifestLoads = new Map<string, Promise<Manifest>>();
+function loadManifest(url: string): Promise<Manifest> {
+  let pending = manifestLoads.get(url);
+  if (!pending) {
+    pending = fetch(url, { signal: AbortSignal.timeout(5000) }).then(response => {
+      if (!response.ok) throw new Error('Pilot manifest unavailable');
+      return response.json() as Promise<Manifest>;
+    }).catch(error => {
+      manifestLoads.delete(url);
+      throw error;
+    });
+    manifestLoads.set(url, pending);
+  }
+  return pending;
+}
+
+/** Omit the selection for the full review pack, or pass an empty selection for shared effects. */
+export async function preloadFullBodyPilot(dojo=false, selected?: readonly CharacterId[], includeEffects = true): Promise<FullBodyPilotAssets | undefined> {
  if(new URLSearchParams(window.location.search).get('renderer')==='legacy')return undefined;
  try {
   const base=dojo?'/fighter-art-newcomers-v1/':'/fighter-art-pilot-v1/';
-  const response=await fetch(base+(dojo?'dojo/manifest.json':'manifest.json'),{signal:AbortSignal.timeout(5000)});
-  if(!response.ok)throw new Error('Pilot manifest unavailable');
-  let manifest=await response.json() as Manifest;
-  if(!dojo&&new URLSearchParams(window.location.search).get('atlas')!=='source'){try{const r=await fetch('/fighter-art-pilot-v1/production/manifest.json',{signal:AbortSignal.timeout(5000)});if(r.ok){const candidate=await r.json() as Manifest;if(candidate.version===1&&candidate.production?.sourceRevision===manifest.revision)manifest=candidate;}}catch(error){console.warn('[fighter-art-pilot] Atlas unavailable; using source sheets',error);}}
+  let manifest=await loadManifest(base+(dojo?'dojo/manifest.json':'manifest.json'));
+  if(!dojo&&new URLSearchParams(window.location.search).get('atlas')!=='source'){
+   try {
+    const candidate=await loadManifest(base+'production/manifest.json');
+    if(candidate.version===1&&candidate.production?.sourceRevision===manifest.revision)manifest=candidate;
+   }catch(error){console.warn('[fighter-art-pilot] Atlas unavailable; using source sheets',error);}
+  }
   const textureTimeoutMs=manifest.production?60_000:15_000;
   const pageCache=new Map<string,Promise<Texture>>();
   function loadPage(file:string):Promise<Texture>{let promise=pageCache.get(file);if(!promise){promise=Assets.load<Texture>(base+file).then(t=>{t.source.scaleMode='linear';return t;});pageCache.set(file,promise);}return promise;}
 
   if(manifest.version!==1)throw new Error('Unsupported pilot version');
   const characters=manifest.characters??{'all-rounder':{clips:manifest.clips}};
-  const entries=await Promise.all((Object.entries(characters) as [FighterArtId,CharacterManifest][]).map(async([characterId,character])=>{
+  const entries=await Promise.all((Object.entries(characters) as [FighterArtId,CharacterManifest][]).filter(([id])=>!selected||selected.includes(id)).map(async([characterId,character])=>{
    const clips=await Promise.all((Object.entries(character.clips) as [PilotClip,Clip][]).filter(([name,clip])=>!clip.previewOnly||PREPARED_LIVE_CLIPS.includes(name)).map(async([name,clip])=>{
     let timer:ReturnType<typeof setTimeout>|undefined;
     try {
@@ -47,9 +66,10 @@ export async function preloadFullBodyPilot(dojo=false): Promise<FullBodyPilotAss
    }));
    return [characterId,Object.fromEntries(clips.filter((entry):entry is NonNullable<typeof entry>=>entry!==null))] as const;
   }));
-  if(!entries.some(([,clips])=>Object.keys(clips).length>0))return undefined;
+  if(selected?.length!==0&&!entries.some(([,clips])=>Object.keys(clips).length>0))return undefined;
   const effects:NonNullable<FullBodyPilotAssets['effects']>={};
-  for(const[name,e]of Object.entries(manifest.effects??{})){let timer:ReturnType<typeof setTimeout>|undefined;try{const bases=await Promise.race([Promise.all(e.frames.map(f=>loadPage(f.image??e.image))),new Promise<never>((_,reject)=>{timer=setTimeout(()=>reject(new Error('Effect timeout')),textureTimeoutMs);})]);effects[name]={scale:e.scale,rotation:e.rotation??0,durations:e.durations,frames:e.frames.map((f,i)=>({texture:new Texture({source:bases[i]!.source,frame:new Rectangle(...f.rect as [number,number,number,number])}),root:f.root}))};}catch(error){console.warn('[fighter-art-pilot] Effect unavailable',name,error);}finally{if(timer!==undefined)clearTimeout(timer);}}
+  for(const[name,e]of Object.entries(includeEffects?manifest.effects??{}:{})){let timer:ReturnType<typeof setTimeout>|undefined;try{const bases=await Promise.race([Promise.all(e.frames.map(f=>loadPage(f.image??e.image))),new Promise<never>((_,reject)=>{timer=setTimeout(()=>reject(new Error('Effect timeout')),textureTimeoutMs);})]);effects[name]={scale:e.scale,rotation:e.rotation??0,durations:e.durations,frames:e.frames.map((f,i)=>({texture:new Texture({source:bases[i]!.source,frame:new Rectangle(...f.rect as [number,number,number,number])}),root:f.root}))};}catch(error){console.warn('[fighter-art-pilot] Effect unavailable',name,error);}finally{if(timer!==undefined)clearTimeout(timer);}}
+  if (selected?.length===0 && !Object.keys(effects).length) return undefined;
   return {characters:Object.fromEntries(entries),effects,packing:manifest.production?"atlas":"source"};
  }catch(error){console.warn('[fighter-art-pilot] Using existing fighter artwork',error);return undefined;}
 }

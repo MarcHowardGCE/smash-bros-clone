@@ -6,7 +6,7 @@ import {getStageLayout,type StageLayout} from '@smash/shared';
 export async function waitForStageAsset<T>(asset:Promise<T>):Promise<T|null>{
   let timer:ReturnType<typeof setTimeout>|undefined;
   try{
-    return await Promise.race([asset,new Promise<null>(resolve=>{timer=setTimeout(()=>resolve(null),8000);})]);
+    return await Promise.race([asset,new Promise<null>(resolve=>{timer=setTimeout(()=>resolve(null),30_000);})]);
   }catch{
     return null;
   }finally{

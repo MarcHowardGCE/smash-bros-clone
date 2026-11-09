@@ -1,3 +1,5 @@
+import { settingsHeader, settingsHint, settingsTabEntries, type SettingsRoute } from './SettingsShell';
+import { matchPause, matchResult, type MatchResult } from './MatchMenus';
 import{renderPracticeSetup}from'../practice/PracticeSetup.js';
 import type{PracticeConfig}from'../practice/curriculum.js';
 import type { PracticeLabAction } from '../practice/PracticePanel';
@@ -62,7 +64,7 @@ export class UIManager {
   private networkRestoreChoice:((id:string)=>void)|null=null;
   private networkSelectionState:{pending:boolean;confirmed:boolean}|null=null;
   private characterScreenCleanup:(()=>void)|null=null;
-  private controlsScreenHandle:{destroy:()=>void}|null=null;
+  private controlsScreenHandle: ReturnType<typeof renderControlsScreen> | null = null;
   private overlay: HTMLElement;
   private hudPanel: HTMLElement;
   private phase: UIPhase = 'connecting';
@@ -89,12 +91,15 @@ export class UIManager {
     this.refreshControllerHints();
   }
 
+  refreshControlAssignments(): void { this.controlsScreenHandle?.refresh(); }
+
   refreshControllerHints(): void {
     refreshControllerPrompts(this.overlay, slot => this.getControllerPromptProfile(slot));
   }
 
   private prompt = (action: PromptAction, slot?: number): string =>
     controllerPrompt(action, this.getControllerPromptProfile(slot), slot);
+  getPromptRenderer(): (action: PromptAction) => string { return this.prompt; }
   private audioManager: AudioManager | null = null;
   private onAudioChanged: (() => void) | null = null;
 
@@ -104,8 +109,10 @@ export class UIManager {
   onPlayAgain: (() => void) | null = null;
   onLocalPlay: (() => void) | null = null;
   onLocalPlayAgain: (() => void) | null = null;
+  onLocalChangeFighters: (() => void) | null = null;
   onOpenVisualSettings:(()=>void)|null=null;
   onOpenControls: (() => void) | null = null;
+  onOpenSound: (() => void) | null = null;
   onResume: (() => void) | null = null;
   onMainMenu: (() => void) | null = null;
 
@@ -280,27 +287,7 @@ export class UIManager {
       'visual-settings-btn': () => this.onOpenVisualSettings?.(),
     };
     const entries = this.bindMenuActions(actions);
-    const audio = this.overlay.querySelector<HTMLElement>('#audio-settings-container')!;
-    const audioButton = this.overlay.querySelector<HTMLButtonElement>('#home-audio-btn')!;
-    if (this.audioManager) {
-      const rows = createAudioSettingsRows({
-        audioManager: this.audioManager,
-        onChanged: () => this.onAudioChanged?.(),
-      });
-      audio.append(rows.container);
-      const toggle = () => {
-        audio.hidden = !audio.hidden;
-        audioButton.setAttribute('aria-expanded', String(!audio.hidden));
-        this.menuNav?.setButtons(audio.hidden ? entries : [...entries, ...rows.buttons]);
-        this.menuNav?.selectIndex(entries.length - 1);
-      };
-      audioButton.setAttribute('aria-expanded', 'false');
-      audioButton.setAttribute('aria-controls', audio.id);
-      audioButton.addEventListener('click', toggle);
-      entries.push({ id: audioButton.id, element: audioButton, onActivate: toggle });
-    } else {
-      audioButton.hidden = true;
-    }
+    entries.push(...this.bindMenuActions({ 'home-audio-btn': () => this.onOpenSound?.() }));
     this.startEntryNav(entries);
   }
 
@@ -392,22 +379,44 @@ export class UIManager {
    *
    * @param deps - Assignment manager and gamepad preference store needed by the controls screen
    */
-  showVisualSettings(scene:StageBackdrop,fromPause:boolean,onBack:()=>void):void {
+  showVisualSettings(scene:StageBackdrop,fromPause:boolean,onBack:()=>void,route?:SettingsRoute):void {
     this.stopMenuNav();this.phase='controls';this.visualSettingsFromPause=fromPause;this.hudPanel.style.display='none';
-    this.visualSettingsHandle=renderVisualSettingsScreen(this.overlay,scene,onBack,this._gamepadPoller,this.prompt);
+    this.visualSettingsHandle=renderVisualSettingsScreen(this.overlay,scene,onBack,this._gamepadPoller,this.prompt,route);
   }
 
-  showControls(deps: { assignmentManager: ControllerAssignmentManager; preferenceStore: GamepadPreferenceStore }): void {
+  showControls(deps: { assignmentManager: ControllerAssignmentManager; preferenceStore: GamepadPreferenceStore }, fromPause = false, onBack = () => this.showLobby(), route?: SettingsRoute): void {
     this.stopMenuNav();
     this.phase = 'controls';
+    this.visualSettingsFromPause = fromPause;
     this.hudPanel.style.display = 'none';
     this.overlay.innerHTML = '';
     
     this.controlsScreenHandle=renderControlsScreen(this.overlay, {
       gamepadPoller:this._gamepadPoller,
       ...deps,
-      onBack: () => this.showLobby(),
+      onBack, route,
     });
+  }
+
+
+  showSoundSettings(fromPause: boolean, onBack: () => void, route?: SettingsRoute): void {
+    this.stopMenuNav();
+    this.phase = 'controls';
+    this.visualSettingsFromPause = fromPause;
+    this.hudPanel.style.display = 'none';
+    this.overlay.innerHTML = `<section class="menu-workspace settings-workspace sound-settings">
+      ${settingsHeader('sound', 'sound-back', route)}
+      <div class="settings-body"><section class="settings-detail"><span class="menu-kicker">Audio</span><h2>Sound</h2>
+      <p>Adjust the game’s master volume or mute it. Changes are saved on this device.</p><div id="sound-options"></div></section></div>
+      ${settingsHint(this.prompt)}</section>`;
+    const entries: MenuButton[] = [];
+    if (this.audioManager) {
+      const rows = createAudioSettingsRows({ audioManager: this.audioManager, onChanged: () => this.onAudioChanged?.() });
+      this.overlay.querySelector('#sound-options')!.append(rows.container);
+      entries.push(...rows.buttons);
+    }
+    entries.push(...this.bindMenuActions({ 'sound-back': onBack }), ...settingsTabEntries(this.overlay, route));
+    this.startEntryNav(entries, onBack);
   }
 
   showCharacterSelect(
@@ -883,7 +892,7 @@ export class UIManager {
     this.overlay.innerHTML = roomLobby(this.roomCode);
     const copyStatus = this.overlay.querySelector('#copy-room-status')!;
     this.startEntryNav(this.bindMenuActions({
-      'ready-btn': () => { this.onReady?.(); this.showWaiting(); },
+      'ready-btn': () => { this.showWaiting(); this.onReady?.(); },
       'copy-btn': async () => {
         try {
           await navigator.clipboard.writeText(window.location.href);
@@ -904,6 +913,7 @@ export class UIManager {
     this.overlay.querySelector('#room-seat-count')!.textContent = this.roomPlayers.length + ' / 4';
     const ready = this.roomPlayers.find(player => player.playerId === this.myPlayerId)?.ready ?? false;
     const button = this.overlay.querySelector<HTMLButtonElement>('#ready-btn')!;
+    if (button.dataset.preparing && !ready) return;
     button.disabled = ready;
     button.textContent = ready ? 'Ready ✓' : 'Ready';
     this.phase = ready ? 'waiting' : 'lobby';
@@ -917,10 +927,12 @@ export class UIManager {
     this.playerCount = Math.max(this.playerCount, slotIndex + 1);
   }
 
-  showWaiting(): void {
+  showWaiting(message = 'Setting ready…'): void {
     this.phase = 'waiting';
     const button = this.overlay.querySelector<HTMLButtonElement>('#ready-btn');
     if (button) {
+      const status = this.overlay.querySelector("#room-ready-status");
+      if (status) status.textContent = message;
       button.textContent = 'Setting ready…';
       button.disabled = true;
     }
@@ -950,7 +962,7 @@ export class UIManager {
   }
   showPracticeSetup(onStart:(config:PracticeConfig)=>void,onBack:()=>void):void {
     this.stopMenuNav();this.phase='controls';this.hudPanel.style.display='none';
-    this.practiceSetupHandle=renderPracticeSetup(this.overlay,this._gamepadPoller,onStart,onBack,this.prompt);
+    this.practiceSetupHandle=renderPracticeSetup(this.overlay,this._gamepadPoller,onStart,onBack,this.prompt,()=>this.getControllerPromptProfile(0));
   }
   hideCombatHUD():void{this.hudPanel.style.display='none';}
   /** Clear the overlay and show the in-match HUD panel. */
@@ -967,7 +979,7 @@ export class UIManager {
   }
 
   /** Show the pause overlay with Resume and Main Menu buttons. */
-  showPauseOverlay(): void {
+  showPauseOverlay(online = false): void {
     this.stopMenuNav();
     this.phase = 'paused';
     this.overlay.dataset.menuSurface = 'pause';
@@ -991,54 +1003,46 @@ export class UIManager {
       });
       return;
     }
-    this.overlay.innerHTML = `
-      <div class="overlay-center pause-menu">
-        <div style="font-size:40px;letter-spacing:4px;margin-bottom:16px">PAUSED</div>
-        <button id="resume-btn" class="ui-btn" style="margin-bottom:16px">Resume · ${this.prompt('pause')}</button>${this.onPracticeMenu?'<button id="dojo-pause-reset" class="ui-btn">Reset practice arena</button><button id="dojo-pause-menu" class="ui-btn">Dojo lessons</button>':''}
-        ${this.onPracticeLabActions?`<details class="dojo-pause-lab" open><summary>Timing laboratory</summary>${this.onPracticeLabActions().map(a=>`<button id="pause-${a.id}" class="ui-btn" ${a.disabled?'disabled':''}>${escapeHtml(a.label)}</button>`).join('')}</details>`:''}<button id="visual-settings-btn" class="ui-btn" style="margin-bottom:16px">Visual accessibility</button>
-        <button id="main-menu-btn" class="ui-btn">Main Menu</button>
-        <div id="audio-settings-container"></div>
-      </div>
-      <div class="menu-hint">↑↓ Navigate • ←→ Adjust • Enter / ${this.prompt('confirm')} Select</div>
-      ${this.versionTag()}`;
 
-    document.getElementById('resume-btn')?.addEventListener('click', () => this.onResume?.());
-    document.getElementById('main-menu-btn')?.addEventListener('click', () => this.onMainMenu?.());
+    this.renderMatchPause(online);
+  }
 
-    // Menu navigation for pause screen
-    this.menuNav = new MenuNavigator(this._gamepadPoller);
-    const navButtons: MenuButton[] = [];
+  private renderMatchPause(online: boolean, confirming = false): void {
+    this.stopMenuNav();
+    this.overlay.dataset.menuSurface = 'pause';
+    this.overlay.innerHTML = matchPause(online, confirming, this.prompt('pause'), this.prompt('confirm')) +
+      this.versionTag();
+    if (confirming) {
+      const stay = () => this.renderMatchPause(online);
+      this.startEntryNav(this.bindMenuActions({
+        'pause-stay-btn': stay,
+        'confirm-leave-match-btn': () => this.onMainMenu?.(),
+      }), stay);
+      return;
+    }
 
-    // Add audio settings rows if audioManager is set
+    const entries = this.bindMenuActions({
+      'resume-btn': () => this.onResume?.(),
+      'visual-settings-btn': () => this.onOpenVisualSettings?.(),
+    });
     if (this.audioManager) {
-      const { container: audioContainer, buttons: audioButtons } = createAudioSettingsRows({
+      const audio = createAudioSettingsRows({
         audioManager: this.audioManager,
         onChanged: () => this.onAudioChanged?.(),
       });
-      const audioSettingsContainer = document.getElementById('audio-settings-container');
-      if (audioSettingsContainer) {
-        audioSettingsContainer.appendChild(audioContainer);
-      }
-      navButtons.push(...audioButtons);
+      this.overlay.querySelector('#audio-settings-container')!.append(audio.container);
+      entries.push(...audio.buttons);
     }
-
-    const resumeEl = document.getElementById('resume-btn');
-    if (resumeEl) {
-      navButtons.push({ id: 'resume-btn', element: resumeEl, onActivate: () => this.onResume?.() });
-    }
-    for(const[id,fn]of [['dojo-pause-reset',this.onPracticeReset],['dojo-pause-menu',this.onPracticeMenu]]as const){const el=document.getElementById(id);if(el){el.addEventListener('click',()=>fn?.());navButtons.push({id,element:el,onActivate:()=>fn?.()});}}
-    for(const action of this.onPracticeLabActions?.()??[]){const el=document.getElementById('pause-'+action.id);if(el){const run=()=>{if(!action.disabled){action.run();this.showPauseOverlay();}};el.addEventListener('click',run);navButtons.push({id:'pause-'+action.id,element:el,onActivate:run});}}
-    const menuEl = document.getElementById('main-menu-btn');
-    if (menuEl) {
-      navButtons.push({ id: 'main-menu-btn', element: menuEl, onActivate: () => this.onMainMenu?.() });
-    }
-    const visuals=this.overlay.querySelector<HTMLElement>('#visual-settings-btn');
-    if(visuals){visuals.addEventListener('click',()=>this.onOpenVisualSettings?.());navButtons.push({id:'visual-settings-btn',element:visuals,onActivate:()=>this.onOpenVisualSettings?.()});}
-    navButtons.sort((a,b)=>a.element===b.element?0:a.element.compareDocumentPosition(b.element)&Node.DOCUMENT_POSITION_FOLLOWING?-1:1);
-    this.menuNav.setButtons(navButtons);
-    this.menuNav.start(() => this.onResume?.());
+    entries.push(...this.bindMenuActions({ 'main-menu-btn': () => this.renderMatchPause(online, true) }));
+    this.startEntryNav(entries, () => this.onResume?.());
   }
 
+  cancelPauseExit(): boolean {
+    const stay = this.overlay.querySelector<HTMLButtonElement>('#pause-stay-btn');
+    if (!stay) return false;
+    stay.click();
+    return true;
+  }
   /** Hide the pause overlay and restore the match HUD. No-op if not paused. */
   hidePauseOverlay(): void {
     if (this.phase !== 'paused' && !this.visualSettingsFromPause) return;
@@ -1061,48 +1065,30 @@ export class UIManager {
    * @param winnerId - Player ID of the winner, or null for a draw
    * @param myPlayerId - Local player's ID for win/loss display
    */
-  showResult(winnerId: PlayerId | null, myPlayerId: PlayerId | null): void {
+
+  showResult(winnerId: PlayerId | null, myPlayerId: PlayerId | null, result?: MatchResult): void {
+    const winner = result?.fighters.find(fighter => fighter.playerId === winnerId);
+    const message = !winnerId ? 'Draw!' : winnerId === myPlayerId ? 'You Win!' :
+      winner ? `P${winner.slotIndex + 1} Wins!` : 'Player Wins!';
+    this.renderResult(message, winnerId, true, result);
+  }
+
+  private renderResult(message: string, winnerId: PlayerId | null, online: boolean, result?: MatchResult): void {
     this.stopMenuNav();
     this.phase = 'result';
     this.hudPanel.style.display = 'none';
-    const isMe = winnerId === myPlayerId;
-    const msg = winnerId
-      ? (isMe ? 'You Win!' : 'Player Wins!')
-      : 'Draw!';
+    this.overlay.innerHTML = matchResult(message, winnerId, online, result, !online && Boolean(this.onLocalChangeFighters)) +
+      `<div class="menu-hint">↑↓ Navigate · Enter / ${this.prompt('confirm')} Select</div>` + this.versionTag();
 
-    this.overlay.innerHTML = `
-      <div class="overlay-center">
-        <div style="font-size:64px;margin-bottom:32px">${msg}</div>
-        <button id="play-again-btn" class="ui-btn">Play Again</button>
-        <button id="main-menu-btn" class="ui-btn" style="margin-top:12px">Main Menu</button>
-      </div>
-      <div class="menu-hint">↑↓ Navigate • Enter / ${this.prompt('confirm')} Select</div>
-      ${this.versionTag()}`;
-
-    document.getElementById('play-again-btn')?.addEventListener('click', () => {
-      this.onPlayAgain?.();
-    });
-    document.getElementById('main-menu-btn')?.addEventListener('click', () => {
-      this.onMainMenu?.();
-    });
-
-    // Menu navigation for result screen
-    this.menuNav = new MenuNavigator(this._gamepadPoller);
-    const navButtons: MenuButton[] = [];
-    const playAgainEl = document.getElementById('play-again-btn');
-    if (playAgainEl) {
-      navButtons.push({ id: 'play-again-btn', element: playAgainEl, onActivate: () => this.onPlayAgain?.() });
+    const entries = this.bindMenuActions(online
+      ? { 'play-again-btn': () => this.onPlayAgain?.() }
+      : { 'local-play-again-btn': () => this.onLocalPlayAgain?.() });
+    if (!online && this.onLocalChangeFighters) {
+      entries.push(...this.bindMenuActions({ 'result-change-fighters-btn': this.onLocalChangeFighters }));
     }
-    for(const[id,fn]of [['dojo-pause-reset',this.onPracticeReset],['dojo-pause-menu',this.onPracticeMenu]]as const){const el=document.getElementById(id);if(el){el.addEventListener('click',()=>fn?.());navButtons.push({id,element:el,onActivate:()=>fn?.()});}}
-    for(const action of this.onPracticeLabActions?.()??[]){const el=document.getElementById('pause-'+action.id);if(el){const run=()=>{if(!action.disabled){action.run();this.showPauseOverlay();}};el.addEventListener('click',run);navButtons.push({id:'pause-'+action.id,element:el,onActivate:run});}}
-    const menuEl = document.getElementById('main-menu-btn');
-    if (menuEl) {
-      navButtons.push({ id: 'main-menu-btn', element: menuEl, onActivate: () => this.onMainMenu?.() });
-    }
-    this.menuNav.setButtons(navButtons);
-    this.menuNav.start();
+    entries.push(...this.bindMenuActions({ 'main-menu-btn': () => this.onMainMenu?.() }));
+    this.startEntryNav(entries);
   }
-
   private interpolateDamageColor(percent: number): string {
     // 0% = white, 75% = yellow, 150%+ = red
     let r: number, g: number, b: number;
@@ -1178,58 +1164,13 @@ export class UIManager {
    *
    * @param winnerId - Player ID of the winner (`'local-p1'`, etc.), or null for a draw
    */
-  showLocalResult(winnerId: PlayerId | null): void {
-    this.stopMenuNav();
-    this.phase = 'result';
-    this.hudPanel.style.display = 'none';
-    this.hideRoomCode();
 
-    let msg: string;
-    if (!winnerId) {
-      msg = 'Draw!';
-    } else {
-      const match = winnerId.match(/^local-p(\d+)$/);
-      if (match) {
-        const playerNum = match[1];
-        msg = `P${playerNum} Wins!`;
-      } else {
-        msg = `${winnerId} Wins!`;
-      }
-    }
-
-    this.overlay.innerHTML = `
-      <div class="overlay-center">
-        <div style="font-size:64px;margin-bottom:32px">${msg}</div>
-        <button id="local-play-again-btn" class="ui-btn">Play Again</button>
-        <button id="main-menu-btn" class="ui-btn" style="margin-top:12px">Main Menu</button>
-      </div>
-      <div class="menu-hint">↑↓ Navigate • Enter / ${this.prompt('confirm')} Select</div>
-      ${this.versionTag()}`;
-
-    document.getElementById('local-play-again-btn')?.addEventListener('click', () => {
-      this.onLocalPlayAgain?.();
-    });
-    document.getElementById('main-menu-btn')?.addEventListener('click', () => {
-      this.onMainMenu?.();
-    });
-
-    // Menu navigation for local result screen
-    this.menuNav = new MenuNavigator(this._gamepadPoller);
-    const navButtons: MenuButton[] = [];
-    const playAgainEl = document.getElementById('local-play-again-btn');
-    if (playAgainEl) {
-      navButtons.push({ id: 'local-play-again-btn', element: playAgainEl, onActivate: () => this.onLocalPlayAgain?.() });
-    }
-    for(const[id,fn]of [['dojo-pause-reset',this.onPracticeReset],['dojo-pause-menu',this.onPracticeMenu]]as const){const el=document.getElementById(id);if(el){el.addEventListener('click',()=>fn?.());navButtons.push({id,element:el,onActivate:()=>fn?.()});}}
-    for(const action of this.onPracticeLabActions?.()??[]){const el=document.getElementById('pause-'+action.id);if(el){const run=()=>{if(!action.disabled){action.run();this.showPauseOverlay();}};el.addEventListener('click',run);navButtons.push({id:'pause-'+action.id,element:el,onActivate:run});}}
-    const menuEl = document.getElementById('main-menu-btn');
-    if (menuEl) {
-      navButtons.push({ id: 'main-menu-btn', element: menuEl, onActivate: () => this.onMainMenu?.() });
-    }
-    this.menuNav.setButtons(navButtons);
-    this.menuNav.start();
+  showLocalResult(winnerId: PlayerId | null, result?: MatchResult): void {
+    const winner = result?.fighters.find(fighter => fighter.playerId === winnerId);
+    const seat = winner ? String(winner.slotIndex + 1) : winnerId?.match(/^local-p(\d+)$/)?.[1];
+    const message = !winnerId ? 'Draw!' : `${seat ? 'P'+seat : winnerId} Wins!`;
+    this.renderResult(message, winnerId, false, result);
   }
-
   showNetworkCharacterSelect(
     fighters: FighterChoice[],
     myPlayerId: PlayerId,

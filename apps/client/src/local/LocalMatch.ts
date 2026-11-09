@@ -40,6 +40,7 @@ export class LocalMatch {
   get practiceSpeed():number{return this.playbackSpeed;}
   get practiceTick():number{return this.engine.getCurrentTick();}
 
+  setPracticeSpawn(spawn: Parameters<GameEngine['setPracticeSpawn']>[0]): void { this.engine.setPracticeSpawn(spawn); }
   getPracticePercent(id: PlayerId): number { return this.engine.getPracticePercent(id); }
   setPracticePercent(id: PlayerId, percent: number): boolean { return this.engine.setPracticePercent(id, percent); }
 

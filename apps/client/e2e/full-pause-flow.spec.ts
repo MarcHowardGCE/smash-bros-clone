@@ -40,7 +40,7 @@ async function startLocalMatch(page: import('@playwright/test').Page): Promise<v
  */
 async function assertPauseOverlayVisible(page: import('@playwright/test').Page): Promise<void> {
   await page.waitForSelector('#resume-btn', { timeout: 2000 });
-  const pauseText = await page.textContent('.overlay-center');
+  const pauseText = await page.textContent('.pause-menu');
   expect(pauseText).toContain('PAUSED');
 
   const resumeBtn = await page.$('#resume-btn');
@@ -145,6 +145,7 @@ test.describe('T26: Full pause/resume/main-menu flow', () => {
 
     // --- MAIN MENU from pause ---
     await page.click('#main-menu-btn');
+    await page.click('#confirm-leave-match-btn');
     await assertLobbyVisible(page);
 
     await page.screenshot({ path: `${EVIDENCE_DIR}/04-back-to-lobby.png` });
@@ -223,6 +224,7 @@ test.describe('T26: Full pause/resume/main-menu flow', () => {
 
     // Go directly to Main Menu without resuming first
     await page.click('#main-menu-btn');
+    await page.click('#confirm-leave-match-btn');
     await assertLobbyVisible(page);
 
     // Verify lobby is fully functional: Local Play button should be clickable

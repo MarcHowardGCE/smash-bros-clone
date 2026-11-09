@@ -13,6 +13,10 @@ November 5 current follow-up: published intermediate All-Rounder and first-stale
 Scope: apps/, packages/, fighter assets and supporting scripts only. bonney/ is a separate project and is excluded.
 
 ## Current decisions
+
+- Menu signoff passed the 64-case layout matrix and simulated controller flows. Initial hardware checks were reported as passing. Deferred atlas loading reduced local production-preview Home entry to 3.4 seconds cold and 1.4 seconds warm. First-match loading and deployed-host checks remain open. See the [menu signoff results](MENU-POLISH-PLAN.md#cross-screen-signoff-pass--november-9-2026).
+
+- Star and Screen KO presentation uses viewport-space flight, a Star KO twinkle, and a Screen KO impact hold and slide. The Dojo keeps replaying after lesson completion. See the [KO presentation audit](TRAINING-DOJO.md#star-and-screen-ko-presentation-audit).
 - Keep the existing 30-second mid-match reconnect grace. Expiry forfeits the disconnected fighter. Explicit Leave forfeits immediately. Empty rooms are removed; server shutdown stops sessions and clears timers.
 - Simulation remains server-authoritative at 60 Hz, with full binary snapshots targeting 20 Hz. Client input/prediction steps at 60 Hz independently of display refresh. The server retains only held buttons across delivery gaps up to 250 ms, never press/release edges; disconnect/pause clears that cache immediately. Remote interpolation uses local snapshot receipt time and server snapshot intervals, never subtraction of unrelated clocks.
 - Root Dockerfile is the deployment source of truth, also selected by Fly. Node 24 / pnpm 11.20.0 match the locally verified toolchain. Committed fighter atlases are used in containers.
@@ -393,6 +397,10 @@ Batch 36 final evidence: complete shared/gamepad/engine/server package runs pass
 
 
 ### Menu polish audit and redesign (November 8, 2026)
+
+November 9 settings checkpoint. Settings uses Controls, Accessibility, and Sound tabs with a return path to Home or the current pause menu. Controls shows the selected seat and opens stick calibration separately. The Dojo has distinct Free Practice and Guided Lessons views, saved session choices, tier browsing, and existing per-fighter completion. Next is cross-screen visual, controller, accessibility, and production-load signoff.
+
+November 9 checkpoint. Standard match pause and results use the shared menu style. Local results display remaining stocks from the final snapshot and offer a rematch or fighter reselection. Online results use the server winner and confirmed lineup and route back to Online Play. Same-room online rematch remains a separate feature. Next menu pass is settings, controls, and the Dojo lesson library.
 
 World Select, online guest preview, and the match intro now use the shared menu style. The platform diagram comes from shared collision geometry. Guests can read stories while the host browses. Local match intro covers arena loading and countdown, and the online GO cue follows the server start. Browser review covered 1280×720 and 1024×600, fixed preview dimensions for all six worlds and Random, and synchronized selection and match entry in two clients.
 

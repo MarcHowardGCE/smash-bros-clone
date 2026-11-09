@@ -129,3 +129,36 @@ it('retains the match intro and its images between loading, countdown and GO', (
   expect(root.querySelector('.match-intro')).toBeNull();
 });
 
+
+it('keeps the match paused when backing out of the leave confirmation', () => {
+  const { root, ui, button } = setup();
+  ui.onMainMenu = vi.fn();
+  ui.onResume = vi.fn();
+  ui.showPauseOverlay(true);
+  expect(root.querySelector('.pause-menu')?.textContent).toContain('paused for everyone');
+  button('#main-menu-btn').click();
+  expect(root.querySelector('.pause-menu')?.textContent).toContain('forfeits');
+  expect(ui.cancelPauseExit()).toBe(true);
+  expect(ui.getPhase()).toBe('paused');
+  expect(ui.onMainMenu).not.toHaveBeenCalled();
+  expect(ui.onResume).not.toHaveBeenCalled();
+  button('#main-menu-btn').click();
+  button('#confirm-leave-match-btn').click();
+  expect(ui.onMainMenu).toHaveBeenCalledOnce();
+  ui.hidePauseOverlay();
+});
+
+it('shows the winner portrait and marks the actual seat in the result lineup', () => {
+  const { root, ui, button } = setup();
+  ui.onLocalChangeFighters = vi.fn();
+  ui.showLocalResult('local-p2', { stage: STAGES[1]!, fighters: [
+    { playerId:'local-p1', slotIndex:0, id:'swift', displayName:'Swift', stocks:0 },
+    { playerId:'local-p2', slotIndex:1, id:'abe-lincoln', displayName:'Abe Lincoln', stocks:1 },
+  ] });
+  expect(root.querySelector('.result-feature img')?.getAttribute('src')).toContain('abe-lincoln');
+  expect(root.querySelector('[data-winner="true"]')?.textContent).toMatch(/P2.*Abe Lincoln.*Winner · 1 stock left/s);
+  button('#result-change-fighters-btn').click();
+  expect(ui.onLocalChangeFighters).toHaveBeenCalledOnce();
+  ui.showMatch();
+});
+

@@ -128,9 +128,6 @@ export function injectStyles(): void {
     .main-menu-panel .menu-utilities {display:flex;gap:12px;justify-content:center;flex-wrap:wrap;}
     .main-menu-panel .menu-utilities .ui-btn {font-size:14px;padding:9px 15px;}
     .menu-shell .overlay-center.visual-settings {display:block;text-align:left;width:min(1050px,calc(100vw - 48px));}
-    .visual-settings header small {color:#e0b567;letter-spacing:.15em;font-size:11px;}
-    .visual-settings h1 {font:34px/1.15 Georgia,serif;margin:8px 0 12px;}
-    .visual-settings header p {max-width:70ch;font-size:14px;color:#eadbc3;margin-bottom:22px;}
     .visual-settings-layout {display:grid;grid-template-columns:1fr 1.1fr;gap:28px;align-items:start;}
     .visual-settings-controls {display:flex;flex-direction:column;gap:10px;}
     .visual-settings-controls .ui-btn {width:100%;padding:10px 14px;font-size:15px;text-align:left;}

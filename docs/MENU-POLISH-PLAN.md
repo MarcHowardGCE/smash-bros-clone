@@ -265,3 +265,32 @@ All three refreshes restored the same fighter slot and arena. Both slow cases st
 At 8 Mbps, a simulated reset of the guest's first Lincoln atlas request kept the countdown blocked and showed the artwork alert after 36.82 seconds. The guest used Change fighter and reconfirmed the same lineup. Both clients reached live play 7.73 seconds after retry. The slow first alert remains observable while the other selected assets finish. A browser regression also holds an atlas through refresh, confirms the match is restored while it is held, then releases it and verifies both full-body sprites. [Recovery regressions](../apps/client/e2e/online-art-recovery.spec.ts)
 
 The next release check is to run the two slow cache modes and the interrupted-atlas retry on Render with the patched bundle.
+
+### Hosted reconnect and retry verification
+
+After deployment of `9065ff0`, Render served `index-BZZ9LC62.js`, the bundle used in the patched local production checks. All three hosted Chromium checks passed in 1.9 minutes. Each used a separate room. Only the guest was throttled to 8 Mbps download and upload, 120 ms latency, and 2× CPU slowdown. [Render game](https://everybody-throws-hands.onrender.com/)
+
+| Live Stage 6 refresh | Rejoin request sent | Same slot and stage restored | Movement visible to host |
+| --- | ---: | ---: | ---: |
+| Cache enabled | 4.70 s | 4.96 s | 5.27 s |
+| Cache bypassed | 6.07 s | 6.46 s | 6.78 s |
+
+Times start at guest refresh. Both guests regained control inside the server's 30-second grace period, compared with the earlier deployed rejoin requests at 30.54 and 37.37 seconds. Both sampled sessions saw 10 atlas page responses for Lincoln, Swift, and shared effects. They saw no requests for unrelated fighters' atlas pages in the observation window.
+
+For the retry check, the guest's first request for `atlas-abe-lincoln-live-0.webp` was reset. The countdown stayed blocked and the artwork alert appeared 33.78 seconds after Stage 1 confirmation. The guest used Change fighter and reconfirmed Swift against Abe Lincoln. The retried atlas returned HTTP 200, the restored match contained the same two fighters, and both clients entered live play 8.19 seconds after starting the retry. The delayed initial alert remains the outstanding issue observed in this scenario.
+
+### Early artwork failure alert
+
+Online preparation reports a failed required idle clip as soon as the loader knows it is unavailable. The alert can appear while other fighter pages, shared effects, or the arena are still loading. Successful preparation still waits for the full lineup and arena, and the client checks that it is acknowledging the active preparation. A retry can reuse successful and in-flight downloads. [Online preparation](../apps/client/src/main.ts#L892) · [Required idle clip](../apps/client/src/renderer/fullbody/FullBodyPilot.ts#L112)
+
+The patched local production bundle `index-DcMq4bb0.js` ran three independent two-client checks. The guest was throttled to 8 Mbps download and upload, 120 ms latency, and 2× CPU slowdown. Each run reset the guest's first Lincoln idle atlas request and immediately used Change fighter after the alert and the host's ready status were observed. All three runs held the countdown at one of two ready. The retry returned HTTP 200 and both players reached live play with the same Abe Lincoln versus Swift lineup.
+
+| Measurement | Median | Range |
+| --- | ---: | ---: |
+| Arena confirmation to artwork alert | 6.06 s | 6.02–6.29 s |
+| Simulated reset to artwork alert | 0.49 s | 0.45–0.77 s |
+| Starting same-lineup retry to both clients live | 37.61 s | 37.33–37.73 s |
+
+The previous Render alert appeared 33.78 seconds after arena confirmation. The patched local retry starts much earlier in the loading sequence, while other art is still downloading. Its retry-to-live interval therefore includes downloads that had already finished by the time the prior alert appeared. These runs verify earlier feedback and successful recovery. A same-host timing comparison awaits deployment.
+
+The browser regression holds a second page while aborting the idle page and verifies that the alert appears before the held page is released. It then retries the same lineup and verifies both clients enter play. [Browser regression](../apps/client/e2e/online-art-recovery.spec.ts#L65)

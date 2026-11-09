@@ -66,6 +66,8 @@ test('an interrupted fighter atlas can be retried with the same lineup', async (
   const context = await browser.newContext({ viewport: { width: 1280, height: 720 }, deviceScaleFactor: info.project.use.deviceScaleFactor });
   test.setTimeout(90_000);
   const guest = await context.newPage();
+  let releaseOtherPage!: () => void;
+  const otherPageGate = new Promise<void>(resolve => { releaseOtherPage = resolve; });
   try {
     await openSelection(host, guest, baseURL!);
     let interrupted = false;
@@ -77,10 +79,17 @@ test('an interrupted fighter atlas can be retried with the same lineup', async (
       interrupted = true;
       await route.abort('connectionreset');
     });
+    let otherPageRequested = false;
+    await guest.route(/\/production\/atlas-abe-lincoln-live-1\.(png|webp)$/, async route => {
+      otherPageRequested = true;
+      await otherPageGate;
+      await route.continue();
+    });
     await confirmFighter(host, 'abe-lincoln');
     await confirmFighter(guest, 'swift');
     await selectStage(host);
-    await expect(guest.locator('#network-charselect-error')).toHaveText(/Fighter artwork could not load/, { timeout: 40_000 });
+    await expect(guest.locator('#network-charselect-error')).toHaveText(/Fighter artwork could not load/, { timeout: 5000 });
+    await expect.poll(() => otherPageRequested).toBe(true);
     await expect(host.locator('#guest-world-status')).toHaveText(/1 \/ 2 ready/);
 
     const retried = guest.waitForResponse(response => abeIdleAtlas.test(response.url()) && response.ok());
@@ -88,8 +97,10 @@ test('an interrupted fighter atlas can be retried with the same lineup', async (
     await confirmFighter(guest, 'swift');
     await selectStage(host);
     await retried;
+    releaseOtherPage();
     await Promise.all([waitForLive(host), waitForLive(guest)]);
   } finally {
+    releaseOtherPage();
     await context.close();
   }
 });

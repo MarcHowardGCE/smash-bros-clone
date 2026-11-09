@@ -172,18 +172,20 @@ async function main() {
   const artworkLoads = new Map<CharacterId, Promise<FullBodyPilotAssets | undefined>>();
   let fullBodyPilot: FullBodyPilotAssets | undefined;
   let effectsLoad: Promise<FullBodyPilotAssets | undefined> | undefined;
-  const prepareFighters = async (ids: readonly CharacterId[]): Promise<void> => {
+  const missingFighterIdle = Symbol("missing fighter idle artwork");
+  const prepareFighters = async (ids: readonly CharacterId[], failFast = false): Promise<boolean> => {
     await fallbackReady;
     const effectsReady = effectsLoad ??= preloadFullBodyPilot(false, []);
     const fightersReady = Promise.all([...new Set(ids)].map(async id => {
       let pending = artworkLoads.get(id);
       if (!pending) {
-        pending = preloadFullBodyPilot(id === "moonshine" || id === "hulk-hoagie", [id], false);
+        pending = preloadFullBodyPilot(id === "moonshine" || id === "hulk-hoagie", [id], false, true);
         artworkLoads.set(id, pending);
       }
       const assets = await pending;
       if (!assets?.characters[id]?.idle) {
         if (artworkLoads.get(id) === pending) artworkLoads.delete(id);
+        if (failFast) throw missingFighterIdle;
         return;
       }
       fullBodyPilot = {
@@ -192,9 +194,18 @@ async function main() {
         effects: fullBodyPilot?.effects,
       };
     }));
-    const [, effects] = await Promise.all([fightersReady, effectsReady]);
-    if (effects && fullBodyPilot) fullBodyPilot = { ...fullBodyPilot, effects: effects.effects };
-    if (!effects && effectsLoad === effectsReady) effectsLoad = undefined;
+    const effectsSettled = effectsReady.then(effects => {
+      if (!effects && effectsLoad === effectsReady) effectsLoad = undefined;
+      return effects;
+    });
+    try {
+      const [, effects] = await Promise.all([fightersReady, effectsSettled]);
+      if (effects && fullBodyPilot) fullBodyPilot = { ...fullBodyPilot, effects: effects.effects };
+      return true;
+    } catch (error) {
+      if (error === missingFighterIdle) return false;
+      throw error;
+    }
   };
   const allFighterIds = roster.map(fighter => fighter.id as CharacterId);
   if (e2eFixtureEnabled) await prepareFighters(allFighterIds);
@@ -702,7 +713,7 @@ async function main() {
   };
   let onlineSelectionScreen:string|null=null;
   let onlinePreparationId: number | undefined;
-  let onlineLineup: { key: string; ready: Promise<void> } | undefined;
+  let onlineLineup: { key: string; ready: Promise<boolean> } | undefined;
   let networkIntroFighters: ResultFighter[] = [];
   const showOnlineFighters=(playerIds:PlayerId[]):void=>{
       onlineSelectionScreen="fighters";
@@ -869,7 +880,7 @@ async function main() {
         const error=(result:{ok:true}|{error:string})=>{if('error'in result){onlineSelectionScreen=null;gameClient.refreshSelectionState();uiManager.showNetworkCharacterSelectConfirmError(result.error);}};
         const lineup = [...new Set(state.players.map(player => player.characterId as CharacterId))].sort();
         const lineupKey = lineup.join(',');
-        if (onlineLineup?.key !== lineupKey) onlineLineup = { key: lineupKey, ready: prepareFighters(lineup) };
+        if (onlineLineup?.key !== lineupKey) onlineLineup = { key: lineupKey, ready: prepareFighters(lineup, urlParams.get('renderer') !== 'legacy') };
         const preparation = state.preparation;
         if (preparation) {
           onlineSelectionScreen = 'preparing';
@@ -878,12 +889,15 @@ async function main() {
             `Preparing fighter and arena artwork · ${readyPlayerIds.length} / ${state.players.length} ready`);
           if (!myPlayerId || readyPlayerIds.includes(myPlayerId) || onlinePreparationId === id) return;
           onlinePreparationId = id;
-          void Promise.all([onlineLineup.ready, stageReady]).then(() => {
+          const arenaReady = stageReady;
+          void onlineLineup.ready.then(async fightersReady => {
             if (onlinePreparationId !== id || isLocalMode) return;
-            if (urlParams.get('renderer') !== 'legacy' && lineup.some(fighter => !fullBodyPilot?.characters[fighter]?.idle)) {
+            if (!fightersReady) {
               uiManager.showNetworkCharacterSelectConfirmError('Fighter artwork could not load. Change fighter to try again.');
               return;
             }
+            await arenaReady;
+            if (onlinePreparationId !== id || isLocalMode) return;
             koPresenter.setAssets(fullBodyPilot);
             gameClient.markStagePrepared(id, result => {
               if ('error' in result && onlinePreparationId === id) {

@@ -72,7 +72,7 @@ function loadManifest(url: string): Promise<Manifest> {
 }
 
 /** Omit the selection for the full review pack, or pass an empty selection for shared effects. */
-export async function preloadFullBodyPilot(dojo=false, selected?: readonly CharacterId[], includeEffects = true): Promise<FullBodyPilotAssets | undefined> {
+export async function preloadFullBodyPilot(dojo=false, selected?: readonly CharacterId[], includeEffects = true, requireIdle = false): Promise<FullBodyPilotAssets | undefined> {
  if(new URLSearchParams(window.location.search).get('renderer')==='legacy')return undefined;
  try {
   const base=dojo?'/fighter-art-newcomers-v1/':'/fighter-art-pilot-v1/';
@@ -107,7 +107,11 @@ export async function preloadFullBodyPilot(dojo=false, selected?: readonly Chara
     try {
      const bases=await Promise.race([Promise.all(clip.frames.map(f=>loadPage(f.image??clip.image))),new Promise<never>((_,reject)=>{timer=setTimeout(()=>reject(new Error('Pilot texture timeout')),textureTimeoutMs);})]);
      return [name,{durations:clip.durations,activeWindow:clip.activeWindow,rotationPeriod:clip.rotationPeriod,mirrorSource:clip.mirrorSource,scale:clip.scale,frames:clip.frames.map((frame,i)=>({texture:new Texture({source:bases[i]!.source,frame:new Rectangle(frame.rect[0],frame.rect[1],frame.rect[2],frame.rect[3])}),root:frame.root,mirrorSource:frame.mirrorSource,sockets:frame.sockets,offsetY:dojo?getCharacterStats(characterId).hurtboxRadius:frame.offsetY??28,airRoot:frame.airRoot}))}] as const;
-    }catch(error){console.warn('[fighter-art-pilot] Missing clip; using existing artwork',characterId,name,error);return null;}
+    } catch (error) {
+     console.warn('[fighter-art-pilot] Missing clip; using existing artwork', characterId, name, error);
+     if (requireIdle && name === 'idle') throw error;
+     return null;
+    }
     finally{if(timer!==undefined)clearTimeout(timer);}
    }));
    return [characterId,Object.fromEntries(clips.filter((entry):entry is NonNullable<typeof entry>=>entry!==null))] as const;

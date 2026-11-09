@@ -146,3 +146,11 @@ The deployed release still passed the ordinary live refresh path. Under 8 Mbps t
 ### Local production recovery verification
 
 The patched production client build and workspace type check passed. All four production browser checks passed, covering interrupted-atlas retry at 8 Mbps plus unthrottled, cache-enabled slow, and cache-bypassed slow reconnects. The two existing mocked main-entry suites failed in the same nine cases on both the prior entry point and the patch because their Pixi mocks lack `Container`. The ten KO presentation tests passed. The targeted Chromium matrix passed all 15 recovery, online, and visual checks across three display densities. All 30 fixture images matched pixel-for-pixel. The published Render bundle still represents the previous hosted recovery stress check. [Timing and reproduction notes](../MENU-POLISH-PLAN.md#reconnect-and-atlas-retry-fixes)
+
+### Render recovery signoff
+
+On the deployed recovery patch, all three 8 Mbps Chromium checks passed. Live refresh restored guest control in 5.27 seconds with browser cache enabled and 6.78 seconds with cache bypassed. After a simulated reset of one fighter atlas, retrying the same lineup returned HTTP 200 and reached live play on both clients in 8.19 seconds. The first artwork alert still took 33.78 seconds to appear. [Hosted timing and test conditions](../MENU-POLISH-PLAN.md#hosted-reconnect-and-retry-verification)
+
+### Local production early-alert verification
+
+The client type check and production build passed. All three 8 Mbps production-browser trials showed the alert within 0.77 seconds of the simulated reset, held the countdown, and recovered the same lineup after retry. Four additional Chromium development checks passed at DPR 1, including the held-page regression, reconnect, and online selection. This patch still needs the hosted rerun. [Timing evidence](../MENU-POLISH-PLAN.md#early-artwork-failure-alert)

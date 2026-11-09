@@ -518,6 +518,8 @@ export class GameEngine {
             if (boundary) this.koEvents.push({
               playerId: player.id, boundary, tick: this.tick,
               exitPosition: { x: player.x, y: player.y },
+              exitVelocity: this.getKOExitVelocity(player),
+              exitFacing: player.facing,
             });
           }
           if (exited) {
@@ -592,6 +594,11 @@ export class GameEngine {
 	 */
 	clearHitEvents(): void {
 		this.hitEvents.length = 0;
+	}
+
+	private getKOExitVelocity(player: PlayerState): { x: number; y: number } {
+		const previous = this.state.players[player.id];
+		return previous ? { x: player.x - previous.x, y: player.y - previous.y } : { x: player.vx, y: player.vy };
 	}
 
 	/**
@@ -3380,7 +3387,11 @@ export class GameEngine {
 			this.ledgeApproaches.delete(playerId);
 			this.ledgeCatches.delete(playerId);
 			this.ledgeTrumps.delete(playerId);
-			const koVisual:NonNullable<PlayerState['koVisual']>={id:this.tick,kind:boundary==='top'?(this.tick%2?'screen':'star'):'launch',x:Math.max(200,Math.min(1080,player.x)),y:Math.max(70,Math.min(480,player.y)),facing:player.facing};
+			const koVisual: NonNullable<PlayerState['koVisual']> = boundary === 'top'
+				? { id: this.tick, kind: this.tick % 2 ? 'screen' : 'star', x: player.x, y: player.y,
+					facing: player.facing, exitVelocity: this.getKOExitVelocity(player) }
+				: { id: this.tick, kind: 'launch', x: Math.max(200, Math.min(1080, player.x)),
+					y: Math.max(70, Math.min(480, player.y)), facing: player.facing };
             const remainingStocks = Math.max(0, player.stocks - 1);
 			if (remainingStocks === 0) {
 				this.techAttemptBuffered.set(playerId as PlayerId, false);

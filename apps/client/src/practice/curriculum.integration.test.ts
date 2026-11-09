@@ -1,7 +1,17 @@
 import{it,expect}from'vitest';import{GameEngine}from'@smash/server/engine';import{INPUT_BITS as B,type CharacterId}from'@smash/shared';import{KO_LESSON_PERCENT,LESSONS,LessonTracker}from'./curriculum.js';
 for(const characterId of['all-rounder','abe-lincoln','swift','moonshine','hulk-hoagie']as CharacterId[])for(const lesson of LESSONS)it(characterId+' can complete '+lesson.id+' with real engine executions',()=>{
  const e=new GameEngine({playerIds:['local-p1','local-p2'],characterIds:{'local-p1':characterId,'local-p2':characterId},practice:true}),tracker=new LessonTracker(lesson);let held=[0,0],confirmed=0;
- const step=(a=0,b=0,n=1)=>{for(let j=0;j<n;j++){const inputs=new Map(['local-p1','local-p2'].map((id,k)=>{const mask=k?b:a,input={playerId:id,tick:e.getCurrentTick(),seq:e.getCurrentTick(),held:mask,pressed:mask&~held[k]!,released:held[k]!&~mask};held[k]=mask;return[id,input]as const;}));const s=e.tickGame(inputs);if(tracker.observe(s,inputs.get('local-p1'),'local-p1',e.getSnapshot(0,{}).hitEvents,e.getKOEvents()))confirmed++;e.clearHitEvents();} };
+ const step=(a=0,b=0,n=1)=>{for(let j=0;j<n;j++){const inputs=new Map(['local-p1','local-p2'].map((id,k)=>{const mask=k?b:a,input={playerId:id,tick:e.getCurrentTick(),seq:e.getCurrentTick(),held:mask,pressed:mask&~held[k]!,released:held[k]!&~mask};held[k]=mask;return[id,input]as const;}));const s=e.tickGame(inputs);const exits=e.getKOEvents();if(tracker.observe(s,inputs.get('local-p1'),'local-p1',e.getSnapshot(0,{}).hitEvents,exits)){
+   confirmed++;
+   if(lesson.ko){
+    const exit=exits.find(event=>event.playerId==='local-p2');
+    expect(exit).toMatchObject({
+     boundary:'top',exitPosition:{x:expect.any(Number),y:expect.any(Number)},
+     exitVelocity:{x:expect.any(Number),y:expect.any(Number)},exitFacing:expect.any(Number),
+    });
+    expect(exit!.exitVelocity!.y).toBeLessThan(0);
+   }
+  }e.clearHitEvents();} };
  for(let repetition=1;repetition<=(lesson.ko?5:3);repetition++){
   e.setPracticeSpawn(lesson.setup ?? 'center');e.setPracticePercent('local-p2',lesson.ko?KO_LESSON_PERCENT:0);
   e.resetPractice();tracker.resetAttempt();held=[0,0];step();

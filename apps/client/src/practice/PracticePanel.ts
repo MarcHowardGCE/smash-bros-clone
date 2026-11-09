@@ -20,7 +20,7 @@ export class PracticePanel {
   faceHeld?:boolean;stickHeld?:boolean;charge:number;charging:boolean;
  };
  private root=document.createElement('aside');private tracker:LessonTracker|null=null;private previousMove='';private recent='';private lastTick=-1;private success='';private level=0;private routineSlot=0;
- constructor(private config:PracticeConfig,private dummy:PracticeDummy,private resetArena:()=>void,private back:()=>void,private active:()=>boolean,private lab?:{match:LocalMatch;routine:PracticeRoutine;overlay:PracticeOverlay;previewKO?:(kind:'screen'|'star',side:PracticeSide,anchor?:Pick<PlayerState,'x'|'y'|'facing'>)=>boolean},private readonly controllerProfile:()=>ControllerProfile=()=>getControllerProfile('')){
+ constructor(private config:PracticeConfig,private dummy:PracticeDummy,private resetArena:()=>void,private back:()=>void,private active:()=>boolean,private lab?:{match:LocalMatch;routine:PracticeRoutine;overlay:PracticeOverlay;previewKO?:(kind:'screen'|'star',side:PracticeSide,anchor?:Pick<PlayerState,'x'|'y'|'facing'>&Pick<KOEventData,'exitVelocity'>)=>boolean},private readonly controllerProfile:()=>ControllerProfile=()=>getControllerProfile('')){
   this.root.addEventListener('keydown',this.interactiveKey);this.root.addEventListener('keyup',this.interactiveKey);this.root.id='practice-panel';this.root.className='dojo-panel';document.body.appendChild(this.root);this.level=Math.max(0,LESSONS.findIndex(l=>l.id===config.lessonId));this.loadSlot();this.setLesson(config.lessonId);window.addEventListener('keydown',this.key);
  }
  private interactiveKey=(e:KeyboardEvent)=>{if((e.target as Element)?.closest?.('button,summary,input,select')&&['Space','Enter','ArrowUp','ArrowDown','ArrowLeft','ArrowRight'].includes(e.code))e.stopPropagation();};
@@ -162,7 +162,7 @@ export class PracticePanel {
     if(lesson.ko){
       const exit=exits.find(event=>event.playerId==='local-p2'&&event.boundary==='top');
       const partner=state.players['local-p2'];
-      const anchor=exit?.exitPosition&&partner?{...exit.exitPosition,facing:partner.facing}:undefined;
+      const anchor=exit?.exitPosition&&partner?{...exit.exitPosition,facing:exit.exitFacing??partner.facing,exitVelocity:exit.exitVelocity}:undefined;
       const displayed=this.lab?.previewKO?.(lesson.ko,'partner',anchor);
       this.success=lesson.title+' confirmed at the top blast zone. '+this.success+
         (displayed?'':' KO artwork unavailable.');

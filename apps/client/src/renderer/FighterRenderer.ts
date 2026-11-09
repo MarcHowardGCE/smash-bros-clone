@@ -251,6 +251,11 @@ export class FighterRenderer {
     }
   }
 
+  getOutgoingTumble() {
+    const sprite = this.fullBodyPilot?.sprite;
+    return sprite?.visible && sprite.label === 'tumble' ? sprite : undefined;
+  }
+
   getArtDiagnostics():{slot:number;character:string|undefined;clip:string;frameRect:string;bodyVisible:boolean;markerVisible:boolean;markerFacing:number}{return {slot:this.slotIndex,character:this.fullBodyPilot?.artId??this.characterId,clip:this.fullBodyPilot?.sprite.label??'',frameRect:this.fullBodyPilot?[this.fullBodyPilot.sprite.texture.frame.x,this.fullBodyPilot.sprite.texture.frame.y,this.fullBodyPilot.sprite.texture.frame.width,this.fullBodyPilot.sprite.texture.frame.height].join(','):'',bodyVisible:this.fullBodyPilot?.sprite.visible??false,markerVisible:this.playerMarker.visible,markerFacing:this.playerMarker.scale.x*this.container.scale.x};}
   /** Release PixiJS resources. Call when the fighter leaves the scene. */
   destroy(): void {

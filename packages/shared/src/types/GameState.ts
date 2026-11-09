@@ -162,7 +162,7 @@ export interface PlayerState {
   shieldDodgeIntent?:number;
   tauntKind?:'up'|'side'|'down';
   hitReaction?:'high'|'low'|'heavy'|'air';
-  koVisual?:{id:number;kind:'launch'|'screen'|'star';x:number;y:number;facing:1|-1};
+  koVisual?:{id:number;kind:'launch'|'screen'|'star';x:number;y:number;facing:1|-1;exitVelocity?:{x:number;y:number}};
   footstoolRole?: 'attacker'|'ground'|'air';
   footstoolPartnerId?: PlayerId;
   footstoolFrame?: number;
@@ -304,6 +304,8 @@ export interface KOEventData {
   tick: number;
   /** Practice diagnostics capture the exit position before the arena resets. */
   exitPosition?: { x: number; y: number };
+  exitVelocity?: { x: number; y: number };
+  exitFacing?: 1 | -1;
 }
 
 /**

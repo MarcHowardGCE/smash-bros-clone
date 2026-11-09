@@ -169,3 +169,15 @@ If a selected fighter's idle artwork is unavailable, the client shows an error a
 In a fresh two-client local browser test, Ready reached fighter selection in 128 ms with zero atlas requests. The Moonshine and Hoagie lineup requested only their pages and shared effects on each client. A held guest fighter page and Stage 3 background exercised cancellation and reconfirmation. Releasing the fighter page alone left the countdown blocked. After the background was released, both clients entered the match with both sprite fighters and the Stage 3 background visible. Server tests cover duplicate, stale, non-member and departed-client acknowledgments.
 
 Deployed-host verification, accessibility review and extended physical-controller signoff remain open. Evidence is saved in the working session under outputs/menu-signoff-20261109/online-lineup-readiness.json.
+
+## Portrait, lesson spacing and camera review — November 9, 2026
+
+Moonshine and “Hulk” Hoagie now use transparent full-body cutouts from their approved neutral idle frames. The same menu asset lookup supplies fighter selection, Dojo, the VS intro and results. The original bust portraits remain available as source art. Completed lesson cards lay out their title and completion status on separate rows and grow to fit the label inside the scrolling list.
+
+The camera audit found a full-stage fit and 1× upper limit in local play. The online render path never called the follow camera. Earlier refinement notes covered wide four-player framing, but had no active camera tuning pass. The new shared camera targets 0.5×–1.65× based on the horizontal and vertical spread of active fighters. It centers the fight lower in the view, tightens gradually and widens more quickly. Screen margins constrain the pan and zoom when fighters launch toward the edge. Knocked-out and eliminated fighters are excluded. Collision, arena geometry and launch physics are untouched.
+
+Nintendo's [Ultimate gameplay demonstration](https://www.youtube.com/watch?v=8oPhDrn7juE) is the reference for comparing normal fight framing. The chosen zoom limits and easing are project tuning values. Native camera limits and timing have not been measured.
+
+Browser checks at 1280×720, 1024×600 and 640×360 kept the Completed line inside its card without touching the next card. A close Dojo setup reached 1.63×. A forced spread with four fighters, including offstage positions, widened to 0.65× with all four centers visible. Both clients in an online match crossed 1.55×. The client type check and 420 targeted tests passed. Evidence is saved under outputs/menu-signoff-20261109/portrait-dojo-camera-checks.json and the companion Dojo screenshots.
+
+Next camera review should compare close exchanges, opposite ledges, vertical launches and respawns on all six worlds, then tune the upper limit and easing against comparable Ultimate captures and human play.

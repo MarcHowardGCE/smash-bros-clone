@@ -7,19 +7,12 @@
  * Call {@link Camera.shake} from a HitEvent handler to trigger the effect.
  */
 import type { Container } from 'pixi.js';
-import { STAGE } from '@smash/shared';
-
-// Camera follows all players and zooms to keep everyone in frame.
-// PADDING: extra space beyond the outermost players so fighters near the edge
-//          aren't right at the viewport border.
-// MIN_SCALE / MAX_SCALE: prevent the camera from zooming so far out the stage is
-//                        tiny, or so far in that distant players go off-screen.
-// LERP_SPEED: smoothing factor (0–1) applied each frame; 0.1 gives gentle easing
-//             without feeling sluggish during fast chases.
-const PADDING = 200;
-const MIN_SCALE = 0.4;
-const MAX_SCALE = 1.0;
-const LERP_SPEED = 0.1;
+const MIN_SCALE = 0.5;
+const MAX_SCALE = 1.65;
+const SIDE_MARGIN = 40;
+const TOP_MARGIN = 110;
+const BOTTOM_MARGIN = 72;
+const clamp = (value: number, min: number, max: number): number => Math.max(min, Math.min(max, value));
 
 // Shake tuning — triggered by HitEvents with knockback above SHAKE_KNOCKBACK_THRESHOLD.
 // Skips 0-knockback pummels and weak jabs (~3-5 magnitude). Strong hits (15-40) and
@@ -36,6 +29,7 @@ const SHAKE_DURATION_SCALE = 0.25;
 export interface PlayerPosition {
   x: number;
   y: number;
+  launching?: boolean;
 }
 
 /**
@@ -47,8 +41,8 @@ export interface PlayerPosition {
  */
 export class Camera {
   private currentScale = 1.0;
-  private currentX = 0;
-  private currentY = 0;
+  private focusX?: number;
+  private focusY?: number;
   private readonly container: Container;
 
   // Shake state — decaying random offset applied on top of the smooth camera position.
@@ -112,50 +106,57 @@ export class Camera {
 
     if (positions.length === 0) return;
 
-    const minX = Math.min(...positions.map(p => p.x)) - PADDING;
-    const maxX = Math.max(...positions.map(p => p.x)) + PADDING;
-    const minY = Math.min(...positions.map(p => p.y)) - PADDING;
-    const maxY = Math.max(...positions.map(p => p.y)) + PADDING;
+    const minX = Math.min(...positions.map(p => p.x));
+    const maxX = Math.max(...positions.map(p => p.x));
+    const minY = Math.min(...positions.map(p => p.y));
+    const maxY = Math.max(...positions.map(p => p.y));
+    const spanX = maxX - minX;
+    const spanY = maxY - minY;
 
-    const boxWidth = Math.max(maxX - minX, 1);
-    const boxHeight = Math.max(maxY - minY, 1);
+    // Close fighters get a tighter shot. Wide and offstage positions can use the whole viewport.
+    const targetScale = clamp(Math.min(
+      viewportWidth / (spanX + 320),
+      viewportHeight / (spanY + 300),
+    ), MIN_SCALE, MAX_SCALE);
+    // Launches influence the framing target without imposing a one-frame fit.
+    const stable = positions.filter(position => !position.launching);
+    const stableMinX = Math.min(...stable.map(p => p.x));
+    const stableMaxX = Math.max(...stable.map(p => p.x));
+    const stableMinY = Math.min(...stable.map(p => p.y));
+    const stableMaxY = Math.max(...stable.map(p => p.y));
+    const visibleScale = stable.length ? Math.min(
+      (viewportWidth - 2 * SIDE_MARGIN) / Math.max(stableMaxX - stableMinX, 1),
+      (viewportHeight - TOP_MARGIN - BOTTOM_MARGIN) / Math.max(stableMaxY - stableMinY, 1),
+    ) : Infinity;
+    const zoomEase = targetScale < this.currentScale ? 0.18 : 0.10;
+    this.currentScale = Math.min(visibleScale, this.currentScale + (targetScale - this.currentScale) * zoomEase);
+    const scale = this.currentScale;
+    const anchorX = viewportWidth / 2;
+    const anchorY = viewportHeight * 0.57;
 
-    // Compute two candidate scales: one that fits all players (scaleForBox) and one
-    // that fits the full stage (scaleForStage). Using the minimum of both prevents the
-    // camera from zooming in past the point where the blast zones would be off-screen,
-    // even if all players are clustered in one corner.
-    const scaleForBox = Math.min(viewportWidth / boxWidth, viewportHeight / boxHeight);
-    const scaleForStage = Math.min(viewportWidth / STAGE.WIDTH, viewportHeight / STAGE.HEIGHT);
-    const targetScale = Math.max(MIN_SCALE, Math.min(MAX_SCALE, Math.min(scaleForBox, scaleForStage)));
+    // Ease the focus in world space so zooming cannot shove it sideways.
+    const focusX = this.focusX ?? anchorX;
+    const focusY = this.focusY ?? anchorY;
+    const nextX = focusX + ((minX + maxX) / 2 - focusX) * 0.16;
+    const nextY = focusY + ((minY + maxY) / 2 - focusY) * 0.16;
+    const x = anchorX - nextX * scale;
+    const y = anchorY - nextY * scale;
+    const framedX = stable.length ? clamp(x,
+      SIDE_MARGIN - stableMinX * scale, viewportWidth - SIDE_MARGIN - stableMaxX * scale) : x;
+    const framedY = stable.length ? clamp(y,
+      TOP_MARGIN - stableMinY * scale, viewportHeight - BOTTOM_MARGIN - stableMaxY * scale) : y;
+    this.focusX = (anchorX - framedX) / scale;
+    this.focusY = (anchorY - framedY) / scale;
 
-    const centerX = (minX + maxX) / 2;
-    const centerY = (minY + maxY) / 2;
-
-    const halfVW = viewportWidth / (2 * targetScale);
-    const halfVH = viewportHeight / (2 * targetScale);
-
-    const clampedCenterX = Math.max(halfVW, Math.min(STAGE.WIDTH - halfVW, centerX));
-    const clampedCenterY = Math.max(halfVH, Math.min(STAGE.HEIGHT - halfVH, centerY));
-
-    const targetX = viewportWidth / 2 - clampedCenterX * targetScale;
-    const targetY = viewportHeight / 2 - clampedCenterY * targetScale;
-
-    this.currentScale += (targetScale - this.currentScale) * LERP_SPEED;
-    this.currentX += (targetX - this.currentX) * LERP_SPEED;
-    this.currentY += (targetY - this.currentY) * LERP_SPEED;
-
-    this.container.scale.set(this.currentScale);
-    this.container.position.set(
-      this.currentX + this.shakeOffsetX,
-      this.currentY + this.shakeOffsetY,
-    );
+    this.container.scale.set(scale);
+    this.container.position.set(framedX + this.shakeOffsetX, framedY + this.shakeOffsetY);
   }
 
   /** Reset camera to default scale and position, clearing any active shake. */
   reset(): void {
     this.currentScale = 1.0;
-    this.currentX = 0;
-    this.currentY = 0;
+    this.focusX = undefined;
+    this.focusY = undefined;
     this.shakeIntensity = 0;
     this.shakeFramesRemaining = 0;
     this.shakeTotalFrames = 0;

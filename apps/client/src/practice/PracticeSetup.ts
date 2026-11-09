@@ -47,7 +47,7 @@ export function renderPracticeSetup(
       <section id="dojo-lessons-pane" class="settings-detail dojo-curriculum"><span class="menu-kicker">Lesson library</span>
         <div class="settings-tabs" role="group" aria-label="Lesson difficulty">${tiers.map(name=>`<button type="button" id="dojo-tier-${name}" class="menu-quiet">${name}</button>`).join('')}</div>
         <div class="dojo-lesson-browser"><div class="dojo-lesson-list">${LESSONS.map(entry=>`<button type="button" class="menu-quiet dojo-lesson-card" id="practice-lesson-${entry.id}" data-lesson="${entry.id}">
-          ${escapeHtml(entry.title)}<small data-completion="${entry.id}"></small></button>`).join('')}</div>
+          <span class="dojo-lesson-title">${escapeHtml(entry.title)}</span><small data-completion="${entry.id}" hidden></small></button>`).join('')}</div>
           <div class="dojo-lesson-detail"><span class="menu-kicker" id="dojo-lesson-tier"></span><h2 id="dojo-lesson-name"></h2>
             <p id="dojo-lesson-hint"></p><p id="dojo-lesson-input"></p><strong id="dojo-lesson-progress"></strong></div></div></section>
     </div>
@@ -85,7 +85,9 @@ export function renderPracticeSetup(
       const button = get('practice-lesson-'+entry.id);
       button.hidden = entry.tier!==tier;
       button.setAttribute('aria-pressed', String(entry.id===lesson.id));
-      button.querySelector('small')!.textContent = completed(entry.id) ? 'Completed' : '';
+      const completion = button.querySelector('small')!;
+      completion.hidden = !completed(entry.id);
+      completion.textContent = completion.hidden ? '' : 'Completed';
     }
     label('dojo-lesson-tier', lesson.tier);
     label('dojo-lesson-name', lesson.title);

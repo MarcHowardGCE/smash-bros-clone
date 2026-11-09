@@ -49,6 +49,10 @@ test("online pause, browser-refresh rejoin, resume and deliberate leave", async 
     await guest.keyboard.press("Escape");
     await expect(guest.locator("#main-menu-btn")).toBeVisible();
     await guest.locator("#main-menu-btn").click();
+    await expect(guest.getByRole("heading", { name: "Leave match?" })).toBeVisible();
+    await expect(host.locator("#resume-btn")).toBeVisible();
+    await guest.locator("#confirm-leave-match-btn").click();
+    await expect(guest).not.toHaveURL(/room=/);
     await expect(guest.locator("#online-play-btn")).toBeVisible();
     await expect(host.locator("#play-again-btn")).toBeVisible();
     expect(await guest.evaluate(() => sessionStorage.getItem("smash:rejoin"))).toBeNull();

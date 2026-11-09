@@ -181,3 +181,45 @@ describe('Camera', () => {
     });
   });
 });
+
+it('tightens a close fight above the old full-stage scale', () => {
+  const container = mockContainer();
+  const camera = new Camera(container);
+  for (let tick = 0; tick < 60; tick++) {
+    camera.update([{ x: 600, y: 470 }, { x: 680, y: 475 }], VP_W, VP_H);
+  }
+  expect(vi.mocked(container.scale.set).mock.lastCall?.[0]).toBeCloseTo(1.65, 2);
+});
+
+it('keeps a vertical launch on its horizontal lane through the camera zoom', () => {
+  const container = mockContainer();
+  const camera = new Camera(container);
+  const project = (x: number) =>
+    vi.mocked(container.position.set).mock.lastCall![0]! +
+      x * vi.mocked(container.scale.set).mock.lastCall![0]!;
+  const positions = [{ x: 640, y: 470 }, { x: 640, y: 470 }];
+  for (let tick = 0; tick < 60; tick++) camera.update(positions, VP_W, VP_H);
+  const before = project(640);
+  camera.update([positions[0]!, { x: 640, y: -170, launching: true }], VP_W, VP_H);
+  expect(project(640)).toBeCloseTo(before);
+  expect(vi.mocked(container.scale.set).mock.lastCall![0]).toBeGreaterThan(1.4);
+  camera.update(positions, VP_W, VP_H);
+  expect(project(640)).toBeCloseTo(before);
+});
+
+it('keeps four spread-out fighters visible on the first wide frame', () => {
+  const container = mockContainer();
+  const camera = new Camera(container);
+  for (let tick = 0; tick < 60; tick++) camera.update(DEFAULT_POS, VP_W, VP_H);
+  const positions = [{ x: -270, y: 695 }, { x: 1540, y: -150 }, { x: 450, y: 490 }, { x: 900, y: 510 }];
+  camera.update(positions, VP_W, VP_H);
+  const scale = vi.mocked(container.scale.set).mock.lastCall![0]!;
+  const [x, y] = vi.mocked(container.position.set).mock.lastCall!;
+  expect(scale).toBeLessThan(1);
+  for (const fighter of positions) {
+    expect(x! + fighter.x * scale).toBeGreaterThan(30);
+    expect(x! + fighter.x * scale).toBeLessThan(VP_W - 30);
+    expect(y! + fighter.y * scale).toBeGreaterThan(90);
+    expect(y! + fighter.y * scale).toBeLessThan(VP_H - 60);
+  }
+});

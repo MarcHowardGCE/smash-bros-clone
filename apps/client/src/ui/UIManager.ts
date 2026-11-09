@@ -964,6 +964,9 @@ export class UIManager {
     this.practiceSetupHandle=renderPracticeSetup(this.overlay,this._gamepadPoller,onStart,onBack,this.prompt,()=>this.getControllerPromptProfile(0));
   }
   hideCombatHUD():void{this.hudPanel.style.display='none';}
+  setScreenKOOverHUD(active: boolean): void {
+    this.hudPanel.toggleAttribute('data-screen-ko-overlap', active);
+  }
   /** Clear the overlay and show the in-match HUD panel. */
   showMatch(showFightCue = false): void {
     this.stopMenuNav();

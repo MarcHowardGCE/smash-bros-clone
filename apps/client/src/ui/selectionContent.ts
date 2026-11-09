@@ -92,5 +92,4 @@ export const WORLD_STORIES: Record<string,{name:string;short:string;hook:string;
 };
 export function escapeHtml(value:string):string{return value.replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]!));}
 export function fighterPortrait(id:string):string{const base=import.meta.env.BASE_URL||'/';
- if(id==='moonshine'||id==='hulk-hoagie')return base+'fighter-art-newcomers-v1/'+id+'-portrait-v1.png';
  return FIGHTER_PRESENTATION[id]?base+'menu-art/'+id+'.png':''; }

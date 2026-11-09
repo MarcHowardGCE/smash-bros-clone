@@ -20,7 +20,7 @@ import type {
 import { MoveId, PHYSICS, STAGE } from "@smash/shared";
 import { STAGES, type StageConfig } from "./stages/stageConfig.js";
 import { GamepadPoller, GamepadPreferenceStore } from "@smash/gamepad-input";
-import { Application } from "pixi.js";
+import { Application, Container } from "pixi.js";
 import {
   DEFAULT_KEYMAP_P1,
   DEFAULT_KEYMAP_P2,
@@ -212,27 +212,32 @@ async function main() {
   // Hide canvas until splash screen is dismissed to prevent game graphics showing behind splash
   app.canvas.style.visibility = e2eFixtureEnabled ? "visible" : "hidden";
 
+  const layers = createLayers();
+  const arenaFrame = app.stage.addChild(new Container());
+  arenaFrame.addChild(layers.background);
+  layers.background.addChild(layers.game);
+  app.stage.addChild(layers.ui);
+
+  const viewport: { width: number; height: number } = { width: STAGE.WIDTH, height: STAGE.HEIGHT };
   function resize() {
-    const scaleX = window.innerWidth / STAGE.WIDTH;
-    const scaleY = window.innerHeight / STAGE.HEIGHT;
-    const scale = Math.min(scaleX, scaleY);
-    app.canvas.style.width = `${STAGE.WIDTH * scale}px`;
-    app.canvas.style.height = `${STAGE.HEIGHT * scale}px`;
-    app.canvas.style.position = "absolute";
-    app.canvas.style.zIndex = "1";
-    app.canvas.style.left = `${(window.innerWidth - STAGE.WIDTH * scale) / 2}px`;
-    app.canvas.style.top = `${(window.innerHeight - STAGE.HEIGHT * scale) / 2}px`;
+    const width = Math.max(1, window.innerWidth);
+    const height = Math.max(1, window.innerHeight);
+    const scale = Math.min(width / STAGE.WIDTH, height / STAGE.HEIGHT);
+    app.renderer.resize(width, height);
+    app.stage.scale.set(scale);
+    viewport.width = app.screen.width / scale;
+    viewport.height = app.screen.height / scale;
+    arenaFrame.position.set((viewport.width - STAGE.WIDTH) / 2, (viewport.height - STAGE.HEIGHT) / 2);
   }
+  app.canvas.style.position = "absolute";
+  app.canvas.style.zIndex = "1";
+  app.canvas.style.inset = "0";
   window.addEventListener("resize", resize);
   resize();
 
   const stageBackdrop=new StageBackdrop(document.getElementById("background-layer"));
-  const layers = createLayers();
-  app.stage.addChild(layers.background);
-  layers.background.addChild(layers.game);
-  app.stage.addChild(layers.ui);
-
-  const koPresenter=new KOPresentation(layers.game,layers.ui,fullBodyPilot);app.ticker.add(()=>koPresenter.tick());
+  const koPresenter = new KOPresentation(layers.game, layers.ui, fullBodyPilot, viewport,
+    id => fighterRenderers.get(id)?.getOutgoingTumble());
   let stageRenderer: StageRenderer | null = null;
   let renderedStageId = "";
   let stageReady = Promise.resolve();
@@ -532,6 +537,20 @@ async function main() {
   await menuArtworkReady;
   document.getElementById('startup-loading')?.remove();
   const uiManager = new UIManager(uiOverlay);
+  let pendingKOResult: (() => void) | undefined;
+  const showResultAfterKO = (showResult: () => void): void => {
+    if (koPresenter.hasSpecialKO()) pendingKOResult = showResult;
+    else showResult();
+  };
+  app.ticker.add(() => {
+    koPresenter.tick();
+    uiManager.setScreenKOOverHUD(koPresenter.hasScreenKOOverHUD());
+    if (pendingKOResult && !koPresenter.hasSpecialKO()) {
+      const showResult = pendingKOResult;
+      pendingKOResult = undefined;
+      showResult();
+    }
+  });
   app.ticker.add(()=>stageBackdrop.update(uiManager.getPhase()==='match'));
   uiManager._gamepadPoller = poller;
   uiManager.controllerIdForSlot = slot => assignmentManager.getAssignments().get(slot)?.gamepadId;
@@ -571,6 +590,7 @@ async function main() {
   };
 
   const cleanupLocalMode = (): void => {
+    pendingKOResult = undefined;
     dojoMatch=undefined;
     practicePanel?.destroy();practicePanel=null;practiceOverlay?.destroy();practiceOverlay=null;uiManager.onPracticeReset=null;uiManager.onPracticeMenu=null;uiManager.onPracticeLabActions=null;
     clearLocalCountdown();
@@ -615,6 +635,15 @@ async function main() {
   };
 
   const newcomerArtId=(id?:CharacterId):DojoArtId|undefined=>id==='moonshine'||id==='hulk-hoagie'?id:undefined;
+  const updateCamera = (state: RenderState): void => {
+    if (state.matchPhase !== 'match') return;
+    const positions = [...state.players.values()].filter(player => player.stocks > 0 && !player.isKnockedOut);
+    (camera ??= new Camera(layers.background)).update(positions.map(player => ({
+      x: player.x, y: player.y,
+      launching: !player.isGrounded && (player.isTumbling || (player.hitstunFramesRemaining ?? 0) > 0),
+    })), STAGE.WIDTH, STAGE.HEIGHT);
+  };
+
   const updateRenderers = (state: RenderState): void => {
     stageBackdrop.setFocus([...state.players.values()].filter(player=>player.stocks>0&&!player.isKnockedOut));
     koPresenter.update(state.players.values());
@@ -737,12 +766,14 @@ async function main() {
         void fallbackReady.then(() => {
           if (!isLocalMode) {
             updateRenderers(state);
+            updateCamera(state);
             uiManager.updateHUD(state, localPlayerId);
           }
         });
         return;
       }
       updateRenderers(state);
+      updateCamera(state);
       uiManager.updateHUD(state, localPlayerId);
     },
     onMatchPhaseChange: (phase: string, winnerId?: PlayerId | null) => {
@@ -769,9 +800,14 @@ async function main() {
       } else if (phase === "result") {
         clearNetworkCountdown();
         networkMatchPhase = "result";
+        const finalSnapshot = gameClient.getLatestSnapshot();
+        if (finalSnapshot?.matchPhase === 'result') koPresenter.update(Object.values(finalSnapshot.players));
+        camera?.reset();
         gameplaySfxRouter.processMatchResult();
-        uiManager.showResult(winnerId ?? null, myPlayerId, { stage: selectedStage, fighters: networkIntroFighters });
-        audioManager.playTrack("game-over");
+        showResultAfterKO(() => {
+          uiManager.showResult(winnerId ?? null, myPlayerId, { stage: selectedStage, fighters: networkIntroFighters });
+          audioManager.playTrack("game-over");
+        });
       }
     },
     onRoomJoinError: message => uiManager.showRoomJoinError(message),
@@ -988,8 +1024,8 @@ async function main() {
         previewKO:(kind,side,anchor)=>{
           const player=anchor??localMatch?.getLatestSnapshot()?.players[side==='you'?'local-p1':'local-p2'];
           return player ? koPresenter.preview(kind,dojoSimulationProfile(side==='you'?practice.fighter:practice.dummy),{
-            x:player.x,y:player.y,facing:player.facing,
-          }) : false;
+            x:player.x,y:player.y,facing:player.facing,exitVelocity:anchor?.exitVelocity,
+          }, anchor ? (side==='you'?'local-p1':'local-p2') : undefined) : false;
         },
       },()=>uiManager.getControllerPromptProfile(0));
       uiManager.onPracticeLabActions=()=>practicePanel?.labActions()??[];
@@ -1001,8 +1037,6 @@ async function main() {
       updateRenderers(renderState);practiceOverlay?.update(snapshot);
       if(practice)uiManager.hideCombatHUD();else uiManager.updateHUD(renderState, null);
 
-      const positions = Object.values(snapshot.players).filter(player => player.stocks > 0);
-
       // Trigger camera shake and hit effects from hit events
       if (snapshot.hitEvents && snapshot.hitEvents.length > 0) {
         processHitEvents(snapshot.hitEvents);
@@ -1011,7 +1045,7 @@ async function main() {
         }
       }
 
-      camera?.update(positions, STAGE.WIDTH, STAGE.HEIGHT);
+      updateCamera(renderState);
 
       if (snapshot.matchPhase === "result") {
         gameplaySfxRouter.processMatchResult();
@@ -1023,8 +1057,10 @@ async function main() {
             displayName: FIGHTER_PRESENTATION[id]?.name ?? id,
           };
         }).sort((a, b) => a.slotIndex - b.slotIndex);
-        uiManager.showLocalResult(snapshot.winnerId, { stage: selectedStage, fighters });
-        audioManager.playTrack("game-over");
+        showResultAfterKO(() => {
+          uiManager.showLocalResult(snapshot.winnerId, { stage: selectedStage, fighters });
+          audioManager.playTrack("game-over");
+        });
       }
     };
 
@@ -1363,6 +1399,7 @@ async function main() {
         forcePosition?: (playerId: PlayerId, x: number, y: number) => boolean;
         getKOEvents?: () => KOEventData[];
         getArtState?:()=>{packing:string|undefined;players:ReturnType<FighterRenderer["getArtDiagnostics"]>[]};
+        getCameraState?: () => { scale: number; x: number; y: number };
       };
     }
   ).__smashDebug = {
@@ -1372,6 +1409,7 @@ async function main() {
       ? {
           forcePosition: forceDebugPosition,
           getKOEvents: getDebugKOEvents,
+          getCameraState: () => ({ scale: layers.background.scale.x, x: layers.background.x, y: layers.background.y }),
           getArtState:()=>({ko:koPresenter.getDiagnostics(),packing:fullBodyPilot?.packing,players:[...fighterRenderers.values()].map(f=>f.getArtDiagnostics())}),
         }
       : {}),

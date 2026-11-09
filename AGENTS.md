@@ -15,7 +15,7 @@ Always pass `category=` when spawning subagents; never pass a raw model ID.
 
 - This project is the platform fighter in apps/ and packages/. Exclude bonney/ from analysis, edits, tests, builds, deployments, and refinement; it is a separate project.
 - Never inspect .env or .env.global files.
-- Update README.md and relevant current design/status documents in the same change whenever behavior, commands, or limitations change. Do not silently rewrite historical evidence.
+- Keep README.md focused on the application, repository, setup, tests, and deployment. Update it when those facts change. Record workstream progress, next steps, and signoff under docs/ using docs/plans/ACTIVE-WORK.md as the index. Preserve dated evidence.
 - Current refinement decisions and remaining gaps are tracked in docs/REFINEMENT.md.
 
 ## Monorepo Structure
@@ -108,6 +108,8 @@ The server ticks at 60 Hz (`TICK_MS = 1000 / 60`) using a `setImmediate` + `perf
 ---
 
 ## How to Run / Test / Build
+
+Use the [development](docs/guides/DEVELOPMENT.md), [testing](docs/guides/TESTING.md), and [deployment](docs/guides/DEPLOYMENT.md) guides for detailed workflows.
 
 ```bash
 # Install all workspace dependencies

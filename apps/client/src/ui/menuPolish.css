@@ -348,8 +348,8 @@ body:has(.dojo-console) .dojo-panel {visibility:hidden}
 .dojo-free-rules li {margin:7px 0}
 .dojo-curriculum > .settings-tabs {margin:5px 0 8px}
 .dojo-lesson-browser {display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.05fr);gap:8px}
-.dojo-lesson-list {display:grid;gap:5px;max-height:265px;overflow:auto;padding:3px 5px 3px 3px}
-.dojo-lesson-list .dojo-lesson-card {text-align:left;min-height:30px;padding:5px 7px}
+.dojo-lesson-list {display:grid;grid-auto-rows:max-content;align-content:start;gap:5px;max-height:265px;overflow:auto;padding:3px 5px 3px 3px}
+.dojo-lesson-list .dojo-lesson-card {display:grid;gap:3px;align-content:center;text-align:left;min-width:0;min-height:30px;padding:5px 7px;line-height:1.3;overflow-wrap:anywhere}
 .dojo-lesson-card small {display:block;color:var(--screen-focus);font-size:10px}
 .dojo-lesson-detail {background:#30223a;border:1px solid #55415a;padding:8px;border-radius:7px}
 .dojo-lesson-detail h2 {font-size:21px}
@@ -387,3 +387,6 @@ body:has(.dojo-console) .dojo-panel {visibility:hidden}
   .dojo-console .dojo-paused-badge {padding:4px 8px}
   .workspace-footer {flex-wrap:wrap}
 }
+
+/* Let the foreground KO finish sliding across the combat HUD. */
+#hud-panel[data-screen-ko-overlap] { visibility: hidden; }

@@ -1,12 +1,5 @@
 import { chooseFirstStage } from "./helpers/flow";
 import { test, expect } from '@playwright/test';
-import { mkdirSync } from 'fs';
-
-const EVIDENCE_DIR = '.omo/evidence';
-
-test.beforeAll(() => {
-  mkdirSync(EVIDENCE_DIR, { recursive: true });
-});
 
 /**
  * Helper: navigate to local play and reach character-select screen.
@@ -67,14 +60,17 @@ async function performP1ForwardSmash(page: import('@playwright/test').Page): Pro
 // ─────────────────────────────────────────────────────────────────────────────
 // TEST 1: Character-select shows both "All-Rounder" and "Abe Lincoln" options
 // ─────────────────────────────────────────────────────────────────────────────
-test('character-select shows both All-Rounder and Abe Lincoln options', async ({ page }) => {
+test('character-select shows the five-fighter roster', async ({ page }) => {
   test.setTimeout(30_000);
 
   await navigateToCharacterSelect(page);
 
   // Check P1 panel has both fighter options
   const p1Options = page.locator('[data-player="1"].fighter-option');
-  await expect(p1Options).toHaveCount(3);
+  await expect(p1Options).toHaveCount(5);
+  expect(await p1Options.evaluateAll(options => options.map(option => option.getAttribute('data-id')).sort())).toEqual([
+    'abe-lincoln', 'all-rounder', 'hulk-hoagie', 'moonshine', 'swift',
+  ]);
 
   const allRounderOption = page.locator('[data-player="1"][data-id="all-rounder"]');
   const abeLincolnOption = page.locator('[data-player="1"][data-id="abe-lincoln"]');
@@ -84,7 +80,7 @@ test('character-select shows both All-Rounder and Abe Lincoln options', async ({
   await expect(allRounderOption).toContainText('All-Rounder');
   await expect(abeLincolnOption).toContainText('Abe Lincoln');
 
-  await page.screenshot({ path: `${EVIDENCE_DIR}/task-15-character-select-options.png` });
+  await page.screenshot({ path: test.info().outputPath("task-15-character-select-options.png") });
 });
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -100,9 +96,7 @@ test('selecting Abe Lincoln starts match with visually distinct fighter', async 
   const abeOption = page.locator('[data-player="1"][data-id="abe-lincoln"]');
   await abeOption.click();
 
-  // Confirm P1 (Enter) and P2 (KeyU auto-confirmed or press U)
-  await page.keyboard.press('Enter');
-  await page.keyboard.press('KeyU');
+  await page.locator('[data-ready-slot="0"]').click();
 
   await waitForMatchStart(page);
 
@@ -117,7 +111,7 @@ test('selecting Abe Lincoln starts match with visually distinct fighter', async 
   expect(p1CharacterId).toBe('abe-lincoln');
 
   // Take screenshot of Lincoln fighter for visual evidence
-  await page.screenshot({ path: `${EVIDENCE_DIR}/task-15-lincoln-in-match.png` });
+  await page.screenshot({ path: test.info().outputPath("task-15-lincoln-in-match.png") });
 
   // Visual distinction: Lincoln's renderer uses different accessories (top hat, beard).
   // Verify the character is rendering distinctly by checking canvas bounding area.
@@ -141,8 +135,7 @@ test('Lincoln forward smash deals 20% damage and currentMoveId changes', async (
 
   // Select Lincoln for P1
   await page.locator('[data-player="1"][data-id="abe-lincoln"]').click();
-  await page.keyboard.press('Enter');
-  await page.keyboard.press('KeyU');
+  await page.locator('[data-ready-slot="0"]').click();
 
   await waitForMatchStart(page);
 
@@ -242,7 +235,7 @@ test('Lincoln forward smash deals 20% damage and currentMoveId changes', async (
   // Note: if we caught it during startup/active, it should be FORWARD_SMASH
   // If timing missed it, at minimum assert the test didn't crash
   // The primary assertion is the 20% damage above
-  await page.screenshot({ path: `${EVIDENCE_DIR}/task-15-lincoln-forward-smash.png` });
+  await page.screenshot({ path: test.info().outputPath("task-15-lincoln-forward-smash.png") });
 });
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -325,5 +318,5 @@ test('All-Rounder default selection regression smoke test', async ({ page }) => 
   }
   // If missed, characterId + movement assertions above already pass regression
 
-  await page.screenshot({ path: `${EVIDENCE_DIR}/task-15-all-rounder-regression.png` });
+  await page.screenshot({ path: test.info().outputPath("task-15-all-rounder-regression.png") });
 });

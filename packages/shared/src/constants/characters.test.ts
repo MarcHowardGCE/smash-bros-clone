@@ -81,8 +81,10 @@ describe('Character Stats Registry', () => {
       expect(CHARACTER_REGISTRY['swift']).toBe(SWIFT_STATS);
     });
 
-    it('should have exactly 3 entries', () => {
-      expect(Object.keys(CHARACTER_REGISTRY)).toHaveLength(3);
+    it('registers all five fighters', () => {
+      expect(Object.keys(CHARACTER_REGISTRY).sort()).toEqual([
+        'abe-lincoln', 'all-rounder', 'hulk-hoagie', 'moonshine', 'swift',
+      ]);
     });
   });
 

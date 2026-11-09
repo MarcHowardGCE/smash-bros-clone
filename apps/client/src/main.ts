@@ -197,9 +197,7 @@ async function main() {
     if (!effects && effectsLoad === effectsReady) effectsLoad = undefined;
   };
   const allFighterIds = roster.map(fighter => fighter.id as CharacterId);
-  let restoringRoom = false;
-  try { restoringRoom = Boolean(sessionStorage.getItem("smash:rejoin")); } catch { /* Storage may be unavailable. */ }
-  if (e2eFixtureEnabled || restoringRoom) await prepareFighters(allFighterIds);
+  if (e2eFixtureEnabled) await prepareFighters(allFighterIds);
   if (e2eFixtureEnabled && !e2ePolygonForced && fighterAssets.mode === "polygon") {
     fighterAssets = await preloadFighterAssets({ locationSearch: "", timeoutMs: 15_000 });
   }
@@ -724,10 +722,12 @@ async function main() {
         ()=>gameClient.selectionBack(result=>{if("error"in result)uiManager.showNetworkCharacterSelectConfirmError(result.error);}),
       );
   };
+  let rejoinedArtworkPending = false;
   const gameClient = new GameClient({
     serverUrl: SERVER_URL,
     gamepadSource:new GamepadInputSource(poller,-1,()=>assignmentManager.getAssignments().get(0)?.gamepadIndex??-1),
     onRejoined: () => {
+      rejoinedArtworkPending = true;
       hasShownSplashOnThisPageLoad = true;
       app.canvas.style.visibility = "visible";
     },
@@ -764,6 +764,17 @@ async function main() {
     },
     onRenderState: (state: RenderState, localPlayerId: PlayerId) => {
       if (isLocalMode) return;
+      if (rejoinedArtworkPending && state.players.size > 0) {
+        rejoinedArtworkPending = false;
+        const fighterIds = [...state.players.values()].map(player => player.characterId ?? "all-rounder");
+        void prepareFighters(fighterIds).then(() => {
+          if (isLocalMode || !fullBodyPilot) return;
+          koPresenter.setAssets(fullBodyPilot);
+          for (const renderer of fighterRenderers.values()) {
+            renderer.setFullBodyAssets(fullBodyPilot);
+          }
+        });
+      }
       if (!fallbackSettled) {
         void fallbackReady.then(() => {
           if (!isLocalMode) {

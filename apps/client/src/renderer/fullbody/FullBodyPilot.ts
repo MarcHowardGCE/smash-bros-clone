@@ -4,7 +4,7 @@ import {footstoolPoint} from './footstoolPose.js';
 import {PREPARED_LIVE_CLIPS,selectPreparedFrame,type PreparedContext} from './preparedHooks.js';
 import {getMoveDataForCharacter} from '@smash/engine';
 import {solveGrabContact} from "./contactPose.js";
-import { Assets, Rectangle, Sprite, Texture } from 'pixi.js';
+import { Assets, ImageSource, Rectangle, Sprite, Texture } from 'pixi.js';
 import { getCharacterStats, type CharacterId, type MoveId } from '@smash/shared';
 import { selectPilotFrame, type PilotClip } from './pilotTimeline.js';
 export interface GrabContactContext {artId?:DojoArtId;characterId:CharacterId;state:string;frame:number;move:MoveId|null;dx:number;dy:number;facing:1|-1}
@@ -22,10 +22,44 @@ export interface FullBodyPilotAssets {
 }
 
 const manifestLoads = new Map<string, Promise<Manifest>>();
+const atlasPages = new Map<string, Promise<Texture>>();
+
+async function fetchAtlasPage(url: string, timeoutMs: number): Promise<Texture> {
+  const response = await fetch(url, { signal: AbortSignal.timeout(timeoutMs) });
+  if (!response.ok) throw new Error(`Atlas page unavailable (${response.status}): ${url}`);
+  const blob = await response.blob();
+  if (typeof createImageBitmap === 'function') {
+    const bitmap = await createImageBitmap(blob);
+    return new Texture({ source: new ImageSource({ resource: bitmap, scaleMode: 'linear' }) });
+  }
+
+  const objectUrl = URL.createObjectURL(blob);
+  try {
+    const image = new Image();
+    image.src = objectUrl;
+    await image.decode();
+    return new Texture({ source: new ImageSource({ resource: image, scaleMode: 'linear' }) });
+  } finally {
+    URL.revokeObjectURL(objectUrl);
+  }
+}
+
+function loadAtlasPage(url: string, timeoutMs: number): Promise<Texture> {
+  let pending = atlasPages.get(url);
+  if (!pending) {
+    // Own the fetch lifetime so a failed image cannot leave a pending Pixi worker load behind.
+    pending = fetchAtlasPage(url, timeoutMs).catch(error => {
+      atlasPages.delete(url);
+      throw error;
+    });
+    atlasPages.set(url, pending);
+  }
+  return pending;
+}
 function loadManifest(url: string): Promise<Manifest> {
   let pending = manifestLoads.get(url);
   if (!pending) {
-    pending = fetch(url, { signal: AbortSignal.timeout(5000) }).then(response => {
+    pending = fetch(url, { signal: AbortSignal.timeout(20_000) }).then(response => {
       if (!response.ok) throw new Error('Pilot manifest unavailable');
       return response.json() as Promise<Manifest>;
     }).catch(error => {
@@ -51,7 +85,19 @@ export async function preloadFullBodyPilot(dojo=false, selected?: readonly Chara
   }
   const textureTimeoutMs=manifest.production?60_000:15_000;
   const pageCache=new Map<string,Promise<Texture>>();
-  function loadPage(file:string):Promise<Texture>{let promise=pageCache.get(file);if(!promise){promise=Assets.load<Texture>(base+file).then(t=>{t.source.scaleMode='linear';return t;});pageCache.set(file,promise);}return promise;}
+  function loadPage(file: string): Promise<Texture> {
+    let promise = pageCache.get(file);
+    if (!promise) {
+      promise = manifest.production || dojo
+        ? loadAtlasPage(base + file, textureTimeoutMs)
+        : Assets.load<Texture>(base + file).then(texture => {
+          texture.source.scaleMode = 'linear';
+          return texture;
+        });
+      pageCache.set(file, promise);
+    }
+    return promise;
+  }
 
   if(manifest.version!==1)throw new Error('Unsupported pilot version');
   const characters=manifest.characters??{'all-rounder':{clips:manifest.clips}};
@@ -94,7 +140,8 @@ export class FullBodyPilot {
  private dojoProneFrame=0;
  private lastFrame=0;private counterStart:number|null=null;
  startCounterReaction():void{this.counterStart=this.lastFrame;}
- constructor(private readonly assets:FullBodyPilotAssets,private readonly characterId:CharacterId='all-rounder',readonly artId?:DojoArtId){this.sprite.visible=false;this.effectSprite.visible=false;}
+ constructor(private assets:FullBodyPilotAssets,private readonly characterId:CharacterId='all-rounder',readonly artId?:DojoArtId){this.sprite.visible=false;this.effectSprite.visible=false;}
+ setAssets(assets: FullBodyPilotAssets): void { this.assets = assets; }
  update(state:string,frame:number,move:MoveId|null,enabled:boolean,vy?:number,hasDoubleJump=true,isTumbling=false,rollDirection:1|-1=1,chargeFrames=0,grabVictim=false,victimFlip=1,facing:1|-1=1,grabOwner?:GrabContactContext,ledgeId?:string|null,prepared:PreparedContext={}):boolean {
   enabled=enabled||Boolean(prepared.result);
   if(this.previousState==="LEDGE_HANG"&&state==="AIRBORNE")this.ledgeRelease={clip:(vy??0)<-1?"ledge_trump":"ledge_drop",start:frame};this.previousState=state;

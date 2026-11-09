@@ -134,3 +134,15 @@ A clean Docker build passed on Docker Desktop's Linux engine using the current W
 - **Timing and revision:** The first hosted attempt timed out under the default five-second match-start assertion. It passed with a 20-second assertion window. This was a functional smoke test. Cold and warm load timing under throttled conditions remains open. Render served client bundle `index-DnnslYQA.js`, while the local image built `index-BRM95Ob2.js`. The exact deployed revision was unverified.
 
 The container smoke used a temporary Playwright config pointed at the production service and no development server. The hosted checks used the same approach with a WebSocket and movement assertion added to the pause and leave flow. See the [deployment runbook](../guides/DEPLOYMENT.md#post-deploy-smoke-test) for the sequence to repeat after a release.
+
+### Post-deploy Render rerun
+
+After deployment of `3928e5d`, Render served the same client bundle bytes as the locally verified production image. All three Chromium smoke checks passed in 54.7 seconds on the updated host. They covered local arena and atlas loading, shared Stage 6 selection and live refresh, and secure WebSocket movement replication, paused refresh, resume, and confirmed leave. [Deployed game](https://everybody-throws-hands.onrender.com/) · [Post-deploy loading benchmark](../MENU-POLISH-PLAN.md#post-deploy-rerun)
+
+### Hosted recovery stress check
+
+The deployed release still passed the ordinary live refresh path. Under 8 Mbps throttling, the rejoin request arrived too late in both cache modes. A separate interrupted-atlas test preserved the countdown gate but exposed a stalled retry. This limits the earlier hosted smoke signoff to the conditions under which it passed. [Timing and failure evidence](../MENU-POLISH-PLAN.md#render-slow-link-and-recovery-checks)
+
+### Local production recovery verification
+
+The patched production client build and workspace type check passed. All four production browser checks passed, covering interrupted-atlas retry at 8 Mbps plus unthrottled, cache-enabled slow, and cache-bypassed slow reconnects. The two existing mocked main-entry suites failed in the same nine cases on both the prior entry point and the patch because their Pixi mocks lack `Container`. The ten KO presentation tests passed. The targeted Chromium matrix passed all 15 recovery, online, and visual checks across three display densities. All 30 fixture images matched pixel-for-pixel. The published Render bundle still represents the previous hosted recovery stress check. [Timing and reproduction notes](../MENU-POLISH-PLAN.md#reconnect-and-atlas-retry-fixes)

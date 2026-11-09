@@ -199,3 +199,69 @@ The earlier optimized local Vite preview reached Home in 3.4 seconds cold and 1.
 Stage 1 was applied at live play in all runs. The first Render cold and warm screenshots showed both fighter sprites, platform skins, and stage artwork. No page or console errors or failed non-audio requests were observed. Sampled Render production atlas and Stage 1 responses reported `Cache-Control: public, max-age=0` and `CF-Cache-Status: DYNAMIC`. Page resource timing did not capture the atlas image requests even though browser response events saw them. Atlas transfer bytes and CDN cache savings are therefore unmeasured in this pass.
 
 Next, repeat on the same released revision with a slower connection, an interrupted asset request, and active-room reconnect. Include a service-idle start separately if the deployed plan sleeps.
+
+### Post-deploy rerun
+
+After the Render deployment of `3928e5d`, both targets served `index-BRM95Ob2.js`. The downloaded client bundles matched SHA-256 `e5be5ad5d235693c712574fabdcdf609f3f6557b901b75ba496fb9c757add1d7`. The same 20 Mbps, 60 ms latency, 2× CPU setup and Moonshine versus All-Rounder flow ran three fresh-context and reload pairs per target. Values are medians with sample ranges in parentheses. [Render game](https://everybody-throws-hands.onrender.com/)
+
+| Measurement | Render cold | Render warm | Local container cold | Local container warm |
+| --- | ---: | ---: | ---: | ---: |
+| Navigation to Home | 4.46 s (4.44–13.84) | 1.96 s (1.95–2.01) | 4.02 s (3.99–4.03) | 1.39 s (1.39–1.40) |
+| Lineup confirmation to live play | 15.17 s (15.17–15.19) | 5.08 s (5.08–5.11) | 16.35 s (16.33–16.38) | 5.07 s (5.06–5.08) |
+| Navigation to live play | 19.86 s (19.84–29.23) | 7.26 s (7.24–7.27) | 20.59 s (20.56–20.62) | 6.64 s (6.63–6.64) |
+
+The first cold Render run took 10.06 seconds to receive the first byte of the document and 29.23 seconds to reach live play. The other two cold runs received the first byte in 0.31–0.34 seconds and reached live play in about 19.85 seconds. The first-byte delay accounts for the outlier. Its cause was unverified, and the test did not deliberately idle the service.
+
+All 12 runs verified movement and the Stage 1 background. The hosted cold screenshot showed both fighter sprites and platform skins at live play. No page or console errors, art warnings, or failed non-audio requests were observed. The browser still could not attribute transfer bytes for the atlas pages through page-level resource timing. The next loading checks are slower networks, interrupted asset requests, and timed active-room reconnects.
+
+## Render slow-link and recovery checks
+
+The deployed `index-BRM95Ob2.js` bundle was tested in headless Chromium at 1280 × 720 and DPR 1. Three fresh-context and same-context reload pairs used 8 Mbps download and upload, 120 ms latency, and 2× CPU slowdown. The lineup was Moonshine versus All-Rounder on Stage 1. All six runs accepted movement and showed the selected backdrop. The cold capture showed both fighter sprites and the platform skins. Values are medians with sample ranges in parentheses. [Render game](https://everybody-throws-hands.onrender.com/)
+
+| Measurement | Render 8 Mbps cold | Render 8 Mbps warm | Previous Render 20 Mbps cold | Previous Render 20 Mbps warm |
+| --- | ---: | ---: | ---: | ---: |
+| Navigation to Home | 7.18 s (7.09–7.41) | 2.00 s (2.00–2.01) | 4.46 s | 1.96 s |
+| Lineup confirmation to live play | 33.18 s (33.09–33.38) | 5.13 s (5.13–5.18) | 15.17 s | 5.08 s |
+| Navigation to live play | 40.69 s (40.58–40.70) | 7.35 s (7.31–7.37) | 19.86 s | 7.26 s |
+
+### Interrupted fighter atlas
+
+In a two-client room, the browser aborted the guest's first request for `atlas-abe-lincoln-live-0.webp` with a simulated connection reset. The host became ready and the countdown remained blocked at one of two players ready. The guest saw no alert within 20 seconds. On the longer run, the fighter-art alert appeared about 60 seconds after arena confirmation. The guest used Change fighter, reconfirmed the same lineup, and the second request for that atlas returned HTTP 200. Neither client entered live play within 60 seconds after the retry. The cause of the stalled retry remains open. The current production clip loader can wait up to 60 seconds. [Clip loader](../apps/client/src/renderer/fullbody/FullBodyPilot.ts#L52)
+
+### Active-room reconnect
+
+Three separate two-client rooms used Abe Lincoln versus Swift on Stage 6. Each guest refreshed the same tab while the match was live. The host stayed unthrottled. The two slow cases used the 8 Mbps, 120 ms, 2× CPU profile only for the guest refresh. Browser cache bypass retained session storage so the guest could still present its reconnect identity. Times start immediately before refresh.
+
+| Guest refresh profile | Rejoin request sent | Match restored | Movement visible to host | Host reached results |
+| --- | ---: | ---: | ---: | ---: |
+| Unthrottled, cache enabled | 3.43 s | 3.68 s | 3.95 s | — |
+| 8 Mbps, cache enabled | 30.54 s | No recovery in 70 s | — | 30.21 s |
+| 8 Mbps, cache bypassed | 37.37 s | No recovery in 70 s | — | 30.33 s |
+
+The unthrottled refresh restored the same fighter slot and arena. Both throttled requests were sent after the host reached results. The client currently waits for artwork for the entire roster before constructing the network client on a saved-room startup. The server enforces a 30-second disconnect grace period. Prioritize reconnecting before full-roster art loading and verify restored control at 8 Mbps with cache enabled and bypassed. [Startup](../apps/client/src/main.ts#L202) · [Grace expiry](../apps/server/src/createApp.ts#L410)
+
+### Separate first-byte investigation
+
+Eight unthrottled probes each of the HTML document and favicon returned HTTP 200, spaced three seconds between pairs. HTML first byte was 0.19–0.32 seconds with a 0.27-second median. Favicon first byte was 0.18–0.35 seconds with a 0.24-second median. HTML TLS setup finished within 0.14 seconds, and the remaining time from connection setup to first byte was at most 0.23 seconds. The three fresh-context 8 Mbps navigations reported 0.18–0.22 seconds to the first HTML byte.
+
+The earlier 10.06-second wait did not recur. It occurred before the first HTML byte and therefore preceded fighter and arena loading. These probes hit a running service. There is no controlled idle-wake sample or provider log for the original request. If it recurs, capture the UTC timestamp, Render request ID, and connection phases for correlation with provider logs.
+
+## Reconnect and atlas retry fixes
+
+The client opens the room connection without waiting for roster artwork. The first restored snapshot identifies the fighters to load. The current arena and match state recover independently, and the live renderers attach the selected full-body sprites as they become available. The match can accept input while the fallback art is still visible. The server's 30-second grace window is unchanged. [Reconnect path](../apps/client/src/main.ts#L725) · [Live art attachment](../apps/client/src/renderer/FighterRenderer.ts#L188)
+
+Production atlas downloads use individually bounded fetches. Successful pages remain available for the next attempt, and failed requests are evicted so the same lineup can retry. The cold-cache retest also exposed a five-second manifest deadline while downloading the 2.54 MB source manifest, so the manifest deadline is now 20 seconds. [Atlas loader](../apps/client/src/renderer/fullbody/FullBodyPilot.ts#L27)
+
+The patched production build ran locally in Chromium. The guest used the same 8 Mbps download and upload, 120 ms latency, and 2× CPU slowdown as the prior Render run. The host stayed unthrottled. Each reconnect row is one independent Stage 6 match with Abe Lincoln and Swift.
+
+| Guest refresh profile | Rejoin request sent | Match restored | Movement visible to host |
+| --- | ---: | ---: | ---: |
+| Unthrottled, cache enabled | 0.16 s | 0.67 s | 0.95 s |
+| 8 Mbps, cache enabled | 4.31 s | 4.46 s | 4.60 s |
+| 8 Mbps, cache bypassed | 6.27 s | 6.45 s | 6.60 s |
+
+All three refreshes restored the same fighter slot and arena. Both slow cases stayed inside the grace window and began loading the two fighters' atlas pages without requesting unrelated fighters. The prior deployed slow-link failures are recorded separately because the patched test used a local production server.
+
+At 8 Mbps, a simulated reset of the guest's first Lincoln atlas request kept the countdown blocked and showed the artwork alert after 36.82 seconds. The guest used Change fighter and reconfirmed the same lineup. Both clients reached live play 7.73 seconds after retry. The slow first alert remains observable while the other selected assets finish. A browser regression also holds an atlas through refresh, confirms the match is restored while it is held, then releases it and verifies both full-body sprites. [Recovery regressions](../apps/client/e2e/online-art-recovery.spec.ts)
+
+The next release check is to run the two slow cache modes and the interrupted-atlas retry on Render with the patched bundle.

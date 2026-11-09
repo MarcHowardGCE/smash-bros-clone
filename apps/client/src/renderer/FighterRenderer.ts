@@ -73,7 +73,8 @@ function lerpColor(a: number, b: number, t: number): number {
 export class FighterRenderer {
   readonly container: Container;
   private readonly partRenderer: IPartRenderer;
-  private readonly fullBodyPilot?: FullBodyPilot;
+  private fullBodyPilot?: FullBodyPilot;
+  private readonly dojoArtId?: FighterRendererOptions['dojoArtId'];
   private readonly pattern: PatternDescriptor;
   private readonly shieldBubble: Graphics;
   private readonly playerMarker = new Graphics();
@@ -101,6 +102,7 @@ export class FighterRenderer {
   ) {
     this.slotIndex = slotIndex;
     this.characterId = characterId;
+    this.dojoArtId = options.dojoArtId;
     this.container = new Container();
     this.partRenderer = createPartRenderer(
       options.mode,
@@ -182,6 +184,18 @@ export class FighterRenderer {
    * Start the hit flash effect. Tints the fighter golden-yellow for HIT_FLASH_FRAMES.
    * Rapid successive hits restart the timer (no stacking).
    */
+  /** Attach completed sprite artwork without replacing the live fighter renderer. */
+  setFullBodyAssets(assets: FullBodyPilotAssets): void {
+    if (this.fullBodyPilot) {
+      this.fullBodyPilot.setAssets(assets);
+    } else if (assets.characters[this.dojoArtId ?? this.characterId ?? 'all-rounder']?.idle) {
+      this.fullBodyPilot = new FullBodyPilot(assets, this.characterId, this.dojoArtId);
+      const index = this.container.getChildIndex(this.partRenderer.container) + 1;
+      this.container.addChildAt(this.fullBodyPilot.sprite, index);
+      this.container.addChildAt(this.fullBodyPilot.effectSprite, index + 1);
+    }
+  }
+
   startGrabReaction(move:import('@smash/shared').MoveId,facing:1|-1):void{this.fullBodyPilot?.startGrabReaction(move,facing);}
   startCounterReaction():void{this.fullBodyPilot?.startCounterReaction();}
 

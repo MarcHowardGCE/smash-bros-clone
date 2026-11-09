@@ -56,4 +56,5 @@ export interface Room {
   /** Unix timestamp (ms) when the room was created. */
   createdAt: number;
   stageId: string;
+  stagePreparation?: { id: number; readyPlayers: Set<PlayerId> };
 }

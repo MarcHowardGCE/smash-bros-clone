@@ -182,7 +182,10 @@ describe('RoomManager character select flow', () => {
 
     const before = manager.getRoom(setup.roomCode);
     expect(before?.phase).toBe('STAGE_SELECT');
-    manager.confirmStage(setup.roomCode,setup.hostPlayerId);
+    manager.confirmStage(setup.roomCode, setup.hostPlayerId);
+    const preparationId = manager.getSelectionState(setup.roomCode)?.preparation?.id;
+    manager.markStagePrepared(setup.roomCode, setup.hostPlayerId, preparationId);
+    manager.markStagePrepared(setup.roomCode, setup.guestPlayerId, preparationId);
     expect(before?.phase).toBe('COUNTDOWN');
 
     const removed = manager.removePlayer('socket-host');

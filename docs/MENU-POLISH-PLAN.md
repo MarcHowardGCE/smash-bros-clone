@@ -139,3 +139,33 @@ The previous production-preview run spent 36.3 seconds cold and 24.7 seconds war
 The cold Moonshine versus All-Rounder test reached live play in 19.6 seconds from lineup confirmation, including the countdown. It requested those two fighters and the shared effects atlas. The rendered first fight showed both sprite fighters, the platform skins and the stage background. A two-client test held one atlas request and verified the lobby waited to advance, then both clients displayed the selected newcomer sprites. A separate Dojo check loaded Moonshine, Hoagie and shared effects without downloading any original fighter sheets.
 
 Next loading priority is the first fight and online readiness. Measure atlas transfer and decode costs, then evaluate smaller production pages and an online preflight scoped to confirmed lineups. Repeat the cold and warm measurements on the deployed host. Full accessibility and extended hardware signoff are still open.
+
+## First-fight atlas follow-up — November 9, 2026
+
+Production builds now crop unused right and bottom space outside the registered frames and padding, then encode smaller pages as lossless WebP. The build checks alpha and every visible pixel against the PNG before replacing a page in the build output. Frame rectangles, pivots, and effect registrations stay the same. Development and the source PNG atlases retain their existing format.
+
+All 20 packed pages converted, and 3,149 frame records were verified against the original manifests. Across both atlas packs, bytes fell from 81.8 MB to 60.8 MB and decoded pixels fell from 83.9 million to 56.9 million. The isolated production build took about 26 seconds with compression, compared with about 4 seconds in the previous build.
+
+| Cold Moonshine versus All-Rounder | PNG | Trimmed lossless WebP |
+| --- | ---: | ---: |
+| Time from lineup confirmation to live play, including countdown | 19.57 s | 16.91 s |
+| Last atlas response from lineup confirmation | 15.48 s | 12.79 s |
+| Atlas response bodies | 26.92 MB | 20.12 MB |
+| Decoded atlas pixels | 25.17 million | 17.77 million |
+| Isolated browser decode, median of three runs | 185 ms | 259 ms |
+
+Each build ran in a fresh Chromium context against a local production preview at 20 Mbps, 60 ms latency and 2× CPU slowdown. The decode test used sequential createImageBitmap calls on downloaded blobs. WebP took about 74 ms longer to decode those pages. The smaller downloads saved 2.66 seconds overall. Both fighters, the platform skins and the world background were present at live play, with no fighter-loader errors. The 442 targeted client tests passed.
+
+Evidence is in the working session under outputs/menu-signoff-20261109, including atlas-transport-ab.json and both first-fight screenshots. Next, reduce the remaining first-fight and online Ready waits by preflighting confirmed online lineups and testing cache behavior on the deployed host. Accessibility and extended hardware signoff remain open.
+
+## Online lineup preparation — November 9, 2026
+
+Lobby Ready now goes directly to the server. Each client starts preparing the distinct fighters in the confirmed lineup and shared effects when the room reaches World Select. The roster remains available during fighter selection without downloading its combat sheets.
+
+When the host chooses the arena, the server assigns a preparation ID to that lineup and arena. Both clients show progress while they settle fighter and arena loading. The server starts the existing three-second countdown after every room member acknowledges that ID. Changing fighters, backing out, or leaving invalidates preparation. Duplicate acknowledgments count once and stale acknowledgments cannot start a match.
+
+If a selected fighter's idle artwork is unavailable, the client shows an error and offers the existing Change fighter route so players can retry or choose another fighter. Arena artwork retains its bounded load and stable fallback behavior. Active-room refresh and reconnect still use eager preparation. The client and server must be deployed together for the new handshake.
+
+In a fresh two-client local browser test, Ready reached fighter selection in 128 ms with zero atlas requests. The Moonshine and Hoagie lineup requested only their pages and shared effects on each client. A held guest fighter page and Stage 3 background exercised cancellation and reconfirmation. Releasing the fighter page alone left the countdown blocked. After the background was released, both clients entered the match with both sprite fighters and the Stage 3 background visible. Server tests cover duplicate, stale, non-member and departed-client acknowledgments.
+
+Deployed-host verification, accessibility review and extended physical-controller signoff remain open. Evidence is saved in the working session under outputs/menu-signoff-20261109/online-lineup-readiness.json.

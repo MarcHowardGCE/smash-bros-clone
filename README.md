@@ -61,7 +61,7 @@ test runs all five fighter suites. E2E runs all browser specs; test:e2e:visual s
 lint aliases real TypeScript checking; no style linter is configured.
 Browser/asset tests write evidence; replacement-art tests temporarily swap generated assets and restore them.
 For verification without reading environment files, set SMASH_ENV_DIR to a dedicated empty directory; Vite/Vitest and build-backed tests inherit it.
-Set SKIP_ASSETPACK=1 to use committed fighter atlases.
+Set SKIP_ASSETPACK=1 to use committed fighter atlases. Production builds trim unused space from full-body atlas pages and use smaller lossless WebP copies in the build output. The build verifies visible pixels and keeps the source PNG atlases.
 
 ## Assets
 Six-part articulated sprites have polygon fallback; ?renderer=polygon forces it.
@@ -354,7 +354,7 @@ World Select shows arena art, a collision-based platform diagram, and an optiona
 
 The main menu separates Local Play, Online Play, and Training Dojo. Local Play shows two to four seat cards with controller and CPU information. Use Online Play to create a private room or join with a six-character code. The room lobby displays the invite link, connected seats, and server-confirmed readiness.
 
-Local and online fighter selection now share a portrait roster and engine-backed weight, run speed, and air speed comparisons. Select a local seat to edit its choice, and use Next fighter to change the comparison independently. In Training Dojo, Escape or the controller pause button opens a wide console with Session, Timing & Display, Recordings, and Settings tabs. Menu navigation follows native Tab focus, compact Settings retains its navigation while content scrolls, and startup shows a loading status while the menu opens. Local Play and Dojo load the selected fighters on demand. Online Ready waits for the roster artwork. See the [menu polish plan](docs/MENU-POLISH-PLAN.md).
+Local and online fighter selection now share a portrait roster and engine-backed weight, run speed, and air speed comparisons. Select a local seat to edit its choice, and use Next fighter to change the comparison independently. In Training Dojo, Escape or the controller pause button opens a wide console with Session, Timing & Display, Recordings, and Settings tabs. Menu navigation follows native Tab focus, compact Settings retains its navigation while content scrolls, and startup shows a loading status while the menu opens. Local Play and Dojo load the selected fighters on demand. Online Ready opens fighter selection immediately. After everyone confirms a fighter, the clients load the lineup and the server waits for artwork preparation before countdown. See the [menu polish plan](docs/MENU-POLISH-PLAN.md).
 
 Selection design preview is in outputs/menu-prototype-v1. Fighter canon remains open for collaborative writing. The game now uses a scoped illustrated menu surface with readable panels and profile-derived Xbox B/A hints. Countdown/match keep the arena visible; pause uses a translucent scrim. This is the foundation pass; portrait-based character selection, story-based stage selection, state-preserving back navigation, and unified online selection remain upcoming integration work.
 

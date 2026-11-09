@@ -233,42 +233,50 @@ export function createApp(): {
     socket.on('stage:confirm',(_code:unknown,ack?: (result:unknown)=>void)=>{
       const roomInfo=roomManager.getRoomBySocketId(socket.id);if(!roomInfo){if(typeof ack==='function')ack({error:'Not in room'});return;}
       const result=roomManager.confirmStage(roomInfo.room.code,roomInfo.playerId);if(typeof ack==='function')ack(result);
-      				if (!("error" in result)) {
-					console.log(`[room] all characters confirmed in ${roomInfo.room.code}, starting countdown after stage confirmation`);
-					io.to(roomInfo.room.code).emit("game:countdown", { seconds: 3, stageId:roomInfo.room.stageId });
+      if (!("error" in result)) broadcastSelection(roomInfo.room.code);
+    });
 
-					const normalizedRoomCode = roomInfo.room.code;
-					const timer = setTimeout(() => {
-						countdownTimers.delete(normalizedRoomCode);
-						if(roomManager.getRoom(normalizedRoomCode)?.phase!=='COUNTDOWN')return;
-						roomManager.startMatch(normalizedRoomCode);
-						const playerIds = roomManager.getPlayerIds(normalizedRoomCode);
-						const characterSelections = roomManager.getCharacterSelections(normalizedRoomCode);
-						io.to(normalizedRoomCode).emit("game:start", { playerIds, stageId:roomInfo.room.stageId });
+    socket.on('stage:prepared', (_code: unknown, preparationId: unknown, ack?: (result: unknown) => void) => {
+      const roomInfo = roomManager.getRoomBySocketId(socket.id);
+      if (!roomInfo) { if (typeof ack === 'function') ack({ error: 'Not in room' }); return; }
+      const result = roomManager.markStagePrepared(roomInfo.room.code, roomInfo.playerId, preparationId);
+      if (typeof ack === 'function') ack(result);
+      if ("error" in result) return;
+      if (!result.allPrepared) { broadcastSelection(roomInfo.room.code); return; }
+      const { code, stageId } = roomInfo.room;
+      console.log(`[room] arena prepared by all clients in ${code}, starting countdown`);
+      io.to(code).emit("game:countdown", { seconds: 3, stageId });
 
-						const session = new MatchSession({
-              stageId:roomInfo.room.stageId,
-							playerIds,
-							characterIds: characterSelections as Record<PlayerId, CharacterId>,
-							onPauseChange: (paused) => {
-                io.to(normalizedRoomCode).emit(paused ? "game:paused" : "game:resumed");
-              },
-              onBroadcast: (binary) => {
-								io.to(normalizedRoomCode).emit("game:state", binary);
-							},
-							onMatchOver: (winnerId) => {
-								roomManager.endMatch(normalizedRoomCode);
-								matchSessions.delete(normalizedRoomCode);
-								io.to(normalizedRoomCode).emit("game:over", { winnerId });
-							},
-						});
+      const timer = setTimeout(() => {
+        countdownTimers.delete(code);
+        if (roomManager.getRoom(code)?.phase !== 'COUNTDOWN') return;
+        roomManager.startMatch(code);
+        const playerIds = roomManager.getPlayerIds(code);
+        const characterSelections = roomManager.getCharacterSelections(code);
+        io.to(code).emit("game:start", { playerIds, stageId });
 
-						matchSessions.set(normalizedRoomCode, session);
-						session.start();
-					}, 3000);
+        const session = new MatchSession({
+          stageId,
+          playerIds,
+          characterIds: characterSelections as Record<PlayerId, CharacterId>,
+          onPauseChange: paused => {
+            io.to(code).emit(paused ? "game:paused" : "game:resumed");
+          },
+          onBroadcast: binary => {
+            io.to(code).emit("game:state", binary);
+          },
+          onMatchOver: winnerId => {
+            roomManager.endMatch(code);
+            matchSessions.delete(code);
+            io.to(code).emit("game:over", { winnerId });
+          },
+        });
 
-					countdownTimers.set(normalizedRoomCode, timer);
-				}
+        matchSessions.set(code, session);
+        session.start();
+      }, 3000);
+
+      countdownTimers.set(code, timer);
     });
 
 		socket.on("game:input", (data: unknown) => {

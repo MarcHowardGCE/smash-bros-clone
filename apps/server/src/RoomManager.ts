@@ -43,7 +43,7 @@ function generatePlayerId(): PlayerId {
  * ```
  * LOBBY
  *   └─ all players ready → CHARACTER_SELECT
- *        └─ all characters confirmed → STAGE_SELECT → host confirms stage → COUNTDOWN
+ *        └─ all characters confirmed → STAGE_SELECT → host confirms stage → all clients prepare art → COUNTDOWN
  *             └─ countdown elapses → MATCH
  *                  └─ match ends / last player disconnects → RESULT
  * ```
@@ -58,6 +58,7 @@ function generatePlayerId(): PlayerId {
  */
 export class RoomManager {
   private rooms = new Map<string, Room>();
+  private nextPreparationId = 0;
   private disconnectedPlayers = new Map<PlayerId, DisconnectedPlayerRecord>();
 
   /**
@@ -188,18 +189,21 @@ export class RoomManager {
   getSelectionState(roomCode:string) {
     const room=this.rooms.get(roomCode);if(!room)return null;
     const players=[...room.players.values()].sort((a,b)=>a.slotIndex-b.slotIndex);
-    return {phase:room.phase,hostPlayerId:players[0]?.playerId,stageId:room.stageId,players:players.map(p=>({playerId:p.playerId,slotIndex:p.slotIndex,characterId:p.characterId,confirmed:p.characterConfirmed,ready:p.isReady}))};
+    const preparation = room.stagePreparation;
+    return {phase:room.phase,hostPlayerId:players[0]?.playerId,stageId:room.stageId,players:players.map(p=>({playerId:p.playerId,slotIndex:p.slotIndex,characterId:p.characterId,confirmed:p.characterConfirmed,ready:p.isReady})), ...(preparation ? { preparation: { id: preparation.id, readyPlayerIds: [...preparation.readyPlayers] } } : {})};
   }
   unconfirmCharacter(code:string,id:PlayerId):{ok:true}|{error:string}{
     const room=this.rooms.get(code);if(!room)return {error:'Room not found'};
     const player=room.players.get(id);if(!player)return {error:'Player not in room'};
     if(room.phase!=='CHARACTER_SELECT'&&room.phase!=='STAGE_SELECT')return {error:'Selection is already closed'};
+    delete room.stagePreparation;
     player.characterConfirmed=false;room.phase='CHARACTER_SELECT';return {ok:true};
   }
   selectionBack(code:string,id:PlayerId):{ok:true}|{error:string}{
     const room=this.rooms.get(code);if(!room||!room.players.has(id))return {error:'Player not in room'};
     if(room.phase==='STAGE_SELECT'){
       if(this.getSelectionState(code)?.hostPlayerId!==id)return {error:'Only the host can return everyone to fighters'};
+      delete room.stagePreparation;
       room.phase='CHARACTER_SELECT';for(const p of room.players.values())p.characterConfirmed=false;
     }else if(room.phase==='CHARACTER_SELECT'){this.resetToLobby(code);}else return {error:'Cannot go back from this phase'};
     return {ok:true};
@@ -209,13 +213,31 @@ export class RoomManager {
     if(room.phase!=='STAGE_SELECT')return {error:'Not in stage select'};
     if(this.getSelectionState(code)?.hostPlayerId!==id)return {error:'Only the host can choose the stage'};
     if(typeof stageId!=='string'||!/^stage[1-6]$/.test(stageId))return {error:'Invalid stage'};
+    if (room.stagePreparation && room.stageId !== stageId) return {error:'The arena is already being prepared'};
     room.stageId=stageId;return {ok:true};
   }
   confirmStage(code:string,id:PlayerId):{ok:true}|{error:string}{
     const room=this.rooms.get(code);if(!room||!room.players.has(id))return {error:'Player not in room'};
     if(room.phase!=='STAGE_SELECT'||this.getSelectionState(code)?.hostPlayerId!==id)return {error:'Only the host can start from stage select'};
     if(room.players.size<2||![...room.players.values()].every(p=>p.characterConfirmed))return {error:'Players are not ready'};
-    room.phase='COUNTDOWN';return {ok:true};
+    room.stagePreparation ??= { id: ++this.nextPreparationId, readyPlayers: new Set() };
+    return {ok:true};
+  }
+
+  markStagePrepared(code: string, id: PlayerId, preparationId: unknown): { ok: true; allPrepared: boolean } | { error: string } {
+    const room = this.rooms.get(code);
+    const preparation = room?.stagePreparation;
+    if (!room || !room.players.has(id)) return { error: 'Player not in room' };
+    if (room.phase !== 'STAGE_SELECT' || !preparation || preparation.id !== preparationId) {
+      return { error: 'Arena preparation has changed' };
+    }
+    preparation.readyPlayers.add(id);
+    const allPrepared = preparation.readyPlayers.size === room.players.size;
+    if (allPrepared) {
+      delete room.stagePreparation;
+      room.phase = 'COUNTDOWN';
+    }
+    return { ok: true, allPrepared };
   }
 
   /**
@@ -322,6 +344,7 @@ export class RoomManager {
     const room = this.rooms.get(roomCode);
     if (!room) return;
     room.phase = 'LOBBY';
+    delete room.stagePreparation;
     for (const player of room.players.values()) {
       player.isReady = false;
       player.characterConfirmed = false;
@@ -345,6 +368,7 @@ export class RoomManager {
           room.players.delete(playerId);
           if (room.phase === 'CHARACTER_SELECT' || room.phase === 'STAGE_SELECT' || room.phase === 'COUNTDOWN') {
             room.phase = 'LOBBY';
+            delete room.stagePreparation;
             for (const remainingSlot of room.players.values()) {
               remainingSlot.isReady = false;
               remainingSlot.characterConfirmed = false;

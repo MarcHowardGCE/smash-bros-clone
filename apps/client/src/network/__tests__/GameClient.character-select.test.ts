@@ -344,7 +344,7 @@ describe('GameClient - character select', () => {
   it('emits authorized selection requests and reports timeouts without faking success',()=>{
     (gameClient as any).myRoomCode='ABC123';const callback=vi.fn();gameClient.selectStage('stage6',callback);
     const sent=mockSocket._getEmitCalls()[0];expect(sent.event).toBe('stage:select');expect(sent.args.slice(0,2)).toEqual(['ABC123','stage6']);sent.args[2](new Error('timeout'));expect(callback).toHaveBeenCalledWith({error:'Request timed out. Please try again.'});
-    mockSocket._clearEmitCalls();gameClient.unconfirmCharacter(callback);expect(mockSocket._getEmitCalls()[0].event).toBe('character:unconfirm');gameClient.selectionBack();gameClient.confirmStage();expect(mockSocket.timeout).toHaveBeenCalledWith(5000);
+    mockSocket._clearEmitCalls();gameClient.unconfirmCharacter(callback);expect(mockSocket._getEmitCalls()[0].event).toBe('character:unconfirm');gameClient.selectionBack();gameClient.confirmStage();gameClient.markStagePrepared(42);expect(mockSocket._getEmitCalls().at(-1)).toMatchObject({event:"stage:prepared",args:["ABC123",42,expect.any(Function)]});expect(mockSocket.timeout).toHaveBeenCalledWith(5000);
   });
   it('applies the authoritative stage before countdown presentation',()=>{
     const order:string[]=[];options.onStageChanged=id=>order.push(id);options.onMatchPhaseChange=phase=>order.push(phase);

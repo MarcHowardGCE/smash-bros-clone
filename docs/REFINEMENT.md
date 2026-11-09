@@ -14,7 +14,7 @@ Scope: apps/, packages/, fighter assets and supporting scripts only. bonney/ is 
 
 ## Current decisions
 
-- Menu signoff passed the 64-case layout matrix and simulated controller flows. Initial hardware checks were reported as passing. Deferred atlas loading reduced local production-preview Home entry to 3.4 seconds cold and 1.4 seconds warm. First-match loading and deployed-host checks remain open. See the [menu signoff results](MENU-POLISH-PLAN.md#cross-screen-signoff-pass--november-9-2026).
+- Menu signoff passed the 64-case layout matrix and simulated controller flows. Initial hardware checks were reported as passing. Deferred atlas loading reduced local production-preview Home entry to 3.4 seconds cold and 1.4 seconds warm. Lossless production atlas compression reduced the tested cold first fight from 19.6 to 16.9 seconds. Online Ready now skips roster atlas loading, with countdown gated on preparation of the confirmed lineup on each client. Deployed-host and reconnect performance checks remain open. See the [menu signoff results](MENU-POLISH-PLAN.md#cross-screen-signoff-pass--november-9-2026).
 
 - Star and Screen KO presentation uses viewport-space flight, a Star KO twinkle, and a Screen KO impact hold and slide. The Dojo keeps replaying after lesson completion. See the [KO presentation audit](TRAINING-DOJO.md#star-and-screen-ko-presentation-audit).
 - Keep the existing 30-second mid-match reconnect grace. Expiry forfeits the disconnected fighter. Explicit Leave forfeits immediately. Empty rooms are removed; server shutdown stops sessions and clears timers.

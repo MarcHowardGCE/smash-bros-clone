@@ -913,7 +913,6 @@ export class UIManager {
     this.overlay.querySelector('#room-seat-count')!.textContent = this.roomPlayers.length + ' / 4';
     const ready = this.roomPlayers.find(player => player.playerId === this.myPlayerId)?.ready ?? false;
     const button = this.overlay.querySelector<HTMLButtonElement>('#ready-btn')!;
-    if (button.dataset.preparing && !ready) return;
     button.disabled = ready;
     button.textContent = ready ? 'Ready ✓' : 'Ready';
     this.phase = ready ? 'waiting' : 'lobby';
@@ -927,12 +926,12 @@ export class UIManager {
     this.playerCount = Math.max(this.playerCount, slotIndex + 1);
   }
 
-  showWaiting(message = 'Setting ready…'): void {
+  showWaiting(): void {
     this.phase = 'waiting';
     const button = this.overlay.querySelector<HTMLButtonElement>('#ready-btn');
     if (button) {
       const status = this.overlay.querySelector("#room-ready-status");
-      if (status) status.textContent = message;
+      if (status) status.textContent = 'Setting ready…';
       button.textContent = 'Setting ready…';
       button.disabled = true;
     }
@@ -1272,7 +1271,7 @@ export class UIManager {
   }
 
 
-  showNetworkStageWaiting(stage: StageConfig, onChangeFighter: () => void): void {
+  showNetworkStageWaiting(stage: StageConfig, onChangeFighter: () => void, preparationStatus?: string): void {
     const stageIndex = STAGES.findIndex(world => world.id === stage.id);
     const stages = stageIndex < 0 ? [stage] : STAGES;
     let panel = this.overlay.querySelector<HTMLElement>('#guest-world-preview');
@@ -1281,11 +1280,11 @@ export class UIManager {
       this.hudPanel.style.display = 'none';
       this.overlay.innerHTML = `
         <section class="menu-workspace world-selection world-guest" aria-labelledby="guest-world-title">
-          <header class="picker-header"><div><span class="menu-kicker">Online / Guest preview</span><h1 id="guest-world-title">Host is choosing</h1></div>
-            <span class="world-live-label">● Live preview</span></header>
+          <header class="picker-header"><div><span class="menu-kicker" id="guest-world-kicker"></span><h1 id="guest-world-title">Host is choosing</h1></div>
+            <span class="world-live-label" id="guest-world-live"></span></header>
           <section id="guest-world-preview" class="world-preview-panel" aria-label="Host’s highlighted world"></section>
           <p id="network-charselect-error" role="alert"></p>
-          <footer class="workspace-footer"><p class="picker-help">The host chooses the arena for everyone.</p>
+          <footer class="workspace-footer"><p class="picker-help" id="guest-world-status" role="status"></p>
             <button type="button" class="menu-quiet" id="online-change-fighter">Change fighter · ${this.prompt('cancel')}</button></footer>
         </section>`;
       panel = this.overlay.querySelector('#guest-world-preview')!;
@@ -1295,6 +1294,10 @@ export class UIManager {
       change.addEventListener('click', onChangeFighter);
       change.addEventListener('focus', () => this.menuNav?.selectIndex(0));
     }
+    this.overlay.querySelector('#guest-world-kicker')!.textContent = preparationStatus ? 'Online / Match setup' : 'Online / Guest preview';
+    this.overlay.querySelector('#guest-world-live')!.textContent = preparationStatus ? '● Checking artwork' : '● Live preview';
+    this.overlay.querySelector('#guest-world-title')!.textContent = preparationStatus ? 'Preparing match' : 'Host is choosing';
+    this.overlay.querySelector('#guest-world-status')!.textContent = preparationStatus ?? 'The host chooses the arena for everyone.';
     if (panel.dataset.worldPreview === stage.id) return;
     const storyFocused = panel.contains(document.activeElement);
     const storyOpen = panel.querySelector('#stage-story-toggle')?.getAttribute('aria-expanded') === 'true';

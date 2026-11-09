@@ -672,12 +672,14 @@ async function main() {
     }
   };
   let onlineSelectionScreen:string|null=null;
+  let onlinePreparationId: number | undefined;
+  let onlineLineup: { key: string; ready: Promise<void> } | undefined;
   let networkIntroFighters: ResultFighter[] = [];
   const showOnlineFighters=(playerIds:PlayerId[]):void=>{
       onlineSelectionScreen="fighters";
       if (!myPlayerId) return;
       uiManager.showNetworkCharacterSelect(
-        roster.filter(fighter => !newcomerArtId(fighter.id as CharacterId) || fullBodyPilot?.characters[fighter.id as CharacterId]?.idle),
+        roster,
         myPlayerId,
         playerIds,
         (characterId) => gameClient.selectCharacter(characterId),
@@ -801,6 +803,8 @@ async function main() {
     },
     onStageChanged:(id)=>{const stage=STAGES.find(s=>s.id===id);if(stage){selectedStage=stage;setStageBackground(stage.backgroundImage);}},
     onSelectionState:(state)=>{
+      if (!state.preparation) onlinePreparationId = undefined;
+      if (state.phase !== 'STAGE_SELECT') onlineLineup = undefined;
       networkIntroFighters = state.players.map(player => ({
         playerId: player.playerId,
         id: player.characterId,
@@ -814,6 +818,32 @@ async function main() {
       }else if(state.phase==='STAGE_SELECT'){
         const stage=STAGES.find(s=>s.id===state.stageId)??STAGES[0]!;
         const error=(result:{ok:true}|{error:string})=>{if('error'in result){onlineSelectionScreen=null;gameClient.refreshSelectionState();uiManager.showNetworkCharacterSelectConfirmError(result.error);}};
+        const lineup = [...new Set(state.players.map(player => player.characterId as CharacterId))].sort();
+        const lineupKey = lineup.join(',');
+        if (onlineLineup?.key !== lineupKey) onlineLineup = { key: lineupKey, ready: prepareFighters(lineup) };
+        const preparation = state.preparation;
+        if (preparation) {
+          onlineSelectionScreen = 'preparing';
+          const { id, readyPlayerIds } = preparation;
+          uiManager.showNetworkStageWaiting(stage, () => gameClient.unconfirmCharacter(error),
+            `Preparing fighter and arena artwork · ${readyPlayerIds.length} / ${state.players.length} ready`);
+          if (!myPlayerId || readyPlayerIds.includes(myPlayerId) || onlinePreparationId === id) return;
+          onlinePreparationId = id;
+          void Promise.all([onlineLineup.ready, stageReady]).then(() => {
+            if (onlinePreparationId !== id || isLocalMode) return;
+            if (urlParams.get('renderer') !== 'legacy' && lineup.some(fighter => !fullBodyPilot?.characters[fighter]?.idle)) {
+              uiManager.showNetworkCharacterSelectConfirmError('Fighter artwork could not load. Change fighter to try again.');
+              return;
+            }
+            koPresenter.setAssets(fullBodyPilot);
+            gameClient.markStagePrepared(id, result => {
+              if ('error' in result && onlinePreparationId === id) {
+                uiManager.showNetworkCharacterSelectConfirmError(result.error + '. Change fighter to try again.');
+              }
+            });
+          });
+          return;
+        }
         if(state.hostPlayerId===myPlayerId){
           if(onlineSelectionScreen!=='host-stage'){
             onlineSelectionScreen='host-stage';
@@ -849,17 +879,8 @@ async function main() {
     gameClient.joinRoom(code);
   };
 
-  uiManager.onReady = async () => {
-    const button = document.querySelector<HTMLButtonElement>("#ready-btn");
-    if (isLocalMode || !button || button.dataset.preparing) return;
-    button.dataset.preparing = "true";
-    uiManager.showWaiting("Loading fighter artwork…");
-    await prepareFighters(allFighterIds);
-    if (!button.isConnected || isLocalMode) return;
-    delete button.dataset.preparing;
-    koPresenter.setAssets(fullBodyPilot);
-    uiManager.showWaiting();
-    gameClient.markReady();
+  uiManager.onReady = () => {
+    if (!isLocalMode) gameClient.markReady();
   };
 
   uiManager.onPlayAgain = () => {
@@ -1172,6 +1193,8 @@ async function main() {
   };
 
   uiManager.onMainMenu = () => {
+    onlinePreparationId = undefined;
+    onlineLineup = undefined;
     clearNetworkCountdown();
     const wasLocalMode = isLocalMode;
 

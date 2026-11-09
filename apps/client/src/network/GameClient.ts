@@ -52,7 +52,7 @@ extensionCodec.register({
     new Set<string>(decode(data, { extensionCodec }) as string[]),
 });
 
-export interface OnlineSelectionState {phase:string;hostPlayerId:string;stageId:string;players:{playerId:PlayerId;slotIndex:number;characterId:string;confirmed:boolean;ready?:boolean}[];}
+export interface OnlineSelectionState {phase:string;hostPlayerId:string;stageId:string;preparation?:{id:number;readyPlayerIds:PlayerId[]};players:{playerId:PlayerId;slotIndex:number;characterId:string;confirmed:boolean;ready?:boolean}[];}
 export interface GameClientOptions {
   onSelectionState?:(state:OnlineSelectionState)=>void;
   onStageChanged?:(stageId:string)=>void;
@@ -239,6 +239,7 @@ export class GameClient {
   selectionBack(callback?:(result:{ok:true}|{error:string})=>void):void {this.selectionRequest('selection:back',[],callback);}
   selectStage(stageId:string,callback?:(result:{ok:true}|{error:string})=>void):void {this.selectionRequest('stage:select',[stageId],callback);}
   confirmStage(callback?:(result:{ok:true}|{error:string})=>void):void {this.selectionRequest('stage:confirm',[],callback);}
+  markStagePrepared(id:number, callback?:(result:{ok:true}|{error:string})=>void):void {this.selectionRequest('stage:prepared',[id],callback);}
 
   /** Whether the game is currently paused. */
   get isPaused(): boolean {

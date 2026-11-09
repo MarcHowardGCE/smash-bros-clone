@@ -65,6 +65,14 @@ function emitWithAck<T>(
 	});
 }
 
+async function confirmPreparedStage(host: Socket, guest: Socket, roomCode: string): Promise<void> {
+  const preparation = waitForEvent<{ preparation: { id: number } }>(host, "room:selectionState");
+  expect(await emitWithAck<AckResponse>(host, "stage:confirm", roomCode)).toMatchObject({ ok: true });
+  const { preparation: { id } } = await preparation;
+  expect(await emitWithAck<AckResponse>(host, "stage:prepared", roomCode, id)).toMatchObject({ ok: true, allPrepared: false });
+  expect(await emitWithAck<AckResponse>(guest, "stage:prepared", roomCode, id)).toMatchObject({ ok: true, allPrepared: true });
+}
+
 const wait = (ms: number): Promise<void> =>
 	new Promise((resolve) => {
 		setTimeout(resolve, ms);
@@ -249,7 +257,7 @@ describe("createApp socket integration", () => {
 			"character:confirm",
 			roomCode,
 		);
-    await emitWithAck<AckResponse>(clientA,"stage:confirm",roomCode);
+    await confirmPreparedStage(clientA, clientB, roomCode);
 		expect(confirmAckB.ok).toBe(true);
 		expect(confirmAckB.allConfirmed).toBe(true);
 
@@ -371,7 +379,7 @@ describe("createApp socket integration", () => {
 			"character:confirm",
 			roomCode,
 		);
-    await emitWithAck<AckResponse>(clientA,"stage:confirm",roomCode);
+    await confirmPreparedStage(clientA, clientB, roomCode);
 		await countdownA;
 
 		let gameStartReceived = false;
@@ -442,7 +450,7 @@ describe("createApp socket integration", () => {
 			"character:confirm",
 			roomCode,
 		);
-    await emitWithAck<AckResponse>(clientA,"stage:confirm",roomCode);
+    await confirmPreparedStage(clientA, clientB, roomCode);
 		await countdownA;
 
 		// Wait for game to start
@@ -545,7 +553,7 @@ describe("createApp socket integration", () => {
 		);
 		await emitWithAck<AckResponse>(clientA, "character:confirm", roomCode);
 		await emitWithAck<AckResponse>(clientB, "character:confirm", roomCode);
-    await emitWithAck<AckResponse>(clientA,"stage:confirm",roomCode);
+    await confirmPreparedStage(clientA, clientB, roomCode);
 		await countdownA;
 
 		// Wait for game start

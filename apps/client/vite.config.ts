@@ -3,6 +3,7 @@ import { fileURLToPath } from 'node:url';
 import { AssetPack } from '@assetpack/core';
 import { defineConfig, type Plugin, type ResolvedConfig } from 'vite';
 import { createAssetPackConfig } from './assetpack.config.mjs';
+import { compactAtlasPlugin } from './atlas-transport.mjs';
 
 const SKIP_ASSETPACK_ENV = 'SKIP_ASSETPACK';
 const CONFIG_DIR = path.dirname(fileURLToPath(import.meta.url));
@@ -52,7 +53,7 @@ function assetPackVitePlugin(): Plugin {
 export default defineConfig({
   envDir: process.env.SMASH_ENV_DIR,
   publicDir: process.env.SMASH_PUBLIC_DIR,
-  plugins: [assetPackVitePlugin()],
+  plugins: [assetPackVitePlugin(), compactAtlasPlugin()],
   server: {
     port: 5173,
     proxy: {

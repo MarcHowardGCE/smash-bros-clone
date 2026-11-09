@@ -17,6 +17,7 @@ type DebugPlayer = {
 	readonly y: number;
 	readonly tick: number;
 	readonly isInvincible: boolean;
+	readonly invincibilityFrames: number;
 	readonly respawnTimer: number;
 };
 
@@ -103,6 +104,7 @@ async function getPlayerBySlot(
 										x: number;
 										y: number;
 										isInvincible: boolean;
+										invincibilityFrames: number;
 										respawnTimer: number;
 									}
 								>;
@@ -131,6 +133,7 @@ async function getPlayerBySlot(
 			y: candidate.y,
 			tick: snapshot.tick,
 			isInvincible: candidate.isInvincible,
+			invincibilityFrames: candidate.invincibilityFrames,
 			respawnTimer: candidate.respawnTimer,
 		};
 	}, slotIndex);
@@ -142,29 +145,35 @@ async function getPlayerBySlot(
 	return player;
 }
 
-async function forcePosition(
-	page: Page,
-	playerId: string,
-	x: number,
-	y: number,
-): Promise<void> {
-	const ok = await page.evaluate(
-		(payload: { playerId: string; x: number; y: number }) => {
-			const debug = (
-				window as Window & {
-					__smashDebug?: {
-						forcePosition?: (playerId: string, x: number, y: number) => boolean;
-					};
-				}
-			).__smashDebug;
-			return debug?.forcePosition?.(payload.playerId, payload.x, payload.y) ?? false;
-		},
-		{ playerId, x, y },
-	);
+async function crossBlastBoundary(page: Page, player: DebugPlayer, boundary: Boundary): Promise<void> {
+	await page.evaluate(({ id, stocks, near, over, keepInside }) => {
+		const debug = window.__smashDebug;
+		const startTick = debug.getSnapshot().tick;
+		if (!debug.forcePosition(id, near.x, near.y)) throw new Error(`Could not position ${id}`);
+		// Point away from the bottom blast zone while sampling the inside position.
+		if (keepInside) debug.getSnapshot().players[id].vy = -8;
 
-	if (!ok) {
-		throw new Error(`forcePosition failed for player ${playerId}`);
-	}
+		return new Promise<void>((resolve, reject) => {
+			const deadline = performance.now() + 2000;
+			const sample = () => {
+				const snapshot = debug.getSnapshot();
+				if (snapshot.tick > startTick) {
+					if (snapshot.players[id]?.stocks !== stocks) {
+						reject(new Error("The inside probe consumed a stock"));
+					} else if (!debug.forcePosition(id, over.x, over.y)) {
+						reject(new Error(`Could not cross the blast boundary with ${id}`));
+					} else {
+						resolve();
+					}
+				} else if (performance.now() >= deadline) {
+					reject(new Error("The simulation did not advance after the inside probe"));
+				} else {
+					requestAnimationFrame(sample);
+				}
+			};
+			requestAnimationFrame(sample);
+		});
+	}, { id: player.id, stocks: player.stocks, ...BOUNDARY_PROBES[boundary], keepInside: boundary === "bottom" });
 }
 
 async function drainKOEvents(page: Page): Promise<void> {
@@ -217,64 +226,38 @@ async function pollKOEvent(
 
 async function verifyRespawnAndInvincibility(
 	page: Page,
-	playerId: string,
+	respawning: DebugPlayer,
 	koTick: number,
 ): Promise<void> {
-	let releaseSnapshot: DebugPlayer | null = null;
-	const releaseDeadline = Date.now() + 8_000;
-	while (Date.now() < releaseDeadline) {
+	expect(respawning.respawnTimer).toBeGreaterThan(0);
+	expect(respawning.x).toBe(STAGE.SPAWN_X_P1);
+	expect(respawning.y).toBe(MATCH_CONFIG.RESPAWN_PLATFORM_Y);
+	expect(respawning.isInvincible).toBe(true);
+	expect(respawning.invincibilityFrames).toBe(MATCH_CONFIG.RESPAWN_INVINCIBILITY_FRAMES);
+
+	// Remaining counters give the transition tick even when Chromium skips a rendered frame.
+	const releaseTick = respawning.tick + respawning.respawnTimer;
+	const invincibilityEndTick = releaseTick + respawning.invincibilityFrames;
+	expect(Math.abs(releaseTick - koTick - MATCH_CONFIG.RESPAWN_DELAY_FRAMES)).toBeLessThanOrEqual(1);
+
+	let observedInvincibilityAfterRelease = false;
+	await expect.poll(async () => {
 		const current = await getPlayerBySlot(page, 0);
-		if (current.id !== playerId) {
-			throw new Error(`expected slot-0 id ${playerId}, got ${current.id}`);
+		expect(current.id).toBe(respawning.id);
+		expect(current.stocks).toBe(respawning.stocks);
+		if (current.tick < releaseTick) {
+			expect(current.tick + current.respawnTimer).toBe(releaseTick);
+			return false;
 		}
 
-		if (current.respawnTimer === 0) {
-			releaseSnapshot = current;
-			break;
-		}
-
-		await page.waitForTimeout(16);
-	}
-
-	if (!releaseSnapshot) {
-		throw new Error("respawn release timer did not reach 0");
-	}
-
-	const respawnDelayFrames = releaseSnapshot.tick - koTick;
-	expect(respawnDelayFrames).toBeGreaterThanOrEqual(
-		MATCH_CONFIG.RESPAWN_DELAY_FRAMES - 2,
-	);
-	expect(respawnDelayFrames).toBeLessThanOrEqual(
-		MATCH_CONFIG.RESPAWN_DELAY_FRAMES + 2,
-	);
-
-	expect(Math.abs(releaseSnapshot.x - STAGE.SPAWN_X_P1)).toBeLessThanOrEqual(3);
-	expect(Math.abs(releaseSnapshot.y - MATCH_CONFIG.RESPAWN_PLATFORM_Y)).toBeLessThanOrEqual(
-		3,
-	);
-
-	let invincibilityEndTick: number | null = null;
-	const invincibilityDeadline = Date.now() + 8_000;
-	while (Date.now() < invincibilityDeadline) {
-		const current = await getPlayerBySlot(page, 0);
-		if (!current.isInvincible) {
-			invincibilityEndTick = current.tick;
-			break;
-		}
-		await page.waitForTimeout(16);
-	}
-
-	if (invincibilityEndTick === null) {
-		throw new Error("invincibility did not end within timeout");
-	}
-
-	const invincibilityFrames = invincibilityEndTick - releaseSnapshot.tick;
-	expect(invincibilityFrames).toBeGreaterThanOrEqual(
-		MATCH_CONFIG.RESPAWN_INVINCIBILITY_FRAMES - 2,
-	);
-	expect(invincibilityFrames).toBeLessThanOrEqual(
-		MATCH_CONFIG.RESPAWN_INVINCIBILITY_FRAMES + 2,
-	);
+		expect(current.respawnTimer).toBe(0);
+		const remaining = Math.max(0, invincibilityEndTick - current.tick);
+		expect(current.invincibilityFrames).toBe(remaining);
+		expect(current.isInvincible).toBe(remaining > 0);
+		observedInvincibilityAfterRelease ||= remaining > 0;
+		return remaining === 0;
+	}, { timeout: 8000 }).toBe(true);
+	expect(observedInvincibilityAfterRelease).toBe(true);
 }
 
 async function runBoundaryScenario(page: Page, boundary: Boundary): Promise<void> {
@@ -282,16 +265,13 @@ async function runBoundaryScenario(page: Page, boundary: Boundary): Promise<void
 	const initial = await getPlayerBySlot(page, 0);
 	await drainKOEvents(page);
 
-	const probe = BOUNDARY_PROBES[boundary];
-	await forcePosition(page, initial.id, probe.near.x, probe.near.y);
-	await page.waitForTimeout(50);
-	await forcePosition(page, initial.id, probe.over.x, probe.over.y);
+	await crossBlastBoundary(page, initial, boundary);
 
 	const koEvent = await pollKOEvent(page, initial.id, boundary, 4_000);
 	const afterKO = await getPlayerBySlot(page, 0);
 	expect(initial.stocks - afterKO.stocks).toBe(1);
 
-	await verifyRespawnAndInvincibility(page, initial.id, koEvent.tick);
+	await verifyRespawnAndInvincibility(page, afterKO, koEvent.tick);
 }
 
 test.describe("Tier-1 blast-zone deterministic telemetry", () => {

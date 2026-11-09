@@ -45,7 +45,14 @@ For asset-replacement and visual baselines, run `pnpm test:e2e:visual`.
 
 The visual command runs the asset-replacement and visual baseline specs. The replacement tests can temporarily change generated assets. Use an isolated checkout, let the tests finish restoring their inputs, and check the asset diff before continuing.
 
-The full inventory uses `pnpm test:e2e`. Offline reviews use committed fixtures and browser evidence goes to Playwright's test output folders. Use an isolated checkout because some visual tests also regenerate tracked evidence. See the [clean-checkout rerun](../history/clean-checkout-verification.md#follow-up-with-portable-browser-tests) for the validated cases and remaining browser failures.
+Run the full inventory at standard density first, then run the higher-density projects.
+
+```sh
+pnpm test:e2e --project=chromium-dpr-1
+pnpm test:e2e --project=chromium-dpr-2 --project=chromium-dpr-3
+```
+
+The visual matrix compares lossless fighter and platform captures at each display density. Each run saves the current screenshots, diffs, a comparison report, and a full Stage 1 image to Playwright's test output folder. Set `UPDATE_BASELINES=1` only for an intentional baseline refresh. Review the new captures, clear that setting, and rerun the comparisons. See the [verification history](../history/clean-checkout-verification.md) for run results.
 
 ## Record signoff
 

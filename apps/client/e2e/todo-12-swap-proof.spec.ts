@@ -14,8 +14,6 @@ const CURRENT_DIR = path.dirname(CURRENT_FILE);
 
 const REPO_ROOT = path.resolve(CURRENT_DIR, '..', '..', '..');
 const CLIENT_ASSETS_ROOT = path.resolve(REPO_ROOT, 'apps', 'client', 'public', 'assets');
-const EVIDENCE_DIR = path.resolve(REPO_ROOT, 'docs', 'assets', 'evidence');
-const SWAP_SCREENSHOT = path.resolve(EVIDENCE_DIR, 'todo-12-swap-proof.png');
 
 const CHARACTER_IDS = ['all-rounder', 'abe-lincoln', 'swift'] as const;
 const PART_SPECS = {
@@ -238,7 +236,7 @@ test('replacement asset pack renders in Chromium via real AssetPack->Assets->ren
     }
   });
 
-  await fs.mkdir(EVIDENCE_DIR, { recursive: true });
+  const screenshotPath = testInfo.outputPath('todo-12-swap-proof.png');
 
   const tempRoot = await fs.mkdtemp(path.join(os.tmpdir(), 'todo-12-replacement-pack-'));
   const rawEntry = await createReplacementRawPack(tempRoot);
@@ -247,7 +245,7 @@ test('replacement asset pack renders in Chromium via real AssetPack->Assets->ren
   const restorePublicAssets = await swapPublicAssets(generatedAssetsDir);
 
   try {
-    await page.goto('/');
+    await page.goto('/?renderer=legacy');
     await page.waitForSelector('#splash-screen', { timeout: 10_000 });
     await page.click('#splash-screen');
     await page.waitForSelector('#local-play-btn', { timeout: 10_000 });
@@ -258,7 +256,7 @@ test('replacement asset pack renders in Chromium via real AssetPack->Assets->ren
     await page.click('#lps-start-btn');
     await page.waitForSelector('[data-player="1"][data-id="all-rounder"]', { timeout: 10_000 });
     await page.click('[data-player="1"][data-id="all-rounder"]');
-    await page.keyboard.press('Enter');
+    await page.locator('[data-ready-slot="0"]').click();
     await page.waitForSelector('[data-stage-idx="0"]', { timeout: 10_000 });
     await page.click('[data-stage-idx="0"]');
 
@@ -272,9 +270,9 @@ test('replacement asset pack renders in Chromium via real AssetPack->Assets->ren
     }, { timeout: 30_000, polling: 100 });
 
     await page.waitForTimeout(500);
-    await page.screenshot({ path: SWAP_SCREENSHOT });
+    await page.screenshot({ path: screenshotPath });
 
-    const screenshotBuffer = await fs.readFile(SWAP_SCREENSHOT);
+    const screenshotBuffer = await fs.readFile(screenshotPath);
     const screenshotImage = PNG.sync.read(screenshotBuffer);
     const magentaPixels = countNearColorPixels(screenshotImage, UNIQUE_HEAD_RGB, 28);
 

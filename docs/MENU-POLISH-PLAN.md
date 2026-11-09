@@ -181,3 +181,21 @@ Nintendo's [Ultimate gameplay demonstration](https://www.youtube.com/watch?v=8oP
 Browser checks at 1280×720, 1024×600 and 640×360 kept the Completed line inside its card without touching the next card. A close Dojo setup reached 1.63×. A forced spread with four fighters, including offstage positions, widened to 0.65× with all four centers visible. Both clients in an online match crossed 1.55×. The client type check and 420 targeted tests passed. Evidence is saved under outputs/menu-signoff-20261109/portrait-dojo-camera-checks.json and the companion Dojo screenshots.
 
 Next camera review should compare close exchanges, opposite ledges, vertical launches and respawns on all six worlds, then tune the upper limit and easing against comparable Ultimate captures and human play.
+
+## Render load benchmark — November 9, 2026
+
+Headless Chromium at 1280 × 720 and DPR 1 ran three cold and warm pairs per target. Chromium DevTools emulated 20 Mbps download and upload, 60 ms latency, and 2× CPU slowdown. Each cold run used a fresh browser context. The warm run reloaded in that same context after the first fight. Target order alternated. The Render service was already running, so these numbers measure browser-cache cold starts. The local target was the same production Docker image used in release smoke verification. [Render game](https://everybody-throws-hands.onrender.com/) · [Release evidence](history/clean-checkout-verification.md#linux-container-and-hosted-release-smoke)
+
+Every run dismissed the splash as soon as it was available, selected Moonshine against All-Rounder, and chose Stage 1 as soon as World Select was ready. Home is measured from navigation to the Local Play button becoming available. Fight time starts at lineup confirmation and ends when the simulation enters live play, including the countdown. All 12 runs then verified player movement. The table gives medians with sample ranges in parentheses.
+
+| Measurement | Render cold | Render warm | Local container cold | Local container warm |
+| --- | ---: | ---: | ---: | ---: |
+| Navigation to Home | 4.22 s (4.13–4.53) | 1.98 s (1.97–2.00) | 4.02 s (4.01–4.02) | 1.37 s (1.36–1.39) |
+| Lineup confirmation to live play | 15.16 s (14.73–15.19) | 5.08 s (5.08–5.11) | 16.35 s (16.35–16.35) | 5.06 s (5.05–5.08) |
+| Navigation to live play | 19.52 s (19.49–19.67) | 7.27 s (7.24–7.28) | 20.59 s (20.59–20.61) | 6.63 s (6.61–6.66) |
+
+The earlier optimized local Vite preview reached Home in 3.4 seconds cold and 1.4 seconds warm. Its trimmed WebP build took 16.91 seconds from lineup confirmation to live play cold. In the paired container comparison, Render reached Home 0.20 seconds later cold and 0.60 seconds later warm. The Render cold fight reached live play 1.19 seconds sooner, while warm fight times were within 0.02 seconds. The two targets served different client bundle hashes, `index-DnnslYQA.js` on Render and `index-BRM95Ob2.js` locally. This comparison measures the two configurations as served. It cannot isolate hosting from build differences.
+
+Stage 1 was applied at live play in all runs. The first Render cold and warm screenshots showed both fighter sprites, platform skins, and stage artwork. No page or console errors or failed non-audio requests were observed. Sampled Render production atlas and Stage 1 responses reported `Cache-Control: public, max-age=0` and `CF-Cache-Status: DYNAMIC`. Page resource timing did not capture the atlas image requests even though browser response events saw them. Atlas transfer bytes and CDN cache savings are therefore unmeasured in this pass.
+
+Next, repeat on the same released revision with a slower connection, an interrupted asset request, and active-room reconnect. Include a service-idle start separately if the deployed plan sleeps.

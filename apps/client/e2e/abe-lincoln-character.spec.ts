@@ -125,119 +125,51 @@ test('selecting Abe Lincoln starts match with visually distinct fighter', async 
 });
 
 // ─────────────────────────────────────────────────────────────────────────────
-// TEST 3: Lincoln forward smash deals 20% damage (not default 18%)
-//         and currentMoveId changes during special-move inputs
+// TEST 3: Lincoln forward smash uses his character-specific damage.
 // ─────────────────────────────────────────────────────────────────────────────
-test('Lincoln forward smash deals 20% damage and currentMoveId changes', async ({ page }) => {
-  test.setTimeout(90_000);
-
+test('Lincoln forward smash deals at least 20% damage', async ({ page }, testInfo) => {
   await navigateToCharacterSelect(page);
-
-  // Select Lincoln for P1
   await page.locator('[data-player="1"][data-id="abe-lincoln"]').click();
   await page.locator('[data-ready-slot="0"]').click();
-
   await waitForMatchStart(page);
 
-  // Force P2 close to P1 for reliable hit
-  const forceOk = await page.evaluate(() => {
-    const debug = (window as any).__smashDebug;
-    // Place P2 directly in front of P1 (P1 starts ~400, face right)
-    return debug?.forcePosition?.('local-p2', 480, 420) ?? false;
-  });
-  expect(forceOk).toBe(true);
-  await page.waitForTimeout(100);
-
-  // Record P2 percent before attack
-  const percentBefore = await page.evaluate(() => {
-    const state = (window as any).__DEBUG_GAME_STATE__?.();
-    if (!state) return -1;
-    const players = Object.values(state.players) as any[];
-    const p2 = players.find((p: any) => p.slotIndex === 1);
-    return p2?.percent ?? -1;
-  });
-
-  // Perform forward smash
-  await performP1ForwardSmash(page);
-
-  // Check currentMoveId changed during the attack (poll during next attempt)
-  // First, verify the damage dealt matches Lincoln's 20%
-  const percentAfter = await page.evaluate(() => {
-    const state = (window as any).__DEBUG_GAME_STATE__?.();
-    if (!state) return -1;
-    const players = Object.values(state.players) as any[];
-    const p2 = players.find((p: any) => p.slotIndex === 1);
-    return p2?.percent ?? -1;
-  });
-
-  const damageDealt = percentAfter - percentBefore;
-
-  // If first smash missed (P2 may have been in hitstun/knocked away), retry
-  if (damageDealt === 0) {
-    // Re-position P2 and try again
-    await page.evaluate(() => {
-      (window as any).__smashDebug?.forcePosition?.('local-p2', 480, 420);
-    });
-    await page.waitForTimeout(200);
-
-    const retryBefore = await page.evaluate(() => {
-      const state = (window as any).__DEBUG_GAME_STATE__?.();
-      const players = Object.values(state.players) as any[];
-      const p2 = players.find((p: any) => p.slotIndex === 1);
-      return p2?.percent ?? -1;
-    });
-
-    await performP1ForwardSmash(page);
-
-    const retryAfter = await page.evaluate(() => {
-      const state = (window as any).__DEBUG_GAME_STATE__?.();
-      const players = Object.values(state.players) as any[];
-      const p2 = players.find((p: any) => p.slotIndex === 1);
-      return p2?.percent ?? -1;
-    });
-
-    const retryDamage = retryAfter - retryBefore;
-    // Lincoln forward smash base = 20 (may be 20-22 with brief charge frames)
-    // Must NOT be 18 (all-rounder default forward smash)
-    expect(retryDamage).toBeGreaterThanOrEqual(20);
-    expect(retryDamage).not.toBe(18);
-  } else {
-    // Lincoln forward smash base = 20 (may be 20-22 with brief charge frames)
-    expect(damageDealt).toBeGreaterThanOrEqual(20);
-    expect(damageDealt).not.toBe(18);
-  }
-
-  // Verify currentMoveId changes during an attack: do another forward smash and poll mid-attack
   await page.evaluate(() => {
-    (window as any).__smashDebug?.forcePosition?.('local-p2', 480, 420);
+    const debug = window.__smashDebug;
+    debug.forcePosition('local-p1', 600, 468);
+    debug.forcePosition('local-p2', 645, 472);
+    const players = debug.getSnapshot().players;
+    Object.assign(players['local-p1'], { state: 'IDLE', isGrounded: true, facing: 1 });
+    Object.assign(players['local-p2'], {
+      state: 'HITSTUN', isGrounded: true, hitstunFramesRemaining: 3600,
+      isInvincible: false, invincibilityFrames: 0, respawnTimer: 0, percent: 0,
+    });
+    const keys = ['ArrowRight', 'ShiftLeft', 'KeyZ'];
+    for (const code of keys) {
+      window.dispatchEvent(new KeyboardEvent('keydown', { code, bubbles: true }));
+    }
+    return new Promise<void>((resolve, reject) => {
+      const deadline = performance.now() + 3000;
+      const sample = () => {
+        const started = debug.getSnapshot().players['local-p1'].currentMoveId === 'FORWARD_SMASH';
+        if (started || performance.now() >= deadline) {
+          for (const code of keys) {
+            window.dispatchEvent(new KeyboardEvent('keyup', { code, bubbles: true }));
+          }
+          if (started) resolve();
+          else reject(new Error('Lincoln did not start forward smash'));
+        } else {
+          requestAnimationFrame(sample);
+        }
+      };
+      requestAnimationFrame(sample);
+    });
   });
-  await page.waitForTimeout(200);
 
-  // Start forward smash and immediately check currentMoveId
-  await page.keyboard.down('ArrowRight');
-  await page.keyboard.down('KeyZ');
-  await page.waitForTimeout(100);
-  await page.keyboard.up('KeyZ');
-
-  // Poll for currentMoveId to be non-null (attack active)
-  const moveIdDuringAttack = await page.evaluate(() => {
-    const state = (window as any).__DEBUG_GAME_STATE__?.();
-    if (!state) return null;
-    const players = Object.values(state.players) as any[];
-    const p1 = players.find((p: any) => p.slotIndex === 0);
-    return p1?.currentMoveId ?? null;
-  });
-
-  await page.keyboard.up('ArrowRight');
-  await page.waitForTimeout(600);
-
-  // currentMoveId should have been set during attack frames
-  // Note: if we caught it during startup/active, it should be FORWARD_SMASH
-  // If timing missed it, at minimum assert the test didn't crash
-  // The primary assertion is the 20% damage above
-  await page.screenshot({ path: test.info().outputPath("task-15-lincoln-forward-smash.png") });
+  await expect.poll(() => page.evaluate(() =>
+    window.__smashDebug.getSnapshot().players['local-p2'].percent,
+  )).toBeGreaterThanOrEqual(20);
+  await page.screenshot({ path: testInfo.outputPath('lincoln-forward-smash.png') });
 });
-
 // ─────────────────────────────────────────────────────────────────────────────
 // TEST 4: All-Rounder regression — default selection (no click) behaves
 //         identically to before (smoke test)

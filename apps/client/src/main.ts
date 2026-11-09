@@ -1,4 +1,4 @@
-import { getStageLayout } from '@smash/shared';
+import { getCharacterStats, getStageLayout } from '@smash/shared';
 import{PracticeRoutine}from'./practice/PracticeRoutine.js';
 import{PracticeOverlay}from'./practice/PracticeOverlay.js';
 import './practice/practice.css';
@@ -402,7 +402,7 @@ async function main() {
 
       renderer.update({
         x: fixturePlayer.x,
-        y: fixturePlayer.y,
+        y: fixturePlayer.y - getCharacterStats(fixturePlayer.characterId).hurtboxRadius,
         facing: fixturePlayer.facing,
         isInvincible: fixturePlayer.isInvincible,
         isKnockedOut: false,
@@ -469,6 +469,8 @@ async function main() {
   };
 
   if (e2eFixtureEnabled) {
+    await stageReady;
+    document.getElementById("startup-loading")?.remove();
     const e2eApi = {
       ready: true,
       renderFixture: (name: E2EFixtureName) => {

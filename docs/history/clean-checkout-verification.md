@@ -59,3 +59,78 @@ pnpm test:e2e apps/client/e2e/controller-calibration.spec.ts apps/client/e2e/net
 The 90-case DPR 1 run completed with 76 passes and 14 failures while the roster-picker and calibration follow-ups were still being refined. Three of those failures subsequently passed in focused reruns. Both corrected online cases, the four-client atlas case, and the repository-relative offline reviews passed in the broad run.
 
 The remaining diagnostic failures were in the Lincoln forward-smash fixture, the visual baseline comparison, six fighter-art and presentation checks, the ledge lifecycle, result-to-Home flow, and replacement-asset proof. The Lincoln damage failure reproduced after the Ready fix. Treat the broad results as a record of that run and rerun the remaining fixtures before a full browser signoff. Generated visual evidence stayed in the isolated checkout.
+
+### Results, ledge lifecycle, and combat fixture follow-up
+
+The isolated Windows checkout used the existing dependencies and generated assets, with the current application and test changes from `aeef3f0` applied over `bb6a69e`. The revised fixtures exercise these paths.
+
+- **Results to Home:** A controlled final-stock blast-zone exit lets the match engine reach Results. The test checks Rematch and Main Menu, returns Home, and checks the Home logo. Six checks passed across DPR 1, 2, and 3 with two runs per density.
+- **Ledge lifecycle:** An online guest lands in the room lobby after splash, so waiting for the Home button blocked the former test before Ready. The online check now observes the host's ledge catch in both clients. The jump getup and trump run in a controlled local match because held direction in the online approach could queue a climb before jump input. The final fixture samples the trump state and the engine's ledge owner together. Twelve checks passed across DPR 1, 2, and 3 with two runs per density. The server ledge suite passed 43 tests with 13 skipped. The browser rerun covers online catches and local trumps, so live online trump coverage remains open.
+- **Lincoln forward smash:** Grounded spacing and a single keyboard input batch let the browser check the actual `FORWARD_SMASH` move ID and at least 20% damage. Six checks passed across DPR 1, 2, and 3 with two runs per density.
+- **Replacement asset proof:** The fixture selects Ready explicitly and opens the legacy renderer that consumes the swapped six-part assets. DPR 1 passed, including the visible replacement marker and restoration verification. The screenshot goes to Playwright's output folder. Run this fixture in a disposable checkout because it temporarily swaps public assets.
+
+A focused DPR 1 rerun of the seven remaining checks passed the live shield SDI case. Confirm its repeatability in the full suite. Five art and presentation checks still fail: reverse roll, kick and fallback routing, Lincoln and Swift roll routing, shield-drop timing, and KO frame progression. The visual baseline comparison also still stops at the first neutral-idle image with 85.6% differing pixels. Review the actual captures against the approved art before refreshing any baselines. Run the full DPR 1 suite after those checks are reconciled, then expand to DPR 2 and 3.
+
+```sh
+pnpm test:e2e apps/client/e2e/ledge.spec.ts apps/client/e2e/result-main-menu.spec.ts apps/client/e2e/abe-lincoln-character.spec.ts --grep "ledge catch reaches|two-fighter trump|local results offer|forward smash deals" --repeat-each=2
+pnpm test:e2e apps/client/e2e/todo-12-swap-proof.spec.ts --project=chromium-dpr-1
+```
+
+### Fighter art and visual baseline verification
+
+The earlier 85.6% neutral-idle diff compared the old grid stage with the game's startup overlay. The fixture now waits for the arena assets, removes the startup overlay, and positions the fighters from the platform surface using their own hurtbox radii. The exposed scene uses the current Stage 1 art and full-body sprites.
+
+The matrix compares fighter and platform pixels with the decorative backdrop hidden. It separately checks that the Stage 1 backdrop is applied and saves a full-arena screenshot. The 30 updated lossless references occupy roughly 25 MB across the three densities, compared with 154 MB for the full-scene candidates. The comparison threshold remains 0.5%. The immediate rerun found **zero differing pixels in all 30 comparisons**.
+
+The fighter-art checks now verify mirrored roll playback, the idle or airborne sprite used for incomplete snapshots, the current Lincoln and Swift roll poses, the shield-drop cue index, and the KO phases. The Star KO check verifies upward retreat, shrinking, and the twinkle. Screen KO is sampled after the impact pose begins, and the KO fixture checks expiry and deduplication. The revised KO browser check covers the three original fighters.
+
+- **DPR 1** — 91 passed in 8 minutes 36 seconds, including the previously failing art checks and live shield SDI.
+- **Focused DPR 1, 2, and 3** — all six visual matrix and KO checks passed. The full higher-density runs exposed timing-sensitive browser fixtures, recorded below.
+
+The isolated Windows checkout used `aeef3f0` application and test changes over `bb6a69e`, the earlier browser fixes, and this pass's fixture and reference updates. The browser runs used committed assets with `SKIP_ASSETPACK=1`. The historical screenshots under `docs/assets/evidence/f3-visual` remain as evidence of earlier runs. Current captures, diffs, and per-test reports go to Playwright's test output folders.
+
+```sh
+pnpm test:e2e apps/client/e2e/f3-visual-baselines.spec.ts apps/client/e2e/fighter-art-review.spec.ts --grep "captures fixture matrix|KO copies render"
+pnpm test:e2e --project=chromium-dpr-1
+pnpm test:e2e --project=chromium-dpr-2 --project=chromium-dpr-3
+```
+
+#### Higher-density runs and timing fixes
+
+The current workspace build and type check passed after rebuilding local package declarations. The build used checked-in generated assets and still emitted Vite's existing large-chunk warning. The full higher-density browser run had **170 passes, 6 deliberate skips, and 6 failures** in 22 minutes 24 seconds. The skips are the three DPR 1-only diagnostics in each project. DPR 2 had 86 passes and two failures. DPR 3 had 84 passes and four failures. Both visual matrices passed in the full run.
+
+The six failures came from three timing-sensitive fixtures. The blast probe now samples a simulation tick inside the boundary before moving outside and reads the engine counters to check the respawn and invincibility deadlines even when the browser skips a rendered frame. The shield fixture stages low health while shield is held and captures both colors and the release. Lincoln's input batch releases its three keys together as soon as the forward smash starts, keeping the intended spacing through startup.
+
+**All 18 targeted timing checks passed** on the revised fixtures, including all four blast boundaries at each density. The full standard-density run and the full higher-density run above preceded these three test-only changes. A single full-matrix run of the final tree remains available for consolidated signoff.
+
+```sh
+pnpm test:e2e apps/client/e2e/abe-lincoln-character.spec.ts apps/client/e2e/blast-zone-boundaries.spec.ts apps/client/e2e/shield-bubble.spec.ts --grep "forward smash deals|boundary KO telemetry|shield bubble renders"
+```
+
+#### Consolidated Chromium signoff
+
+One uninterrupted Playwright run on the final test tree completed in 31.2 minutes with **267 passed, six deliberate skips, and zero failures**.
+
+| Display density | Passed | Skipped | Failed |
+| --- | ---: | ---: | ---: |
+| DPR 1 | 91 | 0 | 0 |
+| DPR 2 | 88 | 3 | 0 |
+| DPR 3 | 88 | 3 | 0 |
+
+The six skips are the draw-call, forced polygon fallback, and replacement-asset diagnostics configured to run at DPR 1 only. All three passed there. All 30 visual comparisons matched pixel-for-pixel. The asset swap restored the checked-in public assets.
+
+The run used the isolated Windows checkout, with the current `aeef3f0` application and test changes over `bb6a69e`. Before starting, 60 changed source, test, and visual-reference inputs were verified against the active worktree. Playwright started its own development services and used the checked-in generated assets with `SKIP_ASSETPACK=1`. This closes local Chromium browser signoff. Hosted verification and physical hardware testing remain separate workstreams.
+
+```sh
+pnpm test:e2e --output test-results-final-browser-matrix
+```
+
+## Linux container and hosted release smoke
+
+A clean Docker build passed on Docker Desktop's Linux engine using the current Windows worktree over `aeef3f0`. The build pulled `node:24-slim`, disabled the build cache, and staged 1,189 tracked inputs from the game workspace without environment files. The frozen install downloaded 491 packages. The optional `cpu-features` build could not detect a compiler in the slim image, and pnpm completed the install. Both the server build and production atlas build succeeded.
+
+- **Local production container:** Image `sha256:8bb7c96ed35a446a21424fb58cd94a3da74781295fc5e9e6386c86699ff56aca` returned HTTP 200 on a temporary loopback port. Three Chromium checks passed in 28.8 seconds. They covered local arena and atlas loading, shared Stage 6 selection and live guest refresh, plus online pause, paused refresh, resume, and confirmed leave.
+- **Hosted Render service:** Three Chromium checks passed in 54.7 seconds with two independent browser contexts for each online match. Both clients received secure Socket.IO WebSocket frames and the guest observed the host's movement. A live Stage 6 refresh preserved the stage. The paused refresh preserved the guest fighter and resumed simulation. Confirmed leave returned the guest Home, cleared reconnect state, and showed the host its result. Local play on the host loaded the production atlas and Stage 1 artwork. [Deployed game](https://everybody-throws-hands.onrender.com/)
+- **Timing and revision:** The first hosted attempt timed out under the default five-second match-start assertion. It passed with a 20-second assertion window. This was a functional smoke test. Cold and warm load timing under throttled conditions remains open. Render served client bundle `index-DnnslYQA.js`, while the local image built `index-BRM95Ob2.js`. The exact deployed revision was unverified.
+
+The container smoke used a temporary Playwright config pointed at the production service and no development server. The hosted checks used the same approach with a WebSocket and movement assertion added to the pause and leave flow. See the [deployment runbook](../guides/DEPLOYMENT.md#post-deploy-smoke-test) for the sequence to repeat after a release.

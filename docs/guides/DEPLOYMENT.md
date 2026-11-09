@@ -45,6 +45,8 @@ Socket.IO is configured for WebSocket transport. A page load only proves static 
 
 ## Post-deploy smoke test
 
+The current production game is hosted on Render. Confirm the target URL and deployed revision for each release check. [Deployed game](https://everybody-throws-hands.onrender.com/)
+
 1. Open the hosted URL in a fresh browser session. Confirm that the main menu appears, start a local match, and check both fighter sprites and the selected arena.
 2. Use two independent browser contexts. Create a room, join by invite, confirm fighters and a world, and wait for both clients to enter live play. Check that artwork loads before the countdown and inputs update both clients.
 3. Refresh a guest while the match is live and rejoin within the 30-second grace period. Verify that the room, selected stage, and player slot are restored. Test explicit Leave separately.

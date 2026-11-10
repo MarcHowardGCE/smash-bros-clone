@@ -1,5 +1,7 @@
 # Netcode Disconnect Layers — Auto-Pause + Auto-Forfeit
 
+> Historical record. The decisions, commands, and next steps below reflect this pass. See the [current project documentation](../../guides/DEPLOYMENT.md) for present guidance.
+
 ## TL;DR
 
 > **Quick Summary**: Build a 4-layer disconnect state machine on top of the existing `sprint/netcode-rejoin` scaffold: disconnected players absorb damage silently for 0.5s (already free via existing `EMPTY_INPUT`), then the match auto-pauses at 0.5s, then at 30s total the disconnected player is auto-forfeited (stocks forced to 0) via the existing elimination/win-condition pipeline — reusing `MatchSession.pause()/resume()` and `GameEngine`'s existing stock-elimination logic, with one new small `GameEngine.forceEliminate()` method.

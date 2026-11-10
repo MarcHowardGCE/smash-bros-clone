@@ -3,6 +3,7 @@
   "version": "0.1.1",
   "private": true,
   "scripts": {
+    "docs:check": "node scripts/check-docs.mjs",
     "build": "pnpm -r build",
     "dev": "concurrently \"pnpm -F @smash/client dev\" \"pnpm -F @smash/server dev\"",
     "test": "pnpm -r --workspace-concurrency=1 test",

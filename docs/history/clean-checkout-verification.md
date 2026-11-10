@@ -158,3 +158,51 @@ The client type check and production build passed. All three 8 Mbps production-b
 ### Hosted early-alert verification
 
 All three Render trials passed at 8 Mbps. The artwork alert appeared a median of 3.12 seconds after arena confirmation and 0.88 seconds after the reset. The countdown stayed blocked until the same-lineup retry fetched the atlas successfully. Both players reached live play in every trial. [Hosted timing and test conditions](../MENU-POLISH-PLAN.md#render-early-alert-signoff)
+
+## Documentation refresh step 3 verification
+
+On November 10, 2026, the operating and player guides were compared with the current workspace scripts, Vite and Playwright configuration, deployment manifests, Dojo panel and curriculum, shared stage layouts, movement and recovery code, and reconnect handlers.
+
+- Existing checkout, local Chromium at DPR 1 and 1280 × 720 with isolated client and server ports, empty environment directory, and committed art. The local match smoke, seven menu and Dojo focus tests, and the two-client reconnect, resume, and leave test passed. Total 9 browser cases.
+- Four focused client suites passed 216 tests, including all 205 fighter-by-lesson cases and checks for practice setup, the panel, and routine playback.
+- Four focused engine suites passed 78 tests for analog ground intent, action buffering, directional air dodge, and tracked launch.
+- The documentation check preserved dated evidence and links it from current summaries. These results are from the existing checkout. The [next phase](../plans/DOCUMENTATION-REFRESH.md#execution) repeats the documented workflow from a clean checkout.
+
+## Documentation refresh step 4 clean checkout
+
+On November 10, 2026, the refreshed instructions were exercised against a clean Windows sparse clone of `aff6d55`, using Node.js 24.13.0 and pnpm 11.20.0. Bonney and environment files were excluded. The clone started without workspace dependencies and build output. Vite and Vitest used an empty environment directory. The pnpm store and browser cache were warm.
+
+| Check | Result |
+| --- | --- |
+| `pnpm install --frozen-lockfile` | Passed. Installed 490 packages from the existing store in 11.8 s. |
+| `pnpm build` and `pnpm typecheck` | Passed in all five packages. The default build regenerated the articulated fallback, built both production transport packs, and reported AssetPack shortcut-name and Vite bundle-size warnings. |
+| `pnpm test` | 2,784 passed, 17 skipped, and 20 failed. Shared, gamepad, engine, and server suites passed. All failures were in the client package. |
+| Original atlas build and verifier | Passed. Verified 2,305 frame entries on 17 pages, with zero registration error. |
+| Newcomer atlas build and inspection | Passed. Checked revision 51, all 844 frame rectangles on three decoded pages, matching clip names and durations, and finite roots. |
+| `pnpm -F @smash/client assets:validate` | Passed. Checked all 18 fallback source parts with zero violations. |
+| Chromium setup and discovery | `pnpm exec playwright install chromium` passed. `pnpm test:e2e --list` discovered 300 cases in 26 files across three display densities. |
+| Development browser smoke | Nine DPR 1 cases passed on alternate local ports. Covered local movement, hit, pause and results, menu and Dojo focus, and a two-client paused refresh, reconnect, resume, and deliberate leave. |
+| Compiled production smoke | After a fresh build, `pnpm start` served the game. Three Chromium cases passed. Moonshine and Abe Lincoln loaded their respective packed WebP pages and Stage 1 art, legacy mode loaded articulated textures, and the guided Throw a jab lesson reached 3/3. |
+
+### Failures and guide corrections
+
+- The focused client rerun reproduced 19 failures. Eighteen local and online app-wiring tests stop when the Pixi mock lacks the `Container` export. The renderer bootstrap test reaches jsdom without a usable canvas context. The Dojo clock test missed one tick in the workspace run and passed on the focused rerun. The [testing guide](../guides/TESTING.md#client-startup-and-dojo-clock-regressions) has the focused command. The gate was open at this point. See the [repair and rerun](#client-regression-gate-follow-up) below.
+- Playwright's managed startup timed out on the default ports. A separate-terminal attempt reported that port 3001 was in use and Vite advanced past port 5173. The nine cases passed with the client on 55920 and the server on 55921, using a local Playwright base URL and explicit client socket URL. The exact temporary config and command in the revised guide passed all nine cases again in 32.3 s. [Testing guide](../guides/TESTING.md#browser-checks)
+- The server production-entry test invokes a workspace build under Vitest. The test-generated client bundle pointed to localhost:3001, which left the first production browser run at Connecting to server when the compiled server was listening on a different port. Rebuilding from the normal shell before `pnpm start` restored the same-origin endpoint and all three production cases passed. [Deployment guide](../guides/DEPLOYMENT.md#build-and-run-locally)
+- Atlas commands were run from the repository root. The rebuilt PNGs and packed manifests had no tracked content differences. The three generated JSON reports showed line-ending changes in the temporary clone. The [atlas guide](../assets/FIGHTER-PRODUCTION-ATLAS.md#current-packaging-workflow) now calls out rebuilding the production output after packing.
+
+No deployment, full browser matrix, physical-controller check, or native Ultimate comparison was part of this rehearsal.
+
+## Client regression gate follow-up
+
+On November 10, 2026, a fresh Windows sparse clone of `aff6d55` was tested with the five changed client test files applied. The run used Node.js 24.13.0, pnpm 11.20.0, the warm dependency store, and an empty Vite and Vitest environment directory.
+
+The three app-entry suites now share a Pixi startup fixture that supplies the stage container and resize surface before the app starts. The local flow checks now cover restoring focus to Local Play and loading only the selected fighters with their required idle art. The Dojo clock fixture drives a controlled animation frame just inside the 60-tick interval and verifies exactly 60 ticks and identical player states at 1×, 0.5×, and 0.25×.
+
+| Check | Result |
+| --- | --- |
+| Frozen install, build, and type check | Passed. |
+| Four targeted client suites | 22 passed in the fresh clone and 22 passed in the working checkout. |
+| `pnpm test` | 2,804 passed, 17 existing skips, zero failures. All 884 client tests passed. |
+
+The client regression gate is closed. The changes affect test fixtures and their expectations.

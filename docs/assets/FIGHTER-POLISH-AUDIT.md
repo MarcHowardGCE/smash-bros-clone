@@ -1,5 +1,7 @@
 # Fighter polish audit — revision 16
 
+> Historical record. The decisions, commands, and next steps below reflect this pass. See the [current project documentation](ULTIMATE-ANIMATION-CHECKLIST.md) for present guidance.
+
 Date: 2026-11-03. All 399 body clips were measured; first/key/last boards for 18 representative families were visually inspected. This is targeted evidence, not approval of all 2235 drawings or final gameplay parity.
 
 ## Completed correction

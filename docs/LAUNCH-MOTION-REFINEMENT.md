@@ -1,5 +1,11 @@
 # Launch motion refinement — November 5, 2026
 
+## Current project baseline
+
+The engine tracks launch momentum separately from gravity and handles hitstun, terrain contact, and ledge recovery. The later grab fixes keep grounded down-throw releases on the solid main platform. Exact native wall and ceiling freeze, cinematic tech rules, and directional ledge timing remain provisional. [Launch motion](../packages/engine/src/physics/launchMotion.ts) · [Main-platform contact](#grounded-grabs-and-main-platform-contact) · [Native capture checklist](REFINEMENT.md#ultimate-1305-capture-checklist)
+
+## Dated launch and ledge experiments
+
 Ordinary body hits and counters now convert raw knockback into world speed: raw × 0.03 × 4. The 0.03 launch and 0.051 reference-decay factors follow the calculator author implementation. Four world units per reference unit is provisional project calibration, not an official scale.
 
 Optional launchVx/launchVy/launchFallVy fields separate launch momentum from gravity. Vector momentum decays by 0.204 world units per tick without reversing. Gravity still uses 0.65 acceleration and an 18-unit fall cap; that cap now applies only to falling velocity. Current velocity moves the fighter before decay. Final-hitlag DI/LSI converts once; zero-hitlag hits initialize immediately and clear pending launch. See the zero-hitlag follow-up below for the subsequent DI/LSI implementation.

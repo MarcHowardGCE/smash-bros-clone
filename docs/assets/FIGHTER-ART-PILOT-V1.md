@@ -1,5 +1,7 @@
 # Fighter artwork pilot v1 — November 2, 2026
 
+> Historical record. The decisions, commands, and next steps below reflect this pass. See the [current project documentation](FULL-BODY-FIGHTER-ART.md) for present guidance.
+
 ## Current revision 4
 Added 20 defense/reaction drawings: four shield-guard, six planted spot-dodge, six roll and four reaction poses. All-Rounder now has 51 drawings. Selected files are all-rounder-shield-v1.png, all-rounder-dodge-v1.png, all-rounder-roll-v1.png and all-rounder-reaction-v1.png. Source imagery and recorded prompts use the built-in image generator; originals remain preserved.
 

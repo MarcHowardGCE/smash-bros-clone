@@ -36,11 +36,11 @@ Player 1 uses **A/D** or **←/→** to move, **W/↑** to aim up, **↓** to ai
 
 Local matches and Dojo reuse the browser-safe `@smash/server/engine` entry. Online, the server runs the simulation at **60 Hz** and sends MessagePack snapshots at a target **20 Hz**. The browser predicts local movement and interpolates remote snapshots. Combat and match results come from the server.
 
-Source fighter art lives in [`raw-assets/`](raw-assets/). The client ships committed atlases and full-body art packs, with fallback rendering for unavailable artwork. The [asset guides](docs/README.md#fighter-art-and-assets) cover packaging and replacement. The `bonney/` directory is a separate project outside this workspace.
+Full-body source sheets and manifests live in the [original roster pack](apps/client/public/fighter-art-pilot-v1/) and the [newcomer pack](apps/client/public/fighter-art-newcomers-v1/). The game uses packed full-body artwork by default. [`raw-assets/`](raw-assets/) supplies the articulated fallback parts. See the [full-body authoring guide](docs/assets/FULL-BODY-FIGHTER-ART.md) and [fallback parts guide](docs/assets/REPLACING-FIGHTER-ART.md). The `bonney/` directory is a separate project outside this workspace.
 
 ## Test
 
-Run `pnpm test` and `pnpm typecheck` after the initial build. Install Chromium with `pnpm exec playwright install chromium`, then run the [portable browser smoke test](docs/guides/TESTING.md#portable-browser-smoke-test). See the [testing guide](docs/guides/TESTING.md) for the full suite, known baseline failures, and signoff.
+Run `pnpm test` and `pnpm typecheck` after the initial build. Install Chromium with `pnpm exec playwright install chromium`, then run the [portable browser smoke test](docs/guides/TESTING.md#portable-browser-smoke-test). See the [testing guide](docs/guides/TESTING.md) for the full suite, recorded baselines, and signoff.
 
 ## Build and deploy
 

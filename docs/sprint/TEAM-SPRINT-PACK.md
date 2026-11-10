@@ -1,5 +1,7 @@
 # Team Sprint — Facilitator Pack (Everybody Throws Hands)
 
+> Historical record. The decisions, commands, and next steps below reflect this pass. See the [current project documentation](../plans/ACTIVE-WORK.md) for present guidance.
+
 **Purpose:** divide the team into four groups for ~1 hour each, discuss and plan the work *together*, and leave each group with a starting skeleton — not finished code. This pack is the meeting artifact. The detailed engineering plan lives in `.omo/plans/team-sprint-next-steps.md`.
 
 > **How to run the hour:** 10 min all-hands kickoff → 40 min in-track discussion + skeleton work → 10 min readouts. The goal at the buzzer is a *shared plan and a skeleton*, not a shipped feature.

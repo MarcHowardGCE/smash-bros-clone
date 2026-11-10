@@ -1,5 +1,41 @@
 # Fighter production atlas and validation
 
+Use the [full-body fighter art guide](FULL-BODY-FIGHTER-ART.md) to locate source sheets and author clip metadata.
+
+## Current packaging workflow
+
+Run from the repository root with installed dependencies and current compiled workspace exports. Follow the [development guide](../guides/DEVELOPMENT.md) for the initial build and an empty environment directory. Use an isolated checkout or copy for a trial. These commands write PNG pages, a packed manifest, and `atlas-report.json` under the pack output directories.
+
+```sh
+# All-Rounder, Abe Lincoln, and Swift
+node scripts/assets/build-production-fighter-atlas.mjs
+node scripts/assets/verify-production-fighter-atlas.mjs
+
+# Moonshine and “Hulk” Hoagie
+node scripts/assets/build-production-fighter-atlas.mjs --dojo
+```
+
+| Command | Output and scope |
+| --- | --- |
+| Default build | `apps/client/public/fighter-art-pilot-v1/production/`. The packer also derives timing for selected original-roster clips from the compiled engine. |
+| Original-pack verifier | Reads the original source and packed manifests and PNG pages. It checks the revision's fixed frame and live-clip counts, bounds, and world-space registration, then writes `production/verification.json`. If the intended inventory count changes, review its assertions along with the content change. |
+| Build with `--dojo` | `apps/client/public/fighter-art-newcomers-v1/dojo/`. Compare its manifest with the source revision and its report with the emitted pages. Check each referenced frame rectangle, its duration and root, and any affected socket. The standalone original-pack verifier covers only the original pack. |
+
+Both packs use 2048 × 2048 PNG pages with two-pixel extrusion and two pixels per world unit. Keep the source art and the rebuilt pack together. The packer updates the public source tree. Run `pnpm build` again before checking changed atlases with `pnpm start`, which serves the compiled output. The Vite production build can trim and losslessly encode eligible pages as WebP in the build output and rewrite their manifest references. It validates decoded pixels before replacing a PNG. Review build output separately from the committed PNG atlases. [Packer](../../scripts/assets/build-production-fighter-atlas.mjs) · [Verifier](../../scripts/assets/verify-production-fighter-atlas.mjs) · [Vite transport](../../apps/client/atlas-transport.mjs)
+
+## Verify in game
+
+Open the normal dev game and start a local match with one fighter from each pack. In Fighter Select, click the CPU seat to choose its fighter, then confirm the human seat with its Ready button. Confirm the selected fighters have visible full-body sprites and that requests come from their respective packed directories. Use the Dojo to play affected clips and check ground and air alignment, contact, and transitions. `?atlas=source` is an original-pack development comparison when source sheets are available. `?renderer=legacy` opens the original roster using the fallback workflow.
+
+## Packaging verification — November 10, 2026
+
+Both pack commands ran against isolated copies of the manifest-referenced sources with the existing compiled workspace exports. The regenerated manifests matched the repository versions. The original verifier passed 2,305 frame entries across 17 pages with zero registration error. The newcomer inspection decoded three pages and checked all 844 frame rectangles, frame/duration counts, finite roots, and source revision. The counts describe these revisions. SHA-256 comparisons matched all 20 regenerated PNG pages with the committed versions. The Vite atlas transport step passed its decoded-pixel checks when invoked on the isolated output for both packs.
+
+Two local Chromium smoke cases passed. A Moonshine versus Abe Lincoln match on Stage 1 showed both full-body sprites and fetched pages from the expected pack directories. The legacy match loaded articulated fallback textures without loading full-body atlas pages. These checks used the current development servers and committed PNG atlases. Full clean-checkout verification is tracked in the [refresh plan](../plans/DOCUMENTATION-REFRESH.md#execution).
+
+## Historical integration batches
+
+The dated sections below preserve earlier workflow, clip counts, and test results for reference.
 
 ## Production atlas and replicated movement hooks — batch 21 (2026-11-03)
 

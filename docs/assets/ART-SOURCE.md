@@ -1,5 +1,13 @@
 # Art Source Decision — Todo 1 + Todo 4
 
+## Current art sources
+
+The default game uses the original roster and newcomer full-body packs. The articulated parts under raw-assets supply the fallback renderer. Use the [full-body authoring guide](FULL-BODY-FIGHTER-ART.md), [atlas workflow](FIGHTER-PRODUCTION-ATLAS.md#current-packaging-workflow), or [fallback parts guide](REPLACING-FIGHTER-ART.md) for current work.
+
+## Dated provenance and art milestones
+
+The remaining sections retain the original sources, decisions, and batch evidence.
+
 Date: 2026-10-31
 
 ## Route taken

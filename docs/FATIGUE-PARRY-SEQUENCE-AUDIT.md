@@ -1,5 +1,11 @@
 # Fatigue parameters and consecutive-parry audit
 
+## Current project baseline
+
+Directional air dodge uses captured fatigue for travel. Body hits can refresh a spent air dodge while double jump stays spent. The project models separate hit waves and tracks right-stick and face Attack releases independently in the Dojo. The current smash charge uses the combined Attack hold. Exact fatigue conversion, adjacent-hit parry exceptions, and native input priority remain provisional. [Air-dodge motion](../packages/engine/src/physics/airDodgeMotion.ts) · [Mixed-input trace](#dojo-trace-for-mixed-input-charge) · [Native capture checklist](REFINEMENT.md#ultimate-1305-capture-checklist)
+
+## Dated tests and implementation notes
+
 November 5, 2026. This supersedes the temporary fatigue curve and the broad automatic-parry backlog wording in OOS-DODGE-PARRY-REFINEMENT.md.
 
 

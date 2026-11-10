@@ -1,5 +1,13 @@
 # Landing input buffering and transition polish — November 5, 2026
 
+## Current project landing buffer
+
+Ordinary recovery uses a six-tick press buffer. During landing recovery, an eligible Jump or face Attack press can be stored for nine ticks. A carried Jump or face Attack hold can commit once with three locked ticks left. Shield and right-stick attacks do not use that hold path. A fresh action at unlock has priority. Compare press, release, and first action in the Dojo trace. [Action buffer](../packages/engine/src/physics/actionBuffer.ts) · [Human feel pass](REFINEMENT.md#next-human-feel-pass)
+
+## November 5 evidence
+
+The original six-tick edge-buffer pass is retained below.
+
 ## Implemented
 A deterministic six-tick edge buffer stores recent jump, attack, special, grab or shield presses during ATTACK, AIR_ATTACK, LANDING_LAG and HELPLESS_LAND recovery. It does not refresh from a held button. A newer fresh command supersedes queued intent. Direction/stick/shortcut metadata from the original press is retained for move selection.
 

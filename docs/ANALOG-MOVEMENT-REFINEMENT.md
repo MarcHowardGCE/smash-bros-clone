@@ -1,5 +1,13 @@
 # Analog walking and dash separation — November 5, 2026
 
+## Current project controls
+
+The calibrated horizontal deadzone is 0.2 and the dash threshold is 0.8. The flick age resets on neutral entry or direction reversal. A dash accepts age 0 or 1. Analog dash startup uses the fighter's profile with a 10-tick default. Digital dash retains 15 ticks. Established runs can branch into braking or turnaround. These are project settings. Physical feel and exact reference parity remain open. [Ground intent](../packages/engine/src/physics/groundIntent.ts) · [Playtest log](REFINEMENT.md#human-playtest-log)
+
+## November 5 evidence
+
+The following measurements were taken before the shorter flick window and fighter-specific dash startup.
+
 Launch calibration is retained after user approval of its feel.
 
 ## Behavior

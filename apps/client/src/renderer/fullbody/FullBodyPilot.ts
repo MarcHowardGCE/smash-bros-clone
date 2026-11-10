@@ -5,7 +5,7 @@ import {PREPARED_LIVE_CLIPS,selectPreparedFrame,type PreparedContext} from './pr
 import {getMoveDataForCharacter} from '@smash/engine';
 import {solveGrabContact} from "./contactPose.js";
 import { Assets, ImageSource, Rectangle, Sprite, Texture } from 'pixi.js';
-import { getCharacterStats, type CharacterId, type MoveId } from '@smash/shared';
+import { getCharacterStats, type CharacterId, type MoveId, type PlayerId } from '@smash/shared';
 import { selectPilotFrame, type PilotClip } from './pilotTimeline.js';
 export interface GrabContactContext {artId?:DojoArtId;characterId:CharacterId;state:string;frame:number;move:MoveId|null;dx:number;dy:number;facing:1|-1}
 interface Frame { mirrorSource?:boolean;image?:string; sockets?:Record<string,number[]>; rect: number[]; root: number[]; offsetY?: number; airRoot?: number[] }
@@ -130,11 +130,20 @@ function dojoFrame(clip:LoadedClip,age:number):number{
   }
   return clip.frames.length-1;
 }
+function throwReleaseIndex(clip: LoadedClip): number | undefined {
+  return clip.activeWindow ? dojoFrame(clip, clip.activeWindow[0]) : undefined;
+}
+
 export class FullBodyPilot {
  readonly sprite=new Sprite();
  readonly effectSprite=new Sprite();
- private reaction:{move:MoveId;facing:1|-1;start:number|null}|null=null;private wasVictim=false;private lastVictimFlip=1;private releaseStart:number|null=null;
- startGrabReaction(move:MoveId,facing:1|-1):void{this.reaction={move,facing,start:null};this.contactRebase=true;}
+ private reaction: { move: MoveId; facing: 1 | -1; start: number | null; ownerId?: PlayerId } | null = null;
+ private wasVictim=false;private lastVictimFlip=1;private releaseStart:number|null=null;
+ get throwOwnerId(): PlayerId | undefined { return this.reaction?.ownerId; }
+ startGrabReaction(move: MoveId, facing: 1 | -1, ownerId?: PlayerId): void {
+  this.reaction = { move, facing, start: null, ownerId: move === 'PUMMEL' ? undefined : ownerId };
+  this.contactRebase = true;
+ }
  private lastContact:[number,number]=[0,0];private lastContactFacing:1|-1=1;private contactRebase=false;private lastHolder:{clip:LoadedClip;index:number;owner:GrabContactContext}|null=null;
  private ledgeFacing:1|-1=1;private previousState="";private ledgeRelease:{clip:PilotClip;start:number}|null=null;
  private contactExit?:{kind:"ledge"|"footstool";x:number;y:number;state?:string;start?:number};
@@ -147,7 +156,7 @@ export class FullBodyPilot {
  constructor(private assets:FullBodyPilotAssets,private readonly characterId:CharacterId='all-rounder',readonly artId?:DojoArtId){this.sprite.visible=false;this.effectSprite.visible=false;}
  private throwRelease: { move: MoveId; start: number | null } | null = null;
  startThrowRelease(move: MoveId): void {
-  if (this.artId) this.throwRelease = { move, start: null };
+  this.throwRelease = { move, start: null };
  }
  setAssets(assets: FullBodyPilotAssets): void { this.assets = assets; }
  update(state:string,frame:number,move:MoveId|null,enabled:boolean,vy?:number,hasDoubleJump=true,isTumbling=false,rollDirection:1|-1=1,chargeFrames=0,grabVictim=false,victimFlip=1,facing:1|-1=1,grabOwner?:GrabContactContext,ledgeId?:string|null,prepared:PreparedContext={}):boolean {
@@ -217,11 +226,6 @@ export class FullBodyPilot {
       age<data.startupFrames+active?start+(age-data.startupFrames)*(end-start)/active:
       end+(age-data.startupFrames-active);
     let index=dojoFrame(clip,previewAge);
-    if (this.throwRelease) {
-     this.throwRelease.start ??= frame;
-     if (frame - this.throwRelease.start < 2) index = dojoFrame(clip, start);
-     else this.throwRelease = null;
-    }
     if(floorAttack&&age<data.startupFrames){
      const hold=clip.durations![0]!+clip.durations![1]!;
      index=age<2?this.dojoProneFrame:dojoFrame(clip,hold+(age-2)*(start-hold)/Math.max(1,data.startupFrames-2));
@@ -255,6 +259,15 @@ export class FullBodyPilot {
       selected.clip.startsWith('ledge_') ? 4 : undefined;
     const reference = ledgeFrames ?? this.assets.characters[this.artId==='moonshine'?'swift':'abe-lincoln']?.[selected.clip]?.frames.length ?? clip.frames.length;
     selected={...selected,index:Math.round(selected.index*(clip.frames.length-1)/Math.max(1,reference-1))};
+   }
+  }
+  if (this.throwRelease && selected && clip) {
+   this.throwRelease.start ??= frame;
+   const index = throwReleaseIndex(clip);
+   if (index !== undefined && frame - this.throwRelease.start < 2) {
+    selected = { ...selected, index };
+   } else {
+    this.throwRelease = null;
    }
   }
   let drawing=selected&&clip?clip.frames[Math.max(0,Math.min(clip.frames.length-1,selected.index))]:undefined;
@@ -292,19 +305,24 @@ export class FullBodyPilot {
     this.sprite.position.y+=this.lastContact[1];
    }
   }else if(this.reaction||showingRelease){
-   if(this.contactRebase&&this.lastHolder&&this.reaction&&!this.artId){
-    const held=this.lastHolder;
-    const {owner}=held;
-    const contactMove=this.reaction.move;
-    // A release snapshot can arrive without the preceding windup frame.
-    const throwPose=owner.artId&&contactMove!=='PUMMEL'
-      ?selectPilotFrame('ATTACK',0,contactMove,0,true,false,owner.characterId):null;
-    const throwClip=throwPose&&owner.artId?this.assets.characters[owner.artId]?.[throwPose.clip]:undefined;
-    const releaseIndex=throwClip?.activeWindow?dojoFrame(throwClip,throwClip.activeWindow[0]):0;
-    const contact=throwClip?.frames[releaseIndex]?.sockets?.grabGrip
-      ?{clip:throwClip,index:releaseIndex}:held;
-    this.lastContact=solveGrabContact(contact.clip,contact.index,clip,selected.index,owner.dx,owner.dy,true);
-    this.contactRebase=false;
+   if (this.contactRebase && this.reaction) {
+    const held = this.lastHolder;
+    const { move: contactMove, facing: reactionFacing } = this.reaction;
+    const owner = grabOwner?.move === contactMove ? grabOwner : held?.owner;
+    if (owner && contactMove !== 'PUMMEL') {
+     const pose = selectPilotFrame('ATTACK', 0, contactMove, 0, true, false, owner.characterId);
+     const throwClip = pose && this.assets.characters[owner.artId ?? owner.characterId]?.[pose.clip];
+     const index = throwClip ? throwReleaseIndex(throwClip) : undefined;
+     if (throwClip && index !== undefined && throwClip.frames[index]?.sockets?.grabGrip) {
+      // Express the victim's drawn mirror in the thrower's coordinate system.
+      const receiver = reactionFacing === owner.facing ? clip : { ...clip, mirrorSource: !clip.mirrorSource };
+      this.lastContact = solveGrabContact(throwClip, index, receiver, selected.index, owner.dx, owner.dy, true);
+      this.lastContactFacing = owner.facing;
+     }
+    } else if (held && !this.artId) {
+     this.lastContact = solveGrabContact(held.clip, held.index, clip, selected.index, held.owner.dx, held.owner.dy, true);
+    }
+    this.contactRebase = false;
    }
    const start=this.reaction?.start;
    const t=start==null?(showingRelease?releaseAge:12):frame-start;

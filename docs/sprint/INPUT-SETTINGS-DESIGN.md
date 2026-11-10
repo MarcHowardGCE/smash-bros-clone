@@ -1,5 +1,7 @@
 # Input & Settings Design (Sprint Track B)
 
+> Historical record. The decisions, commands, and next steps below reflect this pass. See the [current project documentation](../REFINEMENT.md) for present guidance.
+
 ## 1. Double-Tap Smash Detection
 
 **Decision: Threshold = 250 milliseconds between directional keydowns**

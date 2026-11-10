@@ -1,5 +1,7 @@
 # Air mobility and fast fall — November 5, 2026
 
+> Historical record. The decisions, commands, and next steps below reflect this pass. See the [current project documentation](REFINEMENT.md) for present guidance.
+
 The user accepted launch and analog ground-movement feel; those settings are retained.
 
 ## Implemented

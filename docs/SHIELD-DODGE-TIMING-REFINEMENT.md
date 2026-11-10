@@ -1,5 +1,7 @@
 # Shield-drop, parry and dodge timing refinement
 
+> Historical record. The decisions, commands, and next steps below reflect this pass. See the [current project documentation](FATIGUE-PARRY-SEQUENCE-AUDIT.md) for present guidance.
+
 Implemented November 5, 2026.
 
 ## Result

@@ -14,7 +14,7 @@ pnpm build
 pnpm dev
 ```
 
-The initial build produces compiled exports for workspace dependencies. Open [localhost:5173](http://localhost:5173). The client runs on **5173** and the Socket.IO server runs on **3001** by default. Both processes start under `pnpm dev`. For separate terminals, run `pnpm -F @smash/client dev` and `pnpm -F @smash/server dev`. The pnpm commands work on Windows and Unix. The optional Bash-based recipes in the [justfile](../../justfile) require a Unix-compatible shell.
+The initial build produces compiled exports for workspace dependencies. Open [localhost:5173](http://localhost:5173). The client runs on **5173** and the Socket.IO server runs on **3001** by default. Both processes start under `pnpm dev`. For separate terminals, run `pnpm -F @smash/client dev` and `pnpm -F @smash/server dev`. The pnpm commands work on Windows and Unix. Prefer `pnpm dev` for routine development. The optional [justfile](../../justfile) uses Bash, `lsof`, and fixed ports 5173 and 3001. Its play, dev, and stop cleanup can terminate processes using those ports, and its clean recipe scans below the current directory. Use those recipes only in an isolated fighter checkout with dedicated ports and with Bonney excluded.
 
 ## Run with an empty environment directory
 
@@ -37,10 +37,10 @@ The game starts locally with defaults. [Vite configuration](../../apps/client/vi
 
 ## Asset development and troubleshooting
 
-- AssetPack generates the articulated fallback atlas from `raw-assets/`. Set `SKIP_ASSETPACK=1` before build or development to use committed generated assets. Use `$env:SKIP_ASSETPACK = '1'` in PowerShell or `export SKIP_ASSETPACK=1` in a POSIX shell. Leave it unset when iterating on raw parts. See [replacing fighter art](../assets/REPLACING-FIGHTER-ART.md).
+- AssetPack generates the articulated fallback atlas from `raw-assets/`. Set `SKIP_ASSETPACK=1` before build or development to use committed generated assets. Use `$env:SKIP_ASSETPACK = '1'` in PowerShell or `export SKIP_ASSETPACK=1` in a POSIX shell. Leave it unset when iterating on raw parts. See [replacing fallback fighter parts](../assets/REPLACING-FIGHTER-ART.md).
 - `ERR_PNPM_IGNORED_BUILDS` calls for checking the pinned pnpm version and the workspace's `allowBuilds` entries. Review the named dependency before changing the allowlist. [Workspace configuration](../../pnpm-workspace.yaml)
 - Unresolved workspace packages after install usually warrant rebuilding from the root. If only a compiled shared package is stale, build that package and restart the consuming process.
 - If Home loads but an online room fails, check that both dev processes are running, verify the printed ports, and look for the WebSocket request in browser developer tools. Vite can choose a different port when 5173 is taken. For a custom backend port, set `PORT` for the server and `VITE_SERVER_URL` for Vite, then restart the affected processes.
-- If a fighter appears as fallback geometry, check the asset requests and the renderer query string. `?renderer=polygon` is a diagnostic override. The live roster and production atlases are covered by the [asset documentation](../README.md#fighter-art-and-assets).
+- If a fighter appears as fallback geometry, remove diagnostic query parameters and inspect the selected fighter’s atlas requests. Use `?renderer=legacy` to compare the original roster with articulated fallback art. The `renderer=polygon` option disables articulated textures. See [full-body fighter art](../assets/FULL-BODY-FIGHTER-ART.md) for both runtime packs.
 
-The [clean-checkout record](../history/clean-checkout-verification.md) confirms the frozen install and default build on Windows. For the portable browser smoke test and known test failures, see [Testing](TESTING.md). For production runtime and host configuration, see [Deployment](DEPLOYMENT.md).
+The [clean-checkout record](../history/clean-checkout-verification.md) confirms the frozen install and default build on Windows. For portable browser smoke tests and the latest recorded test baseline, see [Testing](TESTING.md). For production runtime and host configuration, see [Deployment](DEPLOYMENT.md).

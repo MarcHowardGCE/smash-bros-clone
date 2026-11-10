@@ -1,5 +1,7 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
+vi.mock("pixi.js", () => import("./fixtures/mainPixi.js"));
+
 type PlayerId = string;
 
 interface BootResult {
@@ -105,16 +107,7 @@ const bootMainWithMocks = async (): Promise<BootResult> => {
   let uiManagerInstance: BootResult["uiManagerInstance"] | null = null;
 
   vi.doMock('../renderer/fullbody/FullBodyPilot.js',()=>({preloadFullBodyPilot:async()=>null}));
-    vi.doMock('../renderer/fullbody/KOPresentation.js',()=>({KOPresentation:class{tick(){}destroy(){}clear(){}spawn(){}update(){}getDiagnostics(){return [];}}}));
-    vi.doMock("pixi.js", () => {
-    class Application {
-        ticker = {add:()=>{},stop:()=>{},start:()=>{}};
-      stage = { addChild: () => {} };
-      canvas = document.createElement("canvas");
-      async init(): Promise<void> {}
-    }
-    return { Application };
-  });
+  vi.doMock('../renderer/fullbody/KOPresentation.js',()=>({KOPresentation:class{tick(){}destroy(){}clear(){}spawn(){}update(){}hasSpecialKO(){return false;}getDiagnostics(){return [];}}}));
 
   vi.doMock("../renderer/layers.js", () => ({
     createLayers: () => ({
@@ -125,7 +118,10 @@ const bootMainWithMocks = async (): Promise<BootResult> => {
   }));
 
   vi.doMock("../renderer/StageRenderer.js", () => ({
-    StageRenderer: class StageRenderer {},
+    StageRenderer: class StageRenderer {
+      ready = Promise.resolve();
+    },
+    waitForStageAsset: (pending: Promise<unknown>) => pending,
   }));
   vi.doMock("../renderer/fighterAssets.js", () => ({
     preloadFighterAssets: async () => ({ mode: "polygon" as const }),

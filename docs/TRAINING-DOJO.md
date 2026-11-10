@@ -1,20 +1,16 @@
 # Training Dojo and practice sandbox
 
-Free Practice partner update: **Telegraphed two-hit up smash** is available in setup and through Change partner behavior. Position yourself in its upward anti-air reach and use freeze/step to inspect setup and finishing contacts. This is a practice behavior, not a new completion lesson.
-
-Implemented November 5, 2026. Enter from **Main Menu -> Training Dojo**. This is a local practice mode using the real GameEngine, not a separate approximation of combat. No online room changes are required.
-
-**Laboratory update:** slow motion, exact stepping, collision overlays and three saved partner-routine slots are now implemented. See [Training laboratory](TRAINING-LAB.md) for controls, validation and current limits. The initial-release roadmap below is retained as history.
+Open **Home → Training Dojo**. Choose **Free Practice** to run repeatable scenarios or **Guided Lessons** to practice a specific technique. Both modes use the same local match engine. The [Timing Laboratory guide](TRAINING-LAB.md) covers frame stepping, collision overlays, input traces, and partner recordings.
 
 ## The two experiences
 
 ### Free Practice: the endless rehearsal
 
-Choose any of the five fighters, a partner fighter and any of the six worlds. Start immediately without a match countdown. The partner can stand still, hold shield, repeat a telegraphed jab, or alternate attack/special. Change behavior inside free practice.
+Choose any of the five fighters, a partner fighter and any of the six worlds. Start immediately without a match countdown. The partner can stand still, hold shield, repeat a telegraphed jab, alternate attack and special, use a telegraphed two-hit up smash, or attempt grabs. Use **Change partner behavior** during Free Practice. The up-smash drill works from within its upward reach.
 
-Both fighters stay at zero accumulated percent; shields retain full health. Hits still produce normal zero-percent reactions, hitlag, hitstun, launches, shieldstun and parries. This preserves realistic defensive timing instead of making the partner invulnerable to contact. Leaving the arena resets both fighters safely on the main platform, with no life consumption, result screen, winner or loser. Grabs, ledges, pending launches and fatigue are cleared on arena reset. Practice cannot change normal local/online match rules.
+Damage stays at a fixed preset and starts at 0% in Free Practice. Shields retain full health. Hits still produce reactions, hitlag, hitstun, launches, shieldstun, and parries at the selected percent. This preserves realistic defensive timing instead of making the partner invulnerable to contact. Leaving the arena resets both fighters safely on the main platform, with no life consumption, result screen, winner or loser. Grabs, ledges, pending launches and fatigue are cleared on arena reset. Practice cannot change normal local/online match rules.
 
-A side panel shows the current action/frame, last move, recent pressed/released action names, dodge fatigue and the partner's strike cue. R resets the arena; F2 returns to the dojo menu. Escape or controller Start pauses. Practice pause adds Reset practice arena and Dojo lessons to the shared keyboard/controller menu. A reset preserves lesson progress. Restart lesson clears the current attempt count.
+A side panel shows the current action/frame, last move, recent pressed/released action names, dodge fatigue and the partner's strike cue. R resets the arena; F2 returns to the dojo menu. Escape or your controller’s Pause button opens the tabbed Dojo menu. Use Left/Right or the D-pad to browse tabs and Enter, Space, or controller Confirm to open one. **Resume**, **Reset arena**, and **Main Menu** are in the footer. **Dojo lessons** in Session returns to the library. Reset preserves the lesson count. **Restart lesson** clears the current attempt count.
 
 Action presses carried from a menu, reset or resume are suppressed until controls are released, preventing a confirmation press from earning lesson credit. Held shielding and directional input remain available during that gate so resume does not force an artificial shield drop.
 
@@ -29,6 +25,8 @@ The library now has 41 lessons, including Break a grab. The earlier expansion co
 Both KO drills start a passive partner at 350% within up-smash range. Three real up-smash launches through the top blast zone complete the drill. The selected effect plays on each confirmed exit, including after lesson completion, and the arena resets with no stock loss. Free Practice retains separate Star and Screen artwork previews.
 
 The next lesson gaps are offstage recovery and directional specials, wall/ceiling techs, DI/SDI/ASDI and launch survival, then footstools, ledge contests, shield pressure and fighter-specific confirms.
+
+## Historical curriculum snapshot
 
 The initial 18 lessons were:
 
@@ -56,6 +54,10 @@ Ground-movement instruction distinguishes gentle analog walking from keyboard mo
 - apps/client/src/main.ts and ui/UIManager.ts: entry, pause/resume, rendering and cleanup integration.
 
 The mode resets to a clean arena rather than continuing a KO/respawn cinematic. Existing body sprite assets and stage art are reused. No new fighter canon was invented. Temporary practice controls and listeners are destroyed when leaving the mode.
+
+## Dated gameplay and presentation evidence
+
+The sections below preserve the progression of KO, curriculum, and grab-escape testing. Use [active work](plans/ACTIVE-WORK.md) for current signoff and blockers.
 
 ## Star and Screen KO presentation audit
 

@@ -107,7 +107,7 @@ play:
     echo "│  How to play:                                        │"
     echo "│    1. Click 'Create Room'                            │"
     echo "│    2. Share the URL with a friend                    │"
-    echo "│    3. Both click Ready — fight!                      │"
+    echo "│    3. Ready, choose fighters, then pick a world.     │"
     echo "│                                                      │"
     echo "│  Press Ctrl+C to stop everything.                   │"
     echo "└──────────────────────────────────────────────────────┘"
@@ -208,7 +208,7 @@ build:
 
 # ─────────────────────────────────────────────
 # TEST
-# Run all engine unit tests (67 tests).
+# Run the fighter workspace test suites.
 # ─────────────────────────────────────────────
 test:
     pnpm test
@@ -240,7 +240,7 @@ clean:
 
 # ─────────────────────────────────────────────
 # INSTALL
-# Install all dependencies.
+# Install workspace dependencies using the pinned lockfile.
 # ─────────────────────────────────────────────
 install:
-    pnpm install
+    pnpm install --frozen-lockfile

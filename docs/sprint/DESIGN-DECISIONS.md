@@ -1,5 +1,7 @@
 # Design Decisions — Sprint Track B (Input & Settings)
 
+> Historical record. The decisions, commands, and next steps below reflect this pass. See the [current project documentation](../REFINEMENT.md) for present guidance.
+
 Consolidated, current-state decisions from `INPUT-SETTINGS-DESIGN.md`. Where later rounds of discussion superseded an earlier value, only the final decision is listed here — see that doc for the full discussion history and rationale trail.
 
 ---

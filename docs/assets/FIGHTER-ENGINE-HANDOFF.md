@@ -1,5 +1,7 @@
 # Fighter art integration handoff
 
+> Historical record. The decisions, commands, and next steps below reflect this pass. See the [current project documentation](ULTIMATE-ANIMATION-CHECKLIST.md) for present guidance.
+
 
 ## Shared effects, player identification and handoff — batch 20 (2026-11-03)
 

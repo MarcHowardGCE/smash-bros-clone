@@ -55,6 +55,59 @@ All four delayed directions showed the active release drawing and the paired vic
 
 Passive and active-input comparisons with both newcomers showed the same timed release behavior. The victim alternated 20 attack, movement, jump, special, and shield presses during the hold. Input did not consistently advance release. The current grab state ignores victim input and the holder's timer ends the hold at 90 ticks. Active mash escape is a gameplay gap. The next mechanics pass should establish the input and damage rules, implement them in the authoritative engine, and verify passive timeout, active escape, pummel and throw priority, and the release cue in the Dojo and a two-client match. [Current grab state](../../packages/engine/src/fsm/states/GrabHoldingState.ts)
 
+### Five-fighter throw-release audit
+
+On November 10, 2026, two local Chromium clients played all four throws in all 20 ordered non-mirror matchups. Keyboard inputs drove the live server at normal speed on The Neighborhood That Ate Itself. The thrower began on the left and the defender gave no defensive input. Each result required server confirmation of the move and damage. Both views sampled the displayed artwork every browser animation frame. Recorded playback supplemented those traces.
+
+Across 80 confirmed throws and 22,087 rendered samples, both clients showed the dedicated victim reaction on the first observed hitstun frame in every case. There was no polygon fallback around release. The victim remained attached while the server still held the grab link in all sampled windups.
+
+- The active thrower drawing was absent around release in 30 cases, all involving one of the original three fighters as thrower. The sequence could go directly from windup to recovery while the victim reaction played.
+- The first release drawing opened a hand-to-victim grip gap greater than 18 world units in 23 cases. The 18-unit threshold is an audit flag. In 22 client views the victim had the same authoritative position as on the preceding rendered sample, which separates those gaps from normal launch movement. Swift's down throw on Abe Lincoln showed a 34.4-unit gap in both views before Abe moved. Hoagie's back throw on Moonshine had the largest measured gap at 55.0 on the host and 52.3 on the guest.
+- The flags overlap. In total, 47 of the 80 throws triggered one or both checks. The audit used the displayed hand socket and victim grip rail. The sprite pivot changes from feet to torso on some release clips, so a pivot displacement alone was excluded.
+
+All 47 flagged throws were replayed with 120–154 ms of ordered inbound WebSocket delay on the guest during gameplay. Outbound keyboard input stayed live. Each counted run received delayed binary packets. Across another 15,924 rendered samples, all 47 had at least one flag again and 39 repeated at least one of their original flags. Both clients still showed every victim reaction at the first observed hitstun sample, with no polygon fallback around release. Hoagie's back throw on Moonshine opened a gap of 59.0 units on the host and 60.7 on the guest. The reverse matchup reached 45.3 and 48.4 units. In the All-Rounder forward throw on Swift, the active drawing appeared on the host and was skipped on the guest. The replay covered only flagged cases and could run throws in a different order, so victim percent could differ between trials.
+
+The table shows baseline → delayed replay where a replay was required. **Pose** marks a missing active thrower drawing near release. **Grip** marks a first-release gap over 18 world units. **OK** means neither condition was observed in either client during the baseline. Both clients showed the victim reaction in every entry.
+
+| Thrower | Victim | Forward | Back | Up | Down |
+| --- | --- | --- | --- | --- | --- |
+| All-Rounder | Abe Lincoln | OK | OK | Pose → Pose | Grip → Pose |
+| All-Rounder | Swift | Pose → Pose | Pose+Grip → Pose+Grip | Pose → Pose | Pose → Pose |
+| All-Rounder | Moonshine | Grip → Grip | Pose+Grip → Grip | Pose → Pose | Pose → Pose |
+| All-Rounder | Hoagie | OK | OK | Pose → Pose | Pose → Pose |
+| Abe Lincoln | All-Rounder | Pose → Pose | OK | Pose → Pose | Pose → Pose |
+| Abe Lincoln | Swift | Pose → Pose | Pose+Grip → Pose+Grip | Pose → Pose | Grip → Pose |
+| Abe Lincoln | Moonshine | Pose → Pose | Pose+Grip → Pose+Grip | Grip → Grip | Pose → Grip |
+| Abe Lincoln | Hoagie | Pose → Pose | Grip → Pose+Grip | Grip → Pose | Pose → Pose |
+| Swift | All-Rounder | Pose → Pose | OK | Pose → Grip | Grip → Pose |
+| Swift | Abe Lincoln | Pose → Pose | OK | Grip → Pose | Grip → Grip |
+| Swift | Moonshine | Pose → Pose | Pose+Grip → Pose+Grip | Grip → Grip | Pose → Pose |
+| Swift | Hoagie | Pose → Pose | Pose+Grip → Grip | Grip → Pose | Pose → Pose |
+| Moonshine | All-Rounder | OK | OK | OK | OK |
+| Moonshine | Abe Lincoln | OK | OK | OK | OK |
+| Moonshine | Swift | OK | OK | OK | OK |
+| Moonshine | Hoagie | OK | Grip → Grip | Grip → Grip | OK |
+| Hoagie | All-Rounder | OK | OK | OK | OK |
+| Hoagie | Abe Lincoln | OK | OK | OK | OK |
+| Hoagie | Swift | OK | OK | OK | OK |
+| Hoagie | Moonshine | Grip → Grip | Grip → Grip | Grip → Grip | Grip → Grip |
+
+Before the fix, the renderer enabled the confirmed active-throw pose only for the newcomer art pack. The release offset solver also rebased only original-pack victims, and it chose the active thrower's grip only for newcomer throwers. Those branches left some pairings using the last windup grip or the wrong drawing at release. The eight focused throw and contact tests passed and did not expose these live cases. [Active throw cue](../../apps/client/src/renderer/fullbody/FullBodyPilot.ts#L148) · [Release contact solver](../../apps/client/src/renderer/fullbody/FullBodyPilot.ts#L294) · [Focused tests](../../apps/client/src/renderer/fullbody/throwReleaseContact.test.ts)
+
+The audit left visual signoff open. The follow-up below records the fix and the repeated match checks.
+
+### Throw-release fix and two-client verification
+
+On November 10, 2026, both full-body packs began using the confirmed hit event to show the active throw drawing. A snapshot that has advanced to recovery still displays the release drawing. The victim's first release frame aligns its grip rail to the hand on that drawing using both fighters' positions in the current rendered frame. The solver accounts for facing, clip and frame mirrors, and each drawing's anchor. The correction fades into the existing launch animation. It applies only to artwork. [Release renderer](../../apps/client/src/renderer/fullbody/FullBodyPilot.ts) · [Contact solver](../../apps/client/src/renderer/fullbody/contactPose.ts) · [Authoring guidance](FULL-BODY-FIGHTER-ART.md)
+
+The baseline repeated all four directions across all 20 ordered non-mirror matchups in two local Chromium clients. Keyboard inputs drove a live local match on The Neighborhood That Ate Itself at normal speed. In all 80 throws and 160 client views, the active throw drawing and the paired reaction appeared at release. The first measured gap rounded to 0.00 world units in every view across 22,409 rendered samples. There was no early separation in the sampled windups or fallback around release.
+
+No baseline throw triggered an audit flag. All 47 combinations flagged before the fix were replayed with the same 120–154 ms ordered inbound delay on the guest during gameplay. Across 94 client views and 18,864 rendered samples, both release drawings appeared and the first grip gap rounded to 0.00 world units in every view. No case showed early separation or polygon fallback. Hoagie's back throw against Moonshine went from a 60.7-unit guest gap to 0.00.
+
+Eight additional throws covered all four directions for All-Rounder and Hoagie against Moonshine with the thrower facing left. Both clients confirmed the facing in the hold trace and passed the release checks for all eight. This closes the throw-release visual audit for the tested two-client setup on Neighborhood. The full matrix used keyboard input and non-mirror pairings. The delay replay used one-way delay with messages delivered in order.
+
+All 888 client tests passed, including 55 full-body renderer tests. The client TypeScript check passed. Added regressions cover a skipped active snapshot in each pack and a paired release without a prior hold sample, including both Hoagie and Moonshine role assignments for back throw.
+
 ### Active grab escape
 
 The shared match engine now owns one timer per grab. The project baseline is floor(90 + 1.7 × victim percent at capture) ticks. A fresh gameplay button press removes 14.4 ticks and a fresh digital or left-stick direction removes 8. At most one credit applies per simulation tick, with the button taking precedence. Holding an input, repeated samples of the same stick direction, and right-stick-generated Attack edges provide no additional credit. The earliest mash release is tick 19. These are provisional Ultimate-style values. Native 13.0.5 rounding, input exclusions, and hitlag timing remain open. The reference mod exposes grab clatter as a testable behavior. [Ultimate Training Modpack](https://github.com/jugeeya/UltimateTrainingModpack#defensive-settings)
@@ -77,7 +130,7 @@ The remaining tables preserve the original three-fighter production plan. Their 
 
 Target: Super Smash Bros. Ultimate shared fighter mechanics for All-Rounder, Abe Lincoln and Swift. Decision recorded November 2, 2026. Original fighter identities and custom movesets remain; this is not a plan to copy Nintendo character artwork or assign every fighter the same moves.
 
-This is the production inventory for finishing the sprite packs before implementing the remaining engine behavior. It includes 125 action families: 101 shared/combat/presentation families and 24 conditional kit, item and stage families. These are NOT frame counts, sheet counts, or a claim that all rows need brand-new drawings. Some rows bundle directional or orientation variants. Per-row artwork status is tracked in the accompanying inventory.
+The following production planning inventory records the earlier sprite and mechanic scope. Use the [current five-fighter inventory](#current-five-fighter-inventory) and [active work](../plans/ACTIVE-WORK.md) for present coverage and signoff. It includes 125 action families: 101 shared/combat/presentation families and 24 conditional kit, item and stage families. These are NOT frame counts, sheet counts, or a claim that all rows need brand-new drawings. Some rows bundle directional or orientation variants. Per-row artwork status is tracked in the accompanying inventory.
 
 All three fighters currently have 763 registered body frames across 136 body clips each. Shared effects add 16 frames. Grab/throw review candidates are integrated in optional full-body mode; broader action coverage and Ultimate parity remain incomplete. The accepted 24-tick walk remains.
 

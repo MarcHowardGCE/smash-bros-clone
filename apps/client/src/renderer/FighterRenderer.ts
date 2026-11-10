@@ -196,7 +196,13 @@ export class FighterRenderer {
     }
   }
 
-  startGrabReaction(move:import('@smash/shared').MoveId,facing:1|-1):void{this.fullBodyPilot?.startGrabReaction(move,facing);}
+  get throwOwnerId(): import('@smash/shared').PlayerId | undefined {
+    return this.fullBodyPilot?.throwOwnerId;
+  }
+
+  startGrabReaction(move: import('@smash/shared').MoveId, facing: 1 | -1, ownerId?: import('@smash/shared').PlayerId): void {
+    this.fullBodyPilot?.startGrabReaction(move, facing, ownerId);
+  }
   startThrowRelease(move: import('@smash/shared').MoveId): void {
     this.fullBodyPilot?.startThrowRelease(move);
   }

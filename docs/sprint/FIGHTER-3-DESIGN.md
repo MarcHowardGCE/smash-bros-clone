@@ -1,5 +1,7 @@
 # Fighter 3 Design — Track C (Wave 1)
 
+> Historical record. The decisions, commands, and next steps below reflect this pass. See the [current project documentation](../assets/ULTIMATE-ANIMATION-CHECKLIST.md) for present guidance.
+
 ## 1) Archetype decision — fast/floaty
 
 Decision: Fighter 3 stays on the ROADMAP's recommended fast/floaty lane.

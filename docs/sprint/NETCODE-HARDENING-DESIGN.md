@@ -1,5 +1,7 @@
 # NETCODE-HARDENING-DESIGN
 
+> Historical record. The decisions, commands, and next steps below reflect this pass. See the [current project documentation](../guides/DEPLOYMENT.md) for present guidance.
+
 ## 1) Problem statement verified from code
 
 - `apps/client/src/network/GameClient.ts:93` sets `reconnection: false` on the socket client.

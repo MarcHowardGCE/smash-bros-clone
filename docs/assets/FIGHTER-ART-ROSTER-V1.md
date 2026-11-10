@@ -1,5 +1,7 @@
 # Roster art pack 1
 
+> Historical record. The decisions, commands, and next steps below reflect this pass. See the [current project documentation](FULL-BODY-FIGHTER-ART.md) for present guidance.
+
 Added 74 drawings: side kick, overhead kick and low sweep for all three fighters (six drawings each), plus Lincoln and Swift idle (four) and walk (six). Total: All-Rounder 69 drawings / 12 clips; Lincoln 28 / 5; Swift 28 / 5.
 
 Open index.html or the live review, choose Fighter, then Animation. Pause and scrub contact drawing 4. Walk remains 24 simulation ticks per cycle.

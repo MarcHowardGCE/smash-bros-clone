@@ -1,22 +1,18 @@
 # Training laboratory: playback, collision view and partner routines
 
-Air-dodge testing: the readout shows ready/spent and the current dodge’s captured fatigue. Compare fresh and level-five directional travel using the fatigue selector; a body hit restores air dodge but does not restore double jump. Intermediate travel scaling and landing interpolation remain provisional.
-
-Fatigue comparison: the Lab fatigue button resets both fighters and sets their next dodge fatigue from 0 to 5. Freeze and step to compare boundaries; normal recovery continues while running. See [the follow-up audit](FATIGUE-PARRY-SEQUENCE-AUDIT.md).
-
-Implemented November 5, 2026. Open **Training Dojo -> Free Practice -> Timing laboratory**. Slow motion, freeze/step and collision tools also appear in guided lessons; partner recording/playback is restricted to Free Practice so it cannot replace a lesson's prescribed partner.
+In an active Dojo session, open **Timing laboratory** in the live panel for the Input trace, collision overlay, and timing tools. Pause to reach timing controls under **Timing & Display** or partner recordings under **Recordings**. Recording, playback, and the Launch and KO lab are available in Free Practice.
 
 ## Controls
 
 | Tool | Keyboard / arena | Controller |
 | --- | --- | --- |
-| Playback speed | Speed button cycles 1x, 0.5x, 0.25x | Start -> Timing laboratory -> Speed |
-| Inspector freeze / run | F6 or Freeze/Run button | Back freezes; Start -> Resume runs |
-| Advance exactly one simulation tick | F7 while frozen | Back again while frozen; also Step in pause menu |
-| Collision view | F3 or Collision overlay button | Start -> Timing laboratory -> Collision overlay |
-| Record your inputs / stop and save | F8 in Free Practice | Start -> Timing laboratory -> Record / Stop and save |
-| Play / stop partner routine | F9 in Free Practice | Start -> Timing laboratory -> Play / Stop |
-| Routine slot, mirror, loop, delay | Laboratory buttons | Same options in the pause laboratory |
+| Playback speed | Speed button cycles 1x, 0.5x, 0.25x | Pause → Timing & Display → Speed |
+| Inspector freeze / run | F6 or Freeze/Run button | Step shortcut freezes. Resume runs. |
+| Advance exactly one simulation tick | F7 while frozen | Use the same shortcut again while frozen, or Step in the pause menu. |
+| Collision view | F3 or Collision overlay button | Pause → Timing & Display → Collision overlay |
+| Record your inputs / stop and save | F8 in Free Practice | Pause → Recordings → Record / Stop and save |
+| Play / stop partner routine | F9 in Free Practice | Pause → Recordings → Play / Stop |
+| Routine slot, mirror, loop, delay | Laboratory buttons | Same options in Recordings |
 
 The controller freeze and step shortcut uses Back on Xbox 360, Minus on Switch Pro, and Create on DualSense. Pause and resume use Start, Plus, and Options respectively. The Dojo shows the labels for Player 1's assigned controller. Buttons held for a frozen step are sampled by the normal input controller, so a player can hold Attack and advance it frame by frame. Steps issued through the pause menu suppress menu action presses. F6 inspector freeze preserves pending simulation buffers; the ordinary Escape/Start menu keeps its existing pause behavior.
 
@@ -56,6 +52,16 @@ Playback options:
 
 Slot data is versioned and contains only bounded input frames and source-fighter metadata. Analog values, action masks, jump-button counts and schema version are validated on load. There is no online upload or account synchronization.
 
+## Fatigue and input trace
+
+**Next dodge fatigue** resets the arena and cycles the preset from 0 to 5. The live readout distinguishes ready or spent air dodge and the fatigue captured when a dodge starts. A body hit restores air dodge while double jump remains spent. The [fatigue audit](FATIGUE-PARRY-SEQUENCE-AUDIT.md) tracks provisional movement and landing rules.
+
+Expand **Input trace** in the live panel to compare presses, separate face Attack and right-stick releases, move start, and smash charge stop. Use Freeze and Step to inspect individual simulation ticks.
+
+### Dojo launch and KO lab
+
+In Free Practice, open **Timing laboratory → Launch and KO lab**. Set your fighter and partner independently to 0%, 50%, 100%, 150%, or 200%. Presets stay fixed through hits and arena resets and start at 0% in each new session. The lab reports the last launch for each fighter, including knockback, hitstun, tumble, base launch speed before directional influence, and maximum displacement during the tracked reaction. A real blast-zone crossing records the boundary before the arena resets. Screen and star KO previews use the selected fighter's existing art without moving fighters or using stocks.
+
 ## Code references
 
 - apps/client/src/local/LocalMatch.ts: fixed-tick speed scheduling, inspector freeze/run and one-tick step.
@@ -68,6 +74,8 @@ Slot data is versioned and contains only bounded input frames and source-fighter
 
 ## Validation
 
+This section preserves the November 5 launch validation. The [current Dojo inventory](TRAINING-DOJO.md#current-curriculum-validation) tracks later lesson coverage.
+
 Engine: 1,023 passed, one existing skip. Server: 392 passed, 16 existing skips. Client: 673 passed. After the final save/toolbar refinement, the two targeted panel tests and client production build passed again. Shared/package production builds passed through the server's production-entrypoint test. A test cleanup return-type error found during the first build was corrected before the clean server rerun.
 
 Coverage includes equal simulation outcomes at 1x/0.5x/0.25x, preservation of buffers while frozen, exact single-tick hitlag progress, normal-match rejection, recorded-field copying, mirror mapping, exact neutral gaps, one-shot release, recording cap, invalid storage rejection, slot loading and real partner attacks from playback. Existing 18-lesson/all-fighter completion checks remain passing.
@@ -76,15 +84,9 @@ Production-browser checks passed for speeds, stable frozen ticks, keyboard/contr
 
 Evidence: task workspace outputs/dojo-lab-v1/checks.json, frozen-collision.png and partner-replay.png. Logs: work/lab-engine.txt, lab-server-final.txt and lab-client.txt. No environment files or bonney content were inspected. No new art assets or ordinary movement/launch/reach changes were introduced.
 
-## Next refinements
+## Follow-ups from the November 5 launch
 
 1. Human controller testing of freeze/step ergonomics and recording instructions.
 2. Input/state timeline, cancel-window annotations, and early/late coaching for failed parries or dodges.
 3. Named routines, trimming, explicit reset-per-loop scenarios and import/export using the existing validated schema.
 4. More dojo chapters for ledges, techs, other throws and fighter-specific sequences.
-
-
-### Dojo launch and KO lab
-
-In Free Practice, open **Timing laboratory → Launch and KO lab**. Set your fighter and partner independently to 0%, 50%, 100%, 150%, or 200%. Presets stay fixed through hits and arena resets and start at 0% in each new session. The lab reports the last launch for each fighter, including knockback, hitstun, tumble, base launch speed before directional influence, and maximum displacement during the tracked reaction. A real blast-zone crossing records the boundary before the arena resets. Screen and star KO previews use the selected fighter's existing art without moving fighters or using stocks.
-

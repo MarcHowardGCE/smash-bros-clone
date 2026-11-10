@@ -1,5 +1,7 @@
 # Roster moveset production baseline
 
+> Historical record. The decisions, commands, and next steps below reflect this pass. See the [current project documentation](../REFINEMENT.md) for present guidance.
+
 Date: 2026-11-03
 
 Production baseline for animation and later engine implementation; no gameplay changes in this batch. These choices settle art requirements for this core kit; they are not a claim of current gameplay or Ultimate feature parity. Original roster identities remain balanced starter / heavy reach / light mobility. User feedback can revise this versioned baseline before engine implementation.

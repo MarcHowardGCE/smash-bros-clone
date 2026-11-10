@@ -1,5 +1,13 @@
 # Menu polish audit and implementation plan
 
+## Current signoff
+
+The tracked native contrast, compact Dojo layout, and Narrator checks passed. Dojo tabs use explicit activation and the duplicate announcement fix was verified in Chrome. Render passed the artwork-retry checks and the live and paused private-credential reconnect smoke. Extended physical controller testing remains open. Collect provider timing evidence if the isolated first-byte delay recurs. [Narrator follow-up](#dojo-tab-announcement-fix) · [Loading signoff](#render-early-alert-signoff) · [Reconnect signoff](guides/DEPLOYMENT.md#render-reconnect-signoff) · [Active work](plans/ACTIVE-WORK.md)
+
+## Earlier menu audit and rollout
+
+The sections below record the rollout in order. Earlier open gates reflect the state of that pass.
+
 November 8, 2026. Fighter select, Dojo pause, Home, Local Play setup, the online room lobby, World Select, and the match intro are ready for in-game review.
 
 ## Audit scope and evidence

@@ -1,5 +1,7 @@
 # Contact and gameplay-scale pass — revision 18
 
+> Historical record. The decisions, commands, and next steps below reflect this pass. See the [current project documentation](ULTIMATE-ANIMATION-CHECKLIST.md) for present guidance.
+
 Completed 2026-11-03. The pack remains 136 clips / 763 registered body frames per fighter (408 clips / 2289 frames plus 16 shared FX frames).
 
 ## Corrections

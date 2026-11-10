@@ -1,6 +1,6 @@
 # AGENTS.md — Everybody Throws Hands
 
-A multiplayer browser platform fighter with percent-based damage, blast-zone KOs, stocks, and 22 moves per fighter, built on a deterministic engine with hybrid client-prediction netcode.
+A multiplayer browser platform fighter with percent-based damage, blast-zone KOs, stocks, and a five-fighter roster, built on a deterministic engine with hybrid client-prediction netcode.
 
 ---
 
@@ -16,6 +16,8 @@ Always pass `category=` when spawning subagents; never pass a raw model ID.
 - This project is the platform fighter in apps/ and packages/. Exclude bonney/ from analysis, edits, tests, builds, deployments, and refinement; it is a separate project.
 - Never inspect .env or .env.global files.
 - Keep README.md focused on the application, repository, setup, tests, and deployment. Update it when those facts change. Record workstream progress, next steps, and signoff under docs/ using docs/plans/ACTIVE-WORK.md as the index. Preserve dated evidence.
+- Update the affected current documentation in the same change. Use the [maintenance checklist](docs/plans/DOCUMENTATION-REFRESH.md#maintenance-rule-for-future-changes) to select the guide. Update the [active-work index](docs/plans/ACTIVE-WORK.md) and link dated evidence when a priority, milestone, signoff, or blocker changes.
+- Verify changed instructions against the implementation and run `pnpm docs:check` after documentation edits. In the [PR checklist](.github/pull_request_template.md), name the docs updated or explain why none were needed. Record any validation limits.
 - Current refinement decisions and remaining gaps are tracked in docs/REFINEMENT.md.
 
 ## Monorepo Structure
@@ -109,71 +111,15 @@ The server ticks at 60 Hz (`TICK_MS = 1000 / 60`) using a `setImmediate` + `perf
 
 ## How to Run / Test / Build
 
-Use the [development](docs/guides/DEVELOPMENT.md), [testing](docs/guides/TESTING.md), and [deployment](docs/guides/DEPLOYMENT.md) guides for detailed workflows.
-
-```bash
-# Install all workspace dependencies
-pnpm install
-
-# Start server + client, open browser, clean up on exit (recommended)
-just play
-
-# Run all unit tests (regression gate: must exit 0 before any commit)
-pnpm test
-
-# Build all packages in dependency order
-pnpm build
-
-# Run Playwright end-to-end tests
-pnpm test:e2e
-```
-
-### Useful asset and renderer commands
-
-```bash
-# Bypass AssetPack generation during build or test runs
-SKIP_ASSETPACK=1 pnpm build
-
-# Regenerate placeholder raw part PNGs for fighters
-node scripts/assets/generate-all-rounder-parts.mjs
-
-# Verify asset generation determinism and atlas contracts
-node scripts/assets/verify-assets-determinism.mjs
-
-# Runtime polygon renderer kill-switch (append to browser URL)
-http://localhost:5173/?renderer=polygon
-```
-
-### All `just` commands
-
-```bash
-just            # list available commands
-just play       # start server + client + open browser + auto-cleanup
-just dev        # start server + client without opening browser
-just build      # build all packages
-just test       # run all five fighter package test suites
-just clean      # remove all dist/ and node_modules/
-just stop       # kill any running server/client processes
-just logs       # tail live server logs
-```
-
-`pnpm test` is the regression gate. It runs all Vitest unit tests. It must exit 0 before merging any change.
+Use the [development](docs/guides/DEVELOPMENT.md), [testing](docs/guides/TESTING.md), and [deployment](docs/guides/DEPLOYMENT.md) guides for commands and verification. Use the [full-body art guide](docs/assets/FULL-BODY-FIGHTER-ART.md) for normal match art, the [atlas workflow](docs/assets/FIGHTER-PRODUCTION-ATLAS.md#current-packaging-workflow) for packaging, and the [fallback parts guide](docs/assets/REPLACING-FIGHTER-ART.md) for AssetPack parts.
 
 ---
 
 ## Adding a Fighter
 
-1. **Define stats** in `packages/shared/src/constants/characters.ts`. Copy `ALL_ROUNDER_STATS` as a base, adjust `weight`, `walkSpeed`, `runSpeed`, `jumpVelocity`, `airSpeed`, and `size`. Register the new ID in `CHARACTER_IDS` and `CHARACTER_REGISTRY`.
-
-2. **Add the `CharacterId` literal** to `packages/shared/src/types/Character.ts` so the union type covers the new fighter.
-
-3. **Override moves** (optional) in `packages/engine/src/moves/`. Create a file analogous to `lincoln.ts`. Call `getMoveDataForCharacter(characterId, moveId)` in `packages/engine/src/moves/index.ts` to route to your overrides.
-
-4. **Add renderer visuals and assets** in `apps/client/`. Add the raw cutouts to `raw-assets/fighters{m}/<characterId>{tps}/` with the 6 contracted filenames (`head.png`, `body.png`, `arm_l.png`, `arm_r.png`, `leg_l.png`, `leg_r.png`) following `docs/assets/REPLACING-FIGHTER-ART.md`. Update `apps/client/src/renderer/parts/assetContract.ts` and `apps/client/src/renderer/fighterAssets.ts` to include the new fighter ID. Build or start the dev server to package sprite atlases into `apps/client/public/assets/fighters/`. If custom accessories or animation poses are needed, create a character-specific file (see `lincolnAccessories.ts` and `lincolnAnimations.ts` for reference) and wire it into `FighterRenderer.ts`.
-
-5. **Write tests** covering frame-data validity (see `packages/engine/src/characters/characters.test.ts`) and any custom move overrides (see `packages/engine/src/moves/lincoln.test.ts`).
-
-6. Run `pnpm test` and confirm zero failures.
+1. Define the ID and stats in `packages/shared/src/types/Character.ts` and `packages/shared/src/constants/characters.ts`. Check both the shared type and the client and server roster gates.
+2. Register the fighter's menu selection and full-body pack. Follow the [full-body art guide](docs/assets/FULL-BODY-FIGHTER-ART.md). Update fallback registrations only when adding or changing articulated parts.
+3. Add any character-specific move data in `packages/engine/src/moves/` and resolve it through `getMoveDataForCharacter`. Verify frame data and exercise selection and animation playback in the intended modes. Follow the [testing guide](docs/guides/TESTING.md) for the regression gate.
 
 ---
 

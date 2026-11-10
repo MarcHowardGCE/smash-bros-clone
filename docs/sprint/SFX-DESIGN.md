@@ -1,5 +1,7 @@
 # SFX Design: Sound Effects & Playback Architecture
 
+> Historical record. The decisions, commands, and next steps below reflect this pass. See the [current project documentation](../README.md) for present guidance.
+
 **Status:** Implemented
 **Baseline Commit:** 5b38f9aa64768126bcfa0f28e908ca33966f56e0  
 **Created:** 2026-09-02

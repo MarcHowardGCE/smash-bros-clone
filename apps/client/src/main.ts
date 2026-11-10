@@ -519,7 +519,7 @@ async function main() {
         const attacker = fighterRenderers.get(event.attackerId);
         const facing = players?.get(event.attackerId)?.facing ?? (attacker?.container.scale.x === -1 ? -1 : 1);
         if (event.moveId !== MoveId.PUMMEL) attacker?.startThrowRelease(event.moveId);
-        defenderRenderer?.startGrabReaction(event.moveId, facing);
+        defenderRenderer?.startGrabReaction(event.moveId, facing, event.attackerId);
       }
       if (defenderRenderer) {
         defenderRenderer.startHitFlash();
@@ -683,7 +683,10 @@ async function main() {
         );
         fighterRenderers.set(id, fighterRenderer);
       }
-      const grabOwner=[...state.players.values()].find(p=>p.isGrabbing&&p.grabbedPlayerId===id);
+      const holder = [...state.players.values()].find(p => p.isGrabbing && p.grabbedPlayerId === id);
+      const throwOwnerId = fighterRenderer.throwOwnerId;
+      const throwOwner = throwOwnerId && playerState.state === 'HITSTUN' ? state.players.get(throwOwnerId) : undefined;
+      const grabOwner = holder ?? throwOwner;
  const footstoolPartner=playerState.footstoolPartnerId?state.players.get(playerState.footstoolPartnerId):undefined;
  const footstoolContact=playerState.footstoolRole==='attacker'&&footstoolPartner&&(footstoolPartner.footstoolRole==='ground'||footstoolPartner.footstoolRole==='air')?{artId:newcomerArtId(footstoolPartner.characterId),characterId:footstoolPartner.characterId??'all-rounder',role:footstoolPartner.footstoolRole,frame:footstoolPartner.footstoolFrame??0,dx:footstoolPartner.x-playerState.x,dy:footstoolPartner.y-playerState.y,facing:footstoolPartner.facing}:undefined;
  const edge=playerState.ledgeId?getStageLayout(selectedStage.id).ledges.find(ledge=>ledge.id===playerState.ledgeId):undefined;

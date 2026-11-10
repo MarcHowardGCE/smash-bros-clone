@@ -11,11 +11,13 @@ shared owns types/constants, engine owns runtime-independent primitives and seed
 Combat is authoritative. Prediction approximates movement at 60 Hz; remote interpolation uses receipt time rather than subtracting browser/server clock origins.
 
 ## Content
-Fighters need shared IDs/stats, optional move overrides, renderer/asset registry entries and tests. Follow docs/assets/REPLACING-FIGHTER-ART.md for the six-part contract.
+Fighters need a shared ID and stats, roster and renderer integration, any move overrides, and tests. Use the [full-body art guide](docs/assets/FULL-BODY-FIGHTER-ART.md) for match artwork and the [atlas guide](docs/assets/FIGHTER-PRODUCTION-ATLAS.md#current-packaging-workflow) for packaging. Use the [fallback parts guide](docs/assets/REPLACING-FIGHTER-ART.md) for the articulated six-part contract.
 StageConfig supplies world names, backgrounds, and music. Update packages/shared/src/constants/stageLayouts.ts for collision geometry and use the shared stage ID in selection and match initialization.
 MoveData fields live in packages/shared/src/types/MoveData.ts; keep FSM duration tables consistent when changing frame data.
 
 ## Review and documentation
-Describe resulting behavior, validation, and limits. Update the README when onboarding, architecture, commands, or deployment changes. Put progress and signoff in the relevant document under docs/ and update docs/plans/ACTIVE-WORK.md when the next action changes. Preserve dated evidence.
+Update the affected current documentation in the same change. Use the [maintenance checklist](docs/plans/DOCUMENTATION-REFRESH.md#maintenance-rule-for-future-changes) to choose the right guide. Update the README for changes to onboarding, architecture, or its quick start. When a priority, milestone, signoff, or blocker changes, update [active work](docs/plans/ACTIVE-WORK.md) and link the dated evidence.
+
+In the [PR checklist](.github/pull_request_template.md), list the docs changed or explain why no update was needed. Verify the guidance against the implementation, run changed instructions where practical, and run `pnpm docs:check` for documentation edits. Record validation limits and update incoming links when moving or renaming docs.
 Do not commit generated output or unrelated changes.
 Version source: packages/shared/src/version.ts. Run scripts/sync-version.js for an intentional release; tagging/publishing is a separate action.

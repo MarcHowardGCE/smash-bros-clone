@@ -1,5 +1,7 @@
 # Recovery and defensive transition audit — November 5, 2026
 
+> Historical record. The decisions, commands, and next steps below reflect this pass. See the [current project documentation](REFINEMENT.md) for present guidance.
+
 ## Verified defects fixed
 1. RUN now accepts shield and special inputs without requiring movement release. Jump and attack/grab priorities are retained.
 2. The shared jump+attack shortcut cannot bypass shieldstun. Checks cover one, two and ten remaining shieldstun ticks; the shortcut remains available from an unstunned shield.

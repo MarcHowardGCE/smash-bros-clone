@@ -2,6 +2,8 @@ Latest update: tracked launch conversion and decay are implemented; see LAUNCH-M
 
 # Movement and launch audit — November 5, 2026
 
+> Historical record. The decisions, commands, and next steps below reflect this pass. See the [current project documentation](LAUNCH-MOTION-REFINEMENT.md) for present guidance.
+
 ## Completed this pass
 Added launch-speed influence (LSI) at the authoritative pending-launch / final-hitlag boundary. Eligible tumble launches use normalized vertical input: full up gives 1.095 speed, full down gives 0.92, partial input interpolates. Exclusions use the post-DI angle and strict 65–115 / 245–295 degree intervals. Neutral and non-tumble launch speeds remain unchanged. Pending launch is consumed once. The existing input transport already carries analog magnitude; no protocol or sprite changes were necessary.
 

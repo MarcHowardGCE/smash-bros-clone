@@ -1,5 +1,7 @@
 import { afterEach, beforeEach, describe, expect, it, vi, type Mock } from "vitest";
 
+vi.mock("pixi.js", () => import("./fixtures/mainPixi.js"));
+
 type SetupResult = {
   participantCount: 2 | 3 | 4;
   seats: Array<
@@ -13,6 +15,7 @@ interface BootResult {
     onLocalPlay: (() => void) | null;
     onLocalPlayAgain: (() => void) | null;
     onMainMenu: (() => void) | null;
+    focusMenuControl: Mock<[string], void>;
   };
   triggerLocalPlaySetupBack: () => void;
   loadPilot: Mock<[], Promise<null>>;
@@ -99,16 +102,7 @@ const bootMainWithMocks = async (
 
   const loadPilot = vi.fn(async () => null);
   vi.doMock('../renderer/fullbody/FullBodyPilot.js', () => ({ preloadFullBodyPilot: loadPilot }));
-    vi.doMock('../renderer/fullbody/KOPresentation.js',()=>({KOPresentation:class{tick(){}destroy(){}clear(){}spawn(){}update(){}setAssets(){}getDiagnostics(){return [];}}}));
-    vi.doMock("pixi.js", () => {
-    class Application {
-        ticker = {add:()=>{},stop:()=>{},start:()=>{}};
-      stage = { addChild: () => {} };
-      canvas = document.createElement("canvas");
-      async init(): Promise<void> {}
-    }
-    return { Application };
-  });
+  vi.doMock('../renderer/fullbody/KOPresentation.js',()=>({KOPresentation:class{tick(){}destroy(){}clear(){}spawn(){}update(){}setAssets(){}hasSpecialKO(){return false;}getDiagnostics(){return [];}}}));
 
   vi.doMock("../renderer/layers.js", () => ({
     createLayers: () => ({
@@ -119,7 +113,10 @@ const bootMainWithMocks = async (
   }));
 
   vi.doMock("../renderer/StageRenderer.js", () => ({
-    StageRenderer: class StageRenderer {},
+    StageRenderer: class StageRenderer {
+      ready = Promise.resolve();
+    },
+    waitForStageAsset: (pending: Promise<unknown>) => pending,
   }));
   vi.doMock("../renderer/fighterAssets.js", () => ({
     preloadFighterAssets: async () => ({ mode: "polygon" as const }),
@@ -295,6 +292,7 @@ const bootMainWithMocks = async (
       setRoomCode(): void {}
       setPlayerId(): void {}
       setAudioManager(): void {}
+      focusMenuControl = vi.fn<[string], void>();
       showLobby(): void {
         showLobbyCalls += 1;
       }
@@ -501,6 +499,8 @@ describe("main local play flow wiring", () => {
 
     runtime.triggerLocalPlaySetupBack();
 
+    expect(runtime.uiInstance.focusMenuControl).toHaveBeenCalledWith("#local-play-btn");
+
     expect(runtime.getGameClientConnectCalls()).toBe(1);
     expect(runtime.getShowLobbyCalls()).toBeGreaterThan(0);
   });
@@ -564,9 +564,11 @@ describe("main local play flow wiring", () => {
     ]);
 
     expect(runtime.localMatchCtorCalls).toHaveLength(1);
-    await vi.waitFor(() => expect(runtime.loadPilot).toHaveBeenCalledWith(false, ["abe-lincoln"], false));
-    expect(runtime.loadPilot).toHaveBeenCalledWith(false, ["all-rounder"], false);
-    expect(runtime.loadPilot).not.toHaveBeenCalledWith(false, ["swift"], false);
+    await vi.waitFor(() => expect(runtime.loadPilot.mock.calls).toEqual([
+      [false, []],
+      [false, ["abe-lincoln"], false, true],
+      [false, ["all-rounder"], false, true],
+    ]));
     const call = runtime.localMatchCtorCalls[0];
     expect(call?.characterIds).toBeDefined();
     expect(call?.characterIds).toEqual({

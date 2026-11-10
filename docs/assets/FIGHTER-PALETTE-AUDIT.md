@@ -1,5 +1,7 @@
 # Palette, face and costume audit
 
+> Historical record. The decisions, commands, and next steps below reflect this pass. See the [current project documentation](FULL-BODY-FIGHTER-ART.md) for present guidance.
+
 
 ### Palette audit — 2026-11-03 (batch 19)
 

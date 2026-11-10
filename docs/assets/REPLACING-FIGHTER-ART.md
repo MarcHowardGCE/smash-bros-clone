@@ -1,8 +1,6 @@
-# Replacing Fighter Art (Artist-First Guide)
+# Replacing fallback fighter parts
 
-This guide is written for artists and content integrators who will never read TypeScript.
-
-If you follow this document literally, you can replace fighter art with **zero code edits**.
+This workflow updates the articulated six-part artwork for the three original fighters. For the artwork used in normal matches and the Dojo, follow the [full-body fighter art guide](FULL-BODY-FIGHTER-ART.md). An existing fallback part can be replaced without a TypeScript change if it follows the contract below.
 
 ---
 
@@ -98,17 +96,17 @@ pnpm dev
 
 Then edit PNGs in `raw-assets/fighters{m}/...`. The dev asset pipeline repacks atlases for live testing.
 
-### Regenerate current placeholder pack
+### Regenerate placeholder parts
 
-```bash
+The placeholder generator overwrites its fallback source PNGs. Run it only when intentionally resetting those parts, preferably in an isolated copy.
+
+```sh
 node scripts/assets/generate-all-rounder-parts.mjs
 ```
 
-### Force polygon fallback renderer (kill-switch)
+### Preview fallback parts
 
-Open:
-
-`http://localhost:5173/?renderer=polygon`
+Open `http://localhost:5173/?renderer=legacy` and start a match with an original fighter. This disables full-body loading and shows the articulated fallback if its atlas is available. The `renderer=polygon` diagnostic disables the articulated texture provider.
 
 ### Skip AssetPack during build/test workflows
 
@@ -206,12 +204,16 @@ Meaning: PNG cannot be decoded.
 
 ## 7) Sanity checks before handoff
 
-1. `pnpm dev` and visually confirm sprite rendering.
-2. Verify polygon fallback still renders: `?renderer=polygon`.
+1. Run `pnpm dev` and check the articulated parts in a match with `?renderer=legacy`.
+2. Run `pnpm -F @smash/client assets:validate` and review any reported missing or invalid parts.
 3. Run unit/integration checks:
    - `pnpm test`
    - `pnpm test:e2e`
 4. Optional fast build path without repack: `SKIP_ASSETPACK=1 pnpm build`.
+
+## Historical full-body batches
+
+The following dated development milestones describe earlier full-body work. Use the current [full-body guide](FULL-BODY-FIGHTER-ART.md) and [atlas workflow](FIGHTER-PRODUCTION-ATLAS.md#current-packaging-workflow) for new changes.
 
 ## Recovery and floor attack batch
 

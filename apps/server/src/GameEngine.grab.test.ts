@@ -285,43 +285,6 @@ describe('GameEngine grab integration', () => {
 		expect(victim?.isGrabbing).toBe(false);
 	});
 
-	it('clears grab flags when both exit GRAB_HOLDING to IDLE after frame 89', () => {
-		const engine = createEngine(['p1', 'p2']);
-
-		primePlayer(engine, 'p1', {
-			state: PlayerStateEnum.GRAB_HOLDING,
-			stateFrame: 89,
-			isGrounded: true,
-			isGrabbing: true,
-			grabbedPlayerId: 'p2',
-			x: 640,
-			y: 472,
-			vx: 0,
-			vy: 0,
-		});
-
-		primePlayer(engine, 'p2', {
-			state: PlayerStateEnum.GRAB_HOLDING,
-			stateFrame: 89,
-			isGrounded: true,
-			isGrabbing: true,
-			x: 680,
-			y: 472,
-			vx: 0,
-			vy: 0,
-		});
-
-		const state = tick(engine, { p1: null, p2: null });
-		const attacker = state.players.p1;
-		const victim = state.players.p2;
-
-		expect(attacker?.state).toBe(PlayerStateEnum.IDLE);
-		expect(victim?.state).toBe(PlayerStateEnum.IDLE);
-		expect(attacker?.isGrabbing).toBe(false);
-		expect(attacker?.grabbedPlayerId).toBeNull();
-		expect(victim?.isGrabbing).toBe(false);
-	});
-
 	it('forward throw from GRAB_HOLDING launches victim into HITSTUN and clears grab flags', () => {
 		const engine = createEngine(['p1', 'p2']);
 		primeGrabHoldingPair(engine, 1);
@@ -648,4 +611,154 @@ it('releases a held victim when the grabber is interrupted', () => {
   const state = tick(engine);
   expect(state.players.p1).toMatchObject({ state: PlayerStateEnum.HITSTUN, isGrabbing: false, grabbedPlayerId: null });
   expect(state.players.p2).toMatchObject({ state: PlayerStateEnum.IDLE, isGrabbing: false });
+});
+
+
+function connectTimedGrab(percent = 0, order: PlayerId[] = ['p1', 'p2']): GameEngine {
+  const engine = createEngine(order);
+  primePlayer(engine, 'p1', { x: 640, y: 472, isGrounded: true, state: PlayerStateEnum.IDLE, facing: 1 });
+  primePlayer(engine, 'p2', { x: 675, y: 472, isGrounded: true, state: PlayerStateEnum.IDLE, percent });
+  tick(engine, { p1: makeInput('p1', INPUT_BITS.GRAB) });
+  tickUntil(engine, s => s.players.p2!.isGrabbing);
+  return engine;
+}
+
+function holdAge(engine: GameEngine, inputs: (age: number) => InputEvent | null): number {
+  for (let age = 1; age <= 300; age++) {
+    if (!tick(engine, { p2: inputs(age) }).players.p2!.isGrabbing) return age;
+  }
+  throw new Error('Grab did not release');
+}
+
+describe('active grab escape', () => {
+  it.each([[0, 90], [50, 175], [100, 260]])('times out at %i percent after %i ticks', (percent, expected) => {
+    const engine = connectTimedGrab(percent);
+    expect(holdAge(engine, () => null)).toBe(expected);
+    expect(getMutableState(engine).players.p1!.state).toBe(PlayerStateEnum.IDLE);
+    expect(getMutableState(engine).players.p2!.state).toBe(PlayerStateEnum.IDLE);
+  });
+
+  it('counts fresh button edges once per tick, even when the input batch contains a chord', () => {
+    const buttons = INPUT_BITS.ATTACK | INPUT_BITS.JUMP | INPUT_BITS.SPECIAL;
+    expect(holdAge(connectTimedGrab(), age => ({ ...makeInput('p2', buttons), pressed: age === 1 ? buttons : 0 }))).toBe(76);
+    expect(holdAge(connectTimedGrab(), age => ({ ...makeInput('p2', buttons), pressed: age % 2 ? buttons : 0 }))).toBe(19);
+  });
+
+  it('credits analog direction changes and neutral rearming, with a smaller credit than buttons', () => {
+    expect(holdAge(connectTimedGrab(), age => ({
+      ...makeInput('p2'),
+      stickX: age === 2 ? 0 : 1,
+      stickY: 0,
+    }))).toBe(74);
+    expect(holdAge(connectTimedGrab(), age => ({
+      ...makeInput('p2'),
+      stickX: age === 1 ? 1 : -1,
+      stickY: 0,
+    }))).toBe(74);
+  });
+
+  it('plays the active release cue for an airborne victim and ages it through landing', () => {
+    const engine = createEngine();
+    primePlayer(engine, 'p1', { x: 640, y: 472, isGrounded: true, state: PlayerStateEnum.IDLE, facing: 1 });
+    primePlayer(engine, 'p2', { x: 675, y: 445, isGrounded: false, state: PlayerStateEnum.AIRBORNE });
+    tick(engine, { p1: makeInput('p1', INPUT_BITS.GRAB) });
+    const held = tickUntil(engine, s => s.players.p2!.isGrabbing);
+    expect(held.players.p2!.isGrounded).toBe(false);
+    expect(holdAge(engine, age => age % 2 ? makeInput('p2', INPUT_BITS.JUMP) : null)).toBe(19);
+    expect(getMutableState(engine).players.p2).toMatchObject({
+      state: PlayerStateEnum.AIRBORNE, artCue: 'grab_escape', artCueFrame: 0, isGrabbing: false,
+    });
+    expect(tick(engine).players.p2).toMatchObject({ artCue: 'grab_escape', artCueFrame: 1 });
+  });
+
+  it.each([
+    ['mash', 59], ['mash', 60], ['timeout', 59], ['timeout', 60],
+  ] as const)('checks regrab eligibility after %s at tick %i', (releaseKind, contactTick) => {
+    const engine = connectTimedGrab();
+    const mash = releaseKind === 'mash';
+    expect(holdAge(engine, age => mash && age % 2 ? makeInput('p2', INPUT_BITS.JUMP) : null))
+      .toBe(mash ? 19 : 90);
+    const releasedAt = engine.getCurrentTick();
+    const startup = getMoveData(MoveId.GRAB).startupFrames;
+    for (let age = 1; age <= contactTick; age++) {
+      const attempt = age === 1 || age === contactTick - startup;
+      const state = tick(engine, { p1: attempt ? makeInput('p1', INPUT_BITS.GRAB) : null });
+      expect(engine.getCurrentTick() - releasedAt).toBe(age);
+      expect(state.players.p2!.isGrabbing).toBe(age === 60);
+      expect(state.players.p2!.percent).toBe(0);
+      expect(state.players.p2!.state).not.toBe(PlayerStateEnum.HITSTUN);
+    }
+    if (contactTick === 60) expect(holdAge(engine, () => null)).toBe(90);
+  });
+
+  it('blocks a different grabber after a throw while allowing ordinary attacks', () => {
+    const engine = connectTimedGrab(0, ['p1', 'p2', 'p3']);
+    tick(engine, { p1: makeInput('p1', INPUT_BITS.UP) });
+    const thrown = tickUntil(engine, state => state.players.p2!.state === PlayerStateEnum.HITSTUN);
+    const damage = thrown.players.p2!.percent;
+    expect(damage).toBeGreaterThan(0);
+    engine.forcePosition('p2', 690, 471);
+    primePlayer(engine, 'p3', { x: 722, y: 472, isGrounded: true, state: PlayerStateEnum.IDLE, facing: -1 });
+    tick(engine, { p3: makeInput('p3', INPUT_BITS.GRAB) });
+    for (let age = 0; age < 26; age++) {
+      const victim = tick(engine).players.p2!;
+      expect(victim.isGrabbing).toBe(false);
+      expect(victim.percent).toBe(damage);
+    }
+    tickUntil(engine, state => state.players.p3!.state === PlayerStateEnum.IDLE);
+    tick(engine, { p3: makeInput('p3', INPUT_BITS.ATTACK) });
+    expect(tickUntil(engine, state => state.players.p2!.percent > damage).players.p2!.state)
+      .toBe(PlayerStateEnum.HITSTUN);
+  });
+
+  it('protects the victim when the holder loses the grab without a throw', () => {
+    const engine = connectTimedGrab(0, ['p1', 'p2', 'p3']);
+    engine.forcePosition('p1', 500, 450);
+    expect(tick(engine).players.p2!.isGrabbing).toBe(false);
+    primePlayer(engine, 'p3', { x: 712, y: 472, isGrounded: true, state: PlayerStateEnum.IDLE, facing: -1 });
+    tick(engine, { p3: makeInput('p3', INPUT_BITS.GRAB) });
+    for (let age = 0; age < 26; age++) {
+      const victim = tick(engine).players.p2!;
+      expect(victim.isGrabbing).toBe(false);
+      expect(victim.percent).toBe(0);
+    }
+  });
+
+  it('ignores synthetic right-stick Attack edges and accepts a fresh face-button edge', () => {
+    expect(holdAge(connectTimedGrab(), age => ({
+      ...makeInput('p2', age === 1 ? INPUT_BITS.ATTACK : 0),
+      faceAttackPressed: false,
+    }))).toBe(90);
+    expect(holdAge(connectTimedGrab(), age => ({
+      ...makeInput('p2', age === 1 ? INPUT_BITS.ATTACK : 0),
+      faceAttackPressed: age === 1,
+    }))).toBe(76);
+  });
+
+  it.each([
+    [MoveId.PUMMEL, INPUT_BITS.ATTACK, 0, true],
+    [MoveId.UP_THROW, INPUT_BITS.UP, 0, true],
+    [MoveId.UP_THROW, INPUT_BITS.UP, 1, false],
+  ] as const)('resolves %s at the escape boundary (delay %i/%i)', (move, command, delay, connects) => {
+    for (const order of [['p1', 'p2'], ['p2', 'p1']]) {
+      const engine = connectTimedGrab(0, order);
+      const actionTick = 19 - getMoveData(move).startupFrames + delay;
+      let state = getMutableState(engine);
+      for (let age = 1; age <= 19; age++) {
+        state = tick(engine, {
+          p1: age === actionTick ? makeInput('p1', command) : null,
+          p2: age % 2 ? makeInput('p2', INPUT_BITS.JUMP) : null,
+        });
+        if (age < 19) expect(state.players.p2!.isGrabbing).toBe(true);
+      }
+      expect(state.players.p2!.isGrabbing).toBe(false);
+      expect(state.players.p2!.percent > 0).toBe(connects);
+      expect(state.players.p2!.state).toBe(move === MoveId.UP_THROW && connects
+        ? PlayerStateEnum.HITSTUN : PlayerStateEnum.IDLE);
+      if (!connects) {
+        for (let i = 0; i < 10; i++) state = tick(engine);
+        expect(state.players.p2!.percent).toBe(0);
+      }
+    }
+  });
 });

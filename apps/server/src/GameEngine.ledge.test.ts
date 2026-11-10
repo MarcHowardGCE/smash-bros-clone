@@ -567,6 +567,7 @@ describe('GameEngine ledge integration', () => {
 		expect(jumpPlayer.state).toBe(PlayerStateEnum.AIRBORNE);
 		expect(jumpPlayer.ledgeId).toBeNull();
 		expect(jumpPlayer.vy).toBeLessThan(0);
+		expect(jumpPlayer.hasDoubleJump).toBe(true);
 
 		const climbPlayer = runOption(
 			INPUT_BITS.LEFT,

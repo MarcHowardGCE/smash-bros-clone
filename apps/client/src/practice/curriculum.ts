@@ -15,7 +15,7 @@ export function dojoSimulationProfile(id:string):CharacterId{
   if(id==='moonshine'||id==='hulk-hoagie'||id==='swift'||id==='abe-lincoln')return id;
   return 'all-rounder';
 }
-export type DummyMode='still'|'shield'|'jab'|'mixed'|'up-smash';
+export type DummyMode='still'|'shield'|'jab'|'mixed'|'up-smash'|'grab';
 export interface PracticeConfig {fighter:string;dummy:string;stageId:string;lessonId:string|null;dummyMode:DummyMode}
 export const KO_LESSON_PERCENT = 350;
 export type LessonSetup = 'center' | 'close' | 'ko-launch' | 'ledge' | 'floor-tech';
@@ -86,6 +86,10 @@ LESSONS.push(
  {id:'pummel',tier:'Advanced',title:'Pummel from a grab',hint:'Grab the nearby partner, then press Attack while holding them. A pummel must connect.',
   buttons:'{grab}, then {attack} · C, then Z',arm:B.ATTACK,dummy:'still',setup:'close',
   check:(_p,_o,context)=>Boolean(context?.hits.some(hit=>hit.attackerId===context.playerId&&hit.moveId==='PUMMEL'))},
+ {id:'grab-escape',tier:'Advanced',title:'Break a grab',dummy:'grab',setup:'close',arm:0,
+  hint:'Let the partner grab you. While held, tap fresh buttons or roll the left stick through directions. Escape early three times. Waiting for the grab to time out does not count.',
+  buttons:'Tap {attack} or {jump}, or rotate the left stick · Z, X, or Arrow keys',
+  check:(p,o)=>o.state==='GRAB_HOLDING'&&o.isGrabbing&&!o.grabbedPlayerId&&p.artCue==='grab_escape'&&p.artCueFrame===0},
  ...throwLessons.map(([id,title,moveId,arm,direction]):Lesson=>({
   id,title,tier:'Advanced',hint:'Grab the nearby partner, then aim '+direction+'.',
   buttons:'{grab}, then '+direction+' · C, then direction',arm,dummy:'still',setup:'close',
@@ -135,7 +139,7 @@ export class LessonTracker {
       }
       outcome = state.tick<=this.launchUntil && exits.some(event=>event.playerId==='local-p2'&&event.boundary==='top');
       if (exits.length) this.launchUntil = -1;
-    } else if (this.previous && state.tick<=this.armedUntil) {
+    } else if (this.previous && (this.lesson.arm===0 || state.tick<=this.armedUntil)) {
       outcome = this.lesson.check(player,this.previous,{hits,playerId});
     }
     this.previous = player;

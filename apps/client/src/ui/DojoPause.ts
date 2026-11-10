@@ -45,7 +45,7 @@ export function renderDojoPause(root: HTMLElement, nav: MenuNavigator, options: 
         `<button type="button" class="menu-quiet" id="dojo-tab-${i}" role="tab" aria-controls="dojo-pane-${i}">${title}</button>`).join('')}</div>
       <div class="dojo-console-body">${tabs.map((title,i) =>
         `<section id="dojo-pane-${i}" role="tabpanel" aria-labelledby="dojo-tab-${i}">
-          <h2>${title}</h2><p>${descriptions[i]}</p>
+          <h2 tabindex="-1">${title}</h2><p>${descriptions[i]}</p>
           <div class="dojo-console-grid">${groups[i]!.map(action => button('pause-'+action.id,escapeHtml(action.label))).join('')}
           ${i===0 ? button('dojo-pause-menu','Dojo lessons') : ''}
           ${i===1 ? '<p class="dojo-console-note">Input trace and launch readout are available in the live Dojo panel.</p>' : ''}
@@ -56,7 +56,7 @@ export function renderDojoPause(root: HTMLElement, nav: MenuNavigator, options: 
         ${button('resume-btn','Resume · '+options.pausePrompt,'ui-btn picker-primary')}
         ${button('dojo-pause-reset','Reset arena')}
         ${button('main-menu-btn','Main Menu')}
-      </div><p class="picker-help">↑↓ Navigate · ←→ Switch tabs from tab bar · Enter / ${options.confirmPrompt} Select</p></footer>
+      </div><p class="picker-help">↑↓ Navigate · ←→ Browse tabs · Enter / ${options.confirmPrompt} Open tab or select action</p></footer>
     </section>`;
 
   const settings = options.settings();
@@ -65,7 +65,7 @@ export function renderDojoPause(root: HTMLElement, nav: MenuNavigator, options: 
   const panes = tabs.map((_,i) => root.querySelector<HTMLElement>('#dojo-pane-'+i)!);
   let entries: MenuButton[] = [];
   const bindings = new Map<string, MenuButton>();
-  function bind(id: string, run: () => void, adjust?: (delta: -1 | 1) => void): void {
+  function bind(id: string, run: (event: MouseEvent) => void, adjust?: (delta: -1 | 1) => void): void {
     const element = root.querySelector<HTMLButtonElement>('#'+id)!;
     element.addEventListener('click', run);
     bindings.set(id, { id, element, onActivate: () => element.click(), onAdjust: adjust });
@@ -78,14 +78,18 @@ export function renderDojoPause(root: HTMLElement, nav: MenuNavigator, options: 
       element.disabled = Boolean(action.disabled);
     }
   }
+  function setTabStop(index: number): void {
+    tabButtons.forEach((button, i) => { button.tabIndex = i === index ? 0 : -1; });
+  }
   function select(index: number, highlight = 'dojo-tab-'+index): void {
     active = index;
     options.selectTab(index);
     tabButtons.forEach((element,i) => {
-      element.setAttribute('aria-selected', String(i===index));
-      element.tabIndex = i===index ? 0 : -1;
-      panes[i]!.hidden = i!==index;
+      const selected = String(i === index);
+      if (element.getAttribute('aria-selected') !== selected) element.setAttribute('aria-selected', selected);
+      panes[i]!.hidden = i !== index;
     });
+    setTabStop(index);
     entries = [
       bindings.get('resume-btn')!,
       ...tabButtons.map(element => bindings.get(element.id)!),
@@ -98,12 +102,28 @@ export function renderDojoPause(root: HTMLElement, nav: MenuNavigator, options: 
     nav.setButtons(entries);
     nav.selectIndex(entries.findIndex(entry => entry.id === highlight));
   }
-  tabButtons.forEach((element,i) => bind(element.id, () => select(i), delta => {
-    const next = (i + delta + tabs.length) % tabs.length;
-    const focused = document.activeElement === element;
-    select(next);
-    if (focused) tabButtons[next]!.focus();
-  }));
+  tabButtons.forEach((element, i) => {
+    // Pointer activation opens the panel without focusing a tab as its selection changes.
+    element.addEventListener('mousedown', event => {
+      if (event.button === 0) event.preventDefault();
+    });
+    bind(element.id, event => {
+      if (i !== active) select(i);
+      const target = event.detail > 0 ? panes[i]!.querySelector('h2')! : element;
+      target.focus({ preventScroll: true });
+    }, delta => {
+      const next = (i + delta + tabs.length) % tabs.length;
+      tabButtons[next]!.focus({ preventScroll: true });
+    });
+  });
+  const tabBar = root.querySelector<HTMLElement>('.dojo-tab-bar')!;
+  tabBar.addEventListener('focusin', event => {
+    const index = tabButtons.findIndex(button => button === event.target);
+    if (index !== -1) setTabStop(index);
+  });
+  tabBar.addEventListener('focusout', event => {
+    if (!tabBar.contains(event.relatedTarget as Node | null)) setTabStop(active);
+  });
   for (const action of groups.flat()) {
     bind('pause-'+action.id, () => {
       const latest = options.actions().find(entry => entry.id === action.id);
@@ -120,6 +140,8 @@ export function renderDojoPause(root: HTMLElement, nav: MenuNavigator, options: 
     nav.selectIndex(entries.findIndex(entry => entry.element === event.target));
   });
   refreshActions();
-  select(active, active === 0 ? 'resume-btn' : 'dojo-tab-'+active);
+  const initialFocus = active === 0 ? 'resume-btn' : 'dojo-tab-'+active;
+  select(active, initialFocus);
   nav.start(options.resume);
+  bindings.get(initialFocus)?.element.focus();
 }

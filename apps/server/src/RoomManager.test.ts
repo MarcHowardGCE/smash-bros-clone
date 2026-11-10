@@ -217,7 +217,7 @@ describe('RoomManager rejoin spike', () => {
     const marked = manager.markDisconnected(created.playerId);
     expect(marked).toEqual({ ok: true });
 
-    const rejoin = manager.rejoinRoom(created.roomCode, created.playerId, 'socket-host-rejoin');
+    const rejoin = manager.rejoinRoom(created.roomCode, created.playerId, created.rejoinToken, 'socket-host-rejoin');
     expect(rejoin).toEqual({ ok: true, slotIndex: 0 });
 
     const room = manager.getRoom(created.roomCode);
@@ -228,7 +228,7 @@ describe('RoomManager rejoin spike', () => {
     const manager = new RoomManager();
     const created = manager.createRoom('socket-host');
 
-    const rejoin = manager.rejoinRoom(created.roomCode, 'player_unknown', 'socket-new');
+    const rejoin = manager.rejoinRoom(created.roomCode, 'player_unknown', created.rejoinToken, 'socket-new');
     expect(rejoin).toEqual({ error: 'Player not in room' });
   });
 
@@ -241,7 +241,7 @@ describe('RoomManager rejoin spike', () => {
 
     vi.advanceTimersByTime(30_001);
 
-    const rejoin = manager.rejoinRoom(created.roomCode, created.playerId, 'socket-host-rejoin');
+    const rejoin = manager.rejoinRoom(created.roomCode, created.playerId, created.rejoinToken, 'socket-host-rejoin');
     expect(rejoin).toEqual({ error: 'Rejoin grace window expired' });
   });
 });

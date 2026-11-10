@@ -3,6 +3,10 @@ import{getCharacterStats,INPUT_BITS,type PlayerState,type InputEvent}from'@smash
 export function withMovementArt(before:PlayerState,after:PlayerState,input:InputEvent|null,stage:StageData):PlayerState{
  const neutral=['IDLE','WALK','DASH','RUN','AIRBORNE','CROUCH','LANDING_LAG'].includes(after.state)&&!after.isKnockedOut&&after.stocks>0;
  let cue=neutral?(after.artCue!==before.artCue&&after.artCueFrame===0?after.artCue:before.artCue):undefined,age=cue?(after.artCue!==before.artCue&&after.artCueFrame===0?0:(before.artCueFrame??0)+1):0;
+ if(cue==='grab_escape'||cue==='grab_release'){
+  const releasing=age<12&&(after.state==='IDLE'||after.state==='AIRBORNE');
+  return {...after,artCue:releasing?cue:undefined,artCueFrame:releasing?age:undefined};
+ }
  if(cue==='entry'&&((input?.held??0)&(INPUT_BITS.LEFT|INPUT_BITS.RIGHT|INPUT_BITS.DOWN)))cue=undefined;
  if(cue&&((['platform_drop','respawn_drop','takeoff_neutral','takeoff_forward','takeoff_backward'].includes(cue)&&after.isGrounded)||(cue==='land_heavy'&&!after.isGrounded)||(['crouch_exit','brake','teeter_front','teeter_back'].includes(cue)&&after.state!=='IDLE')))cue=undefined;
  const set=(name:string)=>{cue=name;age=0;};

@@ -9,7 +9,7 @@ export interface SettingsRoute {
 
 export function settingsHeader(active: SettingsTab, backId: string, route?: SettingsRoute): string {
   const tabs = [['controls','Controls'],['visual','Accessibility'],['sound','Sound']] as const;
-  return `<header class="picker-header"><div><span class="menu-kicker">Game options</span><h1>Settings</h1></div>
+  return `<header class="picker-header"><div><span class="menu-kicker">Game options</span><h1 tabindex="-1">Settings</h1></div>
     <button type="button" id="${backId}" class="menu-quiet">← Back</button></header>
     ${route ? `<nav class="settings-tabs" aria-label="Settings sections">${tabs.map(([id,label]) =>
       `<button type="button" class="menu-quiet" data-settings-tab="${id}" ${id===active ? 'aria-current="page"' : ''}>${label}</button>`).join('')}</nav>` : ''}`;

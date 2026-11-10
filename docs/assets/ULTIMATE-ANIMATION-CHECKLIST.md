@@ -1,5 +1,80 @@
 # Ultimate animation and mechanics checklist
 
+## Current five-fighter inventory
+
+The local and online roster and Training Dojo include All-Rounder, Abe Lincoln, Swift, Moonshine, and “Hulk” Hoagie. The original three use the production atlas. The two newcomers use their packed manifest, whose directory retains its Dojo name from the initial integration.
+
+| Fighters | Packed revision | Registered clips per fighter | Registered frames per fighter | Clips eligible for runtime loading |
+| --- | ---: | ---: | ---: | ---: |
+| All-Rounder, Abe Lincoln, Swift | 18 | 136 | 763 | 135 |
+| Moonshine, “Hulk” Hoagie | 51 | 145 | 422 | 145 |
+
+The five packs share 135 eligible clip keys. The originals retain one preview-only generic directional dodge. The newcomers load ten additional keys, including paired reaction variants. Both packed revisions matched their source manifests. All referenced body-art pages were present, with matching frame and duration counts and valid rectangle coordinates and positive dimensions. The original pack supplies 16 shared effect frames. Loader eligibility and file presence are separate from per-state playback and visual signoff. [Loader](../../apps/client/src/renderer/fullbody/FullBodyPilot.ts) · [Original packed manifest](../../apps/client/public/fighter-art-pilot-v1/production/manifest.json) · [Newcomer packed manifest](../../apps/client/public/fighter-art-newcomers-v1/dojo/manifest.json)
+
+The six selectable arenas have authored lore, artwork, and fixed collision layouts. Neighborhood, Factory, and Banquet each have two pass-through platforms. Cathedral, Circus, and Library each have three. Each has one solid floor. The proposed wind, bubble lift, conveyor reversal, trapeze rotation, fork lift, and page-turn layouts remain design concepts. Fighter canon remains deferred for collaborative writing. [Stage registry](../../apps/client/src/stages/stageConfig.ts) · [Collision layouts](../../packages/shared/src/constants/stageLayouts.ts) · [Current Dojo curriculum](../TRAINING-DOJO.md#current-curriculum-validation)
+
+## Runtime animation audit
+
+The packed atlas audit decoded 20 pages and checked all 3,133 fighter frames and 16 shared effect frames. Every referenced rectangle stayed inside its page and contained visible pixels. The lowest visible-pixel count in a checked rectangle was 469 in the original pack and 1,480 in the newcomer pack, counting alpha values above 16 out of 255.
+
+A Chromium audit drove the real packed-art renderer with 131 distinct state and cue scenarios per fighter in both facings. All 40,220 tick samples selected the expected clip and a visible texture. The cases covered movement, all eight directional air dodges plus neutral, grounded and aerial attacks, shields and parries, trips and techs, grab and throw owner poses, ledge options, taunts, and results selection. A mismatched clip label counted as a failure even if the renderer supplied substitute artwork. These scenarios exercise the renderer directly. They do not establish that every input, opponent interaction, and online snapshot reaches the expected state.
+
+Live Free Practice runs drove each of the five selectable fighters with keyboard inputs. Crouch hold, down tilt from crouch, jump apex, normal fall, fast fall, downward air dodge, and return to idle all displayed their expected body artwork when sampled. The reported Swift and Moonshine polygon dropouts did not reproduce on this route. The live check sampled each named state and did not record every rendered frame.
+
+Visual signoff remains open. Review gameplay-speed transitions and contact alignment in live playback, beginning with crouch and Down inputs, jump squat through landing, and paired grab and ledge transitions. Include both facings and all five fighters. Check KO presentation separately through its own renderer. Capture the fighter, action, preceding state, facing, and clip when a frame appears wrong so the next audit can separate a trigger issue from an art issue. [State selection](../../apps/client/src/renderer/fullbody/pilotTimeline.ts) · [Cue selection](../../apps/client/src/renderer/fullbody/preparedHooks.ts) · [Runtime renderer](../../apps/client/src/renderer/fullbody/FullBodyPilot.ts)
+
+### Continuous Dojo playback
+
+At 1× speed on Neighborhood, Chromium drove 60 live sequences across all five fighters. These included ten standing jumps through landing, ten ledge catches followed by a ledge jump and a separate double jump, and forty throws covering all four directions in both facings. Each fighter threw one rotating roster partner. Browser animation-frame sampling captured 1,946 observations with visible body art. The standing jumps passed through jump squat, takeoff, rise, apex, fall, and heavy landing.
+
+The initial trace showed a generic hit pose ahead of the paired victim reaction on some throws. Local snapshots now apply the grab reaction before drawing the hit tick, using the attacker facing from that snapshot. On rerun, the first observed hitstun pose was the paired throw reaction in all forty sequences. Ledge jumps also consumed the aerial jump and incorrectly displayed the double-jump clip. The getup now uses the same launch velocity while preserving the aerial jump. Both ledges showed the rise clip first and the double-jump clip only after a separate Jump press.
+
+Reviewed still captures of both ledges for all five fighters. The inward hand lined up with the visible platform lip, including Hoagie's two-arm hang. This pass covered one stage and did not include every paired matchup or online presentation. The focused ledge suite passed 43 tests with 13 existing skips. The full-body renderer suite passed 45 tests. The separate local-play wiring suite reported ten failures during startup because its Pixi mock is missing the Container export.
+
+Next, review throw release and ledge exit spacing with the camera zoomed in and out, then replay mixed pairs online. Include pummel, escape, ledge climb, roll, attack, and drop in the next contact pass. [Local hit event ordering](../../apps/client/src/main.ts) · [Ledge jump regression](../../apps/server/src/GameEngine.ledge.test.ts)
+
+### Camera zoom and mixed-pair contact
+
+Neighborhood Free Practice covered 100 ledge sequences at normal speed. Each fighter climbed, rolled, attacked, jumped, and dropped from both edges with the partner positioned for close (1.634–1.650×) and wide (1.118–1.121×) framing. All expected clips appeared across 2,491 samples without a polygon fallback. All 871 same-frame comparisons had matching world-space sprite offsets at both zoom levels. Reviewed close and wide screenshots of Moonshine at the start of the climb.
+
+Moonshine and Hoagie previously used different ledge frame indices and grip offsets depending on whether Swift or Abe Lincoln was loaded. The renderer now maps the newcomer ledge drawings against the canonical timeline even when the reference fighter is absent. Both regression cases reproduced the discrepancy before the fix and passed after it. The full-body renderer suite passed all 47 tests.
+
+Ten local grab, pummel, and up-throw sequences played the expected reactions. The camera returned to approximately 1.65× by the throw release even when the fighters started far apart. Five separate hold timeouts showed the release pose, with every fighter covered as a victim. Active mash escape was outside this pass.
+
+In three two-client rooms on the local game server, All-Rounder threw Moonshine, Swift threw Hoagie, and Abe Lincoln threw Moonshine after a pummel. Both clients showed the hold, pummel, and throw reactions in every match. A third client stood apart in a separate room so the All-Rounder-to-Hoagie up-throw stayed at approximately 1.162× during release. All three views showed the paired throw reaction. These checks establish clip continuity under the measured framing. Full visual signoff for release spacing across every pairing and network condition remains open. [Renderer](../../apps/client/src/renderer/fullbody/FullBodyPilot.ts) · [Ledge regression](../../apps/client/src/renderer/fullbody/ledgeContact.test.ts)
+
+Next, review newcomer-led grabs and throws with roles reversed, check active escape, and replay under delayed packets. Capture any release separation or grip jump from both clients, then complete gameplay-speed visual signoff.
+
+### Newcomer throw release under network delay
+
+A local two-client Chromium run put the newcomers in the thrower role. Moonshine used up throw on Abe Lincoln and forward throw on Swift. Hoagie used down throw on Swift and back throw on All-Rounder. Each throw followed a pummel. The final replay added 120–154 ms of ordered delay to server messages on the guest only, with client input sent normally.
+
+Before the correction, the victim's first release drawing used the last windup grip. The largest measured hand-to-victim grip gap was about 54 world pixels on Hoagie's back throw. The renderer now aligns the victim to the active throw drawing's grip. The confirmed throw event also shows that drawing if the online snapshot skips directly to recovery. The change affects sprite presentation. Throw trajectory and damage still come from the simulation.
+
+All four delayed directions showed the active release drawing and the paired victim reaction in both views, with no intervening generic hit pose or polygon fallback in the samples. The first visible grip gaps measured 0–8.3 world pixels, including samples taken after the victim had begun to move. The full-body renderer passed 50 tests and the client type check passed. This replay used one stage, four pair-and-direction combinations, and ordered one-way delay. [Release renderer](../../apps/client/src/renderer/fullbody/FullBodyPilot.ts) · [Regression cases](../../apps/client/src/renderer/fullbody/throwReleaseContact.test.ts)
+
+Passive and active-input comparisons with both newcomers showed the same timed release behavior. The victim alternated 20 attack, movement, jump, special, and shield presses during the hold. Input did not consistently advance release. The current grab state ignores victim input and the holder's timer ends the hold at 90 ticks. Active mash escape is a gameplay gap. The next mechanics pass should establish the input and damage rules, implement them in the authoritative engine, and verify passive timeout, active escape, pummel and throw priority, and the release cue in the Dojo and a two-client match. [Current grab state](../../packages/engine/src/fsm/states/GrabHoldingState.ts)
+
+### Active grab escape
+
+The shared match engine now owns one timer per grab. The project baseline is floor(90 + 1.7 × victim percent at capture) ticks. A fresh gameplay button press removes 14.4 ticks and a fresh digital or left-stick direction removes 8. At most one credit applies per simulation tick, with the button taking precedence. Holding an input, repeated samples of the same stick direction, and right-stick-generated Attack edges provide no additional credit. The earliest mash release is tick 19. These are provisional Ultimate-style values. Native 13.0.5 rounding, input exclusions, and hitlag timing remain open. The reference mod exposes grab clatter as a testable behavior. [Ultimate Training Modpack](https://github.com/jugeeya/UltimateTrainingModpack#defensive-settings)
+
+Damage is sampled at capture. A pummel can deal damage while the clock is running without resetting it. Hit detection precedes escape resolution. A pummel active on the boundary deals damage before the escape, an active throw launches the victim, and a later throw loses the grab. Paired-only moves cannot reactivate their hitbox after the link breaks. [Match engine](../../apps/server/src/GameEngine.ts) · [Grab regressions](../../apps/server/src/GameEngine.grab.test.ts)
+
+| Verification | Observed result |
+| --- | --- |
+| Dojo, scripted inputs through the live match loop | Passive holds lasted 90 ticks at 0% and 175 at 50%. Mashing at 0% released at tick 19 with the grab release pose. |
+| Dojo, contact on the escape tick | The pummel hit at tick 19 and then showed the escape pose. The up throw hit at tick 19 and showed the throw victim pose. An up throw due at tick 20 produced no hit, and the escape pose played at tick 19. |
+| Two Chromium clients, Moonshine holding Swift | Passive release was observed at tick 90. The completed keyboard mash trial released at tick 64, with the escape pose on both clients. Keyboard timing and packet sampling make this observation different from the deterministic Dojo floor. |
+| Two Chromium clients, attack during mashing | Both clients saw the pummel reaction, 2.52% damage, and the later escape pose. Both saw the up throw land for 10.08% and play its throw victim pose. |
+| Automated suites | 707 server tests passed with 16 existing skips. All 52 FSM tests passed. The server type check and patch whitespace check passed. |
+
+The live playback covered grounded releases on Neighborhood with keyboard or scripted inputs. The follow-up added the playable Break a grab lesson and verified airborne releases and regrab timing. Delayed-input escape, priority, and regrab checks passed in a two-client match. Physical-controller and native Ultimate 13.0.5 signoff remain open. [Lesson validation](../TRAINING-DOJO.md#break-a-grab-validation) · [Delayed-input results](../TRAINING-DOJO.md#delayed-input-grab-escape-and-regrabs)
+
+## Historical production checklist
+
+The remaining tables preserve the original three-fighter production plan. Their statuses describe that phase of work.
+
 Target: Super Smash Bros. Ultimate shared fighter mechanics for All-Rounder, Abe Lincoln and Swift. Decision recorded November 2, 2026. Original fighter identities and custom movesets remain; this is not a plan to copy Nintendo character artwork or assign every fighter the same moves.
 
 This is the production inventory for finishing the sprite packs before implementing the remaining engine behavior. It includes 125 action families: 101 shared/combat/presentation families and 24 conditional kit, item and stage families. These are NOT frame counts, sheet counts, or a claim that all rows need brand-new drawings. Some rows bundle directional or orientation variants. Per-row artwork status is tracked in the accompanying inventory.

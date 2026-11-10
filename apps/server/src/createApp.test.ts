@@ -150,12 +150,22 @@ describe("createApp socket integration", () => {
 		roomCode = String(roomCreated.roomCode);
 		const playerAId = String(roomCreated.playerId);
 
+		const guestJoined = waitForEvent<unknown>(clientA, "room:playerJoined");
+		const lobbyState = waitForEvent<unknown>(clientB, "room:selectionState");
 		const roomJoined = await emitWithAck<AckResponse>(
 			clientB,
 			"room:join",
 			roomCode,
 		);
 		const playerBId = String(roomJoined.playerId);
+		expect(roomCreated.rejoinToken).toMatch(/^[a-f0-9]{64}$/);
+		expect(roomJoined.rejoinToken).toMatch(/^[a-f0-9]{64}$/);
+		expect(roomJoined.rejoinToken).not.toBe(roomCreated.rejoinToken);
+		expect(await guestJoined).toEqual({ playerId: playerBId, slotIndex: 1 });
+		const publicState = JSON.stringify(await lobbyState);
+		expect(publicState).toContain(playerBId);
+		expect(publicState).not.toContain(String(roomJoined.rejoinToken));
+		expect(publicState).not.toContain(String(roomCreated.rejoinToken));
 
 		let countdownBeforeConfirm = false;
 		const onEarlyCountdown = () => {
@@ -496,28 +506,42 @@ describe("createApp socket integration", () => {
 		});
 		await waitForConnect(clientBReconnected);
 
+		sockets.push(clientBReconnected);
+		const publicIdentity = { roomCode, playerId: playerBId };
+		for (const request of [
+			publicIdentity,
+			{ ...publicIdentity, rejoinToken: "malformed" },
+			{ ...publicIdentity, rejoinToken: roomCreated.rejoinToken },
+		]) {
+			expect(await emitWithAck<AckResponse>(clientBReconnected, "room:rejoin", request))
+				.toEqual({ ok: false, error: "Invalid rejoin credential" });
+		}
+		expect(await emitWithAck<AckResponse>(clientA, "room:rejoin", {
+			...publicIdentity, rejoinToken: playerBJoin.rejoinToken,
+		})).toEqual({ ok: false, error: "Socket is already in a room" });
+		expect(roomManager.getRoomBySocketId(clientBReconnected.id!)).toBeNull();
+
+		const playerRejoined = waitForEvent<{ readonly playerId: string }>(clientA, "room:playerRejoined");
 		const rejoinResult = await emitWithAck<{ readonly ok: boolean; readonly error?: string }>(
 			clientBReconnected,
 			"room:rejoin",
-			{ roomCode, playerId: playerBId },
+			{ roomCode, playerId: playerBId, rejoinToken: playerBJoin.rejoinToken },
 		);
 		expect(rejoinResult.ok).toBe(true);
 		expect(rejoinResult.error).toBeUndefined();
 
-		// Verify player is re-joined
-		const playerRejoined = waitForEvent<{ readonly playerId: string }>(
-			clientA,
-			"room:playerRejoined",
-		);
-		await playerRejoined;
+		expect(await playerRejoined).toEqual({ playerId: playerBId });
 
 		const roomAfterRejoin = roomManager.getRoom(roomCode);
 		expect(roomAfterRejoin?.phase).toBe("MATCH");
 
 		const playerBSlotAfterRejoin = roomAfterRejoin?.players.get(playerBId);
 		expect(playerBSlotAfterRejoin?.socketId).toBe(clientBReconnected.id);
-
-		sockets.push(clientBReconnected);
+		const unassigned = clientB.connect();
+		await waitForConnect(unassigned);
+		expect(await emitWithAck<AckResponse>(unassigned, "room:rejoin", {
+			...publicIdentity, rejoinToken: playerBJoin.rejoinToken,
+		})).toEqual({ ok: false, error: "Player is not disconnected" });
 	});
 
 	it("rejects rejoin after grace window expires", async () => {
@@ -589,7 +613,7 @@ describe("createApp socket integration", () => {
 		const rejoinResult = await emitWithAck<{ readonly ok: boolean; readonly error?: string }>(
 			clientBReconnected,
 			"room:rejoin",
-			{ roomCode, playerId: playerBId },
+			{ roomCode, playerId: playerBId, rejoinToken: playerBJoin.rejoinToken },
 		);
 		expect(rejoinResult.ok).toBe(false);
 		expect(rejoinResult.error).toBe("Player not in room");

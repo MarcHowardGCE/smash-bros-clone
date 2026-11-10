@@ -75,26 +75,33 @@ export function renderStageSelectScreen(
     }
   }
 
-  function updateVisuals(): void {
+  function updateVisuals(announce: boolean): void {
     const allBtns = container.querySelectorAll<HTMLElement>('[data-stage-idx]');
     allBtns.forEach((btn) => {
       const idx = Number(btn.dataset['stageIdx']);
-      if (idx === selectedIndex) {
-        btn.classList.add('menu-selected');
-        btn.setAttribute('aria-pressed', 'true');
-        btn.scrollIntoView?.({ block: 'nearest', inline: 'nearest' });
-      } else {
-        btn.classList.remove('menu-selected');
-        btn.setAttribute('aria-pressed', 'false');
-      }
+      const previewed = idx === selectedIndex;
+      btn.classList.toggle('menu-selected', previewed);
+      btn.toggleAttribute('data-previewed', previewed);
+      if (previewed) btn.scrollIntoView?.({ block: 'nearest', inline: 'nearest' });
     });
     const stage=stages[selectedIndex];
     if(stage && stage.id!==lastPreviewId){lastPreviewId=stage.id;onPreview?.(stage);}
     const panel = container.querySelector<HTMLElement>('#stage-preview')!;
+    const previousPreview = panel.dataset.worldPreview;
     renderWorldPreview(panel, stages, selectedIndex, prompt);
+    if (panel.dataset.worldPreview !== previousPreview) {
+      // A focused tile already exposes its name. Announce previews that change without moving focus.
+      container.querySelector('#stage-preview-status')!.textContent = announce
+        ? 'Preview: ' + (stage?.displayName ?? 'Random world')
+        : '';
+    }
     container.querySelector('#stage-confirm-btn')!.textContent = stage ? 'Choose World' : 'Choose Random World';
   }
-  function moveGrid(direction: 'up' | 'down' | 'left' | 'right'): void {
+  function moveGrid(direction: 'up' | 'down' | 'left' | 'right', moveFocus = false): void {
+    const focused = document.activeElement;
+    if (moveFocus && focused instanceof HTMLElement && container.contains(focused) && focused.dataset.stageIdx !== undefined) {
+      selectedIndex = Number(focused.dataset.stageIdx);
+    }
     const stageCount = stages.length;
     const rows = Math.ceil(stageCount / GRID_COLS);
 
@@ -146,7 +153,8 @@ export function renderStageSelectScreen(
       }
     }
 
-    updateVisuals();
+    updateVisuals(!moveFocus);
+    if (moveFocus) container.querySelector<HTMLElement>(`[data-stage-idx="${selectedIndex}"]`)?.focus({ preventScroll: true });
   }
 
 
@@ -162,6 +170,7 @@ export function renderStageSelectScreen(
           <button type="button" class="menu-quiet world-random-choice" data-stage-idx="${randomIndex}"><span aria-hidden="true">✦</span> Random world</button>
         </div>
         <section id="stage-preview" class="world-preview-panel" aria-label="World preview"></section>
+        <p id="stage-preview-status" class="menu-visually-hidden" role="status"></p>
       </div>
       <footer class="workspace-footer"><p class="picker-help">Arrows / D-pad browse · Enter / ${prompt('confirm')} Select · ${prompt('story')} / I Story${onBack ? ' · Esc / '+prompt('cancel')+' Back' : ''}</p>
         <button type="button" class="menu-quiet workspace-primary" id="stage-confirm-btn">Choose World</button></footer>
@@ -169,9 +178,12 @@ export function renderStageSelectScreen(
   // --- Wire click listeners ---
   const allBtns = container.querySelectorAll<HTMLElement>('[data-stage-idx]');
   allBtns.forEach((btn) => {
-    const preview=()=>{selectedIndex=Number(btn.dataset['stageIdx']);updateVisuals();};
-    btn.addEventListener('mouseenter',preview);
-    btn.addEventListener('focus',preview);
+    const preview = (announce: boolean) => {
+      selectedIndex = Number(btn.dataset.stageIdx);
+      updateVisuals(announce);
+    };
+    btn.addEventListener('mouseenter', () => preview(true));
+    btn.addEventListener('focus', () => preview(false));
     btn.addEventListener('click', () => {
       const idx = Number(btn.dataset['stageIdx']);
       selectStage(idx);
@@ -185,7 +197,8 @@ export function renderStageSelectScreen(
   container.querySelector('#stage-confirm-btn')?.addEventListener('click', () => selectStage(selectedIndex));
 
   // Initial visual highlight
-  updateVisuals();
+  updateVisuals(false);
+  container.querySelector<HTMLElement>(`[data-stage-idx="${selectedIndex}"]`)?.focus({ preventScroll: true });
 
   // --- Keyboard navigation ---
   keyHandler = (e: KeyboardEvent) => {
@@ -204,26 +217,26 @@ export function renderStageSelectScreen(
     switch (e.key) {
       case 'ArrowUp':
         e.preventDefault();
-        moveGrid('up');
+        moveGrid('up', true);
         break;
       case 'ArrowDown':
         e.preventDefault();
-        moveGrid('down');
+        moveGrid('down', true);
         break;
       case 'ArrowLeft':
         e.preventDefault();
-        moveGrid('left');
+        moveGrid('left', true);
         break;
       case 'ArrowRight':
         e.preventDefault();
-        moveGrid('right');
+        moveGrid('right', true);
         break;
       case 'i':
       case 'I':
         e.preventDefault();toggleWorldStory(container);break;
       case 'Enter':
       case ' ':
-        if((e.target as HTMLElement)?.closest?.('#stage-story-toggle, #stage-story, #stage-back-btn, #stage-confirm-btn'))return;
+        if((e.target as HTMLElement)?.closest?.('[data-stage-idx], #stage-story-toggle, #stage-story, #stage-back-btn, #stage-confirm-btn'))return;
         e.preventDefault();
         selectStage(selectedIndex);
         break;

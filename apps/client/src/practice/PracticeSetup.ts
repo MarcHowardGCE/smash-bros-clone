@@ -10,8 +10,8 @@ const fighters = [
   ['all-rounder','All-Rounder'], ['abe-lincoln','Abe Lincoln'], ['swift','Swift'],
   ['moonshine','Moonshine'], ['hulk-hoagie','“Hulk” Hoagie'],
 ] as const;
-const modes: readonly DummyMode[] = ['still','shield','jab','mixed','up-smash'];
-const behaviorNames = ['Passive','Shield','Telegraphed jab','Alternating attack / special','Telegraphed two-hit up smash'];
+const modes: readonly DummyMode[] = ['still','shield','jab','mixed','up-smash','grab'];
+const behaviorNames = ['Passive','Shield','Telegraphed jab','Alternating attack / special','Telegraphed two-hit up smash','Telegraphed grab'];
 const tiers = ['Basics','Advanced','Subtle'] as const;
 const selectionKey = 'eth:dojo:setup:v1';
 

@@ -5,3 +5,18 @@ it('jab partner produces one fresh telegraphed strike per cycle',()=>{const d=ne
 it('shield partner holds guard without repeated press edges',()=>{const d=new PracticeDummy();d.mode='shield';expect(d.pollInput().pressed).toBe(B.SHIELD);expect(d.pollInput().pressed).toBe(0);expect(d.pollInput().held).toBe(B.SHIELD);});
 
 it('up-smash partner uses explicit smash intent with one fresh input per cycle',()=>{const d=new PracticeDummy();d.mode='up-smash';d.observe({players:{'local-p1':{x:630,isGrounded:true},'local-p2':{x:640,isGrounded:true,facing:-1}}}as unknown as GameState);const strikes=[];for(let n=0;n<400;n++){d.setTick(n);const input=d.pollInput();if(input.pressed&B.ATTACK){strikes.push(n);expect(input.held).toBe(B.UP|B.ATTACK);expect(input.smashAttack).toBe(true);}}expect(strikes).toEqual([90,240,390]);});
+
+it('telegraphs a grab, leaves the player free to escape, then grabs again on cue',()=>{
+ const dummy=new PracticeDummy();
+ dummy.mode='grab';
+ dummy.observe(state);
+ dummy.setTick(90);
+ expect(dummy.pollInput().pressed).toBe(B.GRAB);
+ dummy.observe({...state,players:{...state.players,'local-p2':{...state.players['local-p2']!,isGrabbing:true,grabbedPlayerId:'local-p1'}}});
+ dummy.setTick(240);
+ expect(dummy.pollInput().pressed).toBe(0);
+ expect(dummy.cue).toContain('Mash');
+ dummy.observe(state);
+ dummy.setTick(390);
+ expect(dummy.pollInput().pressed).toBe(B.GRAB);
+});

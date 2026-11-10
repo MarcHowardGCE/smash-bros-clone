@@ -22,9 +22,9 @@ Action presses carried from a menu, reset or resume are suppressed until control
 
 The same sandbox runs a focused instruction card with keyboard prompts and the button labels for Player 1's assigned Xbox 360, Nintendo Switch Pro, or PlayStation DualSense controller. The partner automatically uses the behavior appropriate to the selected drill. Complete a technique correctly three separate times; mistakes do not erase successful repetitions. Completion is saved per fighter on this browser/device. Completed drills remain replayable and any lesson can be selected directly. Next lesson advances after completion.
 
-Success requires a recent relevant input and an observed engine outcome. Buttons alone, the wrong move, repeated frames of one animation and hitlag do not inflate progress. Contact lessons require contact: a missed grab is not a successful grab, a blocked attack is not a release parry, and holding one parry pose is not three parries. Basic dodge lessons grade execution; they do not yet grade whether a strike was actually evaded.
+Most lessons require a recent relevant input and an observed engine outcome. Break a grab uses the confirmed early escape because left-stick rotation can score without a button press. Buttons alone, the wrong move, repeated frames of one animation and hitlag do not inflate progress. Contact lessons require contact: a missed grab is not a successful grab, a blocked attack is not a release parry, and holding one parry pose is not three parries. Basic dodge lessons grade execution; they do not yet grade whether a strike was actually evaded.
 
-The library now has 40 lessons. The 22 new drills cover all three grounded smashes, all five aerials, both air dodges, pummels, back/up/down throws, four ledge getups, neutral and rolling floor techs, and Star and Screen KOs.
+The library now has 41 lessons, including Break a grab. The earlier expansion covers all three grounded smashes, all five aerials, both air dodges, pummels, back/up/down throws, four ledge getups, neutral and rolling floor techs, and Star and Screen KOs.
 
 Both KO drills start a passive partner at 350% within up-smash range. Three real up-smash launches through the top blast zone complete the drill. The selected effect plays on each confirmed exit, including after lesson completion, and the arena resets with no stock loss. Free Practice retains separate Star and Screen artwork previews.
 
@@ -108,9 +108,67 @@ Star KO now starts at the projected exit and uses an eased curve into the distan
 
 Ten real up-smash Dojo runs covered all five fighters at 1280 × 720 and 1200 × 1000. Each matched the outgoing drawing and crossed the upper edge while shrinking, then twinkled. The renderer tests also cover zero and mirrored lateral motion. The 226 focused tests and client type check passed. Exact native projection and simulation frame counts still require a matched Ultimate capture.
 
+#### Straight and angled Star KO capture
+
+The previously cited gameplay clip is a visual reference for the upper-edge appearance and retreat. The source search did not produce a version-confirmed pair of straight and angled launches with matched fighter, stage, and input. Native handoff, shrink, and twinkle timing are provisional. Signoff is blocked until version-confirmed captures become available. [Earlier gameplay reference](https://www.youtube.com/watch?v=gL3PIOFP5iI&t=10s)
+
+For the native comparison, record the title screen version and use the same attacker, victim, move, hitbox, stage, launch position, and starting percent. Use neutral input for a near-vertical control and change only DI for left and right angled cases. Keep successful Star KO trials and record the actual exit direction. Use a continuous 60 fps capture from before the hit through the twinkle, with the full viewport visible.
+
+| Event | What to record |
+| --- | --- |
+| Launch and exit | First moving frame after hitlag, last visible live-tumble frame, and top-edge crossing if visible. Record the center and direction at exit and whether the camera is still moving. |
+| Handoff | First visible distant-tumble frame, its screen position and apparent size, and any intervening blank frames. Keep the blast-line crossing separate from the viewport edge. Mark a crossing that occurs offscreen as unobservable. |
+| Shrink and twinkle | Record normalized center and visible size at first appearance and every 10 frames until the first twinkle. Record the last visible fighter frame and first and last twinkle frames. Flag partially clipped poses, changes in rotation, and duplicate capture frames. |
+
+Align the local and native traces at the last visible live-tumble frame, then compare vertical continuity, left and right drift, time to half apparent size, and time to twinkle. Normalize horizontal and vertical position by viewport dimensions. Express apparent size relative to the last fully visible live pose. The local renderer carries over pose and scale at handoff and starts the twinkle at presentation tick 101, ending the effect at tick 120. Those ticks are measured from the local cue and cannot be compared directly with time from the hit. [Local Star KO renderer](../apps/client/src/renderer/fullbody/KOPresentation.ts)
+
 ## Current curriculum validation
 
-All 40 lessons completed three engine-driven repetitions on each of the five fighters. Both KO drills were completed in the local browser and the matching sprite was visible after each launch. A separate engine sweep verified up-smash contact, top blast-zone exit and preserved stocks for all 25 fighter pairings on all six worlds, using both keyboard and right-stick inputs.
+The current library has 41 guided lessons across Basics (8), Advanced (22), and Subtle (11). All 205 fighter-by-lesson engine cases and both setup tests passed. The KO cases exercise successful attempts after the third repetition. [Curriculum](../apps/client/src/practice/curriculum.ts) · [Engine-driven tests](../apps/client/src/practice/curriculum.integration.test.ts)
+
+
+Before Break a grab was added, all 40 lessons completed three engine-driven repetitions on each of the five fighters. Both KO drills were completed in the local browser and the matching sprite was visible after each launch. A separate engine sweep verified up-smash contact, top blast-zone exit and preserved stocks for all 25 fighter pairings on all six worlds, using both keyboard and right-stick inputs.
+
+### Break a grab validation
+
+Open **Training Dojo → Guided Lessons → Advanced → Break a grab**. The partner starts within grab range, shows a countdown, and tries again automatically after recovery. Tap fresh Attack or Jump presses, or roll the left stick through directions while held. The drill counts three early escapes and saves completion for the selected fighter. Passive timeouts show a retry message and earn zero credit. Free Practice also offers a telegraphed grab partner.
+
+Chromium completed an uninterrupted five-attempt run on Neighborhood with All-Rounder. The passive hold and passive regrab released after about 90 ticks. Keyboard buttons escaped after about 20 ticks, and rotating the simulated Xbox 360 left stick escaped after about 21. An airborne keyboard escape released after 19 ticks. All five attempts displayed the release sprite, and the three active escapes completed the lesson and saved progress. Separate airborne trials displayed the packed release poses for Moonshine and Hoagie through the approach to landing.
+
+Before regrab protection, the engine regression confirmed that the same opponent could immediately regrab within 12 ticks. The second hold started a fresh timer and timed out at exactly 90 ticks without input. The renderer also passed a landing transition check that prevents the release pose from restarting. All 205 fighter-by-lesson cases and the focused server grab suites passed. Physical controller feel, native Ultimate timing, and any native regrab immunity window remain to be verified. [Lesson](../apps/client/src/practice/curriculum.ts) · [Regrab and airborne tests](../apps/server/src/GameEngine.grab.test.ts)
+
+### Regrab protection and controller signoff
+
+The match engine now gives the released victim a 60-tick window against standard grabs from any opponent. The release tick is the start of protection. The first eligible contact is release plus 60 ticks. Escape, passive timeout, throw, and interrupted hold all start the window. Normal strikes still work during it, and a blocked grab causes no damage or hitstun.
+
+The 60-tick value is a provisional Ultimate match. A mod author documented the stock `invalid_capture_frame` parameter as 60 in the game's 5.0.0 data. Nintendo's 13.0.5 notes describe an online data-handling change. A 13.0.5 capture or parameter trace is still needed to confirm the exact release boundary and which releases share it. [Original parameter notes](https://gamebanana.com/mods/38616) · [Nintendo update history](https://en-americas-support.nintendo.com/app/answers/detail/a_id/42809/p/1076)
+
+- Engine fixtures blocked tick 59 and accepted tick 60 after both mashing and passive timeout. A new hold after expiry used the full 90-tick timer at 0%. Separate fixtures checked a different grabber after a throw, an interrupted hold, and ordinary damage during protection. The full server suite passed 714 tests with 16 existing skips.
+- In the Neighborhood Dojo, the guided lesson still awarded three active escapes for keyboard, simulated Xbox 360 left stick, and airborne keyboard inputs. Both passive holds earned zero credit and the release art stayed visible. The browser samples were approximately 19–20 ticks for the active escapes and 90 for the passive holds.
+- In a two-client Moonshine versus Swift match, both views saw an early grab whiff without damage after an active escape. Both saw the next grab connect after protection expired and the passive release animation play.
+- Physical testing was deferred. When available, run one passive hold, one button mash, and one left-stick-only rotation in **Advanced → Break a grab**. Record the controller model, USB or Bluetooth connection, browser, and whether each active attempt scored. For native signoff, record the version and compare grab contact at release plus 59 and plus 60, using hitbox contact as the endpoint.
+
+[Engine regressions](../apps/server/src/GameEngine.grab.test.ts) · [Grab resolution](../apps/server/src/GameEngine.ts)
+
+### Delayed-input grab escape and regrabs
+
+Two Chromium clients played All-Rounder versus Swift on Neighborhood through the local room server. The clients sent real WebSocket inputs. A test fixture held selected packets in order before the normal server input queue and delivered them on specified ticks. The trace recorded every authoritative tick, and both clients independently sampled the release artwork. The mash and priority cases held selected packets for 8–24 ticks after receipt. The late-input and regrab cases used longer holds to reach the requested boundaries.
+
+| Scenario | Authoritative result |
+| --- | --- |
+| Passive hold at 0% | Released 90 ticks after capture. |
+| Delayed mash during the hold | Released 19 ticks after capture. |
+| First mash edge delivered one tick after timeout | Released at tick 90. Jump started at tick 91, so neither client sampled the brief release pose. |
+| Pummel contact on the escape tick | The pummel dealt 2.52% at tick 19 and the victim escaped that tick. |
+| Pummel due one tick after escape | Escape resolved at tick 19 with no pummel damage. |
+| Up throw contact on the escape tick | The throw landed at tick 19 and launched the victim. Both clients showed the throw reaction. |
+| Up throw due one tick after escape | Escape resolved at tick 19 with no throw hit. |
+| Regrab contact 59 ticks after release | The active grab missed and caused no damage or hitstun. |
+| Regrab contact 60 ticks after release | The grab connected. |
+
+Both clients showed the expected escape pose in the other release cases. A separate Moonshine versus Swift match used a browser relay to delay actual guest-to-server WebSocket messages by 119–191 ms as measured at the relay. Both clients observed a passive hold of about 92 ticks and a mashed hold of about 35 ticks, using the snapshots they received. Both displayed the release artwork. These snapshot estimates are separate from the exact server-tick measurements above.
+
+Physical-controller signoff and a version-matched Ultimate 13.0.5 comparison remain open. [Input queue](../apps/server/src/MatchSession.ts) · [Grab and regrab resolution](../apps/server/src/GameEngine.ts)
 
 ## Initial release validation
 

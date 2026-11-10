@@ -52,4 +52,12 @@ The current production game is hosted on Render. Confirm the target URL and depl
 3. Refresh a guest while the match is live and rejoin within the 30-second grace period. Verify that the room, selected stage, and player slot are restored. Test explicit Leave separately.
 4. Record the revision, host, browser, WebSocket result, and any visible asset delays. For performance work, capture cold and warm results with the network conditions and cache state recorded. Follow the [release and loading gates](../plans/ACTIVE-WORK.md).
 
-If a release fails these checks, collect the build and runtime logs and redeploy the last known-good revision through the same host. Verify the rollback with the same browser checks. Rejoin identity hardening and hosted network signoff are tracked separately from the runbook.
+If a release fails these checks, collect the build and runtime logs and redeploy the last known-good revision through the same host. Verify the rollback with the same browser checks. Hosted signoff for the private reconnect credential is tracked below.
+
+### Private reconnect credentials
+
+The server issues a private per-seat token in the create or join response. The browser keeps it in session storage for refresh recovery and in memory for reconnects in the current page. Lobby broadcasts and room URLs use public identifiers. The server requires the credential during the existing 30-second grace period, and confirmed Leave removes the seat immediately.
+
+Local verification passed 18 room and socket integration tests, 12 client network tests, both type checks, and a two-browser test that refreshed during pause, recovered the same fighter, resumed, and left deliberately. Socket checks covered missing, malformed, and wrong-seat credentials, replay against a connected seat, and expiry. Rejected requests left the legitimate seat available.
+
+Deploy the client and server together. Tabs opened before this change have no credential for their old room. After deploy, reload both tabs and start a new online room for the hosted smoke test. Verify guest refresh during live and paused play, resume, and confirmed Leave. Hosted verification for this change is pending.

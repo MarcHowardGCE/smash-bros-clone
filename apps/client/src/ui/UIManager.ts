@@ -264,6 +264,10 @@ export class UIManager {
   }
 
 
+  focusMenuControl(selector: string): void {
+    this.overlay.querySelector<HTMLElement>(selector)?.focus();
+  }
+
   /** Route into the room when returning from selection, otherwise show Home. */
   showLobby(): void {
     if (this.roomCode && new URL(window.location.href).searchParams.has('room') && this.roomPlayers.length) {
@@ -275,9 +279,7 @@ export class UIManager {
     this.stopMenuNav();
     this.phase = 'lobby';
     this.hudPanel.style.display = 'none';
-    this.overlay.innerHTML = homeMenu() +
-      `<div class="menu-hint">↑↓ Navigate · ←→ Adjust · Enter / ${this.prompt('confirm')} Select</div>` +
-      this.versionTag();
+    this.overlay.innerHTML = homeMenu(this.prompt('confirm')) + this.versionTag();
 
     const actions: Record<string, () => void> = {
       'local-play-btn': () => this.onLocalPlay?.(),
@@ -305,6 +307,7 @@ export class UIManager {
       url.searchParams.delete('room');
       window.history.replaceState({}, '', url);
       this.showLobby();
+      this.focusMenuControl('#online-play-btn');
     };
     const create = () => {
       this.setOnlinePending('Creating room…');
@@ -336,6 +339,7 @@ export class UIManager {
       'online-back-btn': goBack,
     }), goBack);
     if (joining) this.setOnlinePending('Joining room…');
+    this.focusMenuControl(joining ? '#join-code' : '#create-btn');
   }
 
   private setOnlinePending(message: string): void {
@@ -892,7 +896,11 @@ export class UIManager {
     this.overlay.innerHTML = roomLobby(this.roomCode);
     const copyStatus = this.overlay.querySelector('#copy-room-status')!;
     this.startEntryNav(this.bindMenuActions({
-      'ready-btn': () => { this.showWaiting(); this.onReady?.(); },
+      'ready-btn': () => {
+        if (this.phase === 'waiting') return;
+        this.showWaiting();
+        this.onReady?.();
+      },
       'copy-btn': async () => {
         try {
           await navigator.clipboard.writeText(window.location.href);
@@ -901,9 +909,13 @@ export class UIManager {
           copyStatus.textContent = 'Could not copy the link. Share the room code above.';
         }
       },
-      'leave-room-btn': () => this.onMainMenu?.(),
+      'leave-room-btn': () => {
+        this.onMainMenu?.();
+        this.focusMenuControl('#online-play-btn');
+      },
     }));
     this.refreshRoomLobby();
+    this.focusMenuControl('#copy-btn');
   }
 
   private refreshRoomLobby(): void {
@@ -913,7 +925,7 @@ export class UIManager {
     this.overlay.querySelector('#room-seat-count')!.textContent = this.roomPlayers.length + ' / 4';
     const ready = this.roomPlayers.find(player => player.playerId === this.myPlayerId)?.ready ?? false;
     const button = this.overlay.querySelector<HTMLButtonElement>('#ready-btn')!;
-    button.disabled = ready;
+    button.setAttribute('aria-disabled', String(ready));
     button.textContent = ready ? 'Ready ✓' : 'Ready';
     this.phase = ready ? 'waiting' : 'lobby';
     this.overlay.querySelector('#room-ready-status')!.textContent = ready
@@ -933,7 +945,7 @@ export class UIManager {
       const status = this.overlay.querySelector("#room-ready-status");
       if (status) status.textContent = 'Setting ready…';
       button.textContent = 'Setting ready…';
-      button.disabled = true;
+      button.setAttribute('aria-disabled', 'true');
     }
   }
 
@@ -1015,11 +1027,15 @@ export class UIManager {
     this.overlay.innerHTML = matchPause(online, confirming, this.prompt('pause'), this.prompt('confirm')) +
       this.versionTag();
     if (confirming) {
-      const stay = () => this.renderMatchPause(online);
+      const stay = () => {
+        this.renderMatchPause(online);
+        this.focusMenuControl('#main-menu-btn');
+      };
       this.startEntryNav(this.bindMenuActions({
         'pause-stay-btn': stay,
         'confirm-leave-match-btn': () => this.onMainMenu?.(),
       }), stay);
+      this.focusMenuControl('#pause-stay-btn');
       return;
     }
 
@@ -1037,6 +1053,7 @@ export class UIManager {
     }
     entries.push(...this.bindMenuActions({ 'main-menu-btn': () => this.renderMatchPause(online, true) }));
     this.startEntryNav(entries, () => this.onResume?.());
+    this.focusMenuControl('#resume-btn');
   }
 
   cancelPauseExit(): boolean {

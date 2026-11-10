@@ -144,7 +144,7 @@ describe('FSM - Grab states', () => {
     expect(result.state).toBe(PlayerStateEnum.GRAB_HOLDING);
   });
 
-  it('GrabHolding → Idle after 90 frames', () => {
+  it('GrabHolding waits for the match engine to release the pair', () => {
     const controller = new FSMController(PlayerStateEnum.GRAB_HOLDING);
     let player = makePlayer({ state: PlayerStateEnum.GRAB_HOLDING, isGrabbing: true, grabbedPlayerId: 'victim', stateFrame: 0 });
 
@@ -152,7 +152,8 @@ describe('FSM - Grab states', () => {
       player = controller.tick(player, makeInput());
     }
 
-    expect(player.state).toBe(PlayerStateEnum.IDLE);
+    expect(player.state).toBe(PlayerStateEnum.GRAB_HOLDING);
+    expect(controller.tick({ ...player, isGrabbing: false }, makeInput()).state).toBe(PlayerStateEnum.IDLE);
   });
 });
 

@@ -53,6 +53,10 @@ extensionCodec.register({
 });
 
 export interface OnlineSelectionState {phase:string;hostPlayerId:string;stageId:string;preparation?:{id:number;readyPlayerIds:PlayerId[]};players:{playerId:PlayerId;slotIndex:number;characterId:string;confirmed:boolean;ready?:boolean}[];}
+type RejoinIdentity = { roomCode: string; playerId: PlayerId; rejoinToken: string };
+type SeatAssignment = { playerId: PlayerId; slotIndex: number; rejoinToken: string };
+const REJOIN_STORAGE_KEY = "smash:rejoin";
+
 export interface GameClientOptions {
   onSelectionState?:(state:OnlineSelectionState)=>void;
   onStageChanged?:(stageId:string)=>void;
@@ -104,6 +108,7 @@ export class GameClient {
   private predictor: LocalPredictor | null = null;
   private myPlayerId: PlayerId | null = null;
   private myRoomCode: string | null = null;
+  private rejoinIdentity: RejoinIdentity | null = null;
   private currentTick = 0;
   private readonly options: GameClientOptions;
   private rafHandle: number | null = null;
@@ -136,15 +141,11 @@ export class GameClient {
     this.inputManager.setKeymap(loadSlotKeymap(0, DEFAULT_KEYMAP_P1));
     this.socket.emit(
       "room:create",
-      (data: { roomCode: string; playerId: PlayerId; slotIndex: number }) => {
+      (data: SeatAssignment & { roomCode: string }) => {
         this.myPlayerId = data.playerId;
         this.myRoomCode = data.roomCode;
         this.inputManager.setPlayerId(data.playerId);
-        // Persist session identity for rejoin on reconnect
-        sessionStorage.setItem(
-          "smash:rejoin",
-          JSON.stringify({ roomCode: data.roomCode, playerId: data.playerId }),
-        );
+        this.saveRejoinIdentity({ roomCode: data.roomCode, playerId: data.playerId, rejoinToken: data.rejoinToken });
         this.options.onPlayerAssigned?.(data.playerId, data.roomCode);
         this.options.onRoomCreated(data.roomCode, data.playerId);
         this.options.onPlayerJoined(data.slotIndex);
@@ -168,7 +169,7 @@ export class GameClient {
     this.socket.emit(
       "room:join",
       roomCode,
-      (data: { playerId: PlayerId; slotIndex: number } | { error: string }) => {
+      (data: SeatAssignment | { error: string }) => {
         if ("error" in data) {
           this.options.onRoomJoinError?.(data.error);
           return;
@@ -177,8 +178,7 @@ export class GameClient {
         this.myPlayerId = data.playerId;
         this.myRoomCode = roomCode.toUpperCase();
         this.inputManager.setPlayerId(data.playerId);
-        // Persist session identity for rejoin on reconnect
-        sessionStorage.setItem('smash:rejoin', JSON.stringify({ roomCode: this.myRoomCode, playerId: data.playerId }));
+        this.saveRejoinIdentity({ roomCode: this.myRoomCode, playerId: data.playerId, rejoinToken: data.rejoinToken });
         this.options.onPlayerAssigned?.(data.playerId, this.myRoomCode);
         this.options.onPlayerJoined(data.slotIndex);
       },
@@ -261,7 +261,7 @@ export class GameClient {
   /** Deliberate departure forfeits immediately, unlike a transient transport drop. */
   leaveRoom(): void {
     this.socket.emit("room:leave");
-    try { sessionStorage.removeItem("smash:rejoin"); } catch {}
+    this.saveRejoinIdentity(null);
     this.stopRenderLoop();
     this.interpolationBuffer.clear();
     this.predictor = null;
@@ -317,24 +317,41 @@ export class GameClient {
     return this.interpolationBuffer.getLatestSnapshot();
   }
 
+  private saveRejoinIdentity(identity: RejoinIdentity | null): void {
+    this.rejoinIdentity = identity;
+    try {
+      if (identity) sessionStorage.setItem(REJOIN_STORAGE_KEY, JSON.stringify(identity));
+      else sessionStorage.removeItem(REJOIN_STORAGE_KEY);
+    } catch { /* The current tab can still reconnect using memory. */ }
+  }
+
+  private getRejoinIdentity(): RejoinIdentity | null {
+    if (this.rejoinIdentity) return this.rejoinIdentity;
+    try {
+      const raw = sessionStorage.getItem(REJOIN_STORAGE_KEY);
+      if (!raw) return null;
+      const value = JSON.parse(raw) as Partial<RejoinIdentity> | null;
+      if (value && typeof value.roomCode === "string" && typeof value.playerId === "string"
+          && typeof value.rejoinToken === "string" && /^[a-f0-9]{64}$/.test(value.rejoinToken)) {
+        const { roomCode, playerId, rejoinToken } = value;
+        this.rejoinIdentity = { roomCode, playerId, rejoinToken };
+        return this.rejoinIdentity;
+      }
+    } catch { /* Storage may be unavailable or malformed. */ }
+    this.saveRejoinIdentity(null);
+    return null;
+  }
+
   private setupSocketHandlers(): void {
     this.socket.on("connect", () => {
       console.log("[client] connected to server:", this.socket.id);
 
-      let saved: { roomCode: string; playerId: PlayerId } | null = null;
-      try {
-        const raw = sessionStorage.getItem("smash:rejoin");
-        if (raw) {
-          const value = JSON.parse(raw);
-          if (typeof value.roomCode === "string" && typeof value.playerId === "string") saved = value;
-        }
-      } catch { /* Storage may be unavailable. */ }
-      if (!saved) { this.options.onConnected?.(); return; }
-      const identity = saved;
+      const identity = this.getRejoinIdentity();
+      if (!identity) { this.options.onConnected?.(); return; }
       this.socket.emit("room:rejoin", identity,
         (response: { ok: boolean; phase?: string; stageId?:string; paused?: boolean }) => {
           if (!response.ok) {
-            try { sessionStorage.removeItem("smash:rejoin"); } catch {}
+            this.saveRejoinIdentity(null);
             this.options.onConnected?.();
             return;
           }

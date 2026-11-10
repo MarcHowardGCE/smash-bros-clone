@@ -10,7 +10,8 @@
  * routing and countdown scheduling live in `createApp.ts`.
  */
 
-import type { Room, PlayerSlot } from './types.js';
+import { randomBytes, timingSafeEqual } from 'node:crypto';
+import type { Room } from './types.js';
 import type { PlayerId, CharacterId } from '@smash/shared';
 
 const ROOM_CODE_CHARS = 'ABCDEFGHIJKLMNPQRSTUVWXYZ123456789';
@@ -66,26 +67,27 @@ export class RoomManager {
    * socket into slot 0 as the host.
    *
    * @param socketId - socket.io socket ID of the creating player.
-   * @returns The new room code, generated player ID, and slot index (always 0).
+   * @returns The new room code, generated player ID, private rejoin token, and slot index (always 0).
    */
-  createRoom(socketId: string): { roomCode: string; playerId: PlayerId; slotIndex: number } {
+  createRoom(socketId: string): { roomCode: string; playerId: PlayerId; slotIndex: number; rejoinToken: string } {
     let roomCode: string;
     do {
       roomCode = generateRoomCode();
     } while (this.rooms.has(roomCode));
 
     const playerId = generatePlayerId();
+    const rejoinToken = randomBytes(32).toString('hex');
     const room: Room = {
       code: roomCode,
       phase: 'LOBBY',
       players: new Map([
-        [playerId, { playerId, socketId, slotIndex: 0, isReady: false, characterId: 'all-rounder', characterConfirmed: false }]
+        [playerId, { playerId, rejoinToken, socketId, slotIndex: 0, isReady: false, characterId: 'all-rounder', characterConfirmed: false }]
       ]),
       createdAt: Date.now(),
       stageId: 'stage1',
     };
     this.rooms.set(roomCode, room);
-    return { roomCode, playerId, slotIndex: 0 };
+    return { roomCode, playerId, slotIndex: 0, rejoinToken };
   }
 
   /**
@@ -96,9 +98,9 @@ export class RoomManager {
    *
    * @param roomCode - 6-character room code (case-insensitive).
    * @param socketId - socket.io socket ID of the joining player.
-   * @returns The generated player ID and slot index, or an `{ error }` object.
+   * @returns The generated player ID, private rejoin token, and slot index, or an `{ error }` object.
    */
-  joinRoom(roomCode: string, socketId: string): { playerId: PlayerId; slotIndex: number } | { error: string } {
+  joinRoom(roomCode: string, socketId: string): { playerId: PlayerId; slotIndex: number; rejoinToken: string } | { error: string } {
     const room = this.rooms.get(roomCode.toUpperCase());
     if (!room) return { error: 'Room not found' };
     if (room.phase !== 'LOBBY') return { error: 'Game already in progress' };
@@ -107,8 +109,9 @@ export class RoomManager {
     const occupied = new Set([...room.players.values()].map(p => p.slotIndex));
     const slotIndex = [0, 1, 2, 3].find(index => !occupied.has(index))!;
     const playerId = generatePlayerId();
-    room.players.set(playerId, { playerId, socketId, slotIndex, isReady: false, characterId: 'all-rounder', characterConfirmed: false });
-    return { playerId, slotIndex };
+    const rejoinToken = randomBytes(32).toString('hex');
+    room.players.set(playerId, { playerId, rejoinToken, socketId, slotIndex, isReady: false, characterId: 'all-rounder', characterConfirmed: false });
+    return { playerId, slotIndex, rejoinToken };
   }
 
   /**
@@ -285,16 +288,23 @@ export class RoomManager {
    *
    * @param roomCode - 6-character room code.
    * @param playerId - Rejoining player ID.
+   * @param rejoinToken - Private credential issued when the player took the seat.
    * @param newSocketId - New socket.io socket ID after reconnect.
    * @returns `{ ok: true, slotIndex }` on success, or `{ error }` when rejoin fails.
    */
-  rejoinRoom(roomCode: string, playerId: PlayerId, newSocketId: string): { ok: true; slotIndex: number } | { error: string } {
+  rejoinRoom(roomCode: string, playerId: PlayerId, rejoinToken: string, newSocketId: string): { ok: true; slotIndex: number } | { error: string } {
     const normalizedRoomCode = roomCode.toUpperCase();
     const room = this.rooms.get(normalizedRoomCode);
     if (!room) return { error: 'Room not found' };
 
     const slot = room.players.get(playerId);
     if (!slot) return { error: 'Player not in room' };
+
+    const token = Buffer.from(rejoinToken);
+    const expected = Buffer.from(slot.rejoinToken);
+    if (token.length !== expected.length || !timingSafeEqual(token, expected)) {
+      return { error: 'Invalid rejoin credential' };
+    }
 
     const disconnected = this.disconnectedPlayers.get(playerId);
     if (!disconnected || disconnected.roomCode !== normalizedRoomCode) {

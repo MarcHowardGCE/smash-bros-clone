@@ -27,6 +27,8 @@ export type SessionPhase = 'LOBBY' | 'CHARACTER_SELECT' | 'READY_CHECK' | 'STAGE
 export interface PlayerSlot {
   /** Unique player identifier generated on join. */
   playerId: PlayerId;
+  /** Private credential sent only to the client assigned this seat. */
+  readonly rejoinToken: string;
   /** socket.io socket ID — used to route messages and resolve identity on disconnect. */
   socketId: string;
   /** Zero-based display index (0–3) used to assign colour/pattern on the client. */

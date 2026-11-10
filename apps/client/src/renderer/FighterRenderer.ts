@@ -197,6 +197,9 @@ export class FighterRenderer {
   }
 
   startGrabReaction(move:import('@smash/shared').MoveId,facing:1|-1):void{this.fullBodyPilot?.startGrabReaction(move,facing);}
+  startThrowRelease(move: import('@smash/shared').MoveId): void {
+    this.fullBodyPilot?.startThrowRelease(move);
+  }
   startCounterReaction():void{this.fullBodyPilot?.startCounterReaction();}
 
   startHitFlash(): void {

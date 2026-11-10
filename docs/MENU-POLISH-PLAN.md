@@ -294,3 +294,179 @@ The patched local production bundle `index-DcMq4bb0.js` ran three independent tw
 The previous Render alert appeared 33.78 seconds after arena confirmation. The patched local retry starts much earlier in the loading sequence, while other art is still downloading. Its retry-to-live interval therefore includes downloads that had already finished by the time the prior alert appeared. These runs verify earlier feedback and successful recovery. A same-host timing comparison awaits deployment.
 
 The browser regression holds a second page while aborting the idle page and verifies that the alert appears before the held page is released. It then retries the same lineup and verifies both clients enter play. [Browser regression](../apps/client/e2e/online-art-recovery.spec.ts#L65)
+
+#### Render early-alert signoff
+
+After deployment of `30d2517`, Render served `index-DcMq4bb0.js`, matching the locally tested bundle filename. Chromium ran three independent two-client rooms with Abe Lincoln versus Swift on Stage 1. Only the guest was throttled to 8 Mbps download and upload, 120 ms latency, and 2× CPU slowdown. Each test reset the guest's first request for Lincoln's required idle atlas. [Render game](https://everybody-throws-hands.onrender.com/)
+
+| Measurement | Median | Range |
+| --- | ---: | ---: |
+| Arena confirmation to artwork alert | 3.12 s | 3.05–3.15 s |
+| Simulated reset to artwork alert | 0.88 s | 0.43–0.89 s |
+| Starting same-lineup retry to both clients live | 37.27 s | 36.52–37.75 s |
+
+All three runs remained at one of two players ready before retry, and neither client entered countdown or live play during the failure check. Every retry returned HTTP 200 for the reset atlas and both clients entered live play with the same lineup. The alert now appeared about 31 seconds earlier than in the previous hosted test. The retry-to-live interval still includes the other artwork downloads that were pending when the alert appeared. The test covers a one-shot reset of required idle artwork.
+
+## Native browser zoom and forced-colors checks
+
+Local Playwright Chromium checks on Windows used the browser's native 200% tab zoom. The CSS viewport changed from 1258×702 to 629×351 and the device pixel ratio changed from 1 to 2. The six surfaces below ran in both standard colors and Chromium's forced-colors emulation, for 12 screen and mode combinations.
+
+| Screen | Action checked |
+| --- | --- |
+| Home | Local Play |
+| Local Player Setup | Choose Fighters |
+| Fighter Select | Confirm the active seat |
+| World Select | First world tile |
+| Dojo lesson library | Free Practice |
+| Dojo pause | Resume |
+
+All checked panels fit the viewport horizontally. Each target was reachable after scrolling, and Chromium's accessibility tree exposed named buttons. Tab on Home focused Online Play with a solid 2 CSS pixel outline in both modes. The Dojo run entered Free Practice, opened pause and resumed.
+
+This pass covers layout, primary pointer targets, browser accessibility roles and names, and one keyboard focus check. Settings and online menus still need completed runs at native zoom. Next verify how selected and focused controls differ in forced colors, then use a screen reader to check navigation, dynamic announcements, and focus restoration. Measure text and control contrast against the rendered artwork in their default, hover, selected, and focused states.
+
+## Expanded zoom and selection checks
+
+A second local Chromium pass repeated the six checks above at native 200% browser zoom and added Controls, visual settings, Sound, online entry, and the host room lobby. All 22 screen and color-mode combinations passed. Each tested panel had no horizontal overflow and its target was reachable after scrolling. The online flow created and left a room on the local server.
+
+Forced colors replaced the selected and unselected fighter cards and Dojo tabs with the same fill and border. The shared menu styles now underline the label on controls marked pressed, selected, or current when forced colors are active. Keyboard focus keeps its separate outline. The rerun verified that the underline followed selection changes in Fighter Select, Settings and Dojo Pause. An unselected Dojo tab kept its outline while focused and received the underline only after activation. The standard-color rerun kept the existing color styling.
+
+Next check spoken screen-reader navigation, dynamic announcements, and focus restoration, then measure text and control contrast over artwork. Chromium's forced-colors emulation and accessibility tree cover browser behavior. Spoken output and physical Windows contrast themes still need separate checks.
+
+## Keyboard focus, announcements, and artwork contrast
+
+Local Playwright Chromium on Windows exercised live menu routes at 1280×720 with standard colors and the local room server. The audit recorded keyboard focus, the visible navigation highlight, and Chromium accessibility tree roles, names, and state after each action. These are browser observations. Spoken output and announcement order in Narrator or NVDA remain unverified.
+
+| Flow | Observation |
+| --- | --- |
+| Home Tab | Tab moved to Online Play, then Training Dojo. Keyboard focus and the visible highlight agreed. |
+| Home arrows | From Online Play, Down highlighted Training Dojo while keyboard focus stayed on Online Play. |
+| Settings entry and return | Enter on Controls opened Settings with focus on the page body. Escape returned Home with focus on the body and Local Play highlighted. The Controls opener did not regain focus. |
+| Online room code and Ready | Enter on a short code kept focus in the labeled textbox, set its invalid state, and updated a polite, atomic status. The host Ready action updated the status to “Waiting for other players.” Leave Room returned Home with body focus. |
+| Fighter Select | The selected fighter exposed a pressed button state. The comparison values exposed a polite live region. Speech and verbosity of the table update remain unverified. |
+| World Select | Right changed the preview and pressed state from Neighborhood to Cathedral, while focus stayed on Neighborhood. The preview is a named region without a live update cue. Escape returned to Fighter Select with body focus. |
+| Dojo Pause | Opening pause left focus on the body despite the Resume highlight. With Session focused, Right moved keyboard focus to Timing & Display and exposed it as the selected tab with a named panel. Escape from Visual Settings reopened the Settings tab with body focus instead of restoring the opener. |
+
+The contrast pass sampled rendered backgrounds under visible text ranges. It temporarily hid the glyph fill and text shadow without removing the art or layout, then compared the computed foreground color with the least favorable sampled background. The table groups the minimums. The run used 4.5:1 for ordinary text and 3:1 for large text. Home Local Play and Choose Fighters were tested at rest, on hover, and with focus. [WCAG 2.2 contrast minimum](https://www.w3.org/TR/WCAG22/#contrast-minimum)
+
+| Surface | Lowest sampled ratio |
+| --- | ---: |
+| Home brand caption and Local Play text | 7.86:1 |
+| Local Player Setup Choose Fighters | 10.74:1 |
+| Fighter hero copy and selected roster label | 6.02:1 |
+| World tile, preview title, and Random World badge | 8.21:1 |
+| Stage 1 match intro title and versus text | 7.72:1 |
+| Stage 1 result heading and details | 7.45:1 |
+
+All sampled text met its threshold. This was a spot check at one viewport with one match backdrop. Focus-ring contrast, additional world art, and unsampled menu states still need checks.
+
+Next, make keyboard focus follow arrow selection and restore it to the originating control on return. Set a useful initial focus for newly opened menus and pause. Give world preview changes a concise announcement. After those fixes, use Windows Narrator to verify the spoken control name, selected state, short status messages, and focus return without repetitive announcements.
+
+## Keyboard focus fixes and spoken verification checklist
+
+Up and Down now move native keyboard focus with the shared menu highlight. World Select also focuses the highlighted tile during keyboard navigation. Hover and controller preview changes use a polite status with the world name when focus stays put. Keyboard focus already exposes the tile name and pressed state, so that path skips the extra status message.
+
+Settings puts focus on its heading and remembers the opener when switching tabs. Back restores focus to the opener on Home or in Pause. World Select returns to the first seat's Ready button, Fighter Select returns to Choose Fighters, and the online entry and lobby return to Online Play. Match Pause focuses Resume. Dojo Pause focuses Resume when Session is active, or the selected tab when reopening another tab.
+
+Four focused Chromium regressions passed alongside the existing pause and online selection checks, for nine browser passes. The two-client test exercised shared stage preview, Back, and reconnect. The client type check and 92 focused UI tests passed. The broader UI run passed 144 checks and could not launch the browser for the three legacy HUD color checks. The pause regression rerun used a local test URL in place of that legacy spec's fixed development URL.
+
+For spoken verification with Windows Narrator:
+
+1. From Home, focus Online Play and press Down. Listen for Training Dojo, then Controls on the next Down. Enter Controls, switch to Sound, and press Escape. Listen for focus returning to Controls.
+2. Enter a short room code and submit it. Listen for the validation status with focus still in the code field. Create a room, press Ready, and listen for the waiting message. Leave and check the Online Play focus announcement.
+3. Open World Select, move from Neighborhood to Cathedral with Right, and listen for the focused world. Hover a different world or use a controller to browse and listen for a short preview status. Verify that keyboard navigation does not speak both the focus and status messages for the same move.
+4. Open Dojo Pause, enter Visual Accessibility through the Settings tab, and press Escape. Listen for focus returning to Visual Accessibility. Check the selected tab announcement when switching tabs with Left or Right.
+
+Spoken output remains open. After the Narrator pass, measure focus-ring contrast against adjacent colors and sample the remaining backdrop and control states.
+
+## Focus outline and six-world contrast
+
+Local Chromium on Windows checked 27 focused control and viewport combinations at 1280×720 and 640×360 in standard colors. Each measurement compared the rendered outline with the same pixels after making the outline transparent and with nearby pixels outside the outline. The lowest measured ratio was 9.14:1, on Enter Free Practice at 640×360. The run sampled the center portions of the four edges, so the result describes the sampled outlines. [WCAG non-text contrast](https://www.w3.org/TR/WCAG22/#non-text-contrast)
+
+At 640×360 the fixed Home navigation hint covered part of the Accessibility button's outline, and the World Select scroll panel clipped the Random World outline at the bottom. Home now puts the hint in the scrolling menu, and World Select reserves scroll clearance around buttons. Keyboard arrows now start from the focused world even if a pointer preview changed the highlight. The rerun found the focus outline at every sampled point. All five keyboard regressions passed, including the compact Home and Random World case.
+
+At 1280×720 the art pass decoded the six preview, intro, and result backdrops before measuring text against the rendered background. All 58 sampled text ranges met their thresholds. These are the minimums across the selected tile label, preview text, intro title and versus text, and result heading and details. [WCAG text contrast](https://www.w3.org/TR/WCAG22/#contrast-minimum)
+
+| World | Lowest sampled ratio |
+| --- | ---: |
+| Neighborhood | 7.45:1 |
+| Cathedral | 7.53:1 |
+| Factory | 7.63:1 |
+| Circus | 7.86:1 |
+| Banquet | 7.59:1 |
+| Library | 7.59:1 |
+
+Narrator is available on Windows, but this session did not have a way to capture and verify spoken output. Follow the spoken checklist above on the desktop and record the speech for focus return, status updates, and world previews. Physical Windows contrast themes are also open.
+
+## Windows Narrator spoken results
+
+Ran the checklist in a private Chrome 157 window against the local game and room server on Windows. Narrator Speech Recap showed the emitted spoken phrases. Narrator enabled scan mode in the browser and intercepted the game arrows while scan mode was on. Insert+Space turned scan mode off for the game's custom arrow navigation. Tab remained usable. [Microsoft Narrator commands and Speech Recap](https://support.microsoft.com/en-us/accessibility/windows/narrator/appendix-b-narrator-keyboard-commands-and-touch-gestures)
+
+| Flow | Observed speech and focus |
+| --- | --- |
+| Home and Settings | Down from Online Play announced Training Dojo and its description. Down again announced Controls. Opening Settings and switching to Sound focused and announced the Settings heading. Escape announced Controls again on Home. |
+| Room validation and lobby | Narrator read the six-character room-code field label and “Enter a six-character room code.” The field retained focus. The lobby announced Copy Invite Link on entry. After Ready, Narrator spoke the document title, then “Waiting for other players.” Leaving the room announced Online Play. |
+| World Select | Right from Neighborhood announced “The Drowned Cathedral of Teeth, toggle button, on” once. A pointer preview on Random World announced that the focused Cathedral toggle was off, then “Preview: Random world.” Escape announced Ready in Fighter Select. The next Escape announced Choose Fighters in Local Player Setup. |
+| Dojo Pause | Opening pause announced Resume. The tab strip announced Session as selected, and Right announced Timing & Display as selected. Speech Recap showed the Timing & Display and Settings selected phrases twice during the tested tab changes. Escape from Visual Accessibility restored and announced the Visual Accessibility button in the Settings tab panel. |
+
+The spoken focus restoration and requested status messages were observed. The pointer path supplied the unfocused world-preview check. Physical controller speech and physical Windows contrast themes were outside this run. Next isolate the repeated Dojo tab announcements, the preceding World Select deselection phrase, and the Ready focus handoff before repeating the affected speech checks.
+
+## Narrator announcement refinement
+
+Ready stays focusable while unavailable. The lobby rejects repeat activation while waiting. Speech Recap in Chrome 157 showed the setting and waiting messages without the prior document-title announcement. The keyboard regression verified that Ready retained focus after the server confirmed it and that Leave Room still returned focus to Online Play. The unit check verified that a second activation did not send Ready again.
+
+World tiles use ordinary button semantics because activation chooses an arena. The visual preview highlight remains, including its forced-colors underline. Keyboard arrows move focus and update the preview without a separate status message. In Narrator, Right announced Cathedral, then a pointer preview announced “Preview: The Neighborhood That Ate Itself” without the previous Cathedral deselection phrase.
+
+The Dojo experiment limited tab attribute writes to changed values and delayed pointer focus until selection. Narrator still spoke the selected Timing & Display phrase twice after Right and the selected Settings phrase twice after a click. The experiment was removed. Keep the selected tab state exposed while investigating whether a different activation model would improve spoken navigation.
+
+Six Chromium checks passed on the final patch, including five keyboard cases and the two-client selection and reconnect flow. The room-focused unit suite passed all eight checks. Physical Windows contrast themes and controller speech remain open.
+
+## Dojo tab activation comparison
+
+Compared the existing automatic tab activation with an isolated manual keyboard prototype in Chrome 157 and Windows Narrator Speech Recap. With scan mode off, Right moved focus from Session to Timing & Display and produced one phrase identifying the focused tab. The Session panel stayed open. Enter opened Timing & Display and produced one separate selected-state phrase. Two more Right presses announced Recordings and Settings once each while keeping Timing & Display open. Space opened Settings and announced it as selected.
+
+Manual activation separated the focus and selection phrases. It also required a second keypress to open each panel. The game keeps automatic activation, which opens a panel with one arrow press and exposes the selected state. The duplicate phrase in Narrator remains a known issue. The manual prototype was confined to the test checkout.
+
+The physical Windows contrast-theme check was attempted next. Windows Settings opened, but permission to inspect the app timed out. No contrast theme was applied. For the next desktop run, record the starting theme, test one light and one dark theme, and restore the starting theme. Check that focus and selection are distinct in Fighter Select, World Select, and Dojo Pause, and that the lobby Ready status stays readable. Controller speech remains open.
+
+## Native Windows contrast themes
+
+Tested Chrome 157 in a private desktop window with the actual Windows Desert and Night sky themes. Windows started with Contrast themes set to None. Chrome updated to each system palette, including when the theme changed with the Dojo paused. Restored None and confirmed the game returned to its standard menu palette and the world diagram returned to its normal colors. [Windows Contrast Themes settings](https://learn.microsoft.com/windows/uwp/launch-resume/launch-settings-app#ease-of-access)
+
+| Surface | Desktop observation in both themes |
+| --- | --- |
+| Room lobby | Waiting for other players remained readable after Ready. The waiting control stayed focused. Its outline was initially dimmed by the disabled opacity. The revised button retains its full-strength outline and uses the system disabled text color. |
+| Fighter Select | The selected fighter label was underlined. Tab moved focus to a different fighter with a separate outline. |
+| World Select | The previewed world was underlined and the focused tile had an outline. The platform diagram was faint in Desert with its original mint and gold. The revised diagram uses the system text color in contrast themes and was legible in Desert. |
+| Dojo Pause | Session stayed selected and underlined while Timing & Display had the keyboard focus outline. |
+
+The revised splash prompt was verified in Night sky. It uses the system text color at full opacity when a contrast theme is active. Two repeatable Chromium checks with light and dark forced colors passed for the splash, Ready, world diagram and distinct focus and selection cues. The first automation attempt did not expose the native forced-colors media state, so native results come from the regular desktop Chrome session. Browser emulation is separate evidence.
+
+Next, verify Narrator prompts and navigation with physical controllers. The desktop pass also exposed a short-window Dojo library layout issue where its navigation hint overlapped the Free Practice heading. Track that separately from the contrast checks.
+
+## Short-window Dojo and controller follow-up
+
+At 740×560, Chromium measured the Dojo footer starting 190.19 CSS pixels before the end of the Free Practice content. The grid could shrink in the scrollable shell while its panels kept their intrinsic height. The grid now keeps its content height, and the footer scrolls after it.
+
+The browser regression checked Free Practice and Guided Lessons at 740×560, 640×360, and 1024×400 in standard and forced colors. All 12 combinations kept the footer below the panels, kept both start actions reachable in their respective modes, and had no horizontal overflow. All six keyboard and layout browser tests passed. The Dojo setup and controller prompt unit suites passed four tests.
+
+Physical-controller Narrator verification is pending because the user will test later. The unit tests cover profile labels and seat assignment. The physical run should check what is actually spoken when the user navigates and activates controls.
+
+| Profile | Expected Confirm / Back | Expected pause and resume prompt |
+| --- | --- | --- |
+| Xbox layout | B / A | Start |
+| Switch Pro | A / B | + |
+| DualSense | Circle / Cross | Options |
+
+With Narrator and Speech Recap open, use each pad to browse Home with the D-pad, enter Training Dojo, change lesson tiers, and pause and resume Free Practice. Record which control name is spoken as the highlight moves, the exact Confirm, Back, and Resume prompts, and whether a profile change leaves a stale label. Repeat with two different pads assigned to separate fighter seats. Record the model, browser, and USB or Bluetooth connection. The available newer Xbox pad does not sign off Xbox 360 hardware.
+
+## Physical-controller Narrator result
+
+On November 10, 2026, the user reported that the physical-controller Narrator checklist passed. Individual models, connection types, and spoken transcripts were not supplied. Extended hardware Dojo, mixed-seat, reconnect, and Xbox 360 signoff remain tracked separately.
+
+## Dojo tab announcement fix
+
+Dojo pause tabs now use manual activation. Arrow keys and the controller D-pad move focus across the tabs, and Enter, Space, or controller Confirm opens the focused panel. Clicking a tab moves focus directly to the heading in the opened panel. The original duplicate announcement is recorded above for reference.
+
+In desktop Chrome with Windows Narrator, browsing to Timing & Display spoke its tab name once while Session stayed open. Pressing Enter then spoke the selected Timing & Display tab once. Clicking Settings after the pointer fix spoke the Settings heading once without repeating the selected tab name.
+
+All seven menu browser tests passed, including keyboard and simulated D-pad navigation, pointer focus, and restoration to the Visual Accessibility opener. The native speech check for this change used keyboard and pointer. See the preceding section for the earlier physical-controller result.

@@ -135,7 +135,7 @@ export class FullBodyPilot {
  readonly effectSprite=new Sprite();
  private reaction:{move:MoveId;facing:1|-1;start:number|null}|null=null;private wasVictim=false;private lastVictimFlip=1;private releaseStart:number|null=null;
  startGrabReaction(move:MoveId,facing:1|-1):void{this.reaction={move,facing,start:null};this.contactRebase=true;}
- private lastContact:[number,number]=[0,0];private lastContactFacing:1|-1=1;private contactRebase=false;private lastHolder:{clip:LoadedClip;index:number;dx:number;dy:number}|null=null;
+ private lastContact:[number,number]=[0,0];private lastContactFacing:1|-1=1;private contactRebase=false;private lastHolder:{clip:LoadedClip;index:number;owner:GrabContactContext}|null=null;
  private ledgeFacing:1|-1=1;private previousState="";private ledgeRelease:{clip:PilotClip;start:number}|null=null;
  private contactExit?:{kind:"ledge"|"footstool";x:number;y:number;state?:string;start?:number};
  private previousDoubleJump:boolean|undefined;
@@ -145,9 +145,16 @@ export class FullBodyPilot {
  private lastFrame=0;private counterStart:number|null=null;
  startCounterReaction():void{this.counterStart=this.lastFrame;}
  constructor(private assets:FullBodyPilotAssets,private readonly characterId:CharacterId='all-rounder',readonly artId?:DojoArtId){this.sprite.visible=false;this.effectSprite.visible=false;}
+ private throwRelease: { move: MoveId; start: number | null } | null = null;
+ startThrowRelease(move: MoveId): void {
+  if (this.artId) this.throwRelease = { move, start: null };
+ }
  setAssets(assets: FullBodyPilotAssets): void { this.assets = assets; }
  update(state:string,frame:number,move:MoveId|null,enabled:boolean,vy?:number,hasDoubleJump=true,isTumbling=false,rollDirection:1|-1=1,chargeFrames=0,grabVictim=false,victimFlip=1,facing:1|-1=1,grabOwner?:GrabContactContext,ledgeId?:string|null,prepared:PreparedContext={}):boolean {
   enabled=enabled||Boolean(prepared.result);
+  if (this.throwRelease && (!enabled || state !== 'ATTACK' || move !== this.throwRelease.move)) {
+   this.throwRelease = null;
+  }
   if(this.previousState==="LEDGE_HANG"&&state==="AIRBORNE")this.ledgeRelease={clip:(vy??0)<-1?"ledge_trump":"ledge_drop",start:frame};this.previousState=state;
   let selected=enabled?selectPilotFrame(state,(state==='ROLL'||state==='SPOT_DODGE')?dodgeAnimationFrame({...prepared,characterId:this.characterId,state},frame):frame,move,vy,hasDoubleJump,isTumbling,this.characterId,chargeFrames,grabVictim):null;
   if(enabled)selected=selectPreparedFrame(state,frame,vy,{...prepared,facing})??selected;
@@ -161,8 +168,15 @@ export class FullBodyPilot {
   if(this.counterStart!==null){const elapsed=frame-this.counterStart;if(enabled&&move==='DOWN_SPECIAL'&&(state==='ATTACK'||state==='AIR_ATTACK')&&elapsed>=0&&elapsed<12)selected={clip:'counter_success',index:Math.floor(elapsed/3)};else this.counterStart=null;}this.lastFrame=frame;
   let reactionFlip=1;
   if(grabVictim&&state==='GRAB_HOLDING')this.lastVictimFlip=victimFlip;
-  if(this.wasVictim&&!grabVictim&&state==='IDLE')this.releaseStart=frame;this.wasVictim=grabVictim&&state==='GRAB_HOLDING';
-  if(this.releaseStart!==null){const t=frame-this.releaseStart;if(enabled&&state==='IDLE'&&t>=0&&t<12)selected={clip:'grab_release',index:Math.floor(t/3)};else this.releaseStart=null;}
+  const releaseState=state==='IDLE'||state==='AIRBORNE';
+  const releaseCue=prepared.artCue==='grab_release'||prepared.artCue==='grab_escape';
+  if(releaseCue)this.releaseStart=null;
+  else if(this.wasVictim&&!grabVictim&&releaseState)this.releaseStart=frame;
+  this.wasVictim=grabVictim&&state==='GRAB_HOLDING';
+  const releaseAge=releaseCue?prepared.artCueFrame??0:this.releaseStart===null?null:frame-this.releaseStart;
+  const showingRelease=enabled&&releaseState&&releaseAge!==null&&releaseAge>=0&&releaseAge<12;
+  if(showingRelease)selected={clip:'grab_release',index:Math.floor(releaseAge/3)};
+  else this.releaseStart=null;
   if(this.reaction){const r=this.reaction,pummel=r.move==='PUMMEL';if(r.start===null)r.start=frame;const t=frame-r.start;const valid=pummel?state==='GRAB_HOLDING':state==='HITSTUN';if(enabled&&valid&&t>=0&&t<(pummel?8:18)){const direction=r.move==='FORWARD_THROW'?0:r.move==='BACK_THROW'?1:r.move==='UP_THROW'?2:3;selected=pummel?{clip:'pummel_victim',index:Math.min(3,Math.floor(t/2))}:{clip:'throw_victim',index:t<6?direction:r.move==='DOWN_THROW'&&t<12?4:5};reactionFlip=r.facing*facing;}else this.reaction=null;}
   this.effectSprite.visible=false;
   if(enabled&&selected&&(state==='ATTACK'||state==='AIR_ATTACK')&&move){
@@ -184,9 +198,9 @@ export class FullBodyPilot {
     const name=frame<5?'grabbed':'grabbed_hold_preview';
     clip=(art as Record<string,LoadedClip>)[name]??clip;
     selected={...selected,index:frame<5?1:0};
-   }else if(selected.clip==='grab_release'&&this.releaseStart!==null){
+   }else if(selected.clip==='grab_release'&&showingRelease){
     clip=(art as Record<string,LoadedClip>).grab_release_victim_preview??clip;
-    selected={...selected,index:frame-this.releaseStart<5?1:2};
+    selected={...selected,index:releaseAge<5?1:2};
    }else if(selected.clip==='pummel_victim'&&this.reaction){
     selected={...selected,index:frame-(this.reaction.start??frame)<4?1:2};
    }else if(selected.clip==='throw_victim'&&this.reaction){
@@ -203,6 +217,11 @@ export class FullBodyPilot {
       age<data.startupFrames+active?start+(age-data.startupFrames)*(end-start)/active:
       end+(age-data.startupFrames-active);
     let index=dojoFrame(clip,previewAge);
+    if (this.throwRelease) {
+     this.throwRelease.start ??= frame;
+     if (frame - this.throwRelease.start < 2) index = dojoFrame(clip, start);
+     else this.throwRelease = null;
+    }
     if(floorAttack&&age<data.startupFrames){
      const hold=clip.durations![0]!+clip.durations![1]!;
      index=age<2?this.dojoProneFrame:dojoFrame(clip,hold+(age-2)*(start-hold)/Math.max(1,data.startupFrames-2));
@@ -230,7 +249,11 @@ export class FullBodyPilot {
    }else if(selected.clip==='double_jump_transition'){
     selected={...selected,index:Math.min(clip.frames.length-1,selected.index)};
    }else{
-    const reference=this.assets.characters[this.artId==='moonshine'?'swift':'abe-lincoln']?.[selected.clip]?.frames.length??clip.frames.length;
+    // Match the canonical ledge timeline even when its reference fighter is off the lineup.
+    const ledgeFrames = selected.clip === 'ledge_climb' || selected.clip === 'ledge_roll' ||
+      selected.clip === 'ledge_attack' || selected.clip === 'ledge_jump' ? 6 :
+      selected.clip.startsWith('ledge_') ? 4 : undefined;
+    const reference = ledgeFrames ?? this.assets.characters[this.artId==='moonshine'?'swift':'abe-lincoln']?.[selected.clip]?.frames.length ?? clip.frames.length;
     selected={...selected,index:Math.round(selected.index*(clip.frames.length-1)/Math.max(1,reference-1))};
    }
   }
@@ -261,14 +284,38 @@ export class FullBodyPilot {
    if(owner&&holder){
     const hi=grabOwner.artId?(owner.clip==='grab_hold'?0:owner.index>=3?1:0):owner.index;
     const receiver=newcomerHeld?{...clip,mirrorSource:!clip.mirrorSource}:clip;
-    this.lastHolder={clip:holder,index:hi,dx:grabOwner.dx,dy:grabOwner.dy};
+    this.lastHolder={clip:holder,index:hi,owner:grabOwner};
     this.lastContactFacing=grabOwner.facing;
     this.contactRebase=false;
     this.lastContact=solveGrabContact(holder,hi,receiver,selected.index,grabOwner.dx,grabOwner.dy,owner.clip.endsWith('_throw'));
     this.sprite.position.x=this.lastContact[0]*grabOwner.facing*facing;
     this.sprite.position.y+=this.lastContact[1];
    }
-  }else if(this.reaction||this.releaseStart!==null){if(this.contactRebase&&this.lastHolder&&this.reaction&&!this.artId){const h=this.lastHolder;this.lastContact=solveGrabContact(h.clip,h.index,clip,selected.index,h.dx,h.dy,true);this.contactRebase=false;}const t=this.reaction?.start!==null&&this.reaction?.start!==undefined?frame-this.reaction.start:this.releaseStart!==null?frame-this.releaseStart:12;const weight=Math.max(0,1-t/12);this.sprite.position.x=this.lastContact[0]*this.lastContactFacing*facing*weight;this.sprite.position.y+=this.lastContact[1]*weight;}else {this.lastContact=[0,0];this.lastHolder=null;this.contactRebase=false;}
+  }else if(this.reaction||showingRelease){
+   if(this.contactRebase&&this.lastHolder&&this.reaction&&!this.artId){
+    const held=this.lastHolder;
+    const {owner}=held;
+    const contactMove=this.reaction.move;
+    // A release snapshot can arrive without the preceding windup frame.
+    const throwPose=owner.artId&&contactMove!=='PUMMEL'
+      ?selectPilotFrame('ATTACK',0,contactMove,0,true,false,owner.characterId):null;
+    const throwClip=throwPose&&owner.artId?this.assets.characters[owner.artId]?.[throwPose.clip]:undefined;
+    const releaseIndex=throwClip?.activeWindow?dojoFrame(throwClip,throwClip.activeWindow[0]):0;
+    const contact=throwClip?.frames[releaseIndex]?.sockets?.grabGrip
+      ?{clip:throwClip,index:releaseIndex}:held;
+    this.lastContact=solveGrabContact(contact.clip,contact.index,clip,selected.index,owner.dx,owner.dy,true);
+    this.contactRebase=false;
+   }
+   const start=this.reaction?.start;
+   const t=start==null?(showingRelease?releaseAge:12):frame-start;
+   const weight=Math.max(0,1-t/12);
+   this.sprite.position.x=this.lastContact[0]*this.lastContactFacing*facing*weight;
+   this.sprite.position.y+=this.lastContact[1]*weight;
+  }else {
+   this.lastContact=[0,0];
+   this.lastHolder=null;
+   this.contactRebase=false;
+  }
   let contactCorrection:{kind:'ledge'|'footstool';x:number;y:number}|undefined;
   if(selected.clip==='footstool_attacker'&&prepared.footstoolContact){
    const contact=prepared.footstoolContact,victim=this.assets.characters[contact.artId??contact.characterId]?.[contact.role==='ground'?'footstool_ground_victim':'footstool_air_victim'];

@@ -510,12 +510,17 @@ async function main() {
   const activeSparks: ImpactSpark[] = [];
 
   /** Process hit events: play SFX, flash defender, and spawn an impact spark. */
-  const processHitEvents = (events: HitEventData[]): void => {
+  const processHitEvents = (events: HitEventData[], players?: RenderState['players']): void => {
     for (const event of events) {
       sfxManager.playHit(event.knockbackMagnitude);
       if(event.moveId===MoveId.DOWN_SPECIAL)fighterRenderers.get(event.attackerId)?.startCounterReaction();
       const defenderRenderer = fighterRenderers.get(event.defenderId);
- if(event.moveId===MoveId.PUMMEL||[MoveId.FORWARD_THROW,MoveId.BACK_THROW,MoveId.UP_THROW,MoveId.DOWN_THROW].includes(event.moveId)){const attacker=fighterRenderers.get(event.attackerId);defenderRenderer?.startGrabReaction(event.moveId,attacker?.container.scale.x===-1?-1:1);}
+      if (event.moveId === MoveId.PUMMEL || [MoveId.FORWARD_THROW, MoveId.BACK_THROW, MoveId.UP_THROW, MoveId.DOWN_THROW].includes(event.moveId)) {
+        const attacker = fighterRenderers.get(event.attackerId);
+        const facing = players?.get(event.attackerId)?.facing ?? (attacker?.container.scale.x === -1 ? -1 : 1);
+        if (event.moveId !== MoveId.PUMMEL) attacker?.startThrowRelease(event.moveId);
+        defenderRenderer?.startGrabReaction(event.moveId, facing);
+      }
       if (defenderRenderer) {
         defenderRenderer.startHitFlash();
       }
@@ -1061,17 +1066,16 @@ async function main() {
     }
     localMatch.onSnapshot = (snapshot) => {
       const renderState = snapshotToRenderState(snapshot);
-      updateRenderers(renderState);practiceOverlay?.update(snapshot);
-      if(practice)uiManager.hideCombatHUD();else uiManager.updateHUD(renderState, null);
-
-      // Trigger camera shake and hit effects from hit events
+      // Select paired hit reactions before drawing this snapshot.
       if (snapshot.hitEvents && snapshot.hitEvents.length > 0) {
-        processHitEvents(snapshot.hitEvents);
+        processHitEvents(snapshot.hitEvents, renderState.players);
         for (const hitEvent of snapshot.hitEvents) {
           camera?.shake(hitEvent.knockbackMagnitude);
         }
       }
 
+      updateRenderers(renderState);practiceOverlay?.update(snapshot);
+      if(practice)uiManager.hideCombatHUD();else uiManager.updateHUD(renderState, null);
       updateCamera(renderState);
 
       if (snapshot.matchPhase === "result") {
@@ -1153,6 +1157,7 @@ async function main() {
               () => {
                 // Back restores the previous fighters without replaying setup.
                 showFighters(choices);
+                uiManager.focusMenuControl('[data-ready-slot="0"]');
               },
             );
           },
@@ -1160,6 +1165,7 @@ async function main() {
           () => {
             // Back from character select → return to setup
             enterLocalPlayFlow();
+            uiManager.focusMenuControl('#lps-start-btn');
           },
           gamepadSlotByIndex,
           previousChoices,
@@ -1174,6 +1180,7 @@ async function main() {
           gameClient.connect();
         }
         uiManager.showLobby();
+        uiManager.focusMenuControl('#local-play-btn');
         audioManager.playTrack("main-menu");
       },
     );
@@ -1231,17 +1238,22 @@ async function main() {
     clearLocalResult();
     reopenLocalFighters();
   };
-  const openSettings = (tab: SettingsTab, fromPause: boolean): void => {
-    const back = () => fromPause ? uiManager.showPauseOverlay(!isLocalMode) : uiManager.showLobby();
-    const route = { open: (next: SettingsTab) => openSettings(next, fromPause),
+  const openSettings = (tab: SettingsTab, fromPause: boolean, opener: string): void => {
+    const back = () => {
+      if (fromPause) uiManager.showPauseOverlay(!isLocalMode);
+      else uiManager.showLobby();
+      uiManager.focusMenuControl(opener);
+    };
+    const route = { open: (next: SettingsTab) => openSettings(next, fromPause, opener),
       prompt: uiManager.getPromptRenderer() };
     if (tab === 'controls') uiManager.showControls({ assignmentManager, preferenceStore: store }, fromPause, back, route);
     else if (tab === 'visual') uiManager.showVisualSettings(stageBackdrop, fromPause, back, route);
     else uiManager.showSoundSettings(fromPause, back, route);
+    uiManager.focusMenuControl('.settings-workspace h1');
   };
-  uiManager.onOpenVisualSettings = () => openSettings('visual', uiManager.getPhase()==='paused');
-  uiManager.onOpenControls = () => openSettings('controls', false);
-  uiManager.onOpenSound = () => openSettings('sound', false);
+  uiManager.onOpenVisualSettings = () => openSettings('visual', uiManager.getPhase()==='paused', '#visual-settings-btn');
+  uiManager.onOpenControls = () => openSettings('controls', false, '#controls-btn');
+  uiManager.onOpenSound = () => openSettings('sound', false, '#home-audio-btn');
   uiManager.onResume = () => {
     if (isLocalMode) {
       if (!localMatch?.paused) return;

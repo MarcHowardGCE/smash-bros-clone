@@ -154,3 +154,7 @@ On the deployed recovery patch, all three 8 Mbps Chromium checks passed. Live re
 ### Local production early-alert verification
 
 The client type check and production build passed. All three 8 Mbps production-browser trials showed the alert within 0.77 seconds of the simulated reset, held the countdown, and recovered the same lineup after retry. Four additional Chromium development checks passed at DPR 1, including the held-page regression, reconnect, and online selection. This patch still needs the hosted rerun. [Timing evidence](../MENU-POLISH-PLAN.md#early-artwork-failure-alert)
+
+### Hosted early-alert verification
+
+All three Render trials passed at 8 Mbps. The artwork alert appeared a median of 3.12 seconds after arena confirmation and 0.88 seconds after the reset. The countdown stayed blocked until the same-lineup retry fetched the atlas successfully. Both players reached live play in every trial. [Hosted timing and test conditions](../MENU-POLISH-PLAN.md#render-early-alert-signoff)

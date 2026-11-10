@@ -35,6 +35,7 @@ describe("interpolation receipt clock", () => {
   });
 });
 describe("online recovery and input cadence", () => {
+  const identity = { roomCode: "ABC123", playerId: "p1", rejoinToken: "a".repeat(64) };
   let client: GameClient;
   const onConnected = vi.fn(), onAssigned = vi.fn(), onPhase = vi.fn(), onRender = vi.fn();
   beforeEach(() => {
@@ -64,13 +65,23 @@ describe("online recovery and input cadence", () => {
     expect(packets[1]).not.toHaveProperty("faceAttackPressed");
   });
   it("restores identity and rendering without opening the lobby", () => {
-    sessionStorage.setItem("smash:rejoin", JSON.stringify({ roomCode: "ABC123", playerId: "p1" }));
-    handlers.connect!(); emit.mock.calls.find(c => c[0] === "room:rejoin")![2]({ ok: true, phase: "MATCH", paused: false });
+    sessionStorage.setItem("smash:rejoin", JSON.stringify(identity));
+    handlers.connect!();
+    const request = emit.mock.calls.find(c => c[0] === "room:rejoin")!;
+    expect(request[1]).toEqual(identity);
+    request[2]({ ok: true, phase: "MATCH", paused: false });
     expect(onAssigned).toHaveBeenCalledWith("p1", "ABC123"); expect(onConnected).not.toHaveBeenCalled();
     expect(onPhase).toHaveBeenCalledWith("match"); expect(requestAnimationFrame).toHaveBeenCalled();
   });
+  it("discards saved seats from before private reconnect credentials", () => {
+    sessionStorage.setItem("smash:rejoin", JSON.stringify({ roomCode: identity.roomCode, playerId: identity.playerId }));
+    handlers.connect!();
+    expect(emit).not.toHaveBeenCalledWith("room:rejoin", expect.anything(), expect.anything());
+    expect(sessionStorage.getItem("smash:rejoin")).toBeNull();
+    expect(onConnected).toHaveBeenCalledOnce();
+  });
   it("clears expired identity and returns to normal connection flow", () => {
-    sessionStorage.setItem("smash:rejoin", JSON.stringify({ roomCode: "ABC123", playerId: "p1" }));
+    sessionStorage.setItem("smash:rejoin", JSON.stringify(identity));
     handlers.connect!(); emit.mock.calls.find(c => c[0] === "room:rejoin")![2]({ ok: false });
     expect(sessionStorage.getItem("smash:rejoin")).toBeNull(); expect(onConnected).toHaveBeenCalledOnce();
   });

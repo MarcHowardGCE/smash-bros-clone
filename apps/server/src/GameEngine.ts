@@ -122,6 +122,22 @@ function isThrowMoveId(playerMoveId: PlayerState['currentMoveId']): playerMoveId
 	);
 }
 
+const GRAB_MIN_HOLD_TICKS = 19;
+const REGRAB_IMMUNITY_TICKS = 60;
+const GRAB_DIRECTION_MASK = INPUT_BITS.UP | INPUT_BITS.DOWN | INPUT_BITS.LEFT | INPUT_BITS.RIGHT;
+const GRAB_BUTTON_MASK = INPUT_BITS.JUMP | INPUT_BITS.SPECIAL | INPUT_BITS.SHIELD | INPUT_BITS.GRAB |
+	INPUT_BITS.TAUNT_UP | INPUT_BITS.TAUNT_SIDE | INPUT_BITS.TAUNT_DOWN;
+
+function grabStickDirection(input: InputEvent, previous: number): number {
+	const { x, y } = inputVector(input);
+	const peak = Math.max(Math.abs(x), Math.abs(y));
+	if (peak < 0.3) return 0;
+	if (peak < 0.7) return previous;
+	return Math.abs(x) >= Math.abs(y)
+		? (x < 0 ? INPUT_BITS.LEFT : INPUT_BITS.RIGHT)
+		: (y < 0 ? INPUT_BITS.UP : INPUT_BITS.DOWN);
+}
+
 /**
  * Creates a shallow clone of `player` with deep copies of the fields that are
  * mutated in place (`activeHitbox`, `hitPlayerIds`, `staleMoveQueue`).
@@ -255,6 +271,10 @@ export class GameEngine {
     private readonly matchPlayerCount:number;
 	private readonly hitEvents: HitEventData[] = [];
 	private readonly koEvents: KOEventData[] = [];
+	private readonly grabProtectedUntil = new Map<PlayerId, number>();
+	private readonly grabClocks = new Map<PlayerId, {
+		victimId: PlayerId; startTick: number; passiveTicks: number; remainingTenths: number; stickDirection: number;
+	}>();
 	private readonly fsmControllers = new Map<PlayerId, FSMController>();
 	private readonly techAttemptBuffered = new Map<PlayerId, boolean>();
 	private readonly consecutiveLedgeGrabs = new Map<string, number>();
@@ -416,6 +436,8 @@ export class GameEngine {
       ids.map((id,i) => [id,this.practicePlayer(fresh.state.players[id]!,i)]),
     ) };
     this.controllerFlick.clear();
+    this.grabClocks.clear();
+    this.grabProtectedUntil.clear();
     if (clearContacts) this.clearHitEvents();
     for(const id of ids){this.fsmControllers.set(id,new FSMController(this.state.players[id]!.state as PlayerStateEnum));this.techAttemptBuffered.set(id,false);}
     this.consecutiveLedgeGrabs.clear();
@@ -504,7 +526,7 @@ export class GameEngine {
 
 		// ─── HIT DETECTION PASS ────────────────────────────────────────────────────
 		this.applyHitDetection(players, inputs);
-		this.syncGrabState(players);
+		this.syncGrabState(players, inputs);
 		// ─── KO CHECK + BLAST ZONE DETECTION ───────────────────────────────────────
 		if(this.practice){
           let exited = false;
@@ -1198,7 +1220,9 @@ export class GameEngine {
 			previous.state === PlayerStateEnum.LEDGE_JUMP &&
 			player.state === PlayerStateEnum.AIRBORNE
 		) {
-			nextPlayer = startJump(nextPlayer, false);
+			// Use the ledge launch velocity without spending the fighter's aerial jump.
+			const { hasDoubleJump } = nextPlayer;
+			nextPlayer = { ...startJump({ ...nextPlayer, hasDoubleJump: true }, false), hasDoubleJump };
 			if (previous.ledgeId) {
 				this.releaseLedge(player.id, previous.ledgeId);
 			}
@@ -2007,6 +2031,9 @@ export class GameEngine {
 		if((player.shieldGrabStartup??0)>0)return {...player,activeHitbox:null};
         const moveId = (player.currentMoveId ?? this.selectMoveId(player, input)) as MoveId;
 		const move = getMoveDataForCharacter(player.characterId, moveId);
+		if ((moveId === MoveId.PUMMEL || isThrowMoveId(moveId)) && (!player.isGrabbing || !player.grabbedPlayerId)) {
+			return { ...player, activeHitbox: null };
+		}
 		const isSmashMove =
 			move.id === MoveId.FORWARD_SMASH ||
 			move.id === MoveId.UP_SMASH ||
@@ -2460,12 +2487,15 @@ export class GameEngine {
 				const playerAInput = inputs.get(playerA.id) ?? null;
 				const playerBInput = inputs.get(playerB.id) ?? null;
 
-				const playerACountered = this.tryApplyCounterHit(players, playerB, playerA, playerAInput);
+				// Catch hitboxes are handled by grab resolution alone, including when a grab whiffs.
+				const strikeA = playerA.activeHitbox && !getMoveDataForCharacter(playerA.characterId, playerA.currentMoveId ?? MoveId.JAB).isGrab;
+				const strikeB = playerB.activeHitbox && !getMoveDataForCharacter(playerB.characterId, playerB.currentMoveId ?? MoveId.JAB).isGrab;
+				const playerACountered = strikeB && this.tryApplyCounterHit(players, playerB, playerA, playerAInput);
 				if (playerACountered) {
 					continue;
 				}
 
-				const playerBCountered = this.tryApplyCounterHit(players, playerA, playerB, playerBInput);
+				const playerBCountered = strikeA && this.tryApplyCounterHit(players, playerA, playerB, playerBInput);
 				if (playerBCountered) {
 					continue;
 				}
@@ -2538,13 +2568,13 @@ export class GameEngine {
 				let hitOnA = NO_HIT;
 				let hitOnB = NO_HIT;
 				const playerAAlreadyHitByB =
-					!playerA.id || !canHitContact(playerB,playerA.id);
+					!strikeB || !playerA.id || !canHitContact(playerB,playerA.id);
 				const playerBAlreadyHitByA =
-					!playerB.id || !canHitContact(playerA,playerB.id);
+					!strikeA || !playerB.id || !canHitContact(playerA,playerB.id);
 
 				// ─── HIT-TRADE RESOLUTION ────────────────────────────────────────────────────
 			// Resolve both receiving sides once; never revive a priority-cancelled hit.
-					if (playerA.activeHitbox && playerB.activeHitbox) {
+					if (strikeA && strikeB) {
 						const [tradeA, tradeB] = resolveHitTrade(
 							playerA,
 							playerB,
@@ -2708,6 +2738,14 @@ export class GameEngine {
 		const trackedHitIds = new Set(attacker.hitPlayerIds);
 		trackedHitIds.add(victim.id);
 
+		const passiveTicks = Math.floor(90 + 1.7 * victim.percent);
+		this.grabClocks.set(attacker.id, {
+			victimId: victim.id,
+			startTick: this.tick,
+			passiveTicks,
+			remainingTenths: passiveTicks * 10,
+			stickDirection: victimInput ? grabStickDirection(victimInput, 0) : 0,
+		});
 		players[attacker.id] = {
 			...attacker,
 			state: PlayerStateEnum.GRAB_HOLDING,
@@ -2814,6 +2852,8 @@ export class GameEngine {
 			{...hit, hitlagFrames:attacker.activeHitbox.hitlagFrames},
 			attacker.facing,
 		);
+		// Later pairs in this same hit pass must see the protection immediately.
+		this.grabProtectedUntil.set(victim.id, this.tick + REGRAB_IMMUNITY_TICKS);
 
 		players[attacker.id] = {
 			...attacker,
@@ -2925,6 +2965,7 @@ export class GameEngine {
 	private isGrabVictimEligible(victim: PlayerState): boolean {
 		return (
 			this.canInteract(victim) && !isDamageImmune(victim) &&
+			this.tick >= (this.grabProtectedUntil.get(victim.id) ?? 0) &&
 			victim.state !== PlayerStateEnum.GRAB_HOLDING &&
 			!victim.isGrabbing
 		);
@@ -2939,7 +2980,10 @@ export class GameEngine {
 	}
 
 	/** Keeps a victim attached through the hold and windup, then clears interrupted pairs. */
-	private syncGrabState(players: Record<PlayerId, PlayerState>): void {
+	private syncGrabState(
+		players: Record<PlayerId, PlayerState>,
+		inputs: ReadonlyMap<PlayerId, InputEvent | null>,
+	): void {
 		const heldVictims = new Set<PlayerId>();
 		const release = (player: PlayerState): PlayerState => ({
 			...player,
@@ -2962,6 +3006,33 @@ export class GameEngine {
 				continue;
 			}
 
+			const clock = this.grabClocks.get(attacker.id);
+			if (clock?.victimId === victim.id && clock.startTick < this.tick) {
+				const input = inputs.get(victim.id);
+				let credit = 0;
+				if (input) {
+					const pressed = input.pressed;
+					const faceAttack = (pressed & INPUT_BITS.ATTACK) !== 0 && input.faceAttackPressed !== false;
+					const hasAnalog = input.stickX !== undefined && input.stickY !== undefined;
+					const direction = grabStickDirection(input, clock.stickDirection);
+					const directionalEdge = hasAnalog
+						? direction !== 0 && direction !== clock.stickDirection
+						: (pressed & GRAB_DIRECTION_MASK) !== 0;
+					clock.stickDirection = direction;
+					// The server can merge several input edges into a single simulation tick.
+					credit = faceAttack || (pressed & GRAB_BUTTON_MASK) !== 0 ? 144 : directionalEdge ? 80 : 0;
+				}
+				clock.remainingTenths -= 10 + credit;
+				if (clock.remainingTenths <= 0 && this.tick - clock.startTick >= GRAB_MIN_HOLD_TICKS) {
+					players[attacker.id] = { ...release(attacker), activeHitbox: null };
+					const escapedEarly = this.tick - clock.startTick < clock.passiveTicks;
+					players[victim.id] = {
+						...release(victim), artCue: escapedEarly ? 'grab_escape' : 'grab_release', artCueFrame: 0,
+					};
+					continue;
+				}
+			}
+
 			heldVictims.add(victim.id);
 			players[victim.id] = {
 				...victim,
@@ -2970,6 +3041,13 @@ export class GameEngine {
 				vy: 0,
 				isFastFalling: false,
 			};
+		}
+
+		for (const [holderId, clock] of this.grabClocks) {
+			if (players[holderId]?.grabbedPlayerId !== clock.victimId || !heldVictims.has(clock.victimId)) {
+				this.grabProtectedUntil.set(clock.victimId, this.tick + REGRAB_IMMUNITY_TICKS);
+				this.grabClocks.delete(holderId);
+			}
 		}
 
 		for (const victim of Object.values(players)) {
@@ -3387,6 +3465,7 @@ export class GameEngine {
 			this.ledgeApproaches.delete(playerId);
 			this.ledgeCatches.delete(playerId);
 			this.ledgeTrumps.delete(playerId);
+			this.grabProtectedUntil.delete(playerId);
 			const koVisual: NonNullable<PlayerState['koVisual']> = boundary === 'top'
 				? { id: this.tick, kind: this.tick % 2 ? 'screen' : 'star', x: player.x, y: player.y,
 					facing: player.facing, exitVelocity: this.getKOExitVelocity(player) }

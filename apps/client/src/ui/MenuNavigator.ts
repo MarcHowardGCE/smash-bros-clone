@@ -98,13 +98,13 @@ export class MenuNavigator {
         case 's':
         case 'S':
           e.preventDefault();
-          this.moveSelection(1);
+          this.moveSelection(1, true);
           break;
         case 'ArrowUp':
         case 'w':
         case 'W':
           e.preventDefault();
-          this.moveSelection(-1);
+          this.moveSelection(-1, true);
           break;
         case 'ArrowLeft': {
           const btn = this.buttons[this.selectedIndex];
@@ -201,11 +201,16 @@ export class MenuNavigator {
     this.lastBitsPerGamepad.clear();
   }
 
-  private moveSelection(delta: number): void {
-    if (this.buttons.length === 0) return;
-    this.selectedIndex =
-      (this.selectedIndex + delta + this.buttons.length) % this.buttons.length;
-    this.updateVisuals();
+  private moveSelection(delta: number, moveFocus = false): void {
+    const count = this.buttons.length;
+    for (let offset = 1; offset <= count; offset++) {
+      const index = (this.selectedIndex + delta * offset + count) % count;
+      const element = this.buttons[index]!.element;
+      if (element.matches(':disabled') || element.closest('[hidden]')) continue;
+      if (moveFocus) element.focus({ preventScroll: true });
+      if (this.selectedIndex !== index) this.selectIndex(index);
+      return;
+    }
   }
 
   private activateSelected(): void {

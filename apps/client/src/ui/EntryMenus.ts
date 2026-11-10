@@ -6,7 +6,7 @@ export interface LobbySeat {
   ready?: boolean;
 }
 
-export function homeMenu(): string {
+export function homeMenu(confirmPrompt: string): string {
   return `<section class="menu-workspace home-menu" aria-label="Main menu">
     <div class="home-brand"><span class="menu-kicker">The arcade is open</span>
       <img src="${import.meta.env.BASE_URL}branding/everybody-throws-hands-arcade.png" width="1536" height="1024" alt="Everybody Throws Hands">
@@ -20,7 +20,7 @@ export function homeMenu(): string {
         <button class="menu-quiet" id="visual-settings-btn">Accessibility</button>
         <button class="menu-quiet" id="home-audio-btn">Sound</button>
       </div>
-
+      <p class="menu-hint">↑↓ Navigate · ←→ Adjust · Enter / ${confirmPrompt} Select</p>
     </div>
   </section>`;
 }

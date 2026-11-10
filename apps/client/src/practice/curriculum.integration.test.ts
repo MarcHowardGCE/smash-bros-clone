@@ -28,6 +28,11 @@ for(const characterId of['all-rounder','abe-lincoln','swift','moonshine','hulk-h
    }
    case'neutral-air-dodge':case'directional-air-dodge':
     step(B.JUMP,0,6);step(B.SHIELD|(lesson.id==='directional-air-dodge'?B.RIGHT:0));break;
+   case'grab-escape':{
+    step(0,B.GRAB);step(0,0,14);
+    for(let i=0;i<6;i++){step(B.JUMP);step();}
+    step(0,0,16);break;
+   }
    case'pummel':case'back-throw':case'up-throw':case'down-throw':{
     step(B.GRAB);step(0,0,20);
     const directions:Record<string,number>={pummel:B.ATTACK,'back-throw':B.LEFT,'up-throw':B.UP,'down-throw':B.DOWN};

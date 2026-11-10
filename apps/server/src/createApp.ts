@@ -330,15 +330,20 @@ export function createApp(): {
 
   socket.on("room:rejoin", (data: unknown, callback?: (response: unknown) => void) => {
     if (typeof callback !== "function") return;
-    if (!data || typeof data !== "object") {
-      callback({ ok: false, error: "Missing roomCode or playerId" }); return;
+    if (roomManager.getRoomBySocketId(socket.id)) {
+      callback({ ok: false, error: "Socket is already in a room" });
+      return;
     }
-    const { roomCode, playerId } = data as { roomCode?: unknown; playerId?: unknown };
-    if (typeof roomCode !== "string" || typeof playerId !== "string") {
-      callback({ ok: false, error: "Missing roomCode or playerId" }); return;
+    const { roomCode, playerId, rejoinToken } = (data ?? {}) as {
+      roomCode?: unknown; playerId?: unknown; rejoinToken?: unknown;
+    };
+    if (typeof roomCode !== "string" || typeof playerId !== "string"
+        || typeof rejoinToken !== "string" || !/^[a-f0-9]{64}$/.test(rejoinToken)) {
+      callback({ ok: false, error: "Invalid rejoin credential" });
+      return;
     }
     const code = roomCode.toUpperCase();
-    const result = roomManager.rejoinRoom(code, playerId, socket.id);
+    const result = roomManager.rejoinRoom(code, playerId, rejoinToken, socket.id);
     if ("error" in result) { callback({ ok: false, error: result.error }); return; }
     clearTimeout(disconnectTimers.get(playerId));
     disconnectTimers.delete(playerId);

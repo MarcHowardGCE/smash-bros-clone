@@ -44,3 +44,17 @@ it('reports the actual blast-zone exit once and resets both fighters at their pr
  expect(result).toMatchObject({matchPhase:'match',winnerId:null});
 });
 
+
+it('uses low impact art for a real non-trip down tilt and heavy art for a smash at fixed percent', () => {
+ for (const [move, startup, percent, reaction] of [
+  [M.DOWN_TILT, 5, 50, 'low'], [M.FORWARD_SMASH, 15, 0, 'heavy'],
+ ] as const) {
+  const e = make();
+  e.setPracticePercent('b', percent);
+  const s = (e as any).state;
+  Object.assign(s.players.a, { state: 'ATTACK', stateFrame: startup - 1, currentMoveId: move });
+  const hit = e.tickGame(new Map()).players.b!;
+  expect(hit).toMatchObject({ state: 'HITSTUN', hitReaction: reaction, percent });
+  expect(e.getSnapshot(0, {}).hitEvents[0]?.damage).toBe(0);
+ }
+});

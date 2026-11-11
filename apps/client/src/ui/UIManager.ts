@@ -10,7 +10,7 @@ import { renderDojoPause } from './DojoPause';
 import { homeMenu, onlineEntry, roomLobby, roomSeats, type LobbySeat } from './EntryMenus';
 import { FIGHTER_PRESENTATION, escapeHtml } from './selectionContent';
 import { STAGES } from '../stages/stageConfig';
-import { matchIntro, renderWorldPreview, toggleWorldStory, type MatchIntro } from './WorldPreview';
+import { matchIntro, renderWorldPreview, type MatchIntro } from './WorldPreview';
 import { ULTIMATE_MENU, getControllerProfile } from '../input/controllerProfiles';
 import { controllerPrompt, refreshControllerPrompts, type PromptAction } from './controllerPrompts';
 /**
@@ -1293,7 +1293,7 @@ export class UIManager {
 
   showNetworkStageWaiting(stage: StageConfig, onChangeFighter: () => void, preparationStatus?: string): void {
     const stageIndex = STAGES.findIndex(world => world.id === stage.id);
-    const stages = stageIndex < 0 ? [stage] : STAGES;
+    const stages = stageIndex < 0 ? [stage] : STAGES.map(world=>world.id===stage.id?stage:world);
     let panel = this.overlay.querySelector<HTMLElement>('#guest-world-preview');
     if (!panel) {
       this.stopMenuNav();
@@ -1310,27 +1310,16 @@ export class UIManager {
       panel = this.overlay.querySelector('#guest-world-preview')!;
       this.menuNav = new MenuNavigator(this._gamepadPoller);
       this.menuNav.start(onChangeFighter);
-      const change = this.overlay.querySelector('#online-change-fighter')!;
+      const change = this.overlay.querySelector<HTMLButtonElement>('#online-change-fighter')!;
       change.addEventListener('click', onChangeFighter);
       change.addEventListener('focus', () => this.menuNav?.selectIndex(0));
+      this.menuNav.setButtons([{ id: change.id, element: change, onActivate: () => change.click() }]);
     }
     this.overlay.querySelector('#guest-world-kicker')!.textContent = preparationStatus ? 'Online / Match setup' : 'Online / Guest preview';
     this.overlay.querySelector('#guest-world-live')!.textContent = preparationStatus ? '● Checking artwork' : '● Live preview';
     this.overlay.querySelector('#guest-world-title')!.textContent = preparationStatus ? 'Preparing match' : 'Host is choosing';
     this.overlay.querySelector('#guest-world-status')!.textContent = preparationStatus ?? 'The host chooses the arena for everyone.';
-    if (panel.dataset.worldPreview === stage.id) return;
-    const storyFocused = panel.contains(document.activeElement);
-    const storyOpen = panel.querySelector('#stage-story-toggle')?.getAttribute('aria-expanded') === 'true';
-    renderWorldPreview(panel, stages, Math.max(0, stageIndex), this.prompt, false);
-    if (storyOpen) toggleWorldStory(panel);
-    const change = this.overlay.querySelector<HTMLButtonElement>('#online-change-fighter')!;
-    const story = panel.querySelector<HTMLButtonElement>('#stage-story-toggle');
-    this.menuNav?.setButtons([
-      { id: change.id, element: change, onActivate: () => change.click() },
-      ...(story ? [{ id: story.id, element: story, onActivate: () => story.click() }] : []),
-    ]);
-    story?.addEventListener('focus', () => this.menuNav?.selectIndex(1));
-    if (storyFocused) story?.focus();
+    renderWorldPreview(panel, stages, Math.max(0, stageIndex));
   }
   updateNetworkCharacterSelect(playerId: PlayerId, characterId: string, confirmed: boolean): void {
     // Restore the authoritative choice without sending another selection request.

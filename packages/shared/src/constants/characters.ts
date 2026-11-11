@@ -7,7 +7,7 @@
  */
 
 import { PHYSICS } from './physics.js';
-import type { CharacterId, CharacterStats, MatchCharacterId } from '../types/Character.js';
+import type { CharacterId, CharacterStats, MatchCharacterId, Pack03PilotId } from '../types/Character.js';
 
 /**
  * All-Rounder character stats — sourced directly from PHYSICS constants.
@@ -72,12 +72,38 @@ const HOAGIE_STATS: CharacterStats = {
   gravity: .665, fallSpeed: 18.5, fastFallSpeed: 29.6,
 };
 
+export const PACK_03_PILOT_FIGHTERS = [
+  { id: 'mr-wrong', name: 'Mr. Wrong' },
+  { id: 'loopy', name: 'Loopy' },
+  { id: 'mrs-tasselbottom', name: 'Mrs. Tasselbottom' },
+] as const satisfies readonly { id: Pack03PilotId; name: string }[];
+
+export function isPack03PilotId(value: unknown): value is Pack03PilotId {
+  return PACK_03_PILOT_FIGHTERS.some(fighter => fighter.id === value);
+}
+
 export const CHARACTER_REGISTRY: Record<CharacterId, CharacterStats> = {
   'all-rounder': ALL_ROUNDER_STATS,
   'abe-lincoln': ABE_LINCOLN_STATS,
   'swift': SWIFT_STATS,
   'moonshine': MOONSHINE_STATS,
   'hulk-hoagie': HOAGIE_STATS,
+  'mr-wrong': {
+    ...ALL_ROUNDER_STATS,
+    fighterWeight: 93, walkSpeed: 3.6, runSpeed: 6.75, airSpeed: 5.1, airAcceleration: 0.14,
+  },
+  loopy: {
+    ...ALL_ROUNDER_STATS,
+    fighterWeight: 82, walkSpeed: 3.75, runSpeed: 7.15,
+    jumpVelocity: -17, shortHopVelocity: -10.5, doubleJumpVelocity: -14.6,
+    airSpeed: 5.25, airAcceleration: 0.15, airBrake: 0.055, gravity: 0.7, fallSpeed: 19, fastFallSpeed: 30.4,
+  },
+  'mrs-tasselbottom': {
+    ...ALL_ROUNDER_STATS,
+    fighterWeight: 128, hurtboxRadius: 34, walkSpeed: 2.9, runSpeed: 5.25,
+    jumpVelocity: -12.6, shortHopVelocity: -8.2, doubleJumpVelocity: -11.5,
+    airSpeed: 3.9, airAcceleration: 0.095, airBrake: 0.065, gravity: 0.74, fallSpeed: 19.5, fastFallSpeed: 31.2,
+  },
 };
 
 /**

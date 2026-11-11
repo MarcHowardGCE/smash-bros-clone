@@ -9,6 +9,10 @@ export const SCENE_PROFILES:Record<string,{theme:string;haze:string;farSeconds:n
  stage4:{theme:'cosmic',haze:'222,208,244',farSeconds:190,nearSeconds:145},
  stage5:{theme:'banquet',haze:'250,231,197',farSeconds:155,nearSeconds:115},
  stage6:{theme:'library',haze:'241,220,176',farSeconds:180,nearSeconds:135},
+ stage7:{theme:'clouds',haze:'226,232,255',farSeconds:175,nearSeconds:130},
+ stage8:{theme:'cosmic',haze:'249,225,183',farSeconds:190,nearSeconds:145},
+ stage10:{theme:'cosmic',haze:'244,224,187',farSeconds:190,nearSeconds:145},
+ stage9:{theme:'library',haze:'243,220,235',farSeconds:185,nearSeconds:140},
 };
 function normalize(raw:Partial<VisualPreferences>):VisualPreferences {
  const bounded=(value:unknown,fallback:number)=>typeof value==='number'&&Number.isFinite(value)?Math.max(0,Math.min(100,Math.round(value))):fallback;

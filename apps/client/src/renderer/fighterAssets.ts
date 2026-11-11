@@ -1,4 +1,4 @@
-import type { MatchCharacterId } from '@smash/shared';
+import { isCharacterId, type MatchCharacterId } from '@smash/shared';
 import { Assets, Texture } from 'pixi.js';
 import type { AssetInitOptions, Spritesheet } from 'pixi.js';
 import type { FighterPart } from './parts/IPartRenderer.js';
@@ -216,7 +216,7 @@ function createSheetScopedTextureProvider(sheets: Record<MatchCharacterId, Sprit
   return {
     getTexture(characterId, part: FighterPart) {
       const frameName = FRAME_NAME_BY_PART[part];
-      const artId = characterId === 'moonshine' ? 'swift' : characterId === 'hulk-hoagie' ? 'abe-lincoln' : characterId;
+      const artId = characterId === 'moonshine' ? 'swift' : characterId === 'hulk-hoagie' ? 'abe-lincoln' : isCharacterId(characterId) ? characterId : 'all-rounder';
       const texture = sheets[artId].textures[frameName];
       return texture ?? Texture.EMPTY;
     },

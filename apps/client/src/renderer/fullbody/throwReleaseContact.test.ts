@@ -1,3 +1,6 @@
+import { readFileSync } from 'node:fs';
+import { dirname, resolve } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { describe, expect, it } from 'vitest';
 import { Texture } from 'pixi.js';
 import { getCharacterStats, MoveId } from '@smash/shared';
@@ -105,4 +108,47 @@ describe('throw release contact', () => {
     expect(pilot.sprite.label).toBe('throw_victim');
     expect([pilot.sprite.position.x, pilot.sprite.position.y]).toEqual([-48, -30]);
   });
+});
+
+it('aligns Pack 03 packed throw releases across all ordered pairings and facings', () => {
+  const directory = dirname(fileURLToPath(import.meta.url));
+  const manifest = JSON.parse(readFileSync(resolve(directory, '../../../public/fighter-art-pack-03-v1/manifest.json'), 'utf8'));
+  const fighters = ['mr-wrong', 'loopy', 'mrs-tasselbottom'] as const;
+  const moves = [
+    [MoveId.FORWARD_THROW, 'forward_throw', 'throw_victim'],
+    [MoveId.BACK_THROW, 'back_throw', 'back_throw_victim_preview'],
+    [MoveId.UP_THROW, 'up_throw', 'up_throw_victim_preview'],
+    [MoveId.DOWN_THROW, 'down_throw', 'down_throw_victim_preview'],
+  ] as const;
+  const characters = Object.fromEntries(fighters.map(id => [id,
+    Object.fromEntries(Object.entries(manifest.characters[id].clips).map(([name, value]) => {
+      const clip = value as { frames: { root: number[]; sockets?: Record<string, number[]> }[] };
+      return [name, { ...clip, frames: clip.frames.map(frame => ({
+        ...frame, texture: Texture.EMPTY, offsetY: getCharacterStats(id).hurtboxRadius,
+      })) }];
+    })),
+  ]));
+  for (const ownerId of fighters) for (const victimId of fighters) {
+    for (const [move, attackerClip, victimClip] of moves) for (const facing of [1, -1] as const) {
+      const attacker = new FullBodyPilot({ characters }, ownerId, ownerId);
+      const victim = new FullBodyPilot({ characters }, victimId, victimId);
+      const age = getMoveDataForCharacter(ownerId, move).startupFrames + 1;
+      const dx = 40;
+      const dy = getCharacterStats(ownerId).hurtboxRadius - getCharacterStats(victimId).hurtboxRadius;
+      attacker.startThrowRelease(move);
+      victim.startGrabReaction(move, facing, 'thrower');
+      attacker.update('ATTACK', age, move, true, 0, true, false, 1, 0, false, 1, facing);
+      victim.update('HITSTUN', 0, null, true, 0, true, false, 1, 0, false, 1, facing, {
+        artId: ownerId, characterId: ownerId, state: 'ATTACK', frame: age, move, dx, dy, facing,
+      });
+      expect(attacker.sprite.label).toBe(attackerClip);
+      expect(victim.sprite.label).toBe('throw_victim');
+      const hand = characters[ownerId]![attackerClip]!.frames[2]!.sockets!.grabGrip!;
+      const torso = characters[victimId]![victimClip]!.frames[1]!.sockets!.gripTop!;
+      expect(dx * facing + facing * (victim.sprite.x + (torso[0]! - victim.sprite.pivot.x) * victim.sprite.scale.x))
+        .toBeCloseTo(facing * (attacker.sprite.x + (hand[0]! - attacker.sprite.pivot.x) * attacker.sprite.scale.x));
+      expect(dy + victim.sprite.y + (torso[1]! - victim.sprite.pivot.y) * victim.sprite.scale.y)
+        .toBeCloseTo(attacker.sprite.y + (hand[1]! - attacker.sprite.pivot.y) * attacker.sprite.scale.y);
+    }
+  }
 });

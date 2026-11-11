@@ -9,6 +9,10 @@ export const STAGE_LAYOUTS:Record<string,StageLayout>={
  stage3:arena('stage3',140,510,1000,[[350,340,190],[740,390,190]]),
  stage4:arena('stage4',240,520,800,[[285,355,160],[560,260,160],[835,355,160]]),
  stage5:arena('stage5',170,510,940,[[300,380,240],[740,380,240]]),
- stage6:arena('stage6',240,500,800,[[310,365,170],[550,275,180],[800,365,170]])
+ stage6:arena('stage6',240,500,800,[[310,365,170],[550,275,180],[800,365,170]]),
+ stage7:arena('stage7',245,516,790,[[310,365,165],[552,258,176],[805,365,165]]),
+ stage8:arena('stage8',175,510,930,[[405,377,160],[715,377,160]]),
+ stage9:arena('stage9',200,518,880,[[265,390,150],[465,283,140],[675,283,140],[865,390,150]]),
+ stage10:arena('stage10',230,510,820,[[300,365,170],[555,275,170],[810,365,170]])
 };
 export function getStageLayout(id:string='stage1'):StageLayout{return STAGE_LAYOUTS[id]??STAGE_LAYOUTS.stage1!;}

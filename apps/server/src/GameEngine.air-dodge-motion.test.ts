@@ -84,3 +84,17 @@ it.each([[500, 0], [536, 2]])('keeps the fatigue clocks running through ledge ap
  expect(tick(e)).toMatchObject({dodgeRecoveryTicks:29-approachTicks,dodgeFatigue:3});
  expect(state(e).players.a.dodgeRefreshTicks).toBeUndefined();
 });
+it.each([1, -1] as const)('keeps facing %i through backward air dodge and touchdown', facing => {
+ const direction = facing === 1 ? B.LEFT : B.RIGHT;
+ const e = make('all-rounder', { facing, y: 450, vy: 2 });
+ const held = B.SHIELD | direction | B.DOWN;
+ const entry = tick(e, inp(B.SHIELD, held));
+ expect(entry).toMatchObject({ state: 'AIR_DODGE', facing, airDodgeDirection: { x: -facing, y: 1 } });
+ let p = entry;
+ for (let n = 0; n < 24 && p.state === 'AIR_DODGE'; n++) {
+  p = tick(e, inp(0, held));
+  expect(p.facing).toBe(facing);
+ }
+ expect(p.state).toBe('LANDING_LAG');
+ expect(Math.sign(p.x - entry.x)).toBe(-facing);
+});

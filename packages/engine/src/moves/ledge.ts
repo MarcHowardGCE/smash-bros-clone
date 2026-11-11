@@ -10,7 +10,8 @@ import type { MoveData, HitboxData } from '@smash/shared';
 import { MoveId } from '@smash/shared';
 
 const ledgeAttackHitbox: HitboxData = {
-  offsetX: 50, offsetY: 10, radius: 24,
+  // The ledge state holds the fighter center 10 units below the lip.
+  offsetX: 50, offsetY: -100, radius: 24,
   damage: 6, baseKnockback: 3, knockbackGrowth: 50, knockbackAngle: 20,
   hitlagFrames: 4, hitstunFrames: 14, priority: 1,
 };

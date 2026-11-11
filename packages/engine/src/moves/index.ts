@@ -161,6 +161,27 @@ const HOAGIE_BACK_THROW: MoveData = {
 };
 
 
+const MR_WRONG_FORWARD_TILT: MoveData = {
+  ...MOVE_FORWARD_TILT,
+  startupFrames: 9,
+  recoveryFrames: 21,
+  hitboxPerActiveFrame: MOVE_FORWARD_TILT.hitboxPerActiveFrame.map(hit => ({
+    ...hit, offsetX: 91, offsetY: 4, radius: 21,
+  })),
+};
+const LOOPY_DASH_ATTACK: MoveData = {
+  ...MOVE_DASH_ATTACK,
+  hitboxPerActiveFrame: MOVE_DASH_ATTACK.hitboxPerActiveFrame.map(hit => ({
+    ...hit, damage: 6, knockbackGrowth: 58,
+  })),
+};
+const TASSELBOTTOM_DOWN_THROW: MoveData = {
+  ...MOVE_DOWN_THROW,
+  hitboxPerActiveFrame: MOVE_DOWN_THROW.hitboxPerActiveFrame.map(hit => ({
+    ...hit, damage: 9, baseKnockback: 6, knockbackGrowth: 52,
+  })),
+};
+
 /**
  * Get character-aware move data. Checks character-specific overrides first,
  * then falls back to shared MOVE_REGISTRY.
@@ -170,6 +191,9 @@ const HOAGIE_BACK_THROW: MoveData = {
  * @returns MoveData with character-specific hitbox stats and default frame timing
  */
 export function getMoveDataForCharacter(characterId: CharacterId | undefined, id: MoveId): MoveData {
+  if (characterId === 'mr-wrong' && id === MoveId.FORWARD_TILT) return MR_WRONG_FORWARD_TILT;
+  if (characterId === 'loopy' && id === MoveId.DASH_ATTACK) return LOOPY_DASH_ATTACK;
+  if (characterId === 'mrs-tasselbottom' && id === MoveId.DOWN_THROW) return TASSELBOTTOM_DOWN_THROW;
   if (characterId === 'moonshine') {
     if (id === MoveId.DASH_ATTACK) return MOONSHINE_DASH_ATTACK;
     if (id === MoveId.FORWARD_AIR) return MOONSHINE_FORWARD_AIR;

@@ -15,7 +15,7 @@ import { createServer } from "node:http";
 import { fileURLToPath } from "node:url";
 import { decode } from "@msgpack/msgpack";
 import type { CharacterId, InputEvent, PlayerId } from "@smash/shared";
-import { isCharacterId } from "@smash/shared";
+import { isCharacterId, isPack03PilotId } from "@smash/shared";
 import { Server } from "socket.io";
 import { MatchSession } from "./MatchSession.js";
 import { RoomManager } from "./RoomManager.js";
@@ -66,6 +66,18 @@ export function createApp(): {
 
 	if (process.env.NODE_ENV === "production") {
 		const clientDistPath = fileURLToPath(new URL("../../client/dist", import.meta.url));
+		app.get(/^\/fighter-art-(?:pilot-v1\/production|newcomers-v1\/dojo|pack-03-v1\/production)\/manifest\.json$/, (req, res, next) => {
+			res.vary("Accept-Encoding");
+			if (!req.acceptsEncodings("br")) return next();
+			res.type("application/json");
+			res.set("Content-Encoding", "br");
+			res.sendFile(req.path.slice(1) + ".br", { root: clientDistPath }, error => {
+				if (!error) return;
+				if (res.headersSent) return next(error);
+				res.removeHeader("Content-Encoding");
+				next();
+			});
+		});
 		app.use(express.static(clientDistPath));
 		app.use((_req, res) => {
 			res.sendFile("index.html", { root: clientDistPath });
@@ -162,7 +174,7 @@ export function createApp(): {
 				const roomInfo = roomManager.getRoomBySocketId(socket.id);
 				if (!roomInfo) return;
 
-				if (!isCharacterId(characterId) && characterId !== 'moonshine' && characterId !== 'hulk-hoagie') {
+				if (!isCharacterId(characterId) && !isPack03PilotId(characterId) && characterId !== 'moonshine' && characterId !== 'hulk-hoagie') {
 					callback?.({ error: "invalid characterId" });
 					return;
 				}
@@ -243,9 +255,9 @@ export function createApp(): {
       if (typeof ack === 'function') ack(result);
       if ("error" in result) return;
       if (!result.allPrepared) { broadcastSelection(roomInfo.room.code); return; }
-      const { code, stageId } = roomInfo.room;
+      const { code, stageId, stageBackgroundVariant } = roomInfo.room;
       console.log(`[room] arena prepared by all clients in ${code}, starting countdown`);
-      io.to(code).emit("game:countdown", { seconds: 3, stageId });
+      io.to(code).emit("game:countdown", { seconds: 3, stageId, stageBackgroundVariant });
 
       const timer = setTimeout(() => {
         countdownTimers.delete(code);
@@ -253,7 +265,7 @@ export function createApp(): {
         roomManager.startMatch(code);
         const playerIds = roomManager.getPlayerIds(code);
         const characterSelections = roomManager.getCharacterSelections(code);
-        io.to(code).emit("game:start", { playerIds, stageId });
+        io.to(code).emit("game:start", { playerIds, stageId, stageBackgroundVariant });
 
         const session = new MatchSession({
           stageId,
@@ -350,8 +362,8 @@ export function createApp(): {
     socket.join(code);
     const room = roomManager.getRoom(code)!;
     const session = matchSessions.get(code);
-    callback({ ok: true, slotIndex: result.slotIndex, phase: room.phase, stageId:room.stageId, paused: session?.isPaused ?? false });
-    socket.emit("room:stage",{stageId:room.stageId});
+    callback({ ok: true, slotIndex: result.slotIndex, phase: room.phase, stageId:room.stageId, stageBackgroundVariant:room.stageBackgroundVariant??0, paused: session?.isPaused ?? false });
+    socket.emit("room:stage",{stageId:room.stageId,stageBackgroundVariant:room.stageBackgroundVariant??0});
     socket.emit("room:selectionState",roomManager.getSelectionState(code));
     session?.syncState(binary => socket.emit("game:state", binary));
     io.to(code).emit("room:playerRejoined", { playerId });

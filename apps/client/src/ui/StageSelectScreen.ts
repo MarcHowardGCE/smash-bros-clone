@@ -1,4 +1,4 @@
-import { renderWorldPreview, toggleWorldStory, worldArtwork } from './WorldPreview';
+import { renderWorldPreview, worldArtwork } from './WorldPreview';
 import { WORLD_STORIES, escapeHtml } from './selectionContent';
 import { ULTIMATE_MENU } from '../input/controllerProfiles';
 import { controllerPrompt, type PromptRenderer } from './controllerPrompts';
@@ -14,7 +14,7 @@ import { controllerPrompt, type PromptRenderer } from './controllerPrompts';
 
 import type { GamepadPoller } from '@smash/gamepad-input';
 import { GenericInputBits } from '@smash/gamepad-input';
-import type { StageConfig } from '../stages/stageConfig.js';
+import {chooseStageVisual, type StageConfig} from '../stages/stageConfig.js';
 
 /** Number of columns in the stage grid. */
 const GRID_COLS = 3;
@@ -32,6 +32,7 @@ export function renderStageSelectScreen(
   initialStageId?:string,
   prompt: PromptRenderer = controllerPrompt,
 ): {destroy:()=>void} {
+  stages=stages.map(stage=>chooseStageVisual(stage));
   /** Total navigable items: stages + 1 random button. */
   const totalItems = stages.length + 1;
   const randomIndex = stages.length;
@@ -82,13 +83,12 @@ export function renderStageSelectScreen(
       const previewed = idx === selectedIndex;
       btn.classList.toggle('menu-selected', previewed);
       btn.toggleAttribute('data-previewed', previewed);
-      if (previewed) btn.scrollIntoView?.({ block: 'nearest', inline: 'nearest' });
     });
     const stage=stages[selectedIndex];
     if(stage && stage.id!==lastPreviewId){lastPreviewId=stage.id;onPreview?.(stage);}
     const panel = container.querySelector<HTMLElement>('#stage-preview')!;
     const previousPreview = panel.dataset.worldPreview;
-    renderWorldPreview(panel, stages, selectedIndex, prompt);
+    renderWorldPreview(panel, stages, selectedIndex);
     if (panel.dataset.worldPreview !== previousPreview) {
       // A focused tile already exposes its name. Announce previews that change without moving focus.
       container.querySelector('#stage-preview-status')!.textContent = announce
@@ -172,7 +172,7 @@ export function renderStageSelectScreen(
         <section id="stage-preview" class="world-preview-panel" aria-label="World preview"></section>
         <p id="stage-preview-status" class="menu-visually-hidden" role="status"></p>
       </div>
-      <footer class="workspace-footer"><p class="picker-help">Arrows / D-pad browse · Enter / ${prompt('confirm')} Select · ${prompt('story')} / I Story${onBack ? ' · Esc / '+prompt('cancel')+' Back' : ''}</p>
+      <footer class="workspace-footer"><p class="picker-help">Arrows / D-pad browse · Enter / ${prompt('confirm')} Select${onBack ? ' · Esc / '+prompt('cancel')+' Back' : ''}</p>
         <button type="button" class="menu-quiet workspace-primary" id="stage-confirm-btn">Choose World</button></footer>
     </section>`;
   // --- Wire click listeners ---
@@ -213,7 +213,6 @@ export function renderStageSelectScreen(
       return;
     }
 
-    if (document.activeElement?.id === 'stage-story' && e.key.startsWith('Arrow')) return;
     switch (e.key) {
       case 'ArrowUp':
         e.preventDefault();
@@ -231,12 +230,9 @@ export function renderStageSelectScreen(
         e.preventDefault();
         moveGrid('right', true);
         break;
-      case 'i':
-      case 'I':
-        e.preventDefault();toggleWorldStory(container);break;
       case 'Enter':
       case ' ':
-        if((e.target as HTMLElement)?.closest?.('[data-stage-idx], #stage-story-toggle, #stage-story, #stage-back-btn, #stage-confirm-btn'))return;
+        if((e.target as HTMLElement)?.closest?.('[data-stage-idx], #stage-back-btn, #stage-confirm-btn'))return;
         e.preventDefault();
         selectStage(selectedIndex);
         break;
@@ -271,7 +267,6 @@ export function renderStageSelectScreen(
         if (pressed & GenericInputBits.DOWN) moveGrid('down');
         if (pressed & GenericInputBits.LEFT) moveGrid('left');
         if (pressed & GenericInputBits.RIGHT) moveGrid('right');
-        if (pressed & GenericInputBits.X) toggleWorldStory(container);
         if (pressed & ULTIMATE_MENU.confirm) selectStage(selectedIndex);
         if(disposed)return;
         if (pressed & ULTIMATE_MENU.cancel) goBack();

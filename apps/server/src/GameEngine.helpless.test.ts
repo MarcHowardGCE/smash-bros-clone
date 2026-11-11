@@ -3,6 +3,39 @@ const input=(pressed:number,held=pressed):InputEvent=>({playerId:'a',tick:0,seq:
 function make(id:CharacterId='all-rounder',ground=false){const e=new GameEngine({playerIds:['a','b'],characterIds:{a:id,b:'all-rounder'}}),s=(e as unknown as{state:GameState}).state;Object.assign(s.players.a!,{x:640,y:ground?500-getCharacterStats(id).hurtboxRadius:150,isGrounded:ground,state:ground?'ATTACK':'AIR_ATTACK',stateFrame:3,currentMoveId:MoveId.UP_SPECIAL,currentMove:getMoveDataForCharacter(id,MoveId.UP_SPECIAL),vx:0,vy:0,isInvincible:false,invincibilityFrames:0,hasDoubleJump:true,hasAirDodge:true});Object.assign(s.players.b!,{x:1100,y:472,isGrounded:true,state:'IDLE',isInvincible:false,invincibilityFrames:0});return{e,s};}
 const tick=(e:GameEngine,i:InputEvent|null=null)=>e.tickGame(new Map([['a',i]]));
 describe('up-special recovery commitment',()=>{
+  for (const id of ['all-rounder','abe-lincoln','swift','moonshine','hulk-hoagie','mr-wrong','loopy','mrs-tasselbottom'] as const) {
+    for (const ground of [true,false]) {
+      it(id+' '+(ground?'grounded':'airborne')+' up-special hit pauses, then resumes lift', () => {
+        const {e,s}=make(id,ground);
+        const whiff=make(id,ground).e;
+        Object.assign(s.players.b!,{x:650,y:s.players.a!.y-33,isGrounded:false,state:'AIRBORNE',vy:0});
+        const launched=tick(e).players.a!;
+        const controlLaunch=tick(whiff).players.a!;
+        expect(launched.hitlagFramesRemaining).toBeGreaterThan(1);
+        expect(launched.vy).toBeLessThan(0);
+        expect(launched.y).toBeCloseTo(controlLaunch.y);
+        expect(launched.vy).toBeCloseTo(controlLaunch.vy);
+
+        let a=launched;
+        for(let remaining=launched.hitlagFramesRemaining-1;remaining>0;remaining--){
+          a=tick(e).players.a!;
+          expect(a.hitlagFramesRemaining).toBe(remaining);
+          expect(a.stateFrame).toBe(launched.stateFrame);
+          expect(a.y).toBeCloseTo(launched.y);
+          expect(a.vy).toBeCloseTo(launched.vy);
+        }
+        a=tick(e).players.a!;
+        const controlNext=tick(whiff).players.a!;
+        expect(a.hitlagFramesRemaining).toBe(0);
+        expect(a.y).toBeCloseTo(controlNext.y);
+        expect(a.vy).toBeCloseTo(controlNext.vy);
+        for(let n=0;n<50&&a.state==='AIR_ATTACK';n++)a=tick(e).players.a!;
+        expect(a.state).toBe('HELPLESS');
+        for(let n=0;n<110&&a.state==='HELPLESS';n++)a=tick(e).players.a!;
+        expect(a.state).toBe('HELPLESS_LAND');
+      });
+    }
+  }
 for(const id of['all-rounder','abe-lincoln','swift','hulk-hoagie']as const)for(const ground of[true,false])it(id+' '+(ground?'ground':'air')+' launches once and commits to helpless',()=>{const{e}=make(id,ground);let a=tick(e).players.a!;expect(a.state).toBe('AIR_ATTACK');expect(a.vy).toBeCloseTo((id==='hulk-hoagie'?-20:-16)+getCharacterStats(id).gravity!);const first=a.vy;a=tick(e).players.a!;expect(a.vy).toBeGreaterThan(first);for(let n=0;n<40&&a.state==='AIR_ATTACK';n++)a=tick(e).players.a!;expect(a.state).toBe('HELPLESS');expect(a.currentMoveId).toBeNull();expect(a.activeHitbox).toBeNull();expect(a.hasDoubleJump).toBe(true);});
 for(const action of[INPUT_BITS.JUMP,INPUT_BITS.ATTACK,INPUT_BITS.SPECIAL,INPUT_BITS.SHIELD,INPUT_BITS.GRAB])it('blocks action '+action+' while permitting horizontal drift',()=>{const{e,s}=make();Object.assign(s.players.a!,{state:'HELPLESS',stateFrame:30,currentMoveId:null,currentMove:undefined,y:150,vy:0});const a=tick(e,input(action,action|INPUT_BITS.RIGHT)).players.a!;expect(a.state).toBe('HELPLESS');expect(a.x).toBeGreaterThan(640);expect(a.hasDoubleJump).toBe(true);expect(a.hasAirDodge).toBe(true);expect(a.currentMoveId).toBeNull();});
 it('lands into fourteen ticks of input-locked recovery and then restores control',()=>{const{e,s}=make();Object.assign(s.players.a!,{state:'HELPLESS',stateFrame:30,currentMoveId:null,currentMove:undefined,y:470,vy:8});let a=tick(e).players.a!;expect(a.state).toBe('HELPLESS_LAND');for(let n=0;n<13;n++){a=tick(e,input(INPUT_BITS.ATTACK)).players.a!;expect(a.state).toBe('HELPLESS_LAND');}a=tick(e).players.a!;expect(a.state).toBe('ATTACK');expect(tick(e,input(INPUT_BITS.ATTACK)).players.a!.state).toBe('ATTACK');});

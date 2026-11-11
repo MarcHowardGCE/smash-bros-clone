@@ -6,13 +6,17 @@ Open **Home → Training Dojo**. Choose **Free Practice** to run repeatable scen
 
 ### Free Practice: the endless rehearsal
 
-Choose any of the five fighters, a partner fighter and any of the six worlds. Start immediately without a match countdown. The partner can stand still, hold shield, repeat a telegraphed jab, alternate attack and special, use a telegraphed two-hit up smash, or attempt grabs. Use **Change partner behavior** during Free Practice. The up-smash drill works from within its upward reach.
+Choose any of the five fighters, a partner fighter and any of the nine worlds. Start immediately without a match countdown. The partner can stand still, hold shield, repeat a telegraphed jab, alternate attack and special, use a telegraphed two-hit up smash, or attempt grabs. Use **Change partner behavior** during Free Practice. The up-smash drill works from within its upward reach.
 
 Damage stays at a fixed preset and starts at 0% in Free Practice. Shields retain full health. Hits still produce reactions, hitlag, hitstun, launches, shieldstun, and parries at the selected percent. This preserves realistic defensive timing instead of making the partner invulnerable to contact. Leaving the arena resets both fighters safely on the main platform, with no life consumption, result screen, winner or loser. Grabs, ledges, pending launches and fatigue are cleared on arena reset. Practice cannot change normal local/online match rules.
 
 A side panel shows the current action/frame, last move, recent pressed/released action names, dodge fatigue and the partner's strike cue. R resets the arena; F2 returns to the dojo menu. Escape or your controller’s Pause button opens the tabbed Dojo menu. Use Left/Right or the D-pad to browse tabs and Enter, Space, or controller Confirm to open one. **Resume**, **Reset arena**, and **Main Menu** are in the footer. **Dojo lessons** in Session returns to the library. Reset preserves the lesson count. **Restart lesson** clears the current attempt count.
 
 Action presses carried from a menu, reset or resume are suppressed until controls are released, preventing a confirmation press from earning lesson credit. Held shielding and directional input remain available during that gate so resume does not force an artificial shield drop.
+
+#### Preview a shield break
+
+In Free Practice, open **Timing laboratory → Launch and KO lab**. Set **Preview fighter** to **You** or **Partner**. With that fighter standing idle, select **Preview shield break** to play the launch, dizzy stagger, and recovery. You can repeat it after the fighter returns to idle. For the first pose, freeze with F6 before activating the preview, then advance one tick at a time with F7. In the pause menu, the same preview is under **Timing & Display**. The preview leaves both fighters' preset damage and lives intact.
 
 ### Guided lessons: learn one technique
 

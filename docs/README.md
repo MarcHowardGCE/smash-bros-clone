@@ -21,6 +21,8 @@ Start with the [project README](../README.md) to understand the game and run it 
 - [Production configuration](guides/DEPLOYMENT.md#configuration) explains the server and client settings.
 - [World presentation](../apps/client/src/stages/stageConfig.ts) owns the arena names, art, and audio references. [Shared stage layouts](../packages/shared/src/constants/stageLayouts.ts) own platform collision. Proposed world events remain in the [content backlog](assets/ULTIMATE-ANIMATION-CHECKLIST.md#current-five-fighter-inventory).
 
+- [Zanda Infinity / Stage 10](assets/ZANDA-INFINITY.md) records the three background variants, shared vinyl arena, supplied music, and verification.
+
 ## Fighter art and assets
 
 - [Asset source and provenance](assets/ART-SOURCE.md)

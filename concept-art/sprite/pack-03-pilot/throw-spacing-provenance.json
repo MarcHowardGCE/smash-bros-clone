@@ -1,0 +1,27 @@
+{
+  "revision": 26,
+  "method": "Built-in image generation with approved holder reference images",
+  "prompt": "Generate a production sprite sheet for the exact reference character. Two isolated complete full-body sprites in one horizontal row with a wide transparent gap, clear alpha background. Match the approved anatomy, clothing and color. Loopy has a blank cream jersey and unspotted golden fur. Mr Wrong has yellow spotted sleeves. LEFT pose: back throw release, torso twisted left, both arms fully extended horizontally LEFT, leading palm far beyond the left edge of the torso, feet braced. RIGHT pose: down throw release, crouching behind with both arms extending diagonally FORWARD RIGHT and down, hands far beyond the right knee at shin height. Keep the torso behind the hands, with room for a victim below and in front. No other character, background, floor, shadow, glow, motion trail or lettering. Preserve entire hands, feet, headwear and antlers inside canvas.",
+  "sources": [
+    {
+      "fighter": "mr-wrong",
+      "file": "mr-wrong-throw-spacing.png",
+      "sha256": "2143441db564a1801958312a4229e5341e6d83892427370d65e869e381870876"
+    },
+    {
+      "fighter": "loopy",
+      "file": "loopy-throw-spacing.png",
+      "sha256": "3c03272f66faa008630a96a12b92d1bf6a69442a800ab4f4c2d28642666b56d6"
+    },
+    {
+      "fighter": "mrs-tasselbottom",
+      "file": "mrs-tasselbottom-throw-spacing.png",
+      "sha256": "664b86d5b82a43a281e6e2d4789c4a095a85330508811ab6c72c6743941a767a"
+    }
+  ],
+  "decisions": [
+    "Back release attaches at the trailing ankle",
+    "Down release uses the mirrored horizontal back-victim drawing",
+    "Mrs. Tasselbottom sleeve colors corrected to deep purple after review"
+  ]
+}

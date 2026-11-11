@@ -1,4 +1,4 @@
-import{getCharacterStats,INPUT_BITS,type PlayerState,type InputEvent}from'@smash/shared';import type{StageData}from'./types.js';
+import{getCharacterStats,INPUT_BITS,isPack03PilotId,type PlayerState,type InputEvent}from'@smash/shared';import type{StageData}from'./types.js';
 /** Visual transition cues do not add turn/brake/edge gameplay lockout. */
 export function withMovementArt(before:PlayerState,after:PlayerState,input:InputEvent|null,stage:StageData):PlayerState{
  const neutral=['IDLE','WALK','DASH','RUN','AIRBORNE','CROUCH','LANDING_LAG'].includes(after.state)&&!after.isKnockedOut&&after.stocks>0;
@@ -8,6 +8,7 @@ export function withMovementArt(before:PlayerState,after:PlayerState,input:Input
   return {...after,artCue:releasing?cue:undefined,artCueFrame:releasing?age:undefined};
  }
  if(cue==='entry'&&((input?.held??0)&(INPUT_BITS.LEFT|INPUT_BITS.RIGHT|INPUT_BITS.DOWN)))cue=undefined;
+ if(cue==='land_soft'&&(!after.isGrounded||!['IDLE','AIRBORNE'].includes(after.state)))cue=undefined;
  if(cue&&((['platform_drop','respawn_drop','takeoff_neutral','takeoff_forward','takeoff_backward'].includes(cue)&&after.isGrounded)||(cue==='land_heavy'&&!after.isGrounded)||(['crouch_exit','brake','teeter_front','teeter_back'].includes(cue)&&after.state!=='IDLE')))cue=undefined;
  const set=(name:string)=>{cue=name;age=0;};
  if(!neutral||after.respawnTimer>0)return{...after,artCue:after.artCue==='respawn_drop'?after.artCue:undefined,artCueFrame:after.artCue==='respawn_drop'?after.artCueFrame:undefined};
@@ -21,10 +22,12 @@ export function withMovementArt(before:PlayerState,after:PlayerState,input:Input
  else if(before.state==='HITSTUN'&&before.isTumbling&&after.state==='AIRBORNE'&&!after.isTumbling&&!['wall_tech','wall_tech_jump','ceiling_tech'].includes(cue??''))set('tumble_recover');
  else if(before.state==='CROUCH'&&after.state==='IDLE')set('crouch_exit');
  else if(!before.isGrounded&&after.isGrounded&&before.vy>10&&['IDLE','AIRBORNE'].includes(after.state))set('land_heavy');
+ else if(!before.isGrounded&&after.isGrounded&&['IDLE','AIRBORNE'].includes(after.state)&&
+  (before.state==='AIRBORNE'||before.state==='DOUBLE_JUMP')&&isPack03PilotId(after.characterId))set('land_soft');
  else if(input?.stickX!==undefined&&after.state==='DASH'&&(before.state==='IDLE'||before.state==='WALK')){cue=undefined;age=0;}
  else if(before.facing!==after.facing&&['IDLE','WALK','DASH','RUN'].includes(after.state))set(before.state==='RUN'?'turn_run':'turn_stand');
  else if(before.state==='RUN'&&after.state==='IDLE'&&Math.abs(before.vx)>.3)set('brake');
- if(cue&&age>=(cue==='entry'?54:cue==='respawn_drop'?36:cue==='ceiling_tech'?26:['wall_tech','wall_tech_jump','ceiling_tech','air_dodge_land','tumble_recover'].includes(cue)?24:18)){cue=undefined;age=0;}
+ if(cue&&age>=(cue==='entry'?54:cue==='respawn_drop'?36:cue==='land_soft'?12:cue==='ceiling_tech'?26:['wall_tech','wall_tech_jump','ceiling_tech','air_dodge_land','tumble_recover'].includes(cue)?24:18)){cue=undefined;age=0;}
  if(!cue&&after.state==='IDLE'&&Math.abs(after.vx)<.3){const bottom=after.y+getCharacterStats(after.characterId).hurtboxRadius;for(const p of[stage.mainPlatform,...stage.platforms]){if(Math.abs(bottom-p.y)>2)continue;const edge=after.x-p.x<12?-1:p.x+p.width-after.x<12?1:0;if(edge&&after.x>=p.x&&after.x<=p.x+p.width){cue=edge===after.facing?'teeter_front':'teeter_back';age=before.artCue===cue?(before.artCueFrame??0)+1:0;break;}}}
  return{...after,artCue:cue,artCueFrame:cue?age:undefined};
 }

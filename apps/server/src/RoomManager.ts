@@ -1,3 +1,4 @@
+import {isStageBackgroundVariant} from '@smash/shared';
 /**
  * @fileoverview Manages room lifecycle for the matchmaking layer.
  *
@@ -12,7 +13,7 @@
 
 import { randomBytes, timingSafeEqual } from 'node:crypto';
 import type { Room } from './types.js';
-import type { PlayerId, CharacterId } from '@smash/shared';
+import { STAGE_LAYOUTS, type PlayerId, type CharacterId } from '@smash/shared';
 
 const ROOM_CODE_CHARS = 'ABCDEFGHIJKLMNPQRSTUVWXYZ123456789';
 const MAX_PLAYERS = 4;
@@ -193,7 +194,7 @@ export class RoomManager {
     const room=this.rooms.get(roomCode);if(!room)return null;
     const players=[...room.players.values()].sort((a,b)=>a.slotIndex-b.slotIndex);
     const preparation = room.stagePreparation;
-    return {phase:room.phase,hostPlayerId:players[0]?.playerId,stageId:room.stageId,players:players.map(p=>({playerId:p.playerId,slotIndex:p.slotIndex,characterId:p.characterId,confirmed:p.characterConfirmed,ready:p.isReady})), ...(preparation ? { preparation: { id: preparation.id, readyPlayerIds: [...preparation.readyPlayers] } } : {})};
+    return {phase:room.phase,hostPlayerId:players[0]?.playerId,stageId:room.stageId,stageBackgroundVariant:room.stageBackgroundVariant??0,players:players.map(p=>({playerId:p.playerId,slotIndex:p.slotIndex,characterId:p.characterId,confirmed:p.characterConfirmed,ready:p.isReady})), ...(preparation ? { preparation: { id: preparation.id, readyPlayerIds: [...preparation.readyPlayers] } } : {})};
   }
   unconfirmCharacter(code:string,id:PlayerId):{ok:true}|{error:string}{
     const room=this.rooms.get(code);if(!room)return {error:'Room not found'};
@@ -215,9 +216,13 @@ export class RoomManager {
     const room=this.rooms.get(code);if(!room||!room.players.has(id))return {error:'Player not in room'};
     if(room.phase!=='STAGE_SELECT')return {error:'Not in stage select'};
     if(this.getSelectionState(code)?.hostPlayerId!==id)return {error:'Only the host can choose the stage'};
-    if(typeof stageId!=='string'||!/^stage[1-6]$/.test(stageId))return {error:'Invalid stage'};
-    if (room.stagePreparation && room.stageId !== stageId) return {error:'The arena is already being prepared'};
-    room.stageId=stageId;return {ok:true};
+    const selection=typeof stageId==='object'&&stageId!==null?stageId as {id?:unknown;backgroundVariant?:unknown}:null;
+    const variant=selection?.backgroundVariant??0;
+    stageId=selection?.id??stageId;
+    if(typeof stageId!=='string'||!Object.hasOwn(STAGE_LAYOUTS,stageId))return {error:'Invalid stage'};
+    if(!isStageBackgroundVariant(stageId,variant))return {error:'Invalid stage background'};
+    if (room.stagePreparation && (room.stageId !== stageId || (room.stageBackgroundVariant??0)!==variant)) return {error:'The arena is already being prepared'};
+    room.stageId=stageId;room.stageBackgroundVariant=variant;return {ok:true};
   }
   confirmStage(code:string,id:PlayerId):{ok:true}|{error:string}{
     const room=this.rooms.get(code);if(!room||!room.players.has(id))return {error:'Player not in room'};

@@ -1,5 +1,6 @@
 import { readFile, stat, unlink, writeFile } from 'node:fs/promises';
 import path from 'node:path';
+import { brotliCompressSync } from 'node:zlib';
 import sharp from 'sharp';
 
 const packs = [
@@ -26,7 +27,7 @@ async function compressPack(directory, folder) {
   try {
     manifest = JSON.parse(await readFile(manifestPath, 'utf8'));
   } catch (error) {
-    if (error.code === 'ENOENT') return;
+    if (error.code === 'ENOENT') return false;
     throw error;
   }
 
@@ -70,7 +71,7 @@ async function compressPack(directory, folder) {
     // Keep frame coordinates and their extrusion gutters at the original positions.
     const pixels = await image.extract({ left: 0, top: 0, width, height }).ensureAlpha().raw().toBuffer();
     const encoded = await sharp(pixels, { raw: { width, height, channels: 4 } })
-      .webp({ lossless: true, effort: 3 }).toBuffer();
+      .webp({ lossless: true, effort: file.startsWith('atlas-all-rounder-live-') ? 6 : 3 }).toBuffer();
     if (encoded.length >= size) {
       outputBytes += size;
       outputPixels += metadata.width * metadata.height;
@@ -97,6 +98,7 @@ async function compressPack(directory, folder) {
   await writeFile(manifestPath, JSON.stringify(manifest));
   for (const key of replacements.keys()) await unlink(path.join(directory, path.posix.basename(key)));
   console.info(`[fighter-atlas] ${folder}: ${pngBytes} → ${outputBytes} bytes, ${pngPixels} → ${outputPixels} decoded pixels`);
+  return true;
 }
 
 export function compactAtlasPlugin() {
@@ -106,6 +108,24 @@ export function compactAtlasPlugin() {
     async writeBundle({ dir }) {
       for (const [pack, folder] of packs) {
         await compressPack(path.resolve(dir, pack, folder), folder);
+      }
+      for (const [pack, folder] of [...packs, ['fighter-art-pack-03-v1', 'production']]) {
+        const base = path.resolve(dir, pack);
+        const manifestPath = path.join(base, folder, 'manifest.json');
+        let manifest;
+        try {
+          manifest = await readFile(manifestPath);
+        } catch (error) {
+          if (error.code === 'ENOENT') continue;
+          throw error;
+        }
+        await writeFile(manifestPath + '.br', brotliCompressSync(manifest));
+        if (folder === 'production') {
+          const { revision } = JSON.parse(await readFile(path.join(base, 'manifest.json'), 'utf8'));
+          if (Number.isInteger(revision)) {
+            await writeFile(path.join(base, 'source-revision.json'), JSON.stringify({ revision }));
+          }
+        }
       }
     },
   };

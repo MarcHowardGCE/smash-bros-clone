@@ -1,3 +1,5 @@
+import { isPack03PilotId } from '@smash/shared';
+
 /** Presentation only. Fighter histories remain open for collaborative writing. */
 export const FIGHTER_PRESENTATION: Record<string,{id:string;name:string;role:string;pitch:string;style:string;strength:string;trade:string}> = {
   "all-rounder": {
@@ -44,6 +46,33 @@ export const FIGHTER_PRESENTATION: Record<string,{id:string;name:string;role:str
     style: "A sturdy wrestler with strong forward and back throws and a higher up-special launch.",
     strength: "Grab and throw payoff",
     trade: "Slower movement and longer grab recovery"
+  },
+  "mr-wrong": {
+    id: "mr-wrong",
+    name: "Mr. Wrong",
+    role: "Long-reach trickster",
+    pitch: "Threaten space with elastic tentacle strikes.",
+    style: "Quick movement and long-reaching attacks give him room to vary his approach.",
+    strength: "Reach and mobility",
+    trade: "Lighter than average"
+  },
+  "loopy": {
+    id: "loopy",
+    name: "Loopy",
+    role: "Lightweight speedster",
+    pitch: "Use speed and quick jumps to change the angle of attack.",
+    style: "Fast running and strong aerial mobility reward quick approaches and retreats.",
+    strength: "Run speed and aerial movement",
+    trade: "Low weight"
+  },
+  "mrs-tasselbottom": {
+    id: "mrs-tasselbottom",
+    name: "Mrs. Tasselbottom",
+    role: "Super heavyweight",
+    pitch: "Hold your ground and make every opening count.",
+    style: "A wide, heavy fighter with powerful attacks and deliberate movement.",
+    strength: "Weight and launch power",
+    trade: "Low jump and slower movement"
   }
 };
 export const WORLD_STORIES: Record<string,{name:string;short:string;hook:string;text:string;story:string}> = {
@@ -88,8 +117,36 @@ export const WORLD_STORIES: Record<string,{name:string;short:string;hook:string;
     "hook": "Every fight has been written. None has happened yet.",
     "text": "Inside a sleeping god’s skull, books shelter tiny cities and clocks disagree with time. A many-armed librarian tends shelves that fold back into themselves.",
     "story": "Bookshelves twist upward into clouds and doorways lead back into the same room. Within books, tiny cities live instead of printed words; one open volume contains people reenacting a fight that has not happened yet. Clocks with skeletal arms disagree above a floor of photographs showing events that never existed. A librarian with a face of tightly packed library cards reaches the highest shelves with dozens of jointed arms. Behind her, a giant book reveals the library from a new impossible perspective on every page."
+  },
+  "stage7": {
+    "name": "The Day Gravity Resigned",
+    "short": "Gravity Resigned",
+    "hook": "The floor used to have a very simple job.",
+    "text": "Railways loop through floating islands while a waterfall pours sideways past an upside-down city.",
+    "story": "Gravity left before the morning trains. By noon, the houses were hanging from their chimneys and the river was pouring past the station sideways. The conductor still announces the next stop. Nobody can agree whether it is above or below them."
+  },
+  "stage8": {
+    "name": "The Tuesday That Happened Twice",
+    "short": "Tuesday Twice",
+    "hook": "At 3:17, everyone gets another first chance.",
+    "text": "A broken clock folds different eras over the same afternoon. The station keeps punching the same ticket.",
+    "story": "The birthday candles went out at 3:17. At 3:17 they were lit again. Outside, a trolley rattled past a dinosaur while film strips unspooled across the sky. The station clerk punched two identical tickets and wondered which one had already been used."
+  },
+  "stage10": {
+    "name": "Zanda Infinity", "short": "Zanda Infinity",
+    "hook": "Where the music becomes the world.",
+    "text": "The studio is recording. The archive is open. The signal is live.",
+    "story": "Every world begins somewhere. Some begin with a melody, a story, or an idea that refuses to stay where it belongs. At Zanda, the work does not always end when the recording stops. A studio. An archive. A transmission. Three sides of the same operation. The equipment is functioning. The masters are accounted for. The signal remains active. Everything appears to be in order. Probably."
+  },
+  "stage9": {
+    "name": "The World That Forgot Its Shape",
+    "short": "Forgot Its Shape",
+    "hook": "Someone is still drawing the far side of the world.",
+    "text": "A painted city peels back into pencil lines, and the unfinished pages hang over the rooftops.",
+    "story": "A hand peeled back the afternoon to see how it was drawn. The towers lost their colors first. Then a man walked past his own penciled outline, which kept going after he stopped. Somewhere below, a painter is trying to remember what belongs in the empty space."
   }
 };
 export function escapeHtml(value:string):string{return value.replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]!));}
 export function fighterPortrait(id:string):string{const base=import.meta.env.BASE_URL||'/';
+ if(isPack03PilotId(id))return base+'fighter-art-pack-03-v1/'+id+'-idle.png';
  return FIGHTER_PRESENTATION[id]?base+'menu-art/'+id+'.png':''; }

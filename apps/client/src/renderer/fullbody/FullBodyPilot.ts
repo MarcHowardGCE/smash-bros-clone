@@ -1,17 +1,17 @@
-import {dodgeAnimationFrame} from '@smash/engine';
+import {dodgeAnimationFrame,dodgeTiming} from '@smash/engine';
 import{selectResultFrame}from'./presentationTimeline.js';
 import {footstoolPoint} from './footstoolPose.js';
 import {PREPARED_LIVE_CLIPS,selectPreparedFrame,type PreparedContext} from './preparedHooks.js';
 import {getMoveDataForCharacter} from '@smash/engine';
 import {solveGrabContact} from "./contactPose.js";
 import { Assets, ImageSource, Rectangle, Sprite, Texture } from 'pixi.js';
-import { getCharacterStats, type CharacterId, type MoveId, type PlayerId } from '@smash/shared';
+import { getCharacterStats, isPack03PilotId, type CharacterId, type MoveId, type Pack03PilotId, type PlayerId } from '@smash/shared';
 import { selectPilotFrame, type PilotClip } from './pilotTimeline.js';
 export interface GrabContactContext {artId?:DojoArtId;characterId:CharacterId;state:string;frame:number;move:MoveId|null;dx:number;dy:number;facing:1|-1}
 interface Frame { mirrorSource?:boolean;image?:string; sockets?:Record<string,number[]>; rect: number[]; root: number[]; offsetY?: number; airRoot?: number[] }
 interface Clip { durations?:number[]; activeWindow?:[number,number]; rotationPeriod?:number; previewOnly?:boolean; mirrorSource?: boolean; image: string; scale: number; frames: Frame[] }
 interface CharacterManifest { clips: Partial<Record<PilotClip, Clip>> }
-export type DojoArtId = 'moonshine' | 'hulk-hoagie';
+export type DojoArtId = 'moonshine' | 'hulk-hoagie' | Pack03PilotId;
 type FighterArtId = CharacterId | DojoArtId;
 interface Manifest extends CharacterManifest { revision?:number;production?:{sourceRevision:number}; effects?:Record<string,Clip & {rotation?:number;durations:number[]}>; version: number; characters?: Partial<Record<FighterArtId, CharacterManifest>> }
 type LoadedClip = { durations?:number[]; activeWindow?:[number,number]; rotationPeriod?:number; mirrorSource?: boolean; scale: number; frames: { texture: Texture;mirrorSource?:boolean; root: number[]; offsetY: number; sockets?:Record<string,number[]>; airRoot?: number[] }[] };
@@ -75,20 +75,31 @@ function loadManifest(url: string): Promise<Manifest> {
 export async function preloadFullBodyPilot(dojo=false, selected?: readonly CharacterId[], includeEffects = true, requireIdle = false): Promise<FullBodyPilotAssets | undefined> {
  if(new URLSearchParams(window.location.search).get('renderer')==='legacy')return undefined;
  try {
-  const base=dojo?'/fighter-art-newcomers-v1/':'/fighter-art-pilot-v1/';
-  let manifest=await loadManifest(base+(dojo?'dojo/manifest.json':'manifest.json'));
-  if(!dojo&&new URLSearchParams(window.location.search).get('atlas')!=='source'){
-   try {
-    const candidate=await loadManifest(base+'production/manifest.json');
-    if(candidate.version===1&&candidate.production?.sourceRevision===manifest.revision)manifest=candidate;
-   }catch(error){console.warn('[fighter-art-pilot] Atlas unavailable; using source sheets',error);}
+  const pack03 = dojo && selected?.some(isPack03PilotId);
+  const base = pack03 ? '/fighter-art-pack-03-v1/' : dojo ? '/fighter-art-newcomers-v1/' : '/fighter-art-pilot-v1/';
+  const sourceUrl = base + (dojo && !pack03 ? 'dojo/manifest.json' : 'manifest.json');
+  let manifest: Manifest | undefined;
+  if ((!dojo || pack03) && new URLSearchParams(window.location.search).get('atlas') !== 'source') {
+    try {
+      const revisionUrl = import.meta.env.PROD ? base + 'source-revision.json' : sourceUrl;
+      const [candidate, source] = await Promise.all([
+        loadManifest(base + 'production/manifest.json'),
+        loadManifest(revisionUrl).catch(() => loadManifest(sourceUrl)),
+      ]);
+      if (candidate.version === 1 && Number.isInteger(source.revision) &&
+          candidate.production?.sourceRevision === source.revision) manifest = candidate;
+    } catch (error) {
+      console.warn('[fighter-art-pilot] Atlas unavailable; using source sheets', error);
+    }
   }
-  const textureTimeoutMs=manifest.production?60_000:15_000;
+  manifest ??= await loadManifest(sourceUrl);
+  const packaged = Boolean(manifest.production);
+  const textureTimeoutMs=packaged?60_000:15_000;
   const pageCache=new Map<string,Promise<Texture>>();
   function loadPage(file: string): Promise<Texture> {
     let promise = pageCache.get(file);
     if (!promise) {
-      promise = manifest.production || dojo
+      promise = packaged || dojo
         ? loadAtlasPage(base + file, textureTimeoutMs)
         : Assets.load<Texture>(base + file).then(texture => {
           texture.source.scaleMode = 'linear';
@@ -150,9 +161,11 @@ export class FullBodyPilot {
  private previousDoubleJump:boolean|undefined;
  private resultStart:number|null=null;private resultKind:string|undefined;
  private doubleJumpCue:{state:string;frame:number;elapsed:number}|null=null;
+ private fastFallStart?:number;
  private dojoProneFrame=0;
+ private shieldBreakGroundStart?:number;
  private lastFrame=0;private counterStart:number|null=null;
- startCounterReaction():void{this.counterStart=this.lastFrame;}
+ startCounterReaction(frame = this.lastFrame):void{this.counterStart=frame;}
  constructor(private assets:FullBodyPilotAssets,private readonly characterId:CharacterId='all-rounder',readonly artId?:DojoArtId){this.sprite.visible=false;this.effectSprite.visible=false;}
  private throwRelease: { move: MoveId; start: number | null } | null = null;
  startThrowRelease(move: MoveId): void {
@@ -161,12 +174,30 @@ export class FullBodyPilot {
  setAssets(assets: FullBodyPilotAssets): void { this.assets = assets; }
  update(state:string,frame:number,move:MoveId|null,enabled:boolean,vy?:number,hasDoubleJump=true,isTumbling=false,rollDirection:1|-1=1,chargeFrames=0,grabVictim=false,victimFlip=1,facing:1|-1=1,grabOwner?:GrabContactContext,ledgeId?:string|null,prepared:PreparedContext={}):boolean {
   enabled=enabled||Boolean(prepared.result);
+  const pack03 = isPack03PilotId(this.artId);
   if (this.throwRelease && (!enabled || state !== 'ATTACK' || move !== this.throwRelease.move)) {
    this.throwRelease = null;
   }
   if(this.previousState==="LEDGE_HANG"&&state==="AIRBORNE")this.ledgeRelease={clip:(vy??0)<-1?"ledge_trump":"ledge_drop",start:frame};this.previousState=state;
   let selected=enabled?selectPilotFrame(state,(state==='ROLL'||state==='SPOT_DODGE')?dodgeAnimationFrame({...prepared,characterId:this.characterId,state},frame):frame,move,vy,hasDoubleJump,isTumbling,this.characterId,chargeFrames,grabVictim):null;
   if(enabled)selected=selectPreparedFrame(state,frame,vy,{...prepared,facing})??selected;
+  const shieldBreak = pack03 && enabled && state === 'HITSTUN' && prepared.shieldReaction === 'break';
+  const shieldBreakAge = prepared.shieldReactionFrame ?? 0;
+  const shieldBreakGrounded = shieldBreak && (prepared.isGrounded ?? shieldBreakAge >= 18);
+  if (shieldBreakGrounded) {
+   if (this.shieldBreakGroundStart === undefined || shieldBreakAge < this.shieldBreakGroundStart) {
+    this.shieldBreakGroundStart = shieldBreakAge;
+   }
+   const remaining = prepared.hitstunFramesRemaining ?? 19;
+   selected = { clip: remaining <= 18 ? 'shield_break_recover' : 'shield_break_dizzy', index: 0 };
+  } else {
+   this.shieldBreakGroundStart = undefined;
+   if (shieldBreak) selected = { clip: 'shield_break_launch', index: 0 };
+   // The simulation passes through grounded AIRBORNE for one tick when the stun clears.
+   else if (pack03 && enabled && state === 'AIRBORNE' && prepared.isGrounded && prepared.shieldReaction === 'break') {
+    selected = { clip: 'idle', index: 0 };
+   }
+  }
   const airborne=state==='AIRBORNE'||state==='DOUBLE_JUMP';
   if(enabled&&airborne&&this.previousDoubleJump===true&&!hasDoubleJump)this.doubleJumpCue={state,frame,elapsed:0};
   else if(this.doubleJumpCue){const cue=this.doubleJumpCue;if(!enabled||!airborne)this.doubleJumpCue=null;else{cue.elapsed+=cue.state===state?Math.max(0,frame-cue.frame):Math.max(1,frame);cue.state=state;cue.frame=frame;if(cue.elapsed>=12)this.doubleJumpCue=null;}}
@@ -174,7 +205,7 @@ export class FullBodyPilot {
   if(prepared.footstoolRole)this.doubleJumpCue=null;
   if(this.doubleJumpCue)selected={clip:'double_jump_transition',index:Math.min(5,Math.floor(this.doubleJumpCue.elapsed/2))};
   if(this.ledgeRelease){const t=frame-this.ledgeRelease.start;if(enabled&&state==="AIRBORNE"&&t>=0&&t<12)selected={clip:this.ledgeRelease.clip,index:Math.min(3,Math.floor(t/3))};else this.ledgeRelease=null;}
-  if(this.counterStart!==null){const elapsed=frame-this.counterStart;if(enabled&&move==='DOWN_SPECIAL'&&(state==='ATTACK'||state==='AIR_ATTACK')&&elapsed>=0&&elapsed<12)selected={clip:'counter_success',index:Math.floor(elapsed/3)};else this.counterStart=null;}this.lastFrame=frame;
+  if(this.counterStart!==null){const elapsed=frame-this.counterStart;if(enabled&&move==='DOWN_SPECIAL'&&(state==='ATTACK'||state==='AIR_ATTACK')&&elapsed>=0&&(pack03||elapsed<12))selected={clip:'counter_success',index:Math.floor(elapsed/3)};else this.counterStart=null;}this.lastFrame=frame;
   let reactionFlip=1;
   if(grabVictim&&state==='GRAB_HOLDING')this.lastVictimFlip=victimFlip;
   const releaseState=state==='IDLE'||state==='AIRBORNE';
@@ -201,6 +232,38 @@ export class FullBodyPilot {
   if(this.artId&&selected?.clip.startsWith('takeoff_')&&state==='AIRBORNE'&&(prepared.artCueFrame??0)>=6){
    selected=selectPreparedFrame(state,frame,vy,{...prepared,artCue:undefined,facing})??selected;
   }
+  if (pack03 && selected?.clip === 'helpless_enter' && frame >= 6) {
+   selected = { clip: 'helpless_loop', index: 0 };
+  }
+  // The pilot's authored turn is shorter than the shared presentation cue.
+  if (pack03 && state !== 'RUN_TURN' && selected?.clip === prepared.artCue &&
+      (selected?.clip === 'turn_run' || selected?.clip === 'turn_stand') && (prepared.artCueFrame ?? 0) >= 6) {
+   selected = selectPilotFrame(state, frame, move, vy, hasDoubleJump, isTumbling, this.characterId, chargeFrames, grabVictim);
+  }
+  if (pack03 && (selected?.clip === 'platform_drop' || selected?.clip === 'tumble_recover')) {
+   const duration = art?.[selected.clip]?.durations?.reduce((sum, ticks) => sum + ticks, 0);
+   if (selected.clip === 'tumble_recover' && prepared.isGrounded) {
+    selected = { clip: 'idle', index: 0 };
+   } else if (duration !== undefined && (prepared.artCueFrame ?? 0) >= duration) {
+    selected = selectPreparedFrame(state, frame, vy, { ...prepared, artCue: undefined, facing }) ?? selected;
+   }
+  }
+  if (pack03 && selected?.clip === 'air_fastfall_loop') {
+   if (this.fastFallStart === undefined || frame < this.fastFallStart) this.fastFallStart = frame;
+  } else {
+   this.fastFallStart = undefined;
+  }
+  if (pack03 && selected?.clip === 'roll' && (prepared.dodgeKind === 'backward' ||
+      (prepared.dodgeKind === undefined && rollDirection === -1)) && art?.roll_back) {
+   selected = { ...selected, clip: 'roll_back' };
+  }
+  if (pack03 && selected?.clip.startsWith('air_dodge_') && state === 'AIR_DODGE' &&
+      !art?.[selected.clip] && art?.air_dodge_neutral) {
+   selected = { ...selected, clip: 'air_dodge_neutral' };
+  }
+  const launchDuration = art?.hit_launch?.durations?.reduce((total, ticks) => total + ticks, 0) ?? 0;
+  const launched = pack03 && selected?.clip === 'tumble';
+  if (launched && frame < launchDuration) selected = { clip: 'hit_launch', index: 0 };
   let clip=selected?art?.[selected.clip]:undefined;
   if(this.artId&&selected&&clip){
    if(selected.clip==='grabbed'){
@@ -226,11 +289,45 @@ export class FullBodyPilot {
       age<data.startupFrames+active?start+(age-data.startupFrames)*(end-start)/active:
       end+(age-data.startupFrames-active);
     let index=dojoFrame(clip,previewAge);
+    if (pack03 && move === 'FORWARD_SMASH' && chargeFrames > 0 && age < data.startupFrames) {
+     index = Math.max(1, index);
+    }
     if(floorAttack&&age<data.startupFrames){
      const hold=clip.durations![0]!+clip.durations![1]!;
      index=age<2?this.dojoProneFrame:dojoFrame(clip,hold+(age-2)*(start-hold)/Math.max(1,data.startupFrames-2));
     }
     selected={...selected,index};
+   }else if(pack03 && (state === 'AIR_DODGE' || ['dodge','roll','roll_back'].includes(selected.clip)) && clip.frames.length === 3){
+    const dodgeKind = prepared.dodgeKind ?? (state === 'ROLL' ? (rollDirection === -1 ? 'backward' : 'forward') : undefined);
+    const timing = dodgeTiming({ ...prepared, characterId: this.characterId, state, dodgeKind });
+    selected = { ...selected, index: frame < timing.intangibleStart ? 0 : frame < timing.intangibleEnd ? 1 : 2 };
+   }else if(pack03 && clip.durations && ['shield_raise','shield','shield_hit','shield_drop','parry','air_dodge_land'].includes(selected.clip)){
+    const age = selected.clip === 'air_dodge_land' ? prepared.artCueFrame ?? frame :
+     selected.clip === 'shield' ? Math.max(0, frame - 6) :
+     selected.clip === 'shield_raise' ? frame : prepared.shieldReactionFrame ?? 0;
+    selected = { ...selected, index: dojoFrame(clip, age) };
+   }else if(shieldBreak && clip.durations && selected.clip.startsWith('shield_break_')){
+    const period = clip.durations.reduce((total, ticks) => total + ticks, 0);
+    const age = selected.clip === 'shield_break_launch' ? shieldBreakAge :
+     selected.clip === 'shield_break_recover' ? 18 - Math.max(0, prepared.hitstunFramesRemaining ?? 18) :
+     (shieldBreakAge - (this.shieldBreakGroundStart ?? shieldBreakAge)) % period;
+    selected = { ...selected, index: dojoFrame(clip, age) };
+   }else if(pack03 && clip.durations && (selected.clip.startsWith('hit_') || selected.clip === 'tumble')){
+    const period = clip.durations.reduce((total, ticks) => total + ticks, 0);
+    const age = selected.clip === 'tumble' ? (frame - launchDuration) % period : frame;
+    selected = { ...selected, index: dojoFrame(clip, age) };
+   }else if(pack03 && clip.durations && selected.clip === 'counter_success'){
+    selected = { ...selected, index: dojoFrame(clip, frame - (this.counterStart ?? frame)) };
+   }else if(pack03 && clip.durations && selected.clip === 'double_jump_transition'){
+    selected = { ...selected, index: dojoFrame(clip, this.doubleJumpCue?.elapsed ?? frame) };
+   }else if(pack03 && clip.durations && selected.clip === 'air_fastfall_loop'){
+    selected = { ...selected, index: dojoFrame(clip, frame - (this.fastFallStart ?? frame)) };
+   }else if(pack03 && clip.durations && (
+    selected.clip.startsWith('takeoff_') || selected.clip === 'dash_start' || selected.clip === 'land_soft' ||
+    ['land_heavy','brake','turn_stand','turn_run','platform_drop','tumble_recover','down_special','helpless_land','knockdown_up','knockdown_down'].includes(selected.clip)
+   )){
+    const age = selected.clip === prepared.artCue ? prepared.artCueFrame ?? 0 : frame;
+    selected = { ...selected, index: dojoFrame(clip, age) };
    }else if(clip.durations&&['idle','walk','run','jump_squat','tumble','air_rise_loop','air_apex_loop','air_fall_loop','air_fastfall_loop'].includes(selected.clip)){
     const period=clip.durations.reduce((sum,ticks)=>sum+ticks,0);
     const age=selected.clip==='air_rise_loop'&&prepared.artCue?.startsWith('takeoff_')?Math.max(0,frame-6):frame;
@@ -247,7 +344,7 @@ export class FullBodyPilot {
    }else if(clip.durations&&(state==='GETUP'||state==='GETUP_ROLL'||state==='TRIP_GETUP'||state==='TRIP_ROLL')){
     const hold=clip.durations[0]!+clip.durations[1]!;
     selected={...selected,index:frame<2?this.dojoProneFrame:dojoFrame(clip,hold+frame-2)};
-   }else if(clip.durations&&selected.clip==='teeter_front'){
+   }else if(clip.durations&&(selected.clip==='teeter_front'||(pack03&&selected.clip==='teeter_back'))){
     const period=clip.durations.reduce((sum,ticks)=>sum+ticks,0);
     selected={...selected,index:dojoFrame(clip,(prepared.artCueFrame??frame)%period)};
    }else if(selected.clip==='double_jump_transition'){
@@ -284,23 +381,37 @@ export class FullBodyPilot {
   this.sprite.label=selected.clip;
   this.sprite.texture=drawing.texture;
   this.sprite.rotation=clip.rotationPeriod?(Math.max(0,Math.floor(Number.isFinite(frame)?frame:0))%clip.rotationPeriod)/clip.rotationPeriod*Math.PI*2:0;
-  this.sprite.scale.set(clip.scale*(clip.mirrorSource?-1:1)*(drawing.mirrorSource?-1:1)*(this.reaction?reactionFlip:selected.clip==='grab_release'?this.lastVictimFlip:['grabbed','pummel_victim'].includes(selected.clip)?victimFlip:(selected.clip==='roll'||selected.clip==='tech_roll')?rollDirection:1),clip.scale);
+  const impactVx = prepared.impactVx ?? 0;
+  const launchFlip = pack03 && (selected.clip === 'hit_launch' || selected.clip === 'tumble') &&
+    Math.abs(impactVx) > 0.2 ? -Math.sign(impactVx)*facing : 1;
+  // The wall side identifies the contacted face of the platform.
+  const wallSide = prepared.wallTechSide;
+  const wallFlip = pack03 && wallSide && selected.index < 5 &&
+    (selected.clip === 'wall_tech' || selected.clip === 'wall_tech_jump')
+    ? (wallSide === 'left' ? 1 : -1) * facing : 1;
+  this.sprite.scale.set(wallFlip*launchFlip*clip.scale*(clip.mirrorSource?-1:1)*(drawing.mirrorSource?-1:1)*(this.reaction?reactionFlip:selected.clip==='grab_release'?this.lastVictimFlip:['grabbed','pummel_victim'].includes(selected.clip)?victimFlip:((selected.clip==='roll'&&!pack03)||selected.clip==='tech_roll')?rollDirection:1),clip.scale);
   const newcomerHeld=this.artId&&['grabbed','pummel_victim','grab_release'].includes(selected.clip);
   if(newcomerHeld)this.sprite.scale.x*=-1;
-  const airborneSpecial=state==='AIR_ATTACK'&&drawing.airRoot;const root=airborneSpecial?drawing.airRoot!:drawing.root;
+  const airRoot = state === 'AIR_ATTACK' || (pack03 && (airborne || state === 'HELPLESS' || state === 'AIR_DODGE' || selected.clip === 'shield_break_launch' ||
+      (state === 'HITSTUN' && ['hit_air','hit_launch','tumble'].includes(selected.clip)))) ? drawing.airRoot : undefined;
+  const root = airRoot ?? drawing.root;
   this.sprite.pivot.set(root[0],root[1]);
   const floorOffset=this.artId?getCharacterStats(this.characterId).hurtboxRadius:drawing.offsetY;
-  this.sprite.position.set(0,airborneSpecial?0:floorOffset);
+  this.sprite.position.set(0,airRoot ? 0 : floorOffset);
   if(grabVictim&&grabOwner){
    const owner=selectPilotFrame(grabOwner.state,grabOwner.frame,grabOwner.move,0,true,false,grabOwner.characterId);
    const holder=owner?this.assets.characters[grabOwner.artId??grabOwner.characterId]?.[owner.clip]:undefined;
    if(owner&&holder){
-    const hi=grabOwner.artId?(owner.clip==='grab_hold'?0:owner.index>=3?1:0):owner.index;
+    const pack03Pummel = isPack03PilotId(grabOwner.artId) && owner.clip==='pummel';
+    const pack03Throw = isPack03PilotId(grabOwner.artId) && owner.clip.endsWith('_throw');
+    const startup = grabOwner.move ? getMoveDataForCharacter(grabOwner.characterId, grabOwner.move).startupFrames : 1;
+    const heldThrowAge = Math.min(grabOwner.frame / Math.max(1, startup), 0.999) * (holder.activeWindow?.[0] ?? 0);
+    const hi=pack03Throw?dojoFrame(holder,heldThrowAge):pack03Pummel?owner.index:grabOwner.artId?(owner.clip==='grab_hold'?0:owner.index>=3?1:0):owner.index;
     const receiver=newcomerHeld?{...clip,mirrorSource:!clip.mirrorSource}:clip;
     this.lastHolder={clip:holder,index:hi,owner:grabOwner};
     this.lastContactFacing=grabOwner.facing;
     this.contactRebase=false;
-    this.lastContact=solveGrabContact(holder,hi,receiver,selected.index,grabOwner.dx,grabOwner.dy,owner.clip.endsWith('_throw'));
+    this.lastContact=solveGrabContact(holder,hi,receiver,selected.index,grabOwner.dx,grabOwner.dy,!pack03Throw && owner.clip.endsWith('_throw'));
     this.sprite.position.x=this.lastContact[0]*grabOwner.facing*facing;
     this.sprite.position.y+=this.lastContact[1];
    }
@@ -351,6 +462,10 @@ export class FullBodyPilot {
    const grip=this.artId&&contact?footstoolPoint(clip,selected.index,'ledgeGrip',inward):null;
    if(contact&&grip){
     contactCorrection={kind:"ledge",x:contact.dx-grip[0],y:contact.dy-grip[1]};
+   }else if(pack03 && contact && selected.index>=2 &&
+       (selected.clip==='ledge_climb' || selected.clip==='ledge_roll' || selected.clip==='ledge_attack')){
+    // The simulation holds its ledge position until the getup completes.
+    contactCorrection={kind:'ledge',x:0,y:contact.dy-floorOffset};
 
    }
   }

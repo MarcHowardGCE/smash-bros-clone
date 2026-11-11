@@ -1,10 +1,10 @@
 import { getStageLayout } from '@smash/shared';
 import type { StageConfig } from '../stages/stageConfig';
-import { controllerPrompt, type PromptRenderer } from './controllerPrompts';
 import { escapeHtml, fighterPortrait, WORLD_STORIES } from './selectionContent';
 
 export function worldArtwork(stage: StageConfig): string {
   const base = import.meta.env.BASE_URL || '/';
+  if(stage.menuImage)return base+'menu-art/'+stage.menuImage;
   return base + (WORLD_STORIES[stage.id] ? 'menu-art/'+stage.id+'.webp' : 'backgrounds/'+stage.backgroundImage);
 }
 
@@ -26,11 +26,9 @@ export function renderWorldPreview(
   panel: HTMLElement,
   stages: readonly StageConfig[],
   index: number,
-  prompt: PromptRenderer = controllerPrompt,
-  showShortcut = true,
 ): void {
   const stage = stages[index];
-  const id = stage?.id ?? 'random';
+  const id = stage ? stage.id+(stage.backgroundVariant===undefined?'':':'+stage.backgroundVariant) : 'random';
   if (panel.dataset.worldPreview === id) return;
   panel.dataset.worldPreview = id;
   if (!stage) {
@@ -43,19 +41,10 @@ export function renderWorldPreview(
   const info = WORLD_STORIES[stage.id];
   panel.innerHTML = `<div class="world-art-slot"><img src="${escapeHtml(worldArtwork(stage))}" alt=""></div>
     <div class="world-preview-summary"><span class="menu-kicker">World ${String(index+1).padStart(2,'0')}</span>
-      <h2>${escapeHtml(stage.displayName)}</h2><p>${escapeHtml(info?.hook ?? '')}</p>
+      <h2>${escapeHtml(stage.displayName)}</h2><p class="world-hook">${escapeHtml(info?.hook ?? '')}</p>
       ${arenaDiagram(stage)}
-      ${info ? `<button type="button" id="stage-story-toggle" class="menu-quiet" aria-expanded="false" aria-controls="stage-story">World story${showShortcut ? ' · '+prompt('story')+' / I' : ''}</button>
-        <p id="stage-story" tabindex="0" hidden>${escapeHtml(info.story)}</p>` : ''}
+      ${info ? `<p id="stage-story">${escapeHtml(info.story)}</p>` : ''}
     </div>`;
-  panel.querySelector('#stage-story-toggle')?.addEventListener('click', () => toggleWorldStory(panel));
-}
-
-export function toggleWorldStory(root: HTMLElement): void {
-  const story = root.querySelector<HTMLElement>('#stage-story');
-  if (!story) return;
-  story.hidden = !story.hidden;
-  root.querySelector('#stage-story-toggle')?.setAttribute('aria-expanded', String(!story.hidden));
 }
 
 export interface MatchIntro {

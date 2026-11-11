@@ -4,7 +4,7 @@
  * Implements {@link IPartRenderer} using PixiJS {@link Sprite} instances.
  * Texture lookup is injected so this renderer stays synchronous and testable.
  */
-import type { CharacterId } from '@smash/shared';
+import { isCharacterId, type CharacterId } from '@smash/shared';
 import { Container, Filter, GlProgram, GpuProgram, Sprite } from 'pixi.js';
 import type { Texture } from 'pixi.js';
 import type { FighterPart, IPartRenderer, PartTransform, PatternDescriptor } from './IPartRenderer';
@@ -181,7 +181,7 @@ export class SpritePartRenderer implements IPartRenderer {
     this.clampedSlotIndex = clampSlotIndex(slotIndex);
     this.container = new Container();
 
-    const artId = characterId === 'moonshine' ? 'swift' : characterId === 'hulk-hoagie' ? 'abe-lincoln' : characterId;
+    const artId = characterId === 'moonshine' ? 'swift' : characterId === 'hulk-hoagie' ? 'abe-lincoln' : isCharacterId(characterId) ? characterId : 'all-rounder';
     const contract = FIGHTER_VISUAL_CONTRACTS[artId];
     const sprites = {} as Record<FighterPart, Sprite>;
     const fitScaleByPart = {} as Record<FighterPart, number>;

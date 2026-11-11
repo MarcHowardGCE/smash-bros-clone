@@ -130,8 +130,9 @@ export function getActiveHitboxWorldPos(player:PlayerState,hitbox:HitboxData):Ci
 }
 /** Narrow vertical damage capsule; physics/ground/ledge radius is deliberately independent. */
 export function getDamageHurtbox(player:PlayerState):{x:number;top:number;bottom:number;radius:number}{
- const radius=player.characterId==='abe-lincoln'?15:player.characterId==='swift'?11:12;
- const height=player.characterId==='abe-lincoln'?98:player.characterId==='swift'?78:82;
+ const id = player.characterId;
+ const radius = id === 'mrs-tasselbottom' ? 17 : id === 'abe-lincoln' ? 15 : id === 'swift' || id === 'loopy' ? 11 : 12;
+ const height = id === 'mrs-tasselbottom' ? 76 : id === 'abe-lincoln' ? 98 : id === 'loopy' ? 90 : id === 'swift' ? 78 : 82;
  const feet=player.y+getCharacterStats(player.characterId).hurtboxRadius;
  const crouched=player.state==='CROUCH',h=crouched?height*.6:height;
  const center=player.isGrounded?feet-h/2:player.y;

@@ -1,0 +1,31 @@
+{
+  "revision": 18,
+  "date": "2026-11-10",
+  "method": "AI-generated compact crouched strike drawings, manual hand-contact registration, no engine hitbox changes",
+  "constraints": [
+    "Preserve approved identity and palette",
+    "No glow or effects",
+    "Transparent background",
+    "Loopy jersey has no number or lettering"
+  ],
+  "sources": [
+    {
+      "fighter": "mr-wrong",
+      "source": "mr-wrong-getup-contacts.png",
+      "sha256": "0deb914bd7dd9dd0b5523765aa26ea65fe7155d23847a038e1cc6bf8641e3f4f",
+      "layout": "2 columns by 2 rows: face-up front/rear, face-down front/rear"
+    },
+    {
+      "fighter": "loopy",
+      "source": "loopy-getup-contacts.png",
+      "sha256": "0d412041f68e30addfd4790d0cf4e8359f98a0af545551e8bd7d6d18b6a61734",
+      "layout": "2 columns by 2 rows: face-up front/rear, face-down front/rear"
+    },
+    {
+      "fighter": "mrs-tasselbottom",
+      "source": "mrs-tasselbottom-getup-contacts.png",
+      "sha256": "4cac8abe1ace9739bf3a044eba42f19ca10cbba7fccd1009797c6bb40f1d3aa0",
+      "layout": "2 columns by 2 rows: face-up front/rear, face-down front/rear"
+    }
+  ]
+}

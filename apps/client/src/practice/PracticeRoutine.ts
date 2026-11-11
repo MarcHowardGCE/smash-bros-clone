@@ -1,4 +1,4 @@
-import{INPUT_BITS as B,type InputEvent,type CharacterId,isCharacterId}from'@smash/shared';
+import{INPUT_BITS as B,type InputEvent,type CharacterId,isCharacterId,isPack03PilotId}from'@smash/shared';
 export type RoutineFrame=Pick<InputEvent,'held'|'pressed'|'released'|'stickX'|'stickY'|'cStickX'|'cStickY'|'jumpButtons'|'smashAttack'|'smashSensitivity'|'cStickTilt'|'faceAttackHeld'|'faceAttackPressed'|'rightStickHeld'>;
 export interface RoutineTape {version:1;fighter:CharacterId;frames:RoutineFrame[]}
 const fields=['held','pressed','released','stickX','stickY','cStickX','cStickY','jumpButtons','smashAttack','smashSensitivity','cStickTilt','faceAttackHeld','faceAttackPressed','rightStickHeld']as const;
@@ -8,7 +8,7 @@ function mirrorBits(n:number):number{return(n&~(B.LEFT|B.RIGHT))|((n&B.LEFT)?B.R
 /** Validates device storage and copies only supported input fields. Never restores player state. */
 export function decodeRoutine(raw:string|null):RoutineTape|null{
  if(!raw||raw.length>500000)return null;
- try{const data=JSON.parse(raw);if(data.version!==1||!(isCharacterId(data.fighter)||data.fighter==='moonshine'||data.fighter==='hulk-hoagie')||!Array.isArray(data.frames)||data.frames.length>MAX_ROUTINE_TICKS)return null;
+ try{const data=JSON.parse(raw);if(data.version!==1||!(isCharacterId(data.fighter)||data.fighter==='moonshine'||data.fighter==='hulk-hoagie'||isPack03PilotId(data.fighter))||!Array.isArray(data.frames)||data.frames.length>MAX_ROUTINE_TICKS)return null;
  const frames:RoutineFrame[]=[];for(const f of data.frames){if(!f||typeof f!=='object')return null;for(const key of['held','pressed','released'])if(!Number.isInteger(f[key])||f[key]<0||f[key]>4095)return null;for(const key of['stickX','stickY','cStickX','cStickY'])if(f[key]!==undefined&&(typeof f[key]!=='number'||!Number.isFinite(f[key])||Math.abs(f[key])>1))return null;if(f.jumpButtons!==undefined&&(!Number.isInteger(f.jumpButtons)||f.jumpButtons<0||f.jumpButtons>3))return null;if(f.smashAttack!==undefined&&typeof f.smashAttack!=='boolean')return null;if(f.faceAttackHeld!==undefined&&typeof f.faceAttackHeld!=='boolean')return null;if(f.faceAttackPressed!==undefined&&typeof f.faceAttackPressed!=='boolean')return null;if(f.rightStickHeld!==undefined&&typeof f.rightStickHeld!=='boolean')return null;if(f.cStickTilt!==undefined&&typeof f.cStickTilt!=='boolean')return null;if(f.smashSensitivity!==undefined&&![-1,0,1].includes(f.smashSensitivity))return null;frames.push(copy(f));}return{version:1,fighter:data.fighter,frames};}catch{return null;}
 }
 /** Tick-indexed input recorder/player. Playback owns no clocks, collisions or fighter state. */

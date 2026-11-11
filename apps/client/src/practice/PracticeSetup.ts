@@ -1,3 +1,4 @@
+import { PACK_03_PILOT_FIGHTERS, isPack03PilotId } from '@smash/shared';
 import { MenuNavigator, type MenuButton } from '../ui/MenuNavigator';
 import { controllerPrompt, type PromptRenderer } from '../ui/controllerPrompts';
 import { getControllerProfile, type ControllerProfile } from '../input/controllerProfiles';
@@ -6,10 +7,14 @@ import { dojoButtonGuide, LESSONS, type PracticeConfig, type DummyMode } from '.
 import { STAGES } from '../stages/stageConfig';
 import { escapeHtml, fighterPortrait } from '../ui/selectionContent';
 
-const fighters = [
+const roster = [
   ['all-rounder','All-Rounder'], ['abe-lincoln','Abe Lincoln'], ['swift','Swift'],
   ['moonshine','Moonshine'], ['hulk-hoagie','“Hulk” Hoagie'],
 ] as const;
+const fighters = [
+  ...roster,
+  ...PACK_03_PILOT_FIGHTERS.map(({ id, name }) => [id, name + ' (pilot)'] as const),
+];
 const modes: readonly DummyMode[] = ['still','shield','jab','mixed','up-smash','grab'];
 const behaviorNames = ['Passive','Shield','Telegraphed jab','Alternating attack / special','Telegraphed two-hit up smash','Telegraphed grab'];
 const tiers = ['Basics','Advanced','Subtle'] as const;
@@ -69,13 +74,20 @@ export function renderPracticeSetup(
     catch { return false; }
   };
   function refresh(highlight = 'dojo-mode-free'): void {
+    if (guided) {
+      if (fighter >= roster.length) fighter = 0;
+      if (partner >= roster.length) partner = 0;
+    }
     try { localStorage.setItem(selectionKey, JSON.stringify(config(guided ? lesson.id : null))); } catch { /* session still works */ }
     label('dojo-fighter','Fighter · '+fighters[fighter]![1]);
     label('dojo-partner','Partner · '+fighters[partner]![1]);
     label('dojo-stage','World · '+STAGES[stage]!.displayName);
     label('dojo-behavior','Partner behavior · '+behaviorNames[mode]);
-    get<HTMLImageElement>('dojo-fighter-art').src = fighterPortrait(fighters[fighter]![0]);
-    get<HTMLImageElement>('dojo-partner-art').src = fighterPortrait(fighters[partner]![0]);
+    for (const [element, id] of [['dojo-fighter-art', fighters[fighter]![0]], ['dojo-partner-art', fighters[partner]![0]]] as const) {
+      get<HTMLImageElement>(element).src = isPack03PilotId(id)
+        ? import.meta.env.BASE_URL + 'fighter-art-pack-03-v1/' + id + '-idle.png'
+        : fighterPortrait(id);
+    }
     get('dojo-mode-free').setAttribute('aria-pressed', String(!guided));
     get('dojo-mode-lessons').setAttribute('aria-pressed', String(guided));
     for (const id of ['dojo-free-pane','dojo-behavior','practice-free']) get(id).hidden = guided;
@@ -104,14 +116,19 @@ export function renderPracticeSetup(
     element.addEventListener('focus',()=>nav.selectIndex(visible.findIndex(entry=>entry.id===id)));
     all.set(id,{id,element,onActivate:action,onAdjust:adjust});
   }
-  function cycle(id: string, length: number, read: () => number, write: (value: number) => void): void {
-    const adjust = (delta: -1 | 1) => { write((read()+delta+length)%length); refresh(id); };
+  function cycle(id: string, length: number | (() => number), read: () => number, write: (value: number) => void): void {
+    const adjust = (delta: -1 | 1) => {
+      const count = typeof length === 'function' ? length() : length;
+      write((read() + delta + count) % count);
+      refresh(id);
+    };
     bind(id,()=>adjust(1),adjust);
   }
   bind('dojo-mode-free',()=>{guided=false;refresh('dojo-mode-free');});
   bind('dojo-mode-lessons',()=>{guided=true;refresh('dojo-mode-lessons');});
-  cycle('dojo-fighter',fighters.length,()=>fighter,value=>{fighter=value;});
-  cycle('dojo-partner',fighters.length,()=>partner,value=>{partner=value;});
+  const availableFighters = () => guided ? roster.length : fighters.length;
+  cycle('dojo-fighter',availableFighters,()=>fighter,value=>{fighter=value;});
+  cycle('dojo-partner',availableFighters,()=>partner,value=>{partner=value;});
   cycle('dojo-stage',STAGES.length,()=>stage,value=>{stage=value;});
   cycle('dojo-behavior',modes.length,()=>mode,value=>{mode=value;});
   for (const name of tiers) bind('dojo-tier-'+name,()=>{

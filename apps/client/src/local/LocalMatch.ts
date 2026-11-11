@@ -41,6 +41,13 @@ export class LocalMatch {
   get practiceTick():number{return this.engine.getCurrentTick();}
 
   setPracticeSpawn(spawn: Parameters<GameEngine['setPracticeSpawn']>[0]): void { this.engine.setPracticeSpawn(spawn); }
+  previewPracticeShieldBreak(id: PlayerId): boolean {
+    if (!this.engine.previewPracticeShieldBreak(id)) return false;
+    this.latestSnapshot = this.engine.getSnapshot(performance.now(), {});
+    this.onSnapshot?.(this.latestSnapshot);
+    return true;
+  }
+
   getPracticePercent(id: PlayerId): number { return this.engine.getPracticePercent(id); }
   setPracticePercent(id: PlayerId, percent: number): boolean { return this.engine.setPracticePercent(id, percent); }
 

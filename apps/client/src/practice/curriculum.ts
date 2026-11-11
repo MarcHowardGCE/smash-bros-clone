@@ -1,4 +1,4 @@
-import {INPUT_BITS as B,type GameState,type InputEvent,type PlayerState,type CharacterId,type HitEventData,type KOEventData} from '@smash/shared';
+import {INPUT_BITS as B,isPack03PilotId,type GameState,type InputEvent,type PlayerState,type CharacterId,type HitEventData,type KOEventData} from '@smash/shared';
 import { controllerBindingLabel, type ControllerProfile } from '../input/controllerProfiles';
 
 export function dojoButtonGuide(profile: ControllerProfile, lesson?: Lesson): string {
@@ -12,7 +12,7 @@ export function dojoButtonGuide(profile: ControllerProfile, lesson?: Lesson): st
 }
 
 export function dojoSimulationProfile(id:string):CharacterId{
-  if(id==='moonshine'||id==='hulk-hoagie'||id==='swift'||id==='abe-lincoln')return id;
+  if(id==='moonshine'||id==='hulk-hoagie'||id==='swift'||id==='abe-lincoln'||isPack03PilotId(id))return id;
   return 'all-rounder';
 }
 export type DummyMode='still'|'shield'|'jab'|'mixed'|'up-smash'|'grab';

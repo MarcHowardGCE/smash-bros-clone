@@ -161,7 +161,8 @@ test('compact layout keeps Home and Random World focus outlines clear', async ({
   await page.mouse.move(1, 1);
   await page.keyboard.press('ArrowDown');
   await expect(page.locator('[data-stage-idx="3"]')).toBeFocused();
-  await page.keyboard.press('ArrowDown');
+  const rows = Math.ceil(await page.locator('.world-tile').count() / 3);
+  for (let row = 1; row < rows; row++) await page.keyboard.press('ArrowDown');
   const random = page.locator('.world-random-choice');
   await expect(random).toBeFocused();
   const clearance = await random.evaluate(button => {
@@ -197,6 +198,53 @@ test('short Dojo library keeps its footer below Free Practice and lessons', asyn
         await action.click({ trial: true });
         expect(await library.evaluate(root => root.scrollWidth - root.clientWidth)).toBeLessThanOrEqual(1);
       }
+    }
+  }
+});
+
+test('World Select fits every full story without scrollbars or layout shifts', async ({ page }) => {
+  await openHome(page);
+  await page.locator('#local-play-btn').click();
+  await page.locator('#lps-start-btn').click();
+  await page.locator('[data-ready-slot="0"]').click();
+
+  const shell = page.locator('.world-selection');
+  const tiles = shell.locator('.world-tile');
+  const count = await tiles.count();
+  for (const size of [{ width: 1280, height: 720 }, { width: 800, height: 600 },
+    { width: 640, height: 360 }, { width: 390, height: 640 }, { width: 320, height: 568 }]) {
+    await page.setViewportSize(size);
+    let firstBox: Awaited<ReturnType<typeof shell.boundingBox>>;
+    for (let i = 0; i <= count; i++) {
+      const tile = i === count ? shell.locator('.world-random-choice') : tiles.nth(i);
+      await tile.focus();
+      const label = (await tile.getAttribute('aria-label')) ?? 'Random world';
+      const description = `${size.width}×${size.height} ${label}`;
+      if (i < count) {
+        await expect(shell.locator('.world-preview-summary h2')).toHaveText(label);
+        const story = shell.locator('#stage-story');
+        await expect(story).toBeVisible();
+        const fits = await story.evaluate(paragraph => {
+          const area = document.createRange();
+          area.selectNodeContents(paragraph);
+          const preview = paragraph.closest('.world-preview-panel')!.getBoundingClientRect();
+          return Array.from(area.getClientRects()).every(rect =>
+            rect.top >= Math.max(0, preview.top) && rect.bottom <= Math.min(innerHeight, preview.bottom) &&
+            rect.left >= Math.max(0, preview.left) && rect.right <= Math.min(innerWidth, preview.right));
+        });
+        expect(fits, description).toBe(true);
+      }
+      const scrollContainers = await shell.evaluate(root =>
+        [root, ...root.querySelectorAll('.world-preview-panel, .world-preview-summary')].filter(node => {
+          const style = getComputedStyle(node);
+          return ['auto', 'scroll'].some(value => value === style.overflowX || value === style.overflowY);
+        }).length);
+      expect(scrollContainers, description).toBe(0);
+      const box = (await shell.boundingBox())!;
+      expect(box.y, description).toBeGreaterThanOrEqual(0);
+      expect(box.y + box.height, description).toBeLessThanOrEqual(size.height);
+      if (i === 0) firstBox = box;
+      else expect(box, description).toEqual(firstBox!);
     }
   }
 });

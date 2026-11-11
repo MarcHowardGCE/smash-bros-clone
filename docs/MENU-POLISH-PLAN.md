@@ -478,3 +478,9 @@ Dojo pause tabs now use manual activation. Arrow keys and the controller D-pad m
 In desktop Chrome with Windows Narrator, browsing to Timing & Display spoke its tab name once while Session stayed open. Pressing Enter then spoke the selected Timing & Display tab once. Clicking Settings after the pointer fix spoke the Settings heading once without repeating the selected tab name.
 
 All seven menu browser tests passed, including keyboard and simulated D-pad navigation, pointer focus, and restoration to the Visual Accessibility opener. The native speech check for this change used keyboard and pointer. See the preceding section for the earlier physical-controller result.
+
+### World stories without scrollbars
+
+November 10, 2026. World Select and the online guest preview show the entire selected world story immediately. The story button and its shortcut were removed. Compact layouts prioritize the text and platform diagram and use the world tiles for artwork. The menu keeps its size when changing worlds or previewing Random World.
+
+Chromium checked all nine stories and Random World at 1280×720, 800×600, 640×360, 390×640, and 320×568. Every story line was inside the preview and viewport, with no scrollbar in the selector or story panel. Keyboard focus and Random World navigation also passed. A two-client local check covered all six worlds accepted by the running server at three sizes. The guest showed the full story when the host changed focus. The last three worlds were verified in local selection. [Shared preview](../apps/client/src/ui/WorldPreview.ts) · [Browser regression](../apps/client/e2e/menu-keyboard-focus.spec.ts)

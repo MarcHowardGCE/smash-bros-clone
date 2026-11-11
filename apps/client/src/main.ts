@@ -1,4 +1,4 @@
-import { getCharacterStats, getStageLayout } from '@smash/shared';
+import { getCharacterStats, getStageLayout, isPack03PilotId, PACK_03_PILOT_FIGHTERS } from '@smash/shared';
 import{PracticeRoutine}from'./practice/PracticeRoutine.js';
 import{PracticeOverlay}from'./practice/PracticeOverlay.js';
 import './practice/practice.css';
@@ -18,7 +18,7 @@ import type {
   StateSnapshot,
 } from "@smash/shared";
 import { MoveId, PHYSICS, STAGE } from "@smash/shared";
-import { STAGES, type StageConfig } from "./stages/stageConfig.js";
+import { chooseStageVisual, withStageVisual, STAGES, type StageConfig } from "./stages/stageConfig.js";
 import { GamepadPoller, GamepadPreferenceStore } from "@smash/gamepad-input";
 import { Application, Container } from "pixi.js";
 import {
@@ -168,7 +168,8 @@ async function main() {
   let fallbackSettled = false;
   const fallbackReady = preloadFighterAssets().then(assets => { fighterAssets = assets; fallbackSettled = true; });
   const roster = urlParams.get("renderer") === "legacy"
-    ? AVAILABLE_FIGHTERS : [...AVAILABLE_FIGHTERS, ...NEWCOMER_CHOICES];
+    ? AVAILABLE_FIGHTERS : [...AVAILABLE_FIGHTERS, ...NEWCOMER_CHOICES,
+      ...PACK_03_PILOT_FIGHTERS.map(({ id, name }) => ({ id, displayName: name }))];
   const artworkLoads = new Map<CharacterId, Promise<FullBodyPilotAssets | undefined>>();
   let fullBodyPilot: FullBodyPilotAssets | undefined;
   let effectsLoad: Promise<FullBodyPilotAssets | undefined> | undefined;
@@ -179,7 +180,7 @@ async function main() {
     const fightersReady = Promise.all([...new Set(ids)].map(async id => {
       let pending = artworkLoads.get(id);
       if (!pending) {
-        pending = preloadFullBodyPilot(id === "moonshine" || id === "hulk-hoagie", [id], false, true);
+        pending = preloadFullBodyPilot(id === "moonshine" || id === "hulk-hoagie" || isPack03PilotId(id), [id], false, true);
         artworkLoads.set(id, pending);
       }
       const assets = await pending;
@@ -257,10 +258,10 @@ async function main() {
   stageLoading.style.cssText = "position:fixed;inset:0;z-index:2;background:#211828;color:#f3eee1;text-align:center;align-content:center;font:600 1rem system-ui;pointer-events:none";
   document.body.append(stageLoading);
 
-  function setStageBackground(backgroundImage: string): void {
-    const stageId = backgroundImage.match(/^stage[1-6]/)?.[0] ?? "stage1";
-    if (stageId === renderedStageId) return;
-    renderedStageId = stageId;
+  function setStageBackground({ id: stageId, backgroundImage }: StageConfig): void {
+    const visualKey=stageId+':'+backgroundImage;
+    if (visualKey === renderedStageId) return;
+    renderedStageId = visualKey;
     stageLoading.hidden = false;
     stageRenderer?.destroy?.();
     stageRenderer = null;
@@ -282,7 +283,7 @@ async function main() {
     stageReady = pending;
   }
 
-  if (e2eFixtureEnabled) setStageBackground(STAGES[0]!.backgroundImage);
+  if (e2eFixtureEnabled) setStageBackground(STAGES[0]!);
 
   const fighterRenderers = new Map<PlayerId, FighterRenderer>();
   const e2eRenderers = new Map<PlayerId, FighterRenderer>();
@@ -513,7 +514,7 @@ async function main() {
   const processHitEvents = (events: HitEventData[], players?: RenderState['players']): void => {
     for (const event of events) {
       sfxManager.playHit(event.knockbackMagnitude);
-      if(event.moveId===MoveId.DOWN_SPECIAL)fighterRenderers.get(event.attackerId)?.startCounterReaction();
+      if(event.moveId===MoveId.DOWN_SPECIAL)fighterRenderers.get(event.attackerId)?.startCounterReaction(players?.get(event.attackerId)?.stateFrame);
       const defenderRenderer = fighterRenderers.get(event.defenderId);
       if (event.moveId === MoveId.PUMMEL || [MoveId.FORWARD_THROW, MoveId.BACK_THROW, MoveId.UP_THROW, MoveId.DOWN_THROW].includes(event.moveId)) {
         const attacker = fighterRenderers.get(event.attackerId);
@@ -638,7 +639,7 @@ async function main() {
           shieldHealth: playerState.shieldHealth,
           currentMoveId: playerState.currentMoveId,
           characterId: playerState.characterId,
- dodgeLevel:playerState.dodgeLevel,dodgeKind:playerState.dodgeKind,koVisual:playerState.koVisual,tauntKind:playerState.tauntKind,hitReaction:playerState.hitReaction,artCue:playerState.artCue,artCueFrame:playerState.artCueFrame,respawnTimer:playerState.respawnTimer,footstoolRole:playerState.footstoolRole,footstoolPartnerId:playerState.footstoolPartnerId,footstoolFrame:playerState.footstoolFrame,shieldReaction:playerState.shieldReaction,shieldReactionFrame:playerState.shieldReactionFrame,hitstunFramesRemaining:playerState.hitstunFramesRemaining,floorOrientation:playerState.floorOrientation,floorRollDirection:playerState.floorRollDirection,isFastFalling:playerState.isFastFalling,airDodgeDirection:playerState.airDodgeDirection,hasDoubleJump:playerState.hasDoubleJump,isTumbling:playerState.isTumbling,chargeFrames:playerState.chargeFrames,isGrabbing:playerState.isGrabbing,grabbedPlayerId:playerState.grabbedPlayerId,ledgeId:playerState.ledgeId,
+ dodgeLevel:playerState.dodgeLevel,dodgeKind:playerState.dodgeKind,koVisual:playerState.koVisual,tauntKind:playerState.tauntKind,hitReaction:playerState.hitReaction,impactVx:playerState.pendingKnockbackVx??playerState.vx,wallTechSide:playerState.wallTechRecovery?.side ?? playerState.launchImpact?.wall,artCue:playerState.artCue,artCueFrame:playerState.artCueFrame,respawnTimer:playerState.respawnTimer,footstoolRole:playerState.footstoolRole,footstoolPartnerId:playerState.footstoolPartnerId,footstoolFrame:playerState.footstoolFrame,shieldReaction:playerState.shieldReaction,shieldReactionFrame:playerState.shieldReactionFrame,hitstunFramesRemaining:playerState.hitstunFramesRemaining,floorOrientation:playerState.floorOrientation,floorRollDirection:playerState.floorRollDirection,isFastFalling:playerState.isFastFalling,airDodgeDirection:playerState.airDodgeDirection,hasDoubleJump:playerState.hasDoubleJump,isTumbling:playerState.isTumbling,chargeFrames:playerState.chargeFrames,isGrabbing:playerState.isGrabbing,grabbedPlayerId:playerState.grabbedPlayerId,ledgeId:playerState.ledgeId,
         },
       ]),
     );
@@ -650,7 +651,7 @@ async function main() {
     };
   };
 
-  const newcomerArtId=(id?:CharacterId):DojoArtId|undefined=>id==='moonshine'||id==='hulk-hoagie'?id:undefined;
+  const newcomerArtId=(id?:CharacterId):DojoArtId|undefined=>id==='moonshine'||id==='hulk-hoagie'||isPack03PilotId(id)?id:undefined;
   const updateCamera = (state: RenderState): void => {
     if (state.matchPhase !== 'match') return;
     const positions = [...state.players.values()].filter(player => player.stocks > 0 && !player.isKnockedOut);
@@ -869,7 +870,7 @@ async function main() {
         data.confirmed,
       );
     },
-    onStageChanged:(id)=>{const stage=STAGES.find(s=>s.id===id);if(stage){selectedStage=stage;setStageBackground(stage.backgroundImage);}},
+    onStageChanged:(id,variant)=>{const stage=STAGES.find(s=>s.id===id);if(stage){selectedStage=withStageVisual(stage,variant);setStageBackground(selectedStage);}},
     onSelectionState:(state)=>{
       if (!state.preparation) onlinePreparationId = undefined;
       if (state.phase !== 'STAGE_SELECT') onlineLineup = undefined;
@@ -884,7 +885,7 @@ async function main() {
         if(onlineSelectionScreen!=='fighters')showOnlineFighters(state.players.map(p=>p.playerId));
         for(const p of state.players)uiManager.updateNetworkCharacterSelect(p.playerId,p.characterId,p.confirmed);
       }else if(state.phase==='STAGE_SELECT'){
-        const stage=STAGES.find(s=>s.id===state.stageId)??STAGES[0]!;
+        const stage=withStageVisual(STAGES.find(s=>s.id===state.stageId)??STAGES[0]!,state.stageBackgroundVariant);
         const error=(result:{ok:true}|{error:string})=>{if('error'in result){onlineSelectionScreen=null;gameClient.refreshSelectionState();uiManager.showNetworkCharacterSelectConfirmError(result.error);}};
         const lineup = [...new Set(state.players.map(player => player.characterId as CharacterId))].sort();
         const lineupKey = lineup.join(',');
@@ -918,7 +919,7 @@ async function main() {
         if(state.hostPlayerId===myPlayerId){
           if(onlineSelectionScreen!=='host-stage'){
             onlineSelectionScreen='host-stage';
-            uiManager.showStageSelect(STAGES,chosen=>gameClient.selectStage(chosen.id,result=>{if('error'in result){error(result);return;}gameClient.confirmStage(error);}),()=>gameClient.selectionBack(error),preview=>gameClient.selectStage(preview.id,error),state.stageId);
+            uiManager.showStageSelect(STAGES,chosen=>gameClient.selectStage(chosen.id,result=>{if('error'in result){error(result);return;}gameClient.confirmStage(error);},chosen.backgroundVariant),()=>gameClient.selectionBack(error),preview=>gameClient.selectStage(preview.id,error,preview.backgroundVariant),state.stageId);
           }
         }else{onlineSelectionScreen='guest-stage';uiManager.showNetworkStageWaiting(stage,()=>gameClient.unconfirmCharacter(error));}
       }
@@ -1102,7 +1103,7 @@ async function main() {
     const pendingMatch = localMatch;
     const intro = { stage: selectedStage, fighters: choices.map((fighter, slotIndex) => ({ ...fighter, slotIndex })) };
     if (!practice) uiManager.showCountdown(null, intro);
-    setStageBackground(selectedStage.backgroundImage);
+    setStageBackground(selectedStage);
     await Promise.all([stageReady, prepareFighters(allPlayerIds.map(id => characterIds[id] ?? "all-rounder"))]);
     if (localMatch !== pendingMatch) return;
     koPresenter.setAssets(fullBodyPilot);
@@ -1151,7 +1152,7 @@ async function main() {
               (chosenStage) => {
                 selectedStage = chosenStage;
                 // Update CSS background with new stage
-                setStageBackground(chosenStage.backgroundImage);
+                setStageBackground(chosenStage);
                 // Destroy old stage graphics and recreate
                 // setStageBackground has already selected matching geometry and art.
                 reopenLocalFighters = () => showFighters(choices);
@@ -1207,7 +1208,7 @@ async function main() {
         status.textContent='Fighter artwork could not load. Try again or choose a different fighter.';
         return;
       }
-      selectedStage=STAGES.find(s=>s.id===config.stageId)??STAGES[0]!;setStageBackground(selectedStage.backgroundImage);
+      selectedStage=chooseStageVisual(STAGES.find(s=>s.id===config.stageId)??STAGES[0]!);setStageBackground(selectedStage);
       startLocalMatchWithSeats({participantCount:2,seats:[{kind:'cpu',difficulty:'easy'}]},[{id:config.fighter,displayName:config.fighter},{id:config.dummy,displayName:config.dummy}],config);
     },()=>uiManager.onMainMenu?.());
   };
@@ -1232,7 +1233,7 @@ async function main() {
     if (!match) return;
     clearLocalResult();
     selectedStage = match.stage;
-    setStageBackground(selectedStage.backgroundImage);
+    setStageBackground(selectedStage);
     void startLocalMatchWithSeats(match.setup, match.choices);
   };
 

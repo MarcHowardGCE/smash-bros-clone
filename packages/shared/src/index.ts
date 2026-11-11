@@ -10,7 +10,7 @@ export type { InputBitmask, InputEvent } from './types/InputEvent.js';
 export { INPUT_BITS } from './types/InputEvent.js';
 export type { MoveData } from './types/MoveData.js';
 export { MoveId } from './types/MoveData.js';
-export type { CharacterId, CharacterStats, MatchCharacterId } from './types/Character.js';
+export type { CharacterId, CharacterStats, MatchCharacterId, Pack03PilotId } from './types/Character.js';
 export { PlayerStateEnum } from './types/PlayerFSMState.js';
 
 // Constants
@@ -21,7 +21,7 @@ export type { Stage } from './constants/stage.js';
 export { MATCH_CONFIG } from './constants/matchConfig.js';
 export { BOT_DIFFICULTY_PRESETS } from './constants/botDifficulty.js';
 export type { BotDifficulty } from './constants/botDifficulty.js';
-export { ALL_ROUNDER_STATS, ABE_LINCOLN_STATS, SWIFT_STATS, CHARACTER_REGISTRY, CHARACTER_IDS, getCharacterStats, isCharacterId } from './constants/characters.js';
+export { ALL_ROUNDER_STATS, ABE_LINCOLN_STATS, SWIFT_STATS, CHARACTER_REGISTRY, CHARACTER_IDS, getCharacterStats, isCharacterId, PACK_03_PILOT_FIGHTERS, isPack03PilotId } from './constants/characters.js';
 export { VERSION } from './version.js';
 
 // Math utilities
@@ -42,4 +42,5 @@ export {inputVector,validStickInput} from './math/input.js';
 export {STAGE_LAYOUTS,getStageLayout} from './constants/stageLayouts.js';
 export type {StageLayout} from './constants/stageLayouts.js';
 
+export {STAGE_BACKGROUND_VARIANTS,isStageBackgroundVariant} from './constants/stageVisuals.js';
 export {isActiveShield} from './math/shield.js';

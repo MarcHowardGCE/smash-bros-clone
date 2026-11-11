@@ -31,10 +31,10 @@ export class StageRenderer {
   private draw(main?:Texture,soft?:Texture):void {
     for(const child of this.container.removeChildren())child.destroy();
     const stage=this.stage;
-    const palette:Record<string,number>={stage1:0xd9c699,stage2:0xa9e0d0,stage3:0xd2ac57,stage4:0xe2bb6c,stage5:0xf2dec0,stage6:0xe2bf78};
+    const palette:Record<string,number>={stage1:0xd9c699,stage2:0xa9e0d0,stage3:0xd2ac57,stage4:0xe2bb6c,stage5:0xf2dec0,stage6:0xe2bf78,stage7:0xffdda0,stage8:0xffe7ab,stage9:0xf5d9e8,stage10:0xffe3a1};
     const lip=palette[stage.id]??0xe2bf78;
     const add=(platform:StageLayout['mainPlatform'],texture:Texture|undefined,isMain:boolean)=>{
-      if(texture){const sprite=new Sprite(texture);sprite.position.set(platform.x,platform.y);sprite.width=platform.width;sprite.height=isMain?Math.min(105,platform.width*texture.height/texture.width):Math.max(platform.height,Math.min(40,platform.width*texture.height/texture.width));this.container.addChild(sprite);}
+      if(texture){const sprite=new Sprite(texture);sprite.position.set(platform.x,platform.y);sprite.width=platform.width;sprite.height=isMain?Math.min(105,platform.width*texture.height/texture.width):Math.max(platform.height,Math.min(40,platform.width*texture.height/texture.width));if(stage.id==='stage10')sprite.y-=sprite.height*(isMain?85/344:63/199);this.container.addChild(sprite);}
       else{const fallback=new Graphics().rect(platform.x,platform.y,platform.width,isMain?55:20).fill({color:0x493342});this.container.addChild(fallback);}
       // The flat rim is the exact landing surface; decorative depth below it is non-colliding.
       const rim=new Graphics().rect(platform.x,platform.y,platform.width,2.5).fill({color:lip}).rect(platform.x,platform.y+2.5,platform.width,1).fill({color:0x261d26});this.container.addChild(rim);

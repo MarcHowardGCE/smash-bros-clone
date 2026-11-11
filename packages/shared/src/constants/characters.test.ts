@@ -83,7 +83,7 @@ describe('Character Stats Registry', () => {
 
     it('registers all five fighters', () => {
       expect(Object.keys(CHARACTER_REGISTRY).sort()).toEqual([
-        'abe-lincoln', 'all-rounder', 'hulk-hoagie', 'moonshine', 'swift',
+        'abe-lincoln', 'all-rounder', 'hulk-hoagie', 'loopy', 'moonshine', 'mr-wrong', 'mrs-tasselbottom', 'swift',
       ]);
     });
   });

@@ -1,0 +1,21 @@
+{
+  "source": "platform-layout.png",
+  "sprites": [
+    {
+      "file": "stage10-main.webp",
+      "left": 0,
+      "top": 519,
+      "width": 1774,
+      "height": 344,
+      "landingLine": 85
+    },
+    {
+      "file": "stage10-soft.webp",
+      "left": 530,
+      "top": 29,
+      "width": 704,
+      "height": 199,
+      "landingLine": 63
+    }
+  ]
+}

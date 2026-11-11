@@ -17,3 +17,13 @@ it('a fresh leftward analog dash shows dash start instead of a standing turn',()
  const after={...p,state:'DASH',facing:-1} as PlayerState;
  expect(withMovementArt({...p,artCue:'turn_stand',artCueFrame:1},after,input,DEFAULT_STAGE).artCue).toBeUndefined();
 });
+
+it('cues a gentle Pack 03 touchdown and cancels the presentation when movement resumes', () => {
+ const grounded = { ...p, characterId: 'loopy' as const };
+ const descending = { ...grounded, state: 'AIRBORNE', isGrounded: false, vy: 6 };
+ const soft = withMovementArt(descending, { ...grounded, state: 'AIRBORNE' }, null, DEFAULT_STAGE);
+ expect(soft).toMatchObject({ state: 'AIRBORNE', isGrounded: true, artCue: 'land_soft', artCueFrame: 0 });
+ expect(withMovementArt({ ...descending, vy: 14 }, grounded, null, DEFAULT_STAGE).artCue).toBe('land_heavy');
+ expect(withMovementArt(soft, { ...grounded, state: 'WALK' }, null, DEFAULT_STAGE).artCue).toBeUndefined();
+ expect(withMovementArt({ ...descending, characterId: 'swift' }, { ...grounded, characterId: 'swift' }, null, DEFAULT_STAGE).artCue).toBeUndefined();
+});

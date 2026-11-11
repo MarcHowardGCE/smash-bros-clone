@@ -1,0 +1,192 @@
+{
+  "date": "2026-11-10",
+  "atlasRevision": 18,
+  "method": "Built-in image editing replaced the original 24 production sources; revision 18 adds a number-free compact get-up contact source.",
+  "costumeRule": "Plain cream jersey front and back with existing purple trim. No numbers, lettering, or directional emblems. Sprites are mirrored in gameplay.",
+  "prompt": "Remove all printed jersey digits, including partial, rotated and back-facing digits. Replace with matching plain cream fabric and folds. Preserve poses, silhouettes, palette, trim, sheet dimensions, cell layout, and transparency. No replacement symbols. The compact-strike retry additionally pins its top-right fist near original x1340,y238.",
+  "sheets": [
+    {
+      "file": "loopy-aerial-horizontal.png",
+      "width": 1487,
+      "height": 1058,
+      "sha256": "0c9b8dcaddd4adefa498b86cbb44ba15b88271c91105ca88afb9ba4625c98de4",
+      "review": "Visual review: no jersey digits; source dimensions retained"
+    },
+    {
+      "file": "loopy-aerial-vertical.png",
+      "width": 1536,
+      "height": 1024,
+      "sha256": "27ab5e58e703785a064159bb2f3ca7a47714d1d4153aee3f23135efd74830c6f",
+      "review": "Visual review: no jersey digits; source dimensions retained"
+    },
+    {
+      "file": "loopy-air-dodge-land.png",
+      "width": 1448,
+      "height": 1086,
+      "sha256": "7d3f854652ce325f98875dfa495ef561dbc6baaaddd0bdfe6c9a6cd6af018972",
+      "review": "Visual review: no jersey digits; source dimensions retained"
+    },
+    {
+      "file": "loopy-compact-strikes.png",
+      "width": 1536,
+      "height": 1024,
+      "sha256": "c2107de1f81b195203a878b9e8451fb54da7fdb35db50ddce57569b45c9d0f5f",
+      "review": "Number-free jersey retained; broad translucent halo removed and jab contacts reviewed on light/dark backgrounds."
+    },
+    {
+      "file": "loopy-contact.png",
+      "width": 1774,
+      "height": 887,
+      "sha256": "f50fce95262f9f056422043a6f93aa1faf02d83ac0dbac700e25a14828f16b49",
+      "review": "Visual review: no jersey digits; source dimensions retained"
+    },
+    {
+      "file": "loopy-dash-smash-forward.png",
+      "width": 1774,
+      "height": 887,
+      "sha256": "4b68d497b6a66959bb586940f039fdc405b5a98636fa030c3ddeb9cf8733d03f",
+      "review": "Visual review: no jersey digits; source dimensions retained"
+    },
+    {
+      "file": "loopy-defense-evade.png",
+      "width": 1448,
+      "height": 1086,
+      "sha256": "e1b12a93acafe68e62a0ad8a9855cc80028ce64647c3e68356ad92c19a0b610f",
+      "review": "Visual review: no jersey digits; source dimensions retained"
+    },
+    {
+      "file": "loopy-defense-guard.png",
+      "width": 1536,
+      "height": 1024,
+      "sha256": "0ecb3143f542a5e636a2b7aefd0991cc8ac03c6d4b2401fae11120b0ad46e552",
+      "review": "Visual review: no jersey digits; source dimensions retained"
+    },
+    {
+      "file": "loopy-edges.png",
+      "width": 1774,
+      "height": 887,
+      "sha256": "f05fce38a34fc6b469ca72d9e1085512da7cdbb2df7e60b8609f73242ee30de3",
+      "review": "Visual review: no jersey digits; source dimensions retained"
+    },
+    {
+      "file": "loopy-gait.png",
+      "width": 1774,
+      "height": 887,
+      "sha256": "2cce68c7b75913498bb14034a2aaa0934d8b815d9e21400f4650d7590754ad29",
+      "review": "Visual review: no jersey digits; source dimensions retained"
+    },
+    {
+      "file": "loopy-getup-down.png",
+      "width": 1448,
+      "height": 1086,
+      "sha256": "fa01f6fa3d626b6d517c994f02d9a153707cc385dde86a6125237a5c8dafbc70",
+      "review": "Visual review: no jersey digits; source dimensions retained"
+    },
+    {
+      "file": "loopy-getup-up.png",
+      "width": 1448,
+      "height": 1086,
+      "sha256": "4eca6c95d29fa4edc8caf57321fc7b48b14e93fa779c34ae36f5fd2283a00aa8",
+      "review": "Visual review: no jersey digits; source dimensions retained"
+    },
+    {
+      "file": "loopy-hit-launch-tumble.png",
+      "width": 1448,
+      "height": 1086,
+      "sha256": "9f19af1c740f6813b66308df025654c4876b9bde979ccf9e5fdc71e45e008f57",
+      "review": "Visual review: no jersey digits; source dimensions retained"
+    },
+    {
+      "file": "loopy-jabs.png",
+      "width": 1448,
+      "height": 1086,
+      "sha256": "acda33afc3a95a67db4d52a098ff198668c195f4d4d0f682dbc7a5597a96efce",
+      "review": "Visual review: no jersey digits; source dimensions retained"
+    },
+    {
+      "file": "loopy-movement.png",
+      "width": 1448,
+      "height": 1086,
+      "sha256": "6929309a478327c8ccc52f136ce978dea2655a137ff71776c0afe4a805038558",
+      "review": "Visual review: no jersey digits; source dimensions retained"
+    },
+    {
+      "file": "loopy-raised-strikes.png",
+      "width": 2172,
+      "height": 724,
+      "sha256": "7bbf072a58fbe1902474a2d5999a208ebcbed6e43c6d01a8ca21dd619cf46016",
+      "review": "Visual review: no jersey digits; source dimensions retained"
+    },
+    {
+      "file": "loopy-shield-break.png",
+      "width": 1448,
+      "height": 1086,
+      "sha256": "18ea483d23ee4b529b06564348c0d72b5b878b106642a58d4045bde1189a66c1",
+      "review": "Visual review: no jersey digits; source dimensions retained"
+    },
+    {
+      "file": "loopy-smash-raised.png",
+      "width": 1774,
+      "height": 887,
+      "sha256": "de2a1db81564cc918c7ca5e7df25208aac4b73ba8d7f908cbaa41bc17e08d34f",
+      "review": "Visual review: no jersey digits; source dimensions retained"
+    },
+    {
+      "file": "loopy-smash-up-down.png",
+      "width": 1774,
+      "height": 887,
+      "sha256": "a3e7fa6bfd31bc203dbcc055e09a0cf61906b522a9055ca15d7869b3f95d9a9c",
+      "review": "Visual review: no jersey digits; source dimensions retained"
+    },
+    {
+      "file": "loopy-special-counter-recovery.png",
+      "width": 1536,
+      "height": 1024,
+      "sha256": "336f991a7dea1b7e8e8c1f6d07fce2fead40d50f28c3d2697bf9bfe8ee8a9d41",
+      "review": "Visual review: no jersey digits; source dimensions retained"
+    },
+    {
+      "file": "loopy-special-offense.png",
+      "width": 1536,
+      "height": 1024,
+      "sha256": "974eae4c9f75e3d88924406f7136e1c8b829b6e577f9a488c0c023a6119c9629",
+      "review": "Visual review: no jersey digits; source dimensions retained"
+    },
+    {
+      "file": "loopy-tilts.png",
+      "width": 1261,
+      "height": 1247,
+      "sha256": "efb2f213e3681be8bc61f22f72bfbfdde4c2081b62474052ed9021401f9174a6",
+      "review": "Visual review: no jersey digits; source dimensions retained"
+    },
+    {
+      "file": "loopy-transitions.png",
+      "width": 1448,
+      "height": 1086,
+      "sha256": "364ce9a5bfb5836f71683a1b377c63dc78160bfb0fe6912436a30e0e9188a461",
+      "review": "Visual review: no jersey digits; source dimensions retained"
+    },
+    {
+      "file": "loopy-tumble-recovery-knockdowns.png",
+      "width": 1448,
+      "height": 1086,
+      "sha256": "1de20cbb7432605a19ddf9723429b922ec6b2074f28cb8061c349564a0ef88f9",
+      "review": "Visual review: no jersey digits; source dimensions retained"
+    },
+    {
+      "file": "loopy-getup-contacts.png",
+      "width": 1448,
+      "height": 1086,
+      "sha256": "0d412041f68e30addfd4790d0cf4e8359f98a0af545551e8bd7d6d18b6a61734",
+      "review": "New revision 18 contact source: visually verified plain cream jersey, no digits or lettering"
+    }
+  ],
+  "followup": {
+    "date": "2026-11-10",
+    "revision": 17,
+    "source": "loopy-compact-strikes.png",
+    "method": "Built-in image edit",
+    "prompt": "Remove only the brown/gold translucent halo and background residue; preserve all six existing poses, ink, colors, number-free jersey, dimensions and layout. True transparent alpha; no drop shadow, glow or bloom.",
+    "contactAdjustment": "Third jab art socket x1354 to1351, y238 unchanged; nearest opaque fist edge. Gameplay unchanged."
+  }
+}

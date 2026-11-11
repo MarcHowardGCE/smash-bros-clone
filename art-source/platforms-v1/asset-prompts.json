@@ -28,5 +28,20 @@
     "id": "stage6",
     "prompt": "Use case: stylized-concept. Asset type: production side-view transparent platform sprites for a 2D platform fighting game. Reference image is a six-world contact sheet for matching the ink-outlined grotesque storybook / vintage cartoon illustration style, detailed painted textures and palette; NOT an edit target. Generate one landscape transparent PNG sprite sheet for stage6. Unborn Library: ancient closed book platform with a perfectly FLAT straight leather-bound upper cover as landing edge, parchment pageblock below, antique gold corner hardware and dusty lavender spine details. Soft platform is a thinner hovering closed book with flat cover. Composition: exactly TWO isolated horizontal platform sprites, stacked vertically with a very large transparent gap. Top sprite is the main island platform, wide and shallow, occupying x=5%..95%, y=12%..38%. Bottom sprite is the smaller pass-through platform, occupying x=20%..80%, y=66%..82%. Both are viewed straight on in orthographic 2D side view. IMPORTANT: each sprite has a clearly readable perfectly straight level horizontal top collision edge across its entire width. Decoration stays BELOW that top edge; no columns, characters, rails or protrusions above it. Keep top and bottom edges and end caps fully inside canvas, no clipping. Transparent exterior and gap, actual alpha, no background, no shadows on a ground plane, no checkerboard drawn into art. The main sprite has a flat top and decorative shallow underside that does not extend far below. Preserve the illustrated color richness and dark brown-black ink outlines of the referenced world. No text, no labels, no gameplay scene, no fighters, no white debug rectangles. Aim landscape 1536x1024.",
     "tool": "built-in image_gen"
+  },
+  {
+    "id": "stage7",
+    "prompt": "Orthographic 2D platform production sheet, 1536x1024, transparent alpha, two isolated horizontal platform sprites with a large transparent gap, wide main over short soft. Exact level flat landing rim, all decoration below. Victorian grotesque storybook pen ink with colored wash; no characters, text, perspective or scenery. Supplied arena artwork was a style and motif reference. Main: dark plum cloudstone viaduct, upside-down arches and brass supports. Soft: thin dark-capped rail-stop slab, brass and violet.",
+    "tool": "built-in image_gen"
+  },
+  {
+    "id": "stage8",
+    "prompt": "Orthographic 2D platform production sheet, 1536x1024, transparent alpha, two isolated horizontal platform sprites with a large transparent gap, wide main over short soft. Exact level flat landing rim, all decoration below. Victorian grotesque storybook pen ink with colored wash; no characters, text, perspective or scenery. Supplied arena artwork was a style and motif reference. Main: dark clockwork station deck, brass lip, broken cream enamel dial, burgundy machinery. Soft: brass and cream ticket-punch balcony.",
+    "tool": "built-in image_gen"
+  },
+  {
+    "id": "stage9",
+    "prompt": "Orthographic 2D platform production sheet, 1536x1024, transparent alpha, two isolated horizontal platform sprites with a large transparent gap, wide main over short soft. Exact level flat landing rim, all decoration below. Victorian grotesque storybook pen ink with colored wash; no characters, text, perspective or scenery. Supplied arena artwork was a style and motif reference. Main: drawing board with rose and lavender paint transitioning to pencil and parchment beneath an ink rim. Soft: folded storyboard strip with ivory and muted rose paper.",
+    "tool": "built-in image_gen"
   }
 ]

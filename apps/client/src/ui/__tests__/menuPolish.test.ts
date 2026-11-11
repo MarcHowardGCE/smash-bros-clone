@@ -2,6 +2,7 @@ import { getStageLayout } from '@smash/shared';
 import { STAGES } from '../../stages/stageConfig';
 import { afterEach, expect, it, vi } from 'vitest';
 import { UIManager } from '../UIManager';
+import { WORLD_STORIES } from '../selectionContent';
 
 function setup() {
   const root = document.body.appendChild(document.createElement('div'));
@@ -96,15 +97,18 @@ it('shows server readiness and clears it when returning to the room from selecti
 });
 
 
-it('keeps the guest story open while the authoritative preview changes', () => {
+it('shows the full guest story and preserves focus when the host changes worlds', () => {
   const { root, ui, button } = setup();
   const change = vi.fn();
   ui.showNetworkStageWaiting(STAGES[0]!, change);
-  button('#stage-story-toggle').click();
   const footer = button('#online-change-fighter');
+  footer.focus();
+  expect(root.querySelector('#stage-story')?.textContent).toBe(WORLD_STORIES.stage1!.story);
   ui.showNetworkStageWaiting(STAGES[5]!, change);
   expect(button('#online-change-fighter')).toBe(footer);
-  expect(button('#stage-story-toggle').getAttribute('aria-expanded')).toBe('true');
+  expect(document.activeElement).toBe(footer);
+  expect(root.querySelector('#stage-story-toggle')).toBeNull();
+  expect(root.querySelector('#stage-story')?.textContent).toBe(WORLD_STORIES.stage6!.story);
   const diagram = root.querySelector('.world-layout-map svg')!;
   const floor = getStageLayout('stage6').mainPlatform;
   const rect = diagram.querySelector('.world-map-solid')!;

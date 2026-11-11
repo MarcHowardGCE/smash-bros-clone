@@ -8,7 +8,10 @@ export const DODGE_PROFILES={
 }as const;
 export type DodgeContext=Partial<Pick<PlayerState,'characterId'|'dodgeKind'|'dodgeLevel'|'airDodgeDirection'|'state'|'floorRollDirection'|'facing'>>;
 function dodgeReference(p:DodgeContext):keyof typeof DODGE_PROFILES{
-  return p.characterId==='moonshine'?'swift':p.characterId==='hulk-hoagie'?'abe-lincoln':p.characterId??'all-rounder';
+  const id = p.characterId;
+  if (id === 'swift' || id === 'moonshine' || id === 'loopy') return 'swift';
+  if (id === 'abe-lincoln' || id === 'hulk-hoagie' || id === 'mrs-tasselbottom') return 'abe-lincoln';
+  return 'all-rounder';
 }
 export function freshDodgeProfile(p:DodgeContext):DodgeProfile {
  const roster=DODGE_PROFILES[dodgeReference(p)];

@@ -1,6 +1,6 @@
 # Everybody Throws Hands
 
-Everybody Throws Hands is a browser platform fighter with an illustrated five-fighter roster and six surreal arenas. Play local matches with human or CPU seats, create an online room for up to four players, or practice in the Training Dojo. Matches use percent damage, stocks, and blast-zone KOs. Super Smash Bros. Ultimate is the reference for combat and controls. The [active work index](docs/plans/ACTIVE-WORK.md) tracks the remaining parity and signoff work.
+Everybody Throws Hands is a browser platform fighter with an illustrated five-fighter roster and ten surreal arenas. Play local matches with human or CPU seats, create an online room for up to four players, or practice in the Training Dojo. Matches use percent damage, stocks, and blast-zone KOs. Super Smash Bros. Ultimate is the reference for combat and controls. The [active work index](docs/plans/ACTIVE-WORK.md) tracks the remaining parity and signoff work.
 
 ## Run locally
 

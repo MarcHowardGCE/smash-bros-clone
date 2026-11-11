@@ -52,14 +52,14 @@ extensionCodec.register({
     new Set<string>(decode(data, { extensionCodec }) as string[]),
 });
 
-export interface OnlineSelectionState {phase:string;hostPlayerId:string;stageId:string;preparation?:{id:number;readyPlayerIds:PlayerId[]};players:{playerId:PlayerId;slotIndex:number;characterId:string;confirmed:boolean;ready?:boolean}[];}
+export interface OnlineSelectionState {phase:string;hostPlayerId:string;stageId:string;stageBackgroundVariant?:number;preparation?:{id:number;readyPlayerIds:PlayerId[]};players:{playerId:PlayerId;slotIndex:number;characterId:string;confirmed:boolean;ready?:boolean}[];}
 type RejoinIdentity = { roomCode: string; playerId: PlayerId; rejoinToken: string };
 type SeatAssignment = { playerId: PlayerId; slotIndex: number; rejoinToken: string };
 const REJOIN_STORAGE_KEY = "smash:rejoin";
 
 export interface GameClientOptions {
   onSelectionState?:(state:OnlineSelectionState)=>void;
-  onStageChanged?:(stageId:string)=>void;
+  onStageChanged?:(stageId:string,backgroundVariant?:number)=>void;
   serverUrl: string;
   gamepadSource?: GamepadInputSource;
   onRejoined?: () => void;
@@ -237,7 +237,7 @@ export class GameClient {
   refreshSelectionState():void {this.socket.emit('selection:sync');}
   unconfirmCharacter(callback?:(result:{ok:true}|{error:string})=>void):void {this.selectionRequest('character:unconfirm',[],callback);}
   selectionBack(callback?:(result:{ok:true}|{error:string})=>void):void {this.selectionRequest('selection:back',[],callback);}
-  selectStage(stageId:string,callback?:(result:{ok:true}|{error:string})=>void):void {this.selectionRequest('stage:select',[stageId],callback);}
+  selectStage(stageId:string,callback?:(result:{ok:true}|{error:string})=>void,backgroundVariant?:number):void {this.selectionRequest('stage:select',[backgroundVariant===undefined?stageId:{id:stageId,backgroundVariant}],callback);}
   confirmStage(callback?:(result:{ok:true}|{error:string})=>void):void {this.selectionRequest('stage:confirm',[],callback);}
   markStagePrepared(id:number, callback?:(result:{ok:true}|{error:string})=>void):void {this.selectionRequest('stage:prepared',[id],callback);}
 
@@ -349,7 +349,7 @@ export class GameClient {
       const identity = this.getRejoinIdentity();
       if (!identity) { this.options.onConnected?.(); return; }
       this.socket.emit("room:rejoin", identity,
-        (response: { ok: boolean; phase?: string; stageId?:string; paused?: boolean }) => {
+        (response: { ok: boolean; phase?: string; stageId?:string; stageBackgroundVariant?:number; paused?: boolean }) => {
           if (!response.ok) {
             this.saveRejoinIdentity(null);
             this.options.onConnected?.();
@@ -359,7 +359,7 @@ export class GameClient {
           this.myRoomCode = identity.roomCode;
           this.inputManager.setPlayerId(identity.playerId);
           this.options.onPlayerAssigned?.(identity.playerId, identity.roomCode);
-          if(response.stageId)this.options.onStageChanged?.(response.stageId);
+          if(response.stageId)this.options.onStageChanged?.(response.stageId,response.stageBackgroundVariant);
           this.paused = response.paused ?? false;
           this.options.onRejoined?.();
           if (response.phase === "MATCH") {
@@ -391,16 +391,16 @@ export class GameClient {
       },
     );
 
-    this.socket.on("room:selectionState",(data:OnlineSelectionState)=>{if(!data)return;this.options.onStageChanged?.(data.stageId);this.options.onSelectionState?.(data);});
-    this.socket.on("room:stage",(data:{stageId:string})=>this.options.onStageChanged?.(data.stageId));
-    this.socket.on("game:countdown", (data: { seconds: number;stageId?:string }) => {
-      if(data.stageId)this.options.onStageChanged?.(data.stageId);
+    this.socket.on("room:selectionState",(data:OnlineSelectionState)=>{if(!data)return;this.options.onStageChanged?.(data.stageId,data.stageBackgroundVariant);this.options.onSelectionState?.(data);});
+    this.socket.on("room:stage",(data:{stageId:string;stageBackgroundVariant?:number})=>this.options.onStageChanged?.(data.stageId,data.stageBackgroundVariant));
+    this.socket.on("game:countdown", (data: { seconds: number;stageId?:string;stageBackgroundVariant?:number }) => {
+      if(data.stageId)this.options.onStageChanged?.(data.stageId,data.stageBackgroundVariant);
       console.log("[client] countdown:", data.seconds);
       this.options.onMatchPhaseChange("countdown");
     });
 
-    this.socket.on("game:start", (data: { playerIds: PlayerId[];stageId?:string }) => {
-      if(data.stageId)this.options.onStageChanged?.(data.stageId);
+    this.socket.on("game:start", (data: { playerIds: PlayerId[];stageId?:string;stageBackgroundVariant?:number }) => {
+      if(data.stageId)this.options.onStageChanged?.(data.stageId,data.stageBackgroundVariant);
       console.log("[client] match started, players:", data.playerIds);
       this.interpolationBuffer.clear();
       this.predictor = null;

@@ -389,6 +389,14 @@ export class GameEngine {
     for(const p of Object.values(this.state.players)){p.dodgeFatigue=level;p.dodgeRecoveryTicks=120;p.dodgeRefreshTicks=undefined;}
     return true;
   }
+  /** Preview the real break sequence without disabling practice shield protection. */
+  previewPracticeShieldBreak(id: PlayerId): boolean {
+    const player = this.state.players[id];
+    if (!this.practice || !player || !player.isGrounded || player.state !== PlayerStateEnum.IDLE) return false;
+    this.state = { ...this.state, players: { ...this.state.players, [id]: this.applyShieldBreak(player) } };
+    return true;
+  }
+
   getPracticePercent(id: PlayerId): number {
     return this.practicePercents.get(id) ?? 0;
   }
@@ -1027,7 +1035,10 @@ export class GameEngine {
 			!beforePhysics.isInvincible &&
 			nextPlayer.isInvincible &&
 			nextPlayer.invincibilityFrames > beforePhysics.invincibilityFrames;
-		nextPlayer = this.applyFacing(nextPlayer, input);
+		// Air-dodge aim controls travel while the fighter keeps their entry facing.
+		if (beforePhysics.state !== PlayerStateEnum.AIR_DODGE) {
+			nextPlayer = this.applyFacing(nextPlayer, input);
+		}
 		if (!gainedInvincibilityThisTick && !gainedInvincibilityFromWallJump) {
 			nextPlayer = this.updateInvincibility(nextPlayer);
 		}
@@ -1258,7 +1269,7 @@ export class GameEngine {
 				nextPlayer = {
 					...nextPlayer,
 					ledgeId: null,
-					y: this.stage.mainPlatform.y - PHYSICS.HURTBOX_RADIUS,
+					y: this.stage.mainPlatform.y - getCharacterStats(player.characterId).hurtboxRadius,
 					vy: 0,
 					isGrounded: true,
 					isFastFalling: false,
@@ -3328,7 +3339,9 @@ export class GameEngine {
 			...initializeLaunch(player, hit.knockbackVx, hit.knockbackVy),
             actionBuffer:undefined,
 			footstoolRole:undefined,footstoolPartnerId:undefined,footstoolFrame:undefined,shieldReaction:undefined,shieldReactionFrame:undefined,
-            jabLockCount:0,hitReaction:hit.damage>=12?'heavy':!player.isGrounded?'air':hit.knockbackVy < -Math.abs(hit.knockbackVx)?'high':hit.knockbackVy>=0?'low':undefined,
+            jabLockCount:0,hitReaction:hit.damage>=12?'heavy':!player.isGrounded?'air':
+              hit.knockbackVy < -Math.abs(hit.knockbackVx)?'high':
+              floorMove?.id===MoveId.DOWN_TILT||hit.knockbackVy>=0?'low':undefined,
             shortHop:false,
             x:player.x+(hit.asdiImpactX??0),
             y:hit.asdiImpactY?checkPlatformCollision({...player,x:player.x+(hit.asdiImpactX??0),y:player.y+hit.asdiImpactY,vy:hit.asdiImpactY},this.stage).y:player.y,

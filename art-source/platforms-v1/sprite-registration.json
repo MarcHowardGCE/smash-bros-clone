@@ -130,5 +130,71 @@
       "height": 139
     },
     "file": "stage6-soft.png"
+  },
+  {
+    "stage": "stage7",
+    "part": "main",
+    "rect": {
+      "left": 9,
+      "top": 204,
+      "width": 1519,
+      "height": 273
+    },
+    "file": "stage7-main.png"
+  },
+  {
+    "stage": "stage7",
+    "part": "soft",
+    "rect": {
+      "left": 267,
+      "top": 754,
+      "width": 1002,
+      "height": 114
+    },
+    "file": "stage7-soft.png"
+  },
+  {
+    "stage": "stage8",
+    "part": "main",
+    "rect": {
+      "left": 13,
+      "top": 222,
+      "width": 1510,
+      "height": 191
+    },
+    "file": "stage8-main.png"
+  },
+  {
+    "stage": "stage8",
+    "part": "soft",
+    "rect": {
+      "left": 274,
+      "top": 739,
+      "width": 988,
+      "height": 105
+    },
+    "file": "stage8-soft.png"
+  },
+  {
+    "stage": "stage9",
+    "part": "main",
+    "rect": {
+      "left": 6,
+      "top": 192,
+      "width": 1524,
+      "height": 192
+    },
+    "file": "stage9-main.png"
+  },
+  {
+    "stage": "stage9",
+    "part": "soft",
+    "rect": {
+      "left": 212,
+      "top": 785,
+      "width": 1112,
+      "height": 84
+    },
+    "file": "stage9-soft.png"
   }
 ]

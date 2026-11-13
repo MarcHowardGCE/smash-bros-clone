@@ -1,0 +1,202 @@
+{
+  "holder": [
+    {
+      "source": "mr-wrong-pummel-holder-transitions.png",
+      "rect": [
+        139,
+        13,
+        349,
+        553
+      ],
+      "scale": 0.13429518072289157,
+      "root": [
+        187.2931862019468,
+        551
+      ],
+      "sockets": {
+        "grabGrip": [
+          234,
+          219
+        ]
+      }
+    },
+    {
+      "source": "mr-wrong-pummel-holder-transitions.png",
+      "rect": [
+        708,
+        12,
+        351,
+        554
+      ],
+      "scale": 0.13389189189189188,
+      "root": [
+        188.15250302785626,
+        552
+      ],
+      "sockets": {
+        "grabGrip": [
+          235,
+          219
+        ]
+      }
+    },
+    {
+      "source": "mr-wrong-pummel-contact-study.png",
+      "rect": [
+        35,
+        13,
+        915,
+        1454
+      ],
+      "scale": 0.052269636576787806,
+      "root": [
+        459.99725250078495,
+        1452
+      ],
+      "sockets": {
+        "grabGrip": [
+          580,
+          599
+        ]
+      }
+    },
+    {
+      "source": "mr-wrong-pummel-holder-transitions.png",
+      "rect": [
+        139,
+        672,
+        355,
+        553
+      ],
+      "scale": 0.13429518072289157,
+      "root": [
+        187.2931862019468,
+        551
+      ],
+      "sockets": {
+        "grabGrip": [
+          234,
+          219
+        ]
+      }
+    },
+    {
+      "source": "mr-wrong-pummel-holder-transitions.png",
+      "rect": [
+        709,
+        673,
+        351,
+        552
+      ],
+      "scale": 0.13429518072289157,
+      "root": [
+        188.2931862019468,
+        550
+      ],
+      "sockets": {
+        "grabGrip": [
+          235,
+          218
+        ]
+      }
+    }
+  ],
+  "victim": [
+    {
+      "source": "mr-wrong-pummel-victim-study.png",
+      "rect": [
+        68,
+        20,
+        375,
+        661
+      ],
+      "scale": 0.11843203883495144,
+      "root": [
+        203.09808583022505,
+        659
+      ],
+      "sockets": {
+        "gripTop": [
+          216,
+          247
+        ],
+        "gripBottom": [
+          216,
+          333.9781530516047
+        ]
+      }
+    },
+    {
+      "source": "mr-wrong-pummel-victim-study.png",
+      "rect": [
+        561,
+        15,
+        388,
+        666
+      ],
+      "scale": 0.11843203883495144,
+      "root": [
+        222.09808583022505,
+        664
+      ],
+      "sockets": {
+        "gripTop": [
+          235,
+          252
+        ],
+        "gripBottom": [
+          235,
+          338.9781530516047
+        ]
+      }
+    },
+    {
+      "source": "mr-wrong-pummel-victim-study.png",
+      "rect": [
+        65,
+        772,
+        383,
+        680
+      ],
+      "scale": 0.11373892773892773,
+      "root": [
+        205.56572529409354,
+        678
+      ],
+      "sockets": {
+        "gripTop": [
+          219,
+          249
+        ],
+        "gripBottom": [
+          219,
+          339.56705742509325
+        ]
+      }
+    },
+    {
+      "source": "mr-wrong-pummel-victim-study.png",
+      "rect": [
+        573,
+        773,
+        386,
+        680
+      ],
+      "scale": 0.11347441860465116,
+      "root": [
+        210.53440996843875,
+        678
+      ],
+      "sockets": {
+        "gripTop": [
+          224,
+          248
+        ],
+        "gripBottom": [
+          224,
+          338.77816944706314
+        ]
+      }
+    }
+  ]
+}

@@ -1,3 +1,9 @@
+/** Select the displayed frame for both rendering and contact socket lookup. */
+export function footstoolFrameIndex(age: number, frameCount: number, legacyNewcomer = false): number {
+ const tick = Number.isFinite(age) ? Math.max(0, Math.floor(age)) : 0;
+ const index = legacyNewcomer && frameCount < 6 ? (tick < 4 ? 1 : 2) : Math.min(5, Math.floor(tick / 3));
+ return Math.max(0, Math.min(frameCount - 1, index));
+}
 export interface FootstoolFrame {readonly root:readonly number[];readonly offsetY?:number;readonly mirrorSource?:boolean;readonly sockets?:Readonly<Record<string,readonly number[]>>}
 export interface FootstoolClip {readonly scale:number;readonly mirrorSource?:boolean;readonly frames:readonly FootstoolFrame[]}
 export function footstoolPoint(clip:FootstoolClip,index:number,key:string,facing:1|-1=1):[number,number]|null{

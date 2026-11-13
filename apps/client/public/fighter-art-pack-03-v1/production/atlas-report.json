@@ -1,66 +1,82 @@
 {
-  "sourceRevision": 42,
-  "frames": 1491,
-  "pages": 7,
-  "livePages": 7,
-  "liveTextureBytes": 117440512,
-  "downloadBytes": 32206914,
+  "sourceRevision": 72,
+  "frames": 1770,
+  "pages": 9,
+  "livePages": 9,
+  "liveTextureBytes": 150994944,
+  "downloadBytes": 40364536,
   "sampling": "premultiplied-alpha bilinear at two pixels per world unit; original artwork preserved",
   "files": [
     {
       "file": "atlas-mr-wrong-live-0.webp",
       "width": 2048,
       "height": 2048,
-      "bytes": 5203114,
-      "sha256": "462f7cc2c15a0f24c03f36d67a6fe0e3b11902cf71dff5bbd51500e20b2ab546",
+      "bytes": 5110094,
+      "sha256": "9f998022d01be214645d330dde6c3439fedddad5c5d4d964db5bc35fcab9fc3d",
       "live": true
     },
     {
       "file": "atlas-mr-wrong-live-1.webp",
       "width": 2048,
       "height": 2048,
-      "bytes": 5638126,
-      "sha256": "516629acb765ca00ae55849804c9a33b8f2a25587776250484308297fdfb970c",
+      "bytes": 5883956,
+      "sha256": "d257857e29b96ccba4555809ce02ac6febefee819568c537718d9f3570cff6fc",
+      "live": true
+    },
+    {
+      "file": "atlas-mr-wrong-live-2.webp",
+      "width": 2048,
+      "height": 2048,
+      "bytes": 2571144,
+      "sha256": "b9d20815e02422a3722a5f3f95f00ac4e70f8c5586b1e4b440992ea2d59786bd",
       "live": true
     },
     {
       "file": "atlas-loopy-live-0.webp",
       "width": 2048,
       "height": 2048,
-      "bytes": 4757390,
-      "sha256": "82a1abfe17497d71237b4152d70d2af2e51b92976f16233f10c5ef44c284490e",
+      "bytes": 4953054,
+      "sha256": "e1e662342f4add92784041077edddabd5c9daafe587c62154031daf3a20a850e",
       "live": true
     },
     {
       "file": "atlas-loopy-live-1.webp",
       "width": 2048,
       "height": 2048,
-      "bytes": 5525316,
-      "sha256": "42eab1fac4a42952ff369865d9172a02e636b5b0589518943e8af47c606d4e8f",
+      "bytes": 5177492,
+      "sha256": "3b004c92ebc42562e584f18f556d859d80499abc8534e6c59e24fa65dbffac7f",
       "live": true
     },
     {
       "file": "atlas-loopy-live-2.webp",
       "width": 2048,
       "height": 2048,
-      "bytes": 1336168,
-      "sha256": "007d7219389b98ce3301f5b007008adb885d8b853886296b000502831e5d7941",
+      "bytes": 4335956,
+      "sha256": "42543ec0bb1d1ea28c2dff9fd3c3e36996893c2540c13716e14e1b5a5d60d8b2",
       "live": true
     },
     {
       "file": "atlas-mrs-tasselbottom-live-0.webp",
       "width": 2048,
       "height": 2048,
-      "bytes": 5632808,
-      "sha256": "35be7feee613c3838a814b8eb7d39712d118b0fc1ce4f14eb82e833f04739893",
+      "bytes": 5949378,
+      "sha256": "84d7f76b0ba236878116f3c736ca3bff6e8d8d007df12d2760083b6926a59b82",
       "live": true
     },
     {
       "file": "atlas-mrs-tasselbottom-live-1.webp",
       "width": 2048,
       "height": 2048,
-      "bytes": 4113992,
-      "sha256": "a8cb25a11f992857f8e7da3a37cc067c5d659f8c041a22d7956c7ba71b41bb75",
+      "bytes": 6225660,
+      "sha256": "9e183eb94a3e7f00f5cbafba0ed624016728d3a9eb399087005b48875f16d874",
+      "live": true
+    },
+    {
+      "file": "atlas-mrs-tasselbottom-live-2.webp",
+      "width": 2048,
+      "height": 2048,
+      "bytes": 157802,
+      "sha256": "972af40dc20cc95031689619eb1d0f86d9b5e865c2aec0691de1e738a63d6236",
       "live": true
     }
   ]

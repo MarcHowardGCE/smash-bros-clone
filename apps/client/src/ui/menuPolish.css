@@ -460,3 +460,196 @@ body:has(.dojo-console) .dojo-panel {visibility:hidden}
  .world-selection .world-tile small {display:none}
  .world-selection:not(.world-guest) .world-preview-panel {min-height:280px}
 }
+
+/* Local fighter face-off prototype */
+.fighter-picker-faceoff {
+  width:min(100%,1240px);
+  background:radial-gradient(ellipse at 12% 32%,#254445 0%,transparent 44%),
+    radial-gradient(ellipse at 88% 32%,#563043 0%,transparent 44%),#17111e;
+}
+.fighter-picker-faceoff .fighter-comparison {
+  grid-template-columns:minmax(0,1fr) minmax(280px,1.2fr) minmax(0,1fr);
+  grid-template-areas:"lead stats rival";
+  align-items:stretch;
+}
+.fighter-picker-faceoff .fighter-hero,.fighter-picker-faceoff .fighter-rival {
+  position:relative; display:grid; grid-template-rows:minmax(0,1fr) auto;
+  justify-items:center; min-width:0; text-align:center; padding:12px;
+  background:transparent; border:0;
+}
+.fighter-picker-faceoff .fighter-hero {grid-area:lead}
+.fighter-picker-faceoff .fighter-rival {grid-area:rival}
+.fighter-picker-faceoff .fighter-stat-sheet {grid-area:stats;align-self:center}
+.fighter-picker-faceoff :is(.fighter-hero,.fighter-rival) img {
+  display:block; width:100%; height:clamp(110px,33vh,340px); object-fit:contain;
+  object-position:center bottom; filter:drop-shadow(0 8px 12px #0009);
+}
+.fighter-picker-faceoff .fighter-rival img {transform:scaleX(-1)}
+.fighter-picker-faceoff :is(.fighter-hero,.fighter-rival) h2 {
+  margin:0; color:#fff0cf; font-size:clamp(18px,3vw,42px); line-height:1.05;
+}
+.fighter-picker-faceoff .fighter-roster-shared {
+  grid-template-columns:repeat(auto-fit,minmax(86px,1fr)); grid-auto-flow:row;
+}
+.menu-shell .fighter-picker-faceoff .fighter-roster button {
+  position:relative; flex-direction:column; justify-content:center; text-align:center;
+  padding:7px 4px 25px; min-width:0; min-height:82px;
+}
+.fighter-picker-faceoff .fighter-roster img {width:44px;height:48px}
+.fighter-cursors {position:absolute;bottom:4px;display:flex;justify-content:center;gap:2px;width:100%}
+.fighter-cursors span {background:#7cbab0;color:#101518;border-radius:3px;padding:1px 3px;font:bold 10px system-ui}
+.fighter-cursors span[data-seat="1"] {background:#db889a}
+.fighter-cursors span[data-seat="2"] {background:#e0b567}
+.fighter-cursors span[data-seat="3"] {background:#a796d4}
+.fighter-cursors span[data-locked="true"] {outline:1px solid #fff0cf}
+@media(max-width:720px) {
+  .fighter-picker-faceoff .fighter-comparison {
+    grid-template-columns:repeat(2,minmax(0,1fr));grid-template-areas:"lead rival" "stats stats";
+  }
+  .fighter-picker-faceoff :is(.fighter-hero,.fighter-rival) img {height:clamp(95px,22vh,170px)}
+}
+
+.fighter-picker-faceoff :is(.fighter-hero,.fighter-rival) {
+  grid-template-columns:minmax(0,1fr);min-height:0;
+}
+.menu-shell .fighter-picker-faceoff .fighter-option[aria-pressed="true"]::after {content:none}
+@media(max-height:620px) and (min-width:721px) {
+  .fighter-picker-faceoff {gap:7px;padding:10px 16px}
+  .fighter-picker-faceoff :is(.fighter-hero,.fighter-rival) {padding:4px}
+  .fighter-picker-faceoff :is(.fighter-hero,.fighter-rival) img {height:clamp(90px,26vh,160px)}
+  .fighter-picker-faceoff .fighter-stat-sheet {padding:7px}
+  .fighter-picker-faceoff .fighter-stat-sheet :is(th,td) {padding:3px 4px}
+  .menu-shell .fighter-picker-faceoff .fighter-roster button {min-height:68px;padding-top:4px}
+  .fighter-picker-faceoff .fighter-roster img {height:35px}
+}
+
+.fighter-picker-faceoff .fighter-seat-title:has([data-seat-portrait]) {
+  display:grid;grid-template-columns:38px minmax(0,1fr);align-items:center;
+  column-gap:8px;text-align:left;
+}
+.fighter-picker-faceoff [data-seat-portrait] {
+  grid-row:span 2;width:38px;height:44px;object-fit:contain;
+}
+@media(max-height:620px) {
+  .fighter-picker-faceoff [data-seat-portrait] {height:34px}
+}
+
+.fighter-picker.fighter-picker-faceoff .fighter-player-panel {
+  grid-template-columns:minmax(0,1fr);
+  align-content:start;
+  row-gap:4px;
+}
+.fighter-picker.fighter-picker-faceoff .fighter-seat-title {
+  grid-row:auto;
+  width:100%;
+  box-sizing:border-box;
+}
+.fighter-picker-faceoff .fighter-seat-title :is(span,strong) {
+  overflow-wrap:normal;
+}
+.menu-shell .fighter-picker-faceoff .fighter-player-panel .fighter-ready {
+  justify-self:start;
+  max-width:100%;
+  white-space:normal;
+}
+
+@media(max-height:620px) and (min-width:721px) {
+  .fighter-picker-faceoff {max-height:calc(100dvh - 16px)}
+  .fighter-picker-faceoff :is(.fighter-hero,.fighter-rival) img {height:clamp(80px,20vh,120px)}
+  .menu-shell .fighter-picker-faceoff .fighter-roster button {
+    gap:3px;padding:4px 4px 20px!important;min-height:68px;
+  }
+  .fighter-picker-faceoff .fighter-roster img {height:28px}
+  .menu-shell .fighter-picker-faceoff .fighter-player-panel {padding:4px 7px}
+  .menu-shell .fighter-picker-faceoff .fighter-player-panel [id$="-status"] {margin-top:0!important}
+}
+
+/* Arena-first world selection */
+@media(min-width:1000px) and (min-height:660px) {
+  .menu-workspace.world-selection-arena {width:min(1320px,calc(100% - 40px))}
+  .world-selection-arena .world-browser {
+    grid-template-columns:minmax(250px,.55fr) minmax(0,1.45fr);
+    align-items:stretch;
+  }
+  .world-selection-arena .world-catalog {align-content:start}
+  .world-selection-arena .world-tile img {height:clamp(42px,7vh,68px)}
+  .world-selection-arena .world-tile > span {min-height:30px;padding:4px 5px;font-size:11px}
+  .world-selection-arena .world-preview-panel {
+    position:relative;isolation:isolate;grid-template-columns:1fr;grid-template-rows:1fr;
+    align-items:end;min-height:clamp(430px,66vh,660px);background:#201627;
+  }
+  .world-selection-arena .world-art-slot {position:absolute;inset:0;z-index:-2}
+  .world-selection-arena .world-preview-panel::before {
+    content:"";position:absolute;inset:0;z-index:-1;pointer-events:none;
+    background:linear-gradient(180deg,transparent 14%,#1c142642 34%,#1c1426f5 67%,#1c1426 100%);
+  }
+  .world-selection-arena .world-preview-summary {padding:clamp(12px,2vw,26px)}
+  .world-selection-arena .world-preview-summary h2 {
+    font:700 clamp(28px,4vw,54px)/1.02 Georgia,serif;
+    max-width:22ch;text-shadow:0 2px 12px #130d19;
+  }
+  .world-selection-arena .world-layout-map {width:min(100%,370px);box-sizing:border-box;background:#21182bf2}
+  .world-selection-arena .world-preview-summary #stage-story {background:#24192bee;max-width:85ch}
+  .world-selection-arena .world-random-art span {top:32%}
+}
+
+@media(min-width:1000px) and (min-height:660px) {
+  .world-guest.world-selection-arena .world-preview-panel {
+    grid-template-columns:1fr;grid-template-rows:1fr;
+  }
+}
+
+@media(min-width:1000px) and (min-height:660px) and (prefers-reduced-motion:no-preference) {
+  .world-selection-arena [data-world="stage1"] img {
+    animation:world-neighborhood-drift 16s ease-in-out infinite alternate;
+  }
+  .world-selection-arena [data-world="stage10"]::after {
+    content:"";position:absolute;inset:0;pointer-events:none;
+    background:linear-gradient(112deg,transparent 35%,#ffc76c24 48%,#ffc76c08 54%,transparent 63%);
+    background-size:240% 100%;mix-blend-mode:screen;
+    animation:world-zanda-sweep 12s ease-in-out infinite;
+  }
+}
+@keyframes world-neighborhood-drift {
+  from {transform:scale(1.025) translateX(-.45%)}
+  to {transform:scale(1.065) translateX(.45%)}
+}
+@keyframes world-zanda-sweep {
+  0%,15% {background-position:100% 0;opacity:0}
+  37%,63% {opacity:.85}
+  85%,100% {background-position:0 0;opacity:0}
+}
+
+/* Versus scene carries the selected fighters and world into the countdown. */
+.menu-workspace.match-intro {width:min(1220px,calc(100% - 32px));padding:18px clamp(12px,3vw,36px)}
+.match-intro .match-intro-art {
+  background:linear-gradient(180deg,#18101cdb 0%,#18101c34 35%,#18101cdd 100%),var(--intro-art) center/cover;
+}
+.match-intro h1 {text-shadow:0 2px 12px #130d19}
+.match-intro .match-lineup {align-items:end;gap:clamp(5px,3vw,44px)}
+.match-intro .match-intro-fighter {
+  --seat-color:#7cbab0;
+  flex:1 1 0;max-width:330px;gap:6px;padding:4px 8px 10px;
+  background:linear-gradient(0deg,#211727e8,transparent 44%);border:0;
+  border-bottom:3px solid var(--seat-color);border-radius:0;
+}
+.match-intro .match-intro-fighter[data-seat="1"] {--seat-color:#db889a}
+.match-intro .match-intro-fighter[data-seat="2"] {--seat-color:#e0b567}
+.match-intro .match-intro-fighter[data-seat="3"] {--seat-color:#a796d4}
+.match-intro .match-intro-fighter img {
+  height:clamp(95px,37dvh,350px);object-position:center bottom;
+  filter:drop-shadow(0 10px 14px #100a17b8);
+}
+.match-intro .match-intro-fighter[data-seat="1"] img,.match-intro .match-intro-fighter[data-seat="3"] img {transform:scaleX(-1)}
+.match-intro .match-intro-fighter span {color:var(--seat-color)}
+.match-intro .match-intro-fighter strong {font:700 clamp(13px,2.4vw,32px)/1.05 Georgia,serif}
+.match-intro .match-versus {align-self:center;text-shadow:0 2px 8px #100a17}
+@media(prefers-reduced-motion:no-preference) {
+  .match-intro .match-lineup {animation:match-lineup-reveal 220ms ease-out both}
+}
+@keyframes match-lineup-reveal {
+  from {opacity:.65;transform:translateY(8px)}
+  to {opacity:1;transform:translateY(0)}
+}
+
+.fighter-picker-faceoff :is(.fighter-hero,.fighter-rival) picture {display:block;width:100%;min-width:0}

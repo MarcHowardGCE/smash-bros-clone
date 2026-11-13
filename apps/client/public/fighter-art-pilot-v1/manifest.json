@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "revision": 18,
+  "revision": 20,
   "character": "all-rounder",
   "worldHeight": 80,
   "clips": {
@@ -46490,12 +46490,10 @@
           "image": "all-rounder-tumble-v1.png",
           "scale": 0.14446952595936793,
           "durations": [
-            3,
-            3,
-            3,
-            3,
-            3,
-            3
+            4,
+            5,
+            4,
+            5
           ],
           "frames": [
             {
@@ -46534,173 +46532,108 @@
             },
             {
               "rect": [
-                139,
-                30,
-                239,
-                435
+                136,
+                571,
+                259,
+                370
               ],
               "root": [
-                119.5,
-                217.5
+                129.5,
+                203.50000000000003
               ],
               "sourceSize": [
                 512,
                 512
               ],
               "trim": [
-                139,
-                30
+                136,
+                59
               ],
-              "visibleHeight": 429,
+              "visibleHeight": 364,
               "registration": "air-torso",
               "offsetY": 0,
               "sockets": {
-                "supportFoot": [
-                  170,
-                  432
+                "torso": [
+                  120,
+                  222.60000000000002
                 ],
                 "floorContact": [
-                  119.5,
-                  432
+                  129.5,
+                  222.60000000000002
                 ]
               },
-              "rotation": 1.0471975511965976
+              "image": "all-rounder-hit-air-v1.png",
+              "scale": 0.169811320754717
             },
             {
               "rect": [
-                139,
-                30,
-                239,
-                435
+                620,
+                554,
+                309,
+                424
               ],
               "root": [
-                119.5,
-                217.5
+                154.5,
+                233.20000000000002
               ],
               "sourceSize": [
                 512,
                 512
               ],
               "trim": [
-                139,
-                30
+                108,
+                42
               ],
-              "visibleHeight": 429,
+              "visibleHeight": 418,
               "registration": "air-torso",
               "offsetY": 0,
               "sockets": {
-                "supportFoot": [
-                  170,
-                  432
+                "torso": [
+                  148,
+                  239.60000000000002
                 ],
                 "floorContact": [
-                  119.5,
-                  432
+                  154.5,
+                  239.60000000000002
                 ]
               },
-              "rotation": 2.0943951023931953
+              "image": "all-rounder-hit-air-v1.png",
+              "scale": 0.169811320754717
             },
             {
               "rect": [
-                139,
-                30,
-                239,
-                435
+                1127,
+                544,
+                271,
+                450
               ],
               "root": [
-                119.5,
-                217.5
+                135.5,
+                247.50000000000003
               ],
               "sourceSize": [
                 512,
                 512
               ],
               "trim": [
-                139,
-                30
+                103,
+                32
               ],
-              "visibleHeight": 429,
+              "visibleHeight": 444,
               "registration": "air-torso",
               "offsetY": 0,
               "sockets": {
-                "supportFoot": [
-                  170,
-                  432
+                "torso": [
+                  153,
+                  249.60000000000002
                 ],
                 "floorContact": [
-                  119.5,
-                  432
+                  135.5,
+                  249.60000000000002
                 ]
               },
-              "rotation": 3.141592653589793
-            },
-            {
-              "rect": [
-                139,
-                30,
-                239,
-                435
-              ],
-              "root": [
-                119.5,
-                217.5
-              ],
-              "sourceSize": [
-                512,
-                512
-              ],
-              "trim": [
-                139,
-                30
-              ],
-              "visibleHeight": 429,
-              "registration": "air-torso",
-              "offsetY": 0,
-              "sockets": {
-                "supportFoot": [
-                  170,
-                  432
-                ],
-                "floorContact": [
-                  119.5,
-                  432
-                ]
-              },
-              "rotation": 4.1887902047863905
-            },
-            {
-              "rect": [
-                139,
-                30,
-                239,
-                435
-              ],
-              "root": [
-                119.5,
-                217.5
-              ],
-              "sourceSize": [
-                512,
-                512
-              ],
-              "trim": [
-                139,
-                30
-              ],
-              "visibleHeight": 429,
-              "registration": "air-torso",
-              "offsetY": 0,
-              "sockets": {
-                "supportFoot": [
-                  170,
-                  432
-                ],
-                "floorContact": [
-                  119.5,
-                  432
-                ]
-              },
-              "rotation": 5.235987755982989
+              "image": "all-rounder-hit-air-v1.png",
+              "scale": 0.169811320754717
             }
           ],
           "actionFamily": true,
@@ -55221,6 +55154,83 @@
             "transition 6"
           ],
           "designOnly": true
+        },
+        "hit_launch": {
+          "image": "all-rounder-hit-air-v1.png",
+          "scale": 0.169811320754717,
+          "durations": [
+            4,
+            6
+          ],
+          "loop": false,
+          "frames": [
+            {
+              "rect": [
+                120,
+                46,
+                316,
+                430
+              ],
+              "root": [
+                158,
+                236.50000000000003
+              ],
+              "sourceSize": [
+                512,
+                512
+              ],
+              "trim": [
+                120,
+                46
+              ],
+              "visibleHeight": 424,
+              "registration": "air-torso",
+              "offsetY": 0,
+              "sockets": {
+                "torso": [
+                  136,
+                  235.60000000000002
+                ],
+                "floorContact": [
+                  158,
+                  235.60000000000002
+                ]
+              }
+            },
+            {
+              "rect": [
+                585,
+                46,
+                386,
+                437
+              ],
+              "root": [
+                193,
+                240.35000000000002
+              ],
+              "sourceSize": [
+                512,
+                512
+              ],
+              "trim": [
+                73,
+                46
+              ],
+              "visibleHeight": 431,
+              "registration": "air-torso",
+              "offsetY": 0,
+              "sockets": {
+                "torso": [
+                  183,
+                  235.60000000000002
+                ],
+                "floorContact": [
+                  193,
+                  235.60000000000002
+                ]
+              }
+            }
+          ]
         }
       }
     },
@@ -74337,12 +74347,10 @@
           "image": "abe-lincoln-tumble-v1.png",
           "scale": 0.17414965986394557,
           "durations": [
-            3,
-            3,
-            3,
-            3,
-            3,
-            3
+            4,
+            5,
+            4,
+            5
           ],
           "frames": [
             {
@@ -74381,173 +74389,108 @@
             },
             {
               "rect": [
-                119,
-                16,
-                299,
-                420
+                122,
+                547,
+                245,
+                380
               ],
               "root": [
-                149.5,
-                210
+                122.5,
+                209.00000000000003
               ],
               "sourceSize": [
                 512,
                 512
               ],
               "trim": [
-                119,
-                16
+                122,
+                35
               ],
-              "visibleHeight": 414,
+              "visibleHeight": 374,
               "registration": "air-torso",
               "offsetY": 0,
               "sockets": {
-                "supportFoot": [
-                  42,
-                  417
+                "torso": [
+                  134,
+                  246.60000000000002
                 ],
                 "floorContact": [
-                  149.5,
-                  417
+                  122.5,
+                  246.60000000000002
                 ]
               },
-              "rotation": 1.0471975511965976
+              "image": "abe-lincoln-hit-air-v1.png",
+              "scale": 0.2013986013986014
             },
             {
               "rect": [
-                119,
-                16,
-                299,
-                420
+                583,
+                533,
+                331,
+                462
               ],
               "root": [
-                149.5,
-                210
+                165.5,
+                254.10000000000002
               ],
               "sourceSize": [
                 512,
                 512
               ],
               "trim": [
-                119,
-                16
+                71,
+                21
               ],
-              "visibleHeight": 414,
+              "visibleHeight": 456,
               "registration": "air-torso",
               "offsetY": 0,
               "sockets": {
-                "supportFoot": [
-                  42,
-                  417
+                "torso": [
+                  185,
+                  260.6
                 ],
                 "floorContact": [
-                  149.5,
-                  417
+                  165.5,
+                  260.6
                 ]
               },
-              "rotation": 2.0943951023931953
+              "image": "abe-lincoln-hit-air-v1.png",
+              "scale": 0.2013986013986014
             },
             {
               "rect": [
-                119,
-                16,
-                299,
-                420
+                1107,
+                518,
+                267,
+                485
               ],
               "root": [
-                149.5,
-                210
+                133.5,
+                266.75
               ],
               "sourceSize": [
                 512,
                 512
               ],
               "trim": [
-                119,
-                16
+                83,
+                6
               ],
-              "visibleHeight": 414,
+              "visibleHeight": 479,
               "registration": "air-torso",
               "offsetY": 0,
               "sockets": {
-                "supportFoot": [
-                  42,
-                  417
+                "torso": [
+                  173,
+                  275.6
                 ],
                 "floorContact": [
-                  149.5,
-                  417
+                  133.5,
+                  275.6
                 ]
               },
-              "rotation": 3.141592653589793
-            },
-            {
-              "rect": [
-                119,
-                16,
-                299,
-                420
-              ],
-              "root": [
-                149.5,
-                210
-              ],
-              "sourceSize": [
-                512,
-                512
-              ],
-              "trim": [
-                119,
-                16
-              ],
-              "visibleHeight": 414,
-              "registration": "air-torso",
-              "offsetY": 0,
-              "sockets": {
-                "supportFoot": [
-                  42,
-                  417
-                ],
-                "floorContact": [
-                  149.5,
-                  417
-                ]
-              },
-              "rotation": 4.1887902047863905
-            },
-            {
-              "rect": [
-                119,
-                16,
-                299,
-                420
-              ],
-              "root": [
-                149.5,
-                210
-              ],
-              "sourceSize": [
-                512,
-                512
-              ],
-              "trim": [
-                119,
-                16
-              ],
-              "visibleHeight": 414,
-              "registration": "air-torso",
-              "offsetY": 0,
-              "sockets": {
-                "supportFoot": [
-                  42,
-                  417
-                ],
-                "floorContact": [
-                  149.5,
-                  417
-                ]
-              },
-              "rotation": 5.235987755982989
+              "image": "abe-lincoln-hit-air-v1.png",
+              "scale": 0.2013986013986014
             }
           ],
           "actionFamily": true,
@@ -83068,6 +83011,83 @@
             "transition 6"
           ],
           "designOnly": true
+        },
+        "hit_launch": {
+          "image": "abe-lincoln-hit-air-v1.png",
+          "scale": 0.2013986013986014,
+          "durations": [
+            4,
+            6
+          ],
+          "loop": false,
+          "frames": [
+            {
+              "rect": [
+                81,
+                22,
+                300,
+                435
+              ],
+              "root": [
+                150,
+                239.25000000000003
+              ],
+              "sourceSize": [
+                512,
+                512
+              ],
+              "trim": [
+                81,
+                22
+              ],
+              "visibleHeight": 429,
+              "registration": "air-torso",
+              "offsetY": 0,
+              "sockets": {
+                "torso": [
+                  175,
+                  259.6
+                ],
+                "floorContact": [
+                  150,
+                  259.6
+                ]
+              }
+            },
+            {
+              "rect": [
+                592,
+                30,
+                353,
+                429
+              ],
+              "root": [
+                176.5,
+                235.95000000000002
+              ],
+              "sourceSize": [
+                512,
+                512
+              ],
+              "trim": [
+                80,
+                30
+              ],
+              "visibleHeight": 423,
+              "registration": "air-torso",
+              "offsetY": 0,
+              "sockets": {
+                "torso": [
+                  176,
+                  251.60000000000002
+                ],
+                "floorContact": [
+                  176.5,
+                  251.60000000000002
+                ]
+              }
+            }
+          ]
         }
       }
     },
@@ -102183,12 +102203,10 @@
           "image": "swift-tumble-v1.png",
           "scale": 0.14305882352941177,
           "durations": [
-            3,
-            3,
-            3,
-            3,
-            3,
-            3
+            4,
+            5,
+            4,
+            5
           ],
           "frames": [
             {
@@ -102227,173 +102245,108 @@
             },
             {
               "rect": [
-                72,
-                30,
-                272,
-                425
+                111,
+                542,
+                306,
+                406
               ],
               "root": [
-                136,
-                212.5
+                153,
+                223.3
               ],
               "sourceSize": [
                 512,
                 512
               ],
               "trim": [
-                72,
+                111,
                 30
               ],
-              "visibleHeight": 419,
+              "visibleHeight": 400,
               "registration": "air-torso",
               "offsetY": 0,
               "sockets": {
-                "supportFoot": [
-                  217,
-                  422
+                "torso": [
+                  145,
+                  251.60000000000002
                 ],
                 "floorContact": [
-                  136,
-                  422
+                  153,
+                  251.60000000000002
                 ]
               },
-              "rotation": 1.0471975511965976
+              "image": "swift-hit-air-v1.png",
+              "scale": 0.14869565217391306
             },
             {
               "rect": [
-                72,
-                30,
-                272,
-                425
+                575,
+                530,
+                388,
+                452
               ],
               "root": [
-                136,
-                212.5
+                194,
+                248.60000000000002
               ],
               "sourceSize": [
                 512,
                 512
               ],
               "trim": [
-                72,
-                30
+                63,
+                18
               ],
-              "visibleHeight": 419,
+              "visibleHeight": 446,
               "registration": "air-torso",
               "offsetY": 0,
               "sockets": {
-                "supportFoot": [
-                  217,
-                  422
+                "torso": [
+                  193,
+                  263.6
                 ],
                 "floorContact": [
-                  136,
-                  422
+                  194,
+                  263.6
                 ]
               },
-              "rotation": 2.0943951023931953
+              "image": "swift-hit-air-v1.png",
+              "scale": 0.14869565217391306
             },
             {
               "rect": [
-                72,
-                30,
-                272,
-                425
+                1068,
+                534,
+                354,
+                472
               ],
               "root": [
-                136,
-                212.5
+                177,
+                259.6
               ],
               "sourceSize": [
                 512,
                 512
               ],
               "trim": [
-                72,
-                30
+                44,
+                22
               ],
-              "visibleHeight": 419,
+              "visibleHeight": 466,
               "registration": "air-torso",
               "offsetY": 0,
               "sockets": {
-                "supportFoot": [
-                  217,
-                  422
+                "torso": [
+                  212,
+                  259.6
                 ],
                 "floorContact": [
-                  136,
-                  422
+                  177,
+                  259.6
                 ]
               },
-              "rotation": 3.141592653589793
-            },
-            {
-              "rect": [
-                72,
-                30,
-                272,
-                425
-              ],
-              "root": [
-                136,
-                212.5
-              ],
-              "sourceSize": [
-                512,
-                512
-              ],
-              "trim": [
-                72,
-                30
-              ],
-              "visibleHeight": 419,
-              "registration": "air-torso",
-              "offsetY": 0,
-              "sockets": {
-                "supportFoot": [
-                  217,
-                  422
-                ],
-                "floorContact": [
-                  136,
-                  422
-                ]
-              },
-              "rotation": 4.1887902047863905
-            },
-            {
-              "rect": [
-                72,
-                30,
-                272,
-                425
-              ],
-              "root": [
-                136,
-                212.5
-              ],
-              "sourceSize": [
-                512,
-                512
-              ],
-              "trim": [
-                72,
-                30
-              ],
-              "visibleHeight": 419,
-              "registration": "air-torso",
-              "offsetY": 0,
-              "sockets": {
-                "supportFoot": [
-                  217,
-                  422
-                ],
-                "floorContact": [
-                  136,
-                  422
-                ]
-              },
-              "rotation": 5.235987755982989
+              "image": "swift-hit-air-v1.png",
+              "scale": 0.14869565217391306
             }
           ],
           "actionFamily": true,
@@ -110914,6 +110867,83 @@
             "transition 6"
           ],
           "designOnly": true
+        },
+        "hit_launch": {
+          "image": "swift-hit-air-v1.png",
+          "scale": 0.14869565217391306,
+          "durations": [
+            4,
+            6
+          ],
+          "loop": false,
+          "frames": [
+            {
+              "rect": [
+                117,
+                27,
+                371,
+                466
+              ],
+              "root": [
+                185.5,
+                256.3
+              ],
+              "sourceSize": [
+                512,
+                512
+              ],
+              "trim": [
+                117,
+                27
+              ],
+              "visibleHeight": 460,
+              "registration": "air-torso",
+              "offsetY": 0,
+              "sockets": {
+                "torso": [
+                  139,
+                  254.60000000000002
+                ],
+                "floorContact": [
+                  185.5,
+                  254.60000000000002
+                ]
+              }
+            },
+            {
+              "rect": [
+                593,
+                40,
+                339,
+                418
+              ],
+              "root": [
+                169.5,
+                229.9
+              ],
+              "sourceSize": [
+                512,
+                512
+              ],
+              "trim": [
+                81,
+                40
+              ],
+              "visibleHeight": 412,
+              "registration": "air-torso",
+              "offsetY": 0,
+              "sockets": {
+                "torso": [
+                  175,
+                  241.60000000000002
+                ],
+                "floorContact": [
+                  169.5,
+                  241.60000000000002
+                ]
+              }
+            }
+          ]
         }
       }
     }

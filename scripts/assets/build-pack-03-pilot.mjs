@@ -230,6 +230,7 @@ const presentationLayouts = {
 };
 
 function build(id,spec) {
+ const idleLoop=load(id+'-idle-loop.png');
  const taunts=load(id+'-taunt-transitions.png');
  const finale=load(id+'-finale.png');
  const presentation=load(id+'-presentation.png'),presentationLayout=presentationLayouts[id];
@@ -247,8 +248,27 @@ function build(id,spec) {
  const ceiling=load(id+'-ceiling-tech.png'),ceilingLayout=ceilingLayouts[id];
  const trip=load(id+'-trip-lock.png'),tripLayout=tripLayouts[id];
  const tech=load(id+'-tech.png'),techLayout=techLayouts[id];
+ const runPush=load(id+'-run-push.png'),runReach=load(id+'-run-reach.png');
+ const pushCell=id==='loopy'?2:0;
+ const pushLayout={columns:id==='loopy'?4:2};
+ const pushRoots=Array.from({length:pushCell+1},(_,i)=>i===pushCell?Math.round(runPush.width*(i+.55)/pushLayout.columns):null);
+ const reachLayout={columns:1};
+ const crouch=load(id+'-crouch.png');
+ const doubleJump=load(id+'-double-jump.png');
+ const doubleJumpLayout={columns:1};
+ const doubleJumpPelvis={ 'mr-wrong':[.51,.55],loopy:[.49,.52],'mrs-tasselbottom':[.50,.57] }[id];
+ const jumpFollow=load(id+'-jump-follow.png');
+ const jumpPelvis={ 'mr-wrong':[null,.60,.55,.58],loopy:[null,.63,.61,.62],'mrs-tasselbottom':[null,.61,.55,.60] }[id];
+ const edgeFollow=load(id+'-edge-follow.png');
+ const edgeFollowLayout={columns:3};
+ const edgeFollowPelvis={ 'mr-wrong':.63,loopy:.63,'mrs-tasselbottom':.64 }[id];
+ const shieldTransition=load(id+'-shield-transition.png');
+ const walkPassing=load(id+'-walk-passing.png');
  const primary=load(id+'-movement.png'),companion=load(id+'-contact.png'),gait=load(id+'-gait.png');
  const transitions=load(id+'-transitions.png'),edges=load(id+'-edges.png');
+ const jabChain=load(id+'-jab-chain.png');
+ const jabOne=load(id+'-jab-one.png');
+ const jabOneLayout={columns:3};
  const jabs=load(id+'-jabs.png'),tilts=load(id+'-tilts.png');
  const compact=load(id+'-compact-strikes.png'),raised=load(id+'-raised-strikes.png');
  const powerForward=load(id+'-dash-smash-forward.png'),powerVertical=load(id+'-smash-up-down.png');
@@ -258,6 +278,38 @@ function build(id,spec) {
  const guard=load(id+'-defense-guard.png'),evade=load(id+'-defense-evade.png');
  const airDefense=load(id+'-air-dodge-land.png');
  const shieldBreak=load(id+'-shield-break.png');
+ const heavyAir=load(id+'-heavy-air-recoil.png');
+ const heavyAirPelvis={'mr-wrong':[.77,.77,.78,.79],loopy:[.81,.82,.82,.81],'mrs-tasselbottom':[.80,.80,.81,.81]}[id];
+ const tumbleRecovery=load(id+'-tumble-recovery.png');
+ const tumbleRecoveryLayout={columns:2,y:(id==='loopy'?[.61,.68]:[.57,.64]).map(y=>y*tumbleRecovery.height)};
+ const floorAdditions=['up','down'].flatMap(side=>['pilot','pair'].map(kind=>{
+  const png=load(id+'-floor-'+side+'-'+kind+'.png');
+  const cuts=(id==='loopy'?(side==='up'?[.273,.624]:[.414]):id==='mrs-tasselbottom'?[.48]:[side==='up'?.407:.405]).map(x=>Math.round(x*png.width));
+  const layout=kind==='pilot'?{columns:1}:{columns:cuts.length+1,columnCuts:[cuts]};
+  const prefix='fp'+side+kind;
+  const edges=kind==='pilot'?[0,png.width]:[0,...cuts,png.width];
+  return {prefix,png,rows:1,layout,x:edges.slice(1).map((right,i)=>(edges[i]+right)/2)};
+ }));
+ const holdAnchors={
+ 'mrs-tasselbottom':[{grabGrip:[247,116]},{grabGrip:[165,124]},{grabGrip:[235,124]},{gripTop:[145,123],gripBottom:[145,158]},{gripTop:[165,147],gripBottom:[165,181]}],
+ 'loopy':[{grabGrip:[250,126]},{grabGrip:[225,151]},{grabGrip:[214,185]},{gripTop:[159,155],gripBottom:[159,183]},{gripTop:[153,173],gripBottom:[153,202]}],
+ 'mr-wrong':[
+  {grabGrip:[199,123]}, {grabGrip:[256,120]}, {grabGrip:[251,135]},
+  {gripTop:[170,112],gripBottom:[170,154]}, {gripTop:[178,116],gripBottom:[178,156]},
+ ]
+ };
+ const holdAdditions=(holdAnchors[id]??[]).map((anchors,i)=>{
+  const png=load(id+'-hold-pose-'+i+'.png');
+  const sockets=Object.fromEntries(Object.entries(anchors).map(([key,[x,y]])=>
+   [key,[Math.round(x*png.width/320),Math.round(y*png.height/320)]]));
+  return {prefix:'hp'+i+'_',png,rows:1,x:[png.width/2],layout:{columns:1,sockets:[sockets]}};
+ });
+ const tripAdditions=Array.from({length:5},(_,i)=>{
+  const png=load(id+'-trip-pose-'+i+'.png');
+  return {prefix:'tp'+i+'_',png,rows:1,x:[png.width/2],layout:{columns:1}};
+ });
+ const groundRecoil=load(id+'-ground-recoil.png');
+ const groundRecoilLayout={columns:2};
  const damage=load(id+'-hit-launch-tumble.png');
  const floor=load(id+'-tumble-recovery-knockdowns.png');
  const getupUp=load(id+'-getup-up.png'),getupDown=load(id+'-getup-down.png');
@@ -273,9 +325,25 @@ function build(id,spec) {
   {prefix:'w',png:evade,rows:3,x:spec.defense.evade.x,layout:spec.defense.evade},
   {prefix:'b',png:primary,rows:3,x:spec.primaryX},
   {prefix:'c',png:companion,rows:2,x:spec.companionX},
+  {prefix:'gp',png:runPush,rows:1,x:pushRoots,layout:pushLayout},
+  {prefix:'gr',png:runReach,rows:1,x:[Math.round(runReach.width*.51)],layout:reachLayout},
+  {prefix:'cr',png:crouch,rows:1,x:[268,815,1348,1888]},
+  {prefix:'dj',png:doubleJump,rows:1,x:[Math.round(doubleJump.width*doubleJumpPelvis[0])],layout:doubleJumpLayout},
+  {prefix:'jf',png:jumpFollow,rows:1,x:[.13,.38,.63,.88].map(x=>Math.round(x*jumpFollow.width))},
+  {prefix:'ef',png:edgeFollow,rows:1,x:[.19,.50,.82].map(x=>Math.round(x*edgeFollow.width)),layout:edgeFollowLayout},
+  {prefix:'st',png:shieldTransition,rows:1,x:[.125,.375,.625,.875].map(x=>Math.round(x*shieldTransition.width))},
+  {prefix:'wp',png:walkPassing,rows:1,x:[270,810]},
   {prefix:'g',png:gait,rows:2,x:spec.gaitX},
   {prefix:'t',png:transitions,rows:3,x:spec.transitionX},
   {prefix:'e',png:edges,rows:2,x:spec.edgeX},
+  {prefix:'jc',png:jabChain,rows:2,x:[.17,.5,.83,.17,.5,.83].map(x=>Math.round(x*jabChain.width)),layout:jabOneLayout},
+  {prefix:'ha',png:heavyAir,rows:2,x:[.13,.38,.63,.88,.13,.38,.63,.88].map(x=>Math.round(x*heavyAir.width))},
+  {prefix:'tu',png:tumbleRecovery,rows:1,x:[.27,.72].map(x=>Math.round(x*tumbleRecovery.width)),layout:tumbleRecoveryLayout},
+  ...floorAdditions,
+  ...tripAdditions,
+  ...holdAdditions,
+  {prefix:'hr',png:groundRecoil,rows:3,x:[.25,.75,.25,.75,.25,.75].map(x=>Math.round(x*groundRecoil.width)),layout:groundRecoilLayout},
+  {prefix:'jb',png:jabOne,rows:2,x:[.17,.5,.83,.17,.5,.83].map(x=>Math.round(x*jabOne.width)),layout:jabOneLayout},
   {prefix:'j',png:jabs,rows:3,x:spec.jabs.x,layout:spec.jabs},
   {prefix:'k',png:tilts,rows:3,x:spec.tilts.x,layout:spec.tilts},
   {prefix:'s',png:compact,rows:2,x:spec.strikes.compact.x,layout:spec.strikes.compact},
@@ -301,6 +369,12 @@ function build(id,spec) {
   loopy:[287,749,1217,290,750,1222],
   'mrs-tasselbottom':[286,777,1240,286,777,1240],
  };
+ const idleLayout={columns:4};
+ const idleRoots=Array.from({length:4},(_,index)=>{
+  const box=cell(idleLoop,index,1,idleLayout);
+  return (box.x+box.right)/2;
+ });
+ sheets.push({prefix:'il',png:idleLoop,rows:1,x:idleRoots,layout:idleLayout});
  sheets.push({prefix:'pt',png:taunts,rows:2,x:tauntRoots[id],layout:{columns:3}});
  sheets.push({prefix:'pf',png:finale,rows:2,x:[210,580,960,1350,200,580,970,1350],layout:{columns:4}});
  sheets.push({prefix:'ps',png:presentation,rows:1,x:presentationLayout.x,layout:presentationLayout});
@@ -327,6 +401,7 @@ function build(id,spec) {
  const ceilingContact=cell(ceiling,0,1,ceilingLayout);
  const holderBase=cell(holder,0,1,grapple.holder),heldBase=cell(held,0,1,grapple.held);
  const factors={
+  il:2*spec.bodyHeight*(cell(primary,0,3).bottom-cell(primary,0,3).y)/((cell(primary,0,3).sole-spec.crown)*(cell(idleLoop,0,1,idleLayout).bottom-cell(idleLoop,0,1,idleLayout).y)),
   ps:presentationLayout.scale,
   pt:presentationLayout.scale*(id==='mrs-tasselbottom'?1.2:id==='loopy'?1.35:1.4),
   pf:presentationLayout.scale*(id==='loopy'?1.35:1.4),
@@ -354,9 +429,22 @@ function build(id,spec) {
   z:2*spec.bodyHeight/(cell(guard,0,3,spec.defense.guard).sole-spec.defense.guard.crown),
   w:2*spec.bodyHeight/(cell(evade,0,3,spec.defense.evade).sole-spec.defense.evade.crown),
   b:2*spec.bodyHeight/(cell(primary,0,3).sole-spec.crown),
+  gp:2*spec.bodyHeight*.91/(cell(runPush,pushCell,1,pushLayout).sole-cell(runPush,pushCell,1,pushLayout).y),
+  gr:2*spec.bodyHeight*.95/(cell(runReach,0,1,reachLayout).sole-cell(runReach,0,1,reachLayout).y),
+  cr:2*spec.bodyHeight*.94/(cell(crouch,0,1).sole-cell(crouch,0,1).y),
+  dj:(cell(transitions,8,3).sole-cell(transitions,8,3).y)*2*spec.bodyHeight/(cell(transitions,2,3).sole-spec.transitionCrown)/(cell(doubleJump,0,1,doubleJumpLayout).sole-cell(doubleJump,0,1,doubleJumpLayout).y),
+  jf:(cell(transitions,4,3).sole-cell(transitions,4,3).y)*2*spec.bodyHeight/(cell(transitions,2,3).sole-spec.transitionCrown)/(cell(jumpFollow,0,1).sole-cell(jumpFollow,0,1).y),
+  ef:(cell(edges,4,2).sole-cell(edges,4,2).y)*2*spec.bodyHeight/(cell(edges,4,2).sole-spec.edgeCrown)/(cell(edgeFollow,1,1,edgeFollowLayout).sole-cell(edgeFollow,1,1,edgeFollowLayout).y),
+  st:(cell(guard,0,3,spec.defense.guard).sole-cell(guard,0,3,spec.defense.guard).y)*2*spec.bodyHeight/(cell(guard,0,3,spec.defense.guard).sole-spec.defense.guard.crown)/(cell(shieldTransition,0,1).sole-cell(shieldTransition,0,1).y),
+  wp:2*spec.bodyHeight/(cell(walkPassing,0,1).sole-cell(walkPassing,0,1).y),
   g:2*spec.bodyHeight/(cell(gait,0,2).sole-spec.gaitCrown),
   t:2*spec.bodyHeight/(cell(transitions,2,3).sole-spec.transitionCrown),
   e:2*spec.bodyHeight/(cell(edges,4,2).sole-spec.edgeCrown),
+  jc:2*spec.bodyHeight*(cell(jabs,3,3,spec.jabs).sole-cell(jabs,3,3,spec.jabs).y)/(cell(jabs,0,3,spec.jabs).sole-spec.jabs.crown)/(cell(jabChain,0,2,jabOneLayout).sole-cell(jabChain,0,2,jabOneLayout).y),
+  ha:(cell(primary,0,3).sole-cell(primary,0,3).y)*2*spec.bodyHeight/(cell(primary,0,3).sole-spec.crown)/(cell(heavyAir,3,2).sole-cell(heavyAir,3,2).y),
+  tu:(cell(primary,0,3).sole-cell(primary,0,3).y)*2*spec.bodyHeight/(cell(primary,0,3).sole-spec.crown)/(cell(tumbleRecovery,1,1,tumbleRecoveryLayout).sole-cell(tumbleRecovery,1,1,tumbleRecoveryLayout).y),
+  hr:(cell(primary,0,3).sole-cell(primary,0,3).y)*2*spec.bodyHeight/(cell(primary,0,3).sole-spec.crown)/(cell(groundRecoil,1,3,groundRecoilLayout).sole-cell(groundRecoil,1,3,groundRecoilLayout).y),
+  jb:2*spec.bodyHeight*(cell(jabs,0,3,spec.jabs).sole-cell(jabs,0,3,spec.jabs).y)/(cell(jabs,0,3,spec.jabs).sole-spec.jabs.crown)/(cell(jabOne,0,2,jabOneLayout).sole-cell(jabOne,0,2,jabOneLayout).y),
   j:2*spec.bodyHeight/(cell(jabs,0,3,spec.jabs).sole-spec.jabs.crown),
   k:2*spec.bodyHeight/(cell(tilts,0,3,spec.tilts).sole-spec.tilts.crown),
   s:2*spec.bodyHeight/(cell(compact,0,2,spec.strikes.compact).sole-spec.strikes.compact.crown),
@@ -371,13 +459,34 @@ function build(id,spec) {
   c:2*spec.bodyHeight/(cell(companion,4,2).sole-(cell(companion,4,2).y+(id==='loopy'?68:35))),
  };
  // Match the airborne pelvis position to the grounded idle's standing body offset.
+ for(const {prefix,png,layout} of floorAdditions){
+  const side=prefix.startsWith('fpup')?'up':'down';
+  const reference=side==='up'?getupUp:getupDown;
+  const sheet=sheets.find(sheet=>sheet.png===reference);
+  const target=cell(reference,0,sheet.rows,sheet.layout);
+  const pair=floorAdditions.find(entry=>entry.prefix==='fp'+side+'pair');
+  const relaxed=cell(pair.png,pair.x.length-1,1,pair.layout);
+  factors[prefix]=(target.right-target.x)*factors[sheet.prefix]/(relaxed.right-relaxed.x);
+ }
+ for(const [i,{prefix,png,layout}] of tripAdditions.entries()){
+  const sourcePose=cell(png,0,1,layout);
+  const target=cell(trip,i===1||(i===2&&id!=='loopy')?0:2,4,tripLayouts[id]);
+  factors[prefix]=(target.sole-target.y)*factors.tr/(sourcePose.sole-sourcePose.y);
+ }
+ for(const [i,{prefix,png,layout}] of holdAdditions.entries()){
+  const pose=cell(png,0,1,layout);
+  const reference=i<3?holder:held;
+  const referenceLayout=i<3?grapple.holder:grapple.held;
+  const target=cell(reference,0,1,referenceLayout);
+  factors[prefix]=(target.sole-target.y)*factors[i<3?'gh':'gv']/(pose.sole-pose.y);
+ }
  const pelvisOffset=spec.radius-(cell(primary,0,3).sole-spec.idlePelvisY)*factors.b/2;
  const drawings={};
  for(const {prefix,png,rows,x,layout} of sheets) for(let i=0;i<x.length;i++){
   if(x[i]===null||((prefix==='j'||prefix==='k')&&i%3===1))continue;
   const key=prefix+i,box=cell(png,i,rows,layout),scale=factors[prefix];
   const pixel=sample(png,box,scale);
-  if(id==='loopy'&&(prefix==='j'||[0,4,8].includes(i)&&prefix==='w'||prefix==='hd'&&[4,7,8,9,10,11].includes(i))){
+  if(prefix.startsWith('hp')||prefix.startsWith('tp')||id==='loopy'&&(prefix==='j'||[0,4,8].includes(i)&&prefix==='w'||prefix==='hd'&&[4,7,8,9,10,11].includes(i))){
    // Keep the antialiasing next to the silhouette and clear the diffuse fringe.
    const {width,height,data}=pixel;
    for(let row=0;row<height;row++)for(let col=0;col<width;col++){
@@ -422,7 +531,7 @@ function build(id,spec) {
    if(sx<box.x||sx>=box.right||sy<box.y||sy>=box.bottom)throw Error(id+' '+key+' '+name+' outside art');
    return [name,[round((sx-box.x)*scale),round((sy-box.y)*scale)]];
   }));
-  const pelvisY=prefix==='t'?spec.transitionPelvisY[i]:prefix==='e'?spec.edgePelvisY[i]:null;
+  const pelvisY=prefix==='t'?spec.transitionPelvisY[i]:prefix==='e'?spec.edgePelvisY[i]:prefix==='ha'&&i>=4?heavyAirPelvis[i-4]*heavyAir.height:prefix==='jf'&&jumpPelvis[i]!==null?jumpPelvis[i]*jumpFollow.height:prefix==='dj'?doubleJumpPelvis[1]*doubleJump.height:prefix==='ef'&&i===0?edgeFollowPelvis*edgeFollow.height:null;
   const airY=layout?.y?.[i];
   // Keep the tucked feet registered while the hands retract from the underside.
   const ceilingRoot=prefix==='ct'
@@ -451,9 +560,9 @@ function build(id,spec) {
   fs.writeFileSync(path.join(output,pageImage),PNG.sync.write(atlas));
  }
  const entries=Object.entries(drawings);
- packPage(entries.filter(([key])=>!(key.startsWith('ps')||key.startsWith('pf')||key.startsWith('pt'))&&!(key.startsWith('lg')||key.startsWith('la'))).map(([,frame])=>frame),image);
+ packPage(entries.filter(([key])=>!(key.startsWith('ps')||key.startsWith('pf')||key.startsWith('pt')||key.startsWith('il')||key.startsWith('wp')||key.startsWith('fp')||key.startsWith('tp')||key.startsWith('hp')||key.startsWith('jb')||key.startsWith('hr')||key.startsWith('tu')||key.startsWith('ha')||key.startsWith('jc')||key.startsWith('st')||key.startsWith('ef')||key.startsWith('jf')||key.startsWith('dj')||key.startsWith('cr')||key.startsWith('gp')||key.startsWith('gr'))&&!(key.startsWith('lg')||key.startsWith('la'))).map(([,frame])=>frame),image);
  packPage(entries.filter(([key])=>(key.startsWith('lg')||key.startsWith('la'))).map(([,frame])=>frame),'atlas-'+id+'-ledge.png');
- packPage(entries.filter(([key])=>(key.startsWith('ps')||key.startsWith('pf')||key.startsWith('pt'))).map(([,frame])=>frame),'atlas-'+id+'-presentation.png');
+ packPage(entries.filter(([key])=>(key.startsWith('ps')||key.startsWith('pf')||key.startsWith('pt')||key.startsWith('il')||key.startsWith('wp')||key.startsWith('fp')||key.startsWith('tp')||key.startsWith('hp')||key.startsWith('jb')||key.startsWith('hr')||key.startsWith('tu')||key.startsWith('ha')||key.startsWith('jc')||key.startsWith('st')||key.startsWith('ef')||key.startsWith('jf')||key.startsWith('dj')||key.startsWith('cr')||key.startsWith('gp')||key.startsWith('gr'))).map(([,frame])=>frame),'atlas-'+id+'-presentation.png');
  fs.writeFileSync(path.join(output,id+'-idle.png'),PNG.sync.write(drawings.b0.pixel));
  const clips={};
  function clip(name,keys,durations,activeWindow) {
@@ -474,11 +583,12 @@ function build(id,spec) {
  clip('ko_screen',['pf6'],[12]);
  clip('ko_star',['pf7'],[12]);
  clip('defeat',['ps3','ps3','ps3','ps3'],[8,8,8,8]);
- clip('footstool_attacker',['fs0','fs0','b5'],[1,3,14]);
- clip('footstool_ground_victim',['fs1','fs1','fs1'],[1,3,14]);
- clip('footstool_air_victim',['fs2','fs2','fs2'],[1,3,14]);
- clip('trip_fall',['tr0','tr0','tr1','tr1','tr2','tr2'],[4,4,4,4,4,4]);
- clip('trip_prone',['tr2','tr3'],[8,8]);
+ clip('footstool_attacker',['fs0','b5','t11','dj0','t8','jf1'],[3,3,3,3,3,3]);
+ clip('footstool_ground_victim',['fs1','hd2','hr4','hr5','cr0','b0'],[3,3,3,3,3,3]);
+ clip('footstool_air_victim',['fs2','ha4','ha5','ha6','ha7','hd7'],[3,3,3,3,3,3]);
+ clip('trip_fall',['tp1_0','tr0',...(id==='loopy'?['tr1','tp2_0']:['tp2_0','tr1']),'tp3_0','tr2'],[4,4,4,4,4,4]);
+ clip('trip_prone',['tr2','tp0_0','tp4_0','tr3'],[6,6,6,6]);
+
  clip('trip_getup',['tr2','tr3','tr4','tc1','tc2','b0'],[1,1,6,6,5,5]);
  clip('trip_roll',['tr2','tr3','tc4','tc5','tc2','b0'],[1,1,14,4,2,2]);
  clip('floor_attack_trip',['tr2','tr3','tr4','gc0','gc1','tc2','b0'],[1,1,4,2,2,7,7],[6,10]);
@@ -489,27 +599,30 @@ function build(id,spec) {
  clip('tech_roll',['tc3','tc4','tc4','tc5','tc2','b0'],[5,5,7,7,8,8]);
  clip('wall_tech',['tc6','tc7','tc7','tc8','tc8','b5'],[4,4,4,4,4,4]);
  clip('wall_tech_jump',['tc9','tc10','tc10','tc11','tc11','b5'],[4,4,4,4,4,4]);
- clip('idle',['b0'],[24]);
- clip('walk',['g0','g1','g2','g3'],[7,5,7,5]);
- clip('run',['g4','g5','g6','g7'],spec.runTiming);
+ clip('idle',['il0','il1','il2','il3'],[12,12,12,12]);
+ clip('walk',['g0','wp0','g1','g2','wp1','g3'],[4,3,5,4,3,5]);
+ const [firstContact,firstPass,secondContact,secondPass]=spec.runTiming;
+ clip('run',['g4','gp'+pushCell,'g5','g6','gr0','g7'],
+  [firstContact-2,2,firstPass,secondContact-2,2,secondPass]);
  clip('dash_start',['t0','t1','g4','g5','g6','g7'],[3,3,2,3,2,2]);
  clip('brake',['t3','t2','b0'],[4,4,10]);
  clip('turn_stand',['t2','b0'],[3,3]);
  clip('turn_run',['t3','t2'],[2,4]);
- clip('jump_squat',['t4'],[4]);
- for(const key of ['crouch_enter','crouch_hold'])clip(key,['b4'],[4]);
- clip('crouch_exit',['b4','b0']);clip('jump',['t4','t8','t9','t10','t11','b7']);
+ clip('jump_squat',['jf0','t4'],[2,2]);
+ clip('crouch_enter',['b0','cr0','cr1','cr1','cr2','cr2'],[3,3,3,3,3,3]);
+ clip('crouch_hold',['cr2','cr3','cr3','cr2'],[6,6,6,6]);
+ clip('crouch_exit',['cr2','cr1','cr0','cr0','b0','b0'],[3,3,3,3,3,3]);clip('jump',['t4','t8','t9','t10','t11','b7']);
  clip('takeoff_neutral',['t5','t8'],[4,2]);
  clip('takeoff_forward',['t6','t8'],[4,2]);
  clip('takeoff_backward',['t7','t8'],[4,2]);
- clip('air_rise_loop',['t8'],[6]);
- clip('air_apex_loop',['t9'],[6]);
- clip('air_fall_loop',['t10'],[6]);
- clip('air_fastfall_loop',['e0','e1'],[3,8]);
+ clip('air_rise_loop',['t8','jf1'],[6,6]);
+ clip('air_apex_loop',['t9','jf2'],[2,2]);
+ clip('air_fall_loop',['t10','jf3'],[6,6]);
+ clip('air_fastfall_loop',['e0','ef0','e1'],[3,3,5]);
  clip('platform_drop',['e2','e3'],[3,5]);
- clip('teeter_front',['e4','e5'],[9,9]);
- clip('teeter_back',['e6','e7'],[9,9]);
- clip('double_jump_transition',['t11','t8'],[5,7]);
+ clip('teeter_front',['e4','ef1','e5','ef1'],[6,6,6,6]);
+ clip('teeter_back',['e6','ef2','e7','ef2'],[6,6,6,6]);
+ clip('double_jump_transition',['t11','dj0','t8'],[4,3,5]);
  clip('land_soft',['b7','b4','b0'],[3,3,6]);
  clip('land_heavy',['b7','b4','b0'],[5,4,9]);
  clip('ledge_catch',['lh0','lh0','lh0','lh1'],[2,2,2,2]);
@@ -523,25 +636,31 @@ function build(id,spec) {
  clip('grab',['b0','b0','c4','gr0','c4','b0']);
  clip('grab_dash',['g4','g5','g6','gr1','c4','b0']);
  clip('grab_pivot',['t2','t3','c4','gr2','c4','b0']);
- clip('grab_hold',['gh0']);
+ if(holdAdditions.length)clip('grab_hold',['gh0','hp0_0','hp1_0','hp2_0'],[12,12,12,12]);
+ else clip('grab_hold',['gh0']);
  clip('pummel',['gh0','gh0','gh0','gh1','gh0','gh0']);
  clip('pummel_victim',['gv0','gv1','gv0']);
- clip('grab_release',['gv0','gv0','gv2']);
- clip('grabbed',['gv0','gv0']);
+ clip('grab_release',['gv0','hp3_0','hp4_0','gv2'],[3,3,3,3]);
+ if(holdAdditions.length)clip('grabbed',['gv0','hp3_0','gv1','hp4_0'],[12,12,12,12]);
+ else clip('grabbed',['gv0','gv0']);
  for(const [index,direction] of ['forward','back','up','down'].entries()){
   const release=['tw1','ts0','th2','ts1'][index],victim=index===3?'tv1':'tv'+index;
   const recovery=direction==='down'?'tr4':'c4';
   const windup=direction==='up'&&drawings.tw2?'tw2':'tw0';
   clip(direction+'_throw',['gh0',windup,release,recovery,'b0'],[3,3,2,5,13],[6,8]);
   const victimClip=direction==='forward'?'throw_victim':direction+'_throw_victim_preview';
-  clip(victimClip,['gv0',victim,'b6']);
-  if(direction==='down')clips[victimClip].frames[1].mirrorSource=true;
+  clip(victimClip,[victim,['ha4','ha5','ha6','ha7'][index],'b6','hd4'],[2,2,2,12]);
+  if(direction==='down')clips[victimClip].frames[0].mirrorSource=true;
  }
  // One distinct windup, contact and recovery drawing per grounded move.
  for(const [i,name] of ['jab','jab_2','jab_3','forward_tilt','up_tilt','down_tilt'].entries()){
+  if(i<3)continue;
   const prefix=i<3?'j':'k',row=i%3;
   clip(name,[prefix+(row*3),spec.strikes.frames[i],prefix+(row*3+2)],[4,4,8],[4,8]);
  }
+ clip('jab',['jb0','j0','jb1',spec.strikes.frames[0],'jb2','jb3','jb4','j2','jb5'],[1,1,1,2,2,2,2,2,2],[3,5]);
+ clip('jab_2',['jc0','j3','jc1',spec.strikes.frames[1],'jc2','j5'],[1,1,1,2,4,6],[3,5]);
+ clip('jab_3',['jc3','j6','jc4',spec.strikes.frames[2],'jc5','j8'],[1,1,2,3,7,11],[4,7]);
  clip('dash_attack',['p0','p1','p2','p3'],[4,4,5,8],[8,13]);
  clip('forward_smash',['p4','p5','p6','p7'],[4,4,3,8],[8,11]);
  clip('up_smash',['q0',...spec.power.up,'q3'],[6,2,3,8],[6,11]);
@@ -558,10 +677,10 @@ function build(id,spec) {
  clip('helpless_enter',['r6']);
  clip('helpless_loop',['r7']);
  clip('helpless_land',['r8','b0'],[10,4]);
- clip('shield_raise',['z0','z1'],[3,3]);
+ clip('shield_raise',['b0','st0','st1','st2','st3','z1'],[1,1,1,1,1,1]);
  clip('shield',['z1','z2'],[8,24]);
  clip('shield_hit',['z3','z4','z1'],[4,6,8]);
- clip('shield_drop',['z2','z5'],[5,6]);
+ clip('shield_drop',['z2','st3','st2','st1','st0','z5'],[2,2,2,2,2,1]);
  clip('parry',['z6','z7','z8'],[3,5,10]);
  clip('dodge',['w0','w4','w8']);
  clip('roll',['w1','w5','w9']);
@@ -574,25 +693,65 @@ function build(id,spec) {
  clip('shield_break_launch',['sb0','sb1','sb2','sb3'],[3,6,6,8]);
  clip('shield_break_dizzy',['sb4','sb5','sb6','sb7'],[6,6,6,6]);
  clip('shield_break_recover',['sb8','sb9','sb10','sb11'],[4,5,5,4]);
- clip('hit_high',['hd0','b0'],[7,3]);
- clip('hit_mid',['hd1','b0'],[6,3]);
- clip('hit_low',['hd2','b0'],[7,3]);
- clip('hit_heavy',['hd3','b0'],[10,4]);
- clip('hit_air',['hd4','hd7'],[6,6]);
+ clip('hit_high',['hd0','hr0','hr1','b0'],[3,2,2,3]);
+ clip('hit_mid',['hd1','hr2','hr3','b0'],[2,2,2,3]);
+ clip('hit_low',['hd2','hr4','hr5','b0'],[3,2,2,3]);
+ clip('hit_heavy',['hd3','ha0','ha1','ha2','ha3','b0'],[3,2,2,2,2,3]);
+ clip('hit_air',['hd4','ha4','ha5','ha6','ha7','hd7'],[2,2,2,2,2,2]);
  clip('hit_launch',['hd5',id==='loopy'?'ad1':'hd6'],[4,6]);
  clip('tumble',['hd8','hd9','hd10','hd11'],[4,4,4,4]);
- clip('tumble_recover',['fl0','fl1','fl2','fl3'],[3,3,3,3]);
+ clip('tumble_recover',['fl0','tu0','fl1','fl2','tu1','fl3'],[2,2,2,2,2,2]);
  for(const [side,prefix,first] of [['up','gu',4],['down','gd',8]]){
   const poses=(indices)=>indices.map(i=>prefix+i);
-  clip('knockdown_'+side,[...Array.from({length:4},(_,i)=>'fl'+(first+i)),prefix+'0'],[2,4,4,4,4]);
-  clip('prone_'+side,poses([0,1]),[6,6]);
+  const fall=Array.from({length:4},(_,i)=>'fl'+(first+i));
+  if(floorAdditions.length){
+   clip('knockdown_'+side,[...fall,'fp'+side+'pair0',prefix+'0'],[2,4,3,3,2,4]);
+   clip('prone_'+side,[prefix+'0','fp'+side+'pilot0','fp'+side+'pair'+(id==='loopy'&&side==='up'?2:1),prefix+'1'],[3,3,3,3]);
+  }else{
+   clip('knockdown_'+side,[...fall,prefix+'0'],[2,4,4,4,4]);
+   clip('prone_'+side,poses([0,1]),[6,6]);
+  }
   clip('getup_'+side,[...poses([0,1,2,3,4]),'b0'],[2,2,5,6,6,5]);
   clip('getup_roll_'+side,[...poses([0,1,5,6,7]),'b0'],[2,2,2,12,5,3]);
   const contact=side==='up'?['gc0','gc1']:['gc2','gc3'];
   clip('floor_attack_'+side,[...poses([0,1,8]),...contact,prefix+'11','b0'],[1,1,4,2,2,7,7],[6,10]);
  }
+ if(['mr-wrong','loopy','mrs-tasselbottom'].includes(id)){
+  const registration=JSON.parse(fs.readFileSync(path.join(source,id+'-pummel-registration.json'),'utf8'));
+  const materialize=({source:image,...frame})=>({...frame,image});
+  for(const image of new Set([...registration.holder,...registration.victim].map(frame=>frame.source))){
+   fs.copyFileSync(path.join(source,image),path.join(output,image));
+  }
+  clips.pummel={
+   ...clips.pummel,frames:[clips.grab_hold.frames[1],...registration.holder.map(materialize)],
+   durations:[1,1,1,1,3,5],activeWindow:[3,4],
+  };
+  clips.pummel_victim={
+   ...clips.pummel_victim,frames:registration.victim.map(materialize),durations:[2,2,2,2],
+  };
+ }
+ {
+  const image=id+'-grab-transitions.png';
+  const stanceCenters={'mr-wrong':[340,900,340,907],loopy:[342,924,348,950],'mrs-tasselbottom':[407,1080,407,1080]};
+  const png=load(image);
+  const worldHeight=clips.grab_hold.frames[1].rect[3]*clips.grab_hold.scale;
+  const frames=stanceCenters[id].map((stanceX,index)=>{
+   const layout=id==='loopy'?{columns:2,columnCuts:[[650],[650]],rowCuts:[550]}:{columns:2};
+   const box=cell(png,index,2,layout);
+   if(id==='loopy'&&index===0)box.x=Math.max(box.x,180);
+   return {
+    image,rect:[box.x,box.y,box.right-box.x,box.bottom-box.y],
+    root:[stanceX-box.x,box.sole-box.y],
+    scale:worldHeight/(box.sole-box.y),
+   };
+  });
+  fs.copyFileSync(path.join(source,image),path.join(output,image));
+  const standing=clips.grab.frames;
+  clips.grab.frames=[standing[0],frames[0],frames[1],standing[3],frames[2],standing[4]];
+  clips.grab_pivot.frames[4]=frames[3];
+ }
  return {clips};
 }
 fs.mkdirSync(output,{recursive:true});
 const characters=Object.fromEntries(Object.entries(specs).map(([id,spec])=>[id,build(id,spec)]));
-fs.writeFileSync(path.join(output,'manifest.json'),JSON.stringify({version:1,revision:42,characters},null,2)+'\n');
+fs.writeFileSync(path.join(output,'manifest.json'),JSON.stringify({version:1,revision:72,characters},null,2)+'\n');

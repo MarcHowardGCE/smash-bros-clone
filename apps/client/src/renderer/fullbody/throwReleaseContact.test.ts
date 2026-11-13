@@ -144,7 +144,7 @@ it('aligns Pack 03 packed throw releases across all ordered pairings and facings
       expect(attacker.sprite.label).toBe(attackerClip);
       expect(victim.sprite.label).toBe('throw_victim');
       const hand = characters[ownerId]![attackerClip]!.frames[2]!.sockets!.grabGrip!;
-      const torso = characters[victimId]![victimClip]!.frames[1]!.sockets!.gripTop!;
+      const torso = characters[victimId]![victimClip]!.frames[0]!.sockets!.gripTop!;
       expect(dx * facing + facing * (victim.sprite.x + (torso[0]! - victim.sprite.pivot.x) * victim.sprite.scale.x))
         .toBeCloseTo(facing * (attacker.sprite.x + (hand[0]! - attacker.sprite.pivot.x) * attacker.sprite.scale.x));
       expect(dy + victim.sprite.y + (torso[1]! - victim.sprite.pivot.y) * victim.sprite.scale.y)

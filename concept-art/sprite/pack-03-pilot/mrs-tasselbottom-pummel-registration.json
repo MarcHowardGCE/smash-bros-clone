@@ -1,0 +1,202 @@
+{
+  "holder": [
+    {
+      "source": "mrs-tasselbottom-pummel-holder-transitions.png",
+      "rect": [
+        163,
+        8,
+        460,
+        427
+      ],
+      "root": [
+        219.79851773049649,
+        425
+      ],
+      "scale": 0.16510538641686182,
+      "sockets": {
+        "grabGrip": [
+          412,
+          163.82741843971627
+        ]
+      }
+    },
+    {
+      "source": "mrs-tasselbottom-pummel-holder-transitions.png",
+      "rect": [
+        867,
+        8,
+        460,
+        427
+      ],
+      "root": [
+        220.79851773049649,
+        425
+      ],
+      "scale": 0.16510538641686182,
+      "sockets": {
+        "grabGrip": [
+          413,
+          163.82741843971627
+        ]
+      }
+    },
+    {
+      "source": "mrs-tasselbottom-pummel-contact-study.png",
+      "rect": [
+        282,
+        19,
+        998,
+        920
+      ],
+      "root": [
+        489.8890780141845,
+        918
+      ],
+      "scale": 0.0766304347826087,
+      "sockets": {
+        "grabGrip": [
+          904,
+          355.2862411347518
+        ]
+      }
+    },
+    {
+      "source": "mrs-tasselbottom-pummel-holder-transitions.png",
+      "rect": [
+        163,
+        520,
+        460,
+        427
+      ],
+      "root": [
+        219.79851773049649,
+        425
+      ],
+      "scale": 0.16510538641686182,
+      "sockets": {
+        "grabGrip": [
+          412,
+          163.82741843971627
+        ]
+      }
+    },
+    {
+      "source": "mrs-tasselbottom-pummel-holder-transitions.png",
+      "rect": [
+        867,
+        520,
+        459,
+        427
+      ],
+      "root": [
+        220.79851773049649,
+        425
+      ],
+      "scale": 0.16510538641686182,
+      "sockets": {
+        "grabGrip": [
+          413,
+          163.82741843971627
+        ]
+      }
+    }
+  ],
+  "victim": [
+    {
+      "source": "mrs-tasselbottom-pummel-victim-study.png",
+      "rect": [
+        272,
+        8,
+        351,
+        483
+      ],
+      "root": [
+        247.49168085106382,
+        481
+      ],
+      "scale": 0.14596273291925466,
+      "sockets": {
+        "gripTop": [
+          213,
+          189.27142553191487
+        ],
+        "gripBottom": [
+          213,
+          242.9255319148936
+        ]
+      }
+    },
+    {
+      "source": "mrs-tasselbottom-pummel-victim-study.png",
+      "rect": [
+        933,
+        8,
+        360,
+        482
+      ],
+      "root": [
+        251.42026950354608,
+        480
+      ],
+      "scale": 0.1462655601659751,
+      "sockets": {
+        "gripTop": [
+          217,
+          188.87541843971627
+        ],
+        "gripBottom": [
+          217,
+          242.41843971631207
+        ]
+      }
+    },
+    {
+      "source": "mrs-tasselbottom-pummel-victim-study.png",
+      "rect": [
+        271,
+        519,
+        352,
+        483
+      ],
+      "root": [
+        248.49168085106382,
+        481
+      ],
+      "scale": 0.14596273291925466,
+      "sockets": {
+        "gripTop": [
+          214,
+          189.27142553191487
+        ],
+        "gripBottom": [
+          214,
+          242.9255319148936
+        ]
+      }
+    },
+    {
+      "source": "mrs-tasselbottom-pummel-victim-study.png",
+      "rect": [
+        939,
+        520,
+        354,
+        482
+      ],
+      "root": [
+        245.42026950354608,
+        480
+      ],
+      "scale": 0.1462655601659751,
+      "sockets": {
+        "gripTop": [
+          211,
+          188.87541843971627
+        ],
+        "gripBottom": [
+          211,
+          242.41843971631207
+        ]
+      }
+    }
+  ]
+}

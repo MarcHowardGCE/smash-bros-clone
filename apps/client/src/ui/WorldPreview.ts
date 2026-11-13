@@ -1,6 +1,7 @@
 import { getStageLayout } from '@smash/shared';
+import { selectionPortrait } from './FighterComparison';
 import type { StageConfig } from '../stages/stageConfig';
-import { escapeHtml, fighterPortrait, WORLD_STORIES } from './selectionContent';
+import { escapeHtml, WORLD_STORIES } from './selectionContent';
 
 export function worldArtwork(stage: StageConfig): string {
   const base = import.meta.env.BASE_URL || '/';
@@ -39,7 +40,7 @@ export function renderWorldPreview(
     return;
   }
   const info = WORLD_STORIES[stage.id];
-  panel.innerHTML = `<div class="world-art-slot"><img src="${escapeHtml(worldArtwork(stage))}" alt=""></div>
+  panel.innerHTML = `<div class="world-art-slot" data-world="${escapeHtml(stage.id)}"><img src="${escapeHtml(worldArtwork(stage))}" alt=""></div>
     <div class="world-preview-summary"><span class="menu-kicker">World ${String(index+1).padStart(2,'0')}</span>
       <h2>${escapeHtml(stage.displayName)}</h2><p class="world-hook">${escapeHtml(info?.hook ?? '')}</p>
       ${arenaDiagram(stage)}
@@ -57,9 +58,9 @@ export function matchIntro(intro: MatchIntro): string {
   return `<section class="menu-workspace match-intro" aria-label="Match intro">
     <div class="match-intro-art" style="--intro-art:url('${escapeHtml(worldArtwork(intro.stage))}')"></div>
     <header><span class="menu-kicker">Entering the arena</span><h1>${escapeHtml(intro.stage.displayName)}</h1></header>
-    <div class="match-lineup">
-    ${fighters.map((fighter,index) => `<div class="match-intro-fighter">
-      <img src="${escapeHtml(fighterPortrait(fighter.id))}" alt=""><span>P${fighter.slotIndex+1}</span><strong>${escapeHtml(fighter.displayName)}</strong>
+    <div class="match-lineup" data-seats="${fighters.length}">
+    ${fighters.map((fighter,index) => `<div class="match-intro-fighter" data-seat="${fighter.slotIndex}">
+      <img src="${escapeHtml(selectionPortrait(fighter.id, 'hero'))}" alt=""><span>P${fighter.slotIndex+1}</span><strong>${escapeHtml(fighter.displayName)}</strong>
     </div>${index===0 && fighters.length===2 ? '<strong class="match-versus" aria-label="versus">VS</strong>' : ''}`).join('')}</div>
     <div class="match-intro-count" role="status"></div>
   </section>`;

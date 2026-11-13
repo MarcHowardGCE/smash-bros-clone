@@ -314,13 +314,13 @@ describe('UIManager', () => {
       expect(mockOverlay.querySelector('#p4-panel')).not.toBeNull();
     });
 
-    it('should render 4 fighter-option elements per panel for playerCount=4', () => {
+    it('renders one shared fighter option for four seats', () => {
       const onSelected = vi.fn();
       uiManager.showCharacterSelect(fighters, 4, onSelected);
 
       const options = mockOverlay.querySelectorAll('.fighter-option');
-      // 1 fighter × 4 panels = 4 options
-      expect(options.length).toBe(4);
+      expect(options.length).toBe(1);
+      expect(mockOverlay.querySelectorAll("[data-inspect-seat]").length).toBe(4);
     });
 
     it('should call onSelected with length-4 array when all 4 slots confirm via keyboard', () => {
@@ -435,11 +435,11 @@ describe('UIManager', () => {
       abeOption.click();
 
       // Verify border is white (selected)
-      expect(abeOption.style.borderColor).toBe('white');
+      expect(abeOption.getAttribute('aria-pressed')).toBe('true');
 
       // Verify other option has dim border (browser normalizes to rgba with spaces)
       const fighter2Option = mockOverlay.querySelector('[data-player="1"][data-id="fighter2"]') as HTMLElement;
-      expect(fighter2Option.style.borderColor).toMatch(/rgba\(255,\s*255,\s*255,\s*0\.3\)/);
+      expect(fighter2Option.getAttribute('aria-pressed')).toBe('false');
 
       // Confirm P1 and P2 to complete selection
       window.dispatchEvent(new KeyboardEvent('keydown', { code: 'Enter' }));
@@ -540,7 +540,7 @@ describe('UIManager', () => {
       expect(onSelect).toHaveBeenCalledWith('fighter1');
     });
 
-    it('should highlight selected fighter with white border', () => {
+    it('marks the selected fighter as pressed', () => {
       const onSelect = vi.fn();
       const onConfirm = vi.fn();
       const myPlayerId = 'p1' as any;
@@ -552,11 +552,11 @@ describe('UIManager', () => {
       const fighter1Option = mockOverlay.querySelector('[data-id="fighter1"]') as HTMLElement;
       fighter1Option.click();
 
-      expect(fighter1Option.style.borderColor).toBe('white');
+      expect(fighter1Option.getAttribute('aria-pressed')).toBe('true');
 
       // Other options should remain dim (browser normalizes rgba format with spaces)
       const fighter2Option = mockOverlay.querySelector('[data-id="fighter2"]') as HTMLElement;
-      expect(fighter2Option.style.borderColor).toMatch(/rgba\(255,\s*255,\s*255,\s*0\.3\)/);
+      expect(fighter2Option.getAttribute('aria-pressed')).toBe('false');
     });
 
     it('should call onConfirm and disable button with "Confirming..." when Confirm button is clicked', () => {

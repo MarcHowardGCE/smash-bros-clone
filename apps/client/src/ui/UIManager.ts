@@ -8,7 +8,7 @@ import type {StageBackdrop} from '../renderer/StageBackdrop';
 import { fighterComparison, fighterTile } from './FighterComparison';
 import { renderDojoPause } from './DojoPause';
 import { homeMenu, onlineEntry, roomLobby, roomSeats, type LobbySeat } from './EntryMenus';
-import { FIGHTER_PRESENTATION, escapeHtml } from './selectionContent';
+import { FIGHTER_PRESENTATION, escapeHtml, fighterPortrait } from './selectionContent';
 import { STAGES } from '../stages/stageConfig';
 import { matchIntro, renderWorldPreview, type MatchIntro } from './WorldPreview';
 import { ULTIMATE_MENU, getControllerProfile } from '../input/controllerProfiles';
@@ -62,6 +62,7 @@ export class UIManager {
   private visualSettingsFromPause=false;
   private stageScreenHandle:{destroy:()=>void}|null=null;
   private networkRestoreChoice:((id:string)=>void)|null=null;
+  private networkRosterUpdate: ((id: PlayerId, fighter: string, ready: boolean) => void) | null = null;
   private networkSelectionState:{pending:boolean;confirmed:boolean}|null=null;
   private characterScreenCleanup:(()=>void)|null=null;
   private controlsScreenHandle: ReturnType<typeof renderControlsScreen> | null = null;
@@ -156,7 +157,7 @@ export class UIManager {
     const roomDisplay=document.getElementById('room-code-display');if(roomDisplay)roomDisplay.style.display='none';
     this.visualSettingsHandle?.destroy();this.visualSettingsHandle=null;this.visualSettingsFromPause=false;
     this.characterScreenCleanup?.(); this.characterScreenCleanup=null;
-    this.networkSelectionState=null;this.networkRestoreChoice=null;
+    this.networkSelectionState=null;this.networkRestoreChoice=null;this.networkRosterUpdate=null;
     this.stageScreenHandle?.destroy();this.stageScreenHandle=null;
     this.overlay.classList.add('menu-shell');
     this.overlay.dataset.menuSurface = 'menu';
@@ -473,6 +474,7 @@ export class UIManager {
         html += `
         <section id="p${i + 1}-panel" class="fighter-player-panel" style="--player-color:${['#7cbab0','#db889a','#e0b567','#a796d4'][i]}">
           <button type="button" class="menu-quiet fighter-seat-title" data-inspect-seat="${i}" aria-pressed="${i===0}">
+            ${playerCount > 2 ? `<img data-seat-portrait="${i}" alt="" draggable="false">` : ''}
             <span>P${i+1} · ${panelRole}</span><strong id="p${i+1}-identity"></strong>
           </button>
           <div id="p${i + 1}-status" style="font-size:14px;margin-top:12px;color:rgba(255,255,255,0.5)">
@@ -485,14 +487,14 @@ export class UIManager {
     })();
 
     this.overlay.innerHTML = `
-      <section class="fighter-picker" aria-label="Fighter selection">
+      <section class="fighter-picker fighter-picker-faceoff" aria-label="Fighter selection">
         <header class="picker-header"><div><span class="menu-kicker">Local play / ${fighters.length} fighters</span><h1>Choose your fighter</h1></div>
           ${onBack ? '<button id="charsel-back-btn" class="menu-quiet">← Back</button>' : ''}</header>
         <div class="fighter-comparison"></div>
         <div class="fighter-rosters">
-          ${choices.map((_, slot) => `<div class="fighter-roster" data-roster-seat="${slot}" ${slot===0?'':'hidden'}>
-            ${fighters.map(f => `<button type="button" class="fighter-option" data-player="${slot+1}" data-id="${escapeHtml(f.id)}">${fighterTile(f)}</button>`).join('')}
-          </div>`).join('')}
+          <div class="fighter-roster fighter-roster-shared" aria-label="Shared fighter roster">
+            ${fighters.map(f => `<button type="button" class="fighter-option" data-player="1" data-id="${escapeHtml(f.id)}">${fighterTile(f, true)}<span class="fighter-cursors"></span></button>`).join('')}
+          </div>
         </div>
         <footer><div class="fighter-seats" style="--players:${playerCount}">${panelsHtml}</div>
           <p class="picker-help">Arrows / D-pad browse · I / ${this.prompt('story',0)} cycles comparison · Select a seat to edit it</p></footer>
@@ -506,72 +508,62 @@ export class UIManager {
       });
     }
 
-    const comparison = fighterComparison(this.overlay, fighters);
+    const comparison = fighterComparison(this.overlay, fighters, true);
+    let inspectedSeat = 0;
+    const options = [...this.overlay.querySelectorAll<HTMLButtonElement>('.fighter-roster-shared .fighter-option')];
+    const refreshRoster = () => {
+      for (const option of options) {
+        const seats = selectedFighterIndex.flatMap((index, slot) =>
+          (fighters[index] ?? fighters[0])?.id === option.dataset.id ? [slot] : []);
+        option.dataset.player = String(inspectedSeat + 1);
+        option.setAttribute('aria-pressed', String(seats.includes(inspectedSeat)));
+        option.querySelector('.fighter-cursors')!.innerHTML = seats.map(slot =>
+          `<span data-seat="${slot}" data-locked="${confirmed[slot]}" aria-label="Player ${slot + 1}${confirmed[slot] ? ' ready' : ''}">P${slot + 1}${confirmed[slot] ? ' ✓' : ''}</span>`).join('');
+      }
+    };
+    const showComparison = () => {
+      const fighter = fighters[selectedFighterIndex[inspectedSeat]!] ?? fighters[0];
+      const opponent = (inspectedSeat + 1) % playerCount;
+      const reference = fighters[selectedFighterIndex[opponent]!] ?? fighters[0];
+      if (fighter) comparison.show(fighter, reference);
+    };
     const inspectSeat = (slot: number) => {
-      this.overlay.querySelectorAll<HTMLElement>('[data-roster-seat]').forEach(row => { row.hidden = Number(row.dataset.rosterSeat) !== slot; });
+      inspectedSeat = slot;
       this.overlay.querySelectorAll<HTMLElement>('[data-inspect-seat]').forEach(button => {
         button.setAttribute('aria-pressed', String(Number(button.dataset.inspectSeat) === slot));
       });
-      const fighter = fighters[selectedFighterIndex[slot]!] ?? fighters[0];
-      if (fighter) comparison.show(fighter);
+      refreshRoster();
+      showComparison();
     };
     this.overlay.querySelectorAll<HTMLElement>('[data-inspect-seat]').forEach(button => {
       button.addEventListener('click', () => inspectSeat(Number(button.dataset.inspectSeat)));
     });
     const updateIdentity = (slot: number, fighter: FighterChoice) => {
-      this.overlay.querySelectorAll<HTMLElement>('[data-player="'+(slot+1)+'"]').forEach(option =>
-        option.setAttribute('aria-pressed', String(option.dataset.id === fighter.id)));
       const name = this.overlay.querySelector('#p'+(slot+1)+'-identity');
       if (name) name.textContent = fighter.displayName;
-      if (!this.overlay.querySelector<HTMLElement>('[data-roster-seat="'+slot+'"]')?.hidden) comparison.show(fighter);
+      const portrait = this.overlay.querySelector<HTMLImageElement>(`[data-seat-portrait="${slot}"]`);
+      const source = fighterPortrait(fighter.id);
+      if (portrait && source && portrait.getAttribute('src') !== source) portrait.src = source;
+      refreshRoster();
+      showComparison();
     };
-    for(let i=0;i<playerCount;i++){const fighter=choices[i]??fighters[0];if(fighter)updateIdentity(i,fighter);}
-    for(let i=0;i<playerCount;i++){if(initialChoices[i]){this.overlay.querySelectorAll<HTMLElement>(`[data-player="${i+1}"]`).forEach(el=>{el.style.borderColor=el.dataset.id===initialChoices[i]?.id?'white':'rgba(255,255,255,0.3)';});}}
-    // Click-to-select: attach listeners to fighter options
-    for (let i = 0; i < playerCount; i++) {
-      const playerElements = document.querySelectorAll(`[data-player="${i + 1}"]`);
-      playerElements.forEach(el => {
-        (el as HTMLElement).addEventListener('click', () => {
-          // Only allow selection if slot not confirmed
-          if (confirmed[i] && !autoConfirmSlotSet.has(i)) return;
-          if(autoConfirmSlotSet.has(i))confirmed[i]=false;
-          
-          const fighterId = (el as HTMLElement).getAttribute('data-id');
-          const selectedFighter = fighters.find(f => f.id === fighterId);
-          
-          if (selectedFighter) {
-            choices[i] = selectedFighter;
-            selectedFighterIndex[i] = fighters.indexOf(selectedFighter);
-            inspectSeat(i);
-            updateIdentity(i,selectedFighter);
-            
-            // Update border styling: clicked option gets white, others dim
-            playerElements.forEach(option => {
-              (option as HTMLElement).style.borderColor = 'rgba(255,255,255,0.3)';
-            });
-            (el as HTMLElement).style.borderColor = 'white';
-            if(autoConfirmSlotSet.has(i))confirmSlot(i);
-          }
-        });
-      });
+    for (let slot = 0; slot < playerCount; slot++) {
+      const fighter = choices[slot] ?? fighters[0];
+      if (!fighter) continue;
+      if (autoConfirmSlotSet.has(slot)) choices[slot] = fighter;
+      updateIdentity(slot, fighter);
     }
-
-    // Auto-select the first fighter only for CPU slots
-    if (fighters[0]) {
-      for (let i = 0; i < playerCount; i++) {
-        if (autoConfirmSlotSet.has(i)) {
-          // CPU slot: auto-select first fighter
-          choices[i] = choices[i] ?? fighters[0];
-          const fighterElement = document.querySelector(
-            `[data-player="${i + 1}"][data-id="${choices[i]!.id}"]`
-          );
-          if (fighterElement) {
-            (fighterElement as HTMLElement).style.borderColor = 'white';
-          }
-        }
-        // Human slots: leave choices[i] as null (already initialized)
-      }
-    }
+    for (const option of options) option.addEventListener('click', () => {
+      const slot = inspectedSeat;
+      if (confirmed[slot] && !autoConfirmSlotSet.has(slot)) return;
+      const index = fighters.findIndex(fighter => fighter.id === option.dataset.id);
+      if (index < 0) return;
+      if (autoConfirmSlotSet.has(slot)) confirmed[slot] = false;
+      selectedFighterIndex[slot] = index;
+      choices[slot] = fighters[index]!;
+      updateIdentity(slot, fighters[index]!);
+      if (autoConfirmSlotSet.has(slot)) confirmSlot(slot);
+    });
 
     const cleanup = () => {
       disposed=true;
@@ -597,6 +589,7 @@ export class UIManager {
     const confirmSlot = (slotIndex: number) => {
       if (disposed || confirmed[slotIndex]) return;
       confirmed[slotIndex] = true;
+      refreshRoster();
       this.overlay.querySelector('#p'+(slotIndex+1)+'-panel')?.setAttribute('data-ready','true');
       const status = document.getElementById(`p${slotIndex + 1}-status`);
       if (status) { status.textContent = '✓ Ready!'; status.style.color = 'white'; }
@@ -607,6 +600,7 @@ export class UIManager {
     const unlockSlot=(slot:number):boolean=>{
       if(disposed||!confirmed[slot]||autoConfirmSlotSet.has(slot))return false;
       confirmed[slot]=false;
+      refreshRoster();
       this.overlay.querySelector('#p'+(slot+1)+'-panel')?.setAttribute('data-ready','false');
       const status=this.overlay.querySelector<HTMLElement>('#p'+(slot+1)+'-status');
       if(status){status.textContent='Choosing · confirm when ready';status.style.color='#e6d3b2';}
@@ -628,19 +622,6 @@ export class UIManager {
       selectedFighterIndex[slotIndex] = resolvedIndex;
       choices[slotIndex] = selectedFighter;
       updateIdentity(slotIndex,selectedFighter);
-
-      // Keep visual highlight in sync when confirm is used before directional navigation/click.
-      const playerElements = document.querySelectorAll(`[data-player="${slotIndex + 1}"]`);
-      playerElements.forEach(el => {
-        (el as HTMLElement).style.borderColor = 'rgba(255,255,255,0.3)';
-      });
-      const selectedElement = document.querySelector(
-        `[data-player="${slotIndex + 1}"][data-id="${selectedFighter.id}"]`
-      );
-      if (selectedElement) {
-        (selectedElement as HTMLElement).style.borderColor = 'white';
-                    updateIdentity(slotIndex,selectedFighter);
-      }
 
       return true;
     };
@@ -681,18 +662,7 @@ export class UIManager {
           }
           const selectedFighter = fighters[selectedFighterIndex[slotIndex]];
           if (selectedFighter) {
-            // Update visual styling: selected option gets white, others dim
-            const playerElements = document.querySelectorAll(`[data-player="${slotIndex + 1}"]`);
-            playerElements.forEach(el => {
-              (el as HTMLElement).style.borderColor = 'rgba(255,255,255,0.3)';
-            });
-            const selectedElement = document.querySelector(
-              `[data-player="${slotIndex + 1}"][data-id="${selectedFighter.id}"]`
-            );
-            if (selectedElement) {
-              (selectedElement as HTMLElement).style.borderColor = 'white';
-                    updateIdentity(slotIndex,selectedFighter);
-            }
+            updateIdentity(slotIndex,selectedFighter);
           }
         }
         return;
@@ -757,18 +727,7 @@ export class UIManager {
                 }
                 const selectedFighter = fighters[selectedFighterIndex[slotIndex]];
                 if (selectedFighter) {
-                  // Update visual styling: selected option gets white, others dim
-                  const playerElements = document.querySelectorAll(`[data-player="${slotIndex + 1}"]`);
-                  playerElements.forEach(el => {
-                    (el as HTMLElement).style.borderColor = 'rgba(255,255,255,0.3)';
-                  });
-                  const selectedElement = document.querySelector(
-                    `[data-player="${slotIndex + 1}"][data-id="${selectedFighter.id}"]`
-                  );
-                  if (selectedElement) {
-                    (selectedElement as HTMLElement).style.borderColor = 'white';
-                    updateIdentity(slotIndex,selectedFighter);
-                  }
+                  updateIdentity(slotIndex,selectedFighter);
                 }
               }
             }
@@ -787,18 +746,7 @@ export class UIManager {
                 }
                 const selectedFighter = fighters[selectedFighterIndex[slotIndex]];
                 if (selectedFighter) {
-                  // Update visual styling: selected option gets white, others dim
-                  const playerElements = document.querySelectorAll(`[data-player="${slotIndex + 1}"]`);
-                  playerElements.forEach(el => {
-                    (el as HTMLElement).style.borderColor = 'rgba(255,255,255,0.3)';
-                  });
-                  const selectedElement = document.querySelector(
-                    `[data-player="${slotIndex + 1}"][data-id="${selectedFighter.id}"]`
-                  );
-                  if (selectedElement) {
-                    (selectedElement as HTMLElement).style.borderColor = 'white';
-                    updateIdentity(slotIndex,selectedFighter);
-                  }
+                  updateIdentity(slotIndex,selectedFighter);
                 }
               }
             }
@@ -1218,11 +1166,11 @@ export class UIManager {
       </div>
     `).join('');
     this.overlay.innerHTML = `
-      <section class="fighter-picker" aria-label="Online fighter selection">
+      <section class="fighter-picker fighter-picker-faceoff fighter-picker-online" aria-label="Online fighter selection">
         <header class="picker-header"><div><span class="menu-kicker">Online / ${fighters.length} fighters</span><h1>Choose your fighter</h1></div></header>
         <div class="fighter-comparison"></div>
-        <div id="network-charselect-panel" class="fighter-roster">
-          ${fighters.map(f => `<button type="button" id="network-fighter-${escapeHtml(f.id)}" class="network-fighter-option" data-id="${escapeHtml(f.id)}">${fighterTile(f)}</button>`).join('')}
+        <div id="network-charselect-panel" class="fighter-roster fighter-roster-shared">
+          ${fighters.map(f => `<button type="button" id="network-fighter-${escapeHtml(f.id)}" class="network-fighter-option" data-id="${escapeHtml(f.id)}">${fighterTile(f, true)}<span class="fighter-cursors"></span></button>`).join('')}
         </div>
         <footer class="network-picker-footer"><div class="network-seats">${statusRowsHtml}</div>
           <div id="network-charselect-error" role="status"></div>
@@ -1230,33 +1178,42 @@ export class UIManager {
           <p class="picker-help">Arrows / D-pad browse · Enter / ${this.prompt('confirm')} select · Esc / ${this.prompt('cancel')} back</p>
         </footer>
       </section>`;
-    const comparison = fighterComparison(this.overlay, fighters);
-    const preview = (id?: string) => {
-      const fighter = fighters.find(f => f.id === id);
-      if (fighter) comparison.show(fighter);
+    const comparison = fighterComparison(this.overlay, fighters, true);
+    const opponentId = otherPlayerIds[0];
+    const choices = new Map<PlayerId, { fighter: string; ready: boolean }>();
+    const options = [...this.overlay.querySelectorAll<HTMLButtonElement>('.network-fighter-option')];
+    let previewId = fighters[0]?.id;
+    const renderChoices = () => {
+      const fighter = fighters.find(f => f.id === previewId);
+      const rival = fighters.find(f => f.id === (opponentId && choices.get(opponentId)?.fighter));
+      if (fighter) comparison.show(fighter, rival);
+      for (const option of options) {
+        option.setAttribute('aria-pressed', String(option.dataset.id === selectedCharacterId));
+        option.querySelector('.fighter-cursors')!.innerHTML = playerIds.map((id, slot) => {
+          const choice = choices.get(id);
+          if (!choice || choice.fighter !== option.dataset.id) return '';
+          return `<span data-seat="${slot}" data-locked="${choice.ready}" aria-label="Player ${slot+1}${choice.ready ? ' ready' : ''}">P${slot+1}${choice.ready ? ' ✓' : ''}</span>`;
+        }).join('');
+      }
     };
-
-    this.networkRestoreChoice=(id:string)=>{selectedCharacterId=id;preview(id);this.overlay.querySelectorAll<HTMLElement>('.network-fighter-option').forEach(el=>{el.style.borderColor=el.dataset.id===id?'white':'rgba(255,255,255,0.3)';el.setAttribute('aria-pressed',String(el.dataset.id===id));});};
-    // Attach click listeners to fighter options
-    const fighterOptions = document.querySelectorAll('.network-fighter-option');
-    fighterOptions.forEach(el => {
-      (el as HTMLElement).addEventListener('click', () => {
-        if (selectionState.pending || selectionState.confirmed) return;
-
-        const fighterId = (el as HTMLElement).getAttribute('data-id');
-        if (!fighterId) return;
-
-        selectedCharacterId = fighterId;
-        preview(fighterId);
-        this.overlay.querySelectorAll<HTMLElement>('.network-fighter-option').forEach(option=>option.setAttribute('aria-pressed',String(option.dataset.id===fighterId)));
-        onSelect(fighterId);
-
-        // Update border styling: clicked option gets white, others dim
-        fighterOptions.forEach(option => {
-          (option as HTMLElement).style.borderColor = 'rgba(255,255,255,0.3)';
-        });
-        (el as HTMLElement).style.borderColor = 'white';
-      });
+    const preview = (id?: string) => {
+      if (selectionState.confirmed || selectionState.pending || !id) return;
+      previewId = id;
+      renderChoices();
+    };
+    this.networkRestoreChoice = id => { selectedCharacterId = id; previewId = id; };
+    this.networkRosterUpdate = (id, fighter, ready) => {
+      choices.set(id, { fighter, ready });
+      renderChoices();
+    };
+    for (const option of options) option.addEventListener('click', () => {
+      if (selectionState.pending || selectionState.confirmed) return;
+      const fighterId = option.dataset.id;
+      if (!fighterId) return;
+      selectedCharacterId = fighterId;
+      choices.set(myPlayerId, { fighter: fighterId, ready: false });
+      preview(fighterId);
+      onSelect(fighterId);
     });
 
     // Attach confirm button listener
@@ -1299,7 +1256,7 @@ export class UIManager {
       this.stopMenuNav();
       this.hudPanel.style.display = 'none';
       this.overlay.innerHTML = `
-        <section class="menu-workspace world-selection world-guest" aria-labelledby="guest-world-title">
+        <section class="menu-workspace world-selection world-guest world-selection-arena" aria-labelledby="guest-world-title">
           <header class="picker-header"><div><span class="menu-kicker" id="guest-world-kicker"></span><h1 id="guest-world-title">Host is choosing</h1></div>
             <span class="world-live-label" id="guest-world-live"></span></header>
           <section id="guest-world-preview" class="world-preview-panel" aria-label="Host’s highlighted world"></section>
@@ -1335,9 +1292,11 @@ export class UIManager {
         }
         // If not confirmed, button state is already managed by showNetworkCharacterSelect
       }
+      this.networkRosterUpdate?.(playerId, characterId, confirmed);
       return;
     }
 
+    this.networkRosterUpdate?.(playerId, characterId, confirmed);
     // Update for other players: update their status row
     const statusEl = document.getElementById(`network-charselect-status-${playerId}`);
     if (statusEl) {

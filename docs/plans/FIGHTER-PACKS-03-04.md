@@ -631,3 +631,13 @@ Next, wire Pack 03 into the shipped roster, including selection portraits and fi
 Mr. Wrong, Loopy, and Mrs. Tasselbottom are enabled in regular local and online fighter select. The picker uses the full-body idle sprites as portraits and reads the existing gameplay profiles for stat comparisons. The server accepts the three IDs in normal room selection. Guided Dojo lessons still use their existing roster.
 
 The built client on a local production-mode server passed three local selections and two online rooms covering all three fighters. The tests verified chosen IDs in live snapshots, successful packaged artwork requests, and live guest refresh with the same slot. A separate Mr. Wrong versus Loopy room passed paused refresh and resume. Eleven focused selection regression tests passed. The production browser smoke used snapshots and request checks because the art diagnostics are development-only. Deployed-host verification remains open.
+
+### Four-frame gameplay idle loops
+
+Revision 43 adds dedicated four-drawing idle loops for Mr. Wrong, Loopy, and Mrs. Tasselbottom at 12 ticks per frame. The builder matches each neutral pose to its previous on-stage height and registers the soles to the ground. Loopy's jersey remains blank. All 1,500 packaged frame slots loaded, and each fighter showed all four idle frames in the normal-speed Dojo. Fighter Select uses four-frame derivatives of the same artwork, checked at three window sizes.
+
+Next, compare distinct drawings and timings across corresponding clips for all eight fighters to identify remaining Pack 03 animation coverage gaps.
+
+### Animation parity inventory
+
+The [eight-fighter animation comparison](../assets/PACK-03-ANIMATION-PARITY.md) records distinct poses, registered frame slots, and declared timing for 147 clip names. It identifies 26 present Pack 03 clips below every earlier fighter in distinct pose count. Idle now has four drawings across the roster. Start the repair pass with walk, run, jump squat, crouch entry and hold, and the airborne loops. Recheck motion on the floor and through the full jump sequence before moving to combat.

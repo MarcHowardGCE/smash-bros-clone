@@ -1,3 +1,4 @@
+import { footstoolFrameIndex } from './footstoolPose.js';
 import {describe,it,expect}from 'vitest';import{footstoolPoint,solveFootstoolContact,type FootstoolClip}from './footstoolPose.js';
 describe('footstool artwork contact',()=>{
  it('aligns every size pairing in both facings without changing the input geometry',()=>{
@@ -11,4 +12,10 @@ describe('footstool artwork contact',()=>{
   expect(footstoolPoint(a,0,'footstoolSole')).toEqual([2,4]);expect(solveFootstoolContact(a,0,v,0)).toEqual([1,19.5]);
   expect(solveFootstoolContact(a,99,v,0)).toBeNull();expect(footstoolPoint({...a,scale:NaN},0,'footstoolSole')).toBeNull();expect(footstoolPoint(a,0,'missing')).toBeNull();
  });
+});
+
+it('uses the same clamped pose for short clips and the full six-pose cadence', () => {
+ expect([0, 3, 4, 17].map(age => footstoolFrameIndex(age, 3, true))).toEqual([1, 1, 2, 2]);
+ expect([0, 4, 17].map(age => footstoolFrameIndex(age, 2, true))).toEqual([1, 1, 1]);
+ expect([0, 3, 6, 9, 12, 15].map(age => footstoolFrameIndex(age, 6, true))).toEqual([0, 1, 2, 3, 4, 5]);
 });

@@ -2,6 +2,8 @@
 
 Normal local matches, online matches, and the Dojo use the full-body packs. Start with the source sheet and its manifest entry. Use the separate [fallback parts guide](REPLACING-FIGHTER-ART.md) when changing the articulated fallback renderer.
 
+For a new roster pack, start with the [fighter pack production guide](FIGHTER-PACK-PRODUCTION.md).
+
 ## Find the source and packed files
 
 | Fighters | Source sheets and clip metadata | Runtime pack |

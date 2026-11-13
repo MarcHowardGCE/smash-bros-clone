@@ -159,7 +159,7 @@ export function renderStageSelectScreen(
 
 
   container.innerHTML = `
-    <section class="menu-workspace world-selection" aria-labelledby="world-select-title">
+    <section class="menu-workspace world-selection world-selection-arena" aria-labelledby="world-select-title">
       <header class="picker-header"><div><span class="menu-kicker">Arena / ${stages.length} worlds</span><h1 id="world-select-title">Choose your world</h1></div>
         ${onBack ? '<button id="stage-back-btn" class="menu-quiet">← Back</button>' : ''}</header>
       <div class="world-browser">

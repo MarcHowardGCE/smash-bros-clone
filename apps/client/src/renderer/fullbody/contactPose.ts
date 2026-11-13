@@ -1,3 +1,8 @@
+/** The held pose and its grip sockets must advance on the same clock. */
+export function grabHoldFrameIndex(age: number, frameCount: number): number {
+ const tick = Number.isFinite(age) ? Math.max(0, Math.floor(age)) : 0;
+ return Math.min(Math.max(0, frameCount - 1), Math.floor(tick / 12) % 4);
+}
 export interface ContactFrame {root:number[];offsetY?:number;mirrorSource?:boolean;sockets?:Record<string,number[]>}
 export interface ContactClip {scale:number;mirrorSource?:boolean;frames:ContactFrame[]}
 export function socketPoint(clip:ContactClip,frame:ContactFrame|undefined,name:string):[number,number]|null{

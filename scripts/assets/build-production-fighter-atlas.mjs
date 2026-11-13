@@ -17,6 +17,18 @@ function flush(){
   pendingPages.push({file:'atlas-'+groupName+'-'+index+++'.'+extension,png:current,live:!groupName.endsWith('-prepared')});
   current=null;
 }
+function clearDetachedFringe(png) {
+  const { width, height, data } = png;
+  for (let y = 0; y < height; y++) for (let x = 0; x < width; x++) {
+    const alpha = (y * width + x) * 4 + 3;
+    if (data[alpha] === 0 || data[alpha] >= 200) continue;
+    let nearInk = false;
+    for (let j = Math.max(0, y - 4); j <= Math.min(height - 1, y + 4) && !nearInk; j++)
+      for (let i = Math.max(0, x - 4); i <= Math.min(width - 1, x + 4); i++)
+        if (data[(j * width + i) * 4 + 3] >= 200) { nearInk = true; break; }
+    if (!nearInk) data[alpha] = 0;
+  }
+}
 function crop(png,f,factor){const w=Math.ceil(f.rect[2]*factor),h=Math.ceil(f.rect[3]*factor),a=new Uint8Array(w*h*4);for(let yy=0;yy<h;yy++)for(let xx=0;xx<w;xx++){const sx=(xx+.5)/factor-.5,sy=(yy+.5)/factor-.5,ix=Math.floor(sx),iy=Math.floor(sy);let alpha=0,r=0,g=0,b=0;for(let dy=0;dy<2;dy++)for(let dx=0;dx<2;dx++){const cx=ix+dx,cy=iy+dy;if(cx<0||cy<0||cx>=f.rect[2]||cy>=f.rect[3])continue;const weight=(dx?sx-ix:1-sx+ix)*(dy?sy-iy:1-sy+iy),o=((f.rect[1]+cy)*png.width+f.rect[0]+cx)*4,v=png.data[o+3]*weight;alpha+=v;r+=png.data[o]*v;g+=png.data[o+1]*v;b+=png.data[o+2]*v;}const o=(yy*w+xx)*4;a[o+3]=Math.round(alpha);if(alpha){a[o]=Math.round(r/alpha);a[o+1]=Math.round(g/alpha);a[o+2]=Math.round(b/alpha);}}return{w,h,a};}
 function place(a){if(a.w+pad*2>size||a.h+pad*2>size)throw Error('Oversize frame');if(!current)start();if(x+a.w+pad>size){x=pad;y+=row+pad*2;row=0;}if(y+a.h+pad>size){flush();start();}const rect=[x,y,a.w,a.h],file=folder+'/atlas-'+groupName+'-'+index+'.'+extension;for(let dy=-pad;dy<a.h+pad;dy++)for(let dx=-pad;dx<a.w+pad;dx++){const src=(Math.max(0,Math.min(a.h-1,dy))*a.w+Math.max(0,Math.min(a.w-1,dx)))*4,dst=((y+dy)*size+x+dx)*4;current.data.set(a.a.subarray(src,src+4),dst);}x+=a.w+pad*2;row=Math.max(row,a.h);return{rect,file};}
 const groups=[];if(dojo||pack03){for(const [id,c] of Object.entries(pack.characters))groups.push({name:id+'-live',clips:Object.values(c.clips)});}else{for(const[id,c]of Object.entries(pack.characters)){for(const[name,k]of Object.entries(c.clips))if(promoted.includes(name))k.previewOnly=false;
@@ -32,7 +44,7 @@ for(const group of groups){
       let placed=cache.get(key);
       if(!placed){
         let png=sources.get(image);
-        if(!png){png=PNG.sync.read(fs.readFileSync(path.join(source,image)));sources.set(image,png);}
+        if(!png){png=PNG.sync.read(fs.readFileSync(path.join(source,image)));if(dojo && (/^(moonshine|hulk-hoagie)-trip-pose-[0-5]-v2[.]png$/.test(image) || /^(moonshine|hulk-hoagie)-hold-pose-[0-3]-v2[.]png$/.test(image)))clearDetachedFringe(png);sources.set(image,png);}
         placed=place(crop(png,frame,factor));cache.set(key,placed);
       }
       frame.rect=placed.rect;frame.image=placed.file;delete frame.scale;

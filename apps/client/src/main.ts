@@ -1021,7 +1021,11 @@ async function main() {
             playerId,
             slotIndex,
             opponentPlayerIds: allPlayerIds.filter((id) => id !== playerId),
+            elevatedOpponentIds: k === setup.seats.findIndex(seat => seat.kind === "cpu")
+              ? ["local-p1", ...setup.seats.flatMap((seat, index) => seat.kind === "cpu" ? [] : ["local-p" + (index + 2)])]
+              : undefined,
             difficulty: seat.difficulty,
+
             seed: slotIndex * 1000 + 1,
           }),
         );

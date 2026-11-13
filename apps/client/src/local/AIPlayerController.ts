@@ -21,6 +21,7 @@ export interface AIPlayerControllerConfig {
   opponentPlayerIds: PlayerId[];
   difficulty: BotDifficulty;
   seed: number;
+  elevatedOpponentIds?: PlayerId[];
 }
 
 /**
@@ -38,6 +39,7 @@ export class AIPlayerController implements ITickController {
     decisionQuality: number;
     executionErrorRate: number;
   };
+  private readonly elevatedOpponentIds: PlayerId[];
   private botMemory: BotMemory;
   private lastHeld: InputBitmask = 0;
   private seqCounter = 0;
@@ -51,6 +53,7 @@ export class AIPlayerController implements ITickController {
   constructor(config: AIPlayerControllerConfig) {
     this.playerId = config.playerId;
     this.slotIndex = config.slotIndex;
+    this.elevatedOpponentIds = config.elevatedOpponentIds ?? [];
     this.opponentPlayerIds = config.opponentPlayerIds;
     this.difficultyConfig = BOT_DIFFICULTY_PRESETS[config.difficulty];
     this.botMemory = createBotMemory(config.seed);
@@ -70,7 +73,14 @@ export class AIPlayerController implements ITickController {
       return null;
     }
 
+    const self = this.latestState.players[this.playerId];
+    const elevated = this.elevatedOpponentIds.filter(id => {
+      const opponent = this.latestState?.players[id];
+      return self && opponent?.isGrounded && (self.isGrounded ? self.y - opponent.y > 90 : Math.abs(self.y - opponent.y) < 300);
+    });
     const targetId = selectTarget(
+      this.latestState, this.playerId, elevated, this.difficultyConfig.reactionDelayFrames
+    ) ?? selectTarget(
       this.latestState,
       this.playerId,
       this.opponentPlayerIds,

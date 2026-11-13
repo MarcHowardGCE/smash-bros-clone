@@ -123,3 +123,5 @@ Simulated controller runs covered the Dojo and two-client loopback matches. Init
 ### CPU pursuit and point-blank pressure
 
 The CPU estimates jump reach from its fighter's jump velocities and gravity, steers toward a reachable platform, and can use its double jump near the apex. Close-range pressure now checks vertical separation, turns toward nearby opponents when needed, and can attack in the air. Punish attempts also require proximity so a distant opponent does not interrupt pursuit. Simulation regressions verify that the CPU damages a stationary opponent on an elevated platform and at overlapping ground positions within 180 ticks. Multi-CPU gameplay and every stage layout still need manual review.
+
+Local Chromium follow-up (2026-11-13): the first CPU gives elevated human opponents priority while other CPUs retain free-for-all targeting. Airborne pursuit prioritizes the upper platform through the apex. Stationary human took damage in Stage 1 with two CPUs on the lower platform scenario (8.4%), Stage 4 with three CPUs and the human on the top platform (3.15%), and Stage 1 standing between three CPUs (3.15%). These are representative local checks.

@@ -112,3 +112,11 @@ Regenerate the derivatives with `node scripts/assets/build-selection-idles.mjs` 
 Fighter Select idle derivatives for Pack 02 use the original idle sheets. Pack 03 uses the four-cell idle-loop source sheets. Build from these sources before the gameplay atlas downsizes them. The five updated previews have four frames at approximately 360 pixels tall.
 
 Local Fighter Select shows one full-body idle preview per seat in three- and four-player lineups. Reduced motion uses a still portrait. Fighter comparison stats remain available with the shared roster. Browser checks at 1280 × 720 confirmed that three and four animated previews load and render.
+
+### November 13 Render release verification
+
+Tested the deployed client bundle index-BbKs5JYs.js in Chromium at 1280 × 720. Three- and four-seat local lineups rendered the corresponding number of animated previews within the viewport. All eight fighter idles decoded and appeared as the selected preview in both layouts, at 360–361 source pixels high. Four still portraits loaded with reduced motion. The accessibility tree exposed named player-seat controls and selection state. Keyboard confirmation and Back restored focus to P1 Ready. All ten named worlds exposed visible story text without a clipping or scrolling ancestor inside the preview.
+
+At 8 Mbps with 80 ms configured latency, local setup to Fighter Select took 69 ms with cache disabled and 36 and 33 ms with cache enabled. Lineup confirmation to live play, including a Back and reconfirm step and the countdown, took 47.56 s with cache disabled (28.38 MB in atlas transfer) and 6.78 and 5.98 s with cache enabled. The cold result remains a performance issue. The two-client retry blocked countdown after a deliberately interrupted Pack 03 atlas request. The guest displayed the alert 81 ms after the intercepted reset on the successful rerun. Reconfirming the same lineup fetched the atlas and both clients entered play. An initial run used a 25-second match timeout, which was too short for cold transfer.
+
+This verifies the requested hosted flows and automated accessibility behavior at the tested viewport. Spoken screen-reader output and full contrast measurement on the latest deployed artwork were not rerun.

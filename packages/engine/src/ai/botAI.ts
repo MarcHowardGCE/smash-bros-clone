@@ -275,7 +275,7 @@ export function decideBotInput(
   const toward = dx < 0 ? INPUT_BITS.LEFT : INPUT_BITS.RIGHT;
   const press = (bits: InputBitmask) => applyExecutionError(bits, difficultyConfig.executionErrorRate, memory);
 
-  if (Math.abs(dx) <= APPROACH_DEADZONE_X && Math.abs(dy) <= 45 && !opponent.isInvincible) {
+  if (Math.abs(dx) <= APPROACH_DEADZONE_X && Math.abs(dy) <= 45 && !(opponent.isGrounded && dy < -12 && self.hasDoubleJump && !self.isGrounded) && !opponent.isInvincible) {
     if (Math.abs(dx) > 1 && Math.sign(dx) !== self.facing) return press(toward);
     const roll = nextRandom(memory);
     const weight = difficultyConfig.decisionQuality >= 0.75 ? 0.45 : 0.25;
@@ -283,7 +283,7 @@ export function decideBotInput(
       difficultyConfig.executionErrorRate, roll.nextMemory);
   }
 
-  if (dy < -90 && opponent.isGrounded) {
+  if (dy < (self.isGrounded ? -90 : -12) && opponent.isGrounded) {
     const stats = getCharacterStats(self.characterId);
     const gravity = stats.gravity ?? PHYSICS.GRAVITY;
     const doubleRise = (stats.doubleJumpVelocity ?? PHYSICS.DOUBLE_JUMP_VELOCITY) ** 2 / (2 * gravity);
@@ -292,14 +292,15 @@ export function decideBotInput(
     const targetFeet = opponent.y + getCharacterStats(opponent.characterId).hurtboxRadius;
     const reachable = layout.platforms.filter(p =>
       p.y >= targetFeet - 2 && feet - p.y > 12 && feet - p.y < fullRise + doubleRise - 12);
-    const platform = reachable.sort((a, b) => a.y - b.y || Math.abs(a.x + a.width / 2 - self.x) - Math.abs(b.x + b.width / 2 - self.x))[0];
+    const singleJump = reachable.filter(p => feet - p.y < fullRise - 8);
+    const platform = (self.isGrounded && singleJump.length ? singleJump : reachable).sort((a, b) => a.y - b.y || Math.abs(a.x + a.width / 2 - self.x) - Math.abs(b.x + b.width / 2 - self.x))[0];
     const goal = platform ? Math.max(platform.x + 12, Math.min(platform.x + platform.width - 12, opponent.x)) : opponent.x;
     const distance = goal - self.x;
     const steer = Math.abs(distance) <= 12 ? 0 : distance < 0 ? INPUT_BITS.LEFT : INPUT_BITS.RIGHT;
     if (self.isGrounded && (platform || -dy < fullRise + doubleRise) && Math.abs(distance) <= 95) {
       return press(jumpInputForState(self.state, steer));
     }
-    if (self.state === PlayerStateEnum.AIRBORNE && self.hasDoubleJump && self.vy >= -1 &&
+    if (self.state === PlayerStateEnum.AIRBORNE && self.hasDoubleJump && self.vy >= -2 &&
         (platform ? feet > platform.y - 8 : -dy < doubleRise) && Math.abs(distance) <= 95) {
       return press(steer | INPUT_BITS.JUMP);
     }

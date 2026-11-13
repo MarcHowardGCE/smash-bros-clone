@@ -17,12 +17,14 @@ describe.skipIf(process.platform === "win32")("production static serving of /ass
 
 	beforeAll(async () => {
 		const repoRoot = path.resolve(__dirname, "../../..");
-		// SKIP_ASSETPACK=1: rely on the committed generated atlases.
-		execSync("pnpm build", {
-			cwd: repoRoot,
-			env: { ...process.env, SKIP_ASSETPACK: "1" },
-			encoding: "utf8",
-		});
+		if (process.env.SMASH_TEST_USE_EXISTING_BUILD !== "1") {
+			// SKIP_ASSETPACK=1: rely on the committed generated atlases.
+			execSync("pnpm build", {
+				cwd: repoRoot,
+				env: { ...process.env, SKIP_ASSETPACK: "1" },
+				encoding: "utf8",
+			});
+		}
 
 		const child = spawn("node", ["apps/server/dist/index.js"], {
 			cwd: repoRoot,

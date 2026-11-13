@@ -98,3 +98,7 @@ files and 1,279,105,347 bytes. The five Socket.IO integration tests passed
 with local loopback access and IPv4-first localhost resolution.
 
 The game repository publishes on pushes to deploy/bluehost-client-pilot using the eth-bluehost-pilot environment. Configure ETH_FTP_HOST, ETH_FTP_USER, and ETH_FTP_PASSWORD for the scoped account. Rerun the successful publish job against the same artifact to verify zero changed files. Live FTPS verification is pending.
+
+The CI static-serving test reuses the completed build. Standalone runs build
+their own output. The first pilot run failed when the test rebuilt into the
+populated Vite output directory.

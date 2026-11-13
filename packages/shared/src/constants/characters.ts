@@ -88,6 +88,8 @@ export const CHARACTER_REGISTRY: Record<CharacterId, CharacterStats> = {
   'swift': SWIFT_STATS,
   'moonshine': MOONSHINE_STATS,
   'hulk-hoagie': HOAGIE_STATS,
+  'zane-corvo': { ...ALL_ROUNDER_STATS },
+  'velvet-reply': { ...ALL_ROUNDER_STATS },
   'mr-wrong': {
     ...ALL_ROUNDER_STATS,
     fighterWeight: 93, walkSpeed: 3.6, runSpeed: 6.75, airSpeed: 5.1, airAcceleration: 0.14,

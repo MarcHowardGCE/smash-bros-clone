@@ -641,3 +641,31 @@ Next, compare distinct drawings and timings across corresponding clips for all e
 ### Animation parity inventory
 
 The [eight-fighter animation comparison](../assets/PACK-03-ANIMATION-PARITY.md) records distinct poses, registered frame slots, and declared timing for 147 clip names. It identifies 26 present Pack 03 clips below every earlier fighter in distinct pose count. Idle now has four drawings across the roster. Start the repair pass with walk, run, jump squat, crouch entry and hold, and the airborne loops. Recheck motion on the floor and through the full jump sequence before moving to combat.
+
+## Pack 04 implementation
+
+Branch: `fighter-pack-04`. Zane Corvo and The Velvet Reply have separate
+character IDs and independent baseline stat records. Both start at weight 100
+with standard movement. Workspace type checking passed with the new IDs.
+
+- [x] Register both character IDs and baseline stats.
+- [x] Implement both prototype move sets.
+- [ ] Verify both kits against All-Rounder in playable Dojo bouts.
+- [ ] Produce one gameplay idle sample per fighter using the approved color
+  sheet. Check both facings, ground contact, gameplay scale, and alpha edges.
+- [ ] Complete the animation matrix, including paired grabs, pummels and throws,
+  ledge contacts, reactions, taunts, and results. Check atlas frames and triggers
+  against the shipped roster and review both facings in the Dojo.
+- [ ] Package gameplay atlases and selection art. Verify asset loading, roster
+  selection, local play, and two-client matches before enabling general selection.
+
+Zane's three jabs have tighter reach and one fewer recovery tick. His
+forward tilt starts on tick 6 versus All-Rounder's 7, and his forward throw
+has less launch force. Velvet's forward tilt starts on tick 9 with 16
+recovery ticks, versus 7 and 12. Her forward aerial reaches farther, starts
+two ticks later, and recovers three ticks later. Her back throw uses a
+145-degree launch and 17 recovery ticks. These are prototype values.
+Zane's forward-tilt step still needs animation and contact review.
+
+Workspace type checking and the engine suite passed (1,104 passed, 1
+skipped). Playable matchup and sprite-contact verification remain open.

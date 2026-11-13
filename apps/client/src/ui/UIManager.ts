@@ -474,7 +474,7 @@ export class UIManager {
         html += `
         <section id="p${i + 1}-panel" class="fighter-player-panel" style="--player-color:${['#7cbab0','#db889a','#e0b567','#a796d4'][i]}">
           <button type="button" class="menu-quiet fighter-seat-title" data-inspect-seat="${i}" aria-pressed="${i===0}">
-            ${playerCount > 2 ? `<img data-seat-portrait="${i}" alt="" draggable="false">` : ''}
+            ${playerCount > 2 ? `<picture class="fighter-seat-preview"><source media="(prefers-reduced-motion: no-preference)"><img data-seat-portrait="${i}" alt="" draggable="false"></picture>` : ''}
             <span>P${i+1} · ${panelRole}</span><strong id="p${i+1}-identity"></strong>
           </button>
           <div id="p${i + 1}-status" style="font-size:14px;margin-top:12px;color:rgba(255,255,255,0.5)">
@@ -487,7 +487,7 @@ export class UIManager {
     })();
 
     this.overlay.innerHTML = `
-      <section class="fighter-picker fighter-picker-faceoff" aria-label="Fighter selection">
+      <section class="fighter-picker fighter-picker-faceoff${playerCount > 2 ? ' fighter-picker-multiplayer' : ''}" aria-label="Fighter selection">
         <header class="picker-header"><div><span class="menu-kicker">Local play / ${fighters.length} fighters</span><h1>Choose your fighter</h1></div>
           ${onBack ? '<button id="charsel-back-btn" class="menu-quiet">← Back</button>' : ''}</header>
         <div class="fighter-comparison"></div>
@@ -544,6 +544,11 @@ export class UIManager {
       const portrait = this.overlay.querySelector<HTMLImageElement>(`[data-seat-portrait="${slot}"]`);
       const source = fighterPortrait(fighter.id);
       if (portrait && source && portrait.getAttribute('src') !== source) portrait.src = source;
+      const animation = portrait?.parentElement?.querySelector('source');
+      const idle = Object.hasOwn(FIGHTER_PRESENTATION, fighter.id)
+        ? (import.meta.env.BASE_URL || '/') + 'menu-art/' + fighter.id + '-select-idle.webp'
+        : '';
+      if (animation && animation.getAttribute('srcset') !== idle) animation.setAttribute('srcset', idle);
       refreshRoster();
       showComparison();
     };

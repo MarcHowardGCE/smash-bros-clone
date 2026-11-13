@@ -653,3 +653,35 @@ body:has(.dojo-console) .dojo-panel {visibility:hidden}
 }
 
 .fighter-picker-faceoff :is(.fighter-hero,.fighter-rival) picture {display:block;width:100%;min-width:0}
+
+.fighter-picker-multiplayer .fighter-comparison {
+  grid-template-columns:minmax(0,1fr);
+  grid-template-areas:"stats";
+}
+.fighter-picker-multiplayer .fighter-comparison :is(.fighter-hero,.fighter-rival) {
+  display:none;
+}
+.fighter-picker-multiplayer .fighter-seats {
+  grid-template-columns:repeat(var(--players),minmax(0,1fr));
+}
+.fighter-picker-multiplayer .fighter-seat-title:has(.fighter-seat-preview) {
+  display:grid;
+  grid-template-columns:minmax(0,1fr);
+  text-align:center;
+}
+.fighter-picker-multiplayer .fighter-seat-preview {
+  display:block;
+  width:100%;
+}
+.fighter-picker-multiplayer [data-seat-portrait] {
+  display:block;
+  width:100%;
+  height:clamp(65px,19vh,190px);
+  object-position:center bottom;
+}
+.fighter-picker-multiplayer .fighter-seat-title strong {
+  overflow-wrap:anywhere;
+}
+@media(max-width:540px) {
+  .fighter-picker-multiplayer .fighter-seats {grid-template-columns:repeat(2,minmax(0,1fr))}
+}

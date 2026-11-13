@@ -108,3 +108,7 @@ In a separate built-client online test, aborting the guest's Mr. Wrong atlas pag
 Local and online Fighter Select use compact WebP derivatives of the gameplay idle clips for the two featured fighters. All eight fighters now play four gameplay frames at the source cadence with registered feet. Revision 43 supplied the three Pack 03 loops and retired the temporary menu-only breathing motion. Reduced motion uses the illustrated hero portraits. Roster tiles and versus use the illustrated assets.
 
 Regenerate the derivatives with `node scripts/assets/build-selection-idles.mjs` from the repository root when an idle clip changes. The build verifies frame counts. Browser checks cycled all eight previews at 1920x1080, 1280x720, and 960x540.
+
+Fighter Select idle derivatives for Pack 02 use the original idle sheets. Pack 03 uses the four-cell idle-loop source sheets. Build from these sources before the gameplay atlas downsizes them. The five updated previews have four frames at approximately 360 pixels tall.
+
+Local Fighter Select shows one full-body idle preview per seat in three- and four-player lineups. Reduced motion uses a still portrait. Fighter comparison stats remain available with the shared roster. Browser checks at 1280 × 720 confirmed that three and four animated previews load and render.

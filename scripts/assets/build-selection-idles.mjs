@@ -8,19 +8,20 @@ const transparent = { r: 0, g: 0, b: 0, alpha: 0 };
 
 for (const [pack, manifestPath] of [
   ['pilot-v1', 'manifest.json'],
-  ['newcomers-v1', 'dojo/manifest.json'],
+  ['newcomers-v1', 'manifest.json'],
   ['pack-03-v1', 'manifest.json'],
 ]) {
   const directory = path.join(publicDir, 'fighter-art-' + pack);
   const { characters } = JSON.parse(await fs.readFile(path.join(directory, manifestPath), 'utf8'));
   for (const [id, character] of Object.entries(characters)) {
     const idle = character.clips.idle;
-    const scale = Math.min(1, 360 / Math.max(...idle.frames.map(frame => frame.rect[3])));
-    const frames = await Promise.all(idle.frames.map(async frame => {
+    const sourceFrames = pack === "pack-03-v1" ? await readIdleSheet(id) : idle.frames;
+    const scale = Math.min(1, 360 / Math.max(...sourceFrames.map(frame => frame.rect[3])));
+    const frames = await Promise.all(sourceFrames.map(async frame => {
       const [left, top, width, height] = frame.rect;
       const w = Math.round(width * scale);
       const h = Math.round(height * scale);
-      const image = await sharp(path.join(directory, frame.image ?? idle.image))
+      const image = await sharp(path.resolve(directory, frame.image ?? idle.image))
         .extract({ left, top, width, height }).resize(w, h).png().toBuffer();
       return { image, w, h, x: Math.round(frame.root[0] * scale), y: Math.round(frame.root[1] * scale) };
     }));
@@ -41,4 +42,23 @@ for (const [pack, manifestPath] of [
     if ((metadata.pages ?? 1) !== pages.length) throw Error(id + ' idle frame count mismatch');
     console.log(id, pages.length, (await fs.stat(file)).size);
   }
+}
+
+async function readIdleSheet(id) {
+  const image = path.resolve('concept-art/sprite/pack-03-pilot', id + '-idle-loop.png');
+  const { data, info } = await sharp(image).ensureAlpha().raw().toBuffer({ resolveWithObject: true });
+  return Array.from({ length: 4 }, (_, index) => {
+    const start = Math.floor(index * info.width / 4);
+    const end = Math.floor((index + 1) * info.width / 4);
+    let left = end, top = info.height, right = start, bottom = 0;
+    for (let y = 0; y < info.height; y++) for (let x = start; x < end; x++) {
+      if (data[(y * info.width + x) * 4 + 3] < 200) continue;
+      left = Math.min(left, x);
+      right = Math.max(right, x + 1);
+      top = Math.min(top, y);
+      bottom = Math.max(bottom, y + 1);
+    }
+    if (left >= right || top >= bottom) throw Error(id + ' has an empty idle cel ' + index);
+    return { image, rect: [left, top, right - left, bottom - top], root: [(right - left) / 2, bottom - top] };
+  });
 }

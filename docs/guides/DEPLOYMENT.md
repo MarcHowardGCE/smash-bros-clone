@@ -109,3 +109,55 @@ The scoped pilot uses explicit FTPS with CA validation and accepts the Bluehost 
 Run 43448034225 uploaded 786 files and its unchanged publish rerun uploaded
 zero. The live smoke found a test rebuild had replaced the configured client.
 CI stages the initial build before tests and checks its Render endpoint.
+
+### Bluehost live browser smoke
+
+On 2026-11-13, two fresh Chromium contexts created and joined an online
+room via the invite URL, confirmed All-Rounder, and reached live play on
+Zanda Infinity. All observed HTTPS responses in that run came from
+play.zandarecords.com. Both game WebSockets connected directly to Render.
+In a second fresh room the guest reloaded during live play and reached the
+match again in 1.237 seconds. Reconnect skipped the splash screen.
+
+The remaining pilot smoke covers local and Dojo play, paused reconnect,
+rematch, cold and warm transfer measurements, and interrupted atlas retry.
+
+On 2026-11-13, Bluehost reached live local play on Zanda Infinity and live
+Dojo Free Practice in Chromium. One unthrottled cold run took 8.04 seconds
+from navigation to live play (5.21 seconds after stage confirmation) and
+transferred 33.04 MB in Resource Timing subresources. A repeat navigation
+in the same browser context took 7.22 seconds (5.12 after confirmation) and
+transferred 9.51 MB. These are single-run measurements and include UI
+automation and the countdown.
+
+### Bluehost interrupted atlas, paused reconnect, and Play Again
+
+On 2026-11-13, a fresh two-client room on Bluehost used All-Rounder on both
+seats and Zanda Infinity. Chromium intercepted and reset four production
+atlas requests on the guest. The artwork failure alert appeared and neither
+client entered countdown or live play. After clearing the simulated fault,
+the guest used Change fighter, selected and confirmed the same fighter, and
+the host confirmed the same world. Both clients reached live play.
+
+The host paused and both clients showed Resume. Refreshing the guest restored
+the paused overlay in 1.951 seconds. Guest Resume dismissed the overlay in
+both clients.
+
+A separate online match reached results through stock loss. Play Again took
+both clients to online room entry. They created and joined a fresh room,
+reselected the same lineup and world, and reached live play again. Online
+Play Again uses a fresh room and requires selection again.
+
+### Coordinated release from main
+
+The release workflow builds and tests the client from the pushed commit.
+To enable publishing, set the repository Actions variable ETH_RELEASE_ENABLED
+to true and add RENDER_DEPLOY_HOOK_URL to the eth-bluehost-pilot environment
+alongside the three existing FTPS secrets. Disable Render auto-deploy in
+the service settings so only the release workflow deploys the server.
+
+The workflow requests the exact commit from Render and checks the public
+healthz endpoint for that full revision before sending files to Bluehost.
+A failed request or a revision that never becomes live blocks the upload.
+A publish rerun skips the Render deploy if that revision is already live.
+The Render fallback client stays available during this rollout.

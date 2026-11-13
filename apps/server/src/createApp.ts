@@ -63,6 +63,9 @@ export function createApp(): {
 } {
 	const app = express();
 	const httpServer = createServer(app);
+	app.get("/healthz", (_req, res) => {
+		res.set("Cache-Control", "no-store").json({ commit: process.env.RENDER_GIT_COMMIT ?? null });
+	});
 
 	if (process.env.NODE_ENV === "production") {
 		const clientDistPath = fileURLToPath(new URL("../../client/dist", import.meta.url));

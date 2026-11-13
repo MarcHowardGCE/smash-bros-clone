@@ -1,7 +1,7 @@
-name: Build Bluehost pilot client
+name: Release Render server and Bluehost client
 on:
   push:
-    branches: [deploy/bluehost-client-pilot]
+    branches: [main]
   pull_request:
     branches: [main]
     paths:
@@ -47,7 +47,7 @@ jobs:
           if-no-files-found: error
 
   publish:
-    if: github.event_name == 'push' && github.ref == 'refs/heads/deploy/bluehost-client-pilot'
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main' && vars.ETH_RELEASE_ENABLED == 'true'
     needs: client
     runs-on: ubuntu-latest
     environment: eth-bluehost-pilot
@@ -66,6 +66,10 @@ jobs:
           name: eth-bluehost-client-${{ github.sha }}
           path: bluehost-client
       - run: npm install --no-save --package-lock=false --ignore-scripts basic-ftp@5.3.1
+      - name: Deploy and verify matching Render revision
+        run: node scripts/deploy-render-release.mjs
+        env:
+          RENDER_DEPLOY_HOOK_URL: ${{ secrets.RENDER_DEPLOY_HOOK_URL }}
       - run: node scripts/deploy-eth-bluehost.mjs bluehost-client
         env:
           ETH_FTP_HOST: ${{ secrets.ETH_FTP_HOST }}

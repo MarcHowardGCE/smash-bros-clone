@@ -67,7 +67,13 @@ export function createApp(): {
 		res.set("Cache-Control", "no-store").json({ commit: process.env.RENDER_GIT_COMMIT ?? null });
 	});
 
-	if (process.env.NODE_ENV === "production") {
+	if (process.env.RENDER === "true" || process.env.SMASH_BACKEND_ONLY === "1") {
+		app.get("/", (req, res) => {
+			const query = req.originalUrl.indexOf("?");
+			res.set("Cache-Control", "no-store").redirect(302, "https://play.zandarecords.com/" +
+				(query === -1 ? "" : req.originalUrl.slice(query)));
+		});
+	} else if (process.env.NODE_ENV === "production") {
 		const clientDistPath = fileURLToPath(new URL("../../client/dist", import.meta.url));
 		app.get(/^\/fighter-art-(?:pilot-v1\/production|newcomers-v1\/dojo|pack-03-v1\/production)\/manifest\.json$/, (req, res, next) => {
 			res.vary("Accept-Encoding");

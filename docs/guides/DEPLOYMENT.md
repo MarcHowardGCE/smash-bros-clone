@@ -23,8 +23,8 @@ To smoke-test this production build, keep the compiled server running and open i
 
 | Target | Source and workflow |
 | --- | --- |
-| Docker | The [root Dockerfile](../../Dockerfile) uses Node 24, pnpm 11.20.0, a frozen install, and committed atlases. It builds from the repository root. The [Docker ignore rules](../../.dockerignore) constrain the context to the fighter workspace and exclude environment files. |
-| Fly.io | [`fly.toml`](../../fly.toml) selects the root Dockerfile, internal port 3001, and forced HTTPS. Authenticate the Fly CLI for the intended app and check the app name in the config before running `pnpm deploy:fly`. |
+| Docker | The [root Dockerfile](../../Dockerfile) uses Node 24, pnpm 11.20.0, and a frozen server build. It builds from the repository root. The [Docker ignore rules](../../.dockerignore) constrain the context to the fighter workspace and exclude environment files. |
+| Fly.io | [`fly.toml`](../../fly.toml) selects the combined client and server Dockerfile, internal port 3001, and forced HTTPS. Authenticate the Fly CLI for the intended app and check the app name in the config before running `pnpm deploy:fly`. |
 | Render | [`render.yaml`](../../render.yaml) defines the native Node Blueprint build and start commands. Connect the repository through that Blueprint. The `pnpm deploy:render` script prints instructions. |
 
 For a local container smoke test, run from the repository root.
@@ -47,7 +47,7 @@ Socket.IO is configured for WebSocket transport. A page load only proves static 
 
 ## Post-deploy smoke test
 
-The current production game is hosted on Render. Confirm the target URL and deployed revision for each release check. [Deployed game](https://everybody-throws-hands.onrender.com/)
+The public client is hosted on Bluehost and Render runs online matches. Confirm the target URL and deployed revision for each release check. [Deployed game](https://play.zandarecords.com/)
 
 1. Open the hosted URL in a fresh browser session. Confirm that the main menu appears, start a local match, and check both fighter sprites and the selected arena.
 2. Use two independent browser contexts. Create a room, join by invite, confirm fighters and a world, and wait for both clients to enter live play. Check that artwork loads before the countdown and inputs update both clients.
@@ -165,3 +165,17 @@ The Render fallback client stays available during this rollout.
 To release manually, open Actions, select Release Render server and Bluehost client, choose Run workflow, and select main. The manual run uses the same test and revision checks.
 
 The staged Bluehost entry page includes an eth-release meta tag for the checked-out commit. Compare it with Render /healthz after a coordinated release.
+
+GitHub Actions run 43468550919 verified Render commit e07461d before
+Bluehost uploaded one of 786 files. The public entry page and Render
+health endpoint reported the same full revision. Two fresh browsers
+then created and joined a room and reached live play on Zanda Infinity.
+Render still serves the fallback client. The next cutover step is to
+remove it from the Render build and redirect old entry links.
+
+### Render backend-only cutover
+
+Render serves /healthz and the online WebSocket endpoint. Legacy game links
+to the Render root redirect temporarily to Bluehost with the original query
+string. The root Dockerfile builds the server and its workspace dependencies.
+The Fly Dockerfile still builds the combined application.

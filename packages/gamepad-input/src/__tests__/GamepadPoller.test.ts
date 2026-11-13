@@ -460,3 +460,22 @@ describe('GamepadPoller', () => {
     });
   });
 });
+
+it('assigns a standard controller first exposed during polling without a connect event', () => {
+  const poller = new GamepadPoller();
+  const onConnect = vi.fn();
+  poller.onConnect = onConnect;
+  const getGamepads = vi.fn().mockReturnValue([]);
+  vi.stubGlobal('navigator', { getGamepads });
+  try {
+    poller.start();
+    const pad = createMockGamepad(2, 'Switch Pro Controller');
+    getGamepads.mockReturnValue([null, null, pad]);
+    expect(poller.poll().get(2)?.gamepad).toBe(pad);
+    poller.poll();
+    expect(onConnect.mock.calls).toEqual([[pad]]);
+  } finally {
+    poller.stop();
+    vi.unstubAllGlobals();
+  }
+});

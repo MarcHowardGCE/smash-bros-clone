@@ -56,3 +56,19 @@ jab and throw cue timing. The change remains local.
 - [ ] Deploy after the contact and hosted checks pass.
 
 [Measurements and limitations](../REFINEMENT.md#browser-contact-trace-with-controlled-jitter)
+
+## Controller gameplay verification
+
+The late-discovery fix is local. Simulated browser reports for Xbox 360,
+Switch Pro, and DualSense each acquired slot 0 without a connection event.
+All three produced movement and attack input accepted by the shared wire
+validator. The controller package passed 76 tests and the profile suite
+passed 12. Physical Switch Pro mapping remains open. Capture the affected browser's mapping, device ID,
+and button/axis counts before adding any raw-device mapping.
+
+Chromium gameplay smoke passed for all three simulated standard profiles.
+Each controller appeared after startup without a connection event. Left
+stick moved the fighter and the right face button entered Attack in local
+play and in a two-client loopback match. The guest verified the host's
+movement and Attack from authoritative snapshots. Physical controller
+reports and hosted testing remain open. No deployment was made.

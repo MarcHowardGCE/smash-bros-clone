@@ -227,3 +227,5 @@ on first grounded presentation and showed the boots at the upper platform.
 The host already displayed idle. The guest displayed the last airborne pose
 at contact, so pose parity at that frame remains a refinement. Hosted
 playtest remains pending.
+
+Controller regression: menu polling could see a standard controller exposed after startup while gameplay had no seat assignment if the browser missed the connection event. Polling now registers that device once. Physical Switch Pro mapping and live gameplay verification remain open.

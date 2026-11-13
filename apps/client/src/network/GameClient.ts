@@ -70,7 +70,7 @@ export interface GameClientOptions {
   onRoomJoinError?: (message: string) => void;
   onRoomCreated: (roomCode: string, playerId: PlayerId) => void;
   onPlayerJoined: (slotIndex: number) => void;
-  onHitEvents?: (hitEvents: HitEventData[]) => void;
+  onHitEvents?: (hitEvents: HitEventData[], players: RenderState["players"]) => void;
   onPaused?: () => void;
   onResumed?: () => void;
   onCharacterSelectStart?: (playerIds: PlayerId[]) => void;
@@ -430,10 +430,6 @@ export class GameClient {
           );
         }
 
-        if (snapshot.hitEvents && snapshot.hitEvents.length > 0) {
-          this.options.onHitEvents?.(snapshot.hitEvents);
-        }
-
         if (this.predictor) {
           this.predictor.onServerSnapshot(snapshot);
         } else if (this.myPlayerId) {
@@ -554,7 +550,7 @@ export class GameClient {
     }
 
     const interpolated = this.interpolationBuffer.getInterpolatedState(
-      performance.now(),
+      now,
       this.myPlayerId,
     );
     if (!interpolated) {
@@ -586,6 +582,8 @@ export class GameClient {
       });
     }
 
+    const hitEvents = this.interpolationBuffer.drainPresentedHits(now);
+    if (hitEvents.length) this.options.onHitEvents?.(hitEvents, interpolated.players);
     this.options.onRenderState(interpolated, this.myPlayerId);
   }
 

@@ -125,3 +125,105 @@ Simulated controller runs covered the Dojo and two-client loopback matches. Init
 The CPU estimates jump reach from its fighter's jump velocities and gravity, steers toward a reachable platform, and can use its double jump near the apex. Close-range pressure now checks vertical separation, turns toward nearby opponents when needed, and can attack in the air. Punish attempts also require proximity so a distant opponent does not interrupt pursuit. Simulation regressions verify that the CPU damages a stationary opponent on an elevated platform and at overlapping ground positions within 180 ticks. Multi-CPU gameplay and every stage layout still need manual review.
 
 Local Chromium follow-up (2026-11-13): the first CPU gives elevated human opponents priority while other CPUs retain free-for-all targeting. Airborne pursuit prioritizes the upper platform through the apex. Stationary human took damage in Stage 1 with two CPUs on the lower platform scenario (8.4%), Stage 4 with three CPUs and the human on the top platform (3.15%), and Stage 1 standing between three CPUs (3.15%). These are representative local checks.
+
+### Remote fighter playback
+
+Remote movement now samples a 100 ms delayed simulation timeline at the
+existing 20 Hz snapshot rate. Continuous poses advance on that timeline.
+The client holds at the newest available state during a gap and reanchors
+after a long interruption. Local prediction stays on its existing path.
+
+The deterministic test replays snapshot arrival gaps of 70, 15, and 92 ms
+with samples between arrivals. Movement and pose progression pass.
+Hosted two-client jitter measurements and human playtesting remain open.
+
+#### Two-client snapshot replay at 20 Hz
+
+Two loopback Socket.IO clients started a match. The host ran, reversed,
+jumped, and landed using normal match input. The observer captured 46
+snapshots over 135 simulation ticks. Both playback implementations replayed
+the same snapshots at 60 Hz with ordered delivery and repeating injected
+delays. Metrics include adjacent moving samples with the same action and
+facing. Holds are position changes under 0.01 world units. Pose skips are
+animation-frame advances greater than one.
+
+| Added delays (ms) | Playback | Moving samples | Holds | Pose skips | Max step (world units) |
+| --- | --- | ---: | ---: | ---: | ---: |
+| 0 | Previous | 92 | 0 | 27 | 14.20 |
+| 0 | Updated | 91 | 0 | 0 | 14.17 |
+| 0, 20, 0, 42 | Previous | 92 | 22 | 19 | 42.50 |
+| 0, 20, 0, 42 | Updated | 91 | 0 | 0 | 14.17 |
+| 0, 55, 0, 95, 0 | Previous | 96 | 47 | 9 | 55.27 |
+| 0, 55, 0, 95, 0 | Updated | 91 | 14 | 7 | 30.60 |
+
+This was a match snapshot replay and sampled renderer inputs, with jitter
+applied to the captured stream. Browser presentation, hosted packet arrival,
+and combat cue alignment still need verification before a production rollout.
+
+#### Two-browser jitter smoke
+
+Two Chromium clients reached live play with the updated local client and
+a loopback match server. The observer route applied ordered repeating
+delays of 0, 20, 0, and 42 ms to incoming binary snapshot packets.
+The route counted 70 packets and the observation sampled 47 unique
+snapshots, covering idle, dash, run, and airborne states. The scripted
+inputs did not produce a confirmed hit or grab in this run. The trace
+also did not measure sprite-to-platform contact at landing.
+
+Code review found an additional timing issue. GameClient dispatches hit
+events on receipt, while the remote pose now plays on the delayed clock.
+The same callback starts hit flash, sparks, and paired throw reactions.
+Mixed local prediction and delayed remote grab poses also need a contact
+check. Keep the change local until these cases are instrumented and verified.
+
+Combat effects now dispatch at the delayed snapshot boundary with the same render player data. A regression verifies the hit becomes visible with hitstun and fires once. Exact within-snapshot contact and mixed local/remote grab alignment still require browser validation.
+
+#### Browser contact trace with controlled jitter
+
+Two local Chromium clients played All-Rounder mirrors on Zanda Infinity.
+The observer delayed snapshot delivery in order by 0, 20, 0, and 42 ms.
+The trace sampled 139 render callbacks and the route counted 127 binary
+snapshot packets. A spaced jab dealt 3.78 percent and the following grab
+established a confirmed hold. The observer rendered six frames with the
+grab link. Jab and up-throw effects both fired with the defender in rendered
+hitstun. Grounded transitions placed the remote fighter at world Y 482
+and Y 337, following airborne samples at 477.44 and 321.61.
+
+These measurements verify renderer inputs and cue timing. The run did not
+measure sprite pixels against the platform or hand-to-body contact. Visual
+review of those two details and hosted jitter sampling remain open.
+
+Grab boundary regression passed: under uneven deliveries the rendered positions switch on the same snapshot boundary as the grab and release states. All 42 network tests and client type-checking passed. Both-view sprite contact review remains open.
+
+#### Two-view sprite contact review
+
+Both Chromium clients received ordered repeating snapshot delays of 0, 20,
+0, and 42 ms in an All-Rounder mirror on Zanda Infinity. The confirmed
+hold frames show central glove contact from both views. The early up-throw
+frames show substantial sprite overlap and different poses between views.
+The throw completed and the guest reached 10 percent. Settled frames show
+both fighters' boots on their platform surfaces. The captures did not
+isolate the exact release or first grounded frame, so those checks remain open.
+
+#### Release cue frame capture
+
+With 0/20/0/42 ms ordered delays on both Chromium clients, captured the
+canvas on the up-throw cue. Host and guest both showed the lift pose with
+the defender tinted in hitstun. The impact spark appeared to the right of
+the lifted sprite on both views. Host and guest attack frames were 17 and
+16 respectively. The guest capture at the first displayed grounded
+transition showed boots on the upper platform (world Y 337). The host
+capture triggered on jump squat at Y 482 and is invalid for landing
+signoff. Repeat with the capture armed only after the jump becomes airborne.
+
+Throw sparks now use the displayed defender sprite center after pose placement, with authoritative impact coordinates as the fallback. The local visual rerun and first host landing frame are pending.
+
+#### Throw spark and first contact rerun
+
+Both views used repeating 0/20/0/42 ms packet delays. The up-throw spark
+appeared on the lifted defender at the cue in both captures. Landing
+capture required confirmed takeoff first. Both views reached world Y 337
+on first grounded presentation and showed the boots at the upper platform.
+The host already displayed idle. The guest displayed the last airborne pose
+at contact, so pose parity at that frame remains a refinement. Hosted
+playtest remains pending.

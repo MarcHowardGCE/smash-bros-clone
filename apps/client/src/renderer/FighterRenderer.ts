@@ -7,7 +7,7 @@
  * KO tumble + star-burst effect. Geometry is delegated to an {@link IPartRenderer}
  * implementation ({@link SpritePartRenderer} with {@link PolygonPartRenderer} fallback).
  */
-import { Container, Graphics } from 'pixi.js';
+import { Container, Graphics, Point } from 'pixi.js';
 import { FullBodyPilot, type FullBodyPilotAssets, type DojoArtId } from './fullbody/FullBodyPilot.js';
 import type { PlayerState, CharacterId } from '@smash/shared';
 import { PHYSICS, lerp } from '@smash/shared';
@@ -194,6 +194,13 @@ export class FighterRenderer {
       this.container.addChildAt(this.fullBodyPilot.sprite, index);
       this.container.addChildAt(this.fullBodyPilot.effectSprite, index + 1);
     }
+  }
+
+  getThrowImpactPosition(world: Container): { x: number; y: number } | undefined {
+    const sprite = this.fullBodyPilot?.sprite;
+    if (!sprite?.visible) return undefined;
+    const bounds = sprite.getLocalBounds();
+    return world.toLocal(new Point(bounds.x + bounds.width / 2, bounds.y + bounds.height / 2), sprite);
   }
 
   get throwOwnerId(): import('@smash/shared').PlayerId | undefined {

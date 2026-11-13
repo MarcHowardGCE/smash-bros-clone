@@ -41,3 +41,18 @@ The project owner approved completed work whose only remaining gate was human si
 ## Bluehost hosting pilot
 
 Pilot PR workflow builds a SHA-tagged client artifact. Next is the first Bluehost upload from the game pilot branch, then an unchanged redeploy and paired Render smoke testing. See the [pilot deployment guide](../guides/DEPLOYMENT.md#bluehost-client-pilot).
+
+## Online remote-fighter smoothing
+
+The pilot uses delayed playback at the existing 20 Hz send rate. The
+two-client jitter comparison and browser contact trace passed for rendered
+jab and throw cue timing. The change remains local.
+
+- [x] Compare old and new playback on the same match snapshots.
+- [x] Verify jab, grab, throw, and landing state transitions in two browsers.
+- [x] Verify throw spark placement and first grounded contact in both browser views.
+- [ ] Review the guest airborne pose on the first grounded frame.
+- [ ] Measure hosted snapshot gaps and playtest on separate connections.
+- [ ] Deploy after the contact and hosted checks pass.
+
+[Measurements and limitations](../REFINEMENT.md#browser-contact-trace-with-controlled-jitter)

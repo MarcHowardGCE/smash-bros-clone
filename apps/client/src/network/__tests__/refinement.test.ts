@@ -1,7 +1,7 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { decode } from "@msgpack/msgpack";
 import type { InputEvent, PlayerState, StateSnapshot } from "@smash/shared";
-import { PlayerStateEnum } from "@smash/shared";
+import { MoveId, PlayerStateEnum } from "@smash/shared";
 import { InterpolationBuffer } from "../InterpolationBuffer.js";
 import { GameClient } from "../GameClient.js";
 const { handlers, emit, disconnect } = vi.hoisted(() => ({
@@ -23,8 +23,57 @@ describe("interpolation receipt clock", () => {
   it.each([100_000, -100_000])("ignores server/browser time-origin offset %s", offset => {
     const buffer = new InterpolationBuffer();
     buffer.pushSnapshot(snap(1, offset, 0), 100); buffer.pushSnapshot(snap(4, offset+50, 100), 150);
-    expect(buffer.getInterpolatedState(175, "local")?.players.get("remote")?.x).toBe(50);
+    expect(buffer.getInterpolatedState(225, "local")?.players.get("remote")?.x).toBeCloseTo(50);
     expect(buffer.getInterpolatedState(250, "local")?.players.get("remote")?.x).toBe(100);
+  });
+  it("keeps moving through uneven arrivals and advances continuous poses", () => {
+    const buffer = new InterpolationBuffer();
+    const arrivals = [[0, 100], [3, 170], [6, 185], [9, 277]];
+    for (const [now, frame] of [[217, 1], [250, 3], [267, 4], [283.34, 5]]) {
+      while (arrivals.length && arrivals[0]![1]! <= now!) {
+        const [tick, receivedAt] = arrivals.shift()!;
+        const snapshot = snap(tick!, 0, tick! * 10);
+        snapshot.players.remote!.stateFrame = tick!;
+        buffer.pushSnapshot(snapshot, receivedAt);
+      }
+      const remote = buffer.getInterpolatedState(now!, "local")?.players.get("remote");
+      expect(remote?.x).toBeCloseTo((now! - 200) * 0.6);
+      expect(remote?.stateFrame).toBe(frame);
+    }
+  });
+  it("releases each hit once when its remote pose becomes visible", () => {
+    const buffer = new InterpolationBuffer();
+    buffer.pushSnapshot(snap(0, 0, 0), 100);
+    const impact = snap(3, 50, 20);
+    impact.players.remote!.state = PlayerStateEnum.HITSTUN;
+    impact.hitEvents = [{
+      attackerId: "local", defenderId: "remote", moveId: MoveId.JAB,
+      damage: 3, knockbackMagnitude: 2, worldX: 20, worldY: 0,
+    }];
+    buffer.pushSnapshot(impact, 170);
+    expect(buffer.getInterpolatedState(249, "local")?.players.get("remote")?.state).toBe(PlayerStateEnum.IDLE);
+    expect(buffer.drainPresentedHits(249)).toEqual([]);
+    expect(buffer.getInterpolatedState(250, "local")?.players.get("remote")?.state).toBe(PlayerStateEnum.HITSTUN);
+    expect(buffer.drainPresentedHits(250)).toEqual(impact.hitEvents);
+    expect(buffer.drainPresentedHits(251)).toEqual([]);
+    buffer.clear();
+    expect(buffer.drainPresentedHits(500)).toEqual([]);
+  });
+  it("keeps remote grab contact positions until the release snapshot is visible", () => {
+    const buffer = new InterpolationBuffer();
+    buffer.pushSnapshot(snap(0, 0, 0), 100);
+    const hold = snap(3, 50, 40);
+    hold.players.remote!.state = PlayerStateEnum.GRAB_HOLDING;
+    hold.players.remote!.grabbedPlayerId = "local";
+    buffer.pushSnapshot(hold, 170);
+    const release = snap(6, 100, 75);
+    buffer.pushSnapshot(release, 185);
+
+    const remoteAt = (now: number) => buffer.getInterpolatedState(now, "local")?.players.get("remote");
+    expect(remoteAt(249)).toMatchObject({ x: 0, state: PlayerStateEnum.IDLE });
+    expect(remoteAt(250)).toMatchObject({ x: 40, state: PlayerStateEnum.GRAB_HOLDING, grabbedPlayerId: "local" });
+    expect(remoteAt(299)).toMatchObject({ x: 40, state: PlayerStateEnum.GRAB_HOLDING });
+    expect(remoteAt(300)).toMatchObject({ x: 75, state: PlayerStateEnum.IDLE });
   });
   it("ignores old snapshots and resets on a new match", () => {
     const buffer = new InterpolationBuffer();

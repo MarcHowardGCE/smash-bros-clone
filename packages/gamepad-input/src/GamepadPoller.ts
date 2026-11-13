@@ -100,11 +100,23 @@ export class GamepadPoller {
     // Query current gamepad state via native API
     const gamepads = navigator.getGamepads?.() ?? [];
 
+    if (this.isStarted) {
+      const connected = new Map(Array.from(gamepads)
+        .filter(pad => pad?.mapping === 'standard' && pad.connected)
+        .map(pad => [pad!.index, pad!.id]));
+      for (const [index, pad] of this.connectedGamepads) {
+        if (connected.get(index) !== pad.id) {
+          this.connectedGamepads.delete(index);
+          this.onDisconnect?.(index);
+        }
+      }
+    }
+
     for (let i = 0; i < gamepads.length; i++) {
       const gamepad = gamepads[i];
 
       // Skip null entries and non-standard-mapping gamepads
-      if (!gamepad || gamepad.mapping !== 'standard') {
+      if (!gamepad || !gamepad.connected || gamepad.mapping !== 'standard') {
         continue;
       }
 

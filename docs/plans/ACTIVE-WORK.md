@@ -72,3 +72,7 @@ stick moved the fighter and the right face button entered Attack in local
 play and in a two-client loopback match. The guest verified the host's
 movement and Attack from authoritative snapshots. Physical controller
 reports and hosted testing remain open. No deployment was made.
+
+Follow-up after the deployed fix: both Xbox-to-Switch Pro and reverse simulated handoffs passed with the browser disconnect event omitted. After reconciliation, the sole controller reclaimed P1 and produced movement plus attack. Browser match handoff and physical hardware verification remain open.
+
+Browser handoff passed in both directions in local and two-client online matches with simulated standard reports. The remaining controller confirmed P1 after the first disappeared without a disconnect event, then moved and attacked in the match. Online verification observed the authoritative state on the guest. Physical hardware and production deployment remain open.

@@ -756,7 +756,11 @@ async function main() {
   let rejoinedArtworkPending = false;
   const gameClient = new GameClient({
     serverUrl: SERVER_URL,
-    gamepadSource:new GamepadInputSource(poller,-1,()=>assignmentManager.getAssignments().get(0)?.gamepadIndex??-1),
+    gamepadSource: new GamepadInputSource(poller, -1, () => {
+      const assignments = assignmentManager.getAssignments();
+      return assignments.get(0)?.gamepadIndex ??
+        (assignments.size === 1 ? assignments.values().next().value?.gamepadIndex ?? -1 : -1);
+    }),
     onRejoined: () => {
       rejoinedArtworkPending = true;
       hasShownSplashOnThisPageLoad = true;
@@ -1148,13 +1152,18 @@ async function main() {
       { assignmentManager },
       lastLocalSetup,
       (result) => {
+        poller.poll();
+        assignmentManager.reclaimPrimarySeat();
         lastLocalSetup = result;
         const cpuSlotIndices = result.seats
           .map((seat, index) => (seat.kind === "cpu" ? index + 1 : null))
           .filter((slotIndex): slotIndex is number => slotIndex !== null);
-        const gamepadSlotByIndex = () => new Map(
+        const gamepadSlotByIndex = () => {
+          assignmentManager.reclaimPrimarySeat();
+          return new Map(
           Array.from(assignmentManager.getAssignments(), ([slot, assignment]) => [assignment.gamepadIndex, slot]),
-        );
+          );
+        };
         const showFighters = (previousChoices: readonly FighterChoice[] = []): void => {
         uiManager.showCharacterSelect(
           roster,
@@ -1206,6 +1215,8 @@ async function main() {
   };
 
   uiManager.onPractice=()=>{
+    poller.poll();
+    assignmentManager.reclaimPrimarySeat();
     if(!isLocalMode){isLocalMode=true;gameClient.disconnect();}
     cleanupLocalMode();for(const renderer of fighterRenderers.values())renderer.destroy();fighterRenderers.clear();koPresenter.clear();
     audioManager.playTrack('main-menu');

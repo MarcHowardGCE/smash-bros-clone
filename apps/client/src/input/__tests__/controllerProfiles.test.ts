@@ -112,3 +112,31 @@ it.each(devices)('routes a late $key controller from discovery into gameplay pac
     localStorage.clear();
   }
 });
+it.each([[devices[0], devices[1]], [devices[1], devices[0]]] as const)(
+  'recovers P1 when swapping %j for %j without disconnect events',
+  (first, second) => {
+    let reports: (ReturnType<typeof pad> | null)[] = [pad(first.id, [])];
+    vi.stubGlobal('navigator', { getGamepads: () => reports });
+    const poller = new GamepadPoller();
+    const seats = new ControllerAssignmentManager(poller, new GamepadPreferenceStore(localStorage), 4);
+    const input = new InputManager({}, 'player', new GamepadInputSource(
+      poller, -1, () => seats.getAssignments().get(0)?.gamepadIndex ?? -1,
+    ));
+    try {
+      reports.push(pad(second.id, [], undefined, 'standard', 1));
+      poller.poll();
+      expect(seats.getAssignments().get(1)?.gamepadId).toBe(second.id);
+      reports = [null, pad(second.id, [1], [0.8, 0, 0, 0], 'standard', 1)];
+      poller.poll();
+      expect(seats.getAssignments().has(0)).toBe(false);
+      seats.reclaimPrimarySeat();
+      expect(seats.getAssignments().get(0)?.gamepadId).toBe(second.id);
+      expect(seats.getAssignments().has(1)).toBe(false);
+      expect(input.pollInput(true)?.held).toBe(B.RIGHT | B.ATTACK);
+    } finally {
+      input.destroy();
+      poller.stop();
+      localStorage.clear();
+    }
+  },
+);

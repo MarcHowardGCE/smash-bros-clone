@@ -32,12 +32,14 @@ jobs:
       - run: pnpm build
         env:
           VITE_SERVER_URL: https://everybody-throws-hands.onrender.com
+      - run: node scripts/stage-bluehost-client.mjs bluehost-client
+      - name: Verify staged online endpoint
+        run: grep -Fl 'https://everybody-throws-hands.onrender.com' bluehost-client/assets/index-*.js
       - run: pnpm exec playwright install --with-deps chromium
       - run: pnpm test
         env:
           SMASH_TEST_USE_EXISTING_BUILD: '1'
       - run: pnpm docs:check
-      - run: node scripts/stage-bluehost-client.mjs bluehost-client
       - uses: actions/upload-artifact@v4
         with:
           name: eth-bluehost-client-${{ github.event.pull_request.head.sha || github.sha }}

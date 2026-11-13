@@ -105,3 +105,7 @@ populated Vite output directory.
 The pilot workflow installs Playwright Chromium before the client tests.
 
 The scoped pilot uses explicit FTPS with CA validation and accepts the Bluehost FTP alias mismatch. Browser HTTPS and Render connections use their normal certificate validation.
+
+Run 43448034225 uploaded 786 files and its unchanged publish rerun uploaded
+zero. The live smoke found a test rebuild had replaced the configured client.
+CI stages the initial build before tests and checks its Render endpoint.

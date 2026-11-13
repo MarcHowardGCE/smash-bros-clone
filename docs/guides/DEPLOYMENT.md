@@ -179,3 +179,11 @@ Render serves /healthz and the online WebSocket endpoint. Legacy game links
 to the Render root redirect temporarily to Bluehost with the original query
 string. The root Dockerfile builds the server and its workspace dependencies.
 The Fly Dockerfile still builds the combined application.
+
+On 2026-11-13, GitHub Actions run 43471767100 verified Render commit
+fb1aca7 and Bluehost uploaded one changed file. The live Render root
+returned a 302 to Bluehost, and the previous client bundle returned 404.
+Two fresh Chromium clients used the old Render homepage and an old-format
+Render room invite, selected All-Rounder on Zanda Infinity, and reached live
+play. The invite preserved the room code. Guest refresh returned to the
+live match in 1.351 seconds.

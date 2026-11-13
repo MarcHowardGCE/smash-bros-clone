@@ -196,6 +196,7 @@ const bootMainWithMocks = async (
 
   vi.doMock("../input/ControllerAssignmentManager.js", () => ({
     ControllerAssignmentManager: class ControllerAssignmentManager {
+      reclaimPrimarySeat(): void {}
       constructor() {}
       getAssignments(): ReadonlyMap<
         number,

@@ -1,0 +1,68 @@
+name: Build Bluehost pilot client
+on:
+  push:
+    branches: [deploy/bluehost-client-pilot]
+  pull_request:
+    branches: [main]
+    paths:
+      - '.github/workflows/build-bluehost-client.yml'
+      - 'apps/**'
+      - 'packages/**'
+      - 'pnpm-lock.yaml'
+      - 'scripts/stage-bluehost-client.mjs'
+
+permissions:
+  contents: read
+
+jobs:
+  client:
+    runs-on: ubuntu-latest
+    env:
+      SKIP_ASSETPACK: '1'
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - run: npm install --global pnpm@11.20.0
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm build
+        env:
+          VITE_SERVER_URL: https://everybody-throws-hands.onrender.com
+      - run: pnpm test
+      - run: pnpm docs:check
+      - run: node scripts/stage-bluehost-client.mjs bluehost-client
+      - uses: actions/upload-artifact@v4
+        with:
+          name: eth-bluehost-client-${{ github.event.pull_request.head.sha || github.sha }}
+          path: bluehost-client/
+          if-no-files-found: error
+
+  publish:
+    if: github.event_name == 'push' && github.ref == 'refs/heads/deploy/bluehost-client-pilot'
+    needs: client
+    runs-on: ubuntu-latest
+    environment: eth-bluehost-pilot
+    concurrency:
+      group: eth-bluehost-pilot
+      cancel-in-progress: false
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - uses: actions/download-artifact@v4
+        with:
+          name: eth-bluehost-client-${{ github.sha }}
+          path: bluehost-client
+      - run: npm install --no-save --package-lock=false --ignore-scripts basic-ftp@5.3.1
+      - run: node scripts/deploy-eth-bluehost.mjs bluehost-client
+        env:
+          ETH_FTP_HOST: ${{ secrets.ETH_FTP_HOST }}
+          ETH_FTP_USER: ${{ secrets.ETH_FTP_USER }}
+          ETH_FTP_PASSWORD: ${{ secrets.ETH_FTP_PASSWORD }}

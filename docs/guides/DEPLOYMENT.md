@@ -78,3 +78,23 @@ On November 10, 2026, two fresh Chromium contexts played Abe Lincoln against Swi
 | Confirmed Leave | The guest returned Home, the room link and saved credential cleared, and the host reached results. |
 
 The browser run passed with zero uncaught page errors. The private credentials identify the updated behavior on Render. The hosting provider's revision ID was outside this check.
+
+## Bluehost client pilot
+
+The pilot pull request workflow builds and tests the game and attaches
+`eth-bluehost-client-<commit-sha>` to its Actions run. The artifact contains
+`apps/client/dist` with the online endpoint set to the existing Render service.
+Local and Dojo simulation run in the browser. Online rooms and matches use Render.
+
+Download the artifact for the exact game revision paired with the Render server.
+The intended Bluehost destination is `play.zandarecords.com` at
+`~/public_html/website_9ed378d6`. The pilot branch builds and publishes to Bluehost from this repository.
+
+The local build produced 978 files and 1,488,072,053 bytes. The staging script
+copies the runtime manifests, their referenced images, Pack 03 idle art, and
+the other static directories. It preserves source-sheet fallback and excludes
+review material in the fighter art directories. The staged build contains 795
+files and 1,279,105,347 bytes. The five Socket.IO integration tests passed
+with local loopback access and IPv4-first localhost resolution.
+
+The game repository publishes on pushes to deploy/bluehost-client-pilot using the eth-bluehost-pilot environment. Configure ETH_FTP_HOST, ETH_FTP_USER, and ETH_FTP_PASSWORD for the scoped account. Rerun the successful publish job against the same artifact to verify zero changed files. Live FTPS verification is pending.

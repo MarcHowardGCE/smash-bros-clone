@@ -37,3 +37,7 @@ Pack 03 revision 49 has expanded locomotion, crouch, jump, fast-fall and teeter.
 ## November 13 human signoff
 
 The project owner approved completed work whose only remaining gate was human signoff. This closes the human review of local CPU behavior for the fixes already verified, the human gameplay feel and balance gate for the current implementation, and the arena readability, recovery and music review for Stages 07–10. This is owner approval, with the previously recorded test coverage as evidence. Human-only art review items on completed clips are also approved. Version-matched Ultimate evidence, Xbox 360 hardware coverage, outstanding hosted and technical checks, and unfinished implementation remain open.
+
+## Bluehost hosting pilot
+
+Pilot PR workflow builds a SHA-tagged client artifact. Next is the first Bluehost upload from the game pilot branch, then an unchanged redeploy and paired Render smoke testing. See the [pilot deployment guide](../guides/DEPLOYMENT.md#bluehost-client-pilot).

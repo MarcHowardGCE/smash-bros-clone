@@ -1,4 +1,4 @@
-import { cp, mkdir, readdir, readFile, stat } from 'node:fs/promises';
+import { cp, mkdir, readdir, readFile, stat, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 
 const source = 'apps/client/dist';
@@ -41,4 +41,13 @@ for (const entry of await readdir(source, { withFileTypes: true })) {
     bytes += (await stat(target)).size;
   }
   console.log(entry.name, kept.size, bytes);
+}
+
+const commit = process.argv[3];
+if (commit) {
+  if (!/^[a-f0-9]{40}$/.test(commit)) throw new Error('Invalid release commit SHA');
+  const index = path.join(output, 'index.html');
+  const html = await readFile(index, 'utf8');
+  if (!html.includes('</head>')) throw new Error('Client entry page is missing its head');
+  await writeFile(index, html.replace('</head>', '<meta name="eth-release" content="' + commit + '">\n</head>'));
 }

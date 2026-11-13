@@ -33,7 +33,7 @@ jobs:
       - run: pnpm build
         env:
           VITE_SERVER_URL: https://everybody-throws-hands.onrender.com
-      - run: node scripts/stage-bluehost-client.mjs bluehost-client
+      - run: node scripts/stage-bluehost-client.mjs bluehost-client "$(git rev-parse HEAD)"
       - name: Verify staged online endpoint
         run: grep -Fl 'https://everybody-throws-hands.onrender.com' bluehost-client/assets/index-*.js
       - run: pnpm exec playwright install --with-deps chromium

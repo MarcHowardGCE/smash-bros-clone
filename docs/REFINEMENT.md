@@ -119,3 +119,7 @@ Simulated controller runs covered the Dojo and two-client loopback matches. Init
 - Fighter pilot, roster art, and animation milestones are indexed by the [roster art record](assets/FIGHTER-ART-ROSTER-V1.md), [engine handoff](assets/FIGHTER-ENGINE-HANDOFF.md), and [production atlas](assets/FIGHTER-PRODUCTION-ATLAS.md).
 - Menu, world selection, accessibility, and load-time history lives in the [menu polish record](MENU-POLISH-PLAN.md).
 - Earlier verification results and all duplicated batches from this page are preserved in the [original refinement log](history/legacy-refinement.md). The [former README](history/legacy-readme.md) and [former roadmap](history/legacy-roadmap.md) remain available as separate snapshots.
+
+### CPU pursuit and point-blank pressure
+
+The CPU estimates jump reach from its fighter's jump velocities and gravity, steers toward a reachable platform, and can use its double jump near the apex. Close-range pressure now checks vertical separation, turns toward nearby opponents when needed, and can attack in the air. Punish attempts also require proximity so a distant opponent does not interrupt pursuit. Simulation regressions verify that the CPU damages a stationary opponent on an elevated platform and at overlapping ground positions within 180 ticks. Multi-CPU gameplay and every stage layout still need manual review.

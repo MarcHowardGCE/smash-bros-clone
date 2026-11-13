@@ -13,7 +13,7 @@ const roster = [
 ] as const;
 const fighters = [
   ...roster,
-  ...PACK_03_PILOT_FIGHTERS.map(({ id, name }) => [id, name + ' (pilot)'] as const),
+  ...PACK_03_PILOT_FIGHTERS.map(({ id, name }) => [id, name] as const),
 ];
 const modes: readonly DummyMode[] = ['still','shield','jab','mixed','up-smash','grab'];
 const behaviorNames = ['Passive','Shield','Telegraphed jab','Alternating attack / special','Telegraphed two-hit up smash','Telegraphed grab'];

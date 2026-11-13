@@ -94,7 +94,7 @@ function computeAiInputEvent(
 }
 
 describe('GameEngine AI platform jump integration', () => {
-  it('reaches JUMPSQUAT and ascends toward platform when opponent is grounded above', () => {
+  it.each([true, false])('hits a stationary opponent (elevated: %s)', elevated => {
     const botId: PlayerId = 'bot';
     const opponentId: PlayerId = 'opponent';
     const engine = new GameEngine({ playerIds: [botId, opponentId] });
@@ -119,8 +119,8 @@ describe('GameEngine AI platform jump integration', () => {
     });
 
     primePlayer(engine, opponentId, {
-      x: leftPlatform.x + 100,
-      y: leftPlatform.y - PHYSICS.HURTBOX_RADIUS,
+      x: leftPlatform.x + (elevated ? 100 : 40),
+      y: (elevated ? leftPlatform.y : STAGE.MAIN_PLATFORM.y) - PHYSICS.HURTBOX_RADIUS,
       vx: 0,
       vy: 0,
       state: PlayerStateEnum.IDLE,
@@ -177,7 +177,8 @@ describe('GameEngine AI platform jump integration', () => {
       }
     }
 
-    expect(sawJumpSquat).toBe(true);
-    expect(minY).toBeLessThan(startY);
+    expect(sawJumpSquat).toBe(elevated);
+    if (elevated) expect(minY).toBeLessThan(startY);
+    expect(getMutableState(engine).players[opponentId]!.percent).toBeGreaterThan(0);
   });
 });

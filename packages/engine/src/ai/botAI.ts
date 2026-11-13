@@ -1,4 +1,4 @@
-import {getStageLayout} from '@smash/shared';
+import {getStageLayout,getCharacterStats,PHYSICS} from '@smash/shared';
 /**
  * @fileoverview Reactive bot AI — frame-by-frame input decision engine.
  *
@@ -66,7 +66,6 @@ interface BotDifficultyConfig {
 }
 
 const APPROACH_DEADZONE_X = 36;
-const ATTACK_PRESSURE_RANGE_X = 90;
 
 function applyExecutionError(
   intendedBits: InputBitmask,
@@ -108,7 +107,8 @@ export function selectTarget(
   candidateIds: PlayerId[],
   reactionDelayFrames: number
 ): PlayerId | null {
-  const stage={MAIN_PLATFORM:getStageLayout(state.stageId).mainPlatform};
+  const layout = getStageLayout(state.stageId);
+  const stage = { MAIN_PLATFORM: layout.mainPlatform };
   const self = state.players[botPlayerId];
   if (self === undefined) {
     throw new Error(`Bot player not found in GameState: ${botPlayerId}`);
@@ -169,7 +169,8 @@ export function decideBotInput(
   difficultyConfig: BotDifficultyConfig,
   memory: BotMemory
 ): { bits: InputBitmask; memory: BotMemory } {
-  const stage={MAIN_PLATFORM:getStageLayout(state.stageId).mainPlatform};
+  const layout = getStageLayout(state.stageId);
+  const stage = { MAIN_PLATFORM: layout.mainPlatform };
   const self = state.players[botPlayerId];
   const opponent = state.players[opponentPlayerId];
 
@@ -234,7 +235,8 @@ export function decideBotInput(
   }
 
   // (5)
-  if (sensors.isPunishWindow(opponent) && opponent.isInvincible === false) {
+  if (sensors.isPunishWindow(opponent) && !opponent.isInvincible &&
+      Math.abs(opponent.x - self.x) <= 55 && Math.abs(opponent.y - self.y) <= 45) {
     const decisionRoll = nextRandom(memory);
     const attackWeight = difficultyConfig.decisionQuality >= 0.75 ? 0.6 : 0.5;
     const intendedBits =
@@ -268,44 +270,42 @@ export function decideBotInput(
     );
   }
 
-  // (6) neutral pressure: approach opponent and occasionally throw out a button in range.
-  const horizontalDelta = opponent.x - self.x;
+  const dx = opponent.x - self.x;
+  const dy = opponent.y - self.y;
+  const toward = dx < 0 ? INPUT_BITS.LEFT : INPUT_BITS.RIGHT;
+  const press = (bits: InputBitmask) => applyExecutionError(bits, difficultyConfig.executionErrorRate, memory);
 
-  if (sensors.platformJumpNeeded(self, opponent) && self.isGrounded) {
-    const directionBits = horizontalDelta > 0 ? INPUT_BITS.RIGHT : INPUT_BITS.LEFT;
-    return applyExecutionError(
-      jumpInputForState(self.state, directionBits),
-      difficultyConfig.executionErrorRate,
-      memory
-    );
+  if (Math.abs(dx) <= APPROACH_DEADZONE_X && Math.abs(dy) <= 45 && !opponent.isInvincible) {
+    if (Math.abs(dx) > 1 && Math.sign(dx) !== self.facing) return press(toward);
+    const roll = nextRandom(memory);
+    const weight = difficultyConfig.decisionQuality >= 0.75 ? 0.45 : 0.25;
+    return applyExecutionError(roll.value < weight ? INPUT_BITS.ATTACK : 0,
+      difficultyConfig.executionErrorRate, roll.nextMemory);
   }
 
-  if (Math.abs(horizontalDelta) > APPROACH_DEADZONE_X) {
-    const towardOpponentBits =
-      horizontalDelta > 0 ? INPUT_BITS.RIGHT : INPUT_BITS.LEFT;
-    return applyExecutionError(
-      towardOpponentBits,
-      difficultyConfig.executionErrorRate,
-      memory
-    );
+  if (dy < -90 && opponent.isGrounded) {
+    const stats = getCharacterStats(self.characterId);
+    const gravity = stats.gravity ?? PHYSICS.GRAVITY;
+    const doubleRise = (stats.doubleJumpVelocity ?? PHYSICS.DOUBLE_JUMP_VELOCITY) ** 2 / (2 * gravity);
+    const fullRise = stats.jumpVelocity ** 2 / (2 * gravity);
+    const feet = self.y + stats.hurtboxRadius;
+    const targetFeet = opponent.y + getCharacterStats(opponent.characterId).hurtboxRadius;
+    const reachable = layout.platforms.filter(p =>
+      p.y >= targetFeet - 2 && feet - p.y > 12 && feet - p.y < fullRise + doubleRise - 12);
+    const platform = reachable.sort((a, b) => a.y - b.y || Math.abs(a.x + a.width / 2 - self.x) - Math.abs(b.x + b.width / 2 - self.x))[0];
+    const goal = platform ? Math.max(platform.x + 12, Math.min(platform.x + platform.width - 12, opponent.x)) : opponent.x;
+    const distance = goal - self.x;
+    const steer = Math.abs(distance) <= 12 ? 0 : distance < 0 ? INPUT_BITS.LEFT : INPUT_BITS.RIGHT;
+    if (self.isGrounded && (platform || -dy < fullRise + doubleRise) && Math.abs(distance) <= 95) {
+      return press(jumpInputForState(self.state, steer));
+    }
+    if (self.state === PlayerStateEnum.AIRBORNE && self.hasDoubleJump && self.vy >= -1 &&
+        (platform ? feet > platform.y - 8 : -dy < doubleRise) && Math.abs(distance) <= 95) {
+      return press(steer | INPUT_BITS.JUMP);
+    }
+    return press(steer);
   }
-
-  if (
-    Math.abs(horizontalDelta) <= ATTACK_PRESSURE_RANGE_X &&
-    self.isGrounded &&
-    opponent.isInvincible === false
-  ) {
-    const decisionRoll = nextRandom(memory);
-    const attackWeight =
-      difficultyConfig.decisionQuality >= 0.75 ? 0.3 : 0.15;
-    const intendedBits =
-      decisionRoll.value < attackWeight ? INPUT_BITS.ATTACK : 0;
-    return applyExecutionError(
-      intendedBits,
-      difficultyConfig.executionErrorRate,
-      decisionRoll.nextMemory
-    );
-  }
+  if (Math.abs(dx) > APPROACH_DEADZONE_X) return press(toward);
 
   return { bits: 0, memory };
 }

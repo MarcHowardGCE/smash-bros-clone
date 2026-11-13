@@ -161,3 +161,5 @@ healthz endpoint for that full revision before sending files to Bluehost.
 A failed request or a revision that never becomes live blocks the upload.
 A publish rerun skips the Render deploy if that revision is already live.
 The Render fallback client stays available during this rollout.
+
+To release manually, open Actions, select Release Render server and Bluehost client, choose Run workflow, and select main. The manual run uses the same test and revision checks.

@@ -2,6 +2,7 @@ name: Release Render server and Bluehost client
 on:
   push:
     branches: [main]
+  workflow_dispatch:
   pull_request:
     branches: [main]
     paths:
@@ -47,7 +48,7 @@ jobs:
           if-no-files-found: error
 
   publish:
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main' && vars.ETH_RELEASE_ENABLED == 'true'
+    if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main' && vars.ETH_RELEASE_ENABLED == 'true'
     needs: client
     runs-on: ubuntu-latest
     environment: eth-bluehost-pilot

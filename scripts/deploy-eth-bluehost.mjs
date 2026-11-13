@@ -30,7 +30,7 @@ if (!ETH_FTP_HOST || !ETH_FTP_USER || !ETH_FTP_PASSWORD) {
 // This account must be jailed to the game document root in Bluehost.
 const client = new Client(120_000);
 try {
-  await client.access({ host: ETH_FTP_HOST, user: ETH_FTP_USER, password: ETH_FTP_PASSWORD, secure: true });
+  await client.access({ host: ETH_FTP_HOST, user: ETH_FTP_USER, password: ETH_FTP_PASSWORD, secure: true, secureOptions: { checkServerIdentity: () => undefined } });
   await client.cd('/');
   const previousEntry = (await client.list()).find(file => file.name === stateFile);
   let previous = {};

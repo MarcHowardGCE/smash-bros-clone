@@ -103,3 +103,5 @@ The CI static-serving test reuses the completed build. Standalone runs build
 their own output. The first pilot run failed when the test rebuilt into the
 populated Vite output directory.
 The pilot workflow installs Playwright Chromium before the client tests.
+
+The scoped pilot uses explicit FTPS with CA validation and accepts the Bluehost FTP alias mismatch. Browser HTTPS and Render connections use their normal certificate validation.

@@ -102,3 +102,4 @@ The game repository publishes on pushes to deploy/bluehost-client-pilot using th
 The CI static-serving test reuses the completed build. Standalone runs build
 their own output. The first pilot run failed when the test rebuilt into the
 populated Vite output directory.
+The pilot workflow installs Playwright Chromium before the client tests.

@@ -32,6 +32,7 @@ jobs:
       - run: pnpm build
         env:
           VITE_SERVER_URL: https://everybody-throws-hands.onrender.com
+      - run: pnpm exec playwright install --with-deps chromium
       - run: pnpm test
         env:
           SMASH_TEST_USE_EXISTING_BUILD: '1'

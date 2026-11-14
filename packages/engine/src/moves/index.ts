@@ -183,12 +183,22 @@ const TASSELBOTTOM_DOWN_THROW: MoveData = {
 };
 
 const ZANE_MOVES: ReadonlyMap<MoveId, MoveData> = new Map([
-  ...[MOVE_JAB, MOVE_JAB_2, MOVE_JAB_3].map((move): [MoveId, MoveData] => [
+  ...[MOVE_FORWARD_SMASH, MOVE_UP_SMASH].map((move, index): [MoveId, MoveData] => {
+    const [dx, dy] = ([[4,-8],[5,-8]] as const)[index]!;
+    return [move.id, {
+      ...move,
+      hitboxPerActiveFrame: move.hitboxPerActiveFrame.map(hit => ({
+        ...hit, offsetX: hit.offsetX + dx, offsetY: hit.offsetY + dy,
+      })),
+    }];
+  }),
+  ...[MOVE_JAB, MOVE_JAB_2, MOVE_JAB_3].map((move, index): [MoveId, MoveData] => [
     move.id, {
       ...move,
       recoveryFrames: move.recoveryFrames - 1,
       hitboxPerActiveFrame: move.hitboxPerActiveFrame.map(hit => ({
-        ...hit, offsetX: hit.offsetX - 5, radius: hit.radius - 2,
+        ...hit, offsetX: index < 2 ? hit.offsetX + 4 : hit.offsetX - 5,
+        offsetY: index < 2 ? -20 : hit.offsetY, radius: hit.radius - 2,
       })),
     },
   ]),
@@ -196,7 +206,7 @@ const ZANE_MOVES: ReadonlyMap<MoveId, MoveData> = new Map([
     ...MOVE_FORWARD_TILT,
     startupFrames: 6,
     hitboxPerActiveFrame: MOVE_FORWARD_TILT.hitboxPerActiveFrame.map(hit => ({
-      ...hit, offsetX: 50, radius: 23,
+      ...hit, offsetX: 50, offsetY: -17, radius: 23,
     })),
   }],
   [MoveId.FORWARD_THROW, {
@@ -208,6 +218,29 @@ const ZANE_MOVES: ReadonlyMap<MoveId, MoveData> = new Map([
 ]);
 
 const VELVET_MOVES: ReadonlyMap<MoveId, MoveData> = new Map([
+  ...[MOVE_FORWARD_SMASH, MOVE_UP_SMASH].map((move, index): [MoveId, MoveData] => {
+    const [dx, dy] = ([[6,-4],[16,-8]] as const)[index]!;
+    return [move.id, {
+      ...move,
+      hitboxPerActiveFrame: move.hitboxPerActiveFrame.map(hit => ({
+        ...hit, offsetX: hit.offsetX + dx, offsetY: hit.offsetY + dy,
+      })),
+    }];
+  }),
+  ...[MOVE_JAB, MOVE_JAB_2].map((move): [MoveId, MoveData] => [
+    move.id, {
+      ...move,
+      hitboxPerActiveFrame: move.hitboxPerActiveFrame.map(hit => ({
+        ...hit, offsetX: hit.offsetX + 5, offsetY: -21,
+      })),
+    },
+  ]),
+  [MoveId.UP_TILT, {
+    ...MOVE_UP_TILT,
+    hitboxPerActiveFrame: MOVE_UP_TILT.hitboxPerActiveFrame.map(hit => ({
+      ...hit, offsetX: 16, offsetY: -60,
+    })),
+  }],
   [MoveId.FORWARD_TILT, {
     ...MOVE_FORWARD_TILT,
     startupFrames: 9,
@@ -278,3 +311,4 @@ export function getMoveDataForCharacter(characterId: CharacterId | undefined, id
 }
 
 export { MoveId };
+

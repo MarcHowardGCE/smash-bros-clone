@@ -1,0 +1,5563 @@
+{
+  "version": 1,
+  "revision": 25,
+  "characters": {
+    "zane-corvo": {
+      "clips": {
+        "idle": {
+          "image": "zane-corvo-idle.png",
+          "scale": 0.062452399086062454,
+          "durations": [
+            24,
+            24
+          ],
+          "frames": [
+            {
+              "image": "zane-corvo-idle.png",
+              "rect": [
+                0,
+                0,
+                764,
+                1313
+              ],
+              "root": [
+                382,
+                1313
+              ]
+            },
+            {
+              "image": "zane-corvo-idle-exhale.png",
+              "rect": [
+                0,
+                0,
+                766,
+                1313
+              ],
+              "root": [
+                383,
+                1313
+              ]
+            }
+          ]
+        },
+        "walk": {
+          "image": "zane-corvo-walk-0.png",
+          "scale": 0.13290113452188007,
+          "durations": [
+            5,
+            5,
+            5,
+            5
+          ],
+          "frames": [
+            {
+              "image": "zane-corvo-walk-0.png",
+              "rect": [
+                0,
+                0,
+                400,
+                616
+              ],
+              "root": [
+                161,
+                616
+              ]
+            },
+            {
+              "image": "zane-corvo-walk-1.png",
+              "rect": [
+                0,
+                0,
+                259,
+                616
+              ],
+              "root": [
+                120,
+                616
+              ]
+            },
+            {
+              "image": "zane-corvo-walk-2.png",
+              "rect": [
+                0,
+                0,
+                444,
+                615
+              ],
+              "root": [
+                184,
+                615
+              ]
+            },
+            {
+              "image": "zane-corvo-walk-3.png",
+              "rect": [
+                0,
+                0,
+                233,
+                617
+              ],
+              "root": [
+                115,
+                617
+              ]
+            }
+          ]
+        },
+        "run": {
+          "image": "zane-corvo-run-0.png",
+          "scale": 0.14564831261101244,
+          "durations": [
+            4,
+            4
+          ],
+          "frames": [
+            {
+              "image": "zane-corvo-run-0.png",
+              "rect": [
+                0,
+                0,
+                523,
+                536
+              ],
+              "root": [
+                229,
+                536
+              ]
+            },
+            {
+              "image": "zane-corvo-run-1.png",
+              "rect": [
+                0,
+                0,
+                431,
+                563
+              ],
+              "root": [
+                216,
+                563
+              ]
+            }
+          ]
+        },
+        "brake": {
+          "image": "zane-corvo-run-2.png",
+          "scale": 0.14564831261101244,
+          "frames": [
+            {
+              "image": "zane-corvo-run-2.png",
+              "rect": [
+                0,
+                0,
+                485,
+                572
+              ],
+              "root": [
+                208,
+                572
+              ]
+            }
+          ]
+        },
+        "turn_stand": {
+          "image": "zane-corvo-stance-0.png",
+          "scale": 0.13874788494077833,
+          "frames": [
+            {
+              "image": "zane-corvo-stance-0.png",
+              "rect": [
+                0,
+                0,
+                299,
+                591
+              ],
+              "root": [
+                147,
+                591
+              ]
+            }
+          ]
+        },
+        "crouch_enter": {
+          "image": "zane-corvo-stance-1.png",
+          "scale": 0.13874788494077833,
+          "frames": [
+            {
+              "image": "zane-corvo-stance-1.png",
+              "rect": [
+                0,
+                0,
+                323,
+                453
+              ],
+              "root": [
+                130,
+                453
+              ]
+            }
+          ]
+        },
+        "crouch_hold": {
+          "image": "zane-corvo-stance-1.png",
+          "scale": 0.13874788494077833,
+          "frames": [
+            {
+              "image": "zane-corvo-stance-1.png",
+              "rect": [
+                0,
+                0,
+                323,
+                453
+              ],
+              "root": [
+                130,
+                453
+              ]
+            }
+          ]
+        },
+        "crouch_exit": {
+          "image": "zane-corvo-stance-1.png",
+          "scale": 0.13874788494077833,
+          "frames": [
+            {
+              "image": "zane-corvo-stance-1.png",
+              "rect": [
+                0,
+                0,
+                323,
+                453
+              ],
+              "root": [
+                130,
+                453
+              ]
+            }
+          ]
+        },
+        "jump_squat": {
+          "image": "zane-corvo-stance-1.png",
+          "scale": 0.13874788494077833,
+          "frames": [
+            {
+              "image": "zane-corvo-stance-1.png",
+              "rect": [
+                0,
+                0,
+                323,
+                453
+              ],
+              "root": [
+                130,
+                453
+              ]
+            }
+          ]
+        },
+        "air_rise_loop": {
+          "image": "zane-corvo-air-0.png",
+          "scale": 0.17672413793103448,
+          "frames": [
+            {
+              "image": "zane-corvo-air-0.png",
+              "rect": [
+                0,
+                0,
+                244,
+                464
+              ],
+              "root": [
+                116,
+                464
+              ]
+            }
+          ]
+        },
+        "air_apex_loop": {
+          "image": "zane-corvo-air-1.png",
+          "scale": 0.17672413793103448,
+          "frames": [
+            {
+              "image": "zane-corvo-air-1.png",
+              "rect": [
+                0,
+                0,
+                251,
+                366
+              ],
+              "root": [
+                124,
+                366
+              ]
+            }
+          ]
+        },
+        "air_fall_loop": {
+          "image": "zane-corvo-air-2.png",
+          "scale": 0.17672413793103448,
+          "frames": [
+            {
+              "image": "zane-corvo-air-2.png",
+              "rect": [
+                0,
+                0,
+                278,
+                438
+              ],
+              "root": [
+                105,
+                438
+              ]
+            }
+          ]
+        },
+        "double_jump_transition": {
+          "image": "zane-corvo-air-3.png",
+          "scale": 0.17672413793103448,
+          "frames": [
+            {
+              "image": "zane-corvo-air-3.png",
+              "rect": [
+                0,
+                0,
+                234,
+                465
+              ],
+              "root": [
+                109,
+                465
+              ]
+            }
+          ]
+        },
+        "air_fastfall_loop": {
+          "image": "zane-corvo-air-4.png",
+          "scale": 0.17672413793103448,
+          "frames": [
+            {
+              "image": "zane-corvo-air-4.png",
+              "rect": [
+                0,
+                0,
+                274,
+                418
+              ],
+              "root": [
+                140,
+                418
+              ]
+            }
+          ]
+        },
+        "land_soft": {
+          "image": "zane-corvo-air-5.png",
+          "scale": 0.17672413793103448,
+          "frames": [
+            {
+              "image": "zane-corvo-air-5.png",
+              "rect": [
+                0,
+                0,
+                222,
+                394
+              ],
+              "root": [
+                104,
+                394
+              ]
+            }
+          ]
+        },
+        "land_heavy": {
+          "image": "zane-corvo-air-5.png",
+          "scale": 0.17672413793103448,
+          "frames": [
+            {
+              "image": "zane-corvo-air-5.png",
+              "rect": [
+                0,
+                0,
+                222,
+                394
+              ],
+              "root": [
+                104,
+                394
+              ]
+            }
+          ]
+        },
+        "takeoff_neutral": {
+          "image": "zane-corvo-stance-3.png",
+          "scale": 0.13874788494077833,
+          "frames": [
+            {
+              "image": "zane-corvo-stance-3.png",
+              "rect": [
+                0,
+                0,
+                232,
+                664
+              ],
+              "root": [
+                123,
+                664
+              ]
+            }
+          ]
+        },
+        "turn_run": {
+          "image": "zane-corvo-run-3.png",
+          "scale": 0.14564831261101244,
+          "frames": [
+            {
+              "image": "zane-corvo-run-3.png",
+              "rect": [
+                0,
+                0,
+                366,
+                586
+              ],
+              "root": [
+                190,
+                586
+              ]
+            }
+          ]
+        },
+        "jab": {
+          "image": "zane-corvo-strikes-0.png",
+          "scale": 0.18262806236080179,
+          "durations": [
+            3,
+            3,
+            6
+          ],
+          "activeWindow": [
+            3,
+            6
+          ],
+          "frames": [
+            {
+              "image": "zane-corvo-strike-transition-0.png",
+              "rect": [
+                0,
+                0,
+                353,
+                560
+              ],
+              "root": [
+                148,
+                560
+              ],
+              "scale": 0.1423611111111111
+            },
+            {
+              "image": "zane-corvo-strikes-0.png",
+              "rect": [
+                0,
+                0,
+                340,
+                448
+              ],
+              "root": [
+                142,
+                448
+              ]
+            },
+            {
+              "image": "zane-corvo-strike-transition-1.png",
+              "rect": [
+                0,
+                0,
+                344,
+                576
+              ],
+              "root": [
+                153,
+                576
+              ],
+              "scale": 0.1423611111111111
+            }
+          ]
+        },
+        "jab_2": {
+          "image": "zane-corvo-strikes-1.png",
+          "scale": 0.18262806236080179,
+          "durations": [
+            3,
+            3,
+            6
+          ],
+          "activeWindow": [
+            3,
+            6
+          ],
+          "frames": [
+            {
+              "image": "zane-corvo-strike-transition-0.png",
+              "rect": [
+                0,
+                0,
+                353,
+                560
+              ],
+              "root": [
+                148,
+                560
+              ],
+              "scale": 0.1423611111111111
+            },
+            {
+              "image": "zane-corvo-strikes-1.png",
+              "rect": [
+                0,
+                0,
+                374,
+                449
+              ],
+              "root": [
+                164,
+                449
+              ]
+            },
+            {
+              "image": "zane-corvo-strike-transition-1.png",
+              "rect": [
+                0,
+                0,
+                344,
+                576
+              ],
+              "root": [
+                153,
+                576
+              ],
+              "scale": 0.1423611111111111
+            }
+          ]
+        },
+        "jab_3": {
+          "image": "zane-corvo-strikes-2.png",
+          "scale": 0.18262806236080179,
+          "durations": [
+            3,
+            3,
+            6
+          ],
+          "activeWindow": [
+            3,
+            6
+          ],
+          "frames": [
+            {
+              "image": "zane-corvo-strike-transition-0.png",
+              "rect": [
+                0,
+                0,
+                353,
+                560
+              ],
+              "root": [
+                148,
+                560
+              ],
+              "scale": 0.1423611111111111
+            },
+            {
+              "image": "zane-corvo-strikes-2.png",
+              "rect": [
+                0,
+                0,
+                310,
+                416
+              ],
+              "root": [
+                156,
+                416
+              ]
+            },
+            {
+              "image": "zane-corvo-strike-transition-1.png",
+              "rect": [
+                0,
+                0,
+                344,
+                576
+              ],
+              "root": [
+                153,
+                576
+              ],
+              "scale": 0.1423611111111111
+            }
+          ]
+        },
+        "forward_tilt": {
+          "image": "zane-corvo-strikes-3.png",
+          "scale": 0.18262806236080179,
+          "durations": [
+            3,
+            3,
+            6
+          ],
+          "activeWindow": [
+            3,
+            6
+          ],
+          "frames": [
+            {
+              "image": "zane-corvo-strike-transition-2.png",
+              "rect": [
+                0,
+                0,
+                362,
+                592
+              ],
+              "root": [
+                152,
+                592
+              ],
+              "scale": 0.1423611111111111
+            },
+            {
+              "image": "zane-corvo-strikes-3.png",
+              "rect": [
+                0,
+                0,
+                358,
+                447
+              ],
+              "root": [
+                200,
+                447
+              ]
+            },
+            {
+              "image": "zane-corvo-strike-transition-3.png",
+              "rect": [
+                0,
+                0,
+                346,
+                598
+              ],
+              "root": [
+                158,
+                598
+              ],
+              "scale": 0.1423611111111111
+            }
+          ]
+        },
+        "up_tilt": {
+          "image": "zane-corvo-strikes-4.png",
+          "scale": 0.18262806236080179,
+          "durations": [
+            3,
+            3,
+            6
+          ],
+          "activeWindow": [
+            3,
+            6
+          ],
+          "frames": [
+            {
+              "image": "zane-corvo-strike-transition-0.png",
+              "rect": [
+                0,
+                0,
+                353,
+                560
+              ],
+              "root": [
+                148,
+                560
+              ],
+              "scale": 0.1423611111111111
+            },
+            {
+              "image": "zane-corvo-strikes-4.png",
+              "rect": [
+                0,
+                0,
+                313,
+                468
+              ],
+              "root": [
+                166,
+                468
+              ]
+            },
+            {
+              "image": "zane-corvo-strike-transition-1.png",
+              "rect": [
+                0,
+                0,
+                344,
+                576
+              ],
+              "root": [
+                153,
+                576
+              ],
+              "scale": 0.1423611111111111
+            }
+          ]
+        },
+        "down_tilt": {
+          "image": "zane-corvo-down-tilt.png",
+          "scale": 0.18262806236080179,
+          "durations": [
+            3,
+            3,
+            6
+          ],
+          "activeWindow": [
+            3,
+            6
+          ],
+          "frames": [
+            {
+              "image": "zane-corvo-strike-transition-0.png",
+              "rect": [
+                0,
+                0,
+                353,
+                560
+              ],
+              "root": [
+                148,
+                560
+              ],
+              "scale": 0.1423611111111111
+            },
+            {
+              "image": "zane-corvo-down-tilt.png",
+              "rect": [
+                0,
+                0,
+                734,
+                1007
+              ],
+              "root": [
+                388,
+                1007
+              ],
+              "scale": 0.077
+            },
+            {
+              "image": "zane-corvo-strike-transition-1.png",
+              "rect": [
+                0,
+                0,
+                344,
+                576
+              ],
+              "root": [
+                153,
+                576
+              ],
+              "scale": 0.1423611111111111
+            }
+          ]
+        },
+        "dash_attack": {
+          "image": "zane-corvo-power-0.png",
+          "scale": 0.1673469387755102,
+          "durations": [
+            4,
+            3,
+            8
+          ],
+          "activeWindow": [
+            4,
+            7
+          ],
+          "frames": [
+            {
+              "image": "zane-corvo-power-transition-0.png",
+              "rect": [
+                0,
+                0,
+                321,
+                367
+              ],
+              "root": [
+                180,
+                367
+              ],
+              "scale": 0.21243523316062177
+            },
+            {
+              "image": "zane-corvo-power-0.png",
+              "rect": [
+                0,
+                0,
+                398,
+                467
+              ],
+              "root": [
+                210,
+                467
+              ]
+            },
+            {
+              "image": "zane-corvo-power-transition-4.png",
+              "rect": [
+                0,
+                0,
+                234,
+                382
+              ],
+              "root": [
+                129,
+                382
+              ],
+              "scale": 0.21243523316062177
+            }
+          ]
+        },
+        "forward_smash": {
+          "image": "zane-corvo-power-1.png",
+          "scale": 0.1673469387755102,
+          "durations": [
+            4,
+            3,
+            8
+          ],
+          "activeWindow": [
+            4,
+            7
+          ],
+          "frames": [
+            {
+              "image": "zane-corvo-power-transition-1.png",
+              "rect": [
+                0,
+                0,
+                331,
+                386
+              ],
+              "root": [
+                170,
+                386
+              ],
+              "scale": 0.21243523316062177
+            },
+            {
+              "image": "zane-corvo-power-1.png",
+              "rect": [
+                0,
+                0,
+                492,
+                490
+              ],
+              "root": [
+                227,
+                490
+              ]
+            },
+            {
+              "image": "zane-corvo-power-transition-5.png",
+              "rect": [
+                0,
+                0,
+                353,
+                387
+              ],
+              "root": [
+                173,
+                387
+              ],
+              "scale": 0.21243523316062177
+            }
+          ]
+        },
+        "up_smash": {
+          "image": "zane-corvo-power-2.png",
+          "scale": 0.1673469387755102,
+          "durations": [
+            4,
+            3,
+            8
+          ],
+          "activeWindow": [
+            4,
+            7
+          ],
+          "frames": [
+            {
+              "image": "zane-corvo-power-transition-2.png",
+              "rect": [
+                0,
+                0,
+                278,
+                314
+              ],
+              "root": [
+                119,
+                314
+              ],
+              "scale": 0.21243523316062177
+            },
+            {
+              "image": "zane-corvo-power-2.png",
+              "rect": [
+                0,
+                0,
+                381,
+                579
+              ],
+              "root": [
+                207,
+                579
+              ]
+            },
+            {
+              "image": "zane-corvo-power-transition-6.png",
+              "rect": [
+                0,
+                0,
+                298,
+                412
+              ],
+              "root": [
+                158,
+                412
+              ],
+              "scale": 0.21243523316062177
+            }
+          ]
+        },
+        "down_smash": {
+          "image": "zane-corvo-down-smash.png",
+          "scale": 0.1673469387755102,
+          "durations": [
+            4,
+            3,
+            3,
+            8
+          ],
+          "activeWindow": [
+            4,
+            10
+          ],
+          "frames": [
+            {
+              "image": "zane-corvo-power-transition-3.png",
+              "rect": [
+                0,
+                0,
+                384,
+                297
+              ],
+              "root": [
+                138,
+                297
+              ],
+              "scale": 0.21243523316062177
+            },
+            {
+              "image": "zane-corvo-down-smash.png",
+              "rect": [
+                0,
+                0,
+                824,
+                1139
+              ],
+              "root": [
+                382,
+                1139
+              ],
+              "scale": 0.07
+            },
+            {
+              "image": "zane-corvo-down-smash.png",
+              "rect": [
+                0,
+                0,
+                824,
+                1139
+              ],
+              "root": [
+                382,
+                1139
+              ],
+              "scale": 0.07,
+              "mirrorSource": true
+            },
+            {
+              "image": "zane-corvo-power-transition-7.png",
+              "rect": [
+                0,
+                0,
+                369,
+                330
+              ],
+              "root": [
+                124,
+                330
+              ],
+              "scale": 0.21243523316062177
+            }
+          ]
+        },
+        "neutral_air": {
+          "image": "zane-corvo-aerial-0.png",
+          "scale": 0.17446808510638298,
+          "durations": [
+            3,
+            3,
+            6
+          ],
+          "activeWindow": [
+            3,
+            6
+          ],
+          "frames": [
+            {
+              "image": "zane-corvo-aerial-transition-0.png",
+              "rect": [
+                0,
+                0,
+                188,
+                320
+              ],
+              "root": [
+                84,
+                320
+              ],
+              "scale": 0.25625,
+              "airRoot": [
+                84,
+                160
+              ]
+            },
+            {
+              "image": "zane-corvo-aerial-0.png",
+              "rect": [
+                0,
+                0,
+                271,
+                423
+              ],
+              "root": [
+                123,
+                423
+              ],
+              "airRoot": [
+                123,
+                226
+              ]
+            },
+            {
+              "image": "zane-corvo-aerial-transition-5.png",
+              "rect": [
+                0,
+                0,
+                230,
+                316
+              ],
+              "root": [
+                78,
+                316
+              ],
+              "scale": 0.25625,
+              "airRoot": [
+                78,
+                146
+              ]
+            }
+          ]
+        },
+        "forward_air": {
+          "image": "zane-corvo-aerial-compact-0.png",
+          "scale": 0.17446808510638298,
+          "durations": [
+            3,
+            3,
+            6
+          ],
+          "activeWindow": [
+            3,
+            6
+          ],
+          "frames": [
+            {
+              "image": "zane-corvo-aerial-transition-1.png",
+              "rect": [
+                0,
+                0,
+                175,
+                316
+              ],
+              "root": [
+                72,
+                316
+              ],
+              "scale": 0.25625,
+              "airRoot": [
+                72,
+                157
+              ]
+            },
+            {
+              "image": "zane-corvo-aerial-compact-0.png",
+              "rect": [
+                0,
+                0,
+                304,
+                578
+              ],
+              "root": [
+                135,
+                578
+              ],
+              "scale": 0.115,
+              "airRoot": [
+                135,
+                309
+              ]
+            },
+            {
+              "image": "zane-corvo-aerial-transition-6.png",
+              "rect": [
+                0,
+                0,
+                284,
+                310
+              ],
+              "root": [
+                100,
+                310
+              ],
+              "scale": 0.25625,
+              "airRoot": [
+                100,
+                150
+              ]
+            }
+          ]
+        },
+        "back_air": {
+          "image": "zane-corvo-aerial-2.png",
+          "scale": 0.17446808510638298,
+          "durations": [
+            3,
+            3,
+            6
+          ],
+          "activeWindow": [
+            3,
+            6
+          ],
+          "frames": [
+            {
+              "image": "zane-corvo-aerial-transition-2.png",
+              "rect": [
+                0,
+                0,
+                235,
+                307
+              ],
+              "root": [
+                95,
+                307
+              ],
+              "scale": 0.25625,
+              "airRoot": [
+                95,
+                152
+              ]
+            },
+            {
+              "image": "zane-corvo-aerial-2.png",
+              "rect": [
+                0,
+                0,
+                400,
+                421
+              ],
+              "root": [
+                237,
+                421
+              ],
+              "airRoot": [
+                237,
+                234
+              ]
+            },
+            {
+              "image": "zane-corvo-aerial-transition-7.png",
+              "rect": [
+                0,
+                0,
+                288,
+                291
+              ],
+              "root": [
+                205,
+                291
+              ],
+              "scale": 0.25625,
+              "airRoot": [
+                205,
+                156
+              ]
+            }
+          ]
+        },
+        "up_air": {
+          "image": "zane-corvo-aerial-compact-1.png",
+          "scale": 0.17446808510638298,
+          "durations": [
+            3,
+            3,
+            6
+          ],
+          "activeWindow": [
+            3,
+            6
+          ],
+          "frames": [
+            {
+              "image": "zane-corvo-aerial-transition-3.png",
+              "rect": [
+                0,
+                0,
+                198,
+                317
+              ],
+              "root": [
+                78,
+                317
+              ],
+              "scale": 0.25625,
+              "airRoot": [
+                78,
+                157
+              ]
+            },
+            {
+              "image": "zane-corvo-aerial-compact-1.png",
+              "rect": [
+                0,
+                0,
+                315,
+                537
+              ],
+              "root": [
+                144,
+                537
+              ],
+              "scale": 0.115,
+              "airRoot": [
+                144,
+                277
+              ]
+            },
+            {
+              "image": "zane-corvo-aerial-transition-8.png",
+              "rect": [
+                0,
+                0,
+                229,
+                320
+              ],
+              "root": [
+                85,
+                320
+              ],
+              "scale": 0.25625,
+              "airRoot": [
+                85,
+                175
+              ]
+            }
+          ]
+        },
+        "down_air": {
+          "image": "zane-corvo-aerial-compact-2.png",
+          "scale": 0.17446808510638298,
+          "durations": [
+            3,
+            3,
+            6
+          ],
+          "activeWindow": [
+            3,
+            6
+          ],
+          "frames": [
+            {
+              "image": "zane-corvo-aerial-transition-4.png",
+              "rect": [
+                0,
+                0,
+                266,
+                254
+              ],
+              "root": [
+                136,
+                254
+              ],
+              "scale": 0.25625,
+              "airRoot": [
+                136,
+                149
+              ]
+            },
+            {
+              "image": "zane-corvo-aerial-compact-2.png",
+              "rect": [
+                0,
+                0,
+                327,
+                566
+              ],
+              "root": [
+                174,
+                566
+              ],
+              "scale": 0.115,
+              "airRoot": [
+                174,
+                343
+              ]
+            },
+            {
+              "image": "zane-corvo-aerial-transition-9.png",
+              "rect": [
+                0,
+                0,
+                267,
+                290
+              ],
+              "root": [
+                119,
+                290
+              ],
+              "scale": 0.25625,
+              "airRoot": [
+                119,
+                145
+              ]
+            }
+          ]
+        },
+        "shield": {
+          "image": "zane-corvo-defense-0.png",
+          "scale": 0.13015873015873017,
+          "frames": [
+            {
+              "image": "zane-corvo-defense-0.png",
+              "rect": [
+                0,
+                0,
+                368,
+                630
+              ],
+              "root": [
+                182,
+                630
+              ]
+            }
+          ]
+        },
+        "shield_raise": {
+          "image": "zane-corvo-shield-0.png",
+          "scale": 0.10775295663600526,
+          "frames": [
+            {
+              "image": "zane-corvo-shield-0.png",
+              "rect": [
+                0,
+                0,
+                423,
+                761
+              ],
+              "root": [
+                204,
+                761
+              ]
+            }
+          ]
+        },
+        "shield_hit": {
+          "image": "zane-corvo-shield-1.png",
+          "scale": 0.10775295663600526,
+          "frames": [
+            {
+              "image": "zane-corvo-shield-1.png",
+              "rect": [
+                0,
+                0,
+                423,
+                742
+              ],
+              "root": [
+                206,
+                742
+              ]
+            }
+          ]
+        },
+        "shield_drop": {
+          "image": "zane-corvo-shield-2.png",
+          "scale": 0.10775295663600526,
+          "frames": [
+            {
+              "image": "zane-corvo-shield-2.png",
+              "rect": [
+                0,
+                0,
+                423,
+                761
+              ],
+              "root": [
+                199,
+                761
+              ]
+            }
+          ]
+        },
+        "parry": {
+          "image": "zane-corvo-defense-1.png",
+          "scale": 0.13015873015873017,
+          "frames": [
+            {
+              "image": "zane-corvo-defense-1.png",
+              "rect": [
+                0,
+                0,
+                389,
+                631
+              ],
+              "root": [
+                174,
+                631
+              ]
+            }
+          ]
+        },
+        "dodge": {
+          "image": "zane-corvo-defense-2.png",
+          "scale": 0.13015873015873017,
+          "frames": [
+            {
+              "image": "zane-corvo-defense-2.png",
+              "rect": [
+                0,
+                0,
+                446,
+                522
+              ],
+              "root": [
+                226,
+                522
+              ]
+            }
+          ]
+        },
+        "roll": {
+          "image": "zane-corvo-defense-3.png",
+          "scale": 0.13015873015873017,
+          "frames": [
+            {
+              "image": "zane-corvo-stance-1.png",
+              "rect": [
+                0,
+                0,
+                323,
+                453
+              ],
+              "root": [
+                130,
+                453
+              ],
+              "scale": 0.13874788494077833
+            },
+            {
+              "image": "zane-corvo-defense-3.png",
+              "rect": [
+                0,
+                0,
+                406,
+                333
+              ],
+              "root": [
+                199,
+                333
+              ]
+            },
+            {
+              "image": "zane-corvo-idle.png",
+              "rect": [
+                0,
+                0,
+                764,
+                1313
+              ],
+              "root": [
+                382,
+                1313
+              ],
+              "scale": 0.062452399086062454
+            }
+          ]
+        },
+        "air_dodge_neutral": {
+          "image": "zane-corvo-air-dodge-0.png",
+          "scale": 0.137,
+          "frames": [
+            {
+              "image": "zane-corvo-air-dodge-0.png",
+              "rect": [
+                0,
+                0,
+                256,
+                456
+              ],
+              "root": [
+                123,
+                456
+              ],
+              "airRoot": [
+                123,
+                306
+              ],
+              "scale": 0.137
+            },
+            {
+              "image": "zane-corvo-air-dodge-0.png",
+              "rect": [
+                0,
+                0,
+                256,
+                456
+              ],
+              "root": [
+                123,
+                456
+              ],
+              "airRoot": [
+                123,
+                306
+              ]
+            },
+            {
+              "image": "zane-corvo-air-dodge-0.png",
+              "rect": [
+                0,
+                0,
+                256,
+                456
+              ],
+              "root": [
+                123,
+                456
+              ],
+              "airRoot": [
+                123,
+                306
+              ]
+            },
+            {
+              "image": "zane-corvo-air-dodge-0.png",
+              "rect": [
+                0,
+                0,
+                256,
+                456
+              ],
+              "root": [
+                123,
+                456
+              ],
+              "airRoot": [
+                123,
+                306
+              ]
+            },
+            {
+              "image": "zane-corvo-aerial-5.png",
+              "rect": [
+                0,
+                0,
+                229,
+                352
+              ],
+              "root": [
+                118,
+                352
+              ],
+              "airRoot": [
+                118,
+                211
+              ],
+              "scale": 0.17446808510638298
+            },
+            {
+              "image": "zane-corvo-aerial-5.png",
+              "rect": [
+                0,
+                0,
+                229,
+                352
+              ],
+              "root": [
+                118,
+                352
+              ],
+              "airRoot": [
+                118,
+                211
+              ],
+              "scale": 0.17446808510638298
+            }
+          ]
+        },
+        "air_dodge_side": {
+          "image": "zane-corvo-air-dodge-1.png",
+          "scale": 0.137,
+          "frames": [
+            {
+              "image": "zane-corvo-air-dodge-0.png",
+              "rect": [
+                0,
+                0,
+                256,
+                456
+              ],
+              "root": [
+                123,
+                456
+              ],
+              "airRoot": [
+                123,
+                306
+              ],
+              "scale": 0.137
+            },
+            {
+              "image": "zane-corvo-air-dodge-1.png",
+              "rect": [
+                0,
+                0,
+                502,
+                519
+              ],
+              "root": [
+                266,
+                519
+              ],
+              "airRoot": [
+                266,
+                312
+              ]
+            },
+            {
+              "image": "zane-corvo-air-dodge-1.png",
+              "rect": [
+                0,
+                0,
+                502,
+                519
+              ],
+              "root": [
+                266,
+                519
+              ],
+              "airRoot": [
+                266,
+                312
+              ]
+            },
+            {
+              "image": "zane-corvo-air-dodge-1.png",
+              "rect": [
+                0,
+                0,
+                502,
+                519
+              ],
+              "root": [
+                266,
+                519
+              ],
+              "airRoot": [
+                266,
+                312
+              ]
+            },
+            {
+              "image": "zane-corvo-aerial-5.png",
+              "rect": [
+                0,
+                0,
+                229,
+                352
+              ],
+              "root": [
+                118,
+                352
+              ],
+              "airRoot": [
+                118,
+                211
+              ],
+              "scale": 0.17446808510638298
+            },
+            {
+              "image": "zane-corvo-aerial-5.png",
+              "rect": [
+                0,
+                0,
+                229,
+                352
+              ],
+              "root": [
+                118,
+                352
+              ],
+              "airRoot": [
+                118,
+                211
+              ],
+              "scale": 0.17446808510638298
+            }
+          ]
+        },
+        "air_dodge_up": {
+          "image": "zane-corvo-air-dodge-2.png",
+          "scale": 0.137,
+          "frames": [
+            {
+              "image": "zane-corvo-air-dodge-0.png",
+              "rect": [
+                0,
+                0,
+                256,
+                456
+              ],
+              "root": [
+                123,
+                456
+              ],
+              "airRoot": [
+                123,
+                306
+              ],
+              "scale": 0.137
+            },
+            {
+              "image": "zane-corvo-air-dodge-2.png",
+              "rect": [
+                0,
+                0,
+                295,
+                527
+              ],
+              "root": [
+                158,
+                527
+              ],
+              "airRoot": [
+                158,
+                307
+              ]
+            },
+            {
+              "image": "zane-corvo-air-dodge-2.png",
+              "rect": [
+                0,
+                0,
+                295,
+                527
+              ],
+              "root": [
+                158,
+                527
+              ],
+              "airRoot": [
+                158,
+                307
+              ]
+            },
+            {
+              "image": "zane-corvo-air-dodge-2.png",
+              "rect": [
+                0,
+                0,
+                295,
+                527
+              ],
+              "root": [
+                158,
+                527
+              ],
+              "airRoot": [
+                158,
+                307
+              ]
+            },
+            {
+              "image": "zane-corvo-aerial-5.png",
+              "rect": [
+                0,
+                0,
+                229,
+                352
+              ],
+              "root": [
+                118,
+                352
+              ],
+              "airRoot": [
+                118,
+                211
+              ],
+              "scale": 0.17446808510638298
+            },
+            {
+              "image": "zane-corvo-aerial-5.png",
+              "rect": [
+                0,
+                0,
+                229,
+                352
+              ],
+              "root": [
+                118,
+                352
+              ],
+              "airRoot": [
+                118,
+                211
+              ],
+              "scale": 0.17446808510638298
+            }
+          ]
+        },
+        "air_dodge_land": {
+          "image": "zane-corvo-air-dodge-3.png",
+          "scale": 0.137,
+          "frames": [
+            {
+              "image": "zane-corvo-air-dodge-3.png",
+              "rect": [
+                0,
+                0,
+                415,
+                493
+              ],
+              "root": [
+                206,
+                493
+              ]
+            },
+            {
+              "image": "zane-corvo-air-dodge-3.png",
+              "rect": [
+                0,
+                0,
+                415,
+                493
+              ],
+              "root": [
+                206,
+                493
+              ]
+            },
+            {
+              "image": "zane-corvo-air-5.png",
+              "rect": [
+                0,
+                0,
+                222,
+                394
+              ],
+              "root": [
+                104,
+                394
+              ],
+              "scale": 0.17672413793103448
+            },
+            {
+              "image": "zane-corvo-air-5.png",
+              "rect": [
+                0,
+                0,
+                222,
+                394
+              ],
+              "root": [
+                104,
+                394
+              ],
+              "scale": 0.17672413793103448
+            },
+            {
+              "image": "zane-corvo-idle.png",
+              "rect": [
+                0,
+                0,
+                764,
+                1313
+              ],
+              "root": [
+                382,
+                1313
+              ],
+              "scale": 0.062452399086062454
+            },
+            {
+              "image": "zane-corvo-idle.png",
+              "rect": [
+                0,
+                0,
+                764,
+                1313
+              ],
+              "root": [
+                382,
+                1313
+              ],
+              "scale": 0.062452399086062454
+            }
+          ]
+        },
+        "air_dodge_down": {
+          "image": "zane-corvo-air-dodge-directions-0.png",
+          "scale": 0.16768916155419222,
+          "frames": [
+            {
+              "image": "zane-corvo-air-dodge-0.png",
+              "rect": [
+                0,
+                0,
+                256,
+                456
+              ],
+              "root": [
+                123,
+                456
+              ],
+              "airRoot": [
+                123,
+                306
+              ],
+              "scale": 0.137
+            },
+            {
+              "image": "zane-corvo-air-dodge-directions-0.png",
+              "rect": [
+                0,
+                0,
+                224,
+                489
+              ],
+              "root": [
+                111,
+                489
+              ],
+              "mirrorSource": false,
+              "airRoot": [
+                111,
+                245
+              ]
+            },
+            {
+              "image": "zane-corvo-air-dodge-directions-0.png",
+              "rect": [
+                0,
+                0,
+                224,
+                489
+              ],
+              "root": [
+                111,
+                489
+              ],
+              "mirrorSource": false,
+              "airRoot": [
+                111,
+                245
+              ]
+            },
+            {
+              "image": "zane-corvo-air-dodge-directions-0.png",
+              "rect": [
+                0,
+                0,
+                224,
+                489
+              ],
+              "root": [
+                111,
+                489
+              ],
+              "mirrorSource": false,
+              "airRoot": [
+                111,
+                245
+              ]
+            },
+            {
+              "image": "zane-corvo-aerial-5.png",
+              "rect": [
+                0,
+                0,
+                229,
+                352
+              ],
+              "root": [
+                118,
+                352
+              ],
+              "airRoot": [
+                118,
+                211
+              ],
+              "scale": 0.17446808510638298
+            },
+            {
+              "image": "zane-corvo-aerial-5.png",
+              "rect": [
+                0,
+                0,
+                229,
+                352
+              ],
+              "root": [
+                118,
+                352
+              ],
+              "airRoot": [
+                118,
+                211
+              ],
+              "scale": 0.17446808510638298
+            }
+          ]
+        },
+        "air_dodge_back": {
+          "image": "zane-corvo-air-dodge-directions-1.png",
+          "scale": 0.16768916155419222,
+          "frames": [
+            {
+              "image": "zane-corvo-air-dodge-0.png",
+              "rect": [
+                0,
+                0,
+                256,
+                456
+              ],
+              "root": [
+                123,
+                456
+              ],
+              "airRoot": [
+                123,
+                306
+              ],
+              "scale": 0.137
+            },
+            {
+              "image": "zane-corvo-air-dodge-directions-1.png",
+              "rect": [
+                0,
+                0,
+                394,
+                459
+              ],
+              "root": [
+                157,
+                459
+              ],
+              "mirrorSource": false,
+              "airRoot": [
+                157,
+                239
+              ]
+            },
+            {
+              "image": "zane-corvo-air-dodge-directions-1.png",
+              "rect": [
+                0,
+                0,
+                394,
+                459
+              ],
+              "root": [
+                157,
+                459
+              ],
+              "mirrorSource": false,
+              "airRoot": [
+                157,
+                239
+              ]
+            },
+            {
+              "image": "zane-corvo-air-dodge-directions-1.png",
+              "rect": [
+                0,
+                0,
+                394,
+                459
+              ],
+              "root": [
+                157,
+                459
+              ],
+              "mirrorSource": false,
+              "airRoot": [
+                157,
+                239
+              ]
+            },
+            {
+              "image": "zane-corvo-aerial-5.png",
+              "rect": [
+                0,
+                0,
+                229,
+                352
+              ],
+              "root": [
+                118,
+                352
+              ],
+              "airRoot": [
+                118,
+                211
+              ],
+              "scale": 0.17446808510638298
+            },
+            {
+              "image": "zane-corvo-aerial-5.png",
+              "rect": [
+                0,
+                0,
+                229,
+                352
+              ],
+              "root": [
+                118,
+                352
+              ],
+              "airRoot": [
+                118,
+                211
+              ],
+              "scale": 0.17446808510638298
+            }
+          ]
+        },
+        "air_dodge_up_diagonal": {
+          "image": "zane-corvo-air-dodge-directions-2.png",
+          "scale": 0.16768916155419222,
+          "frames": [
+            {
+              "image": "zane-corvo-air-dodge-0.png",
+              "rect": [
+                0,
+                0,
+                256,
+                456
+              ],
+              "root": [
+                123,
+                456
+              ],
+              "airRoot": [
+                123,
+                306
+              ],
+              "scale": 0.137
+            },
+            {
+              "image": "zane-corvo-air-dodge-directions-2.png",
+              "rect": [
+                0,
+                0,
+                354,
+                488
+              ],
+              "root": [
+                183,
+                488
+              ],
+              "mirrorSource": false,
+              "airRoot": [
+                183,
+                243
+              ]
+            },
+            {
+              "image": "zane-corvo-air-dodge-directions-2.png",
+              "rect": [
+                0,
+                0,
+                354,
+                488
+              ],
+              "root": [
+                183,
+                488
+              ],
+              "mirrorSource": false,
+              "airRoot": [
+                183,
+                243
+              ]
+            },
+            {
+              "image": "zane-corvo-air-dodge-directions-2.png",
+              "rect": [
+                0,
+                0,
+                354,
+                488
+              ],
+              "root": [
+                183,
+                488
+              ],
+              "mirrorSource": false,
+              "airRoot": [
+                183,
+                243
+              ]
+            },
+            {
+              "image": "zane-corvo-aerial-5.png",
+              "rect": [
+                0,
+                0,
+                229,
+                352
+              ],
+              "root": [
+                118,
+                352
+              ],
+              "airRoot": [
+                118,
+                211
+              ],
+              "scale": 0.17446808510638298
+            },
+            {
+              "image": "zane-corvo-aerial-5.png",
+              "rect": [
+                0,
+                0,
+                229,
+                352
+              ],
+              "root": [
+                118,
+                352
+              ],
+              "airRoot": [
+                118,
+                211
+              ],
+              "scale": 0.17446808510638298
+            }
+          ]
+        },
+        "air_dodge_up_back": {
+          "image": "zane-corvo-air-dodge-directions-3.png",
+          "scale": 0.16768916155419222,
+          "frames": [
+            {
+              "image": "zane-corvo-air-dodge-0.png",
+              "rect": [
+                0,
+                0,
+                256,
+                456
+              ],
+              "root": [
+                123,
+                456
+              ],
+              "airRoot": [
+                123,
+                306
+              ],
+              "scale": 0.137
+            },
+            {
+              "image": "zane-corvo-air-dodge-directions-3.png",
+              "rect": [
+                0,
+                0,
+                329,
+                488
+              ],
+              "root": [
+                131,
+                488
+              ],
+              "mirrorSource": true,
+              "airRoot": [
+                131,
+                235
+              ]
+            },
+            {
+              "image": "zane-corvo-air-dodge-directions-3.png",
+              "rect": [
+                0,
+                0,
+                329,
+                488
+              ],
+              "root": [
+                131,
+                488
+              ],
+              "mirrorSource": true,
+              "airRoot": [
+                131,
+                235
+              ]
+            },
+            {
+              "image": "zane-corvo-air-dodge-directions-3.png",
+              "rect": [
+                0,
+                0,
+                329,
+                488
+              ],
+              "root": [
+                131,
+                488
+              ],
+              "mirrorSource": true,
+              "airRoot": [
+                131,
+                235
+              ]
+            },
+            {
+              "image": "zane-corvo-aerial-5.png",
+              "rect": [
+                0,
+                0,
+                229,
+                352
+              ],
+              "root": [
+                118,
+                352
+              ],
+              "airRoot": [
+                118,
+                211
+              ],
+              "scale": 0.17446808510638298
+            },
+            {
+              "image": "zane-corvo-aerial-5.png",
+              "rect": [
+                0,
+                0,
+                229,
+                352
+              ],
+              "root": [
+                118,
+                352
+              ],
+              "airRoot": [
+                118,
+                211
+              ],
+              "scale": 0.17446808510638298
+            }
+          ]
+        },
+        "air_dodge_down_diagonal": {
+          "image": "zane-corvo-air-dodge-directions-4.png",
+          "scale": 0.16768916155419222,
+          "frames": [
+            {
+              "image": "zane-corvo-air-dodge-0.png",
+              "rect": [
+                0,
+                0,
+                256,
+                456
+              ],
+              "root": [
+                123,
+                456
+              ],
+              "airRoot": [
+                123,
+                306
+              ],
+              "scale": 0.137
+            },
+            {
+              "image": "zane-corvo-air-dodge-directions-4.png",
+              "rect": [
+                0,
+                0,
+                360,
+                472
+              ],
+              "root": [
+                159,
+                472
+              ],
+              "mirrorSource": false,
+              "airRoot": [
+                159,
+                242
+              ]
+            },
+            {
+              "image": "zane-corvo-air-dodge-directions-4.png",
+              "rect": [
+                0,
+                0,
+                360,
+                472
+              ],
+              "root": [
+                159,
+                472
+              ],
+              "mirrorSource": false,
+              "airRoot": [
+                159,
+                242
+              ]
+            },
+            {
+              "image": "zane-corvo-air-dodge-directions-4.png",
+              "rect": [
+                0,
+                0,
+                360,
+                472
+              ],
+              "root": [
+                159,
+                472
+              ],
+              "mirrorSource": false,
+              "airRoot": [
+                159,
+                242
+              ]
+            },
+            {
+              "image": "zane-corvo-aerial-5.png",
+              "rect": [
+                0,
+                0,
+                229,
+                352
+              ],
+              "root": [
+                118,
+                352
+              ],
+              "airRoot": [
+                118,
+                211
+              ],
+              "scale": 0.17446808510638298
+            },
+            {
+              "image": "zane-corvo-aerial-5.png",
+              "rect": [
+                0,
+                0,
+                229,
+                352
+              ],
+              "root": [
+                118,
+                352
+              ],
+              "airRoot": [
+                118,
+                211
+              ],
+              "scale": 0.17446808510638298
+            }
+          ]
+        },
+        "air_dodge_down_back": {
+          "image": "zane-corvo-air-dodge-directions-5.png",
+          "scale": 0.16768916155419222,
+          "frames": [
+            {
+              "image": "zane-corvo-air-dodge-0.png",
+              "rect": [
+                0,
+                0,
+                256,
+                456
+              ],
+              "root": [
+                123,
+                456
+              ],
+              "airRoot": [
+                123,
+                306
+              ],
+              "scale": 0.137
+            },
+            {
+              "image": "zane-corvo-air-dodge-directions-5.png",
+              "rect": [
+                0,
+                0,
+                365,
+                438
+              ],
+              "root": [
+                197,
+                438
+              ],
+              "mirrorSource": false,
+              "airRoot": [
+                197,
+                229
+              ]
+            },
+            {
+              "image": "zane-corvo-air-dodge-directions-5.png",
+              "rect": [
+                0,
+                0,
+                365,
+                438
+              ],
+              "root": [
+                197,
+                438
+              ],
+              "mirrorSource": false,
+              "airRoot": [
+                197,
+                229
+              ]
+            },
+            {
+              "image": "zane-corvo-air-dodge-directions-5.png",
+              "rect": [
+                0,
+                0,
+                365,
+                438
+              ],
+              "root": [
+                197,
+                438
+              ],
+              "mirrorSource": false,
+              "airRoot": [
+                197,
+                229
+              ]
+            },
+            {
+              "image": "zane-corvo-aerial-5.png",
+              "rect": [
+                0,
+                0,
+                229,
+                352
+              ],
+              "root": [
+                118,
+                352
+              ],
+              "airRoot": [
+                118,
+                211
+              ],
+              "scale": 0.17446808510638298
+            },
+            {
+              "image": "zane-corvo-aerial-5.png",
+              "rect": [
+                0,
+                0,
+                229,
+                352
+              ],
+              "root": [
+                118,
+                352
+              ],
+              "airRoot": [
+                118,
+                211
+              ],
+              "scale": 0.17446808510638298
+            }
+          ]
+        },
+        "reaction": {
+          "image": "zane-corvo-reaction-0.png",
+          "scale": 0.14855072463768115,
+          "frames": [
+            {
+              "image": "zane-corvo-reaction-0.png",
+              "rect": [
+                0,
+                0,
+                331,
+                552
+              ],
+              "root": [
+                168,
+                552
+              ]
+            }
+          ]
+        },
+        "hit_mid": {
+          "image": "zane-corvo-reaction-0.png",
+          "scale": 0.14855072463768115,
+          "frames": [
+            {
+              "image": "zane-corvo-reaction-0.png",
+              "rect": [
+                0,
+                0,
+                331,
+                552
+              ],
+              "root": [
+                168,
+                552
+              ]
+            }
+          ]
+        },
+        "hit_air": {
+          "image": "zane-corvo-reaction-1.png",
+          "scale": 0.14855072463768115,
+          "frames": [
+            {
+              "image": "zane-corvo-reaction-1.png",
+              "rect": [
+                0,
+                0,
+                313,
+                521
+              ],
+              "root": [
+                191,
+                521
+              ],
+              "airRoot": [
+                191,
+                231
+              ]
+            }
+          ]
+        },
+        "hit_launch": {
+          "image": "zane-corvo-reaction-2.png",
+          "scale": 0.14855072463768115,
+          "frames": [
+            {
+              "image": "zane-corvo-reaction-2.png",
+              "rect": [
+                0,
+                0,
+                534,
+                482
+              ],
+              "root": [
+                292,
+                482
+              ],
+              "airRoot": [
+                292,
+                162
+              ]
+            }
+          ],
+          "durations": [
+            6
+          ]
+        },
+        "tumble": {
+          "image": "zane-corvo-reaction-3.png",
+          "scale": 0.14855072463768115,
+          "frames": [
+            {
+              "image": "zane-corvo-reaction-3.png",
+              "rect": [
+                0,
+                0,
+                374,
+                346
+              ],
+              "root": [
+                135,
+                346
+              ],
+              "airRoot": [
+                135,
+                215
+              ]
+            }
+          ]
+        },
+        "hit_high": {
+          "image": "zane-corvo-hit-variants-0.png",
+          "scale": 0.1150070126227209,
+          "frames": [
+            {
+              "image": "zane-corvo-hit-variants-0.png",
+              "rect": [
+                0,
+                0,
+                509,
+                713
+              ],
+              "root": [
+                309,
+                713
+              ]
+            }
+          ]
+        },
+        "hit_low": {
+          "image": "zane-corvo-hit-variants-1.png",
+          "scale": 0.1150070126227209,
+          "frames": [
+            {
+              "image": "zane-corvo-hit-variants-1.png",
+              "rect": [
+                0,
+                0,
+                438,
+                606
+              ],
+              "root": [
+                191,
+                606
+              ]
+            }
+          ]
+        },
+        "hit_heavy": {
+          "image": "zane-corvo-hit-variants-2.png",
+          "scale": 0.1150070126227209,
+          "frames": [
+            {
+              "image": "zane-corvo-hit-variants-2.png",
+              "rect": [
+                0,
+                0,
+                503,
+                691
+              ],
+              "root": [
+                293,
+                691
+              ]
+            }
+          ]
+        }
+      }
+    },
+    "velvet-reply": {
+      "clips": {
+        "idle": {
+          "image": "velvet-reply-idle.png",
+          "scale": 0.061933534743202415,
+          "durations": [
+            24,
+            24
+          ],
+          "frames": [
+            {
+              "image": "velvet-reply-idle.png",
+              "rect": [
+                0,
+                0,
+                733,
+                1324
+              ],
+              "root": [
+                366.5,
+                1324
+              ]
+            },
+            {
+              "image": "velvet-reply-idle-exhale.png",
+              "rect": [
+                0,
+                0,
+                719,
+                1328
+              ],
+              "root": [
+                359.5,
+                1328
+              ]
+            }
+          ]
+        },
+        "walk": {
+          "image": "velvet-reply-walk-0.png",
+          "scale": 0.12974683544303797,
+          "durations": [
+            5,
+            5,
+            5,
+            5
+          ],
+          "frames": [
+            {
+              "image": "velvet-reply-walk-0.png",
+              "rect": [
+                0,
+                0,
+                401,
+                631
+              ],
+              "root": [
+                180,
+                631
+              ]
+            },
+            {
+              "image": "velvet-reply-walk-1.png",
+              "rect": [
+                0,
+                0,
+                301,
+                632
+              ],
+              "root": [
+                161,
+                632
+              ]
+            },
+            {
+              "image": "velvet-reply-walk-2.png",
+              "rect": [
+                0,
+                0,
+                427,
+                622
+              ],
+              "root": [
+                187,
+                622
+              ]
+            },
+            {
+              "image": "velvet-reply-walk-3.png",
+              "rect": [
+                0,
+                0,
+                286,
+                624
+              ],
+              "root": [
+                164,
+                624
+              ]
+            }
+          ]
+        },
+        "run": {
+          "image": "velvet-reply-run-0.png",
+          "scale": 0.148014440433213,
+          "durations": [
+            4,
+            4
+          ],
+          "frames": [
+            {
+              "image": "velvet-reply-run-0.png",
+              "rect": [
+                0,
+                0,
+                556,
+                530
+              ],
+              "root": [
+                275,
+                530
+              ]
+            },
+            {
+              "image": "velvet-reply-run-1.png",
+              "rect": [
+                0,
+                0,
+                466,
+                554
+              ],
+              "root": [
+                248,
+                554
+              ]
+            }
+          ]
+        },
+        "brake": {
+          "image": "velvet-reply-run-2.png",
+          "scale": 0.148014440433213,
+          "frames": [
+            {
+              "image": "velvet-reply-run-2.png",
+              "rect": [
+                0,
+                0,
+                525,
+                549
+              ],
+              "root": [
+                262,
+                549
+              ]
+            }
+          ]
+        },
+        "turn_stand": {
+          "image": "velvet-reply-stance-0.png",
+          "scale": 0.13036565977742448,
+          "frames": [
+            {
+              "image": "velvet-reply-stance-0.png",
+              "rect": [
+                0,
+                0,
+                297,
+                629
+              ],
+              "root": [
+                151,
+                629
+              ]
+            }
+          ]
+        },
+        "crouch_enter": {
+          "image": "velvet-reply-stance-1.png",
+          "scale": 0.13036565977742448,
+          "frames": [
+            {
+              "image": "velvet-reply-stance-1.png",
+              "rect": [
+                0,
+                0,
+                420,
+                458
+              ],
+              "root": [
+                153,
+                458
+              ]
+            }
+          ]
+        },
+        "crouch_hold": {
+          "image": "velvet-reply-stance-1.png",
+          "scale": 0.13036565977742448,
+          "frames": [
+            {
+              "image": "velvet-reply-stance-1.png",
+              "rect": [
+                0,
+                0,
+                420,
+                458
+              ],
+              "root": [
+                153,
+                458
+              ]
+            }
+          ]
+        },
+        "crouch_exit": {
+          "image": "velvet-reply-stance-1.png",
+          "scale": 0.13036565977742448,
+          "frames": [
+            {
+              "image": "velvet-reply-stance-1.png",
+              "rect": [
+                0,
+                0,
+                420,
+                458
+              ],
+              "root": [
+                153,
+                458
+              ]
+            }
+          ]
+        },
+        "jump_squat": {
+          "image": "velvet-reply-stance-1.png",
+          "scale": 0.13036565977742448,
+          "frames": [
+            {
+              "image": "velvet-reply-stance-1.png",
+              "rect": [
+                0,
+                0,
+                420,
+                458
+              ],
+              "root": [
+                153,
+                458
+              ]
+            }
+          ]
+        },
+        "air_rise_loop": {
+          "image": "velvet-reply-air-0.png",
+          "scale": 0.17083333333333334,
+          "frames": [
+            {
+              "image": "velvet-reply-air-0.png",
+              "rect": [
+                0,
+                0,
+                256,
+                480
+              ],
+              "root": [
+                132,
+                480
+              ]
+            }
+          ]
+        },
+        "air_apex_loop": {
+          "image": "velvet-reply-air-1.png",
+          "scale": 0.17083333333333334,
+          "frames": [
+            {
+              "image": "velvet-reply-air-1.png",
+              "rect": [
+                0,
+                0,
+                243,
+                370
+              ],
+              "root": [
+                130,
+                370
+              ]
+            }
+          ]
+        },
+        "air_fall_loop": {
+          "image": "velvet-reply-air-2.png",
+          "scale": 0.17083333333333334,
+          "frames": [
+            {
+              "image": "velvet-reply-air-2.png",
+              "rect": [
+                0,
+                0,
+                270,
+                480
+              ],
+              "root": [
+                137,
+                480
+              ]
+            }
+          ]
+        },
+        "double_jump_transition": {
+          "image": "velvet-reply-air-3.png",
+          "scale": 0.17083333333333334,
+          "frames": [
+            {
+              "image": "velvet-reply-air-3.png",
+              "rect": [
+                0,
+                0,
+                282,
+                464
+              ],
+              "root": [
+                157,
+                464
+              ]
+            }
+          ]
+        },
+        "air_fastfall_loop": {
+          "image": "velvet-reply-air-4.png",
+          "scale": 0.17083333333333334,
+          "frames": [
+            {
+              "image": "velvet-reply-air-4.png",
+              "rect": [
+                0,
+                0,
+                264,
+                477
+              ],
+              "root": [
+                135,
+                477
+              ]
+            }
+          ]
+        },
+        "land_soft": {
+          "image": "velvet-reply-air-5.png",
+          "scale": 0.17083333333333334,
+          "frames": [
+            {
+              "image": "velvet-reply-air-5.png",
+              "rect": [
+                0,
+                0,
+                243,
+                443
+              ],
+              "root": [
+                116,
+                443
+              ]
+            }
+          ]
+        },
+        "land_heavy": {
+          "image": "velvet-reply-air-5.png",
+          "scale": 0.17083333333333334,
+          "frames": [
+            {
+              "image": "velvet-reply-air-5.png",
+              "rect": [
+                0,
+                0,
+                243,
+                443
+              ],
+              "root": [
+                116,
+                443
+              ]
+            }
+          ]
+        },
+        "takeoff_neutral": {
+          "image": "velvet-reply-stance-3.png",
+          "scale": 0.13036565977742448,
+          "frames": [
+            {
+              "image": "velvet-reply-stance-3.png",
+              "rect": [
+                0,
+                0,
+                270,
+                642
+              ],
+              "root": [
+                166,
+                642
+              ]
+            }
+          ]
+        },
+        "turn_run": {
+          "image": "velvet-reply-run-3.png",
+          "scale": 0.148014440433213,
+          "frames": [
+            {
+              "image": "velvet-reply-run-3.png",
+              "rect": [
+                0,
+                0,
+                441,
+                561
+              ],
+              "root": [
+                217,
+                561
+              ]
+            }
+          ]
+        },
+        "jab": {
+          "image": "velvet-reply-strikes-0.png",
+          "scale": 0.1782608695652174,
+          "durations": [
+            3,
+            3,
+            6
+          ],
+          "activeWindow": [
+            3,
+            6
+          ],
+          "frames": [
+            {
+              "image": "velvet-reply-strike-transition-0.png",
+              "rect": [
+                0,
+                0,
+                302,
+                510
+              ],
+              "root": [
+                143,
+                510
+              ],
+              "scale": 0.15891472868217055
+            },
+            {
+              "image": "velvet-reply-strikes-0.png",
+              "rect": [
+                0,
+                0,
+                315,
+                460
+              ],
+              "root": [
+                132,
+                460
+              ]
+            },
+            {
+              "image": "velvet-reply-strike-transition-1.png",
+              "rect": [
+                0,
+                0,
+                303,
+                516
+              ],
+              "root": [
+                148,
+                516
+              ],
+              "scale": 0.15891472868217055
+            }
+          ]
+        },
+        "jab_2": {
+          "image": "velvet-reply-strikes-1.png",
+          "scale": 0.1782608695652174,
+          "durations": [
+            3,
+            3,
+            6
+          ],
+          "activeWindow": [
+            3,
+            6
+          ],
+          "frames": [
+            {
+              "image": "velvet-reply-strike-transition-0.png",
+              "rect": [
+                0,
+                0,
+                302,
+                510
+              ],
+              "root": [
+                143,
+                510
+              ],
+              "scale": 0.15891472868217055
+            },
+            {
+              "image": "velvet-reply-strikes-1.png",
+              "rect": [
+                0,
+                0,
+                369,
+                453
+              ],
+              "root": [
+                171,
+                453
+              ]
+            },
+            {
+              "image": "velvet-reply-strike-transition-1.png",
+              "rect": [
+                0,
+                0,
+                303,
+                516
+              ],
+              "root": [
+                148,
+                516
+              ],
+              "scale": 0.15891472868217055
+            }
+          ]
+        },
+        "jab_3": {
+          "image": "velvet-reply-strikes-2.png",
+          "scale": 0.1782608695652174,
+          "durations": [
+            3,
+            3,
+            6
+          ],
+          "activeWindow": [
+            3,
+            6
+          ],
+          "frames": [
+            {
+              "image": "velvet-reply-strike-transition-0.png",
+              "rect": [
+                0,
+                0,
+                302,
+                510
+              ],
+              "root": [
+                143,
+                510
+              ],
+              "scale": 0.15891472868217055
+            },
+            {
+              "image": "velvet-reply-strikes-2.png",
+              "rect": [
+                0,
+                0,
+                293,
+                422
+              ],
+              "root": [
+                124,
+                422
+              ]
+            },
+            {
+              "image": "velvet-reply-strike-transition-1.png",
+              "rect": [
+                0,
+                0,
+                303,
+                516
+              ],
+              "root": [
+                148,
+                516
+              ],
+              "scale": 0.15891472868217055
+            }
+          ]
+        },
+        "forward_tilt": {
+          "image": "velvet-reply-strikes-3.png",
+          "scale": 0.1782608695652174,
+          "durations": [
+            3,
+            3,
+            6
+          ],
+          "activeWindow": [
+            3,
+            6
+          ],
+          "frames": [
+            {
+              "image": "velvet-reply-strike-transition-2.png",
+              "rect": [
+                0,
+                0,
+                319,
+                556
+              ],
+              "root": [
+                149,
+                556
+              ],
+              "scale": 0.15891472868217055
+            },
+            {
+              "image": "velvet-reply-strikes-3.png",
+              "rect": [
+                0,
+                0,
+                393,
+                468
+              ],
+              "root": [
+                124,
+                468
+              ]
+            },
+            {
+              "image": "velvet-reply-strike-transition-3.png",
+              "rect": [
+                0,
+                0,
+                292,
+                551
+              ],
+              "root": [
+                162,
+                551
+              ],
+              "scale": 0.15891472868217055
+            }
+          ]
+        },
+        "up_tilt": {
+          "image": "velvet-reply-strikes-4.png",
+          "scale": 0.1782608695652174,
+          "durations": [
+            3,
+            3,
+            6
+          ],
+          "activeWindow": [
+            3,
+            6
+          ],
+          "frames": [
+            {
+              "image": "velvet-reply-strike-transition-0.png",
+              "rect": [
+                0,
+                0,
+                302,
+                510
+              ],
+              "root": [
+                143,
+                510
+              ],
+              "scale": 0.15891472868217055
+            },
+            {
+              "image": "velvet-reply-strikes-4.png",
+              "rect": [
+                0,
+                0,
+                289,
+                481
+              ],
+              "root": [
+                156,
+                481
+              ]
+            },
+            {
+              "image": "velvet-reply-strike-transition-1.png",
+              "rect": [
+                0,
+                0,
+                303,
+                516
+              ],
+              "root": [
+                148,
+                516
+              ],
+              "scale": 0.15891472868217055
+            }
+          ]
+        },
+        "down_tilt": {
+          "image": "velvet-reply-down-tilt.png",
+          "scale": 0.1782608695652174,
+          "durations": [
+            3,
+            3,
+            6
+          ],
+          "activeWindow": [
+            3,
+            6
+          ],
+          "frames": [
+            {
+              "image": "velvet-reply-strike-transition-0.png",
+              "rect": [
+                0,
+                0,
+                302,
+                510
+              ],
+              "root": [
+                143,
+                510
+              ],
+              "scale": 0.15891472868217055
+            },
+            {
+              "image": "velvet-reply-down-tilt.png",
+              "rect": [
+                0,
+                0,
+                850,
+                1023
+              ],
+              "root": [
+                521,
+                1023
+              ],
+              "scale": 0.081
+            },
+            {
+              "image": "velvet-reply-strike-transition-1.png",
+              "rect": [
+                0,
+                0,
+                303,
+                516
+              ],
+              "root": [
+                148,
+                516
+              ],
+              "scale": 0.15891472868217055
+            }
+          ]
+        },
+        "dash_attack": {
+          "image": "velvet-reply-power-0.png",
+          "scale": 0.14564831261101244,
+          "durations": [
+            4,
+            3,
+            8
+          ],
+          "activeWindow": [
+            4,
+            7
+          ],
+          "frames": [
+            {
+              "image": "velvet-reply-power-transition-0.png",
+              "rect": [
+                0,
+                0,
+                347,
+                349
+              ],
+              "root": [
+                204,
+                349
+              ],
+              "scale": 0.20654911838790932
+            },
+            {
+              "image": "velvet-reply-power-0.png",
+              "rect": [
+                0,
+                0,
+                361,
+                552
+              ],
+              "root": [
+                210,
+                552
+              ]
+            },
+            {
+              "image": "velvet-reply-power-transition-4.png",
+              "rect": [
+                0,
+                0,
+                306,
+                349
+              ],
+              "root": [
+                151,
+                349
+              ],
+              "scale": 0.20654911838790932
+            }
+          ]
+        },
+        "forward_smash": {
+          "image": "velvet-reply-power-1.png",
+          "scale": 0.14564831261101244,
+          "durations": [
+            4,
+            3,
+            8
+          ],
+          "activeWindow": [
+            4,
+            7
+          ],
+          "frames": [
+            {
+              "image": "velvet-reply-power-transition-1.png",
+              "rect": [
+                0,
+                0,
+                253,
+                397
+              ],
+              "root": [
+                125,
+                397
+              ],
+              "scale": 0.20654911838790932
+            },
+            {
+              "image": "velvet-reply-power-1.png",
+              "rect": [
+                0,
+                0,
+                496,
+                563
+              ],
+              "root": [
+                176,
+                563
+              ]
+            },
+            {
+              "image": "velvet-reply-power-transition-5.png",
+              "rect": [
+                0,
+                0,
+                240,
+                401
+              ],
+              "root": [
+                120,
+                401
+              ],
+              "scale": 0.20654911838790932
+            }
+          ]
+        },
+        "up_smash": {
+          "image": "velvet-reply-power-2.png",
+          "scale": 0.14564831261101244,
+          "durations": [
+            4,
+            3,
+            8
+          ],
+          "activeWindow": [
+            4,
+            7
+          ],
+          "frames": [
+            {
+              "image": "velvet-reply-power-transition-2.png",
+              "rect": [
+                0,
+                0,
+                232,
+                320
+              ],
+              "root": [
+                113,
+                320
+              ],
+              "scale": 0.20654911838790932
+            },
+            {
+              "image": "velvet-reply-power-2.png",
+              "rect": [
+                0,
+                0,
+                335,
+                642
+              ],
+              "root": [
+                174,
+                642
+              ]
+            },
+            {
+              "image": "velvet-reply-power-transition-6.png",
+              "rect": [
+                0,
+                0,
+                334,
+                405
+              ],
+              "root": [
+                132,
+                405
+              ],
+              "scale": 0.20654911838790932
+            }
+          ]
+        },
+        "down_smash": {
+          "image": "velvet-reply-down-smash.png",
+          "scale": 0.14564831261101244,
+          "durations": [
+            4,
+            3,
+            3,
+            8
+          ],
+          "activeWindow": [
+            4,
+            10
+          ],
+          "frames": [
+            {
+              "image": "velvet-reply-power-transition-3.png",
+              "rect": [
+                0,
+                0,
+                362,
+                292
+              ],
+              "root": [
+                102,
+                292
+              ],
+              "scale": 0.20654911838790932
+            },
+            {
+              "image": "velvet-reply-down-smash.png",
+              "rect": [
+                0,
+                0,
+                860,
+                1088
+              ],
+              "root": [
+                390,
+                1088
+              ],
+              "scale": 0.07
+            },
+            {
+              "image": "velvet-reply-down-smash.png",
+              "rect": [
+                0,
+                0,
+                860,
+                1088
+              ],
+              "root": [
+                390,
+                1088
+              ],
+              "scale": 0.07,
+              "mirrorSource": true
+            },
+            {
+              "image": "velvet-reply-power-transition-7.png",
+              "rect": [
+                0,
+                0,
+                359,
+                331
+              ],
+              "root": [
+                110,
+                331
+              ],
+              "scale": 0.20654911838790932
+            }
+          ]
+        },
+        "neutral_air": {
+          "image": "velvet-reply-aerial-0.png",
+          "scale": 0.1673469387755102,
+          "durations": [
+            3,
+            3,
+            6
+          ],
+          "activeWindow": [
+            3,
+            6
+          ],
+          "frames": [
+            {
+              "image": "velvet-reply-aerial-transition-0.png",
+              "rect": [
+                0,
+                0,
+                233,
+                353
+              ],
+              "root": [
+                140,
+                353
+              ],
+              "scale": 0.23229461756373937,
+              "airRoot": [
+                140,
+                179
+              ]
+            },
+            {
+              "image": "velvet-reply-aerial-0.png",
+              "rect": [
+                0,
+                0,
+                252,
+                383
+              ],
+              "root": [
+                148,
+                383
+              ],
+              "airRoot": [
+                148,
+                206
+              ]
+            },
+            {
+              "image": "velvet-reply-aerial-transition-5.png",
+              "rect": [
+                0,
+                0,
+                223,
+                360
+              ],
+              "root": [
+                127,
+                360
+              ],
+              "scale": 0.23229461756373937,
+              "airRoot": [
+                127,
+                182
+              ]
+            }
+          ]
+        },
+        "forward_air": {
+          "image": "velvet-reply-aerial-1.png",
+          "scale": 0.1673469387755102,
+          "durations": [
+            3,
+            3,
+            6
+          ],
+          "activeWindow": [
+            3,
+            6
+          ],
+          "frames": [
+            {
+              "image": "velvet-reply-aerial-transition-1.png",
+              "rect": [
+                0,
+                0,
+                196,
+                353
+              ],
+              "root": [
+                99,
+                353
+              ],
+              "scale": 0.23229461756373937,
+              "airRoot": [
+                99,
+                188
+              ]
+            },
+            {
+              "image": "velvet-reply-aerial-1.png",
+              "rect": [
+                0,
+                0,
+                467,
+                383
+              ],
+              "root": [
+                186,
+                383
+              ],
+              "airRoot": [
+                186,
+                242
+              ]
+            },
+            {
+              "image": "velvet-reply-aerial-transition-6.png",
+              "rect": [
+                0,
+                0,
+                196,
+                363
+              ],
+              "root": [
+                96,
+                363
+              ],
+              "scale": 0.23229461756373937,
+              "airRoot": [
+                96,
+                183
+              ]
+            }
+          ]
+        },
+        "back_air": {
+          "image": "velvet-reply-aerial-2.png",
+          "scale": 0.1673469387755102,
+          "durations": [
+            3,
+            3,
+            6
+          ],
+          "activeWindow": [
+            3,
+            6
+          ],
+          "frames": [
+            {
+              "image": "velvet-reply-aerial-transition-2.png",
+              "rect": [
+                0,
+                0,
+                201,
+                353
+              ],
+              "root": [
+                105,
+                353
+              ],
+              "scale": 0.23229461756373937,
+              "airRoot": [
+                105,
+                180
+              ]
+            },
+            {
+              "image": "velvet-reply-aerial-2.png",
+              "rect": [
+                0,
+                0,
+                456,
+                404
+              ],
+              "root": [
+                244,
+                404
+              ],
+              "airRoot": [
+                244,
+                219
+              ]
+            },
+            {
+              "image": "velvet-reply-aerial-transition-7.png",
+              "rect": [
+                0,
+                0,
+                198,
+                363
+              ],
+              "root": [
+                102,
+                363
+              ],
+              "scale": 0.23229461756373937,
+              "airRoot": [
+                102,
+                182
+              ]
+            }
+          ]
+        },
+        "up_air": {
+          "image": "velvet-reply-aerial-compact-0.png",
+          "scale": 0.1673469387755102,
+          "durations": [
+            3,
+            3,
+            6
+          ],
+          "activeWindow": [
+            3,
+            6
+          ],
+          "frames": [
+            {
+              "image": "velvet-reply-aerial-transition-3.png",
+              "rect": [
+                0,
+                0,
+                176,
+                353
+              ],
+              "root": [
+                96,
+                353
+              ],
+              "scale": 0.23229461756373937,
+              "airRoot": [
+                96,
+                188
+              ]
+            },
+            {
+              "image": "velvet-reply-aerial-compact-0.png",
+              "rect": [
+                0,
+                0,
+                357,
+                493
+              ],
+              "root": [
+                184,
+                493
+              ],
+              "scale": 0.104,
+              "airRoot": [
+                184,
+                273
+              ]
+            },
+            {
+              "image": "velvet-reply-aerial-transition-8.png",
+              "rect": [
+                0,
+                0,
+                193,
+                362
+              ],
+              "root": [
+                93,
+                362
+              ],
+              "scale": 0.23229461756373937,
+              "airRoot": [
+                93,
+                185
+              ]
+            }
+          ]
+        },
+        "down_air": {
+          "image": "velvet-reply-aerial-compact-1.png",
+          "scale": 0.1673469387755102,
+          "durations": [
+            3,
+            3,
+            6
+          ],
+          "activeWindow": [
+            3,
+            6
+          ],
+          "frames": [
+            {
+              "image": "velvet-reply-aerial-transition-4.png",
+              "rect": [
+                0,
+                0,
+                190,
+                266
+              ],
+              "root": [
+                109,
+                266
+              ],
+              "scale": 0.23229461756373937,
+              "airRoot": [
+                109,
+                176
+              ]
+            },
+            {
+              "image": "velvet-reply-aerial-compact-1.png",
+              "rect": [
+                0,
+                0,
+                333,
+                657
+              ],
+              "root": [
+                193,
+                657
+              ],
+              "scale": 0.104,
+              "airRoot": [
+                193,
+                360
+              ]
+            },
+            {
+              "image": "velvet-reply-aerial-transition-9.png",
+              "rect": [
+                0,
+                0,
+                189,
+                343
+              ],
+              "root": [
+                94,
+                343
+              ],
+              "scale": 0.23229461756373937,
+              "airRoot": [
+                94,
+                188
+              ]
+            }
+          ]
+        },
+        "shield": {
+          "image": "velvet-reply-defense-0.png",
+          "scale": 0.1353135313531353,
+          "frames": [
+            {
+              "image": "velvet-reply-defense-0.png",
+              "rect": [
+                0,
+                0,
+                354,
+                606
+              ],
+              "root": [
+                181,
+                606
+              ]
+            }
+          ]
+        },
+        "shield_raise": {
+          "image": "velvet-reply-shield-0.png",
+          "scale": 0.11884057971014493,
+          "frames": [
+            {
+              "image": "velvet-reply-shield-0.png",
+              "rect": [
+                0,
+                0,
+                361,
+                690
+              ],
+              "root": [
+                197,
+                690
+              ]
+            }
+          ]
+        },
+        "shield_hit": {
+          "image": "velvet-reply-shield-1.png",
+          "scale": 0.11884057971014493,
+          "frames": [
+            {
+              "image": "velvet-reply-shield-1.png",
+              "rect": [
+                0,
+                0,
+                367,
+                665
+              ],
+              "root": [
+                205,
+                665
+              ]
+            }
+          ]
+        },
+        "shield_drop": {
+          "image": "velvet-reply-shield-2.png",
+          "scale": 0.11884057971014493,
+          "frames": [
+            {
+              "image": "velvet-reply-shield-2.png",
+              "rect": [
+                0,
+                0,
+                364,
+                690
+              ],
+              "root": [
+                207,
+                690
+              ]
+            }
+          ]
+        },
+        "parry": {
+          "image": "velvet-reply-defense-1.png",
+          "scale": 0.1353135313531353,
+          "frames": [
+            {
+              "image": "velvet-reply-defense-1.png",
+              "rect": [
+                0,
+                0,
+                394,
+                605
+              ],
+              "root": [
+                170,
+                605
+              ]
+            }
+          ]
+        },
+        "dodge": {
+          "image": "velvet-reply-defense-2.png",
+          "scale": 0.1353135313531353,
+          "frames": [
+            {
+              "image": "velvet-reply-defense-2.png",
+              "rect": [
+                0,
+                0,
+                495,
+                500
+              ],
+              "root": [
+                267,
+                500
+              ]
+            }
+          ]
+        },
+        "roll": {
+          "image": "velvet-reply-defense-3.png",
+          "scale": 0.1353135313531353,
+          "frames": [
+            {
+              "image": "velvet-reply-stance-1.png",
+              "rect": [
+                0,
+                0,
+                420,
+                458
+              ],
+              "root": [
+                153,
+                458
+              ],
+              "scale": 0.13036565977742448
+            },
+            {
+              "image": "velvet-reply-defense-3.png",
+              "rect": [
+                0,
+                0,
+                459,
+                401
+              ],
+              "root": [
+                223,
+                401
+              ]
+            },
+            {
+              "image": "velvet-reply-idle.png",
+              "rect": [
+                0,
+                0,
+                733,
+                1324
+              ],
+              "root": [
+                366.5,
+                1324
+              ],
+              "scale": 0.061933534743202415
+            }
+          ]
+        },
+        "air_dodge_neutral": {
+          "image": "velvet-reply-air-dodge-0.png",
+          "scale": 0.13,
+          "frames": [
+            {
+              "image": "velvet-reply-air-dodge-0.png",
+              "rect": [
+                0,
+                0,
+                281,
+                429
+              ],
+              "root": [
+                131,
+                429
+              ],
+              "airRoot": [
+                131,
+                263
+              ],
+              "scale": 0.13
+            },
+            {
+              "image": "velvet-reply-air-dodge-0.png",
+              "rect": [
+                0,
+                0,
+                281,
+                429
+              ],
+              "root": [
+                131,
+                429
+              ],
+              "airRoot": [
+                131,
+                263
+              ]
+            },
+            {
+              "image": "velvet-reply-air-dodge-0.png",
+              "rect": [
+                0,
+                0,
+                281,
+                429
+              ],
+              "root": [
+                131,
+                429
+              ],
+              "airRoot": [
+                131,
+                263
+              ]
+            },
+            {
+              "image": "velvet-reply-air-dodge-0.png",
+              "rect": [
+                0,
+                0,
+                281,
+                429
+              ],
+              "root": [
+                131,
+                429
+              ],
+              "airRoot": [
+                131,
+                263
+              ]
+            },
+            {
+              "image": "velvet-reply-aerial-5.png",
+              "rect": [
+                0,
+                0,
+                273,
+                349
+              ],
+              "root": [
+                124,
+                349
+              ],
+              "airRoot": [
+                124,
+                239
+              ],
+              "scale": 0.1673469387755102
+            },
+            {
+              "image": "velvet-reply-aerial-5.png",
+              "rect": [
+                0,
+                0,
+                273,
+                349
+              ],
+              "root": [
+                124,
+                349
+              ],
+              "airRoot": [
+                124,
+                239
+              ],
+              "scale": 0.1673469387755102
+            }
+          ]
+        },
+        "air_dodge_side": {
+          "image": "velvet-reply-air-dodge-1.png",
+          "scale": 0.13,
+          "frames": [
+            {
+              "image": "velvet-reply-air-dodge-0.png",
+              "rect": [
+                0,
+                0,
+                281,
+                429
+              ],
+              "root": [
+                131,
+                429
+              ],
+              "airRoot": [
+                131,
+                263
+              ],
+              "scale": 0.13
+            },
+            {
+              "image": "velvet-reply-air-dodge-1.png",
+              "rect": [
+                0,
+                0,
+                493,
+                487
+              ],
+              "root": [
+                257,
+                487
+              ],
+              "airRoot": [
+                257,
+                250
+              ]
+            },
+            {
+              "image": "velvet-reply-air-dodge-1.png",
+              "rect": [
+                0,
+                0,
+                493,
+                487
+              ],
+              "root": [
+                257,
+                487
+              ],
+              "airRoot": [
+                257,
+                250
+              ]
+            },
+            {
+              "image": "velvet-reply-air-dodge-1.png",
+              "rect": [
+                0,
+                0,
+                493,
+                487
+              ],
+              "root": [
+                257,
+                487
+              ],
+              "airRoot": [
+                257,
+                250
+              ]
+            },
+            {
+              "image": "velvet-reply-aerial-5.png",
+              "rect": [
+                0,
+                0,
+                273,
+                349
+              ],
+              "root": [
+                124,
+                349
+              ],
+              "airRoot": [
+                124,
+                239
+              ],
+              "scale": 0.1673469387755102
+            },
+            {
+              "image": "velvet-reply-aerial-5.png",
+              "rect": [
+                0,
+                0,
+                273,
+                349
+              ],
+              "root": [
+                124,
+                349
+              ],
+              "airRoot": [
+                124,
+                239
+              ],
+              "scale": 0.1673469387755102
+            }
+          ]
+        },
+        "air_dodge_up": {
+          "image": "velvet-reply-air-dodge-2.png",
+          "scale": 0.13,
+          "frames": [
+            {
+              "image": "velvet-reply-air-dodge-0.png",
+              "rect": [
+                0,
+                0,
+                281,
+                429
+              ],
+              "root": [
+                131,
+                429
+              ],
+              "airRoot": [
+                131,
+                263
+              ],
+              "scale": 0.13
+            },
+            {
+              "image": "velvet-reply-air-dodge-2.png",
+              "rect": [
+                0,
+                0,
+                330,
+                472
+              ],
+              "root": [
+                218,
+                472
+              ],
+              "airRoot": [
+                218,
+                288
+              ]
+            },
+            {
+              "image": "velvet-reply-air-dodge-2.png",
+              "rect": [
+                0,
+                0,
+                330,
+                472
+              ],
+              "root": [
+                218,
+                472
+              ],
+              "airRoot": [
+                218,
+                288
+              ]
+            },
+            {
+              "image": "velvet-reply-air-dodge-2.png",
+              "rect": [
+                0,
+                0,
+                330,
+                472
+              ],
+              "root": [
+                218,
+                472
+              ],
+              "airRoot": [
+                218,
+                288
+              ]
+            },
+            {
+              "image": "velvet-reply-aerial-5.png",
+              "rect": [
+                0,
+                0,
+                273,
+                349
+              ],
+              "root": [
+                124,
+                349
+              ],
+              "airRoot": [
+                124,
+                239
+              ],
+              "scale": 0.1673469387755102
+            },
+            {
+              "image": "velvet-reply-aerial-5.png",
+              "rect": [
+                0,
+                0,
+                273,
+                349
+              ],
+              "root": [
+                124,
+                349
+              ],
+              "airRoot": [
+                124,
+                239
+              ],
+              "scale": 0.1673469387755102
+            }
+          ]
+        },
+        "air_dodge_land": {
+          "image": "velvet-reply-air-dodge-3.png",
+          "scale": 0.13,
+          "frames": [
+            {
+              "image": "velvet-reply-air-dodge-3.png",
+              "rect": [
+                0,
+                0,
+                390,
+                514
+              ],
+              "root": [
+                156,
+                514
+              ]
+            },
+            {
+              "image": "velvet-reply-air-dodge-3.png",
+              "rect": [
+                0,
+                0,
+                390,
+                514
+              ],
+              "root": [
+                156,
+                514
+              ]
+            },
+            {
+              "image": "velvet-reply-air-5.png",
+              "rect": [
+                0,
+                0,
+                243,
+                443
+              ],
+              "root": [
+                116,
+                443
+              ],
+              "scale": 0.17083333333333334
+            },
+            {
+              "image": "velvet-reply-air-5.png",
+              "rect": [
+                0,
+                0,
+                243,
+                443
+              ],
+              "root": [
+                116,
+                443
+              ],
+              "scale": 0.17083333333333334
+            },
+            {
+              "image": "velvet-reply-idle.png",
+              "rect": [
+                0,
+                0,
+                733,
+                1324
+              ],
+              "root": [
+                366.5,
+                1324
+              ],
+              "scale": 0.061933534743202415
+            },
+            {
+              "image": "velvet-reply-idle.png",
+              "rect": [
+                0,
+                0,
+                733,
+                1324
+              ],
+              "root": [
+                366.5,
+                1324
+              ],
+              "scale": 0.061933534743202415
+            }
+          ]
+        },
+        "air_dodge_down": {
+          "image": "velvet-reply-air-dodge-directions-0.png",
+          "scale": 0.17083333333333334,
+          "frames": [
+            {
+              "image": "velvet-reply-air-dodge-0.png",
+              "rect": [
+                0,
+                0,
+                281,
+                429
+              ],
+              "root": [
+                131,
+                429
+              ],
+              "airRoot": [
+                131,
+                263
+              ],
+              "scale": 0.13
+            },
+            {
+              "image": "velvet-reply-air-dodge-directions-0.png",
+              "rect": [
+                0,
+                0,
+                255,
+                480
+              ],
+              "root": [
+                127,
+                480
+              ],
+              "mirrorSource": false,
+              "airRoot": [
+                127,
+                228
+              ]
+            },
+            {
+              "image": "velvet-reply-air-dodge-directions-0.png",
+              "rect": [
+                0,
+                0,
+                255,
+                480
+              ],
+              "root": [
+                127,
+                480
+              ],
+              "mirrorSource": false,
+              "airRoot": [
+                127,
+                228
+              ]
+            },
+            {
+              "image": "velvet-reply-air-dodge-directions-0.png",
+              "rect": [
+                0,
+                0,
+                255,
+                480
+              ],
+              "root": [
+                127,
+                480
+              ],
+              "mirrorSource": false,
+              "airRoot": [
+                127,
+                228
+              ]
+            },
+            {
+              "image": "velvet-reply-aerial-5.png",
+              "rect": [
+                0,
+                0,
+                273,
+                349
+              ],
+              "root": [
+                124,
+                349
+              ],
+              "airRoot": [
+                124,
+                239
+              ],
+              "scale": 0.1673469387755102
+            },
+            {
+              "image": "velvet-reply-aerial-5.png",
+              "rect": [
+                0,
+                0,
+                273,
+                349
+              ],
+              "root": [
+                124,
+                349
+              ],
+              "airRoot": [
+                124,
+                239
+              ],
+              "scale": 0.1673469387755102
+            }
+          ]
+        },
+        "air_dodge_back": {
+          "image": "velvet-reply-air-dodge-directions-1.png",
+          "scale": 0.17083333333333334,
+          "frames": [
+            {
+              "image": "velvet-reply-air-dodge-0.png",
+              "rect": [
+                0,
+                0,
+                281,
+                429
+              ],
+              "root": [
+                131,
+                429
+              ],
+              "airRoot": [
+                131,
+                263
+              ],
+              "scale": 0.13
+            },
+            {
+              "image": "velvet-reply-air-dodge-directions-1.png",
+              "rect": [
+                0,
+                0,
+                355,
+                464
+              ],
+              "root": [
+                196,
+                464
+              ],
+              "mirrorSource": false,
+              "airRoot": [
+                196,
+                230
+              ]
+            },
+            {
+              "image": "velvet-reply-air-dodge-directions-1.png",
+              "rect": [
+                0,
+                0,
+                355,
+                464
+              ],
+              "root": [
+                196,
+                464
+              ],
+              "mirrorSource": false,
+              "airRoot": [
+                196,
+                230
+              ]
+            },
+            {
+              "image": "velvet-reply-air-dodge-directions-1.png",
+              "rect": [
+                0,
+                0,
+                355,
+                464
+              ],
+              "root": [
+                196,
+                464
+              ],
+              "mirrorSource": false,
+              "airRoot": [
+                196,
+                230
+              ]
+            },
+            {
+              "image": "velvet-reply-aerial-5.png",
+              "rect": [
+                0,
+                0,
+                273,
+                349
+              ],
+              "root": [
+                124,
+                349
+              ],
+              "airRoot": [
+                124,
+                239
+              ],
+              "scale": 0.1673469387755102
+            },
+            {
+              "image": "velvet-reply-aerial-5.png",
+              "rect": [
+                0,
+                0,
+                273,
+                349
+              ],
+              "root": [
+                124,
+                349
+              ],
+              "airRoot": [
+                124,
+                239
+              ],
+              "scale": 0.1673469387755102
+            }
+          ]
+        },
+        "air_dodge_up_diagonal": {
+          "image": "velvet-reply-air-dodge-directions-2.png",
+          "scale": 0.17083333333333334,
+          "frames": [
+            {
+              "image": "velvet-reply-air-dodge-0.png",
+              "rect": [
+                0,
+                0,
+                281,
+                429
+              ],
+              "root": [
+                131,
+                429
+              ],
+              "airRoot": [
+                131,
+                263
+              ],
+              "scale": 0.13
+            },
+            {
+              "image": "velvet-reply-air-dodge-directions-2.png",
+              "rect": [
+                0,
+                0,
+                404,
+                478
+              ],
+              "root": [
+                216,
+                478
+              ],
+              "mirrorSource": false,
+              "airRoot": [
+                216,
+                233
+              ]
+            },
+            {
+              "image": "velvet-reply-air-dodge-directions-2.png",
+              "rect": [
+                0,
+                0,
+                404,
+                478
+              ],
+              "root": [
+                216,
+                478
+              ],
+              "mirrorSource": false,
+              "airRoot": [
+                216,
+                233
+              ]
+            },
+            {
+              "image": "velvet-reply-air-dodge-directions-2.png",
+              "rect": [
+                0,
+                0,
+                404,
+                478
+              ],
+              "root": [
+                216,
+                478
+              ],
+              "mirrorSource": false,
+              "airRoot": [
+                216,
+                233
+              ]
+            },
+            {
+              "image": "velvet-reply-aerial-5.png",
+              "rect": [
+                0,
+                0,
+                273,
+                349
+              ],
+              "root": [
+                124,
+                349
+              ],
+              "airRoot": [
+                124,
+                239
+              ],
+              "scale": 0.1673469387755102
+            },
+            {
+              "image": "velvet-reply-aerial-5.png",
+              "rect": [
+                0,
+                0,
+                273,
+                349
+              ],
+              "root": [
+                124,
+                349
+              ],
+              "airRoot": [
+                124,
+                239
+              ],
+              "scale": 0.1673469387755102
+            }
+          ]
+        },
+        "air_dodge_up_back": {
+          "image": "velvet-reply-air-dodge-directions-3.png",
+          "scale": 0.17083333333333334,
+          "frames": [
+            {
+              "image": "velvet-reply-air-dodge-0.png",
+              "rect": [
+                0,
+                0,
+                281,
+                429
+              ],
+              "root": [
+                131,
+                429
+              ],
+              "airRoot": [
+                131,
+                263
+              ],
+              "scale": 0.13
+            },
+            {
+              "image": "velvet-reply-air-dodge-directions-3.png",
+              "rect": [
+                0,
+                0,
+                345,
+                484
+              ],
+              "root": [
+                152,
+                484
+              ],
+              "mirrorSource": true,
+              "airRoot": [
+                152,
+                239
+              ]
+            },
+            {
+              "image": "velvet-reply-air-dodge-directions-3.png",
+              "rect": [
+                0,
+                0,
+                345,
+                484
+              ],
+              "root": [
+                152,
+                484
+              ],
+              "mirrorSource": true,
+              "airRoot": [
+                152,
+                239
+              ]
+            },
+            {
+              "image": "velvet-reply-air-dodge-directions-3.png",
+              "rect": [
+                0,
+                0,
+                345,
+                484
+              ],
+              "root": [
+                152,
+                484
+              ],
+              "mirrorSource": true,
+              "airRoot": [
+                152,
+                239
+              ]
+            },
+            {
+              "image": "velvet-reply-aerial-5.png",
+              "rect": [
+                0,
+                0,
+                273,
+                349
+              ],
+              "root": [
+                124,
+                349
+              ],
+              "airRoot": [
+                124,
+                239
+              ],
+              "scale": 0.1673469387755102
+            },
+            {
+              "image": "velvet-reply-aerial-5.png",
+              "rect": [
+                0,
+                0,
+                273,
+                349
+              ],
+              "root": [
+                124,
+                349
+              ],
+              "airRoot": [
+                124,
+                239
+              ],
+              "scale": 0.1673469387755102
+            }
+          ]
+        },
+        "air_dodge_down_diagonal": {
+          "image": "velvet-reply-air-dodge-directions-4.png",
+          "scale": 0.17083333333333334,
+          "frames": [
+            {
+              "image": "velvet-reply-air-dodge-0.png",
+              "rect": [
+                0,
+                0,
+                281,
+                429
+              ],
+              "root": [
+                131,
+                429
+              ],
+              "airRoot": [
+                131,
+                263
+              ],
+              "scale": 0.13
+            },
+            {
+              "image": "velvet-reply-air-dodge-directions-4.png",
+              "rect": [
+                0,
+                0,
+                394,
+                459
+              ],
+              "root": [
+                141,
+                459
+              ],
+              "mirrorSource": false,
+              "airRoot": [
+                141,
+                225
+              ]
+            },
+            {
+              "image": "velvet-reply-air-dodge-directions-4.png",
+              "rect": [
+                0,
+                0,
+                394,
+                459
+              ],
+              "root": [
+                141,
+                459
+              ],
+              "mirrorSource": false,
+              "airRoot": [
+                141,
+                225
+              ]
+            },
+            {
+              "image": "velvet-reply-air-dodge-directions-4.png",
+              "rect": [
+                0,
+                0,
+                394,
+                459
+              ],
+              "root": [
+                141,
+                459
+              ],
+              "mirrorSource": false,
+              "airRoot": [
+                141,
+                225
+              ]
+            },
+            {
+              "image": "velvet-reply-aerial-5.png",
+              "rect": [
+                0,
+                0,
+                273,
+                349
+              ],
+              "root": [
+                124,
+                349
+              ],
+              "airRoot": [
+                124,
+                239
+              ],
+              "scale": 0.1673469387755102
+            },
+            {
+              "image": "velvet-reply-aerial-5.png",
+              "rect": [
+                0,
+                0,
+                273,
+                349
+              ],
+              "root": [
+                124,
+                349
+              ],
+              "airRoot": [
+                124,
+                239
+              ],
+              "scale": 0.1673469387755102
+            }
+          ]
+        },
+        "air_dodge_down_back": {
+          "image": "velvet-reply-air-dodge-directions-5.png",
+          "scale": 0.17083333333333334,
+          "frames": [
+            {
+              "image": "velvet-reply-air-dodge-0.png",
+              "rect": [
+                0,
+                0,
+                281,
+                429
+              ],
+              "root": [
+                131,
+                429
+              ],
+              "airRoot": [
+                131,
+                263
+              ],
+              "scale": 0.13
+            },
+            {
+              "image": "velvet-reply-air-dodge-directions-5.png",
+              "rect": [
+                0,
+                0,
+                332,
+                464
+              ],
+              "root": [
+                175,
+                464
+              ],
+              "mirrorSource": false,
+              "airRoot": [
+                175,
+                232
+              ]
+            },
+            {
+              "image": "velvet-reply-air-dodge-directions-5.png",
+              "rect": [
+                0,
+                0,
+                332,
+                464
+              ],
+              "root": [
+                175,
+                464
+              ],
+              "mirrorSource": false,
+              "airRoot": [
+                175,
+                232
+              ]
+            },
+            {
+              "image": "velvet-reply-air-dodge-directions-5.png",
+              "rect": [
+                0,
+                0,
+                332,
+                464
+              ],
+              "root": [
+                175,
+                464
+              ],
+              "mirrorSource": false,
+              "airRoot": [
+                175,
+                232
+              ]
+            },
+            {
+              "image": "velvet-reply-aerial-5.png",
+              "rect": [
+                0,
+                0,
+                273,
+                349
+              ],
+              "root": [
+                124,
+                349
+              ],
+              "airRoot": [
+                124,
+                239
+              ],
+              "scale": 0.1673469387755102
+            },
+            {
+              "image": "velvet-reply-aerial-5.png",
+              "rect": [
+                0,
+                0,
+                273,
+                349
+              ],
+              "root": [
+                124,
+                349
+              ],
+              "airRoot": [
+                124,
+                239
+              ],
+              "scale": 0.1673469387755102
+            }
+          ]
+        },
+        "reaction": {
+          "image": "velvet-reply-reaction-0.png",
+          "scale": 0.148014440433213,
+          "frames": [
+            {
+              "image": "velvet-reply-reaction-0.png",
+              "rect": [
+                0,
+                0,
+                353,
+                554
+              ],
+              "root": [
+                215,
+                554
+              ]
+            }
+          ]
+        },
+        "hit_mid": {
+          "image": "velvet-reply-reaction-0.png",
+          "scale": 0.148014440433213,
+          "frames": [
+            {
+              "image": "velvet-reply-reaction-0.png",
+              "rect": [
+                0,
+                0,
+                353,
+                554
+              ],
+              "root": [
+                215,
+                554
+              ]
+            }
+          ]
+        },
+        "hit_air": {
+          "image": "velvet-reply-reaction-1.png",
+          "scale": 0.148014440433213,
+          "frames": [
+            {
+              "image": "velvet-reply-reaction-1.png",
+              "rect": [
+                0,
+                0,
+                389,
+                532
+              ],
+              "root": [
+                225,
+                532
+              ],
+              "airRoot": [
+                225,
+                240
+              ]
+            }
+          ]
+        },
+        "hit_launch": {
+          "image": "velvet-reply-reaction-2.png",
+          "scale": 0.148014440433213,
+          "frames": [
+            {
+              "image": "velvet-reply-reaction-2.png",
+              "rect": [
+                0,
+                0,
+                548,
+                492
+              ],
+              "root": [
+                323,
+                492
+              ],
+              "airRoot": [
+                323,
+                142
+              ]
+            }
+          ],
+          "durations": [
+            6
+          ]
+        },
+        "tumble": {
+          "image": "velvet-reply-reaction-3.png",
+          "scale": 0.148014440433213,
+          "frames": [
+            {
+              "image": "velvet-reply-reaction-3.png",
+              "rect": [
+                0,
+                0,
+                439,
+                358
+              ],
+              "root": [
+                181,
+                358
+              ],
+              "airRoot": [
+                181,
+                229
+              ]
+            }
+          ]
+        },
+        "hit_high": {
+          "image": "velvet-reply-hit-variants-0.png",
+          "scale": 0.11815561959654179,
+          "frames": [
+            {
+              "image": "velvet-reply-hit-variants-0.png",
+              "rect": [
+                0,
+                0,
+                427,
+                694
+              ],
+              "root": [
+                278,
+                694
+              ]
+            }
+          ]
+        },
+        "hit_low": {
+          "image": "velvet-reply-hit-variants-1.png",
+          "scale": 0.11815561959654179,
+          "frames": [
+            {
+              "image": "velvet-reply-hit-variants-1.png",
+              "rect": [
+                0,
+                0,
+                396,
+                609
+              ],
+              "root": [
+                153,
+                609
+              ]
+            }
+          ]
+        },
+        "hit_heavy": {
+          "image": "velvet-reply-hit-variants-2.png",
+          "scale": 0.11815561959654179,
+          "frames": [
+            {
+              "image": "velvet-reply-hit-variants-2.png",
+              "rect": [
+                0,
+                0,
+                455,
+                687
+              ],
+              "root": [
+                269,
+                687
+              ]
+            }
+          ]
+        }
+      }
+    }
+  }
+}

@@ -5,16 +5,16 @@ import {PREPARED_LIVE_CLIPS,selectPreparedFrame,type PreparedContext} from './pr
 import {getMoveDataForCharacter} from '@smash/engine';
 import {grabHoldFrameIndex,solveGrabContact} from "./contactPose.js";
 import { Assets, ImageSource, Rectangle, Sprite, Texture } from 'pixi.js';
-import { getCharacterStats, isPack03PilotId, type CharacterId, type MoveId, type Pack03PilotId, type PlayerId } from '@smash/shared';
+import { getCharacterStats, isPack03PilotId, isPack04FighterId, type CharacterId, type MoveId, type Pack03PilotId, type PlayerId } from '@smash/shared';
 import { selectPilotFrame, type PilotClip } from './pilotTimeline.js';
 export interface GrabContactContext {artId?:DojoArtId;characterId:CharacterId;state:string;frame:number;move:MoveId|null;dx:number;dy:number;facing:1|-1}
-interface Frame { mirrorSource?:boolean;image?:string; sockets?:Record<string,number[]>; rect: number[]; root: number[]; offsetY?: number; airRoot?: number[] }
+interface Frame { scale?: number; mirrorSource?:boolean;image?:string; sockets?:Record<string,number[]>; rect: number[]; root: number[]; offsetY?: number; airRoot?: number[] }
 interface Clip { durations?:number[]; activeWindow?:[number,number]; rotationPeriod?:number; previewOnly?:boolean; mirrorSource?: boolean; image: string; scale: number; frames: Frame[] }
 interface CharacterManifest { clips: Partial<Record<PilotClip, Clip>> }
-export type DojoArtId = 'moonshine' | 'hulk-hoagie' | Pack03PilotId;
+export type DojoArtId = 'moonshine' | 'hulk-hoagie' | Pack03PilotId | 'zane-corvo' | 'velvet-reply';
 type FighterArtId = CharacterId | DojoArtId;
 interface Manifest extends CharacterManifest { revision?:number;production?:{sourceRevision:number}; effects?:Record<string,Clip & {rotation?:number;durations:number[]}>; version: number; characters?: Partial<Record<FighterArtId, CharacterManifest>> }
-type LoadedClip = { durations?:number[]; activeWindow?:[number,number]; rotationPeriod?:number; mirrorSource?: boolean; scale: number; frames: { texture: Texture;mirrorSource?:boolean; root: number[]; offsetY: number; sockets?:Record<string,number[]>; airRoot?: number[] }[] };
+type LoadedClip = { durations?:number[]; activeWindow?:[number,number]; rotationPeriod?:number; mirrorSource?: boolean; scale: number; frames: { texture: Texture; scale?: number;mirrorSource?:boolean; root: number[]; offsetY: number; sockets?:Record<string,number[]>; airRoot?: number[] }[] };
 export interface FullBodyPilotAssets {
  readonly packing?:"atlas"|"source";
  readonly effects?:Record<string,{scale:number;rotation:number;durations:number[];frames:{texture:Texture;root:number[]}[]}>;
@@ -75,9 +75,10 @@ function loadManifest(url: string): Promise<Manifest> {
 export async function preloadFullBodyPilot(dojo=false, selected?: readonly CharacterId[], includeEffects = true, requireIdle = false): Promise<FullBodyPilotAssets | undefined> {
  if(new URLSearchParams(window.location.search).get('renderer')==='legacy')return undefined;
  try {
+  const pack04 = dojo && selected?.some(isPack04FighterId);
   const pack03 = dojo && selected?.some(isPack03PilotId);
-  const base = pack03 ? '/fighter-art-pack-03-v1/' : dojo ? '/fighter-art-newcomers-v1/' : '/fighter-art-pilot-v1/';
-  const sourceUrl = base + (dojo && !pack03 ? 'dojo/manifest.json' : 'manifest.json');
+  const base = pack04 ? '/fighter-art-pack-04-v1/' : pack03 ? '/fighter-art-pack-03-v1/' : dojo ? '/fighter-art-newcomers-v1/' : '/fighter-art-pilot-v1/';
+  const sourceUrl = base + (dojo && !pack03 && !pack04 ? 'dojo/manifest.json' : 'manifest.json');
   let manifest: Manifest | undefined;
   if ((!dojo || pack03) && new URLSearchParams(window.location.search).get('atlas') !== 'source') {
     try {
@@ -117,7 +118,7 @@ export async function preloadFullBodyPilot(dojo=false, selected?: readonly Chara
     let timer:ReturnType<typeof setTimeout>|undefined;
     try {
      const bases=await Promise.race([Promise.all(clip.frames.map(f=>loadPage(f.image??clip.image))),new Promise<never>((_,reject)=>{timer=setTimeout(()=>reject(new Error('Pilot texture timeout')),textureTimeoutMs);})]);
-     return [name,{durations:clip.durations,activeWindow:clip.activeWindow,rotationPeriod:clip.rotationPeriod,mirrorSource:clip.mirrorSource,scale:clip.scale,frames:clip.frames.map((frame,i)=>({texture:new Texture({source:bases[i]!.source,frame:new Rectangle(frame.rect[0],frame.rect[1],frame.rect[2],frame.rect[3])}),root:frame.root,mirrorSource:frame.mirrorSource,sockets:frame.sockets,offsetY:dojo?getCharacterStats(characterId).hurtboxRadius:frame.offsetY??28,airRoot:frame.airRoot}))}] as const;
+     return [name,{durations:clip.durations,activeWindow:clip.activeWindow,rotationPeriod:clip.rotationPeriod,mirrorSource:clip.mirrorSource,scale:clip.scale,frames:clip.frames.map((frame,i)=>({texture:new Texture({source:bases[i]!.source,frame:new Rectangle(frame.rect[0],frame.rect[1],frame.rect[2],frame.rect[3])}),root:frame.root,scale:frame.scale,mirrorSource:frame.mirrorSource,sockets:frame.sockets,offsetY:dojo?getCharacterStats(characterId).hurtboxRadius:frame.offsetY??28,airRoot:frame.airRoot}))}] as const;
     } catch (error) {
      console.warn('[fighter-art-pilot] Missing clip; using existing artwork', characterId, name, error);
      if (requireIdle && name === 'idle') throw error;
@@ -239,6 +240,9 @@ export class FullBodyPilot {
   if(prepared.result){if(this.resultStart===null||this.resultKind!==prepared.result){this.resultStart=performance.now();this.resultKind=prepared.result;}selected=selectResultFrame(prepared.result,prepared.presentationVariant??0,(performance.now()-this.resultStart)*.06);this.effectSprite.visible=false;}
   else{this.resultStart=null;this.resultKind=undefined;}
   const art = this.assets.characters[this.artId??this.characterId];
+  if (enabled && state === "LANDING_LAG" && isPack04FighterId(this.artId) && art?.land_soft && selected?.clip !== "air_dodge_land") {
+   selected = { clip: "land_soft", index: 0 };
+  }
   if(this.artId&&selected?.clip.startsWith('takeoff_')&&state==='AIRBORNE'&&(prepared.artCueFrame??0)>=6){
    selected=selectPreparedFrame(state,frame,vy,{...prepared,artCue:undefined,facing})??selected;
   }
@@ -417,17 +421,18 @@ export class FullBodyPilot {
   this.sprite.texture=drawing.texture;
   this.sprite.rotation=clip.rotationPeriod?(rotationAge%clip.rotationPeriod)/clip.rotationPeriod*Math.PI*2:0;
   const impactVx = prepared.impactVx ?? 0;
-  const launchFlip = pack03 && (selected.clip === 'hit_launch' || selected.clip === 'tumble') &&
+  const launchFlip = (pack03 || isPack04FighterId(this.artId)) && (selected.clip === 'hit_launch' || selected.clip === 'tumble') &&
     Math.abs(impactVx) > 0.2 ? -Math.sign(impactVx)*facing : 1;
   // The wall side identifies the contacted face of the platform.
   const wallSide = prepared.wallTechSide;
   const wallFlip = pack03 && wallSide && selected.index < 5 &&
     (selected.clip === 'wall_tech' || selected.clip === 'wall_tech_jump')
     ? (wallSide === 'left' ? 1 : -1) * facing : 1;
-  this.sprite.scale.set(wallFlip*launchFlip*clip.scale*(clip.mirrorSource?-1:1)*(drawing.mirrorSource?-1:1)*(this.reaction?reactionFlip:selected.clip==='grab_release'?this.lastVictimFlip:['grabbed','pummel_victim'].includes(selected.clip)?victimFlip:((selected.clip==='roll'&&!pack03)||selected.clip==='tech_roll')?rollDirection:1),clip.scale);
+  const drawingScale = drawing.scale ?? clip.scale;
+  this.sprite.scale.set(wallFlip*launchFlip*drawingScale*(clip.mirrorSource?-1:1)*(drawing.mirrorSource?-1:1)*(this.reaction?reactionFlip:selected.clip==='grab_release'?this.lastVictimFlip:['grabbed','pummel_victim'].includes(selected.clip)?victimFlip:((selected.clip==='roll'&&!pack03)||selected.clip==='tech_roll')?rollDirection:1),drawingScale);
   const newcomerHeld=this.artId&&['grabbed','pummel_victim','grab_release'].includes(selected.clip);
   if(newcomerHeld)this.sprite.scale.x*=-1;
-  const airRoot = state === 'AIR_ATTACK' || (pack03 && (airborne || state === 'HELPLESS' || state === 'AIR_DODGE' || selected.clip === 'shield_break_launch' ||
+  const airRoot = state === 'AIR_ATTACK' || (isPack04FighterId(this.artId) && (state === 'AIR_DODGE' || state === 'HITSTUN' || selected.clip === 'tumble')) || (pack03 && (airborne || state === 'HELPLESS' || state === 'AIR_DODGE' || selected.clip === 'shield_break_launch' ||
       (state === 'HITSTUN' && ['hit_air','hit_launch','tumble','footstool_air_victim'].includes(selected.clip)))) ? drawing.airRoot : undefined;
   const root = airRoot ?? drawing.root;
   this.sprite.pivot.set(root[0],root[1]);

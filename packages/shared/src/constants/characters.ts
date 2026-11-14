@@ -72,6 +72,15 @@ const HOAGIE_STATS: CharacterStats = {
   gravity: .665, fallSpeed: 18.5, fastFallSpeed: 29.6,
 };
 
+export const PACK_04_PILOT_FIGHTERS = [
+  { id: 'zane-corvo', name: 'Zane Corvo' },
+  { id: 'velvet-reply', name: 'The Velvet Reply' },
+] as const;
+
+export function isPack04FighterId(value: unknown): value is typeof PACK_04_PILOT_FIGHTERS[number]['id'] {
+  return PACK_04_PILOT_FIGHTERS.some(fighter => fighter.id === value);
+}
+
 export const PACK_03_PILOT_FIGHTERS = [
   { id: 'mr-wrong', name: 'Mr. Wrong' },
   { id: 'loopy', name: 'Loopy' },

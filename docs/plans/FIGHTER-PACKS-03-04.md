@@ -669,3 +669,386 @@ Zane's forward-tilt step still needs animation and contact review.
 
 Workspace type checking and the engine suite passed (1,104 passed, 1
 skipped). Playable matchup and sprite-contact verification remain open.
+
+The branch includes the latest fetched main changes (through 4deb165).
+The first right-facing idle drawings use the approved roster colors and the
+sketch sheets as pose reference. The source PNGs still need atlas
+registration, mirrored floor-contact checks, and gameplay review.
+
+[Zane idle](../../concept-art/sprite/pack-04/zane-corvo-idle.png) · [Velvet idle](../../concept-art/sprite/pack-04/velvet-reply-idle.png)
+
+### Pack 04 Dojo idle pilot
+
+Both fighters are available in Dojo setup as player or partner. Their
+simulation uses the Pack 04 move overrides. The source atlas registers the
+82-unit idle drawings at the base of their opaque bounds with a centered
+horizontal pivot. The renderer reflects the horizontal axis for left-facing
+play and keeps the floor pivot on the same vertical coordinate.
+
+This milestone includes one idle drawing per fighter. Missing clips use
+idle while the pilot art is loaded. Playable comparisons against All-Rounder,
+dedicated combat and movement clips, and local and online release checks are
+still open.
+
+Chromium Free Practice passed for Zane versus passive All-Rounder and
+Velvet versus passive All-Rounder. Both Pack 04 sprites loaded, turned
+left and right, and landed a keyboard jab that put All-Rounder in hitstun.
+Screenshots in both facings showed the boots meeting the main platform's
+top edge. The default test server was serving an older build. The two
+checks passed on a fresh Vite instance at port 5198 using
+`PACK04_TEST_URL` with the `pack-04-dojo` Playwright spec.
+
+Next is dedicated idle and grounded movement animation, followed by
+authored jab, tilt, aerial and throw contact poses. This smoke test
+covers the idle registration and jab input path. It does not establish
+move-set balance or contact-pose alignment.
+
+### Pack 04 idle loops
+
+Source atlas revision 2 gives each fighter a resting and exhale drawing,
+held for 24 ticks each. The checked Dojo idle drawings served as costume
+references. Each drawing pivots at its sole baseline and uses the original
+idle scale. Both Chromium Dojo smoke tests passed against All-Rounder.
+Continuous playback has not been visually signed off. Grounded movement
+is the next animation batch.
+
+### Pack 04 walk cycles
+
+Source atlas revision 3 adds four walk poses per fighter at five ticks
+per pose. The sheets use the gameplay idle costumes as references. Each
+pose uses a body-centered horizontal pivot and a sole baseline, with a
+shared scale across the cycle. Both existing Chromium Dojo smoke tests
+passed. Full-speed walk playback and alternating foot contact still need
+review. Next are run, brake, and turnaround.
+
+### Pack 04 run, brake, and turnaround
+
+Source atlas revision 4 adds a two-pose run cycle and a dedicated drawing
+each for braking and running turnaround. Both Chromium Dojo smoke tests
+passed against All-Rounder. The tests did not exercise every new movement
+clip. Alternating stride and transition continuity still need playback
+review. Next are standing turn, crouch, jump squat, and takeoff.
+
+### Pack 04 stance and takeoff
+
+Source atlas revision 5 registers standing turn, a grounded crouch,
+neutral takeoff, and an airborne tuck. Crouch entry, hold, exit, and jump
+squat temporarily share the grounded drawing. The generated squat read
+as airborne, so it was assigned to the apex clip. Both Chromium Dojo
+smoke tests passed. Targeted transition playback remains open. Next
+are dedicated rise, apex transitions, fall, double jump, fast fall,
+and landing.
+
+### Pack 04 airborne and landing poses
+
+Source atlas revision 6 adds separate rise, apex, fall, double-jump,
+fast-fall, and landing drawings. Soft and heavy landing currently share
+the landing drawing. Each clip holds one pose. The source sheets have
+transparent gutters despite the visible color in the generation preview.
+Both Chromium Dojo smoke tests passed against All-Rounder. Targeted
+jump-to-landing playback and separate landing transitions remain open.
+The next art batch is jab and tilt contact poses.
+
+### Pack 04 jab and tilt contact poses
+
+Source atlas revision 7 adds separate contact drawings for all three jabs
+and all three tilts for each fighter. Zane's forward tilt reads as a
+stepping elbow strike and Velvet's as a horizontal boot kick. The
+prototype clips hold each contact pose through the move. Dedicated startup
+and recovery drawings and hitbox alignment in both facings remain open.
+Both Chromium Dojo smoke tests passed against passive All-Rounder. They
+cover landing a jab. Next are jab and tilt transitions and active-frame
+alignment checks.
+
+### Pack 04 strike transitions
+
+Atlas revision 8 gives the six ground strikes a windup, contact, and
+recovery. Forward tilt has its own lead-in and follow-through. Jab and
+the other two tilts share the general punch transitions for now. The
+renderer maps the authored contact window to each move's active ticks.
+Type checking and both Dojo jab smoke tests passed. Contact alignment
+in both facings remains open, followed by dash attack and smashes.
+
+### Pack 04 ground strike contact audit
+
+Measured estimated fist, elbow and boot contact points against the
+grounded hit circles in atlas revision 8. Values below are world units
+outside the circle, rounded to one decimal. Negative values indicate
+overlap. Both facings have the same gaps because the sprite and hitbox
+reflect about the same horizontal origin.
+
+| Fighter | Jab 1 | Jab 2 | Jab 3 | Forward tilt | Up tilt | Down tilt |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: |
+| Zane Corvo | 6.9 | 7.6 | -1.2 | 6.8 | -0.7 | 33.3 |
+| The Velvet Reply | 5.4 | 5.2 | -0.6 | 0.0 | 5.8 | 34.8 |
+
+Prioritize both down tilts. Draw the low strike with a shorter extension
+and direct its striking surface toward the hit circle roughly 20 units
+forward and 40.5 units above the floor. Shorten or lower the first two
+jab contacts, bring Zane's elbow inward, and bring Velvet's rising fist
+closer to the body axis. Velvet's forward kick sits at the circle edge
+and needs a frame-step check. These are drawing measurements. Dojo
+frame-step verification and the revised drawings remain open.
+
+### Pack 04 corrected down tilts
+
+Atlas revision 9 replaces both extended sweeps with compact crouching
+body strikes using the gameplay costumes. Estimated knuckle contact is
+25.0 forward and 37.7 above the floor for Zane, and 25.1 forward and
+40.5 above the floor for Velvet. Both points fall within the existing
+10-unit hit circle in either facing. Both Chromium Dojo smoke tests
+passed. Down-tilt frame stepping remains open alongside corrections to
+Jab 1, Jab 2, Zane's forward tilt, and Velvet's up tilt.
+
+### Pack 04 ground strike offset tuning
+
+Adjusted the prototype hit circles for Jab 1 and Jab 2 on both fighters,
+Zane's forward tilt, and Velvet's up tilt to meet their drawn contact
+points. This uses move-specific offsets, so it changes gameplay reach
+and height. Sprite pivots, hitbox radii, and move timing stay as authored.
+Remeasure the contacts and frame-step in the Dojo before balance signoff.
+
+The rebuilt engine's hit circles contain all six sampled contact points on
+every active tick in both facings. Minimum clearance inside the circle
+was 1.73 units for Zane Jab 1, 1.41 for Jab 2, and 0.72 for forward tilt.
+For Velvet it was 4.45 for Jab 1, 4.17 for Jab 2, and 3.66 for up tilt.
+These are measurements from the registered artwork and engine geometry.
+Dojo frame-step playback remains open.
+
+Chromium Dojo frame stepping passed for both fighters' right-facing Jab 1.
+The regression test uses F6 and F7 to sample seven successive ticks and
+compares the renderer's frame rectangle with the atlas windup, contact,
+and recovery entries. Contact is selected at move ages 3 and 4. Left-facing
+playback, the rest of the jab chain, and the tilts remain open.
+
+Jab 1 frame stepping now passes facing left and right for both fighters.
+Both browser tests passed with the contact drawing at move ages 3 and 4
+in all four cases. Next is the full jab chain, followed by the three tilts.
+
+The full three-hit jab sequence now passes the Chromium Dojo test for
+both fighters in both facings. Fresh Attack presses queue Jab 2 and Jab 3.
+Frame stepping checks atlas frame selection through the windups and links,
+including Jab 1 and 2 contact at ages 3–4 and Jab 3 at ages 4–6. The step
+limit accounts for repeated move ages during hitstop. Next is frame stepping
+forward, up and down tilts in both facings.
+
+### Pack 04 tilt frame-step verification
+
+Both Chromium Dojo tests passed all three tilts in both facings. Direction
+and Attack were sampled on the same frozen tick to select the tilt from
+idle. The frame checks covered windup, every active age, and the first
+recovery age. Forward tilt contact ages were 6–8 for Zane and 9–11 for
+Velvet. Up tilt used ages 6–9 and down tilt used ages 5–6 for both.
+These checks verify clip timing. Matchup balance and gameplay-speed
+review remain open. Next are dedicated dash attack and smash poses.
+
+### Pack 04 dash attack and smash contacts
+
+Atlas revision 10 adds dedicated dash attack and forward, up, and down
+smash contact drawings for both fighters. Existing sprint, brake,
+crouch and guard art supplies provisional transitions. Down smash
+mirrors its contact drawing for the rear active window. Both existing
+Dojo jab and tilt browser tests passed. The new moves still need
+frame-step timing and contact measurements in both facings.
+
+### Pack 04 power-strike frame stepping
+
+The Chromium Dojo suite checked dash attack and all three smashes in
+both facings for both fighters. Contact ages were 8–12 for dash attack,
+15–17 for forward smash, 12–16 for up smash, and 10–15 for down smash.
+The visible sprite flips on down smash ages 13–15 for the rear hit.
+The check covers displayed pose timing and direction. Spatial contact
+measurements and dedicated transition drawings remain open.
+
+### Pack 04 power-strike contact audit
+
+Estimated contact points from the source drawings were projected using
+atlas revision 10 and compared with engine hit circles on every active
+tick in both facings. Values are world units from the circle edge.
+Negative values indicate overlap. Down smash includes the rear phase.
+
+| Fighter | Dash attack | Forward smash | Up smash | Down smash |
+| --- | ---: | ---: | ---: | ---: |
+| Zane Corvo | -3.9 | 2.3 | 2.8 | 22.0 |
+| The Velvet Reply | -3.5 | 0.9 | 6.3 | 36.1 |
+
+Both dash contacts fit. Redraw the down smashes with compact sweeps
+first, then align the forward and up smash contact points. Keep the
+existing authored hit windows for the retest.
+
+Atlas revision 11 replaces both down-smash sweeps with compact planted
+forearm strikes. The sampled striking surface is the leading elbow.
+Estimated world contacts are about (19.5, 43.3) for Zane and (20.4, 42.2)
+for Velvet, measured forward and above the floor. Both are inside the
+front circle centered at (22.5, 43) with radius 14. The rear pose and
+circle reflect about the same origin. Forward and up smash remain open.
+
+Forward and up smash now use Pack 04-specific hitbox offsets. The sampled
+contact points fall inside the circles on every active tick in both
+facings. Both Chromium Dojo frame-step tests passed. The offsets tune
+gameplay reach and height. Dedicated power-strike transitions remain open.
+
+### Pack 04 power-strike transitions
+
+Atlas revision 12 adds one dedicated windup and one dedicated recovery
+for dash attack and all three smashes on each fighter. Both Chromium
+Dojo tests passed in both facings, including the rear down-smash
+contact. The tests verify pose selection and timing. Full-speed motion
+and charged-smash playback remain open. Next are the five aerial
+attack contacts and their transitions.
+
+### Pack 04 aerial contacts
+
+Atlas revision 13 adds neutral, forward, back, up and down aerial contact
+poses per fighter, with pelvis anchors and a shared tuck for startup and
+recovery. Custom sheet cuts preserve the extended kick silhouettes.
+Existing ground-strike Dojo regression tests passed. Aerial timing,
+hitbox alignment, landing handoffs and dedicated transitions remain open.
+
+### Pack 04 aerial transitions
+
+Atlas revision 14 adds a dedicated windup and recovery for each of
+Velvet's five aerials. Zane retains the shared tuck. His generated
+transition sheet had a semi-opaque background and was rejected.
+Aerial frame-step and landing checks remain open.
+
+Atlas revision 15 adds Zane's replacement aerial windups and recoveries
+for all five moves. The source column gutters contain no pixels at or
+above 50% opacity. Existing Chromium ground-strike tests passed for
+both fighters. Next is aerial frame stepping in both facings and
+landing handoff verification.
+
+### Pack 04 aerial frame stepping
+
+Chromium passed all five aerials in both facings for both fighters.
+All active ages selected the contact cel and landing cleared the aerial
+clip while keeping the full-body sprite visible. Back air exposed a
+shared facing bug: the away input reversed the fighter after move
+selection. The simulation now preserves facing during AIR_ATTACK.
+Spatial hitbox alignment and full-speed landing continuity remain open.
+
+### Pack 04 aerial contact audit
+
+Estimated strike tips from the atlas were compared with the engine
+circles across active ticks in both facings. Positive values show
+world units outside the circle.
+
+| Fighter | Neutral | Forward | Back | Up | Down |
+| --- | ---: | ---: | ---: | ---: | ---: |
+| Zane Corvo | 0.7 | 16.4 | 4.3 | 21.1 | 10.0 |
+| The Velvet Reply | 5.8 | 1.7 | 9.7 | 15.3 | 7.4 |
+
+Prioritize both up airs, Zane's forward air, and both stomps. Shorten
+the drawn extensions while keeping Velvet's longer forward reach.
+Recheck the smaller gaps after those redraws. Full-speed landing
+continuity remains open.
+
+Atlas revision 16 replaces five contact drawings: Zane's forward-air
+knee and both fighters' up-air strikes and down-air stomps. The builder
+registers each redraw with a frame-specific scale and airborne pivot.
+The full Chromium Dojo frame-step suite passed for both fighters,
+including contact selection in both facings and the landing handoff.
+Next is remeasurement against the engine hit circles. The timing test
+does not establish spatial overlap.
+
+Atlas revision 17 refines the airborne pivots for Zane's up air and
+both down airs. Remeasured the five redraws using estimated strike-tip
+coordinates and the current engine hit circles. The smaller gaps in
+the other aerial contacts remain open.
+
+Revision 17 passed both Chromium Dojo frame-step tests, including all
+aerial contacts in both facings and the handoff to landing. Minimum
+clearance inside the hit circle across active ticks was 1.78 world units
+for Zane forward air, 1.55 for up air, and 1.71 for down air. Velvet
+up air measured 3.03 and down air 0.99. These use estimated strike-tip
+coordinates. Both neutral airs, both back airs, and Velvet forward air
+are next for alignment. Full-speed landing playback remains open.
+
+Revision 18 aligns the remaining aerial contacts through artwork pivots.
+The minimum sampled margins inside the circles were 2.20 for Zane
+neutral air and 1.79 for back air. Velvet measured 0.63 for neutral
+air, 2.33 for forward air, and 1.52 for back air. Both Chromium Dojo
+frame-step tests passed. Next is gameplay-speed landing playback,
+including a check for visible shifts from the adjusted pivots.
+
+### Pack 04 aerial landing handoff
+
+Pack 04 now uses its authored soft landing pose during LANDING_LAG.
+The legacy jump clip was absent from this atlas, so the renderer had
+fallen back to idle during lag. Both Dojo frame-step tests passed in
+both facings with the landing-pose assertion. Visual review at normal
+speed remains open.
+
+The normal-speed Chromium attempt timed out before reliably observing
+the descent trigger for either fighter. The frame-step test remains the
+verified coverage. Normal-speed visual review remains open.
+
+Normal-speed neutral-air landing now passes for both fighters in Chromium.
+The regression positions each fighter above the main platform, clears the
+initial input gate with one neutral step, then starts neutral air and
+resumes at 1×. Both runs observed the authored landing pose during lag
+and the return to idle. Visual review of continuity across the five
+aerials remains open. The next art batch is shields and dodges.
+
+### Pack 04 first defensive poses
+
+Atlas revision 19 registers shield guard, parry, spot dodge, and a
+forward roll with a tucked contact drawing for both fighters. Shield
+raise shares the guard drawing. Roll borrows crouch and idle for its
+bookends. All four existing Chromium Dojo tests passed. Those tests
+cover strikes and landings. Targeted defensive playback remains open.
+Next are dedicated shield raise, impact and release, followed by air
+dodges and dodge landing.
+
+### Pack 04 shield transitions
+
+Atlas revision 20 registers separate shield raise, impact and release
+drawings for both fighters. Atlas generation and distinct clip
+registration passed. The Chromium worker exited before the first test
+ran, so targeted defensive playback remains open alongside air dodges.
+
+### Pack 04 first air dodges
+
+Atlas revision 21 adds neutral, forward and upward air-dodge poses
+with pelvis anchors and a planted dodge-landing pose. The renderer
+keeps the dodge-landing cue ahead of the generic aerial landing pose.
+Atlas generation and workspace type checking passed. Downward, backward
+and diagonal poses, directional transitions and targeted Dojo playback
+remain open.
+
+Atlas revision 22 covers neutral plus all eight directions for both
+fighters. The up-back source faces left and is reflected into the
+atlas's right-facing convention. The atlas check found nine clips
+with airborne anchors per fighter. Each direction has a single
+authored pose. Continuous dodge-to-landing playback and transition
+drawings remain open.
+
+### Pack 04 air-dodge playback checks
+
+Chromium verified all nine dodge selections in both facings for both
+fighters (36 cases). Four straight-down dodge cases resumed at 1x and
+showed the authored dodge-landing clip. The tests cover rendered clip
+selection. In-between cels and visual continuity still need review.
+
+Atlas revision 23 adds shared tuck and recovery drawings around the
+directional travel poses, and sequences dodge landing from plant to
+settle to stand. Both targeted Chromium tests passed, covering all 36
+dodge clip selections and four 1x landing handoffs. These assertions
+check clip selection. Visual continuity and unique transition artwork
+remain open for the polish pass. Next are hit reactions and tumble.
+
+### Pack 04 first damage reactions
+
+Atlas revision 24 adds grounded and airborne recoil, a six-tick launch
+pose and a tucked tumble pose. Airborne reactions use pelvis anchors.
+Launch and tumble use the impact direction to orient the body. Atlas
+generation and workspace type checking passed. Next are high, low and
+heavy reactions, followed by tumble recovery and knockdown. Targeted
+Dojo playback remains open.
+
+### Pack 04 high, low and heavy hit reactions
+
+Atlas revision 25 registers separate grounded high, low and heavy recoil
+drawings for both fighters. Each uses a sole anchor. Atlas generation
+and crop registration checks passed. These are single-drawing clips.
+Targeted Dojo playback remains open. Next are tumble recovery and knockdown.

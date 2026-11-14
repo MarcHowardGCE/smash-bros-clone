@@ -261,3 +261,328 @@ for (const fighter of ['zane-corvo', 'velvet-reply']) {
     }
   });
 }
+
+for (const fighter of ['zane-corvo', 'velvet-reply']) {
+  for (const realtime of [false, true]) test(fighter + ' synchronizes paired throw release art ' + (realtime ? 'at 1x' : 'frame by frame'), async ({ page }) => {
+    const partner = fighter === 'zane-corvo' ? 'velvet-reply' : 'zane-corvo';
+    await page.addInitScript(([fighter, dummy]) => localStorage.setItem('eth:dojo:setup:v1',
+      JSON.stringify({fighter, dummy, dummyMode: 'still'})), [fighter, partner]);
+    await page.goto(process.env.PACK04_TEST_URL ?? '/');
+    await page.locator('#splash-screen').click();
+    await page.locator('#practice-btn').click();
+    await page.locator('#practice-free').click();
+    await expect.poll(() => page.evaluate(() => window.__smashDebug?.getArtState?.()?.players.length)).toBe(2);
+    await page.getByText('Launch and KO lab', { exact: true }).click();
+    for (let i = 0; i < 4; i++) await page.locator('#dojo-launch-percent-partner').click();
+    const atlas = await (await page.request.get(new URL('/fighter-art-pack-04-v1/manifest.json', page.url()).href)).json();
+    const tumble = atlas.characters[partner].clips.tumble.frames[0].rect.join(',');
+    await page.keyboard.press('F6');
+    for (const facing of [1, -1]) for (const [move, key] of [
+      ['FORWARD_THROW', facing === 1 ? 'ArrowRight' : 'ArrowLeft'],
+      ['BACK_THROW', facing === 1 ? 'ArrowLeft' : 'ArrowRight'],
+      ['UP_THROW', 'ArrowUp'], ['DOWN_THROW', 'ArrowDown'],
+    ] as const) {
+      await page.keyboard.press('r');
+      await page.keyboard.press('F7');
+      await page.evaluate(facing => {
+        const debug = window.__smashDebug!;
+        const players = Object.values(debug.getSnapshot()!.players);
+        for (const p of players) {
+          const direction = p.slotIndex === 0 ? facing : -facing;
+          p.x = p.slotIndex === 0 ? 600 : 600 + 31 * facing;
+          p.facing = direction as 1 | -1;
+          p.isInvincible = false;
+          p.invincibilityFrames = 0;
+        }
+      }, facing);
+      await page.keyboard.down('c');
+      await page.keyboard.press('F7');
+      await page.keyboard.up('c');
+      const art = () => page.evaluate(() => window.__smashDebug!.getArtState!().players);
+      for (let i = 0; i < 12 && (await art()).find(p => p.slot === 0)?.clip !== 'grab_hold'; i++) {
+        await page.keyboard.press('F7');
+      }
+      expect((await art()).find(p => p.slot === 1)?.clip).toBe('grabbed');
+      await page.keyboard.down(key);
+      await page.keyboard.press('F7');
+      await page.keyboard.up(key);
+      if (realtime) {
+        const playback = page.waitForFunction(clip => {
+          const players = window.__smashDebug?.getArtState?.()?.players;
+          return players?.some(p => p.slot === 0 && p.clip === clip && p.bodyVisible) &&
+            players.some(p => p.slot === 1 && p.clip === 'throw_victim' && p.bodyVisible);
+        }, move.toLowerCase(), { timeout: 3000 });
+        await page.keyboard.press('F6');
+        await playback;
+        await page.keyboard.press('F6');
+        continue;
+      }
+      let released = false;
+      for (let i = 0; i < 24; i++) {
+        await page.keyboard.press('F7');
+        const frames = await art();
+        if (frames.find(p => p.slot === 1)?.clip !== 'throw_victim') continue;
+        expect(frames.find(p => p.slot === 0)?.clip).toBe(move.toLowerCase());
+        expect(frames.every(p => p.bodyVisible)).toBe(true);
+        released = true;
+        break;
+      }
+      expect(released, move + ' facing ' + facing).toBe(true);
+      let reachedTumblePose = false;
+      for (let tick = 0; tick < 30; tick++) {
+        await page.keyboard.press('F7');
+        const victim = (await art()).find(p => p.slot === 1);
+        expect(victim?.bodyVisible).toBe(true);
+        if (move === "DOWN_THROW" && victim?.clip !== "throw_victim") {
+          expect(victim?.clip).toMatch(/^(hit_.*|knockdown_.*|prone_.*|idle|air_fall_loop|tumble|reaction)$/);
+          reachedTumblePose = true;
+          break;
+        }
+        if (victim?.frameRect !== tumble) continue;
+        expect(['throw_victim', 'tumble']).toContain(victim.clip);
+        reachedTumblePose = true;
+        break;
+      }
+      expect(reachedTumblePose, move + ' facing ' + facing).toBe(true);
+    }
+  });
+}
+
+test('Pack 04 ledge art meets both platform edges', async ({ page }) => {
+  await page.goto(process.env.PACK04_TEST_URL ?? '/');
+  await page.evaluate(async () => {
+    const path = '/src/renderer/fullbody/FullBodyPilot.ts';
+    const { FullBodyPilot, preloadFullBodyPilot } = await import(path);
+    for (const id of ['zane-corvo', 'velvet-reply']) {
+      const assets = await preloadFullBodyPilot(true, [id], false, true);
+      for (const edge of ['left', 'right']) {
+        const facing = edge === 'left' ? 1 : -1;
+        const pilot = new FullBodyPilot(assets, id, id);
+        const contact = { dx: 12 * facing, dy: -25 };
+        const draw = (state: string, tick: number) => pilot.update(
+          state, tick, null, true, 0, true, false, 1, 0, false, 1, facing,
+          undefined, edge, { ledgeContact: contact },
+        );
+        for (const [tick, name] of [[0, 'ledge_catch'], [6, 'ledge_catch'], [20, 'ledge_hang']] as const) {
+          draw('LEDGE_HANG', tick);
+          if (pilot.sprite.label !== name || !pilot.sprite.visible) throw Error(id + ' ' + name);
+          const [x, y] = assets.characters[id][name].frames[0].sockets.ledgeGrip;
+          const point = pilot.sprite.toGlobal({ x, y });
+          if (Math.abs(point.x * facing - contact.dx) > 0.001 || Math.abs(point.y - contact.dy) > 0.001) {
+            throw Error(id + ' ' + edge + ' ' + name + ' grip offset');
+          }
+        }
+        draw('LEDGE_CLIMB', 28);
+        const sole = pilot.sprite.toGlobal({ x: pilot.sprite.pivot.x, y: pilot.sprite.pivot.y });
+        if (pilot.sprite.label !== 'ledge_climb' || Math.abs(sole.y - contact.dy) > 0.001) {
+          throw Error(id + ' ' + edge + ' climb sole offset');
+        }
+        for (const [state, clip] of [['AIRBORNE', 'ledge_drop'], ['LEDGE_TRUMP', 'ledge_trump']]) {
+          draw('LEDGE_HANG', 20);
+          const correction = { x: pilot.sprite.x, y: pilot.sprite.y };
+          for (let tick = 0; tick <= 6; tick++) {
+            pilot.update(state, tick, null, true, 0, true, false, 1, 0, false, 1, facing);
+            const weight = 1 - tick / 6;
+            if (!pilot.sprite.visible || pilot.sprite.label !== clip ||
+                Math.abs(pilot.sprite.x - correction.x * weight) > 0.001 ||
+                Math.abs(pilot.sprite.y - correction.y * weight) > 0.001) {
+              throw Error(id + ' ' + edge + ' ' + clip + ' release tick ' + tick);
+            }
+          }
+        }
+        pilot.sprite.destroy();
+        pilot.effectSprite.destroy();
+      }
+    }
+  });
+});
+
+for (const fighter of ['zane-corvo', 'velvet-reply']) {
+  test(fighter + ' uses live Dojo ledge options at both edges', async ({ page }) => {
+    test.setTimeout(90_000);
+    await page.addInitScript(id => localStorage.setItem('eth:dojo:setup:v1', JSON.stringify({
+      fighter: id, dummy: 'all-rounder', dummyMode: 'still',
+    })), fighter);
+    await page.goto(process.env.PACK04_TEST_URL ?? '/');
+    await page.locator('#splash-screen').click();
+    await page.locator('#practice-btn').click();
+    await page.locator('#practice-free').click();
+    const sample = () => page.evaluate(id => {
+      const debug = window.__smashDebug;
+      return {
+        player: Object.values(debug?.getSnapshot()?.players ?? {}).find(p => p.characterId === id),
+        art: debug?.getArtState?.()?.players.find(p => p.character === id),
+      };
+    }, fighter);
+    await expect.poll(async () => (await sample()).player?.isGrounded).toBe(true);
+    for (const edge of ['left', 'right']) {
+      for (const [key, clip] of [
+        [edge === 'left' ? 'ArrowRight' : 'ArrowLeft', 'ledge_climb'],
+        ['KeyX', 'ledge_jump'], ['KeyZ', 'ledge_attack'], ['ShiftLeft', 'ledge_roll'],
+        ['ArrowDown', 'ledge_drop'], ['trump', 'ledge_trump'],
+      ]) {
+        await page.keyboard.press('r');
+        const position = await page.evaluate(async ({ id, edge }) => {
+          const debug = window.__smashDebug!;
+          const pkg = '@smash/shared';
+          const { getStageLayout } = await import('/@id/' + pkg);
+          const snapshot = debug.getSnapshot();
+          const player = Object.values(snapshot.players).find(p => p.characterId === id)!;
+          const lip = getStageLayout(snapshot.stageId).ledges.find((ledge: {id: string}) => ledge.id === edge);
+          return debug.forcePosition(player.id, lip.x + (edge === 'left' ? -5 : 5), lip.y + 33);
+        }, { id: fighter, edge });
+        expect(position).toBe(true);
+        await expect.poll(async () => (await sample()).art?.clip, { intervals: [16] }).toBe('ledge_hang');
+        expect((await sample()).player?.ledgeId).toBe(edge);
+        if (clip === 'ledge_drop' || clip === 'ledge_trump') {
+          await page.keyboard.press('F6');
+          const frames = [await sample()];
+          if (key === 'trump') {
+          await page.evaluate(() => {
+            const debug = window.__smashDebug!;
+            const players = Object.values(debug.getSnapshot().players);
+            const holder = players.find(player => player.slotIndex === 0)!;
+            const challenger = players.find(player => player.slotIndex === 1)!;
+            debug.forcePosition(challenger.id, holder.x, holder.y);
+          });
+
+          } else {
+            await page.keyboard.down(key);
+          }
+          await page.keyboard.press('F7');
+          if (key !== 'trump') await page.keyboard.up(key);
+          frames.push(await sample());
+          for (let tick = 1; tick <= 50; tick++) {
+            await page.keyboard.press('F7');
+            frames.push(await sample());
+            if (frames.at(-1)?.art?.clip.startsWith('air_fall') && frames.some(frame => frame.art?.clip === clip)) break;
+          }
+          const release = frames.findIndex(frame => frame.art?.clip === clip);
+          expect(release).toBeGreaterThan(0);
+          expect(frames[release].player?.stateFrame).toBeLessThanOrEqual(1);
+          expect(frames.at(-1)?.art?.clip).toMatch(/^air_fall/);
+          const anchors = frames.slice(release - 1).map(({ player, art }) => {
+            expect(art?.bodyVisible).toBe(true);
+            return { x: art!.bodyX - player!.x, y: art!.bodyY - player!.y };
+          });
+          for (let tick = 0; tick < anchors.length; tick++) {
+            const weight = Math.max(0, 1 - Math.max(0, tick - 1) / 6);
+            expect(anchors[tick].x).toBeCloseTo(anchors[0].x * weight, 3);
+            expect(anchors[tick].y).toBeCloseTo(anchors[0].y * weight, 3);
+          }
+          await test.info().attach(fighter + '-' + edge + '-' + clip, {
+            body: JSON.stringify(frames, null, 2),
+            contentType: 'application/json',
+          });
+          await page.keyboard.press('F6');
+          continue;
+        }
+        await page.keyboard.down(key);
+        try {
+          await expect.poll(async () => (await sample()).art, { intervals: [16] })
+            .toMatchObject({ clip, bodyVisible: true });
+        } finally {
+          await page.keyboard.up(key);
+        }
+        if (clip !== 'ledge_drop') await expect.poll(async () => (await sample()).player?.isGrounded).toBe(true);
+      }
+    }
+  });
+}
+
+test('Pack 04 up-special recovery clips in the Dojo', async ({ page }) => {
+  test.setTimeout(60_000);
+  for (const fighter of ['zane-corvo', 'velvet-reply']) {
+    await page.addInitScript(id => localStorage.setItem('eth:dojo:setup:v1', JSON.stringify({
+      fighter: id, dummy: 'all-rounder', dummyMode: 'still',
+    })), fighter);
+    await page.goto(process.env.PACK04_TEST_URL ?? '/');
+    await page.locator('#splash-screen').click();
+    await page.locator('#practice-btn').click();
+    await page.locator('#practice-free').click();
+    const read = () => page.evaluate(() => {
+      const debug = window.__smashDebug;
+      const player = Object.values(debug?.getSnapshot()?.players ?? {}).find(p => p.slotIndex === 0);
+      const art = debug?.getArtState?.()?.players.find(p => p.slot === 0);
+      return { hitlag: player?.hitlagFramesRemaining ?? 0, state: player?.state, frame: player?.stateFrame, facing: player?.facing, grounded: player?.isGrounded, clip: art?.clip, visible: art?.bodyVisible, fighter: art?.character };
+    });
+    await expect.poll(read).toMatchObject({ grounded: true, fighter });
+    await page.keyboard.press('F6');
+    for (const [facing, direction] of [[1, 'ArrowRight'], [-1, 'ArrowLeft']] as const) {
+      for (const [airborne, hit] of [[false,false],[true,false],[false,true],[true,true]]) {
+        await page.keyboard.press('r');
+        await page.keyboard.press('F7');
+        await page.keyboard.down(direction);
+        await page.keyboard.press('F7');
+        await page.keyboard.up(direction);
+        if (airborne) {
+          await page.keyboard.down('KeyX');
+          for (let tick = 0; tick < 9; tick++) await page.keyboard.press('F7');
+          await page.keyboard.up('KeyX');
+        }
+        expect(await read()).toMatchObject({ grounded: !airborne, facing });
+        if (hit) await page.evaluate(() => {
+          const debug = window.__smashDebug!;
+          const players = Object.values(debug.getSnapshot().players);
+          const player = players.find(p => p.slotIndex === 0)!;
+          const dummy = players.find(p => p.slotIndex === 1)!;
+          debug.forcePosition(dummy.id, player.x + 15 * player.facing, player.y - (player.isGrounded ? 20 : 45));
+        });
+        if (hit && !airborne) {
+          await page.keyboard.down('ArrowUp');
+          await page.keyboard.down('KeyS');
+          await page.keyboard.press('F6');
+          const playback = await page.evaluate(async () => {
+            const debug = window.__smashDebug!;
+            const frames = [];
+            const end = performance.now() + 2000;
+            while (performance.now() < end) {
+              await new Promise(requestAnimationFrame);
+              const player = Object.values(debug.getSnapshot().players).find(p => p.slotIndex === 0)!;
+              const art = debug.getArtState!().players.find(p => p.slot === 0)!;
+              frames.push({ state: player.state, hitlag: player.hitlagFramesRemaining ?? 0,
+                facing: art.bodyFacing, clip: art.clip, visible: art.bodyVisible,
+                anchorY: art.bodyY - player.y, frameRect: art.frameRect });
+              if (frames.some(frame => frame.state === 'HELPLESS_LAND') && player.state === 'IDLE') break;
+            }
+            return frames;
+          });
+          await page.keyboard.up('KeyS');
+          await page.keyboard.up('ArrowUp');
+          await page.keyboard.press('F6');
+          expect(playback.some(frame => frame.clip === 'up_special' && frame.hitlag > 0)).toBe(true);
+          expect(playback.some(frame => frame.clip.startsWith('helpless_') && frame.state === 'HELPLESS')).toBe(true);
+          expect(playback.some(frame => frame.clip === 'helpless_land')).toBe(true);
+          expect(playback.at(-1)?.state).toBe('IDLE');
+          expect(playback.every(frame => frame.visible && frame.facing === facing)).toBe(true);
+          await test.info().attach(fighter + '-recovery-' + facing, {
+            body: JSON.stringify(playback, null, 2), contentType: 'application/json',
+          });
+          continue;
+        }
+    await page.keyboard.down('ArrowUp');
+    await page.keyboard.down('KeyS');
+    await page.keyboard.press('F7');
+    await page.keyboard.up('KeyS');
+    await page.keyboard.up('ArrowUp');
+    let contact = false;
+    const seen = new Map<string, string>();
+    for (let tick = 0; tick < 110; tick++) {
+      const frame = await read();
+      expect(frame.visible, JSON.stringify(frame)).toBe(true);
+      contact ||= frame.hitlag > 0;
+      seen.set(frame.state!, frame.clip!);
+      if (frame.grounded && seen.has('HELPLESS')) break;
+      await page.keyboard.press('F7');
+    }
+    expect(contact, JSON.stringify({fighter,facing,airborne,hit})).toBe(hit);
+    expect(seen.has('HELPLESS')).toBe(true);
+    expect((await read()).grounded).toBe(true);
+    expect(seen.get('AIR_ATTACK')).toBe('up_special');
+    expect(seen.get('HELPLESS')).toMatch(/^helpless_(enter|loop)$/);
+    expect(await read()).toMatchObject({clip: 'helpless_land'});
+    expect((await read()).frame).toBeLessThanOrEqual(1);
+      }
+    }
+  }
+});

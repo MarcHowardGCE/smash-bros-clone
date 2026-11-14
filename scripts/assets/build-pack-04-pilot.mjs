@@ -44,10 +44,11 @@ function registerSheet(id, action, pivots, rowCut, columns = 2, columnCuts) {
   return pivots.map((pivot, index) => {
     const column = index % columns;
     const row = Math.floor(index / columns);
-    const x = columnCuts?.[column] ?? Math.floor(column * sheet.width / columns);
+    const cuts = Array.isArray(columnCuts?.[0]) ? columnCuts[row] : columnCuts;
+    const x = cuts?.[column] ?? Math.floor(column * sheet.width / columns);
     const split = (Array.isArray(rowCut) ? rowCut[column] : rowCut) ?? Math.floor(sheet.height / 2);
     const y = row === 0 ? 0 : split;
-    const width = (columnCuts?.[column + 1] ?? Math.floor((column + 1) * sheet.width / columns)) - x;
+    const width = (cuts?.[column + 1] ?? Math.floor((column + 1) * sheet.width / columns)) - x;
     const height = row === 0 ? split : sheet.height - split;
     const cell = new PNG({ width, height });
     PNG.bitblt(sheet, cell, x, y, width, height, 0, 0);
@@ -299,7 +300,270 @@ for (const [id, pivots] of Object.entries(walkPivots)) {
     const frame = variants[index];
     clips[name] = { image: frame.image, scale: 82 / variants[0].rect[3], frames: [frame] };
   }
+
+  const knockdownSheet = readSource(id + '-knockdown.png');
+  const [uncurl, faceUp, faceDown] = registerSheet(id, 'knockdown',
+    zane ? [270, 967, 1730] : [285, 991, 1780],
+    knockdownSheet.height, 3, [0, 580, 1370]);
+  const knockdownScale = zane ? 0.127 : 0.123;
+  const knockdownPose = frame => ({ image: frame.image, scale: knockdownScale, frames: [frame] });
+  Object.assign(clips, {
+    tumble_recover: knockdownPose({
+      ...uncurl,
+      airRoot: [uncurl.root[0], uncurl.root[1] - (zane ? 270 : 233)],
+    }),
+    knockdown_up: knockdownPose(faceUp),
+    knockdown_down: knockdownPose(faceDown),
+  });
+
+  const floor = registerSheet(id, 'prone',
+    zane ? [319, 871, 378, 943] : [279, 910, 382, 950]);
+  const floorScale = zane ? 0.143 : 0.146;
+  for (const [index, orientation] of ['up', 'down'].entries()) {
+    const hold = floor[index * 2];
+    const rise = floor[index * 2 + 1];
+    clips['prone_' + orientation] = { image: hold.image, scale: floorScale, frames: [hold] };
+    clips['getup_' + orientation] = {
+      image: rise.image, scale: floorScale,
+      frames: [hold, rise, { ...crouch, scale: stanceScale }, { ...resting, scale: clips.idle.scale }],
+      durations: [2, 6, 6, 5],
+    };
+  }
+
+  const options = registerSheet(id, 'floor-options',
+    zane ? [278, 787, 263, 721] : [313, 810, 245, 748],
+    undefined, 2, [[0, 550], [0, 480]]);
+  const optionScale = zane ? 0.13 : 0.128;
+  for (const [index, orientation] of ['up', 'down'].entries()) {
+    const [hold, rise, settle, stand] = clips['getup_' + orientation].frames;
+    const roll = options[index * 2];
+    const attack = options[index * 2 + 1];
+    clips['getup_roll_' + orientation] = {
+      image: roll.image, scale: floorScale,
+      frames: [hold, rise, { ...roll, scale: optionScale }, settle, stand],
+      durations: [2, 4, 9, 6, 5],
+    };
+    clips['floor_attack_' + orientation] = {
+      image: attack.image, scale: floorScale,
+      frames: [hold, rise, { ...attack, scale: optionScale },
+        { ...attack, scale: optionScale, mirrorSource: true }, settle, stand],
+      durations: [2, 4, 2, 2, 6, 5],
+      activeWindow: [6, 10],
+    };
+  }
+
+  const tech = registerSheet(id, 'tech',
+    zane ? [333, 1000, 304, 965] : [302, 931, 280, 889]);
+  const techScale = zane ? 0.147 : 0.140;
+  const techPose = (index, belowPelvis) => {
+    const frame = tech[index];
+    return belowPelvis === undefined ? frame : {
+      ...frame,
+      airRoot: [frame.root[0], frame.root[1] - belowPelvis],
+    };
+  };
+  const plantTech = techPose(0);
+  const rollTech = techPose(1);
+  const wallBrace = techPose(2, zane ? 194 : 220);
+  const wallPush = techPose(3, zane ? 255 : 280);
+  const techStand = { ...resting, scale: clips.idle.scale };
+  const techCrouch = { ...crouch, scale: stanceScale };
+  for (const [name, frames] of Object.entries({
+    tech_neutral: [plantTech, plantTech, techCrouch, techStand],
+    tech_roll: [plantTech, rollTech, rollTech, techCrouch, techStand],
+    wall_tech: [wallBrace],
+    wall_tech_jump: [wallBrace, wallBrace, wallPush, wallPush],
+  })) {
+    clips[name] = { image: frames[0].image, scale: techScale, frames };
+  }
+
+  const [ceiling, slip, seated, rise, lockUp, lockDown] = registerSheet(id, 'trip-tech',
+    zane ? [234, 708, 1198, 206, 675, 1287] : [234, 689, 1164, 217, 680, 1249],
+    513, 3, [[0, 478, 987], [0, 398, zane ? 975 : 930]]);
+  const tripScale = zane ? 0.16 : 0.155;
+  const tripPose = frames => ({ image: frames[0].image, scale: tripScale, frames });
+  Object.assign(clips, {
+    ceiling_tech: tripPose([{ ...ceiling, airRoot: [ceiling.root[0], ceiling.root[1] - (zane ? 203 : 204)] }]),
+    trip_fall: tripPose([slip, slip, seated]),
+    trip_prone: tripPose([seated]),
+    trip_getup: tripPose([seated, rise, { ...resting, scale: clips.idle.scale }]),
+    jab_lock_up: tripPose([lockUp, { ...clips.prone_up.frames[0], scale: floorScale }]),
+    jab_lock_down: tripPose([lockDown, { ...clips.prone_down.frames[0], scale: floorScale }]),
+  });
+
+  const tripStand = { ...resting, scale: clips.idle.scale };
+  const tripRoll = { ...options[2], scale: optionScale };
+  const tripAttack = { ...options[1], scale: optionScale };
+  clips.trip_roll = {
+    ...tripPose([seated, rise, tripRoll, { ...crouch, scale: stanceScale }, tripStand]),
+    durations: [2, 4, 9, 6, 5],
+  };
+  clips.floor_attack_trip = {
+    ...tripPose([seated, rise, tripAttack, { ...crouch, scale: stanceScale }, tripStand]),
+    durations: [2, 4, 4, 6, 5],
+    activeWindow: [6, 10],
+  };
+
+  const [reach, hold, held, grabRelease] = registerSheet(id, 'grab',
+    zane ? [250, 854, 319, 886] : [282, 869, 326, 865], zane ? 645 : 590);
+  const grabScale = 82 / hold.rect[3];
+  const socket = (frame, x, aboveFloor) => [frame.root[0] + x, frame.root[1] - aboveFloor];
+  hold.sockets = { grabGrip: socket(hold, zane ? 217 : 207, zane ? 425 : 414) };
+  held.sockets = {
+    gripTop: socket(held, zane ? -53 : -42, zane ? 483 : 530),
+    gripBottom: socket(held, zane ? -34 : -23, zane ? 431 : 477),
+  };
+  const grabPose = frames => ({ image: frames[0].image, scale: grabScale, frames });
+  Object.assign(clips, {
+    grab: { ...grabPose([{ ...resting, scale: clips.idle.scale }, reach, grabRelease]),
+      durations: [3, 3, 6], activeWindow: [3, 6] },
+    grab_hold: grabPose([hold]),
+    grabbed: grabPose([held]),
+    grab_release: grabPose([grabRelease, { ...resting, scale: clips.idle.scale }]),
+  });
+  clips.grab_dash = {
+    ...grabPose([{ ...stride, scale: runScale }, reach, { ...brake, scale: runScale }]),
+    durations: [4, 3, 8], activeWindow: [4, 7],
+  };
+  clips.grab_pivot = {
+    ...grabPose([{ ...standingTurn, scale: stanceScale }, reach, grabRelease]),
+    durations: [4, 3, 8], activeWindow: [4, 7],
+  };
+
+  const pummelSheet = readSource(id + '-pummel.png');
+  const [strike, flinch] = registerSheet(id, 'pummel',
+    zane ? [408, 1304] : [440, 1305], pummelSheet.height);
+  const pummelScale = 82 / strike.rect[3];
+  const strikeFrame = { ...strike, scale: pummelScale, sockets: {
+    grabGrip: socket(strike, zane ? 308 : 258, zane ? 645 : 676),
+  }};
+  const flinchFrame = { ...flinch, scale: pummelScale, sockets: {
+    gripTop: socket(flinch, zane ? 102 : 184, zane ? 538 : 594),
+    gripBottom: socket(flinch, zane ? 118 : 194, zane ? 495 : 548),
+  }};
+  clips.pummel = {
+    ...grabPose([hold, strikeFrame, hold]), durations: [3, 1, 6], activeWindow: [3, 4],
+  };
+  clips.pummel_victim = grabPose([flinchFrame, flinchFrame, held, held]);
+
+  const throws = registerSheet(id, 'throws',
+    zane ? [251, 932, 287, 883] : [278, 904, 318, 867], zane ? 640 : 590);
+  const windups = registerSheet(id, 'throw-windup',
+    zane ? [259, 875, 268, 882] : [286, 907, 287, 869]);
+  const grips = zane ? [[90, 406], [-4, 413], [54, 529], [-25, 300]]
+    : [[136, 411], [17, 405], [62, 573], [11, 332]];
+  const windupScale = 82 / windups[0].rect[3];
+  const between = registerSheet(id, 'throw-inbetween',
+    zane ? [350, 1080, 1771] : [365, 1090, 1798],
+    readSource(id + '-throw-inbetween.png').height, 3);
+  const betweenGrips = zane ? [[138, 476], [145, 558], [140, 413]]
+    : [[159, 475], [142, 563], [163, 429]];
+  const betweenScale = 82 / between[0].rect[3];
+  const throwScale = 82 / throws[0].rect[3];
+  for (const [index, direction] of ['forward', 'back', 'up', 'down'].entries()) {
+    const releaseFrame = { ...throws[index], scale: throwScale };
+    const intermediate = between[index - 1];
+    const transition = intermediate ? [{
+      ...intermediate, scale: betweenScale,
+      sockets: { grabGrip: socket(intermediate, ...betweenGrips[index - 1]) },
+    }] : [];
+    clips[direction + '_throw'] = {
+      ...grabPose([hold, ...transition, { ...windups[index], scale: windupScale, sockets: {
+        grabGrip: socket(windups[index], ...grips[index]),
+      } }, releaseFrame, { ...resting, scale: clips.idle.scale }]),
+      durations: intermediate ? [2, 2, 2, 1, 12] : [3, 3, 1, 12], activeWindow: [6, 7],
+    };
+  }
+  {
+    const thrown = registerSheet(id, 'throw-victim', zane ? [270, 956, 340, 894] : [263, 1123, 432, 1118], zane ? 550 : 440, 2, zane ? [[0, 635], [0, 520]] : undefined);
+    const belowPelvis = zane ? [167, 177, 345, 127] : [160, 80, 310, 44];
+    const scale = 0.13;
+    const frames = thrown.map((frame, index) => ({
+      ...frame,
+      airRoot: [frame.root[0], frame.root[1] - belowPelvis[index]],
+    }));
+    clips.throw_victim = {
+      image: frames[0].image, scale,
+      frames: [...frames, frames[3], { ...clips.tumble.frames[0], scale: clips.tumble.scale }],
+    };
+  }
+
+  const ledgeSheet = readSource(id + '-ledge.png');
+  const ledge = registerSheet(id, 'ledge',
+    zane ? [485, 1378] : [551, 1352], ledgeSheet.height);
+  const ledgeScale = 0.102;
+  const ledgeHands = zane ? [[103, 35], [62, 34]] : [[88, 26], [70, 24]];
+  for (const [index, name] of ['ledge_catch', 'ledge_hang'].entries()) {
+    const frame = ledge[index];
+    const [handX, handY] = ledgeHands[index];
+    frame.sockets = { ledgeGrip: [frame.root[0] + handX, handY] };
+    clips[name] = { image: frame.image, scale: ledgeScale, frames: [frame] };
+  }
+
+  const [pull, leap, tuckRoll, ledgeStrike] = registerSheet(id, 'ledge-options',
+    zane ? [257, 828, 242, 767] : [248, 805, 248, 739], 735, 2, [[0, 540], [0, 480]]);
+  const climbScale = 0.129;
+  const hang = { ...clips.ledge_hang.frames[0], scale: ledgeScale };
+  const standLedge = { ...resting, scale: clips.idle.scale };
+  const pullFrame = { ...pull, sockets: { ledgeGrip: [pull.root[0] + (zane ? 178 : 188), 28] } };
+  const leapFrame = { ...leap, airRoot: [leap.root[0], leap.root[1] - (zane ? 195 : 191)] };
+  const ledgeOptions = {
+    ledge_climb: [hang, pullFrame, { ...crouch, scale: stanceScale }, standLedge],
+    ledge_jump: [leapFrame],
+    ledge_roll: [hang, pullFrame, tuckRoll, standLedge],
+    ledge_attack: [hang, pullFrame, ledgeStrike, standLedge],
+  };
+  for (const [name, frames] of Object.entries(ledgeOptions)) {
+    clips[name] = { image: frames[0].image, scale: climbScale, frames };
+  }
+
+  const fallFromLedge = {
+    ...air[2], scale: airScale,
+    airRoot: [air[2].root[0], Math.round(air[2].rect[3] * 0.54)],
+  };
+  const releaseTuck = { ...anchored[5], scale: aerialScale };
+  const recoverySheet = registerSheet(id, 'recovery-special',
+    zane ? [270, 742, 1240, 265, 770, 1244] : [257, 763, 1260, 260, 775, 1255], 503, 3);
+  const [special_windup, special_strike, special_apex, special_helpless, special_fall, special_landing] = recoverySheet;
+  const recoveryScale = 82 / special_strike.rect[3];
+  const airborneFrame = frame => ({
+    ...frame, airRoot: [frame.root[0], Math.round(frame.rect[3] * 0.54)],
+  });
+  for (const [name, frames] of Object.entries({
+    up_special: [special_windup, special_windup, airborneFrame(special_strike), airborneFrame(special_strike), airborneFrame(special_apex), airborneFrame(special_apex)],
+    helpless_enter: [airborneFrame(special_helpless), airborneFrame(special_fall)],
+    helpless_loop: [airborneFrame(special_fall)],
+    helpless_land: [special_landing, special_landing, standLedge],
+  })) clips[name] = { image: frames[0].image, scale: recoveryScale, frames };
+  const trumpRecoil = { ...clips.hit_air.frames[0], scale: clips.hit_air.scale };
+  for (const [name, frames] of Object.entries({
+    ledge_drop: [releaseTuck, fallFromLedge, fallFromLedge, fallFromLedge],
+    ledge_trump: [trumpRecoil, trumpRecoil, releaseTuck, fallFromLedge],
+  })) clips[name] = { image: frames[0].image, scale: airScale, frames };
+  // Register the presentation cues with approved drawings pending dedicated art.
+  const presentation = {
+    entry: [standingTurn, standingTurn, resting, resting, resting, resting],
+    respawn_wait: [air[3]], respawn_drop: [air[3], air[2], air[5]],
+    taunt_up: [resting, special_strike, special_strike, special_strike, special_apex, resting],
+    taunt_side: [resting, standingTurn, standingTurn, standingTurn, exhale, resting],
+    taunt_down: [resting, crouch, crouch, crouch, exhale, resting],
+    victory_1: [resting, special_strike, special_apex],
+    victory_2: [resting, standingTurn, exhale],
+    victory_3: [crouch, standingTurn, resting],
+    defeat: [crouch],
+    ko_launch: [trumpRecoil], ko_star: [special_helpless],
+    ko_screen: [special_helpless],
+  };
+  for (const [name, frames] of Object.entries(presentation)) {
+    clips[name] = { image: frames[0].image, scale: clips.idle.scale,
+      frames: frames.map(frame => ({
+        ...frame,
+        scale: frame.scale ?? (recoverySheet.includes(frame) ? recoveryScale :
+          air.includes(frame) ? airScale : frame === standingTurn || frame === crouch ? stanceScale : clips.idle.scale),
+      })),
+    };
+  }
 }
-fs.writeFileSync(output + '/manifest.json', JSON.stringify({ version: 1, revision: 25, characters }, null, 2) + '\n');
+fs.writeFileSync(output + '/manifest.json', JSON.stringify({ version: 1, revision: 45, characters }, null, 2) + '\n');
 
 

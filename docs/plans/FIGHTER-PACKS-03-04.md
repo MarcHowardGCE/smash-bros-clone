@@ -1052,3 +1052,411 @@ Atlas revision 25 registers separate grounded high, low and heavy recoil
 drawings for both fighters. Each uses a sole anchor. Atlas generation
 and crop registration checks passed. These are single-drawing clips.
 Targeted Dojo playback remains open. Next are tumble recovery and knockdown.
+
+### Pack 04 tumble recovery and knockdown
+
+Atlas revision 26 adds an airborne uncurl and distinct face-up and
+face-down knockdown poses for each fighter. The airborne pose uses a
+pelvis anchor and the floor poses use bottom anchors. Atlas registration
+and client type checking passed. Targeted Dojo playback remains open.
+Next are prone holds and get-up options for both orientations.
+
+### Pack 04 prone holds and neutral get-ups
+
+Atlas revision 27 adds distinct face-up and face-down prone holds and
+rising poses. Neutral get-up starts from the matching hold, uses the
+dedicated seated or kneeling drawing, then uses crouch and idle for the
+finish. Atlas checks verified floor anchors and the hold-to-get-up
+registration. Dojo playback remains open. Next are get-up rolls and attacks.
+
+### Pack 04 get-up rolls and attacks
+
+Atlas revision 28 adds orientation-specific rolls and floor attacks.
+Each sequence starts from its matching prone hold. Rolls use the
+requested direction on the authored tuck. Floor attacks mirror the
+strike for the rear active window. Registration passed for both
+orientations on both fighters. Dojo playback and strike geometry
+remain open. Next are ground and wall techs.
+
+### Pack 04 ground and wall techs
+
+Atlas revision 29 adds dedicated neutral ground tech, rolling ground
+tech, wall brace and wall-jump push-off poses for each fighter.
+Wall poses use airborne anchors and mirror for the contacted wall.
+The atlas build and client type check passed. Collision playback and
+hand and boot alignment remain open. Next are ceiling tech, trip
+and jab-lock reactions.
+
+### Pack 04 ceiling tech, trip and jab lock
+
+Atlas revision 30 adds ceiling brace, trip fall, seated hold, neutral
+trip get-up and both jab-lock orientations. The ceiling brace uses an
+airborne anchor. Jab locks return to their matching prone holds.
+Atlas generation and client type checking passed. Ceiling contact and
+floor transitions still need targeted Dojo playback. Next are trip
+roll and trip attack, followed by paired grabs and throws.
+
+### Pack 04 seated trip options
+
+Atlas revision 31 adds trip roll and trip attack sequences. Both start
+from the seated hold and reuse the existing floor roll and strike art.
+Atlas checks passed for hold continuity and floor anchors. Dojo
+playback and strike alignment remain open. Next are paired grabs.
+
+### Pack 04 standing grabs
+
+Atlas revision 32 adds standing reach, hold, held and escape poses
+for both fighters. The holder hand and victim collar sockets are
+registered inside their respective frame bounds. Pair alignment
+in both facings still needs Dojo review. Next are dash and pivot
+grabs, pummels, and throws.
+
+Atlas revision 33 adds dash and pivot grabs. Dash uses a sprint lead-in
+and brake recovery. Pivot uses the standing turn lead-in. Both borrow
+the standing grab reach for contact. Atlas registration passed, with
+live playback and dedicated contact drawings still open.
+Next is the paired pummel.
+
+### Pack 04 first pummel poses
+
+Atlas revision 34 adds a holder strike and a victim flinch for both
+fighters, with authored grip sockets and a return to the held poses.
+The contact solver now uses the displayed frame scale for sockets.
+Atlas socket bounds and client type checking passed. The visible strike
+and grip sync still need Dojo playback in both facings. Throws are next.
+
+### Pack 04 first throw releases
+
+Atlas revision 35 adds four distinct throw release drawings per fighter.
+The clips share the standing grip before release and idle afterward.
+Atlas generation and distinct release registration passed. Directional
+windups, victim drawings, grip continuity and Dojo timing remain open.
+
+Atlas revision 36 registers Zane's four directional throw victim poses.
+Velvet's candidate sheet showed visible white and colored matte in the
+gutters and was rejected. Velvet's replacement, airborne registration
+in the renderer, and paired Dojo playback remain open.
+
+Atlas revision 37 registers Velvet's replacement sheet after the source
+edge and center gutter alpha check. Both fighters have four distinct
+release poses with airborne anchors. The existing Pack 04 HITSTUN
+renderer path consumes those anchors. The final throw-victim cel
+retains the standalone tumble scale. Paired Dojo playback and
+directional throw windups remain open.
+
+Atlas revision 38 adds directional throw windups for both fighters.
+Before release, the contact solver samples the same authored timeline
+as the holder drawing. All eight windup sockets are inside their
+registered sprites. Client type checking passed. Paired Dojo playback
+and release alignment remain open.
+
+### Pack 04 paired throw playback
+
+Chromium passed all four throws with either Pack 04 fighter holding,
+in both facings (16 cases). Frame stepping confirmed the grabbed pose
+before the throw and visible thrower and victim clips on the first
+reaction tick. Grip spacing across the windup and the visual handoff
+into tumble remain open.
+
+At 200% partner damage, both Chromium tests passed the follow-through
+in both facings. Forward, back and up throw reach the tumble drawing.
+Down throw exits the reaction without losing the sprite, and the
+test allows the ensuing floor or airborne reaction. This run checks
+visible frame selection. Grip spacing and gameplay-speed continuity
+remain open.
+
+### Pack 04 throw windup grip spacing
+
+Measured the holder's grip movement from standing hold to the directional
+windup using each frame's registered scale. Mirroring changes the sign
+of horizontal movement and preserves its magnitude.
+
+| Fighter | Forward | Back | Up | Down |
+| --- | ---: | ---: | ---: | ---: |
+| Zane Corvo | 18.5 | 31.1 | 26.5 | 38.5 |
+| The Velvet Reply | 10.9 | 28.3 | 31.0 | 31.8 |
+
+Values are world units. Each move makes this change on a single animation
+tick. The largest jump is Zane's down throw, which pulls the grip inward
+33.8 units and lowers it 18.4 units. These measurements describe the
+holder's artwork. Verify the rendered victim displacement separately
+because the solver constrains vertical placement along the collar rail.
+Add intermediate windup drawings with sockets on the visible hand,
+starting with back, up and down throws. Replay both facings at 1x.
+
+Atlas revision 39 adds an intermediate hand pose for back, up and down
+throws. Maximum adjacent grip changes are now 18.0, 15.9 and 23.3 world
+units for Zane and 17.1, 16.7 and 18.9 for Velvet, in that order.
+The paired Chromium tests passed in both facings. The measurements
+cover grip sockets. Normal-speed visual review remains open.
+
+At 1x speed, Chromium observed visible thrower and victim reaction
+clips together on all 16 releases. The test stages the grab while
+frozen and resumes for the windup and release. All four browser
+tests passed across 1x and frame-step modes. This verifies release
+visibility. The visual smoothness of victim movement remains open
+for the polish pass. Next is the ledge animation set.
+
+### Pack 04 ledge catch and hang
+
+Atlas revision 40 adds distinct ledge catch and hang poses, with
+a leading-hand socket registered inside each frame. Atlas checks
+passed. Live hand placement and art scale need Dojo review in
+both facings. Next are ledge climb, jump, roll and attack.
+
+### Pack 04 ledge options
+
+Atlas revision 41 registers dedicated climb, jump, roll and attack
+drawings. Climb, roll and attack use the hang at entry and existing
+idle at exit. Jump has an airborne pivot registered. Atlas generation
+and clip structure checks passed. Renderer playback, hand and sole
+placement, and jump anchor use remain open. Next are ledge drop and
+trump, followed by the in-game ledge alignment pass.
+
+### Pack 04 ledge drop and trump
+
+Atlas revision 42 adds four-tick-indexed pose sequences for ledge drop
+and trump using the existing fall, tuck and recoil drawings. The
+renderer uses airborne anchors for ledge jump, drop and trump.
+Atlas generation and client type checking passed. Next is targeted
+Dojo playback and alignment at both stage edges.
+
+### Pack 04 ledge alignment corrections
+
+Ledge contact now samples the same clamped frame as the displayed sprite,
+and socket offsets respect the frame scale. Pack 04 also uses platform
+height for the planted portion of ledge climb, roll and attack. Client
+type checking and the three existing contact helper tests passed during
+this pass. Both-edge Dojo playback remains open.
+
+### Pack 04 ledge renderer verification
+
+The Chromium regression passed for Zane and Velvet at both platform edges.
+It checks catch and hang hand placement against the platform lip and sole
+placement during the planted part of the climb using the gameplay atlas.
+Next is live Dojo playback of the ledge transitions and getup options.
+
+### Pack 04 live Dojo ledge options
+
+Chromium Free Practice passed all 16 fighter, edge and input combinations.
+Zane and Velvet approached from below, caught the correct ledge, showed the
+hang sprite, and used keyboard inputs to climb, jump, attack or roll.
+Each option displayed its dedicated full-body clip and returned to the floor.
+The separate renderer test measures grip position and planted climb height.
+This live pass checks clip transitions and landing, with no additional
+alignment changes. Ledge drop and trump remain outside this live check.
+
+### Pack 04 live Dojo ledge drop and trump
+
+The extended Chromium Free Practice tests passed all 24 combinations
+across Zane and Velvet and both stage edges. The eight added cases check
+Down input from hang and a partner contest from the held ledge position.
+Drop and trump showed their dedicated full-body clips, and each contest
+entered the engine's ledge trump state. The tests used debug positioning
+to set up the approaches and did not measure per-frame release alignment.
+
+### Pack 04 ledge release alignment
+
+Drop and trump now carry the full hang sprite offset through the first
+release tick, including the change from the grounded to the airborne
+anchor. The offset then fades to zero over six ticks. The browser renderer
+test measures all seven ticks for both moves, fighters and edges. Both live
+Chromium Dojo tests also passed all 24 ledge combinations. The live tests
+verify state and visible clips. The per-tick measurements use controlled
+renderer states with the gameplay atlas.
+
+### Pack 04 live ledge release captures
+
+Chromium Dojo frame stepping captured eight drop and trump sequences across
+both fighters and both edges. The first release tick kept the hang offset
+in all eight cases. The first fall tick previously added 28 world units
+to the vertical sprite offset. Pack 04 fall now uses the same airborne
+pivot as the final release drawing. The rerun verified the full six-tick
+offset fade and zero relative offset through the first fall tick.
+Playwright attaches the live frame samples as JSON. These measure sprite
+anchors and clip selection with debug-positioned approaches.
+
+### Pack 04 up-special recovery baseline
+
+A live Chromium Dojo frame-step check confirmed that Zane and Velvet
+both enter helpless fall and helpless landing after a grounded up special
+against a passive All-Rounder. Full-body art stays visible, but the up
+special uses idle and generic fall poses. Helpless and helpless landing
+both use idle. The next art batch needs each fighter's up-special
+windup, ascent and recovery, followed by a distinct helpless entry,
+fall loop and planted landing. Then retest grounded and aerial starts
+in both facings, including confirmed hits and the first landing tick.
+
+### Pack 04 up-special and helpless clips
+
+Atlas revision 43 assembles dedicated move timelines from approved Pack 04
+drawings for up special, helpless entry and fall, and helpless landing.
+The pass reuses existing drawings. Newly drawn poses and a gameplay-speed
+visual review remain open. Chromium Dojo frame stepping passed all 16 cases
+across both fighters, both facings, grounded and aerial starts, and whiffs
+and confirmed hits. Hit cases used debug-positioned All-Rounder and verified
+attacker hit freeze. Every case displayed full-body recovery art and entered
+the helpless landing clip on the first grounded tick.
+
+### Pack 04 dedicated recovery drawings
+
+Atlas revision 44 adds six new drawings per fighter based on the shipped
+idle costume references. The sheet covers windup, upward strike, apex,
+helpless entry, fall, and planted landing. Landing recovers into the
+existing standing drawing. The atlas builder and the 16-case Chromium
+Dojo frame-step regression passed with the new art installed. This covers
+both facings, grounded and aerial starts, hit freeze and the first
+landing tick. Gameplay-speed visual review remains open.
+
+### Pack 04 normal-speed recovery playback
+
+Four Chromium Dojo captures at 1x cover confirmed grounded up-special
+hits for Zane and Velvet in both facings against debug-positioned
+All-Rounder. Each run showed hit freeze, helpless fall, helpless landing
+and return to idle with visible full-body art and consistent facing.
+Playwright attaches frame samples with clip, atlas rectangle and
+vertical anchor. Grounded confirmed-hit cases ran at 1x in this rerun.
+Aerial entries retained frame-step coverage. The captures are renderer
+telemetry, so visual pose continuity still needs direct playback review.
+
+### Pack 04 recorded recovery footage
+
+The Chromium recovery regression passed again with video recording
+enabled. The recording includes both fighters and both facings at
+normal speed for grounded confirmed hits. The recording was generated
+successfully. Visual continuity remains pending review of the footage.
+
+### Pack 04 recovery footage review and atlas gaps
+
+November 14, 2026. Reviewed a contact sheet sampled every ninth frame
+from the recorded Chromium Dojo playback. Both fighters and facings
+showed continuous ascent and descent, with no clear displacement jump
+in the sampled images. No sprite changes were made. The sampling can
+miss single-frame pose jumps. The existing frame-step regression covers
+hit freeze and the first landing tick.
+
+The lists below apply to both Zane and Velvet. The comparison uses the
+three shipped Pack 03 production manifests as the baseline. Counts are
+atlas frame entries and can include repeated drawings. Preview keys
+and the generic jump key require trigger verification before assigning
+production drawings. Other shipped packs can have different counts.
+
+#### Missing clip keys (34)
+
+- `entry`
+- `respawn_wait`
+- `respawn_drop`
+- `victory_1`
+- `victory_2`
+- `victory_3`
+- `taunt_up`
+- `taunt_side`
+- `taunt_down`
+- `ko_launch`
+- `ko_screen`
+- `ko_star`
+- `defeat`
+- `footstool_attacker`
+- `footstool_ground_victim`
+- `footstool_air_victim`
+- `dash_start`
+- `jump`
+- `takeoff_forward`
+- `takeoff_backward`
+- `platform_drop`
+- `teeter_front`
+- `teeter_back`
+- `back_throw_victim_preview`
+- `up_throw_victim_preview`
+- `down_throw_victim_preview`
+- `neutral_special`
+- `side_special`
+- `down_special`
+- `counter_success`
+- `roll_back`
+- `shield_break_launch`
+- `shield_break_dizzy`
+- `shield_break_recover`
+
+#### Shared clips below all three Pack 03 frame counts (73)
+
+| Clip | Pack 04 | Pack 03 minimum |
+|---|---:|---:|
+| `idle` | 2 | 4 |
+| `walk` | 4 | 6 |
+| `run` | 2 | 6 |
+| `brake` | 1 | 3 |
+| `turn_stand` | 1 | 2 |
+| `crouch_enter` | 1 | 6 |
+| `crouch_hold` | 1 | 4 |
+| `crouch_exit` | 1 | 6 |
+| `jump_squat` | 1 | 2 |
+| `air_rise_loop` | 1 | 2 |
+| `air_apex_loop` | 1 | 2 |
+| `air_fall_loop` | 1 | 2 |
+| `double_jump_transition` | 1 | 3 |
+| `air_fastfall_loop` | 1 | 3 |
+| `land_soft` | 1 | 3 |
+| `land_heavy` | 1 | 3 |
+| `takeoff_neutral` | 1 | 2 |
+| `turn_run` | 1 | 2 |
+| `jab` | 3 | 9 |
+| `jab_2` | 3 | 6 |
+| `jab_3` | 3 | 6 |
+| `dash_attack` | 3 | 4 |
+| `forward_smash` | 3 | 4 |
+| `up_smash` | 3 | 4 |
+| `shield` | 1 | 2 |
+| `shield_raise` | 1 | 6 |
+| `shield_hit` | 1 | 3 |
+| `shield_drop` | 1 | 6 |
+| `parry` | 1 | 3 |
+| `dodge` | 1 | 3 |
+| `hit_mid` | 1 | 4 |
+| `hit_air` | 1 | 6 |
+| `hit_launch` | 1 | 2 |
+| `tumble` | 1 | 4 |
+| `hit_high` | 1 | 4 |
+| `hit_low` | 1 | 4 |
+| `hit_heavy` | 1 | 6 |
+| `tumble_recover` | 1 | 6 |
+| `knockdown_up` | 1 | 6 |
+| `knockdown_down` | 1 | 6 |
+| `prone_up` | 1 | 4 |
+| `getup_up` | 4 | 6 |
+| `prone_down` | 1 | 4 |
+| `getup_down` | 4 | 6 |
+| `getup_roll_up` | 5 | 6 |
+| `floor_attack_up` | 6 | 7 |
+| `getup_roll_down` | 5 | 6 |
+| `floor_attack_down` | 6 | 7 |
+| `tech_neutral` | 4 | 6 |
+| `tech_roll` | 5 | 6 |
+| `wall_tech` | 1 | 6 |
+| `wall_tech_jump` | 4 | 6 |
+| `ceiling_tech` | 1 | 6 |
+| `trip_fall` | 3 | 6 |
+| `trip_prone` | 1 | 4 |
+| `trip_getup` | 3 | 6 |
+| `jab_lock_up` | 2 | 4 |
+| `jab_lock_down` | 2 | 4 |
+| `trip_roll` | 5 | 6 |
+| `floor_attack_trip` | 5 | 7 |
+| `grab` | 3 | 6 |
+| `grab_hold` | 1 | 4 |
+| `grabbed` | 1 | 4 |
+| `grab_release` | 2 | 4 |
+| `grab_dash` | 3 | 6 |
+| `grab_pivot` | 3 | 6 |
+| `pummel` | 3 | 6 |
+| `forward_throw` | 4 | 5 |
+| `ledge_catch` | 1 | 4 |
+| `ledge_climb` | 4 | 6 |
+| `ledge_jump` | 1 | 6 |
+| `ledge_roll` | 4 | 6 |
+| `ledge_attack` | 4 | 6 |
+
+Next, complete entry, respawn, taunts, KO reactions and results, then
+close the remaining runtime clip and frame gaps. Audit triggers,
+distinct drawings and fallback behavior before production packaging.
+

@@ -168,7 +168,7 @@ export class FullBodyPilot {
  }
  private lastContact:[number,number]=[0,0];private lastContactFacing:1|-1=1;private contactRebase=false;private lastHolder:{clip:LoadedClip;index:number;owner:GrabContactContext}|null=null;
  private ledgeFacing:1|-1=1;private previousState="";private ledgeRelease:{clip:PilotClip;start:number}|null=null;
- private contactExit?:{kind:"ledge"|"footstool";x:number;y:number;state?:string;start?:number};
+ private contactExit?:{kind:"ledge"|"footstool";x:number;y:number;state?:string;start?:number;baseY?:number};
  private previousDoubleJump:boolean|undefined;
  private resultStart:number|null=null;private resultKind:string|undefined;
  private doubleJumpCue:{state:string;frame:number;elapsed:number}|null=null;
@@ -425,33 +425,35 @@ export class FullBodyPilot {
     Math.abs(impactVx) > 0.2 ? -Math.sign(impactVx)*facing : 1;
   // The wall side identifies the contacted face of the platform.
   const wallSide = prepared.wallTechSide;
-  const wallFlip = pack03 && wallSide && selected.index < 5 &&
+  const wallFlip = (pack03 || isPack04FighterId(this.artId)) && wallSide && selected.index < 5 &&
     (selected.clip === 'wall_tech' || selected.clip === 'wall_tech_jump')
     ? (wallSide === 'left' ? 1 : -1) * facing : 1;
   const drawingScale = drawing.scale ?? clip.scale;
   this.sprite.scale.set(wallFlip*launchFlip*drawingScale*(clip.mirrorSource?-1:1)*(drawing.mirrorSource?-1:1)*(this.reaction?reactionFlip:selected.clip==='grab_release'?this.lastVictimFlip:['grabbed','pummel_victim'].includes(selected.clip)?victimFlip:((selected.clip==='roll'&&!pack03)||selected.clip==='tech_roll')?rollDirection:1),drawingScale);
   const newcomerHeld=this.artId&&['grabbed','pummel_victim','grab_release'].includes(selected.clip);
   if(newcomerHeld)this.sprite.scale.x*=-1;
-  const airRoot = state === 'AIR_ATTACK' || (isPack04FighterId(this.artId) && (state === 'AIR_DODGE' || state === 'HITSTUN' || selected.clip === 'tumble')) || (pack03 && (airborne || state === 'HELPLESS' || state === 'AIR_DODGE' || selected.clip === 'shield_break_launch' ||
+  const airRoot = state === 'AIR_ATTACK' || (isPack04FighterId(this.artId) && (state === 'AIR_DODGE' || state === 'HELPLESS' || state === 'HITSTUN' || selected.clip === 'tumble' || (selected.clip === 'tumble_recover' && !prepared.isGrounded) || selected.clip === 'wall_tech' || selected.clip === 'wall_tech_jump' || selected.clip === 'ceiling_tech' || selected.clip === 'ledge_jump' || selected.clip === 'ledge_drop' || selected.clip === 'ledge_trump')) || (pack03 && (airborne || state === 'HELPLESS' || state === 'AIR_DODGE' || selected.clip === 'shield_break_launch' ||
       (state === 'HITSTUN' && ['hit_air','hit_launch','tumble','footstool_air_victim'].includes(selected.clip)))) ? drawing.airRoot : undefined;
-  const root = airRoot ?? drawing.root;
+  const fallRoot = isPack04FighterId(this.artId) && selected.clip === 'air_fall_loop'
+    ? [drawing.root[0], Math.round(drawing.texture.frame.height * 0.54)] : undefined;
+  const root = airRoot ?? fallRoot ?? drawing.root;
   this.sprite.pivot.set(root[0],root[1]);
   const floorOffset=this.artId?getCharacterStats(this.characterId).hurtboxRadius:drawing.offsetY;
-  this.sprite.position.set(0,airRoot ? 0 : floorOffset);
+  this.sprite.position.set(0,airRoot || fallRoot ? 0 : floorOffset);
   if(grabVictim&&grabOwner){
    const owner=selectPilotFrame(grabOwner.state,grabOwner.frame,grabOwner.move,0,true,false,grabOwner.characterId);
    const holder=owner?this.assets.characters[grabOwner.artId??grabOwner.characterId]?.[owner.clip]:undefined;
    if(owner&&holder){
     const authoredPummel = grabOwner.artId && owner.clip === 'pummel' && holder.activeWindow;
-    const pack03Throw = isPack03PilotId(grabOwner.artId) && owner.clip.endsWith('_throw');
+    const authoredThrow = (isPack03PilotId(grabOwner.artId) || isPack04FighterId(grabOwner.artId)) && owner.clip.endsWith('_throw');
     const startup = grabOwner.move ? getMoveDataForCharacter(grabOwner.characterId, grabOwner.move).startupFrames : 1;
     const heldThrowAge = Math.min(grabOwner.frame / Math.max(1, startup), 0.999) * (holder.activeWindow?.[0] ?? 0);
-    const hi=owner.clip==='grab_hold'?grabHoldFrameIndex(grabOwner.frame,holder.frames.length):pack03Throw?dojoFrame(holder,heldThrowAge):authoredPummel?authoredAttackFrame(holder,Math.max(0,grabOwner.frame),startup,getMoveDataForCharacter(grabOwner.characterId,grabOwner.move!).activeFrames):grabOwner.artId?(owner.index>=3?1:0):owner.index;
+    const hi=owner.clip==='grab_hold'?grabHoldFrameIndex(grabOwner.frame,holder.frames.length):authoredThrow?dojoFrame(holder,heldThrowAge):authoredPummel?authoredAttackFrame(holder,Math.max(0,grabOwner.frame),startup,getMoveDataForCharacter(grabOwner.characterId,grabOwner.move!).activeFrames):grabOwner.artId?(owner.index>=3?1:0):owner.index;
     const receiver=newcomerHeld?{...clip,mirrorSource:!clip.mirrorSource}:clip;
     this.lastHolder={clip:holder,index:hi,owner:grabOwner};
     this.lastContactFacing=grabOwner.facing;
     this.contactRebase=false;
-    this.lastContact=solveGrabContact(holder,hi,receiver,selected.index,grabOwner.dx,grabOwner.dy,!pack03Throw && owner.clip.endsWith('_throw'));
+    this.lastContact=solveGrabContact(holder,hi,receiver,selected.index,grabOwner.dx,grabOwner.dy,!authoredThrow && owner.clip.endsWith('_throw'));
     this.sprite.position.x=this.lastContact[0]*grabOwner.facing*facing;
     this.sprite.position.y+=this.lastContact[1];
    }
@@ -493,29 +495,35 @@ export class FullBodyPilot {
    else if(sole&&head){const weight=this.artId?1:Math.max(0,1-(prepared.footstoolFrame??0)/6);this.sprite.position.x+=(contact.dx+head[0]-sole[0])*facing*weight;this.sprite.position.y+=(contact.dy+head[1]-sole[1])*weight;}
   }
   const floorRoll=selected.clip.startsWith('getup_roll')||selected.clip==='trip_roll';
-  if(floorRoll&&(!this.artId||selected.index===(selected.clip==='trip_roll'?2:3)))this.sprite.scale.x=Math.abs(this.sprite.scale.x)*(prepared.floorRollDirection??facing)*facing*(drawing.mirrorSource?-1:1);
+  if(floorRoll&&(!this.artId||selected.index===(selected.clip==='trip_roll'||isPack04FighterId(this.artId)?2:3)))this.sprite.scale.x=Math.abs(this.sprite.scale.x)*(prepared.floorRollDirection??facing)*facing*(drawing.mirrorSource?-1:1);
   if(ledgeId)this.ledgeFacing=ledgeId==='left'?1:-1;
   if(selected.clip.startsWith('ledge_')){
    const inward=this.ledgeFacing;
    this.sprite.scale.x=Math.abs(this.sprite.scale.x)*inward*facing;
    const contact=prepared.ledgeContact;
-   const grip=this.artId&&contact?footstoolPoint(clip,selected.index,'ledgeGrip',inward):null;
+   const grip=this.artId&&contact?footstoolPoint(clip,Math.max(0,Math.min(clip.frames.length-1,selected.index)),'ledgeGrip',inward):null;
    if(contact&&grip){
     contactCorrection={kind:"ledge",x:contact.dx-grip[0],y:contact.dy-grip[1]};
-   }else if(pack03 && contact && selected.index>=2 &&
+   }else if((pack03 || isPack04FighterId(this.artId)) && contact && selected.index>=2 &&
        (selected.clip==='ledge_climb' || selected.clip==='ledge_roll' || selected.clip==='ledge_attack')){
     // The simulation holds its ledge position until the getup completes.
     contactCorrection={kind:'ledge',x:0,y:contact.dy-floorOffset};
 
    }
   }
-  if(contactCorrection)this.contactExit=contactCorrection;
+  if(contactCorrection)this.contactExit={
+   ...contactCorrection,
+   baseY:this.sprite.position.y,
+  };
   const exit=this.contactExit;
   if(exit){
    const followsContact=exit.kind==='ledge'?selected.clip.startsWith('ledge_'):selected.clip==='footstool_attacker'||state==='AIRBORNE'||state==='DOUBLE_JUMP';
    if(!contactCorrection&&followsContact&&exit.state!==state){exit.state=state;exit.start=frame;}
-   const weight=contactCorrection?1:followsContact?Math.max(0,1-(frame-(exit.start??frame)+1)/6):0;
-   if(weight>0){this.sprite.position.x+=exit.x*facing*weight;this.sprite.position.y+=exit.y*weight;}
+   const pack04LedgeRelease=isPack04FighterId(this.artId) && exit.kind==='ledge' &&
+     (selected.clip==='ledge_drop' || selected.clip==='ledge_trump');
+   const elapsed=frame-(exit.start??frame);
+   const weight=contactCorrection?1:followsContact?Math.max(0,1-(elapsed+(pack04LedgeRelease?0:1))/6):0;
+   if(weight>0){this.sprite.position.x+=exit.x*facing*weight;this.sprite.position.y+=(exit.y+(pack04LedgeRelease?(exit.baseY??0)-this.sprite.position.y:0))*weight;}
    else this.contactExit=undefined;
   }
   return true;

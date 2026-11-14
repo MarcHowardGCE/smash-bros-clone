@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "revision": 25,
+  "revision": 44,
   "characters": {
     "zane-corvo": {
       "clips": {
@@ -2775,6 +2775,2781 @@
               "root": [
                 293,
                 691
+              ]
+            }
+          ]
+        },
+        "tumble_recover": {
+          "image": "zane-corvo-knockdown-0.png",
+          "scale": 0.127,
+          "frames": [
+            {
+              "image": "zane-corvo-knockdown-0.png",
+              "rect": [
+                0,
+                0,
+                483,
+                577
+              ],
+              "root": [
+                245,
+                577
+              ],
+              "airRoot": [
+                245,
+                307
+              ]
+            }
+          ]
+        },
+        "knockdown_up": {
+          "image": "zane-corvo-knockdown-1.png",
+          "scale": 0.127,
+          "frames": [
+            {
+              "image": "zane-corvo-knockdown-1.png",
+              "rect": [
+                0,
+                0,
+                701,
+                227
+              ],
+              "root": [
+                354,
+                227
+              ]
+            }
+          ]
+        },
+        "knockdown_down": {
+          "image": "zane-corvo-knockdown-2.png",
+          "scale": 0.127,
+          "frames": [
+            {
+              "image": "zane-corvo-knockdown-2.png",
+              "rect": [
+                0,
+                0,
+                735,
+                207
+              ],
+              "root": [
+                328,
+                207
+              ]
+            }
+          ]
+        },
+        "prone_up": {
+          "image": "zane-corvo-prone-0.png",
+          "scale": 0.143,
+          "frames": [
+            {
+              "image": "zane-corvo-prone-0.png",
+              "rect": [
+                0,
+                0,
+                571,
+                144
+              ],
+              "root": [
+                292,
+                144
+              ]
+            }
+          ]
+        },
+        "getup_up": {
+          "image": "zane-corvo-prone-1.png",
+          "scale": 0.143,
+          "frames": [
+            {
+              "image": "zane-corvo-prone-0.png",
+              "rect": [
+                0,
+                0,
+                571,
+                144
+              ],
+              "root": [
+                292,
+                144
+              ]
+            },
+            {
+              "image": "zane-corvo-prone-1.png",
+              "rect": [
+                0,
+                0,
+                515,
+                375
+              ],
+              "root": [
+                186,
+                375
+              ]
+            },
+            {
+              "image": "zane-corvo-stance-1.png",
+              "rect": [
+                0,
+                0,
+                323,
+                453
+              ],
+              "root": [
+                130,
+                453
+              ],
+              "scale": 0.13874788494077833
+            },
+            {
+              "image": "zane-corvo-idle.png",
+              "rect": [
+                0,
+                0,
+                764,
+                1313
+              ],
+              "root": [
+                382,
+                1313
+              ],
+              "scale": 0.062452399086062454
+            }
+          ],
+          "durations": [
+            2,
+            6,
+            6,
+            5
+          ]
+        },
+        "prone_down": {
+          "image": "zane-corvo-prone-2.png",
+          "scale": 0.143,
+          "frames": [
+            {
+              "image": "zane-corvo-prone-2.png",
+              "rect": [
+                0,
+                0,
+                593,
+                178
+              ],
+              "root": [
+                353,
+                178
+              ]
+            }
+          ]
+        },
+        "getup_down": {
+          "image": "zane-corvo-prone-3.png",
+          "scale": 0.143,
+          "frames": [
+            {
+              "image": "zane-corvo-prone-2.png",
+              "rect": [
+                0,
+                0,
+                593,
+                178
+              ],
+              "root": [
+                353,
+                178
+              ]
+            },
+            {
+              "image": "zane-corvo-prone-3.png",
+              "rect": [
+                0,
+                0,
+                481,
+                386
+              ],
+              "root": [
+                247,
+                386
+              ]
+            },
+            {
+              "image": "zane-corvo-stance-1.png",
+              "rect": [
+                0,
+                0,
+                323,
+                453
+              ],
+              "root": [
+                130,
+                453
+              ],
+              "scale": 0.13874788494077833
+            },
+            {
+              "image": "zane-corvo-idle.png",
+              "rect": [
+                0,
+                0,
+                764,
+                1313
+              ],
+              "root": [
+                382,
+                1313
+              ],
+              "scale": 0.062452399086062454
+            }
+          ],
+          "durations": [
+            2,
+            6,
+            6,
+            5
+          ]
+        },
+        "getup_roll_up": {
+          "image": "zane-corvo-floor-options-0.png",
+          "scale": 0.143,
+          "frames": [
+            {
+              "image": "zane-corvo-prone-0.png",
+              "rect": [
+                0,
+                0,
+                571,
+                144
+              ],
+              "root": [
+                292,
+                144
+              ]
+            },
+            {
+              "image": "zane-corvo-prone-1.png",
+              "rect": [
+                0,
+                0,
+                515,
+                375
+              ],
+              "root": [
+                186,
+                375
+              ]
+            },
+            {
+              "image": "zane-corvo-floor-options-0.png",
+              "rect": [
+                0,
+                0,
+                459,
+                439
+              ],
+              "root": [
+                243,
+                439
+              ],
+              "scale": 0.13
+            },
+            {
+              "image": "zane-corvo-stance-1.png",
+              "rect": [
+                0,
+                0,
+                323,
+                453
+              ],
+              "root": [
+                130,
+                453
+              ],
+              "scale": 0.13874788494077833
+            },
+            {
+              "image": "zane-corvo-idle.png",
+              "rect": [
+                0,
+                0,
+                764,
+                1313
+              ],
+              "root": [
+                382,
+                1313
+              ],
+              "scale": 0.062452399086062454
+            }
+          ],
+          "durations": [
+            2,
+            4,
+            9,
+            6,
+            5
+          ]
+        },
+        "floor_attack_up": {
+          "image": "zane-corvo-floor-options-1.png",
+          "scale": 0.143,
+          "frames": [
+            {
+              "image": "zane-corvo-prone-0.png",
+              "rect": [
+                0,
+                0,
+                571,
+                144
+              ],
+              "root": [
+                292,
+                144
+              ]
+            },
+            {
+              "image": "zane-corvo-prone-1.png",
+              "rect": [
+                0,
+                0,
+                515,
+                375
+              ],
+              "root": [
+                186,
+                375
+              ]
+            },
+            {
+              "image": "zane-corvo-floor-options-1.png",
+              "rect": [
+                0,
+                0,
+                524,
+                407
+              ],
+              "root": [
+                207,
+                407
+              ],
+              "scale": 0.13
+            },
+            {
+              "image": "zane-corvo-floor-options-1.png",
+              "rect": [
+                0,
+                0,
+                524,
+                407
+              ],
+              "root": [
+                207,
+                407
+              ],
+              "scale": 0.13,
+              "mirrorSource": true
+            },
+            {
+              "image": "zane-corvo-stance-1.png",
+              "rect": [
+                0,
+                0,
+                323,
+                453
+              ],
+              "root": [
+                130,
+                453
+              ],
+              "scale": 0.13874788494077833
+            },
+            {
+              "image": "zane-corvo-idle.png",
+              "rect": [
+                0,
+                0,
+                764,
+                1313
+              ],
+              "root": [
+                382,
+                1313
+              ],
+              "scale": 0.062452399086062454
+            }
+          ],
+          "durations": [
+            2,
+            4,
+            2,
+            2,
+            6,
+            5
+          ],
+          "activeWindow": [
+            6,
+            10
+          ]
+        },
+        "getup_roll_down": {
+          "image": "zane-corvo-floor-options-2.png",
+          "scale": 0.143,
+          "frames": [
+            {
+              "image": "zane-corvo-prone-2.png",
+              "rect": [
+                0,
+                0,
+                593,
+                178
+              ],
+              "root": [
+                353,
+                178
+              ]
+            },
+            {
+              "image": "zane-corvo-prone-3.png",
+              "rect": [
+                0,
+                0,
+                481,
+                386
+              ],
+              "root": [
+                247,
+                386
+              ]
+            },
+            {
+              "image": "zane-corvo-floor-options-2.png",
+              "rect": [
+                0,
+                0,
+                332,
+                394
+              ],
+              "root": [
+                154,
+                394
+              ],
+              "scale": 0.13
+            },
+            {
+              "image": "zane-corvo-stance-1.png",
+              "rect": [
+                0,
+                0,
+                323,
+                453
+              ],
+              "root": [
+                130,
+                453
+              ],
+              "scale": 0.13874788494077833
+            },
+            {
+              "image": "zane-corvo-idle.png",
+              "rect": [
+                0,
+                0,
+                764,
+                1313
+              ],
+              "root": [
+                382,
+                1313
+              ],
+              "scale": 0.062452399086062454
+            }
+          ],
+          "durations": [
+            2,
+            4,
+            9,
+            6,
+            5
+          ]
+        },
+        "floor_attack_down": {
+          "image": "zane-corvo-floor-options-3.png",
+          "scale": 0.143,
+          "frames": [
+            {
+              "image": "zane-corvo-prone-2.png",
+              "rect": [
+                0,
+                0,
+                593,
+                178
+              ],
+              "root": [
+                353,
+                178
+              ]
+            },
+            {
+              "image": "zane-corvo-prone-3.png",
+              "rect": [
+                0,
+                0,
+                481,
+                386
+              ],
+              "root": [
+                247,
+                386
+              ]
+            },
+            {
+              "image": "zane-corvo-floor-options-3.png",
+              "rect": [
+                0,
+                0,
+                589,
+                406
+              ],
+              "root": [
+                215,
+                406
+              ],
+              "scale": 0.13
+            },
+            {
+              "image": "zane-corvo-floor-options-3.png",
+              "rect": [
+                0,
+                0,
+                589,
+                406
+              ],
+              "root": [
+                215,
+                406
+              ],
+              "scale": 0.13,
+              "mirrorSource": true
+            },
+            {
+              "image": "zane-corvo-stance-1.png",
+              "rect": [
+                0,
+                0,
+                323,
+                453
+              ],
+              "root": [
+                130,
+                453
+              ],
+              "scale": 0.13874788494077833
+            },
+            {
+              "image": "zane-corvo-idle.png",
+              "rect": [
+                0,
+                0,
+                764,
+                1313
+              ],
+              "root": [
+                382,
+                1313
+              ],
+              "scale": 0.062452399086062454
+            }
+          ],
+          "durations": [
+            2,
+            4,
+            2,
+            2,
+            6,
+            5
+          ],
+          "activeWindow": [
+            6,
+            10
+          ]
+        },
+        "tech_neutral": {
+          "image": "zane-corvo-tech-0.png",
+          "scale": 0.147,
+          "frames": [
+            {
+              "image": "zane-corvo-tech-0.png",
+              "rect": [
+                0,
+                0,
+                378,
+                392
+              ],
+              "root": [
+                169,
+                392
+              ]
+            },
+            {
+              "image": "zane-corvo-tech-0.png",
+              "rect": [
+                0,
+                0,
+                378,
+                392
+              ],
+              "root": [
+                169,
+                392
+              ]
+            },
+            {
+              "image": "zane-corvo-stance-1.png",
+              "rect": [
+                0,
+                0,
+                323,
+                453
+              ],
+              "root": [
+                130,
+                453
+              ],
+              "scale": 0.13874788494077833
+            },
+            {
+              "image": "zane-corvo-idle.png",
+              "rect": [
+                0,
+                0,
+                764,
+                1313
+              ],
+              "root": [
+                382,
+                1313
+              ],
+              "scale": 0.062452399086062454
+            }
+          ]
+        },
+        "tech_roll": {
+          "image": "zane-corvo-tech-0.png",
+          "scale": 0.147,
+          "frames": [
+            {
+              "image": "zane-corvo-tech-0.png",
+              "rect": [
+                0,
+                0,
+                378,
+                392
+              ],
+              "root": [
+                169,
+                392
+              ]
+            },
+            {
+              "image": "zane-corvo-tech-1.png",
+              "rect": [
+                0,
+                0,
+                383,
+                283
+              ],
+              "root": [
+                208,
+                283
+              ]
+            },
+            {
+              "image": "zane-corvo-tech-1.png",
+              "rect": [
+                0,
+                0,
+                383,
+                283
+              ],
+              "root": [
+                208,
+                283
+              ]
+            },
+            {
+              "image": "zane-corvo-stance-1.png",
+              "rect": [
+                0,
+                0,
+                323,
+                453
+              ],
+              "root": [
+                130,
+                453
+              ],
+              "scale": 0.13874788494077833
+            },
+            {
+              "image": "zane-corvo-idle.png",
+              "rect": [
+                0,
+                0,
+                764,
+                1313
+              ],
+              "root": [
+                382,
+                1313
+              ],
+              "scale": 0.062452399086062454
+            }
+          ]
+        },
+        "wall_tech": {
+          "image": "zane-corvo-tech-2.png",
+          "scale": 0.147,
+          "frames": [
+            {
+              "image": "zane-corvo-tech-2.png",
+              "rect": [
+                0,
+                0,
+                407,
+                433
+              ],
+              "root": [
+                186,
+                433
+              ],
+              "airRoot": [
+                186,
+                239
+              ]
+            }
+          ]
+        },
+        "wall_tech_jump": {
+          "image": "zane-corvo-tech-2.png",
+          "scale": 0.147,
+          "frames": [
+            {
+              "image": "zane-corvo-tech-2.png",
+              "rect": [
+                0,
+                0,
+                407,
+                433
+              ],
+              "root": [
+                186,
+                433
+              ],
+              "airRoot": [
+                186,
+                239
+              ]
+            },
+            {
+              "image": "zane-corvo-tech-2.png",
+              "rect": [
+                0,
+                0,
+                407,
+                433
+              ],
+              "root": [
+                186,
+                433
+              ],
+              "airRoot": [
+                186,
+                239
+              ]
+            },
+            {
+              "image": "zane-corvo-tech-3.png",
+              "rect": [
+                0,
+                0,
+                480,
+                500
+              ],
+              "root": [
+                220,
+                500
+              ],
+              "airRoot": [
+                220,
+                245
+              ]
+            },
+            {
+              "image": "zane-corvo-tech-3.png",
+              "rect": [
+                0,
+                0,
+                480,
+                500
+              ],
+              "root": [
+                220,
+                500
+              ],
+              "airRoot": [
+                220,
+                245
+              ]
+            }
+          ]
+        },
+        "ceiling_tech": {
+          "image": "zane-corvo-trip-tech-0.png",
+          "scale": 0.16,
+          "frames": [
+            {
+              "image": "zane-corvo-trip-tech-0.png",
+              "rect": [
+                0,
+                0,
+                318,
+                473
+              ],
+              "root": [
+                119,
+                473
+              ],
+              "airRoot": [
+                119,
+                270
+              ]
+            }
+          ]
+        },
+        "trip_fall": {
+          "image": "zane-corvo-trip-tech-1.png",
+          "scale": 0.16,
+          "frames": [
+            {
+              "image": "zane-corvo-trip-tech-1.png",
+              "rect": [
+                0,
+                0,
+                441,
+                408
+              ],
+              "root": [
+                185,
+                408
+              ]
+            },
+            {
+              "image": "zane-corvo-trip-tech-1.png",
+              "rect": [
+                0,
+                0,
+                441,
+                408
+              ],
+              "root": [
+                185,
+                408
+              ]
+            },
+            {
+              "image": "zane-corvo-trip-tech-2.png",
+              "rect": [
+                0,
+                0,
+                474,
+                334
+              ],
+              "root": [
+                178,
+                334
+              ]
+            }
+          ]
+        },
+        "trip_prone": {
+          "image": "zane-corvo-trip-tech-2.png",
+          "scale": 0.16,
+          "frames": [
+            {
+              "image": "zane-corvo-trip-tech-2.png",
+              "rect": [
+                0,
+                0,
+                474,
+                334
+              ],
+              "root": [
+                178,
+                334
+              ]
+            }
+          ]
+        },
+        "trip_getup": {
+          "image": "zane-corvo-trip-tech-2.png",
+          "scale": 0.16,
+          "frames": [
+            {
+              "image": "zane-corvo-trip-tech-2.png",
+              "rect": [
+                0,
+                0,
+                474,
+                334
+              ],
+              "root": [
+                178,
+                334
+              ]
+            },
+            {
+              "image": "zane-corvo-trip-tech-3.png",
+              "rect": [
+                0,
+                0,
+                321,
+                363
+              ],
+              "root": [
+                174,
+                363
+              ]
+            },
+            {
+              "image": "zane-corvo-idle.png",
+              "rect": [
+                0,
+                0,
+                764,
+                1313
+              ],
+              "root": [
+                382,
+                1313
+              ],
+              "scale": 0.062452399086062454
+            }
+          ]
+        },
+        "jab_lock_up": {
+          "image": "zane-corvo-trip-tech-4.png",
+          "scale": 0.16,
+          "frames": [
+            {
+              "image": "zane-corvo-trip-tech-4.png",
+              "rect": [
+                0,
+                0,
+                545,
+                162
+              ],
+              "root": [
+                269,
+                162
+              ]
+            },
+            {
+              "image": "zane-corvo-prone-0.png",
+              "rect": [
+                0,
+                0,
+                571,
+                144
+              ],
+              "root": [
+                292,
+                144
+              ],
+              "scale": 0.143
+            }
+          ]
+        },
+        "jab_lock_down": {
+          "image": "zane-corvo-trip-tech-5.png",
+          "scale": 0.16,
+          "frames": [
+            {
+              "image": "zane-corvo-trip-tech-5.png",
+              "rect": [
+                0,
+                0,
+                528,
+                160
+              ],
+              "root": [
+                293,
+                160
+              ]
+            },
+            {
+              "image": "zane-corvo-prone-2.png",
+              "rect": [
+                0,
+                0,
+                593,
+                178
+              ],
+              "root": [
+                353,
+                178
+              ],
+              "scale": 0.143
+            }
+          ]
+        },
+        "trip_roll": {
+          "image": "zane-corvo-trip-tech-2.png",
+          "scale": 0.16,
+          "frames": [
+            {
+              "image": "zane-corvo-trip-tech-2.png",
+              "rect": [
+                0,
+                0,
+                474,
+                334
+              ],
+              "root": [
+                178,
+                334
+              ]
+            },
+            {
+              "image": "zane-corvo-trip-tech-3.png",
+              "rect": [
+                0,
+                0,
+                321,
+                363
+              ],
+              "root": [
+                174,
+                363
+              ]
+            },
+            {
+              "image": "zane-corvo-floor-options-2.png",
+              "rect": [
+                0,
+                0,
+                332,
+                394
+              ],
+              "root": [
+                154,
+                394
+              ],
+              "scale": 0.13
+            },
+            {
+              "image": "zane-corvo-stance-1.png",
+              "rect": [
+                0,
+                0,
+                323,
+                453
+              ],
+              "root": [
+                130,
+                453
+              ],
+              "scale": 0.13874788494077833
+            },
+            {
+              "image": "zane-corvo-idle.png",
+              "rect": [
+                0,
+                0,
+                764,
+                1313
+              ],
+              "root": [
+                382,
+                1313
+              ],
+              "scale": 0.062452399086062454
+            }
+          ],
+          "durations": [
+            2,
+            4,
+            9,
+            6,
+            5
+          ]
+        },
+        "floor_attack_trip": {
+          "image": "zane-corvo-trip-tech-2.png",
+          "scale": 0.16,
+          "frames": [
+            {
+              "image": "zane-corvo-trip-tech-2.png",
+              "rect": [
+                0,
+                0,
+                474,
+                334
+              ],
+              "root": [
+                178,
+                334
+              ]
+            },
+            {
+              "image": "zane-corvo-trip-tech-3.png",
+              "rect": [
+                0,
+                0,
+                321,
+                363
+              ],
+              "root": [
+                174,
+                363
+              ]
+            },
+            {
+              "image": "zane-corvo-floor-options-1.png",
+              "rect": [
+                0,
+                0,
+                524,
+                407
+              ],
+              "root": [
+                207,
+                407
+              ],
+              "scale": 0.13
+            },
+            {
+              "image": "zane-corvo-stance-1.png",
+              "rect": [
+                0,
+                0,
+                323,
+                453
+              ],
+              "root": [
+                130,
+                453
+              ],
+              "scale": 0.13874788494077833
+            },
+            {
+              "image": "zane-corvo-idle.png",
+              "rect": [
+                0,
+                0,
+                764,
+                1313
+              ],
+              "root": [
+                382,
+                1313
+              ],
+              "scale": 0.062452399086062454
+            }
+          ],
+          "durations": [
+            2,
+            4,
+            4,
+            6,
+            5
+          ],
+          "activeWindow": [
+            6,
+            10
+          ]
+        },
+        "grab": {
+          "image": "zane-corvo-idle.png",
+          "scale": 0.14017094017094017,
+          "frames": [
+            {
+              "image": "zane-corvo-idle.png",
+              "rect": [
+                0,
+                0,
+                764,
+                1313
+              ],
+              "root": [
+                382,
+                1313
+              ],
+              "scale": 0.062452399086062454
+            },
+            {
+              "image": "zane-corvo-grab-0.png",
+              "rect": [
+                0,
+                0,
+                435,
+                585
+              ],
+              "root": [
+                170,
+                585
+              ]
+            },
+            {
+              "image": "zane-corvo-grab-3.png",
+              "rect": [
+                0,
+                0,
+                431,
+                557
+              ],
+              "root": [
+                206,
+                557
+              ]
+            }
+          ],
+          "durations": [
+            3,
+            3,
+            6
+          ],
+          "activeWindow": [
+            3,
+            6
+          ]
+        },
+        "grab_hold": {
+          "image": "zane-corvo-grab-1.png",
+          "scale": 0.14017094017094017,
+          "frames": [
+            {
+              "image": "zane-corvo-grab-1.png",
+              "rect": [
+                0,
+                0,
+                426,
+                585
+              ],
+              "root": [
+                176,
+                585
+              ],
+              "sockets": {
+                "grabGrip": [
+                  393,
+                  160
+                ]
+              }
+            }
+          ]
+        },
+        "grabbed": {
+          "image": "zane-corvo-grab-2.png",
+          "scale": 0.14017094017094017,
+          "frames": [
+            {
+              "image": "zane-corvo-grab-2.png",
+              "rect": [
+                0,
+                0,
+                374,
+                586
+              ],
+              "root": [
+                205,
+                586
+              ],
+              "sockets": {
+                "gripTop": [
+                  152,
+                  103
+                ],
+                "gripBottom": [
+                  171,
+                  155
+                ]
+              }
+            }
+          ]
+        },
+        "grab_release": {
+          "image": "zane-corvo-grab-3.png",
+          "scale": 0.14017094017094017,
+          "frames": [
+            {
+              "image": "zane-corvo-grab-3.png",
+              "rect": [
+                0,
+                0,
+                431,
+                557
+              ],
+              "root": [
+                206,
+                557
+              ]
+            },
+            {
+              "image": "zane-corvo-idle.png",
+              "rect": [
+                0,
+                0,
+                764,
+                1313
+              ],
+              "root": [
+                382,
+                1313
+              ],
+              "scale": 0.062452399086062454
+            }
+          ]
+        },
+        "grab_dash": {
+          "image": "zane-corvo-run-0.png",
+          "scale": 0.14017094017094017,
+          "frames": [
+            {
+              "image": "zane-corvo-run-0.png",
+              "rect": [
+                0,
+                0,
+                523,
+                536
+              ],
+              "root": [
+                229,
+                536
+              ],
+              "scale": 0.14564831261101244
+            },
+            {
+              "image": "zane-corvo-grab-0.png",
+              "rect": [
+                0,
+                0,
+                435,
+                585
+              ],
+              "root": [
+                170,
+                585
+              ]
+            },
+            {
+              "image": "zane-corvo-run-2.png",
+              "rect": [
+                0,
+                0,
+                485,
+                572
+              ],
+              "root": [
+                208,
+                572
+              ],
+              "scale": 0.14564831261101244
+            }
+          ],
+          "durations": [
+            4,
+            3,
+            8
+          ],
+          "activeWindow": [
+            4,
+            7
+          ]
+        },
+        "grab_pivot": {
+          "image": "zane-corvo-stance-0.png",
+          "scale": 0.14017094017094017,
+          "frames": [
+            {
+              "image": "zane-corvo-stance-0.png",
+              "rect": [
+                0,
+                0,
+                299,
+                591
+              ],
+              "root": [
+                147,
+                591
+              ],
+              "scale": 0.13874788494077833
+            },
+            {
+              "image": "zane-corvo-grab-0.png",
+              "rect": [
+                0,
+                0,
+                435,
+                585
+              ],
+              "root": [
+                170,
+                585
+              ]
+            },
+            {
+              "image": "zane-corvo-grab-3.png",
+              "rect": [
+                0,
+                0,
+                431,
+                557
+              ],
+              "root": [
+                206,
+                557
+              ]
+            }
+          ],
+          "durations": [
+            4,
+            3,
+            8
+          ],
+          "activeWindow": [
+            4,
+            7
+          ]
+        },
+        "pummel": {
+          "image": "zane-corvo-grab-1.png",
+          "scale": 0.14017094017094017,
+          "frames": [
+            {
+              "image": "zane-corvo-grab-1.png",
+              "rect": [
+                0,
+                0,
+                426,
+                585
+              ],
+              "root": [
+                176,
+                585
+              ],
+              "sockets": {
+                "grabGrip": [
+                  393,
+                  160
+                ]
+              }
+            },
+            {
+              "image": "zane-corvo-pummel-0.png",
+              "rect": [
+                0,
+                0,
+                618,
+                840
+              ],
+              "root": [
+                267,
+                840
+              ],
+              "scale": 0.09761904761904762,
+              "sockets": {
+                "grabGrip": [
+                  575,
+                  195
+                ]
+              }
+            },
+            {
+              "image": "zane-corvo-grab-1.png",
+              "rect": [
+                0,
+                0,
+                426,
+                585
+              ],
+              "root": [
+                176,
+                585
+              ],
+              "sockets": {
+                "grabGrip": [
+                  393,
+                  160
+                ]
+              }
+            }
+          ],
+          "durations": [
+            3,
+            1,
+            6
+          ],
+          "activeWindow": [
+            3,
+            4
+          ]
+        },
+        "pummel_victim": {
+          "image": "zane-corvo-pummel-1.png",
+          "scale": 0.14017094017094017,
+          "frames": [
+            {
+              "image": "zane-corvo-pummel-1.png",
+              "rect": [
+                0,
+                0,
+                500,
+                747
+              ],
+              "root": [
+                205,
+                747
+              ],
+              "scale": 0.09761904761904762,
+              "sockets": {
+                "gripTop": [
+                  307,
+                  209
+                ],
+                "gripBottom": [
+                  323,
+                  252
+                ]
+              }
+            },
+            {
+              "image": "zane-corvo-pummel-1.png",
+              "rect": [
+                0,
+                0,
+                500,
+                747
+              ],
+              "root": [
+                205,
+                747
+              ],
+              "scale": 0.09761904761904762,
+              "sockets": {
+                "gripTop": [
+                  307,
+                  209
+                ],
+                "gripBottom": [
+                  323,
+                  252
+                ]
+              }
+            },
+            {
+              "image": "zane-corvo-grab-2.png",
+              "rect": [
+                0,
+                0,
+                374,
+                586
+              ],
+              "root": [
+                205,
+                586
+              ],
+              "sockets": {
+                "gripTop": [
+                  152,
+                  103
+                ],
+                "gripBottom": [
+                  171,
+                  155
+                ]
+              }
+            },
+            {
+              "image": "zane-corvo-grab-2.png",
+              "rect": [
+                0,
+                0,
+                374,
+                586
+              ],
+              "root": [
+                205,
+                586
+              ],
+              "sockets": {
+                "gripTop": [
+                  152,
+                  103
+                ],
+                "gripBottom": [
+                  171,
+                  155
+                ]
+              }
+            }
+          ]
+        },
+        "forward_throw": {
+          "image": "zane-corvo-grab-1.png",
+          "scale": 0.14017094017094017,
+          "frames": [
+            {
+              "image": "zane-corvo-grab-1.png",
+              "rect": [
+                0,
+                0,
+                426,
+                585
+              ],
+              "root": [
+                176,
+                585
+              ],
+              "sockets": {
+                "grabGrip": [
+                  393,
+                  160
+                ]
+              }
+            },
+            {
+              "image": "zane-corvo-throw-windup-0.png",
+              "rect": [
+                0,
+                0,
+                354,
+                597
+              ],
+              "root": [
+                177,
+                597
+              ],
+              "scale": 0.1373534338358459,
+              "sockets": {
+                "grabGrip": [
+                  267,
+                  191
+                ]
+              }
+            },
+            {
+              "image": "zane-corvo-throws-0.png",
+              "rect": [
+                0,
+                0,
+                437,
+                598
+              ],
+              "root": [
+                170,
+                598
+              ],
+              "scale": 0.13712374581939799
+            },
+            {
+              "image": "zane-corvo-idle.png",
+              "rect": [
+                0,
+                0,
+                764,
+                1313
+              ],
+              "root": [
+                382,
+                1313
+              ],
+              "scale": 0.062452399086062454
+            }
+          ],
+          "durations": [
+            3,
+            3,
+            1,
+            12
+          ],
+          "activeWindow": [
+            6,
+            7
+          ]
+        },
+        "back_throw": {
+          "image": "zane-corvo-grab-1.png",
+          "scale": 0.14017094017094017,
+          "frames": [
+            {
+              "image": "zane-corvo-grab-1.png",
+              "rect": [
+                0,
+                0,
+                426,
+                585
+              ],
+              "root": [
+                176,
+                585
+              ],
+              "sockets": {
+                "grabGrip": [
+                  393,
+                  160
+                ]
+              }
+            },
+            {
+              "image": "zane-corvo-throw-inbetween-0.png",
+              "rect": [
+                0,
+                0,
+                415,
+                657
+              ],
+              "root": [
+                204,
+                657
+              ],
+              "scale": 0.1248097412480974,
+              "sockets": {
+                "grabGrip": [
+                  342,
+                  181
+                ]
+              }
+            },
+            {
+              "image": "zane-corvo-throw-windup-1.png",
+              "rect": [
+                0,
+                0,
+                380,
+                597
+              ],
+              "root": [
+                192,
+                597
+              ],
+              "scale": 0.1373534338358459,
+              "sockets": {
+                "grabGrip": [
+                  188,
+                  184
+                ]
+              }
+            },
+            {
+              "image": "zane-corvo-throws-1.png",
+              "rect": [
+                0,
+                0,
+                463,
+                595
+              ],
+              "root": [
+                268,
+                595
+              ],
+              "scale": 0.13712374581939799
+            },
+            {
+              "image": "zane-corvo-idle.png",
+              "rect": [
+                0,
+                0,
+                764,
+                1313
+              ],
+              "root": [
+                382,
+                1313
+              ],
+              "scale": 0.062452399086062454
+            }
+          ],
+          "durations": [
+            2,
+            2,
+            2,
+            1,
+            12
+          ],
+          "activeWindow": [
+            6,
+            7
+          ]
+        },
+        "up_throw": {
+          "image": "zane-corvo-grab-1.png",
+          "scale": 0.14017094017094017,
+          "frames": [
+            {
+              "image": "zane-corvo-grab-1.png",
+              "rect": [
+                0,
+                0,
+                426,
+                585
+              ],
+              "root": [
+                176,
+                585
+              ],
+              "sockets": {
+                "grabGrip": [
+                  393,
+                  160
+                ]
+              }
+            },
+            {
+              "image": "zane-corvo-throw-inbetween-1.png",
+              "rect": [
+                0,
+                0,
+                415,
+                658
+              ],
+              "root": [
+                210,
+                658
+              ],
+              "scale": 0.1248097412480974,
+              "sockets": {
+                "grabGrip": [
+                  355,
+                  100
+                ]
+              }
+            },
+            {
+              "image": "zane-corvo-throw-windup-2.png",
+              "rect": [
+                0,
+                0,
+                380,
+                560
+              ],
+              "root": [
+                167,
+                560
+              ],
+              "scale": 0.1373534338358459,
+              "sockets": {
+                "grabGrip": [
+                  221,
+                  31
+                ]
+              }
+            },
+            {
+              "image": "zane-corvo-throws-2.png",
+              "rect": [
+                0,
+                0,
+                373,
+                612
+              ],
+              "root": [
+                186,
+                612
+              ],
+              "scale": 0.13712374581939799
+            },
+            {
+              "image": "zane-corvo-idle.png",
+              "rect": [
+                0,
+                0,
+                764,
+                1313
+              ],
+              "root": [
+                382,
+                1313
+              ],
+              "scale": 0.062452399086062454
+            }
+          ],
+          "durations": [
+            2,
+            2,
+            2,
+            1,
+            12
+          ],
+          "activeWindow": [
+            6,
+            7
+          ]
+        },
+        "down_throw": {
+          "image": "zane-corvo-grab-1.png",
+          "scale": 0.14017094017094017,
+          "frames": [
+            {
+              "image": "zane-corvo-grab-1.png",
+              "rect": [
+                0,
+                0,
+                426,
+                585
+              ],
+              "root": [
+                176,
+                585
+              ],
+              "sockets": {
+                "grabGrip": [
+                  393,
+                  160
+                ]
+              }
+            },
+            {
+              "image": "zane-corvo-throw-inbetween-2.png",
+              "rect": [
+                0,
+                0,
+                437,
+                641
+              ],
+              "root": [
+                219,
+                641
+              ],
+              "scale": 0.1248097412480974,
+              "sockets": {
+                "grabGrip": [
+                  359,
+                  228
+                ]
+              }
+            },
+            {
+              "image": "zane-corvo-throw-windup-3.png",
+              "rect": [
+                0,
+                0,
+                385,
+                556
+              ],
+              "root": [
+                211,
+                556
+              ],
+              "scale": 0.1373534338358459,
+              "sockets": {
+                "grabGrip": [
+                  186,
+                  256
+                ]
+              }
+            },
+            {
+              "image": "zane-corvo-throws-3.png",
+              "rect": [
+                0,
+                0,
+                433,
+                561
+              ],
+              "root": [
+                201,
+                561
+              ],
+              "scale": 0.13712374581939799
+            },
+            {
+              "image": "zane-corvo-idle.png",
+              "rect": [
+                0,
+                0,
+                764,
+                1313
+              ],
+              "root": [
+                382,
+                1313
+              ],
+              "scale": 0.062452399086062454
+            }
+          ],
+          "durations": [
+            2,
+            2,
+            2,
+            1,
+            12
+          ],
+          "activeWindow": [
+            6,
+            7
+          ]
+        },
+        "throw_victim": {
+          "image": "zane-corvo-throw-victim-0.png",
+          "scale": 0.13,
+          "frames": [
+            {
+              "image": "zane-corvo-throw-victim-0.png",
+              "rect": [
+                0,
+                0,
+                515,
+                367
+              ],
+              "root": [
+                194,
+                367
+              ],
+              "airRoot": [
+                194,
+                200
+              ]
+            },
+            {
+              "image": "zane-corvo-throw-victim-1.png",
+              "rect": [
+                0,
+                0,
+                505,
+                441
+              ],
+              "root": [
+                274,
+                441
+              ],
+              "airRoot": [
+                274,
+                264
+              ]
+            },
+            {
+              "image": "zane-corvo-throw-victim-2.png",
+              "rect": [
+                0,
+                0,
+                254,
+                612
+              ],
+              "root": [
+                158,
+                612
+              ],
+              "airRoot": [
+                158,
+                267
+              ]
+            },
+            {
+              "image": "zane-corvo-throw-victim-3.png",
+              "rect": [
+                0,
+                0,
+                586,
+                300
+              ],
+              "root": [
+                261,
+                300
+              ],
+              "airRoot": [
+                261,
+                173
+              ]
+            },
+            {
+              "image": "zane-corvo-throw-victim-3.png",
+              "rect": [
+                0,
+                0,
+                586,
+                300
+              ],
+              "root": [
+                261,
+                300
+              ],
+              "airRoot": [
+                261,
+                173
+              ]
+            },
+            {
+              "image": "zane-corvo-reaction-3.png",
+              "rect": [
+                0,
+                0,
+                374,
+                346
+              ],
+              "root": [
+                135,
+                346
+              ],
+              "airRoot": [
+                135,
+                215
+              ],
+              "scale": 0.14855072463768115
+            }
+          ]
+        },
+        "ledge_catch": {
+          "image": "zane-corvo-ledge-0.png",
+          "scale": 0.102,
+          "frames": [
+            {
+              "image": "zane-corvo-ledge-0.png",
+              "rect": [
+                0,
+                0,
+                521,
+                863
+              ],
+              "root": [
+                383,
+                863
+              ],
+              "sockets": {
+                "ledgeGrip": [
+                  486,
+                  35
+                ]
+              }
+            }
+          ]
+        },
+        "ledge_hang": {
+          "image": "zane-corvo-ledge-1.png",
+          "scale": 0.102,
+          "frames": [
+            {
+              "image": "zane-corvo-ledge-1.png",
+              "rect": [
+                0,
+                0,
+                270,
+                791
+              ],
+              "root": [
+                120,
+                791
+              ],
+              "sockets": {
+                "ledgeGrip": [
+                  182,
+                  34
+                ]
+              }
+            }
+          ]
+        },
+        "ledge_climb": {
+          "image": "zane-corvo-ledge-1.png",
+          "scale": 0.129,
+          "frames": [
+            {
+              "image": "zane-corvo-ledge-1.png",
+              "rect": [
+                0,
+                0,
+                270,
+                791
+              ],
+              "root": [
+                120,
+                791
+              ],
+              "sockets": {
+                "ledgeGrip": [
+                  182,
+                  34
+                ]
+              },
+              "scale": 0.102
+            },
+            {
+              "image": "zane-corvo-ledge-options-0.png",
+              "rect": [
+                0,
+                0,
+                366,
+                652
+              ],
+              "root": [
+                154,
+                652
+              ],
+              "sockets": {
+                "ledgeGrip": [
+                  332,
+                  28
+                ]
+              }
+            },
+            {
+              "image": "zane-corvo-stance-1.png",
+              "rect": [
+                0,
+                0,
+                323,
+                453
+              ],
+              "root": [
+                130,
+                453
+              ],
+              "scale": 0.13874788494077833
+            },
+            {
+              "image": "zane-corvo-idle.png",
+              "rect": [
+                0,
+                0,
+                764,
+                1313
+              ],
+              "root": [
+                382,
+                1313
+              ],
+              "scale": 0.062452399086062454
+            }
+          ]
+        },
+        "ledge_jump": {
+          "image": "zane-corvo-ledge-options-1.png",
+          "scale": 0.129,
+          "frames": [
+            {
+              "image": "zane-corvo-ledge-options-1.png",
+              "rect": [
+                0,
+                0,
+                501,
+                445
+              ],
+              "root": [
+                245,
+                445
+              ],
+              "airRoot": [
+                245,
+                250
+              ]
+            }
+          ]
+        },
+        "ledge_roll": {
+          "image": "zane-corvo-ledge-1.png",
+          "scale": 0.129,
+          "frames": [
+            {
+              "image": "zane-corvo-ledge-1.png",
+              "rect": [
+                0,
+                0,
+                270,
+                791
+              ],
+              "root": [
+                120,
+                791
+              ],
+              "sockets": {
+                "ledgeGrip": [
+                  182,
+                  34
+                ]
+              },
+              "scale": 0.102
+            },
+            {
+              "image": "zane-corvo-ledge-options-0.png",
+              "rect": [
+                0,
+                0,
+                366,
+                652
+              ],
+              "root": [
+                154,
+                652
+              ],
+              "sockets": {
+                "ledgeGrip": [
+                  332,
+                  28
+                ]
+              }
+            },
+            {
+              "image": "zane-corvo-ledge-options-2.png",
+              "rect": [
+                0,
+                0,
+                330,
+                325
+              ],
+              "root": [
+                139,
+                325
+              ]
+            },
+            {
+              "image": "zane-corvo-idle.png",
+              "rect": [
+                0,
+                0,
+                764,
+                1313
+              ],
+              "root": [
+                382,
+                1313
+              ],
+              "scale": 0.062452399086062454
+            }
+          ]
+        },
+        "ledge_attack": {
+          "image": "zane-corvo-ledge-1.png",
+          "scale": 0.129,
+          "frames": [
+            {
+              "image": "zane-corvo-ledge-1.png",
+              "rect": [
+                0,
+                0,
+                270,
+                791
+              ],
+              "root": [
+                120,
+                791
+              ],
+              "sockets": {
+                "ledgeGrip": [
+                  182,
+                  34
+                ]
+              },
+              "scale": 0.102
+            },
+            {
+              "image": "zane-corvo-ledge-options-0.png",
+              "rect": [
+                0,
+                0,
+                366,
+                652
+              ],
+              "root": [
+                154,
+                652
+              ],
+              "sockets": {
+                "ledgeGrip": [
+                  332,
+                  28
+                ]
+              }
+            },
+            {
+              "image": "zane-corvo-ledge-options-3.png",
+              "rect": [
+                0,
+                0,
+                592,
+                434
+              ],
+              "root": [
+                253,
+                434
+              ]
+            },
+            {
+              "image": "zane-corvo-idle.png",
+              "rect": [
+                0,
+                0,
+                764,
+                1313
+              ],
+              "root": [
+                382,
+                1313
+              ],
+              "scale": 0.062452399086062454
+            }
+          ]
+        },
+        "up_special": {
+          "image": "zane-corvo-recovery-special-0.png",
+          "scale": 0.1759656652360515,
+          "frames": [
+            {
+              "image": "zane-corvo-recovery-special-0.png",
+              "rect": [
+                0,
+                0,
+                271,
+                364
+              ],
+              "root": [
+                136,
+                364
+              ]
+            },
+            {
+              "image": "zane-corvo-recovery-special-0.png",
+              "rect": [
+                0,
+                0,
+                271,
+                364
+              ],
+              "root": [
+                136,
+                364
+              ]
+            },
+            {
+              "image": "zane-corvo-recovery-special-1.png",
+              "rect": [
+                0,
+                0,
+                322,
+                466
+              ],
+              "root": [
+                166,
+                466
+              ],
+              "airRoot": [
+                166,
+                252
+              ]
+            },
+            {
+              "image": "zane-corvo-recovery-special-1.png",
+              "rect": [
+                0,
+                0,
+                322,
+                466
+              ],
+              "root": [
+                166,
+                466
+              ],
+              "airRoot": [
+                166,
+                252
+              ]
+            },
+            {
+              "image": "zane-corvo-recovery-special-2.png",
+              "rect": [
+                0,
+                0,
+                277,
+                453
+              ],
+              "root": [
+                135,
+                453
+              ],
+              "airRoot": [
+                135,
+                245
+              ]
+            },
+            {
+              "image": "zane-corvo-recovery-special-2.png",
+              "rect": [
+                0,
+                0,
+                277,
+                453
+              ],
+              "root": [
+                135,
+                453
+              ],
+              "airRoot": [
+                135,
+                245
+              ]
+            }
+          ]
+        },
+        "helpless_enter": {
+          "image": "zane-corvo-recovery-special-3.png",
+          "scale": 0.1759656652360515,
+          "frames": [
+            {
+              "image": "zane-corvo-recovery-special-3.png",
+              "rect": [
+                0,
+                0,
+                426,
+                478
+              ],
+              "root": [
+                203,
+                478
+              ],
+              "airRoot": [
+                203,
+                258
+              ]
+            },
+            {
+              "image": "zane-corvo-recovery-special-4.png",
+              "rect": [
+                0,
+                0,
+                289,
+                430
+              ],
+              "root": [
+                153,
+                430
+              ],
+              "airRoot": [
+                153,
+                232
+              ]
+            }
+          ]
+        },
+        "helpless_loop": {
+          "image": "zane-corvo-recovery-special-4.png",
+          "scale": 0.1759656652360515,
+          "frames": [
+            {
+              "image": "zane-corvo-recovery-special-4.png",
+              "rect": [
+                0,
+                0,
+                289,
+                430
+              ],
+              "root": [
+                153,
+                430
+              ],
+              "airRoot": [
+                153,
+                232
+              ]
+            }
+          ]
+        },
+        "helpless_land": {
+          "image": "zane-corvo-recovery-special-5.png",
+          "scale": 0.1759656652360515,
+          "frames": [
+            {
+              "image": "zane-corvo-recovery-special-5.png",
+              "rect": [
+                0,
+                0,
+                280,
+                381
+              ],
+              "root": [
+                129,
+                381
+              ]
+            },
+            {
+              "image": "zane-corvo-recovery-special-5.png",
+              "rect": [
+                0,
+                0,
+                280,
+                381
+              ],
+              "root": [
+                129,
+                381
+              ]
+            },
+            {
+              "image": "zane-corvo-idle.png",
+              "rect": [
+                0,
+                0,
+                764,
+                1313
+              ],
+              "root": [
+                382,
+                1313
+              ],
+              "scale": 0.062452399086062454
+            }
+          ]
+        },
+        "ledge_drop": {
+          "image": "zane-corvo-aerial-5.png",
+          "scale": 0.17672413793103448,
+          "frames": [
+            {
+              "image": "zane-corvo-aerial-5.png",
+              "rect": [
+                0,
+                0,
+                229,
+                352
+              ],
+              "root": [
+                118,
+                352
+              ],
+              "airRoot": [
+                118,
+                211
+              ],
+              "scale": 0.17446808510638298
+            },
+            {
+              "image": "zane-corvo-air-2.png",
+              "rect": [
+                0,
+                0,
+                278,
+                438
+              ],
+              "root": [
+                105,
+                438
+              ],
+              "scale": 0.17672413793103448,
+              "airRoot": [
+                105,
+                237
+              ]
+            },
+            {
+              "image": "zane-corvo-air-2.png",
+              "rect": [
+                0,
+                0,
+                278,
+                438
+              ],
+              "root": [
+                105,
+                438
+              ],
+              "scale": 0.17672413793103448,
+              "airRoot": [
+                105,
+                237
+              ]
+            },
+            {
+              "image": "zane-corvo-air-2.png",
+              "rect": [
+                0,
+                0,
+                278,
+                438
+              ],
+              "root": [
+                105,
+                438
+              ],
+              "scale": 0.17672413793103448,
+              "airRoot": [
+                105,
+                237
+              ]
+            }
+          ]
+        },
+        "ledge_trump": {
+          "image": "zane-corvo-reaction-1.png",
+          "scale": 0.17672413793103448,
+          "frames": [
+            {
+              "image": "zane-corvo-reaction-1.png",
+              "rect": [
+                0,
+                0,
+                313,
+                521
+              ],
+              "root": [
+                191,
+                521
+              ],
+              "airRoot": [
+                191,
+                231
+              ],
+              "scale": 0.14855072463768115
+            },
+            {
+              "image": "zane-corvo-reaction-1.png",
+              "rect": [
+                0,
+                0,
+                313,
+                521
+              ],
+              "root": [
+                191,
+                521
+              ],
+              "airRoot": [
+                191,
+                231
+              ],
+              "scale": 0.14855072463768115
+            },
+            {
+              "image": "zane-corvo-aerial-5.png",
+              "rect": [
+                0,
+                0,
+                229,
+                352
+              ],
+              "root": [
+                118,
+                352
+              ],
+              "airRoot": [
+                118,
+                211
+              ],
+              "scale": 0.17446808510638298
+            },
+            {
+              "image": "zane-corvo-air-2.png",
+              "rect": [
+                0,
+                0,
+                278,
+                438
+              ],
+              "root": [
+                105,
+                438
+              ],
+              "scale": 0.17672413793103448,
+              "airRoot": [
+                105,
+                237
               ]
             }
           ]
@@ -5553,6 +8328,2781 @@
               "root": [
                 269,
                 687
+              ]
+            }
+          ]
+        },
+        "tumble_recover": {
+          "image": "velvet-reply-knockdown-0.png",
+          "scale": 0.123,
+          "frames": [
+            {
+              "image": "velvet-reply-knockdown-0.png",
+              "rect": [
+                0,
+                0,
+                520,
+                532
+              ],
+              "root": [
+                254,
+                532
+              ],
+              "airRoot": [
+                254,
+                299
+              ]
+            }
+          ]
+        },
+        "knockdown_up": {
+          "image": "velvet-reply-knockdown-1.png",
+          "scale": 0.123,
+          "frames": [
+            {
+              "image": "velvet-reply-knockdown-1.png",
+              "rect": [
+                0,
+                0,
+                693,
+                241
+              ],
+              "root": [
+                352,
+                241
+              ]
+            }
+          ]
+        },
+        "knockdown_down": {
+          "image": "velvet-reply-knockdown-2.png",
+          "scale": 0.123,
+          "frames": [
+            {
+              "image": "velvet-reply-knockdown-2.png",
+              "rect": [
+                0,
+                0,
+                712,
+                227
+              ],
+              "root": [
+                349,
+                227
+              ]
+            }
+          ]
+        },
+        "prone_up": {
+          "image": "velvet-reply-prone-0.png",
+          "scale": 0.146,
+          "frames": [
+            {
+              "image": "velvet-reply-prone-0.png",
+              "rect": [
+                0,
+                0,
+                557,
+                132
+              ],
+              "root": [
+                243,
+                132
+              ]
+            }
+          ]
+        },
+        "getup_up": {
+          "image": "velvet-reply-prone-1.png",
+          "scale": 0.146,
+          "frames": [
+            {
+              "image": "velvet-reply-prone-0.png",
+              "rect": [
+                0,
+                0,
+                557,
+                132
+              ],
+              "root": [
+                243,
+                132
+              ]
+            },
+            {
+              "image": "velvet-reply-prone-1.png",
+              "rect": [
+                0,
+                0,
+                484,
+                303
+              ],
+              "root": [
+                215,
+                303
+              ]
+            },
+            {
+              "image": "velvet-reply-stance-1.png",
+              "rect": [
+                0,
+                0,
+                420,
+                458
+              ],
+              "root": [
+                153,
+                458
+              ],
+              "scale": 0.13036565977742448
+            },
+            {
+              "image": "velvet-reply-idle.png",
+              "rect": [
+                0,
+                0,
+                733,
+                1324
+              ],
+              "root": [
+                366.5,
+                1324
+              ],
+              "scale": 0.061933534743202415
+            }
+          ],
+          "durations": [
+            2,
+            6,
+            6,
+            5
+          ]
+        },
+        "prone_down": {
+          "image": "velvet-reply-prone-2.png",
+          "scale": 0.146,
+          "frames": [
+            {
+              "image": "velvet-reply-prone-2.png",
+              "rect": [
+                0,
+                0,
+                557,
+                166
+              ],
+              "root": [
+                345,
+                166
+              ]
+            }
+          ]
+        },
+        "getup_down": {
+          "image": "velvet-reply-prone-3.png",
+          "scale": 0.146,
+          "frames": [
+            {
+              "image": "velvet-reply-prone-2.png",
+              "rect": [
+                0,
+                0,
+                557,
+                166
+              ],
+              "root": [
+                345,
+                166
+              ]
+            },
+            {
+              "image": "velvet-reply-prone-3.png",
+              "rect": [
+                0,
+                0,
+                453,
+                294
+              ],
+              "root": [
+                233,
+                294
+              ]
+            },
+            {
+              "image": "velvet-reply-stance-1.png",
+              "rect": [
+                0,
+                0,
+                420,
+                458
+              ],
+              "root": [
+                153,
+                458
+              ],
+              "scale": 0.13036565977742448
+            },
+            {
+              "image": "velvet-reply-idle.png",
+              "rect": [
+                0,
+                0,
+                733,
+                1324
+              ],
+              "root": [
+                366.5,
+                1324
+              ],
+              "scale": 0.061933534743202415
+            }
+          ],
+          "durations": [
+            2,
+            6,
+            6,
+            5
+          ]
+        },
+        "getup_roll_up": {
+          "image": "velvet-reply-floor-options-0.png",
+          "scale": 0.146,
+          "frames": [
+            {
+              "image": "velvet-reply-prone-0.png",
+              "rect": [
+                0,
+                0,
+                557,
+                132
+              ],
+              "root": [
+                243,
+                132
+              ]
+            },
+            {
+              "image": "velvet-reply-prone-1.png",
+              "rect": [
+                0,
+                0,
+                484,
+                303
+              ],
+              "root": [
+                215,
+                303
+              ]
+            },
+            {
+              "image": "velvet-reply-floor-options-0.png",
+              "rect": [
+                0,
+                0,
+                503,
+                430
+              ],
+              "root": [
+                288,
+                430
+              ],
+              "scale": 0.128
+            },
+            {
+              "image": "velvet-reply-stance-1.png",
+              "rect": [
+                0,
+                0,
+                420,
+                458
+              ],
+              "root": [
+                153,
+                458
+              ],
+              "scale": 0.13036565977742448
+            },
+            {
+              "image": "velvet-reply-idle.png",
+              "rect": [
+                0,
+                0,
+                733,
+                1324
+              ],
+              "root": [
+                366.5,
+                1324
+              ],
+              "scale": 0.061933534743202415
+            }
+          ],
+          "durations": [
+            2,
+            4,
+            9,
+            6,
+            5
+          ]
+        },
+        "floor_attack_up": {
+          "image": "velvet-reply-floor-options-1.png",
+          "scale": 0.146,
+          "frames": [
+            {
+              "image": "velvet-reply-prone-0.png",
+              "rect": [
+                0,
+                0,
+                557,
+                132
+              ],
+              "root": [
+                243,
+                132
+              ]
+            },
+            {
+              "image": "velvet-reply-prone-1.png",
+              "rect": [
+                0,
+                0,
+                484,
+                303
+              ],
+              "root": [
+                215,
+                303
+              ]
+            },
+            {
+              "image": "velvet-reply-floor-options-1.png",
+              "rect": [
+                0,
+                0,
+                528,
+                401
+              ],
+              "root": [
+                172,
+                401
+              ],
+              "scale": 0.128
+            },
+            {
+              "image": "velvet-reply-floor-options-1.png",
+              "rect": [
+                0,
+                0,
+                528,
+                401
+              ],
+              "root": [
+                172,
+                401
+              ],
+              "scale": 0.128,
+              "mirrorSource": true
+            },
+            {
+              "image": "velvet-reply-stance-1.png",
+              "rect": [
+                0,
+                0,
+                420,
+                458
+              ],
+              "root": [
+                153,
+                458
+              ],
+              "scale": 0.13036565977742448
+            },
+            {
+              "image": "velvet-reply-idle.png",
+              "rect": [
+                0,
+                0,
+                733,
+                1324
+              ],
+              "root": [
+                366.5,
+                1324
+              ],
+              "scale": 0.061933534743202415
+            }
+          ],
+          "durations": [
+            2,
+            4,
+            2,
+            2,
+            6,
+            5
+          ],
+          "activeWindow": [
+            6,
+            10
+          ]
+        },
+        "getup_roll_down": {
+          "image": "velvet-reply-floor-options-2.png",
+          "scale": 0.146,
+          "frames": [
+            {
+              "image": "velvet-reply-prone-2.png",
+              "rect": [
+                0,
+                0,
+                557,
+                166
+              ],
+              "root": [
+                345,
+                166
+              ]
+            },
+            {
+              "image": "velvet-reply-prone-3.png",
+              "rect": [
+                0,
+                0,
+                453,
+                294
+              ],
+              "root": [
+                233,
+                294
+              ]
+            },
+            {
+              "image": "velvet-reply-floor-options-2.png",
+              "rect": [
+                0,
+                0,
+                407,
+                384
+              ],
+              "root": [
+                190,
+                384
+              ],
+              "scale": 0.128
+            },
+            {
+              "image": "velvet-reply-stance-1.png",
+              "rect": [
+                0,
+                0,
+                420,
+                458
+              ],
+              "root": [
+                153,
+                458
+              ],
+              "scale": 0.13036565977742448
+            },
+            {
+              "image": "velvet-reply-idle.png",
+              "rect": [
+                0,
+                0,
+                733,
+                1324
+              ],
+              "root": [
+                366.5,
+                1324
+              ],
+              "scale": 0.061933534743202415
+            }
+          ],
+          "durations": [
+            2,
+            4,
+            9,
+            6,
+            5
+          ]
+        },
+        "floor_attack_down": {
+          "image": "velvet-reply-floor-options-3.png",
+          "scale": 0.146,
+          "frames": [
+            {
+              "image": "velvet-reply-prone-2.png",
+              "rect": [
+                0,
+                0,
+                557,
+                166
+              ],
+              "root": [
+                345,
+                166
+              ]
+            },
+            {
+              "image": "velvet-reply-prone-3.png",
+              "rect": [
+                0,
+                0,
+                453,
+                294
+              ],
+              "root": [
+                233,
+                294
+              ]
+            },
+            {
+              "image": "velvet-reply-floor-options-3.png",
+              "rect": [
+                0,
+                0,
+                596,
+                414
+              ],
+              "root": [
+                189,
+                414
+              ],
+              "scale": 0.128
+            },
+            {
+              "image": "velvet-reply-floor-options-3.png",
+              "rect": [
+                0,
+                0,
+                596,
+                414
+              ],
+              "root": [
+                189,
+                414
+              ],
+              "scale": 0.128,
+              "mirrorSource": true
+            },
+            {
+              "image": "velvet-reply-stance-1.png",
+              "rect": [
+                0,
+                0,
+                420,
+                458
+              ],
+              "root": [
+                153,
+                458
+              ],
+              "scale": 0.13036565977742448
+            },
+            {
+              "image": "velvet-reply-idle.png",
+              "rect": [
+                0,
+                0,
+                733,
+                1324
+              ],
+              "root": [
+                366.5,
+                1324
+              ],
+              "scale": 0.061933534743202415
+            }
+          ],
+          "durations": [
+            2,
+            4,
+            2,
+            2,
+            6,
+            5
+          ],
+          "activeWindow": [
+            6,
+            10
+          ]
+        },
+        "tech_neutral": {
+          "image": "velvet-reply-tech-0.png",
+          "scale": 0.14,
+          "frames": [
+            {
+              "image": "velvet-reply-tech-0.png",
+              "rect": [
+                0,
+                0,
+                492,
+                419
+              ],
+              "root": [
+                234,
+                419
+              ]
+            },
+            {
+              "image": "velvet-reply-tech-0.png",
+              "rect": [
+                0,
+                0,
+                492,
+                419
+              ],
+              "root": [
+                234,
+                419
+              ]
+            },
+            {
+              "image": "velvet-reply-stance-1.png",
+              "rect": [
+                0,
+                0,
+                420,
+                458
+              ],
+              "root": [
+                153,
+                458
+              ],
+              "scale": 0.13036565977742448
+            },
+            {
+              "image": "velvet-reply-idle.png",
+              "rect": [
+                0,
+                0,
+                733,
+                1324
+              ],
+              "root": [
+                366.5,
+                1324
+              ],
+              "scale": 0.061933534743202415
+            }
+          ]
+        },
+        "tech_roll": {
+          "image": "velvet-reply-tech-0.png",
+          "scale": 0.14,
+          "frames": [
+            {
+              "image": "velvet-reply-tech-0.png",
+              "rect": [
+                0,
+                0,
+                492,
+                419
+              ],
+              "root": [
+                234,
+                419
+              ]
+            },
+            {
+              "image": "velvet-reply-tech-1.png",
+              "rect": [
+                0,
+                0,
+                427,
+                337
+              ],
+              "root": [
+                273,
+                337
+              ]
+            },
+            {
+              "image": "velvet-reply-tech-1.png",
+              "rect": [
+                0,
+                0,
+                427,
+                337
+              ],
+              "root": [
+                273,
+                337
+              ]
+            },
+            {
+              "image": "velvet-reply-stance-1.png",
+              "rect": [
+                0,
+                0,
+                420,
+                458
+              ],
+              "root": [
+                153,
+                458
+              ],
+              "scale": 0.13036565977742448
+            },
+            {
+              "image": "velvet-reply-idle.png",
+              "rect": [
+                0,
+                0,
+                733,
+                1324
+              ],
+              "root": [
+                366.5,
+                1324
+              ],
+              "scale": 0.061933534743202415
+            }
+          ]
+        },
+        "wall_tech": {
+          "image": "velvet-reply-tech-2.png",
+          "scale": 0.14,
+          "frames": [
+            {
+              "image": "velvet-reply-tech-2.png",
+              "rect": [
+                0,
+                0,
+                467,
+                497
+              ],
+              "root": [
+                213,
+                497
+              ],
+              "airRoot": [
+                213,
+                277
+              ]
+            }
+          ]
+        },
+        "wall_tech_jump": {
+          "image": "velvet-reply-tech-2.png",
+          "scale": 0.14,
+          "frames": [
+            {
+              "image": "velvet-reply-tech-2.png",
+              "rect": [
+                0,
+                0,
+                467,
+                497
+              ],
+              "root": [
+                213,
+                497
+              ],
+              "airRoot": [
+                213,
+                277
+              ]
+            },
+            {
+              "image": "velvet-reply-tech-2.png",
+              "rect": [
+                0,
+                0,
+                467,
+                497
+              ],
+              "root": [
+                213,
+                497
+              ],
+              "airRoot": [
+                213,
+                277
+              ]
+            },
+            {
+              "image": "velvet-reply-tech-3.png",
+              "rect": [
+                0,
+                0,
+                441,
+                548
+              ],
+              "root": [
+                225,
+                548
+              ],
+              "airRoot": [
+                225,
+                268
+              ]
+            },
+            {
+              "image": "velvet-reply-tech-3.png",
+              "rect": [
+                0,
+                0,
+                441,
+                548
+              ],
+              "root": [
+                225,
+                548
+              ],
+              "airRoot": [
+                225,
+                268
+              ]
+            }
+          ]
+        },
+        "ceiling_tech": {
+          "image": "velvet-reply-trip-tech-0.png",
+          "scale": 0.155,
+          "frames": [
+            {
+              "image": "velvet-reply-trip-tech-0.png",
+              "rect": [
+                0,
+                0,
+                381,
+                459
+              ],
+              "root": [
+                169,
+                459
+              ],
+              "airRoot": [
+                169,
+                255
+              ]
+            }
+          ]
+        },
+        "trip_fall": {
+          "image": "velvet-reply-trip-tech-1.png",
+          "scale": 0.155,
+          "frames": [
+            {
+              "image": "velvet-reply-trip-tech-1.png",
+              "rect": [
+                0,
+                0,
+                478,
+                413
+              ],
+              "root": [
+                192,
+                413
+              ]
+            },
+            {
+              "image": "velvet-reply-trip-tech-1.png",
+              "rect": [
+                0,
+                0,
+                478,
+                413
+              ],
+              "root": [
+                192,
+                413
+              ]
+            },
+            {
+              "image": "velvet-reply-trip-tech-2.png",
+              "rect": [
+                0,
+                0,
+                476,
+                309
+              ],
+              "root": [
+                147,
+                309
+              ]
+            }
+          ]
+        },
+        "trip_prone": {
+          "image": "velvet-reply-trip-tech-2.png",
+          "scale": 0.155,
+          "frames": [
+            {
+              "image": "velvet-reply-trip-tech-2.png",
+              "rect": [
+                0,
+                0,
+                476,
+                309
+              ],
+              "root": [
+                147,
+                309
+              ]
+            }
+          ]
+        },
+        "trip_getup": {
+          "image": "velvet-reply-trip-tech-2.png",
+          "scale": 0.155,
+          "frames": [
+            {
+              "image": "velvet-reply-trip-tech-2.png",
+              "rect": [
+                0,
+                0,
+                476,
+                309
+              ],
+              "root": [
+                147,
+                309
+              ]
+            },
+            {
+              "image": "velvet-reply-trip-tech-3.png",
+              "rect": [
+                0,
+                0,
+                344,
+                371
+              ],
+              "root": [
+                172,
+                371
+              ]
+            },
+            {
+              "image": "velvet-reply-idle.png",
+              "rect": [
+                0,
+                0,
+                733,
+                1324
+              ],
+              "root": [
+                366.5,
+                1324
+              ],
+              "scale": 0.061933534743202415
+            }
+          ]
+        },
+        "jab_lock_up": {
+          "image": "velvet-reply-trip-tech-4.png",
+          "scale": 0.155,
+          "frames": [
+            {
+              "image": "velvet-reply-trip-tech-4.png",
+              "rect": [
+                0,
+                0,
+                488,
+                188
+              ],
+              "root": [
+                255,
+                188
+              ]
+            },
+            {
+              "image": "velvet-reply-prone-0.png",
+              "rect": [
+                0,
+                0,
+                557,
+                132
+              ],
+              "root": [
+                243,
+                132
+              ],
+              "scale": 0.146
+            }
+          ]
+        },
+        "jab_lock_down": {
+          "image": "velvet-reply-trip-tech-5.png",
+          "scale": 0.155,
+          "frames": [
+            {
+              "image": "velvet-reply-trip-tech-5.png",
+              "rect": [
+                0,
+                0,
+                553,
+                179
+              ],
+              "root": [
+                303,
+                179
+              ]
+            },
+            {
+              "image": "velvet-reply-prone-2.png",
+              "rect": [
+                0,
+                0,
+                557,
+                166
+              ],
+              "root": [
+                345,
+                166
+              ],
+              "scale": 0.146
+            }
+          ]
+        },
+        "trip_roll": {
+          "image": "velvet-reply-trip-tech-2.png",
+          "scale": 0.155,
+          "frames": [
+            {
+              "image": "velvet-reply-trip-tech-2.png",
+              "rect": [
+                0,
+                0,
+                476,
+                309
+              ],
+              "root": [
+                147,
+                309
+              ]
+            },
+            {
+              "image": "velvet-reply-trip-tech-3.png",
+              "rect": [
+                0,
+                0,
+                344,
+                371
+              ],
+              "root": [
+                172,
+                371
+              ]
+            },
+            {
+              "image": "velvet-reply-floor-options-2.png",
+              "rect": [
+                0,
+                0,
+                407,
+                384
+              ],
+              "root": [
+                190,
+                384
+              ],
+              "scale": 0.128
+            },
+            {
+              "image": "velvet-reply-stance-1.png",
+              "rect": [
+                0,
+                0,
+                420,
+                458
+              ],
+              "root": [
+                153,
+                458
+              ],
+              "scale": 0.13036565977742448
+            },
+            {
+              "image": "velvet-reply-idle.png",
+              "rect": [
+                0,
+                0,
+                733,
+                1324
+              ],
+              "root": [
+                366.5,
+                1324
+              ],
+              "scale": 0.061933534743202415
+            }
+          ],
+          "durations": [
+            2,
+            4,
+            9,
+            6,
+            5
+          ]
+        },
+        "floor_attack_trip": {
+          "image": "velvet-reply-trip-tech-2.png",
+          "scale": 0.155,
+          "frames": [
+            {
+              "image": "velvet-reply-trip-tech-2.png",
+              "rect": [
+                0,
+                0,
+                476,
+                309
+              ],
+              "root": [
+                147,
+                309
+              ]
+            },
+            {
+              "image": "velvet-reply-trip-tech-3.png",
+              "rect": [
+                0,
+                0,
+                344,
+                371
+              ],
+              "root": [
+                172,
+                371
+              ]
+            },
+            {
+              "image": "velvet-reply-floor-options-1.png",
+              "rect": [
+                0,
+                0,
+                528,
+                401
+              ],
+              "root": [
+                172,
+                401
+              ],
+              "scale": 0.128
+            },
+            {
+              "image": "velvet-reply-stance-1.png",
+              "rect": [
+                0,
+                0,
+                420,
+                458
+              ],
+              "root": [
+                153,
+                458
+              ],
+              "scale": 0.13036565977742448
+            },
+            {
+              "image": "velvet-reply-idle.png",
+              "rect": [
+                0,
+                0,
+                733,
+                1324
+              ],
+              "root": [
+                366.5,
+                1324
+              ],
+              "scale": 0.061933534743202415
+            }
+          ],
+          "durations": [
+            2,
+            4,
+            4,
+            6,
+            5
+          ],
+          "activeWindow": [
+            6,
+            10
+          ]
+        },
+        "grab": {
+          "image": "velvet-reply-idle.png",
+          "scale": 0.14828209764918626,
+          "frames": [
+            {
+              "image": "velvet-reply-idle.png",
+              "rect": [
+                0,
+                0,
+                733,
+                1324
+              ],
+              "root": [
+                366.5,
+                1324
+              ],
+              "scale": 0.061933534743202415
+            },
+            {
+              "image": "velvet-reply-grab-0.png",
+              "rect": [
+                0,
+                0,
+                404,
+                553
+              ],
+              "root": [
+                164,
+                553
+              ]
+            },
+            {
+              "image": "velvet-reply-grab-3.png",
+              "rect": [
+                0,
+                0,
+                435,
+                587
+              ],
+              "root": [
+                167,
+                587
+              ]
+            }
+          ],
+          "durations": [
+            3,
+            3,
+            6
+          ],
+          "activeWindow": [
+            3,
+            6
+          ]
+        },
+        "grab_hold": {
+          "image": "velvet-reply-grab-1.png",
+          "scale": 0.14828209764918626,
+          "frames": [
+            {
+              "image": "velvet-reply-grab-1.png",
+              "rect": [
+                0,
+                0,
+                400,
+                553
+              ],
+              "root": [
+                168,
+                553
+              ],
+              "sockets": {
+                "grabGrip": [
+                  375,
+                  139
+                ]
+              }
+            }
+          ]
+        },
+        "grabbed": {
+          "image": "velvet-reply-grab-2.png",
+          "scale": 0.14828209764918626,
+          "frames": [
+            {
+              "image": "velvet-reply-grab-2.png",
+              "rect": [
+                0,
+                0,
+                391,
+                652
+              ],
+              "root": [
+                257,
+                652
+              ],
+              "sockets": {
+                "gripTop": [
+                  215,
+                  122
+                ],
+                "gripBottom": [
+                  234,
+                  175
+                ]
+              }
+            }
+          ]
+        },
+        "grab_release": {
+          "image": "velvet-reply-grab-3.png",
+          "scale": 0.14828209764918626,
+          "frames": [
+            {
+              "image": "velvet-reply-grab-3.png",
+              "rect": [
+                0,
+                0,
+                435,
+                587
+              ],
+              "root": [
+                167,
+                587
+              ]
+            },
+            {
+              "image": "velvet-reply-idle.png",
+              "rect": [
+                0,
+                0,
+                733,
+                1324
+              ],
+              "root": [
+                366.5,
+                1324
+              ],
+              "scale": 0.061933534743202415
+            }
+          ]
+        },
+        "grab_dash": {
+          "image": "velvet-reply-run-0.png",
+          "scale": 0.14828209764918626,
+          "frames": [
+            {
+              "image": "velvet-reply-run-0.png",
+              "rect": [
+                0,
+                0,
+                556,
+                530
+              ],
+              "root": [
+                275,
+                530
+              ],
+              "scale": 0.148014440433213
+            },
+            {
+              "image": "velvet-reply-grab-0.png",
+              "rect": [
+                0,
+                0,
+                404,
+                553
+              ],
+              "root": [
+                164,
+                553
+              ]
+            },
+            {
+              "image": "velvet-reply-run-2.png",
+              "rect": [
+                0,
+                0,
+                525,
+                549
+              ],
+              "root": [
+                262,
+                549
+              ],
+              "scale": 0.148014440433213
+            }
+          ],
+          "durations": [
+            4,
+            3,
+            8
+          ],
+          "activeWindow": [
+            4,
+            7
+          ]
+        },
+        "grab_pivot": {
+          "image": "velvet-reply-stance-0.png",
+          "scale": 0.14828209764918626,
+          "frames": [
+            {
+              "image": "velvet-reply-stance-0.png",
+              "rect": [
+                0,
+                0,
+                297,
+                629
+              ],
+              "root": [
+                151,
+                629
+              ],
+              "scale": 0.13036565977742448
+            },
+            {
+              "image": "velvet-reply-grab-0.png",
+              "rect": [
+                0,
+                0,
+                404,
+                553
+              ],
+              "root": [
+                164,
+                553
+              ]
+            },
+            {
+              "image": "velvet-reply-grab-3.png",
+              "rect": [
+                0,
+                0,
+                435,
+                587
+              ],
+              "root": [
+                167,
+                587
+              ]
+            }
+          ],
+          "durations": [
+            4,
+            3,
+            8
+          ],
+          "activeWindow": [
+            4,
+            7
+          ]
+        },
+        "pummel": {
+          "image": "velvet-reply-grab-1.png",
+          "scale": 0.14828209764918626,
+          "frames": [
+            {
+              "image": "velvet-reply-grab-1.png",
+              "rect": [
+                0,
+                0,
+                400,
+                553
+              ],
+              "root": [
+                168,
+                553
+              ],
+              "sockets": {
+                "grabGrip": [
+                  375,
+                  139
+                ]
+              }
+            },
+            {
+              "image": "velvet-reply-pummel-0.png",
+              "rect": [
+                0,
+                0,
+                562,
+                861
+              ],
+              "root": [
+                269,
+                861
+              ],
+              "scale": 0.09523809523809523,
+              "sockets": {
+                "grabGrip": [
+                  527,
+                  185
+                ]
+              }
+            },
+            {
+              "image": "velvet-reply-grab-1.png",
+              "rect": [
+                0,
+                0,
+                400,
+                553
+              ],
+              "root": [
+                168,
+                553
+              ],
+              "sockets": {
+                "grabGrip": [
+                  375,
+                  139
+                ]
+              }
+            }
+          ],
+          "durations": [
+            3,
+            1,
+            6
+          ],
+          "activeWindow": [
+            3,
+            4
+          ]
+        },
+        "pummel_victim": {
+          "image": "velvet-reply-pummel-1.png",
+          "scale": 0.14828209764918626,
+          "frames": [
+            {
+              "image": "velvet-reply-pummel-1.png",
+              "rect": [
+                0,
+                0,
+                485,
+                771
+              ],
+              "root": [
+                211,
+                771
+              ],
+              "scale": 0.09523809523809523,
+              "sockets": {
+                "gripTop": [
+                  395,
+                  177
+                ],
+                "gripBottom": [
+                  405,
+                  223
+                ]
+              }
+            },
+            {
+              "image": "velvet-reply-pummel-1.png",
+              "rect": [
+                0,
+                0,
+                485,
+                771
+              ],
+              "root": [
+                211,
+                771
+              ],
+              "scale": 0.09523809523809523,
+              "sockets": {
+                "gripTop": [
+                  395,
+                  177
+                ],
+                "gripBottom": [
+                  405,
+                  223
+                ]
+              }
+            },
+            {
+              "image": "velvet-reply-grab-2.png",
+              "rect": [
+                0,
+                0,
+                391,
+                652
+              ],
+              "root": [
+                257,
+                652
+              ],
+              "sockets": {
+                "gripTop": [
+                  215,
+                  122
+                ],
+                "gripBottom": [
+                  234,
+                  175
+                ]
+              }
+            },
+            {
+              "image": "velvet-reply-grab-2.png",
+              "rect": [
+                0,
+                0,
+                391,
+                652
+              ],
+              "root": [
+                257,
+                652
+              ],
+              "sockets": {
+                "gripTop": [
+                  215,
+                  122
+                ],
+                "gripBottom": [
+                  234,
+                  175
+                ]
+              }
+            }
+          ]
+        },
+        "forward_throw": {
+          "image": "velvet-reply-grab-1.png",
+          "scale": 0.14828209764918626,
+          "frames": [
+            {
+              "image": "velvet-reply-grab-1.png",
+              "rect": [
+                0,
+                0,
+                400,
+                553
+              ],
+              "root": [
+                168,
+                553
+              ],
+              "sockets": {
+                "grabGrip": [
+                  375,
+                  139
+                ]
+              }
+            },
+            {
+              "image": "velvet-reply-throw-windup-0.png",
+              "rect": [
+                0,
+                0,
+                327,
+                562
+              ],
+              "root": [
+                168,
+                562
+              ],
+              "scale": 0.14590747330960854,
+              "sockets": {
+                "grabGrip": [
+                  304,
+                  151
+                ]
+              }
+            },
+            {
+              "image": "velvet-reply-throws-0.png",
+              "rect": [
+                0,
+                0,
+                403,
+                557
+              ],
+              "root": [
+                158,
+                557
+              ],
+              "scale": 0.14721723518850988
+            },
+            {
+              "image": "velvet-reply-idle.png",
+              "rect": [
+                0,
+                0,
+                733,
+                1324
+              ],
+              "root": [
+                366.5,
+                1324
+              ],
+              "scale": 0.061933534743202415
+            }
+          ],
+          "durations": [
+            3,
+            3,
+            1,
+            12
+          ],
+          "activeWindow": [
+            6,
+            7
+          ]
+        },
+        "back_throw": {
+          "image": "velvet-reply-grab-1.png",
+          "scale": 0.14828209764918626,
+          "frames": [
+            {
+              "image": "velvet-reply-grab-1.png",
+              "rect": [
+                0,
+                0,
+                400,
+                553
+              ],
+              "root": [
+                168,
+                553
+              ],
+              "sockets": {
+                "grabGrip": [
+                  375,
+                  139
+                ]
+              }
+            },
+            {
+              "image": "velvet-reply-throw-inbetween-0.png",
+              "rect": [
+                0,
+                0,
+                401,
+                667
+              ],
+              "root": [
+                216,
+                667
+              ],
+              "scale": 0.12293853073463268,
+              "sockets": {
+                "grabGrip": [
+                  375,
+                  192
+                ]
+              }
+            },
+            {
+              "image": "velvet-reply-throw-windup-1.png",
+              "rect": [
+                0,
+                0,
+                323,
+                562
+              ],
+              "root": [
+                194,
+                562
+              ],
+              "scale": 0.14590747330960854,
+              "sockets": {
+                "grabGrip": [
+                  211,
+                  157
+                ]
+              }
+            },
+            {
+              "image": "velvet-reply-throws-1.png",
+              "rect": [
+                0,
+                0,
+                396,
+                557
+              ],
+              "root": [
+                241,
+                557
+              ],
+              "scale": 0.14721723518850988
+            },
+            {
+              "image": "velvet-reply-idle.png",
+              "rect": [
+                0,
+                0,
+                733,
+                1324
+              ],
+              "root": [
+                366.5,
+                1324
+              ],
+              "scale": 0.061933534743202415
+            }
+          ],
+          "durations": [
+            2,
+            2,
+            2,
+            1,
+            12
+          ],
+          "activeWindow": [
+            6,
+            7
+          ]
+        },
+        "up_throw": {
+          "image": "velvet-reply-grab-1.png",
+          "scale": 0.14828209764918626,
+          "frames": [
+            {
+              "image": "velvet-reply-grab-1.png",
+              "rect": [
+                0,
+                0,
+                400,
+                553
+              ],
+              "root": [
+                168,
+                553
+              ],
+              "sockets": {
+                "grabGrip": [
+                  375,
+                  139
+                ]
+              }
+            },
+            {
+              "image": "velvet-reply-throw-inbetween-1.png",
+              "rect": [
+                0,
+                0,
+                386,
+                668
+              ],
+              "root": [
+                217,
+                668
+              ],
+              "scale": 0.12293853073463268,
+              "sockets": {
+                "grabGrip": [
+                  359,
+                  105
+                ]
+              }
+            },
+            {
+              "image": "velvet-reply-throw-windup-2.png",
+              "rect": [
+                0,
+                0,
+                363,
+                602
+              ],
+              "root": [
+                197,
+                602
+              ],
+              "scale": 0.14590747330960854,
+              "sockets": {
+                "grabGrip": [
+                  259,
+                  29
+                ]
+              }
+            },
+            {
+              "image": "velvet-reply-throws-2.png",
+              "rect": [
+                0,
+                0,
+                366,
+                669
+              ],
+              "root": [
+                222,
+                669
+              ],
+              "scale": 0.14721723518850988
+            },
+            {
+              "image": "velvet-reply-idle.png",
+              "rect": [
+                0,
+                0,
+                733,
+                1324
+              ],
+              "root": [
+                366.5,
+                1324
+              ],
+              "scale": 0.061933534743202415
+            }
+          ],
+          "durations": [
+            2,
+            2,
+            2,
+            1,
+            12
+          ],
+          "activeWindow": [
+            6,
+            7
+          ]
+        },
+        "down_throw": {
+          "image": "velvet-reply-grab-1.png",
+          "scale": 0.14828209764918626,
+          "frames": [
+            {
+              "image": "velvet-reply-grab-1.png",
+              "rect": [
+                0,
+                0,
+                400,
+                553
+              ],
+              "root": [
+                168,
+                553
+              ],
+              "sockets": {
+                "grabGrip": [
+                  375,
+                  139
+                ]
+              }
+            },
+            {
+              "image": "velvet-reply-throw-inbetween-2.png",
+              "rect": [
+                0,
+                0,
+                389,
+                656
+              ],
+              "root": [
+                203,
+                656
+              ],
+              "scale": 0.12293853073463268,
+              "sockets": {
+                "grabGrip": [
+                  366,
+                  227
+                ]
+              }
+            },
+            {
+              "image": "velvet-reply-throw-windup-3.png",
+              "rect": [
+                0,
+                0,
+                387,
+                588
+              ],
+              "root": [
+                176,
+                588
+              ],
+              "scale": 0.14590747330960854,
+              "sockets": {
+                "grabGrip": [
+                  187,
+                  256
+                ]
+              }
+            },
+            {
+              "image": "velvet-reply-throws-3.png",
+              "rect": [
+                0,
+                0,
+                398,
+                579
+              ],
+              "root": [
+                158,
+                579
+              ],
+              "scale": 0.14721723518850988
+            },
+            {
+              "image": "velvet-reply-idle.png",
+              "rect": [
+                0,
+                0,
+                733,
+                1324
+              ],
+              "root": [
+                366.5,
+                1324
+              ],
+              "scale": 0.061933534743202415
+            }
+          ],
+          "durations": [
+            2,
+            2,
+            2,
+            1,
+            12
+          ],
+          "activeWindow": [
+            6,
+            7
+          ]
+        },
+        "throw_victim": {
+          "image": "velvet-reply-throw-victim-0.png",
+          "scale": 0.13,
+          "frames": [
+            {
+              "image": "velvet-reply-throw-victim-0.png",
+              "rect": [
+                0,
+                0,
+                405,
+                353
+              ],
+              "root": [
+                98,
+                353
+              ],
+              "airRoot": [
+                98,
+                193
+              ]
+            },
+            {
+              "image": "velvet-reply-throw-victim-1.png",
+              "rect": [
+                0,
+                0,
+                505,
+                333
+              ],
+              "root": [
+                253,
+                333
+              ],
+              "airRoot": [
+                253,
+                253
+              ]
+            },
+            {
+              "image": "velvet-reply-throw-victim-2.png",
+              "rect": [
+                0,
+                0,
+                231,
+                497
+              ],
+              "root": [
+                187,
+                497
+              ],
+              "airRoot": [
+                187,
+                187
+              ]
+            },
+            {
+              "image": "velvet-reply-throw-victim-3.png",
+              "rect": [
+                0,
+                0,
+                630,
+                198
+              ],
+              "root": [
+                326,
+                198
+              ],
+              "airRoot": [
+                326,
+                154
+              ]
+            },
+            {
+              "image": "velvet-reply-throw-victim-3.png",
+              "rect": [
+                0,
+                0,
+                630,
+                198
+              ],
+              "root": [
+                326,
+                198
+              ],
+              "airRoot": [
+                326,
+                154
+              ]
+            },
+            {
+              "image": "velvet-reply-reaction-3.png",
+              "rect": [
+                0,
+                0,
+                439,
+                358
+              ],
+              "root": [
+                181,
+                358
+              ],
+              "airRoot": [
+                181,
+                229
+              ],
+              "scale": 0.148014440433213
+            }
+          ]
+        },
+        "ledge_catch": {
+          "image": "velvet-reply-ledge-0.png",
+          "scale": 0.102,
+          "frames": [
+            {
+              "image": "velvet-reply-ledge-0.png",
+              "rect": [
+                0,
+                0,
+                569,
+                867
+              ],
+              "root": [
+                454,
+                867
+              ],
+              "sockets": {
+                "ledgeGrip": [
+                  542,
+                  26
+                ]
+              }
+            }
+          ]
+        },
+        "ledge_hang": {
+          "image": "velvet-reply-ledge-1.png",
+          "scale": 0.102,
+          "frames": [
+            {
+              "image": "velvet-reply-ledge-1.png",
+              "rect": [
+                0,
+                0,
+                364,
+                807
+              ],
+              "root": [
+                168,
+                807
+              ],
+              "sockets": {
+                "ledgeGrip": [
+                  238,
+                  24
+                ]
+              }
+            }
+          ]
+        },
+        "ledge_climb": {
+          "image": "velvet-reply-ledge-1.png",
+          "scale": 0.129,
+          "frames": [
+            {
+              "image": "velvet-reply-ledge-1.png",
+              "rect": [
+                0,
+                0,
+                364,
+                807
+              ],
+              "root": [
+                168,
+                807
+              ],
+              "sockets": {
+                "ledgeGrip": [
+                  238,
+                  24
+                ]
+              },
+              "scale": 0.102
+            },
+            {
+              "image": "velvet-reply-ledge-options-0.png",
+              "rect": [
+                0,
+                0,
+                398,
+                661
+              ],
+              "root": [
+                171,
+                661
+              ],
+              "sockets": {
+                "ledgeGrip": [
+                  359,
+                  28
+                ]
+              }
+            },
+            {
+              "image": "velvet-reply-stance-1.png",
+              "rect": [
+                0,
+                0,
+                420,
+                458
+              ],
+              "root": [
+                153,
+                458
+              ],
+              "scale": 0.13036565977742448
+            },
+            {
+              "image": "velvet-reply-idle.png",
+              "rect": [
+                0,
+                0,
+                733,
+                1324
+              ],
+              "root": [
+                366.5,
+                1324
+              ],
+              "scale": 0.061933534743202415
+            }
+          ]
+        },
+        "ledge_jump": {
+          "image": "velvet-reply-ledge-options-1.png",
+          "scale": 0.129,
+          "frames": [
+            {
+              "image": "velvet-reply-ledge-options-1.png",
+              "rect": [
+                0,
+                0,
+                484,
+                461
+              ],
+              "root": [
+                225,
+                461
+              ],
+              "airRoot": [
+                225,
+                270
+              ]
+            }
+          ]
+        },
+        "ledge_roll": {
+          "image": "velvet-reply-ledge-1.png",
+          "scale": 0.129,
+          "frames": [
+            {
+              "image": "velvet-reply-ledge-1.png",
+              "rect": [
+                0,
+                0,
+                364,
+                807
+              ],
+              "root": [
+                168,
+                807
+              ],
+              "sockets": {
+                "ledgeGrip": [
+                  238,
+                  24
+                ]
+              },
+              "scale": 0.102
+            },
+            {
+              "image": "velvet-reply-ledge-options-0.png",
+              "rect": [
+                0,
+                0,
+                398,
+                661
+              ],
+              "root": [
+                171,
+                661
+              ],
+              "sockets": {
+                "ledgeGrip": [
+                  359,
+                  28
+                ]
+              }
+            },
+            {
+              "image": "velvet-reply-ledge-options-2.png",
+              "rect": [
+                0,
+                0,
+                363,
+                330
+              ],
+              "root": [
+                165,
+                330
+              ]
+            },
+            {
+              "image": "velvet-reply-idle.png",
+              "rect": [
+                0,
+                0,
+                733,
+                1324
+              ],
+              "root": [
+                366.5,
+                1324
+              ],
+              "scale": 0.061933534743202415
+            }
+          ]
+        },
+        "ledge_attack": {
+          "image": "velvet-reply-ledge-1.png",
+          "scale": 0.129,
+          "frames": [
+            {
+              "image": "velvet-reply-ledge-1.png",
+              "rect": [
+                0,
+                0,
+                364,
+                807
+              ],
+              "root": [
+                168,
+                807
+              ],
+              "sockets": {
+                "ledgeGrip": [
+                  238,
+                  24
+                ]
+              },
+              "scale": 0.102
+            },
+            {
+              "image": "velvet-reply-ledge-options-0.png",
+              "rect": [
+                0,
+                0,
+                398,
+                661
+              ],
+              "root": [
+                171,
+                661
+              ],
+              "sockets": {
+                "ledgeGrip": [
+                  359,
+                  28
+                ]
+              }
+            },
+            {
+              "image": "velvet-reply-ledge-options-3.png",
+              "rect": [
+                0,
+                0,
+                550,
+                441
+              ],
+              "root": [
+                210,
+                441
+              ]
+            },
+            {
+              "image": "velvet-reply-idle.png",
+              "rect": [
+                0,
+                0,
+                733,
+                1324
+              ],
+              "root": [
+                366.5,
+                1324
+              ],
+              "scale": 0.061933534743202415
+            }
+          ]
+        },
+        "up_special": {
+          "image": "velvet-reply-recovery-special-0.png",
+          "scale": 0.17672413793103448,
+          "frames": [
+            {
+              "image": "velvet-reply-recovery-special-0.png",
+              "rect": [
+                0,
+                0,
+                286,
+                397
+              ],
+              "root": [
+                142,
+                397
+              ]
+            },
+            {
+              "image": "velvet-reply-recovery-special-0.png",
+              "rect": [
+                0,
+                0,
+                286,
+                397
+              ],
+              "root": [
+                142,
+                397
+              ]
+            },
+            {
+              "image": "velvet-reply-recovery-special-1.png",
+              "rect": [
+                0,
+                0,
+                390,
+                464
+              ],
+              "root": [
+                199,
+                464
+              ],
+              "airRoot": [
+                199,
+                251
+              ]
+            },
+            {
+              "image": "velvet-reply-recovery-special-1.png",
+              "rect": [
+                0,
+                0,
+                390,
+                464
+              ],
+              "root": [
+                199,
+                464
+              ],
+              "airRoot": [
+                199,
+                251
+              ]
+            },
+            {
+              "image": "velvet-reply-recovery-special-2.png",
+              "rect": [
+                0,
+                0,
+                343,
+                473
+              ],
+              "root": [
+                156,
+                473
+              ],
+              "airRoot": [
+                156,
+                255
+              ]
+            },
+            {
+              "image": "velvet-reply-recovery-special-2.png",
+              "rect": [
+                0,
+                0,
+                343,
+                473
+              ],
+              "root": [
+                156,
+                473
+              ],
+              "airRoot": [
+                156,
+                255
+              ]
+            }
+          ]
+        },
+        "helpless_enter": {
+          "image": "velvet-reply-recovery-special-3.png",
+          "scale": 0.17672413793103448,
+          "frames": [
+            {
+              "image": "velvet-reply-recovery-special-3.png",
+              "rect": [
+                0,
+                0,
+                388,
+                456
+              ],
+              "root": [
+                200,
+                456
+              ],
+              "airRoot": [
+                200,
+                246
+              ]
+            },
+            {
+              "image": "velvet-reply-recovery-special-4.png",
+              "rect": [
+                0,
+                0,
+                276,
+                444
+              ],
+              "root": [
+                137,
+                444
+              ],
+              "airRoot": [
+                137,
+                240
+              ]
+            }
+          ]
+        },
+        "helpless_loop": {
+          "image": "velvet-reply-recovery-special-4.png",
+          "scale": 0.17672413793103448,
+          "frames": [
+            {
+              "image": "velvet-reply-recovery-special-4.png",
+              "rect": [
+                0,
+                0,
+                276,
+                444
+              ],
+              "root": [
+                137,
+                444
+              ],
+              "airRoot": [
+                137,
+                240
+              ]
+            }
+          ]
+        },
+        "helpless_land": {
+          "image": "velvet-reply-recovery-special-5.png",
+          "scale": 0.17672413793103448,
+          "frames": [
+            {
+              "image": "velvet-reply-recovery-special-5.png",
+              "rect": [
+                0,
+                0,
+                310,
+                367
+              ],
+              "root": [
+                153,
+                367
+              ]
+            },
+            {
+              "image": "velvet-reply-recovery-special-5.png",
+              "rect": [
+                0,
+                0,
+                310,
+                367
+              ],
+              "root": [
+                153,
+                367
+              ]
+            },
+            {
+              "image": "velvet-reply-idle.png",
+              "rect": [
+                0,
+                0,
+                733,
+                1324
+              ],
+              "root": [
+                366.5,
+                1324
+              ],
+              "scale": 0.061933534743202415
+            }
+          ]
+        },
+        "ledge_drop": {
+          "image": "velvet-reply-aerial-5.png",
+          "scale": 0.17083333333333334,
+          "frames": [
+            {
+              "image": "velvet-reply-aerial-5.png",
+              "rect": [
+                0,
+                0,
+                273,
+                349
+              ],
+              "root": [
+                124,
+                349
+              ],
+              "airRoot": [
+                124,
+                239
+              ],
+              "scale": 0.1673469387755102
+            },
+            {
+              "image": "velvet-reply-air-2.png",
+              "rect": [
+                0,
+                0,
+                270,
+                480
+              ],
+              "root": [
+                137,
+                480
+              ],
+              "scale": 0.17083333333333334,
+              "airRoot": [
+                137,
+                259
+              ]
+            },
+            {
+              "image": "velvet-reply-air-2.png",
+              "rect": [
+                0,
+                0,
+                270,
+                480
+              ],
+              "root": [
+                137,
+                480
+              ],
+              "scale": 0.17083333333333334,
+              "airRoot": [
+                137,
+                259
+              ]
+            },
+            {
+              "image": "velvet-reply-air-2.png",
+              "rect": [
+                0,
+                0,
+                270,
+                480
+              ],
+              "root": [
+                137,
+                480
+              ],
+              "scale": 0.17083333333333334,
+              "airRoot": [
+                137,
+                259
+              ]
+            }
+          ]
+        },
+        "ledge_trump": {
+          "image": "velvet-reply-reaction-1.png",
+          "scale": 0.17083333333333334,
+          "frames": [
+            {
+              "image": "velvet-reply-reaction-1.png",
+              "rect": [
+                0,
+                0,
+                389,
+                532
+              ],
+              "root": [
+                225,
+                532
+              ],
+              "airRoot": [
+                225,
+                240
+              ],
+              "scale": 0.148014440433213
+            },
+            {
+              "image": "velvet-reply-reaction-1.png",
+              "rect": [
+                0,
+                0,
+                389,
+                532
+              ],
+              "root": [
+                225,
+                532
+              ],
+              "airRoot": [
+                225,
+                240
+              ],
+              "scale": 0.148014440433213
+            },
+            {
+              "image": "velvet-reply-aerial-5.png",
+              "rect": [
+                0,
+                0,
+                273,
+                349
+              ],
+              "root": [
+                124,
+                349
+              ],
+              "airRoot": [
+                124,
+                239
+              ],
+              "scale": 0.1673469387755102
+            },
+            {
+              "image": "velvet-reply-air-2.png",
+              "rect": [
+                0,
+                0,
+                270,
+                480
+              ],
+              "root": [
+                137,
+                480
+              ],
+              "scale": 0.17083333333333334,
+              "airRoot": [
+                137,
+                259
               ]
             }
           ]

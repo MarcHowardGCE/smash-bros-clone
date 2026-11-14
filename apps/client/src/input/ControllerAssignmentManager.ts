@@ -62,6 +62,16 @@ export class ControllerAssignmentManager {
     return new Map(this.assignments);
   }
 
+  /** Reclaim the primary seat at a menu boundary when only one controller remains. */
+  reclaimPrimarySeat(): void {
+    if (this.assignments.has(0) || this.assignments.size !== 1) return;
+    const [slot, assignment] = this.assignments.entries().next().value!;
+    this.assignments.delete(slot);
+    this.assignments.set(0, assignment);
+    this.persist();
+    this.onAssignmentChanged?.();
+  }
+
   /**
    * Handle gamepad connect event
    * Logic:

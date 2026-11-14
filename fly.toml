@@ -2,7 +2,7 @@ app = "smash-clone"
 primary_region = "ord"
 
 [build]
-  dockerfile = "Dockerfile"
+  dockerfile = "apps/server/Dockerfile"
 
 [http_service]
   internal_port = 3001

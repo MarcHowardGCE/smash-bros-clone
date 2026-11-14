@@ -23,8 +23,8 @@ To smoke-test this production build, keep the compiled server running and open i
 
 | Target | Source and workflow |
 | --- | --- |
-| Docker | The [root Dockerfile](../../Dockerfile) uses Node 24, pnpm 11.20.0, a frozen install, and committed atlases. It builds from the repository root. The [Docker ignore rules](../../.dockerignore) constrain the context to the fighter workspace and exclude environment files. |
-| Fly.io | [`fly.toml`](../../fly.toml) selects the root Dockerfile, internal port 3001, and forced HTTPS. Authenticate the Fly CLI for the intended app and check the app name in the config before running `pnpm deploy:fly`. |
+| Docker | The [root Dockerfile](../../Dockerfile) uses Node 24, pnpm 11.20.0, and a frozen server build. It builds from the repository root. The [Docker ignore rules](../../.dockerignore) constrain the context to the fighter workspace and exclude environment files. |
+| Fly.io | [`fly.toml`](../../fly.toml) selects the combined client and server Dockerfile, internal port 3001, and forced HTTPS. Authenticate the Fly CLI for the intended app and check the app name in the config before running `pnpm deploy:fly`. |
 | Render | [`render.yaml`](../../render.yaml) defines the native Node Blueprint build and start commands. Connect the repository through that Blueprint. The `pnpm deploy:render` script prints instructions. |
 
 For a local container smoke test, run from the repository root.
@@ -47,7 +47,7 @@ Socket.IO is configured for WebSocket transport. A page load only proves static 
 
 ## Post-deploy smoke test
 
-The current production game is hosted on Render. Confirm the target URL and deployed revision for each release check. [Deployed game](https://everybody-throws-hands.onrender.com/)
+The public client is hosted on Bluehost and Render runs online matches. Confirm the target URL and deployed revision for each release check. [Deployed game](https://play.zandarecords.com/)
 
 1. Open the hosted URL in a fresh browser session. Confirm that the main menu appears, start a local match, and check both fighter sprites and the selected arena.
 2. Use two independent browser contexts. Create a room, join by invite, confirm fighters and a world, and wait for both clients to enter live play. Check that artwork loads before the countdown and inputs update both clients.
@@ -78,3 +78,112 @@ On November 10, 2026, two fresh Chromium contexts played Abe Lincoln against Swi
 | Confirmed Leave | The guest returned Home, the room link and saved credential cleared, and the host reached results. |
 
 The browser run passed with zero uncaught page errors. The private credentials identify the updated behavior on Render. The hosting provider's revision ID was outside this check.
+
+## Bluehost client pilot
+
+The pilot pull request workflow builds and tests the game and attaches
+`eth-bluehost-client-<commit-sha>` to its Actions run. The artifact contains
+`apps/client/dist` with the online endpoint set to the existing Render service.
+Local and Dojo simulation run in the browser. Online rooms and matches use Render.
+
+Download the artifact for the exact game revision paired with the Render server.
+The intended Bluehost destination is `play.zandarecords.com` at
+`~/public_html/website_9ed378d6`. The pilot branch builds and publishes to Bluehost from this repository.
+
+The local build produced 978 files and 1,488,072,053 bytes. The staging script
+copies the runtime manifests, their referenced images, Pack 03 idle art, and
+the other static directories. It preserves source-sheet fallback and excludes
+review material in the fighter art directories. The staged build contains 795
+files and 1,279,105,347 bytes. The five Socket.IO integration tests passed
+with local loopback access and IPv4-first localhost resolution.
+
+The game repository publishes on pushes to deploy/bluehost-client-pilot using the eth-bluehost-pilot environment. Configure ETH_FTP_HOST, ETH_FTP_USER, and ETH_FTP_PASSWORD for the scoped account. Rerun the successful publish job against the same artifact to verify zero changed files. Live FTPS verification is pending.
+
+The CI static-serving test reuses the completed build. Standalone runs build
+their own output. The first pilot run failed when the test rebuilt into the
+populated Vite output directory.
+The pilot workflow installs Playwright Chromium before the client tests.
+
+The scoped pilot uses explicit FTPS with CA validation and accepts the Bluehost FTP alias mismatch. Browser HTTPS and Render connections use their normal certificate validation.
+
+Run 43448034225 uploaded 786 files and its unchanged publish rerun uploaded
+zero. The live smoke found a test rebuild had replaced the configured client.
+CI stages the initial build before tests and checks its Render endpoint.
+
+### Bluehost live browser smoke
+
+On 2026-11-13, two fresh Chromium contexts created and joined an online
+room via the invite URL, confirmed All-Rounder, and reached live play on
+Zanda Infinity. All observed HTTPS responses in that run came from
+play.zandarecords.com. Both game WebSockets connected directly to Render.
+In a second fresh room the guest reloaded during live play and reached the
+match again in 1.237 seconds. Reconnect skipped the splash screen.
+
+The remaining pilot smoke covers local and Dojo play, paused reconnect,
+rematch, cold and warm transfer measurements, and interrupted atlas retry.
+
+On 2026-11-13, Bluehost reached live local play on Zanda Infinity and live
+Dojo Free Practice in Chromium. One unthrottled cold run took 8.04 seconds
+from navigation to live play (5.21 seconds after stage confirmation) and
+transferred 33.04 MB in Resource Timing subresources. A repeat navigation
+in the same browser context took 7.22 seconds (5.12 after confirmation) and
+transferred 9.51 MB. These are single-run measurements and include UI
+automation and the countdown.
+
+### Bluehost interrupted atlas, paused reconnect, and Play Again
+
+On 2026-11-13, a fresh two-client room on Bluehost used All-Rounder on both
+seats and Zanda Infinity. Chromium intercepted and reset four production
+atlas requests on the guest. The artwork failure alert appeared and neither
+client entered countdown or live play. After clearing the simulated fault,
+the guest used Change fighter, selected and confirmed the same fighter, and
+the host confirmed the same world. Both clients reached live play.
+
+The host paused and both clients showed Resume. Refreshing the guest restored
+the paused overlay in 1.951 seconds. Guest Resume dismissed the overlay in
+both clients.
+
+A separate online match reached results through stock loss. Play Again took
+both clients to online room entry. They created and joined a fresh room,
+reselected the same lineup and world, and reached live play again. Online
+Play Again uses a fresh room and requires selection again.
+
+### Coordinated release from main
+
+The release workflow builds and tests the client from the pushed commit.
+To enable publishing, set the repository Actions variable ETH_RELEASE_ENABLED
+to true and add RENDER_DEPLOY_HOOK_URL to the eth-bluehost-pilot environment
+alongside the three existing FTPS secrets. Disable Render auto-deploy in
+the service settings so only the release workflow deploys the server.
+
+The workflow requests the exact commit from Render and checks the public
+healthz endpoint for that full revision before sending files to Bluehost.
+A failed request or a revision that never becomes live blocks the upload.
+A publish rerun skips the Render deploy if that revision is already live.
+The Render fallback client stays available during this rollout.
+
+To release manually, open Actions, select Release Render server and Bluehost client, choose Run workflow, and select main. The manual run uses the same test and revision checks.
+
+The staged Bluehost entry page includes an eth-release meta tag for the checked-out commit. Compare it with Render /healthz after a coordinated release.
+
+GitHub Actions run 43468550919 verified Render commit e07461d before
+Bluehost uploaded one of 786 files. The public entry page and Render
+health endpoint reported the same full revision. Two fresh browsers
+then created and joined a room and reached live play on Zanda Infinity.
+Render still serves the fallback client. The next cutover step is to
+remove it from the Render build and redirect old entry links.
+
+### Render backend-only cutover
+
+Render serves /healthz and the online WebSocket endpoint. Legacy game links
+to the Render root redirect temporarily to Bluehost with the original query
+string. The root Dockerfile builds the server and its workspace dependencies.
+The Fly Dockerfile still builds the combined application.
+
+On 2026-11-13, GitHub Actions run 43471767100 verified Render commit
+fb1aca7 and Bluehost uploaded one changed file. The live Render root
+returned a 302 to Bluehost, and the previous client bundle returned 404.
+Two fresh Chromium clients used the old Render homepage and an old-format
+Render room invite, selected All-Rounder on Zanda Infinity, and reached live
+play. The invite preserved the room code. Guest refresh returned to the
+live match in 1.351 seconds.

@@ -1,6 +1,8 @@
+import { ControllerAssignmentManager } from '../ControllerAssignmentManager';
+import { InputManager } from '../InputManager';
 import { afterEach, expect, it, vi } from 'vitest';
-import { GamepadPoller } from '@smash/gamepad-input';
-import { INPUT_BITS as B } from '@smash/shared';
+import { GamepadPoller, GamepadPreferenceStore } from '@smash/gamepad-input';
+import { INPUT_BITS as B, validStickInput } from '@smash/shared';
 import { GamepadInputSource } from '../GamepadInputSource';
 import { CONTROLLER_PROFILES, controllerBindingLabel, detectControllerProfile, getControllerProfile, setControllerProfileOverride } from '../controllerProfiles';
 
@@ -88,3 +90,53 @@ it('reads the assigned index when all three controller families are connected', 
   slot = 2;
   expect(source.getHeldBits()).toBe(B.JUMP);
 });
+
+it.each(devices)('routes a late $key controller from discovery into gameplay packets', ({ id }) => {
+  let reports: ReturnType<typeof pad>[] = [];
+  vi.stubGlobal('navigator', { getGamepads: () => reports });
+  const poller = new GamepadPoller();
+  const assignments = new ControllerAssignmentManager(poller, new GamepadPreferenceStore(localStorage), 4);
+  const source = new GamepadInputSource(poller, -1, () => assignments.getAssignments().get(0)?.gamepadIndex ?? -1);
+  const input = new InputManager({}, 'player', source);
+  try {
+    reports = [pad(id, [1], [0.8, 0, 0, 0])];
+    expect(poller.poll().get(0)?.bits).toBeTruthy();
+    expect(assignments.getAssignments().get(0)?.gamepadId).toBe(id);
+    const packet = input.pollInput(true)!;
+    expect(packet.held).toBe(B.RIGHT | B.ATTACK);
+    expect(packet.pressed & B.ATTACK).toBe(B.ATTACK);
+    expect(validStickInput(packet)).toBe(true);
+  } finally {
+    input.destroy();
+    poller.stop();
+    localStorage.clear();
+  }
+});
+it.each([[devices[0], devices[1]], [devices[1], devices[0]]] as const)(
+  'recovers P1 when swapping %j for %j without disconnect events',
+  (first, second) => {
+    let reports: (ReturnType<typeof pad> | null)[] = [pad(first.id, [])];
+    vi.stubGlobal('navigator', { getGamepads: () => reports });
+    const poller = new GamepadPoller();
+    const seats = new ControllerAssignmentManager(poller, new GamepadPreferenceStore(localStorage), 4);
+    const input = new InputManager({}, 'player', new GamepadInputSource(
+      poller, -1, () => seats.getAssignments().get(0)?.gamepadIndex ?? -1,
+    ));
+    try {
+      reports.push(pad(second.id, [], undefined, 'standard', 1));
+      poller.poll();
+      expect(seats.getAssignments().get(1)?.gamepadId).toBe(second.id);
+      reports = [null, pad(second.id, [1], [0.8, 0, 0, 0], 'standard', 1)];
+      poller.poll();
+      expect(seats.getAssignments().has(0)).toBe(false);
+      seats.reclaimPrimarySeat();
+      expect(seats.getAssignments().get(0)?.gamepadId).toBe(second.id);
+      expect(seats.getAssignments().has(1)).toBe(false);
+      expect(input.pollInput(true)?.held).toBe(B.RIGHT | B.ATTACK);
+    } finally {
+      input.destroy();
+      poller.stop();
+      localStorage.clear();
+    }
+  },
+);

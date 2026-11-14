@@ -131,6 +131,10 @@ export class InputManager {
   private readonly resetHeld = (): void => { this.currentHeld = 0;this.pendingTaunts=0; };
 
   private readonly onKeyDown = (e: KeyboardEvent): void => {
+    const target = e.target;
+    if (target instanceof HTMLElement &&
+        (target.isContentEditable || target.closest('input, textarea, select'))) return;
+
     const bit = this.keyToBit(e.code);
     if (bit !== 0) {
       e.preventDefault();

@@ -509,6 +509,13 @@ async function main() {
   }
 
   const activeSparks: ImpactSpark[] = [];
+  const pendingThrowSparks: HitEventData[] = [];
+  const spawnImpactSpark = (x: number, y: number): void => {
+    const spark = new ImpactSpark();
+    spark.start(x, y);
+    layers.game.addChild(spark.container);
+    activeSparks.push(spark);
+  };
 
   /** Process hit events: play SFX, flash defender, and spawn an impact spark. */
   const processHitEvents = (events: HitEventData[], players?: RenderState['players']): void => {
@@ -516,7 +523,8 @@ async function main() {
       sfxManager.playHit(event.knockbackMagnitude);
       if(event.moveId===MoveId.DOWN_SPECIAL)fighterRenderers.get(event.attackerId)?.startCounterReaction(players?.get(event.attackerId)?.stateFrame);
       const defenderRenderer = fighterRenderers.get(event.defenderId);
-      if (event.moveId === MoveId.PUMMEL || [MoveId.FORWARD_THROW, MoveId.BACK_THROW, MoveId.UP_THROW, MoveId.DOWN_THROW].includes(event.moveId)) {
+      const isThrow = [MoveId.FORWARD_THROW, MoveId.BACK_THROW, MoveId.UP_THROW, MoveId.DOWN_THROW].includes(event.moveId);
+      if (event.moveId === MoveId.PUMMEL || isThrow) {
         const attacker = fighterRenderers.get(event.attackerId);
         const facing = players?.get(event.attackerId)?.facing ?? (attacker?.container.scale.x === -1 ? -1 : 1);
         if (event.moveId !== MoveId.PUMMEL) attacker?.startThrowRelease(event.moveId);
@@ -526,10 +534,8 @@ async function main() {
         defenderRenderer.startHitFlash();
       }
 
-      const spark = new ImpactSpark();
-      spark.start(event.worldX, event.worldY);
-      layers.game.addChild(spark.container);
-      activeSparks.push(spark);
+      if (isThrow) pendingThrowSparks.push(event);
+      else spawnImpactSpark(event.worldX, event.worldY);
     }
   };
 
@@ -702,6 +708,11 @@ async function main() {
       }
     }
 
+    for (const event of pendingThrowSparks.splice(0)) {
+      const contact = fighterRenderers.get(event.defenderId)?.getThrowImpactPosition(layers.game);
+      spawnImpactSpark(contact?.x ?? event.worldX, contact?.y ?? event.worldY);
+    }
+
     // Tick impact spark particles each render frame
     tickSparks();
   };
@@ -745,7 +756,11 @@ async function main() {
   let rejoinedArtworkPending = false;
   const gameClient = new GameClient({
     serverUrl: SERVER_URL,
-    gamepadSource:new GamepadInputSource(poller,-1,()=>assignmentManager.getAssignments().get(0)?.gamepadIndex??-1),
+    gamepadSource: new GamepadInputSource(poller, -1, () => {
+      const assignments = assignmentManager.getAssignments();
+      return assignments.get(0)?.gamepadIndex ??
+        (assignments.size === 1 ? assignments.values().next().value?.gamepadIndex ?? -1 : -1);
+    }),
     onRejoined: () => {
       rejoinedArtworkPending = true;
       hasShownSplashOnThisPageLoad = true;
@@ -850,8 +865,8 @@ async function main() {
     onPlayerJoined: (slotIndex: number) => {
       uiManager.showPlayerJoined(slotIndex);
     },
-    onHitEvents: (hitEvents) => {
-      processHitEvents(hitEvents);
+    onHitEvents: (hitEvents, players) => {
+      processHitEvents(hitEvents, players);
       for (const hitEvent of hitEvents) {
         camera?.shake(hitEvent.knockbackMagnitude);
       }
@@ -1137,13 +1152,18 @@ async function main() {
       { assignmentManager },
       lastLocalSetup,
       (result) => {
+        poller.poll();
+        assignmentManager.reclaimPrimarySeat();
         lastLocalSetup = result;
         const cpuSlotIndices = result.seats
           .map((seat, index) => (seat.kind === "cpu" ? index + 1 : null))
           .filter((slotIndex): slotIndex is number => slotIndex !== null);
-        const gamepadSlotByIndex = () => new Map(
+        const gamepadSlotByIndex = () => {
+          assignmentManager.reclaimPrimarySeat();
+          return new Map(
           Array.from(assignmentManager.getAssignments(), ([slot, assignment]) => [assignment.gamepadIndex, slot]),
-        );
+          );
+        };
         const showFighters = (previousChoices: readonly FighterChoice[] = []): void => {
         uiManager.showCharacterSelect(
           roster,
@@ -1195,6 +1215,8 @@ async function main() {
   };
 
   uiManager.onPractice=()=>{
+    poller.poll();
+    assignmentManager.reclaimPrimarySeat();
     if(!isLocalMode){isLocalMode=true;gameClient.disconnect();}
     cleanupLocalMode();for(const renderer of fighterRenderers.values())renderer.destroy();fighterRenderers.clear();koPresenter.clear();
     audioManager.playTrack('main-menu');

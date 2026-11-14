@@ -14,6 +14,7 @@
 import { lerp } from "@smash/shared";
 import type {
   StateSnapshot,
+  HitEventData,
   PlayerState,
   PlayerId,
   MoveId,
@@ -70,34 +71,31 @@ export interface RenderState {
  */
 export class InterpolationBuffer {
   private snapshots: StateSnapshot[] = [];
-  private readonly bufferSize = 3;
-  private latestReceivedAt = 0;
+  private readonly bufferSize = 12;
+  private pendingHits: { tick: number; events: HitEventData[] }[] = [];
+  private clockOffset: number | undefined;
+  private static readonly tickMs = 1000 / 60;
+  private static readonly delayMs = 100;
 
-  /**
-   * Queues an authoritative server snapshot, keeping only the last `bufferSize` entries.
-   *
-   * Snapshot interpolation for remote players:
-   * Snapshots arrive at ~20Hz (every 3 render frames at 60fps).
-   * The buffer holds 3 snapshots. At render time, lerp between snapshot[n] and snapshot[n+1]
-   * using elapsed time / snapshot interval as t. This eliminates the jitter of rendering
-   * the raw 20Hz positions and gives the appearance of 60fps smooth movement.
-   *
-   * @param snapshot - The latest authoritative `StateSnapshot` from the server.
-   */
   pushSnapshot(snapshot: StateSnapshot, receivedAt = performance.now()): void {
-    if (this.snapshots.length && snapshot.tick <= this.snapshots[this.snapshots.length - 1]!.tick) return;
-    this.latestReceivedAt = receivedAt;
-    this.snapshots.push(snapshot);
-    // Keep last 3 snapshots
-    if (this.snapshots.length > this.bufferSize) {
-      this.snapshots.shift();
+    const previous = this.snapshots.at(-1);
+    if (previous && snapshot.tick <= previous.tick) return;
+    const offset = receivedAt - snapshot.tick * InterpolationBuffer.tickMs;
+    // Re-anchor after a pause or long stall. Normal packet jitter leaves the clock alone.
+    if (this.clockOffset === undefined || offset - this.clockOffset > 500) {
+      this.clockOffset = offset;
+      this.snapshots = [];
+      this.pendingHits = [];
     }
+    if (snapshot.hitEvents?.length) this.pendingHits.push({ tick: snapshot.tick, events: snapshot.hitEvents });
+    this.snapshots.push(snapshot);
+    if (this.snapshots.length > this.bufferSize) this.snapshots.shift();
   }
 
   /**
    * Computes an interpolated `RenderState` for the given timestamp.
    *
-   * Lerps remote player positions between the two most recent snapshots.
+   * Samples the buffered simulation timeline at a fixed playback delay.
    * The local player's entry is snapped to the latest snapshot value as a
    * fallback; `GameClient.renderTick` immediately overwrites it with the
    * predicted state from `LocalPredictor`.
@@ -118,76 +116,61 @@ export class InterpolationBuffer {
       return null;
     }
 
-    const snap0 = this.snapshots[this.snapshots.length - 2]!;
-    const snap1 = this.snapshots[this.snapshots.length - 1]!;
-
-    const duration = snap1.timestamp - snap0.timestamp;
-    if (duration <= 0) {
-      return this.snapshotToRenderState(snap1);
+    const newest = this.snapshots.at(-1)!;
+    const target = this.targetTick(now);
+    const next = this.snapshots.findIndex(snapshot => snapshot.tick > target + 1e-8);
+    if (next <= 0) {
+      const rendered = this.snapshotToRenderState(next < 0 ? newest : this.snapshots[0]!);
+      const local = newest.players[localPlayerId];
+      if (local) rendered.players.set(localPlayerId, this.playerToRenderState(local));
+      return { ...rendered, matchPhase: newest.matchPhase, winnerId: newest.winnerId };
     }
-
-    // Play the previous->latest interval from local receipt time. Server and
-    // browser performance.now() have unrelated origins; only server intervals
-    // are comparable. Clamp during stalls rather than extrapolate combat positions.
-    const alpha = Math.max(0, Math.min(1, (now - this.latestReceivedAt) / duration));
+    const snap0 = this.snapshots[next - 1]!;
+    const snap1 = this.snapshots[next]!;
+    const alpha = Math.max(0, (target - snap0.tick) / (snap1.tick - snap0.tick));
 
     const players = new Map<PlayerId, RenderPlayerState>();
 
-    for (const [id, p1] of Object.entries(snap1.players)) {
-      const p0 = snap0.players[id as PlayerId];
-
-      if (!p0) {
-        // New player — use latest state directly
-        players.set(id as PlayerId, this.playerToRenderState(p1));
+    for (const [id, p0] of Object.entries(snap0.players)) {
+      const playerId = id as PlayerId;
+      const p1 = snap1.players[playerId];
+      if (id === localPlayerId || !p1) {
+        players.set(playerId, this.playerToRenderState(newest.players[playerId] ?? p0));
         continue;
       }
 
-      // WHY local player uses snap-to-latest instead of lerp: The local player's rendering
-      // position is already managed by `LocalPredictor` (client-side prediction). The caller
-      // (`GameClient.renderTick`) overwrites the local player's entry in the returned map with
-      // the predicted state immediately after this call. The snap-to-latest here is just a
-      // safe fallback that ensures the map always contains an entry for the local player.
-      if (id === localPlayerId) {
-        players.set(id as PlayerId, this.playerToRenderState(p1));
-        continue;
+      const rendered = this.playerToRenderState(p0);
+      if (p0.stocks === p1.stocks && p0.isKnockedOut === p1.isKnockedOut &&
+          p0.grabbedPlayerId === p1.grabbedPlayerId &&
+          (p0.state === "GRAB_HOLDING") === (p1.state === "GRAB_HOLDING")) {
+        rendered.x = lerp(p0.x, p1.x, alpha);
+        rendered.y = lerp(p0.y, p1.y, alpha);
+        rendered.vx = lerp(p0.vx, p1.vx, alpha);
+        rendered.vy = lerp(p0.vy, p1.vy, alpha);
+        if (p0.state === p1.state && p0.currentMoveId === p1.currentMoveId &&
+            p1.stateFrame >= p0.stateFrame) {
+          rendered.stateFrame = Math.floor(lerp(p0.stateFrame, p1.stateFrame, alpha) + 1e-8);
+        }
       }
-
-      // For remote players: interpolate numeric position fields
-      const interpolated: RenderPlayerState = {
-        id: id as PlayerId,
-        slotIndex: p1.slotIndex,
-        x: lerp(p0.x, p1.x, alpha),
-        y: lerp(p0.y, p1.y, alpha),
-        vx: lerp(p0.vx, p1.vx, alpha),
-        vy: lerp(p0.vy, p1.vy, alpha),
-        isGrounded: p1.isGrounded,
-        // WHY facing/state/stateFrame/percent/stocks snap rather than lerp: These are discrete
-        // values where interpolation produces nonsense. Lerping `facing` between -1 and 1 yields
-        // 0 (no direction). Lerping `state` (a string enum) is impossible. Lerping `percent`
-        // would display fractional damage like "12.4%" between two integer server states. All
-        // are snapped to the authoritative latest value from the most recent snapshot.
-        facing: p1.facing, // snap to latest (no lerp)
-        state: p1.state, // snap to latest
-        stateFrame: p1.stateFrame, // snap to latest
-        percent: p1.percent, // snap to latest (avoid fractional damage display)
-        stocks: p1.stocks, // snap to latest
-        isInvincible: p1.isInvincible,
-        isKnockedOut: p1.isKnockedOut,
-        isShielding: p1.isShielding,
-        shieldHealth: p1.shieldHealth,
-        currentMoveId: p1.currentMoveId,
-        characterId: p1.characterId,
- dodgeLevel:p1.dodgeLevel,dodgeKind:p1.dodgeKind,koVisual:p1.koVisual,tauntKind:p1.tauntKind,hitReaction:p1.hitReaction,impactVx:p1.pendingKnockbackVx??p1.vx,artCue:p1.artCue,artCueFrame:p1.artCueFrame,respawnTimer:p1.respawnTimer,footstoolRole:p1.footstoolRole,footstoolPartnerId:p1.footstoolPartnerId,footstoolFrame:p1.footstoolFrame,shieldReaction:p1.shieldReaction,shieldReactionFrame:p1.shieldReactionFrame,hitstunFramesRemaining:p1.hitstunFramesRemaining,floorOrientation:p1.floorOrientation,floorRollDirection:p1.floorRollDirection,isFastFalling:p1.isFastFalling,airDodgeDirection:p1.airDodgeDirection,hasDoubleJump:p1.hasDoubleJump,isTumbling:p1.isTumbling,chargeFrames:p1.chargeFrames,isGrabbing:p1.isGrabbing,grabbedPlayerId:p1.grabbedPlayerId,ledgeId:p1.ledgeId,
-      };
-
-      players.set(id as PlayerId, interpolated);
+      players.set(playerId, rendered);
     }
 
-    return {
-      players,
-      matchPhase: snap1.matchPhase,
-      winnerId: snap1.winnerId,
-    };
+    return { players, matchPhase: newest.matchPhase, winnerId: newest.winnerId };
+  }
+
+  private targetTick(now: number): number {
+    return (now - this.clockOffset! - InterpolationBuffer.delayMs) / InterpolationBuffer.tickMs;
+  }
+
+  drainPresentedHits(now: number): HitEventData[] {
+    if (this.clockOffset === undefined) return [];
+    const tick = this.snapshots.length === 1 ? this.snapshots[0]!.tick :
+      Math.max(this.snapshots[0]!.tick, this.targetTick(now));
+    const events: HitEventData[] = [];
+    while (this.pendingHits[0] && this.pendingHits[0].tick <= tick + 1e-8) {
+      events.push(...this.pendingHits.shift()!.events);
+    }
+    return events;
   }
 
   /** Returns the most recent authoritative snapshot, or `null` if the buffer is empty. */
@@ -203,7 +186,8 @@ export class InterpolationBuffer {
   /** Clears all buffered snapshots. Called on disconnect and match restart. */
   clear(): void {
     this.snapshots = [];
-    this.latestReceivedAt = 0;
+    this.clockOffset = undefined;
+    this.pendingHits = [];
   }
 
   private snapshotToRenderState(snap: StateSnapshot): RenderState {

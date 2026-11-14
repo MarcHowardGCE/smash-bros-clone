@@ -68,8 +68,7 @@ export class GamepadPoller {
     for (let i = 0; i < gamepads.length; i++) {
       const gamepad = gamepads[i];
       if (gamepad && gamepad.mapping === 'standard') {
-        this.connectedGamepads.set(i, gamepad);
-        this.onConnect?.(gamepad);
+        this.trackConnection(gamepad);
       }
     }
   }
@@ -101,19 +100,33 @@ export class GamepadPoller {
     // Query current gamepad state via native API
     const gamepads = navigator.getGamepads?.() ?? [];
 
+    if (this.isStarted) {
+      const connected = new Map(Array.from(gamepads)
+        .filter(pad => pad?.mapping === 'standard' && pad.connected)
+        .map(pad => [pad!.index, pad!.id]));
+      for (const [index, pad] of this.connectedGamepads) {
+        if (connected.get(index) !== pad.id) {
+          this.connectedGamepads.delete(index);
+          this.onDisconnect?.(index);
+        }
+      }
+    }
+
     for (let i = 0; i < gamepads.length; i++) {
       const gamepad = gamepads[i];
 
       // Skip null entries and non-standard-mapping gamepads
-      if (!gamepad || gamepad.mapping !== 'standard') {
+      if (!gamepad || !gamepad.connected || gamepad.mapping !== 'standard') {
         continue;
       }
+
+      if (this.isStarted) this.trackConnection(gamepad);
 
       // Sample this gamepad's input bits
       const profile=loadStickCalibration(gamepad.id);
       const bits = sampleGamepadBits(gamepad,profile.deadzone,profile.threshold,profile.centerX,profile.centerY);
 
-      result.set(i, { gamepad, bits });
+      result.set(gamepad.index, { gamepad, bits });
     }
 
     return result;
@@ -130,6 +143,10 @@ export class GamepadPoller {
       return;
     }
 
+    this.trackConnection(gamepad);
+  };
+
+  private trackConnection(gamepad: Gamepad): void {
     // Ignore duplicate browser connect events for an index we already track
     // (can happen after initial start() sweep in some browser flows).
     if (this.connectedGamepads.has(gamepad.index)) {
@@ -141,7 +158,7 @@ export class GamepadPoller {
 
     // Notify listener
     this.onConnect?.(gamepad);
-  };
+  }
 
   /**
    * Internal event handler - called when a gamepad disconnects

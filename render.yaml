@@ -2,8 +2,9 @@ services:
   - type: web
     name: smash-clone
     runtime: node
-    buildCommand: npm install -g pnpm@11.20.0 && pnpm install --frozen-lockfile && pnpm build
+    buildCommand: npm install -g pnpm@11.20.0 && pnpm install --frozen-lockfile && pnpm --filter @smash/server... build
     startCommand: node apps/server/dist/index.js
+    healthCheckPath: /healthz
     envVars:
       - key: NODE_ENV
         value: production

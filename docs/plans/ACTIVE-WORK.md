@@ -37,3 +37,42 @@ Pack 03 revision 49 has expanded locomotion, crouch, jump, fast-fall and teeter.
 ## November 13 human signoff
 
 The project owner approved completed work whose only remaining gate was human signoff. This closes the human review of local CPU behavior for the fixes already verified, the human gameplay feel and balance gate for the current implementation, and the arena readability, recovery and music review for Stages 07–10. This is owner approval, with the previously recorded test coverage as evidence. Human-only art review items on completed clips are also approved. Version-matched Ultimate evidence, Xbox 360 hardware coverage, outstanding hosted and technical checks, and unfinished implementation remain open.
+
+## Bluehost hosting pilot
+
+Pilot PR workflow builds a SHA-tagged client artifact. Next is the first Bluehost upload from the game pilot branch, then an unchanged redeploy and paired Render smoke testing. See the [pilot deployment guide](../guides/DEPLOYMENT.md#bluehost-client-pilot).
+
+## Online remote-fighter smoothing
+
+The pilot uses delayed playback at the existing 20 Hz send rate. The
+two-client jitter comparison and browser contact trace passed for rendered
+jab and throw cue timing. The change remains local.
+
+- [x] Compare old and new playback on the same match snapshots.
+- [x] Verify jab, grab, throw, and landing state transitions in two browsers.
+- [x] Verify throw spark placement and first grounded contact in both browser views.
+- [ ] Review the guest airborne pose on the first grounded frame.
+- [ ] Measure hosted snapshot gaps and playtest on separate connections.
+- [ ] Deploy after the contact and hosted checks pass.
+
+[Measurements and limitations](../REFINEMENT.md#browser-contact-trace-with-controlled-jitter)
+
+## Controller gameplay verification
+
+The late-discovery fix is local. Simulated browser reports for Xbox 360,
+Switch Pro, and DualSense each acquired slot 0 without a connection event.
+All three produced movement and attack input accepted by the shared wire
+validator. The controller package passed 76 tests and the profile suite
+passed 12. Physical Switch Pro mapping remains open. Capture the affected browser's mapping, device ID,
+and button/axis counts before adding any raw-device mapping.
+
+Chromium gameplay smoke passed for all three simulated standard profiles.
+Each controller appeared after startup without a connection event. Left
+stick moved the fighter and the right face button entered Attack in local
+play and in a two-client loopback match. The guest verified the host's
+movement and Attack from authoritative snapshots. Physical controller
+reports and hosted testing remain open. No deployment was made.
+
+Follow-up after the deployed fix: both Xbox-to-Switch Pro and reverse simulated handoffs passed with the browser disconnect event omitted. After reconciliation, the sole controller reclaimed P1 and produced movement plus attack. Browser match handoff and physical hardware verification remain open.
+
+Browser handoff passed in both directions in local and two-client online matches with simulated standard reports. The remaining controller confirmed P1 after the first disappeared without a disconnect event, then moved and attacked in the match. Online verification observed the authoritative state on the guest. Physical hardware and production deployment remain open.

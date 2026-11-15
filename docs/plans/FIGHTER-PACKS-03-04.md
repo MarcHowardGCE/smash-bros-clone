@@ -2663,3 +2663,144 @@ the standing grab into paired pummel for both fighters. The tests
 check cue selection and the handoff into the hold. Visual reach
 against the grab volume throughout the active ticks remains open.
 Next are the holder, victim, and pummel pose gaps.
+
+### Pack 04 paired hold and pummel pose parity
+
+Revision 100 brings both fighters to four distinct holder and victim
+hold poses, six holder pummel poses, and four victim pummel poses.
+New drawings have per-frame hand or chest sockets. The existing
+pummel strike and initial victim flinch retain their timing.
+
+The first combined Chromium run encountered Dojo startup timeouts and
+failed grab acquisition. On separate reruns, both paired pummel tests
+passed in both facings and all four stepped and normal-speed throw
+release tests passed. These checks cover cue synchronization and
+handoffs. Visual hand placement through the new hold and pummel poses
+remains open. Next are grab escape release and throw victim pose gaps.
+
+### Pack 04 grab release and throw victim pose parity
+
+Revision 101 fills four clips per fighter with existing costume-matched
+drawings. Grab release and back, up, and down throw victim sequences
+each have four distinct poses. The directional release drawings remain
+first, with existing recoil, tumble, or uncurl poses to carry the exit.
+
+All four Chromium Dojo throw tests passed at stepped and normal speed
+for both fighters. Grab-escape release was verified by atlas counts.
+Live escape playback and visual spacing across the full release remain
+open. Next are the specials, successful counter, and shield-break gaps.
+
+### Pack 04 specials and shield-break pose parity
+
+Revision 102 reuses costume-matched transition drawings to reach
+three distinct poses for each neutral, side, and down special and
+successful counter, and four for each shield-break phase. Both
+fighters passed the Chromium Dojo specials and full shield-break
+tests in both facings. Gameplay-speed pose continuity remains open.
+Next are the entry, taunt, and victory pose gaps.
+
+### Pack 04 presentation and final pose-count audit
+
+Revision 103 adds existing idle transitions to the signature entry,
+taunt, and victory drawings. Per fighter, entry and each victory now
+have three distinct crops and each taunt has four. The atlas comparison
+found zero timeline or distinct-crop gaps across all 139 clips shared
+with Pack 03, using its per-clip minimum across the three fighters.
+
+All eight Chromium presentation tests passed, covering Dojo cues,
+full local match presentation, and both alternate victory routes for
+each fighter. These tests cover cue selection. Next are gameplay-speed
+visual continuity and release verification. Pose counts alone do not
+establish that the reused transitions read naturally at gameplay speed.
+
+### Pack 04 revision 103 recorded playback
+
+Seven Chromium Dojo cases passed with recording enabled. The cases
+cover both fighters' normal-speed throw tests, presentation cues,
+shield break, and airborne reactions. Reviewed timestamped contact
+sheets from all seven recordings. The sampled sequences showed
+visible fighter art through the exercised transitions. The short
+throw and taunt transitions need closer frame-by-frame review for
+hand and foot placement. No atlas changes were made in this pass.
+
+Next, run the production build and Pack 04 release checks for asset
+loading, fighter selection, and local and online roster integration.
+The recorded Dojo pass is sampled visual evidence.
+
+### Pack 04 revision 103 production preflight
+
+The production build passed. The built Pack 04 manifest reports
+revision 103, and all 434 referenced images are present. The two
+Pack 04 local presentation checks and the existing two-client online
+selection and reconnect check passed against the development server.
+Those local presentation checks use a staged Pack 04 lineup, and the
+online check exercises released fighters.
+
+Normal Fighter Select still lists the roster through Pack 03. Next
+is to wire both Pack 04 fighters into regular selection and match art
+loading, then verify cold loading and a real local and two-client
+match with Zane and Velvet against the production build.
+
+### Pack 04 regular roster integration
+
+Zane and Velvet now appear in regular local and online Fighter Select
+with their own portraits and kit descriptions. Online rooms accept both
+IDs. The existing selection and match preload path serves their atlas.
+
+The production build passed. Three Chromium checks against the built
+server passed using fresh browser contexts: one two-client match with
+Zane versus Velvet and one regular local match for each fighter. Each
+check verified a successful Pack 04 manifest request and the expected
+fighter IDs in the live match. The first online run logged a Windows
+read error for stage audio. The three-case rerun did not reproduce it.
+No deployed-host timings or in-match sprite captures were taken.
+Next are throttled production loading, interrupted artwork retry, and
+the remaining gameplay-speed art review.
+
+### Pack 04 throttled production loading and retry
+
+The source-sheet baseline never reached live play within the 75-second
+assertion window in either 8 Mbps run. A guest manifest abort surfaced
+the artwork alert in 118 ms, but reconfirming the lineup still missed
+the same deadline.
+
+Pack 04 now uses four lossless WebP atlas pages totaling 9,675,238
+bytes and 64 MiB decoded. The source directory contains about 130 MB.
+Rebuild the source manifest with
+`node scripts/assets/build-pack-04-pilot.mjs`, then run
+`node scripts/assets/build-production-fighter-atlas.mjs --pack-04`
+from the repo root after building the engine. The production build
+passed, and the loader checks the packed revision against the source.
+
+On the built server with fresh Chromium contexts, 8 Mbps download and
+upload, and 80 ms simulated latency, Zane versus Velvet reached live
+play in 35.27 seconds from navigation and 20.18 seconds from stage
+selection. Aborting a packed page on the guest showed the alert in
+0.39 seconds and kept live play blocked. Reconfirming the same lineup
+reached live play 19.18 seconds after selecting the stage again.
+Both local selection smokes and five packed Dojo throw and ledge
+checks also passed. The cold run logged an intermittent Windows
+stage audio read error. Deployed-host timing and remaining visual
+review are open.
+
+### Pack 04 packed atlas floor alignment
+
+The full Chromium Dojo run initially passed 53 of 56 tests.
+Locomotion, landing, and knockdown floor checks caught fractional
+anchor drift when the packer rounded sprite rectangles. The Pack 04
+packer now preserves bottom-edge roots at the packed rectangle
+boundary. After regeneration, all 56 tests passed. The four WebP
+pages retain the same transfer size. Deployed-host timing and the
+remaining gameplay-speed visual review are open.
+
+### Pack 04 production retest after floor alignment
+
+Rebuilt production with the corrected packed roots. All four Chromium
+release cases passed against the built server. At 8 Mbps and 80 ms
+simulated latency, the cold online match reached live play in 35.28 s
+from navigation and 20.19 s from stage selection. Aborting one guest
+atlas page showed the alert in 0.35 s and blocked live play. The same
+lineup reached live play 19.14 s after selecting the stage again.
+Both fighters also passed regular local selection and match startup.
+Hosted timing and visual review of the remaining short transitions
+stay open.

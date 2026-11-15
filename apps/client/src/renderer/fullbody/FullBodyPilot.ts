@@ -80,7 +80,7 @@ export async function preloadFullBodyPilot(dojo=false, selected?: readonly Chara
   const base = pack04 ? '/fighter-art-pack-04-v1/' : pack03 ? '/fighter-art-pack-03-v1/' : dojo ? '/fighter-art-newcomers-v1/' : '/fighter-art-pilot-v1/';
   const sourceUrl = base + (dojo && !pack03 && !pack04 ? 'dojo/manifest.json' : 'manifest.json');
   let manifest: Manifest | undefined;
-  if ((!dojo || pack03) && new URLSearchParams(window.location.search).get('atlas') !== 'source') {
+  if ((!dojo || pack03 || pack04) && new URLSearchParams(window.location.search).get('atlas') !== 'source') {
     try {
       const revisionUrl = import.meta.env.PROD ? base + 'source-revision.json' : sourceUrl;
       const [candidate, source] = await Promise.all([

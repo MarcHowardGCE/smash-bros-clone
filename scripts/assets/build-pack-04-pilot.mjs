@@ -592,7 +592,7 @@ for (const [id, pivots] of Object.entries(walkPivots)) {
       durations: [1, 2, 1, 2, 2, 4], activeWindow: [3, 6] },
     grab_hold: grabPose([hold, hold, hold, hold]),
     grabbed: grabPose([held, held, held, held]),
-    grab_release: grabPose([grabRelease, grabRelease, techStand, techStand]),
+    grab_release: grabPose([grabRelease, { ...standingTurn, scale: stanceScale }, idleBetween[0], techStand]),
   });
   clips.grab_dash = {
     ...grabPose([{ ...stride, scale: runScale }, { ...passing, scale: runScale }, reach, grabExtension, { ...brake, scale: runScale }, techStand]),
@@ -614,10 +614,29 @@ for (const [id, pivots] of Object.entries(walkPivots)) {
     gripTop: socket(flinch, zane ? 102 : 184, zane ? 538 : 594),
     gripBottom: socket(flinch, zane ? 118 : 194, zane ? 495 : 548),
   }};
+  const pair = registerSheet(id, 'grab-pair-detail',
+    zane ? [220, 660, 1098, 1544, 249, 685, 1126, 1575] : [221, 650, 1093, 1533, 241, 673, 1121, 1572], 443, 4)
+    .map((frame, index) => ({ ...frame, scale: [82, 79, 79, 79, 82, 79, 75, 78][index] / frame.rect[3] }));
+  const holderGrips = zane ? [[124, 292], [126, 281], [130, 280], [130, 282]]
+    : [[125, 332], [141, 322], [140, 323], [143, 325]];
+  const victimGrips = zane ? [[-30, 322], [0, 304], [-29, 286], [-22, 303]]
+    : [[-24, 328], [-3, 318], [-27, 310], [-20, 311]];
+  const holderPoses = pair.slice(0, 4).map((frame, index) => ({
+    ...frame, sockets: { grabGrip: socket(frame, ...holderGrips[index]) },
+  }));
+  const victimPoses = pair.slice(4).map((frame, index) => {
+    const [x, height] = victimGrips[index];
+    return { ...frame, sockets: {
+      gripTop: socket(frame, x, height),
+      gripBottom: socket(frame, x + 10, height - 29),
+    } };
+  });
+  clips.grab_hold.frames = [hold, holderPoses[0], holderPoses[1], holderPoses[3]];
+  clips.grabbed.frames = [held, victimPoses[0], victimPoses[1], victimPoses[3]];
   clips.pummel = {
-    ...grabPose([hold, hold, strikeFrame, hold, hold, hold]), durations: [1, 2, 1, 2, 2, 2], activeWindow: [3, 4],
+    ...grabPose([hold, holderPoses[2], strikeFrame, holderPoses[3], holderPoses[1], holderPoses[0]]), durations: [1, 2, 1, 2, 2, 2], activeWindow: [3, 4],
   };
-  clips.pummel_victim = grabPose([flinchFrame, flinchFrame, held, held]);
+  clips.pummel_victim = grabPose([flinchFrame, victimPoses[2], victimPoses[3], held]);
 
   const throws = registerSheet(id, 'throws',
     zane ? [251, 932, 287, 883] : [278, 904, 318, 867], zane ? 640 : 590);
@@ -664,7 +683,9 @@ for (const [id, pivots] of Object.entries(walkPivots)) {
       const release = frames[index + 1];
       clips[direction + '_throw_victim_preview'] = {
         image: release.image, scale, durations: [6, 6, 6, 6],
-        frames: [release, direction === 'down' ? release : tumble, tumble, tumble],
+        frames: direction === 'down'
+          ? [release, airRecoil, tumble, uncurlPose]
+          : [release, tumble, clips.tumble.frames[2], uncurlPose],
       };
     }
   }
@@ -798,7 +819,11 @@ for (const [id, pivots] of Object.entries(walkPivots)) {
     PNG.bitblt(breakSheet, cell, x, 0, cell.width, cell.height, 0, 0);
     const pose = registerFrame(id + '-' + name + '.png', cell);
     clips[name] = { image: pose.image, scale: 82 / pose.rect[3],
-      frames: [index === 0 ? airborneFrame(pose) : pose] };
+      frames: [
+        [airborneFrame(pose), launchRecoil, airRecoil, uncurlPose],
+        [pose, techCrouch, idleBetween[1], idleBetween[0]],
+        [pose, techCrouch, idleBetween[0], standLedge],
+      ][index] };
   }
   const specialSheet = readSource(id + '-specials.png');
   const half = Math.floor(specialSheet.width / 2);
@@ -809,8 +834,8 @@ for (const [id, pivots] of Object.entries(walkPivots)) {
     const scale = 82 / specials[0].rect[3];
     const action = { ...pose, scale };
     clips[name] = { image: pose.image, scale,
-      frames: index === 3 ? [action, action, standLedge] :
-        [standLedge, standLedge, action, action, action, standLedge] };
+      frames: index === 3 ? [action, idleBetween[0], standLedge] :
+        [standLedge, [idleBetween[0], stanceFrame(standingTurn), stanceFrame(crouch)][index], action, action, action, standLedge] };
   }
   const sheet = readSource(id + '-presentation.png');
   const presentationFrames = Array.from({ length: 12 }, (_, index) => {
@@ -826,12 +851,13 @@ for (const [id, pivots] of Object.entries(walkPivots)) {
   });
   const [entrance, respawn, tauntUp, tauntSide, tauntDown, winOne, winTwo, winThree,
     defeat, launch, screen, star] = presentationFrames;
-  const taunt = gesture => [standLedge, gesture, gesture, gesture, gesture, standLedge];
+  const taunt = gesture => [standLedge, idleBetween[0], gesture, gesture, idleBetween[1], standLedge];
+  const victory = gesture => [standLedge, idleBetween[0], gesture, gesture, gesture, gesture];
   const presentation = {
-    entry: [entrance, entrance, entrance, entrance, standLedge, standLedge],
+    entry: [entrance, entrance, entrance, idleBetween[0], standLedge, standLedge],
     respawn_wait: [respawn], respawn_drop: [respawn, respawn, airborneFrame(air[2]), { ...air[5], scale: airScale }, standLedge, standLedge],
     taunt_up: taunt(tauntUp), taunt_side: taunt(tauntSide), taunt_down: taunt(tauntDown),
-    victory_1: [winOne], victory_2: [winTwo], victory_3: [winThree],
+    victory_1: victory(winOne), victory_2: victory(winTwo), victory_3: victory(winThree),
     defeat: [defeat], ko_launch: [launch], ko_screen: [screen], ko_star: [star],
   };
   for (const [name, frames] of Object.entries(presentation)) {
@@ -839,8 +865,7 @@ for (const [id, pivots] of Object.entries(walkPivots)) {
   }
   // Explicit holds preserve the current pose and let the shared timelines index every entry.
   const presentationHolds = {
-    respawn_wait: 4, victory_1: 6, victory_2: 6, victory_3: 6, defeat: 4,
-    shield_break_launch: 4, shield_break_dizzy: 4, shield_break_recover: 4,
+    respawn_wait: 4, defeat: 4,
   };
   for (const [name, count] of Object.entries(presentationHolds)) {
     clips[name].frames = Array(count).fill(clips[name].frames[0]);
@@ -858,6 +883,6 @@ for (const [id, pivots] of Object.entries(walkPivots)) {
     clips.air_fastfall_loop.frames = [sized(dive, 69), air[4], sized(descend, 82)];
   }
 }
-fs.writeFileSync(output + '/manifest.json', JSON.stringify({ version: 1, revision: 99, characters }, null, 2) + '\n');
+fs.writeFileSync(output + '/manifest.json', JSON.stringify({ version: 1, revision: 103, characters }, null, 2) + '\n');
 
 

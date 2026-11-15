@@ -15,7 +15,7 @@ import { createServer } from "node:http";
 import { fileURLToPath } from "node:url";
 import { decode } from "@msgpack/msgpack";
 import type { CharacterId, InputEvent, PlayerId } from "@smash/shared";
-import { isCharacterId, isPack03PilotId } from "@smash/shared";
+import { isCharacterId, isPack03PilotId, isPack04FighterId } from "@smash/shared";
 import { Server } from "socket.io";
 import { MatchSession } from "./MatchSession.js";
 import { RoomManager } from "./RoomManager.js";
@@ -183,7 +183,7 @@ export function createApp(): {
 				const roomInfo = roomManager.getRoomBySocketId(socket.id);
 				if (!roomInfo) return;
 
-				if (!isCharacterId(characterId) && !isPack03PilotId(characterId) && characterId !== 'moonshine' && characterId !== 'hulk-hoagie') {
+				if (!isCharacterId(characterId) && !isPack03PilotId(characterId) && !isPack04FighterId(characterId) && characterId !== 'moonshine' && characterId !== 'hulk-hoagie') {
 					callback?.({ error: "invalid characterId" });
 					return;
 				}

@@ -14,7 +14,7 @@ for (const fighter of ['zane-corvo', 'velvet-reply']) {
     await expect(page.locator('#dojo-fighter')).toContainText(fighter === 'zane-corvo' ? 'Zane Corvo' : 'The Velvet Reply');
     await page.locator('#practice-free').click();
     await page.waitForFunction(() => window.__smashDebug?.getSnapshot()?.matchPhase === 'match');
-    const manifest = await (await page.request.get(new URL('/fighter-art-pack-04-v1/manifest.json', page.url()).href)).json();
+    const manifest = await (await page.request.get(new URL('/fighter-art-pack-04-v1/production/manifest.json', page.url()).href)).json();
     const clips = manifest.characters[fighter].clips;
     for (const [key, facing] of [['ArrowLeft', -1], ['ArrowRight', 1]] as const) {
       await page.keyboard.down(key);
@@ -274,7 +274,7 @@ for (const fighter of ['zane-corvo', 'velvet-reply']) {
     await expect.poll(() => page.evaluate(() => window.__smashDebug?.getArtState?.()?.players.length)).toBe(2);
     await page.getByText('Launch and KO lab', { exact: true }).click();
     for (let i = 0; i < 4; i++) await page.locator('#dojo-launch-percent-partner').click();
-    const atlas = await (await page.request.get(new URL('/fighter-art-pack-04-v1/manifest.json', page.url()).href)).json();
+    const atlas = await (await page.request.get(new URL('/fighter-art-pack-04-v1/production/manifest.json', page.url()).href)).json();
     const tumble = atlas.characters[partner].clips.tumble.frames[0].rect.join(',');
     await page.keyboard.press('F6');
     for (const facing of [1, -1]) for (const [move, key] of [
@@ -1048,7 +1048,7 @@ for (const fighter of ['zane-corvo', 'velvet-reply']) {
     await page.locator('#splash-screen').click();
     await page.locator('#practice-btn').click();
     await page.locator('#practice-free').click();
-    const manifest = await (await page.request.get('/fighter-art-pack-04-v1/manifest.json')).json();
+    const manifest = await (await page.request.get('/fighter-art-pack-04-v1/production/manifest.json')).json();
     const contact = manifest.characters[fighter].clips.dash_attack.frames[2].rect.join(',');
     const sample = () => page.evaluate(() => {
       const debug = window.__smashDebug;

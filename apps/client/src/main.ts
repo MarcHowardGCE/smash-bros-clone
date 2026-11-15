@@ -1,4 +1,4 @@
-import { getCharacterStats, getStageLayout, isPack04FighterId, isPack03PilotId, PACK_03_PILOT_FIGHTERS } from '@smash/shared';
+import { getCharacterStats, getStageLayout, isPack04FighterId, isPack03PilotId, PACK_03_PILOT_FIGHTERS, PACK_04_PILOT_FIGHTERS } from '@smash/shared';
 import{PracticeRoutine}from'./practice/PracticeRoutine.js';
 import{PracticeOverlay}from'./practice/PracticeOverlay.js';
 import './practice/practice.css';
@@ -169,7 +169,7 @@ async function main() {
   const fallbackReady = preloadFighterAssets().then(assets => { fighterAssets = assets; fallbackSettled = true; });
   const roster = urlParams.get("renderer") === "legacy"
     ? AVAILABLE_FIGHTERS : [...AVAILABLE_FIGHTERS, ...NEWCOMER_CHOICES,
-      ...PACK_03_PILOT_FIGHTERS.map(({ id, name }) => ({ id, displayName: name }))];
+      ...[...PACK_03_PILOT_FIGHTERS, ...PACK_04_PILOT_FIGHTERS].map(({ id, name }) => ({ id, displayName: name }))];
   const artworkLoads = new Map<CharacterId, Promise<FullBodyPilotAssets | undefined>>();
   let fullBodyPilot: FullBodyPilotAssets | undefined;
   let effectsLoad: Promise<FullBodyPilotAssets | undefined> | undefined;

@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "revision": 99,
+  "revision": 103,
   "characters": {
     "zane-corvo": {
       "clips": {
@@ -6646,59 +6646,62 @@
               }
             },
             {
-              "image": "zane-corvo-grab-1.png",
+              "image": "zane-corvo-grab-pair-detail-0.png",
               "rect": [
                 0,
                 0,
-                426,
-                585
+                251,
+                410
               ],
               "root": [
-                176,
-                585
+                109,
+                410
               ],
+              "scale": 0.2,
               "sockets": {
                 "grabGrip": [
-                  393,
-                  160
+                  233,
+                  118
                 ]
               }
             },
             {
-              "image": "zane-corvo-grab-1.png",
+              "image": "zane-corvo-grab-pair-detail-1.png",
               "rect": [
                 0,
                 0,
-                426,
-                585
+                265,
+                394
               ],
               "root": [
-                176,
-                585
+                120,
+                394
               ],
+              "scale": 0.20050761421319796,
               "sockets": {
                 "grabGrip": [
-                  393,
-                  160
+                  246,
+                  113
                 ]
               }
             },
             {
-              "image": "zane-corvo-grab-1.png",
+              "image": "zane-corvo-grab-pair-detail-3.png",
               "rect": [
                 0,
                 0,
-                426,
-                585
+                265,
+                393
               ],
               "root": [
-                176,
-                585
+                117,
+                393
               ],
+              "scale": 0.2010178117048346,
               "sockets": {
                 "grabGrip": [
-                  393,
-                  160
+                  247,
+                  111
                 ]
               }
             }
@@ -6732,71 +6735,74 @@
               }
             },
             {
-              "image": "zane-corvo-grab-2.png",
+              "image": "zane-corvo-grab-pair-detail-4.png",
               "rect": [
                 0,
                 0,
-                374,
-                586
+                230,
+                409
               ],
               "root": [
-                205,
-                586
+                120,
+                409
               ],
+              "scale": 0.20048899755501223,
               "sockets": {
                 "gripTop": [
-                  152,
-                  103
+                  90,
+                  87
                 ],
                 "gripBottom": [
-                  171,
-                  155
+                  100,
+                  116
                 ]
               }
             },
             {
-              "image": "zane-corvo-grab-2.png",
+              "image": "zane-corvo-grab-pair-detail-5.png",
               "rect": [
                 0,
                 0,
-                374,
-                586
+                229,
+                392
               ],
               "root": [
-                205,
-                586
+                123,
+                392
               ],
+              "scale": 0.20153061224489796,
               "sockets": {
                 "gripTop": [
-                  152,
-                  103
+                  123,
+                  88
                 ],
                 "gripBottom": [
-                  171,
-                  155
+                  133,
+                  117
                 ]
               }
             },
             {
-              "image": "zane-corvo-grab-2.png",
+              "image": "zane-corvo-grab-pair-detail-7.png",
               "rect": [
                 0,
                 0,
-                374,
-                586
+                227,
+                389
               ],
               "root": [
-                205,
-                586
+                132,
+                389
               ],
+              "scale": 0.20051413881748073,
               "sockets": {
                 "gripTop": [
-                  152,
-                  103
+                  110,
+                  86
                 ],
                 "gripBottom": [
-                  171,
-                  155
+                  120,
+                  115
                 ]
               }
             }
@@ -6820,31 +6826,32 @@
               ]
             },
             {
-              "image": "zane-corvo-grab-3.png",
+              "image": "zane-corvo-stance-0.png",
               "rect": [
                 0,
                 0,
-                431,
-                557
+                299,
+                591
               ],
               "root": [
-                206,
-                557
-              ]
+                147,
+                591
+              ],
+              "scale": 0.13874788494077833
             },
             {
-              "image": "zane-corvo-idle.png",
+              "image": "zane-corvo-idle-between-0.png",
               "rect": [
                 0,
                 0,
-                764,
-                1313
+                482,
+                849
               ],
               "root": [
-                382,
-                1313
+                241,
+                849
               ],
-              "scale": 0.062452399086062454
+              "scale": 0.09658421672555949
             },
             {
               "image": "zane-corvo-idle.png",
@@ -7087,21 +7094,22 @@
               }
             },
             {
-              "image": "zane-corvo-grab-1.png",
+              "image": "zane-corvo-grab-pair-detail-2.png",
               "rect": [
                 0,
                 0,
-                426,
-                585
+                289,
+                393
               ],
               "root": [
-                176,
-                585
+                139,
+                393
               ],
+              "scale": 0.2010178117048346,
               "sockets": {
                 "grabGrip": [
-                  393,
-                  160
+                  269,
+                  113
                 ]
               }
             },
@@ -7126,59 +7134,62 @@
               }
             },
             {
-              "image": "zane-corvo-grab-1.png",
+              "image": "zane-corvo-grab-pair-detail-3.png",
               "rect": [
                 0,
                 0,
-                426,
-                585
+                265,
+                393
               ],
               "root": [
-                176,
-                585
+                117,
+                393
               ],
+              "scale": 0.2010178117048346,
               "sockets": {
                 "grabGrip": [
-                  393,
-                  160
+                  247,
+                  111
                 ]
               }
             },
             {
-              "image": "zane-corvo-grab-1.png",
+              "image": "zane-corvo-grab-pair-detail-1.png",
               "rect": [
                 0,
                 0,
-                426,
-                585
+                265,
+                394
               ],
               "root": [
-                176,
-                585
+                120,
+                394
               ],
+              "scale": 0.20050761421319796,
               "sockets": {
                 "grabGrip": [
-                  393,
-                  160
+                  246,
+                  113
                 ]
               }
             },
             {
-              "image": "zane-corvo-grab-1.png",
+              "image": "zane-corvo-grab-pair-detail-0.png",
               "rect": [
                 0,
                 0,
-                426,
-                585
+                251,
+                410
               ],
               "root": [
-                176,
-                585
+                109,
+                410
               ],
+              "scale": 0.2,
               "sockets": {
                 "grabGrip": [
-                  393,
-                  160
+                  233,
+                  118
                 ]
               }
             }
@@ -7225,49 +7236,50 @@
               }
             },
             {
-              "image": "zane-corvo-pummel-1.png",
+              "image": "zane-corvo-grab-pair-detail-6.png",
               "rect": [
                 0,
                 0,
-                500,
-                747
+                248,
+                369
               ],
               "root": [
-                205,
-                747
+                126,
+                369
               ],
-              "scale": 0.09761904761904762,
+              "scale": 0.2032520325203252,
               "sockets": {
                 "gripTop": [
-                  307,
-                  209
+                  97,
+                  83
                 ],
                 "gripBottom": [
-                  323,
-                  252
+                  107,
+                  112
                 ]
               }
             },
             {
-              "image": "zane-corvo-grab-2.png",
+              "image": "zane-corvo-grab-pair-detail-7.png",
               "rect": [
                 0,
                 0,
-                374,
-                586
+                227,
+                389
               ],
               "root": [
-                205,
-                586
+                132,
+                389
               ],
+              "scale": 0.20051413881748073,
               "sockets": {
                 "gripTop": [
-                  152,
-                  103
+                  110,
+                  86
                 ],
                 "gripBottom": [
-                  171,
-                  155
+                  120,
+                  115
                 ]
               }
             },
@@ -7861,40 +7873,40 @@
               "scale": 0.14855072463768115
             },
             {
-              "image": "zane-corvo-reaction-3.png",
+              "image": "zane-corvo-recoil-detail-5.png",
               "rect": [
                 0,
                 0,
-                374,
-                346
+                289,
+                302
               ],
               "root": [
-                135,
-                346
+                140,
+                302
               ],
+              "scale": 0.19205298013245034,
               "airRoot": [
-                135,
-                215
-              ],
-              "scale": 0.14855072463768115
+                140,
+                166
+              ]
             },
             {
-              "image": "zane-corvo-reaction-3.png",
+              "image": "zane-corvo-knockdown-0.png",
               "rect": [
                 0,
                 0,
-                374,
-                346
+                483,
+                577
               ],
               "root": [
-                135,
-                346
+                245,
+                577
               ],
               "airRoot": [
-                135,
-                215
+                245,
+                307
               ],
-              "scale": 0.14855072463768115
+              "scale": 0.127
             }
           ]
         },
@@ -7944,40 +7956,40 @@
               "scale": 0.14855072463768115
             },
             {
-              "image": "zane-corvo-reaction-3.png",
+              "image": "zane-corvo-recoil-detail-5.png",
               "rect": [
                 0,
                 0,
-                374,
-                346
+                289,
+                302
               ],
               "root": [
-                135,
-                346
+                140,
+                302
               ],
+              "scale": 0.19205298013245034,
               "airRoot": [
-                135,
-                215
-              ],
-              "scale": 0.14855072463768115
+                140,
+                166
+              ]
             },
             {
-              "image": "zane-corvo-reaction-3.png",
+              "image": "zane-corvo-knockdown-0.png",
               "rect": [
                 0,
                 0,
-                374,
-                346
+                483,
+                577
               ],
               "root": [
-                135,
-                346
+                245,
+                577
               ],
               "airRoot": [
-                135,
-                215
+                245,
+                307
               ],
-              "scale": 0.14855072463768115
+              "scale": 0.127
             }
           ]
         },
@@ -8009,37 +8021,20 @@
               ]
             },
             {
-              "image": "zane-corvo-throw-victim-3.png",
+              "image": "zane-corvo-reaction-1.png",
               "rect": [
                 0,
                 0,
-                586,
-                300
+                313,
+                521
               ],
               "root": [
-                261,
-                300
+                191,
+                521
               ],
               "airRoot": [
-                261,
-                173
-              ]
-            },
-            {
-              "image": "zane-corvo-reaction-3.png",
-              "rect": [
-                0,
-                0,
-                374,
-                346
-              ],
-              "root": [
-                135,
-                346
-              ],
-              "airRoot": [
-                135,
-                215
+                191,
+                231
               ],
               "scale": 0.14855072463768115
             },
@@ -8060,6 +8055,24 @@
                 215
               ],
               "scale": 0.14855072463768115
+            },
+            {
+              "image": "zane-corvo-knockdown-0.png",
+              "rect": [
+                0,
+                0,
+                483,
+                577
+              ],
+              "root": [
+                245,
+                577
+              ],
+              "airRoot": [
+                245,
+                307
+              ],
+              "scale": 0.127
             }
           ]
         },
@@ -9627,55 +9640,58 @@
               ]
             },
             {
-              "image": "zane-corvo-shield_break_launch.png",
+              "image": "zane-corvo-reaction-2.png",
               "rect": [
                 0,
                 0,
-                571,
-                584
+                534,
+                482
               ],
               "root": [
-                285.5,
-                584
+                292,
+                482
               ],
               "airRoot": [
-                285.5,
-                315
-              ]
+                292,
+                162
+              ],
+              "scale": 0.14855072463768115
             },
             {
-              "image": "zane-corvo-shield_break_launch.png",
+              "image": "zane-corvo-reaction-1.png",
               "rect": [
                 0,
                 0,
-                571,
-                584
+                313,
+                521
               ],
               "root": [
-                285.5,
-                584
+                191,
+                521
               ],
               "airRoot": [
-                285.5,
-                315
-              ]
+                191,
+                231
+              ],
+              "scale": 0.14855072463768115
             },
             {
-              "image": "zane-corvo-shield_break_launch.png",
+              "image": "zane-corvo-knockdown-0.png",
               "rect": [
                 0,
                 0,
-                571,
-                584
+                483,
+                577
               ],
               "root": [
-                285.5,
-                584
+                245,
+                577
               ],
               "airRoot": [
-                285.5,
-                315
-              ]
+                245,
+                307
+              ],
+              "scale": 0.127
             }
           ]
         },
@@ -9697,43 +9713,46 @@
               ]
             },
             {
-              "image": "zane-corvo-shield_break_dizzy.png",
+              "image": "zane-corvo-stance-1.png",
               "rect": [
                 0,
                 0,
-                335,
-                671
+                323,
+                453
               ],
               "root": [
-                167.5,
-                671
-              ]
+                130,
+                453
+              ],
+              "scale": 0.13874788494077833
             },
             {
-              "image": "zane-corvo-shield_break_dizzy.png",
+              "image": "zane-corvo-idle-between-1.png",
               "rect": [
                 0,
                 0,
-                335,
-                671
+                482,
+                849
               ],
               "root": [
-                167.5,
-                671
-              ]
+                241,
+                849
+              ],
+              "scale": 0.09658421672555949
             },
             {
-              "image": "zane-corvo-shield_break_dizzy.png",
+              "image": "zane-corvo-idle-between-0.png",
               "rect": [
                 0,
                 0,
-                335,
-                671
+                482,
+                849
               ],
               "root": [
-                167.5,
-                671
-              ]
+                241,
+                849
+              ],
+              "scale": 0.09658421672555949
             }
           ]
         },
@@ -9755,43 +9774,46 @@
               ]
             },
             {
-              "image": "zane-corvo-shield_break_recover.png",
+              "image": "zane-corvo-stance-1.png",
               "rect": [
                 0,
                 0,
-                428,
-                671
+                323,
+                453
               ],
               "root": [
-                214,
-                671
-              ]
+                130,
+                453
+              ],
+              "scale": 0.13874788494077833
             },
             {
-              "image": "zane-corvo-shield_break_recover.png",
+              "image": "zane-corvo-idle-between-0.png",
               "rect": [
                 0,
                 0,
-                428,
-                671
+                482,
+                849
               ],
               "root": [
-                214,
-                671
-              ]
+                241,
+                849
+              ],
+              "scale": 0.09658421672555949
             },
             {
-              "image": "zane-corvo-shield_break_recover.png",
+              "image": "zane-corvo-idle.png",
               "rect": [
                 0,
                 0,
-                428,
-                671
+                764,
+                1313
               ],
               "root": [
-                214,
-                671
-              ]
+                382,
+                1313
+              ],
+              "scale": 0.062452399086062454
             }
           ]
         },
@@ -9814,18 +9836,18 @@
               "scale": 0.062452399086062454
             },
             {
-              "image": "zane-corvo-idle.png",
+              "image": "zane-corvo-idle-between-0.png",
               "rect": [
                 0,
                 0,
-                764,
-                1313
+                482,
+                849
               ],
               "root": [
-                382,
-                1313
+                241,
+                849
               ],
-              "scale": 0.062452399086062454
+              "scale": 0.09658421672555949
             },
             {
               "image": "zane-corvo-specials-0.png",
@@ -9904,18 +9926,18 @@
               "scale": 0.062452399086062454
             },
             {
-              "image": "zane-corvo-idle.png",
+              "image": "zane-corvo-stance-0.png",
               "rect": [
                 0,
                 0,
-                764,
-                1313
+                299,
+                591
               ],
               "root": [
-                382,
-                1313
+                147,
+                591
               ],
-              "scale": 0.062452399086062454
+              "scale": 0.13874788494077833
             },
             {
               "image": "zane-corvo-specials-1.png",
@@ -9994,18 +10016,18 @@
               "scale": 0.062452399086062454
             },
             {
-              "image": "zane-corvo-idle.png",
+              "image": "zane-corvo-stance-1.png",
               "rect": [
                 0,
                 0,
-                764,
-                1313
+                323,
+                453
               ],
               "root": [
-                382,
-                1313
+                130,
+                453
               ],
-              "scale": 0.062452399086062454
+              "scale": 0.13874788494077833
             },
             {
               "image": "zane-corvo-specials-2.png",
@@ -10084,18 +10106,18 @@
               "scale": 0.16205533596837945
             },
             {
-              "image": "zane-corvo-specials-3.png",
+              "image": "zane-corvo-idle-between-0.png",
               "rect": [
                 0,
                 0,
-                429,
-                511
+                482,
+                849
               ],
               "root": [
-                220.80000000000007,
-                511
+                241,
+                849
               ],
-              "scale": 0.16205533596837945
+              "scale": 0.09658421672555949
             },
             {
               "image": "zane-corvo-idle.png",
@@ -10160,18 +10182,18 @@
               "scale": 0.24188790560471976
             },
             {
-              "image": "zane-corvo-presentation-0.png",
+              "image": "zane-corvo-idle-between-0.png",
               "rect": [
                 0,
                 0,
-                259,
-                339
+                482,
+                849
               ],
               "root": [
-                129.5,
-                339
+                241,
+                849
               ],
-              "scale": 0.24188790560471976
+              "scale": 0.09658421672555949
             },
             {
               "image": "zane-corvo-idle.png",
@@ -10377,18 +10399,18 @@
               "scale": 0.062452399086062454
             },
             {
-              "image": "zane-corvo-presentation-2.png",
+              "image": "zane-corvo-idle-between-0.png",
               "rect": [
                 0,
                 0,
-                204,
-                349
+                482,
+                849
               ],
               "root": [
-                102,
-                349
+                241,
+                849
               ],
-              "scale": 0.2349570200573066
+              "scale": 0.09658421672555949
             },
             {
               "image": "zane-corvo-presentation-2.png",
@@ -10419,18 +10441,18 @@
               "scale": 0.2349570200573066
             },
             {
-              "image": "zane-corvo-presentation-2.png",
+              "image": "zane-corvo-idle-between-1.png",
               "rect": [
                 0,
                 0,
-                204,
-                349
+                482,
+                849
               ],
               "root": [
-                102,
-                349
+                241,
+                849
               ],
-              "scale": 0.2349570200573066
+              "scale": 0.09658421672555949
             },
             {
               "image": "zane-corvo-idle.png",
@@ -10467,18 +10489,18 @@
               "scale": 0.062452399086062454
             },
             {
-              "image": "zane-corvo-presentation-3.png",
+              "image": "zane-corvo-idle-between-0.png",
               "rect": [
                 0,
                 0,
-                158,
-                337
+                482,
+                849
               ],
               "root": [
-                79,
-                337
+                241,
+                849
               ],
-              "scale": 0.2433234421364985
+              "scale": 0.09658421672555949
             },
             {
               "image": "zane-corvo-presentation-3.png",
@@ -10509,18 +10531,18 @@
               "scale": 0.2433234421364985
             },
             {
-              "image": "zane-corvo-presentation-3.png",
+              "image": "zane-corvo-idle-between-1.png",
               "rect": [
                 0,
                 0,
-                158,
-                337
+                482,
+                849
               ],
               "root": [
-                79,
-                337
+                241,
+                849
               ],
-              "scale": 0.2433234421364985
+              "scale": 0.09658421672555949
             },
             {
               "image": "zane-corvo-idle.png",
@@ -10557,18 +10579,18 @@
               "scale": 0.062452399086062454
             },
             {
-              "image": "zane-corvo-presentation-4.png",
+              "image": "zane-corvo-idle-between-0.png",
               "rect": [
                 0,
                 0,
-                195,
-                339
+                482,
+                849
               ],
               "root": [
-                97.5,
-                339
+                241,
+                849
               ],
-              "scale": 0.24188790560471976
+              "scale": 0.09658421672555949
             },
             {
               "image": "zane-corvo-presentation-4.png",
@@ -10599,18 +10621,18 @@
               "scale": 0.24188790560471976
             },
             {
-              "image": "zane-corvo-presentation-4.png",
+              "image": "zane-corvo-idle-between-1.png",
               "rect": [
                 0,
                 0,
-                195,
-                339
+                482,
+                849
               ],
               "root": [
-                97.5,
-                339
+                241,
+                849
               ],
-              "scale": 0.24188790560471976
+              "scale": 0.09658421672555949
             },
             {
               "image": "zane-corvo-idle.png",
@@ -10629,36 +10651,36 @@
           ]
         },
         "victory_1": {
-          "image": "zane-corvo-presentation-5.png",
+          "image": "zane-corvo-idle.png",
           "scale": 0.062452399086062454,
           "frames": [
             {
-              "image": "zane-corvo-presentation-5.png",
+              "image": "zane-corvo-idle.png",
               "rect": [
                 0,
                 0,
-                213,
-                343
+                764,
+                1313
               ],
               "root": [
-                106.5,
-                343
+                382,
+                1313
               ],
-              "scale": 0.239067055393586
+              "scale": 0.062452399086062454
             },
             {
-              "image": "zane-corvo-presentation-5.png",
+              "image": "zane-corvo-idle-between-0.png",
               "rect": [
                 0,
                 0,
-                213,
-                343
+                482,
+                849
               ],
               "root": [
-                106.5,
-                343
+                241,
+                849
               ],
-              "scale": 0.239067055393586
+              "scale": 0.09658421672555949
             },
             {
               "image": "zane-corvo-presentation-5.png",
@@ -10719,36 +10741,36 @@
           ]
         },
         "victory_2": {
-          "image": "zane-corvo-presentation-6.png",
+          "image": "zane-corvo-idle.png",
           "scale": 0.062452399086062454,
           "frames": [
             {
-              "image": "zane-corvo-presentation-6.png",
+              "image": "zane-corvo-idle.png",
               "rect": [
                 0,
                 0,
-                305,
-                327
+                764,
+                1313
               ],
               "root": [
-                152.5,
-                327
+                382,
+                1313
               ],
-              "scale": 0.25076452599388377
+              "scale": 0.062452399086062454
             },
             {
-              "image": "zane-corvo-presentation-6.png",
+              "image": "zane-corvo-idle-between-0.png",
               "rect": [
                 0,
                 0,
-                305,
-                327
+                482,
+                849
               ],
               "root": [
-                152.5,
-                327
+                241,
+                849
               ],
-              "scale": 0.25076452599388377
+              "scale": 0.09658421672555949
             },
             {
               "image": "zane-corvo-presentation-6.png",
@@ -10809,36 +10831,36 @@
           ]
         },
         "victory_3": {
-          "image": "zane-corvo-presentation-7.png",
+          "image": "zane-corvo-idle.png",
           "scale": 0.062452399086062454,
           "frames": [
             {
-              "image": "zane-corvo-presentation-7.png",
+              "image": "zane-corvo-idle.png",
               "rect": [
                 0,
                 0,
-                213,
-                305
+                764,
+                1313
               ],
               "root": [
-                106.5,
-                305
+                382,
+                1313
               ],
-              "scale": 0.26885245901639343
+              "scale": 0.062452399086062454
             },
             {
-              "image": "zane-corvo-presentation-7.png",
+              "image": "zane-corvo-idle-between-0.png",
               "rect": [
                 0,
                 0,
-                213,
-                305
+                482,
+                849
               ],
               "root": [
-                106.5,
-                305
+                241,
+                849
               ],
-              "scale": 0.26885245901639343
+              "scale": 0.09658421672555949
             },
             {
               "image": "zane-corvo-presentation-7.png",
@@ -17665,59 +17687,62 @@
               }
             },
             {
-              "image": "velvet-reply-grab-1.png",
+              "image": "velvet-reply-grab-pair-detail-0.png",
               "rect": [
                 0,
                 0,
-                400,
-                553
+                267,
+                424
               ],
               "root": [
-                168,
-                553
+                125,
+                424
               ],
+              "scale": 0.19339622641509435,
               "sockets": {
                 "grabGrip": [
-                  375,
-                  139
+                  250,
+                  92
                 ]
               }
             },
             {
-              "image": "velvet-reply-grab-1.png",
+              "image": "velvet-reply-grab-pair-detail-1.png",
               "rect": [
                 0,
                 0,
-                400,
-                553
+                270,
+                410
               ],
               "root": [
-                168,
-                553
+                114,
+                410
               ],
+              "scale": 0.1926829268292683,
               "sockets": {
                 "grabGrip": [
-                  375,
-                  139
+                  255,
+                  88
                 ]
               }
             },
             {
-              "image": "velvet-reply-grab-1.png",
+              "image": "velvet-reply-grab-pair-detail-3.png",
               "rect": [
                 0,
                 0,
-                400,
-                553
+                271,
+                410
               ],
               "root": [
-                168,
-                553
+                111,
+                410
               ],
+              "scale": 0.1926829268292683,
               "sockets": {
                 "grabGrip": [
-                  375,
-                  139
+                  254,
+                  85
                 ]
               }
             }
@@ -17751,71 +17776,74 @@
               }
             },
             {
-              "image": "velvet-reply-grab-2.png",
+              "image": "velvet-reply-grab-pair-detail-4.png",
               "rect": [
                 0,
                 0,
-                391,
-                652
+                220,
+                421
               ],
               "root": [
-                257,
-                652
+                144,
+                421
               ],
+              "scale": 0.19477434679334918,
               "sockets": {
                 "gripTop": [
-                  215,
-                  122
+                  120,
+                  93
                 ],
                 "gripBottom": [
-                  234,
-                  175
+                  130,
+                  122
                 ]
               }
             },
             {
-              "image": "velvet-reply-grab-2.png",
+              "image": "velvet-reply-grab-pair-detail-5.png",
               "rect": [
                 0,
                 0,
-                391,
-                652
+                229,
+                407
               ],
               "root": [
-                257,
-                652
+                141,
+                407
               ],
+              "scale": 0.1941031941031941,
               "sockets": {
                 "gripTop": [
-                  215,
-                  122
+                  138,
+                  89
                 ],
                 "gripBottom": [
-                  234,
-                  175
+                  148,
+                  118
                 ]
               }
             },
             {
-              "image": "velvet-reply-grab-2.png",
+              "image": "velvet-reply-grab-pair-detail-7.png",
               "rect": [
                 0,
                 0,
-                391,
-                652
+                237,
+                396
               ],
               "root": [
-                257,
-                652
+                156,
+                396
               ],
+              "scale": 0.19696969696969696,
               "sockets": {
                 "gripTop": [
-                  215,
-                  122
+                  136,
+                  85
                 ],
                 "gripBottom": [
-                  234,
-                  175
+                  146,
+                  114
                 ]
               }
             }
@@ -17839,31 +17867,32 @@
               ]
             },
             {
-              "image": "velvet-reply-grab-3.png",
+              "image": "velvet-reply-stance-0.png",
               "rect": [
                 0,
                 0,
-                435,
-                587
+                297,
+                629
               ],
               "root": [
-                167,
-                587
-              ]
+                151,
+                629
+              ],
+              "scale": 0.13036565977742448
             },
             {
-              "image": "velvet-reply-idle.png",
+              "image": "velvet-reply-idle-between-0.png",
               "rect": [
                 0,
                 0,
-                733,
-                1324
+                448,
+                854
               ],
               "root": [
-                366.5,
-                1324
+                224,
+                854
               ],
-              "scale": 0.061933534743202415
+              "scale": 0.09601873536299765
             },
             {
               "image": "velvet-reply-idle.png",
@@ -18106,21 +18135,22 @@
               }
             },
             {
-              "image": "velvet-reply-grab-1.png",
+              "image": "velvet-reply-grab-pair-detail-2.png",
               "rect": [
                 0,
                 0,
-                400,
-                553
+                272,
+                410
               ],
               "root": [
-                168,
-                553
+                115,
+                410
               ],
+              "scale": 0.1926829268292683,
               "sockets": {
                 "grabGrip": [
-                  375,
-                  139
+                  255,
+                  87
                 ]
               }
             },
@@ -18145,59 +18175,62 @@
               }
             },
             {
-              "image": "velvet-reply-grab-1.png",
+              "image": "velvet-reply-grab-pair-detail-3.png",
               "rect": [
                 0,
                 0,
-                400,
-                553
+                271,
+                410
               ],
               "root": [
-                168,
-                553
+                111,
+                410
               ],
+              "scale": 0.1926829268292683,
               "sockets": {
                 "grabGrip": [
-                  375,
-                  139
+                  254,
+                  85
                 ]
               }
             },
             {
-              "image": "velvet-reply-grab-1.png",
+              "image": "velvet-reply-grab-pair-detail-1.png",
               "rect": [
                 0,
                 0,
-                400,
-                553
+                270,
+                410
               ],
               "root": [
-                168,
-                553
+                114,
+                410
               ],
+              "scale": 0.1926829268292683,
               "sockets": {
                 "grabGrip": [
-                  375,
-                  139
+                  255,
+                  88
                 ]
               }
             },
             {
-              "image": "velvet-reply-grab-1.png",
+              "image": "velvet-reply-grab-pair-detail-0.png",
               "rect": [
                 0,
                 0,
-                400,
-                553
+                267,
+                424
               ],
               "root": [
-                168,
-                553
+                125,
+                424
               ],
+              "scale": 0.19339622641509435,
               "sockets": {
                 "grabGrip": [
-                  375,
-                  139
+                  250,
+                  92
                 ]
               }
             }
@@ -18244,49 +18277,50 @@
               }
             },
             {
-              "image": "velvet-reply-pummel-1.png",
+              "image": "velvet-reply-grab-pair-detail-6.png",
               "rect": [
                 0,
                 0,
-                485,
-                771
+                254,
+                400
               ],
               "root": [
-                211,
-                771
+                160,
+                400
               ],
-              "scale": 0.09523809523809523,
+              "scale": 0.1875,
               "sockets": {
                 "gripTop": [
-                  395,
-                  177
+                  133,
+                  90
                 ],
                 "gripBottom": [
-                  405,
-                  223
+                  143,
+                  119
                 ]
               }
             },
             {
-              "image": "velvet-reply-grab-2.png",
+              "image": "velvet-reply-grab-pair-detail-7.png",
               "rect": [
                 0,
                 0,
-                391,
-                652
+                237,
+                396
               ],
               "root": [
-                257,
-                652
+                156,
+                396
               ],
+              "scale": 0.19696969696969696,
               "sockets": {
                 "gripTop": [
-                  215,
-                  122
+                  136,
+                  85
                 ],
                 "gripBottom": [
-                  234,
-                  175
+                  146,
+                  114
                 ]
               }
             },
@@ -18880,40 +18914,40 @@
               "scale": 0.148014440433213
             },
             {
-              "image": "velvet-reply-reaction-3.png",
+              "image": "velvet-reply-recoil-detail-5.png",
               "rect": [
                 0,
                 0,
-                439,
-                358
+                361,
+                316
               ],
               "root": [
-                181,
-                358
+                171,
+                316
               ],
+              "scale": 0.18354430379746836,
               "airRoot": [
-                181,
-                229
-              ],
-              "scale": 0.148014440433213
+                171,
+                174
+              ]
             },
             {
-              "image": "velvet-reply-reaction-3.png",
+              "image": "velvet-reply-knockdown-0.png",
               "rect": [
                 0,
                 0,
-                439,
-                358
+                520,
+                532
               ],
               "root": [
-                181,
-                358
+                254,
+                532
               ],
               "airRoot": [
-                181,
-                229
+                254,
+                299
               ],
-              "scale": 0.148014440433213
+              "scale": 0.123
             }
           ]
         },
@@ -18963,40 +18997,40 @@
               "scale": 0.148014440433213
             },
             {
-              "image": "velvet-reply-reaction-3.png",
+              "image": "velvet-reply-recoil-detail-5.png",
               "rect": [
                 0,
                 0,
-                439,
-                358
+                361,
+                316
               ],
               "root": [
-                181,
-                358
+                171,
+                316
               ],
+              "scale": 0.18354430379746836,
               "airRoot": [
-                181,
-                229
-              ],
-              "scale": 0.148014440433213
+                171,
+                174
+              ]
             },
             {
-              "image": "velvet-reply-reaction-3.png",
+              "image": "velvet-reply-knockdown-0.png",
               "rect": [
                 0,
                 0,
-                439,
-                358
+                520,
+                532
               ],
               "root": [
-                181,
-                358
+                254,
+                532
               ],
               "airRoot": [
-                181,
-                229
+                254,
+                299
               ],
-              "scale": 0.148014440433213
+              "scale": 0.123
             }
           ]
         },
@@ -19028,37 +19062,20 @@
               ]
             },
             {
-              "image": "velvet-reply-throw-victim-3.png",
+              "image": "velvet-reply-reaction-1.png",
               "rect": [
                 0,
                 0,
-                630,
-                198
+                389,
+                532
               ],
               "root": [
-                326,
-                198
+                225,
+                532
               ],
               "airRoot": [
-                326,
-                154
-              ]
-            },
-            {
-              "image": "velvet-reply-reaction-3.png",
-              "rect": [
-                0,
-                0,
-                439,
-                358
-              ],
-              "root": [
-                181,
-                358
-              ],
-              "airRoot": [
-                181,
-                229
+                225,
+                240
               ],
               "scale": 0.148014440433213
             },
@@ -19079,6 +19096,24 @@
                 229
               ],
               "scale": 0.148014440433213
+            },
+            {
+              "image": "velvet-reply-knockdown-0.png",
+              "rect": [
+                0,
+                0,
+                520,
+                532
+              ],
+              "root": [
+                254,
+                532
+              ],
+              "airRoot": [
+                254,
+                299
+              ],
+              "scale": 0.123
             }
           ]
         },
@@ -20646,55 +20681,58 @@
               ]
             },
             {
-              "image": "velvet-reply-shield_break_launch.png",
+              "image": "velvet-reply-reaction-2.png",
               "rect": [
                 0,
                 0,
-                654,
-                606
+                548,
+                492
               ],
               "root": [
-                327,
-                606
+                323,
+                492
               ],
               "airRoot": [
-                327,
-                327
-              ]
+                323,
+                142
+              ],
+              "scale": 0.148014440433213
             },
             {
-              "image": "velvet-reply-shield_break_launch.png",
+              "image": "velvet-reply-reaction-1.png",
               "rect": [
                 0,
                 0,
-                654,
-                606
+                389,
+                532
               ],
               "root": [
-                327,
-                606
+                225,
+                532
               ],
               "airRoot": [
-                327,
-                327
-              ]
+                225,
+                240
+              ],
+              "scale": 0.148014440433213
             },
             {
-              "image": "velvet-reply-shield_break_launch.png",
+              "image": "velvet-reply-knockdown-0.png",
               "rect": [
                 0,
                 0,
-                654,
-                606
+                520,
+                532
               ],
               "root": [
-                327,
-                606
+                254,
+                532
               ],
               "airRoot": [
-                327,
-                327
-              ]
+                254,
+                299
+              ],
+              "scale": 0.123
             }
           ]
         },
@@ -20716,43 +20754,46 @@
               ]
             },
             {
-              "image": "velvet-reply-shield_break_dizzy.png",
+              "image": "velvet-reply-stance-1.png",
               "rect": [
                 0,
                 0,
-                314,
-                682
+                420,
+                458
               ],
               "root": [
-                157,
-                682
-              ]
+                153,
+                458
+              ],
+              "scale": 0.13036565977742448
             },
             {
-              "image": "velvet-reply-shield_break_dizzy.png",
+              "image": "velvet-reply-idle-between-1.png",
               "rect": [
                 0,
                 0,
-                314,
-                682
+                464,
+                853
               ],
               "root": [
-                157,
-                682
-              ]
+                232,
+                853
+              ],
+              "scale": 0.09613130128956623
             },
             {
-              "image": "velvet-reply-shield_break_dizzy.png",
+              "image": "velvet-reply-idle-between-0.png",
               "rect": [
                 0,
                 0,
-                314,
-                682
+                448,
+                854
               ],
               "root": [
-                157,
-                682
-              ]
+                224,
+                854
+              ],
+              "scale": 0.09601873536299765
             }
           ]
         },
@@ -20774,43 +20815,46 @@
               ]
             },
             {
-              "image": "velvet-reply-shield_break_recover.png",
+              "image": "velvet-reply-stance-1.png",
               "rect": [
                 0,
                 0,
-                489,
-                656
+                420,
+                458
               ],
               "root": [
-                244.5,
-                656
-              ]
+                153,
+                458
+              ],
+              "scale": 0.13036565977742448
             },
             {
-              "image": "velvet-reply-shield_break_recover.png",
+              "image": "velvet-reply-idle-between-0.png",
               "rect": [
                 0,
                 0,
-                489,
-                656
+                448,
+                854
               ],
               "root": [
-                244.5,
-                656
-              ]
+                224,
+                854
+              ],
+              "scale": 0.09601873536299765
             },
             {
-              "image": "velvet-reply-shield_break_recover.png",
+              "image": "velvet-reply-idle.png",
               "rect": [
                 0,
                 0,
-                489,
-                656
+                733,
+                1324
               ],
               "root": [
-                244.5,
-                656
-              ]
+                366.5,
+                1324
+              ],
+              "scale": 0.061933534743202415
             }
           ]
         },
@@ -20833,18 +20877,18 @@
               "scale": 0.061933534743202415
             },
             {
-              "image": "velvet-reply-idle.png",
+              "image": "velvet-reply-idle-between-0.png",
               "rect": [
                 0,
                 0,
-                733,
-                1324
+                448,
+                854
               ],
               "root": [
-                366.5,
-                1324
+                224,
+                854
               ],
-              "scale": 0.061933534743202415
+              "scale": 0.09601873536299765
             },
             {
               "image": "velvet-reply-specials-0.png",
@@ -20923,18 +20967,18 @@
               "scale": 0.061933534743202415
             },
             {
-              "image": "velvet-reply-idle.png",
+              "image": "velvet-reply-stance-0.png",
               "rect": [
                 0,
                 0,
-                733,
-                1324
+                297,
+                629
               ],
               "root": [
-                366.5,
-                1324
+                151,
+                629
               ],
-              "scale": 0.061933534743202415
+              "scale": 0.13036565977742448
             },
             {
               "image": "velvet-reply-specials-1.png",
@@ -21013,18 +21057,18 @@
               "scale": 0.061933534743202415
             },
             {
-              "image": "velvet-reply-idle.png",
+              "image": "velvet-reply-stance-1.png",
               "rect": [
                 0,
                 0,
-                733,
-                1324
+                420,
+                458
               ],
               "root": [
-                366.5,
-                1324
+                153,
+                458
               ],
-              "scale": 0.061933534743202415
+              "scale": 0.13036565977742448
             },
             {
               "image": "velvet-reply-specials-2.png",
@@ -21103,18 +21147,18 @@
               "scale": 0.15384615384615385
             },
             {
-              "image": "velvet-reply-specials-3.png",
+              "image": "velvet-reply-idle-between-0.png",
               "rect": [
                 0,
                 0,
-                440,
-                554
+                448,
+                854
               ],
               "root": [
-                283.80000000000007,
-                554
+                224,
+                854
               ],
-              "scale": 0.15384615384615385
+              "scale": 0.09601873536299765
             },
             {
               "image": "velvet-reply-idle.png",
@@ -21179,18 +21223,18 @@
               "scale": 0.24477611940298508
             },
             {
-              "image": "velvet-reply-presentation-0.png",
+              "image": "velvet-reply-idle-between-0.png",
               "rect": [
                 0,
                 0,
-                243,
-                335
+                448,
+                854
               ],
               "root": [
-                121.5,
-                335
+                224,
+                854
               ],
-              "scale": 0.24477611940298508
+              "scale": 0.09601873536299765
             },
             {
               "image": "velvet-reply-idle.png",
@@ -21396,18 +21440,18 @@
               "scale": 0.061933534743202415
             },
             {
-              "image": "velvet-reply-presentation-2.png",
+              "image": "velvet-reply-idle-between-0.png",
               "rect": [
                 0,
                 0,
-                194,
-                342
+                448,
+                854
               ],
               "root": [
-                97,
-                342
+                224,
+                854
               ],
-              "scale": 0.23976608187134502
+              "scale": 0.09601873536299765
             },
             {
               "image": "velvet-reply-presentation-2.png",
@@ -21438,18 +21482,18 @@
               "scale": 0.23976608187134502
             },
             {
-              "image": "velvet-reply-presentation-2.png",
+              "image": "velvet-reply-idle-between-1.png",
               "rect": [
                 0,
                 0,
-                194,
-                342
+                464,
+                853
               ],
               "root": [
-                97,
-                342
+                232,
+                853
               ],
-              "scale": 0.23976608187134502
+              "scale": 0.09613130128956623
             },
             {
               "image": "velvet-reply-idle.png",
@@ -21486,18 +21530,18 @@
               "scale": 0.061933534743202415
             },
             {
-              "image": "velvet-reply-presentation-3.png",
+              "image": "velvet-reply-idle-between-0.png",
               "rect": [
                 0,
                 0,
-                191,
-                334
+                448,
+                854
               ],
               "root": [
-                95.5,
-                334
+                224,
+                854
               ],
-              "scale": 0.24550898203592814
+              "scale": 0.09601873536299765
             },
             {
               "image": "velvet-reply-presentation-3.png",
@@ -21528,18 +21572,18 @@
               "scale": 0.24550898203592814
             },
             {
-              "image": "velvet-reply-presentation-3.png",
+              "image": "velvet-reply-idle-between-1.png",
               "rect": [
                 0,
                 0,
-                191,
-                334
+                464,
+                853
               ],
               "root": [
-                95.5,
-                334
+                232,
+                853
               ],
-              "scale": 0.24550898203592814
+              "scale": 0.09613130128956623
             },
             {
               "image": "velvet-reply-idle.png",
@@ -21576,18 +21620,18 @@
               "scale": 0.061933534743202415
             },
             {
-              "image": "velvet-reply-presentation-4.png",
+              "image": "velvet-reply-idle-between-0.png",
               "rect": [
                 0,
                 0,
-                205,
-                333
+                448,
+                854
               ],
               "root": [
-                102.5,
-                333
+                224,
+                854
               ],
-              "scale": 0.24624624624624625
+              "scale": 0.09601873536299765
             },
             {
               "image": "velvet-reply-presentation-4.png",
@@ -21618,18 +21662,18 @@
               "scale": 0.24624624624624625
             },
             {
-              "image": "velvet-reply-presentation-4.png",
+              "image": "velvet-reply-idle-between-1.png",
               "rect": [
                 0,
                 0,
-                205,
-                333
+                464,
+                853
               ],
               "root": [
-                102.5,
-                333
+                232,
+                853
               ],
-              "scale": 0.24624624624624625
+              "scale": 0.09613130128956623
             },
             {
               "image": "velvet-reply-idle.png",
@@ -21648,36 +21692,36 @@
           ]
         },
         "victory_1": {
-          "image": "velvet-reply-presentation-5.png",
+          "image": "velvet-reply-idle.png",
           "scale": 0.061933534743202415,
           "frames": [
             {
-              "image": "velvet-reply-presentation-5.png",
+              "image": "velvet-reply-idle.png",
               "rect": [
                 0,
                 0,
-                181,
-                343
+                733,
+                1324
               ],
               "root": [
-                90.5,
-                343
+                366.5,
+                1324
               ],
-              "scale": 0.239067055393586
+              "scale": 0.061933534743202415
             },
             {
-              "image": "velvet-reply-presentation-5.png",
+              "image": "velvet-reply-idle-between-0.png",
               "rect": [
                 0,
                 0,
-                181,
-                343
+                448,
+                854
               ],
               "root": [
-                90.5,
-                343
+                224,
+                854
               ],
-              "scale": 0.239067055393586
+              "scale": 0.09601873536299765
             },
             {
               "image": "velvet-reply-presentation-5.png",
@@ -21738,36 +21782,36 @@
           ]
         },
         "victory_2": {
-          "image": "velvet-reply-presentation-6.png",
+          "image": "velvet-reply-idle.png",
           "scale": 0.061933534743202415,
           "frames": [
             {
-              "image": "velvet-reply-presentation-6.png",
+              "image": "velvet-reply-idle.png",
               "rect": [
                 0,
                 0,
-                286,
-                334
+                733,
+                1324
               ],
               "root": [
-                143,
-                334
+                366.5,
+                1324
               ],
-              "scale": 0.24550898203592814
+              "scale": 0.061933534743202415
             },
             {
-              "image": "velvet-reply-presentation-6.png",
+              "image": "velvet-reply-idle-between-0.png",
               "rect": [
                 0,
                 0,
-                286,
-                334
+                448,
+                854
               ],
               "root": [
-                143,
-                334
+                224,
+                854
               ],
-              "scale": 0.24550898203592814
+              "scale": 0.09601873536299765
             },
             {
               "image": "velvet-reply-presentation-6.png",
@@ -21828,36 +21872,36 @@
           ]
         },
         "victory_3": {
-          "image": "velvet-reply-presentation-7.png",
+          "image": "velvet-reply-idle.png",
           "scale": 0.061933534743202415,
           "frames": [
             {
-              "image": "velvet-reply-presentation-7.png",
+              "image": "velvet-reply-idle.png",
               "rect": [
                 0,
                 0,
-                214,
-                308
+                733,
+                1324
               ],
               "root": [
-                107,
-                308
+                366.5,
+                1324
               ],
-              "scale": 0.2662337662337662
+              "scale": 0.061933534743202415
             },
             {
-              "image": "velvet-reply-presentation-7.png",
+              "image": "velvet-reply-idle-between-0.png",
               "rect": [
                 0,
                 0,
-                214,
-                308
+                448,
+                854
               ],
               "root": [
-                107,
-                308
+                224,
+                854
               ],
-              "scale": 0.2662337662337662
+              "scale": 0.09601873536299765
             },
             {
               "image": "velvet-reply-presentation-7.png",

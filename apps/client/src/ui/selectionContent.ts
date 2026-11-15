@@ -1,7 +1,19 @@
-import { isPack03PilotId } from '@smash/shared';
+import { isPack04FighterId, isPack03PilotId } from '@smash/shared';
 
 /** Presentation only. Fighter histories remain open for collaborative writing. */
 export const FIGHTER_PRESENTATION: Record<string,{id:string;name:string;role:string;pitch:string;style:string;strength:string;trade:string}> = {
+  "zane-corvo": {
+    id: "zane-corvo", name: "Zane Corvo", role: "Close-range brawler",
+    pitch: "Get close and keep the pressure on.",
+    style: "Balanced movement with a close-range kit.",
+    strength: "Close-range pressure", trade: "Needs to close distance"
+  },
+  "velvet-reply": {
+    id: "velvet-reply", name: "The Velvet Reply", role: "Spacing fighter",
+    pitch: "Control the distance and punish approaches.",
+    style: "Balanced movement with strikes built for spacing.",
+    strength: "Spacing", trade: "Relies on positioning"
+  },
   "all-rounder": {
     "id": "all-rounder",
     "name": "All-Rounder",
@@ -148,5 +160,6 @@ export const WORLD_STORIES: Record<string,{name:string;short:string;hook:string;
 };
 export function escapeHtml(value:string):string{return value.replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]!));}
 export function fighterPortrait(id:string):string{const base=import.meta.env.BASE_URL||'/';
+ if(isPack04FighterId(id))return base+'fighter-art-pack-04-v1/'+id+'-idle.png';
  if(isPack03PilotId(id))return base+'fighter-art-pack-03-v1/'+id+'-idle.png';
  return FIGHTER_PRESENTATION[id]?base+'menu-art/'+id+'.png':''; }

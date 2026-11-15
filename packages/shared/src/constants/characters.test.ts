@@ -81,9 +81,9 @@ describe('Character Stats Registry', () => {
       expect(CHARACTER_REGISTRY['swift']).toBe(SWIFT_STATS);
     });
 
-    it('registers all five fighters', () => {
+    it('registers all ten fighters', () => {
       expect(Object.keys(CHARACTER_REGISTRY).sort()).toEqual([
-        'abe-lincoln', 'all-rounder', 'hulk-hoagie', 'loopy', 'moonshine', 'mr-wrong', 'mrs-tasselbottom', 'swift',
+        'abe-lincoln', 'all-rounder', 'hulk-hoagie', 'loopy', 'moonshine', 'mr-wrong', 'mrs-tasselbottom', 'swift', 'velvet-reply', 'zane-corvo',
       ]);
     });
   });

@@ -240,8 +240,8 @@ export class FullBodyPilot {
   if(prepared.result){if(this.resultStart===null||this.resultKind!==prepared.result){this.resultStart=performance.now();this.resultKind=prepared.result;}selected=selectResultFrame(prepared.result,prepared.presentationVariant??0,(performance.now()-this.resultStart)*.06);this.effectSprite.visible=false;}
   else{this.resultStart=null;this.resultKind=undefined;}
   const art = this.assets.characters[this.artId??this.characterId];
-  if (enabled && state === "LANDING_LAG" && isPack04FighterId(this.artId) && art?.land_soft && selected?.clip !== "air_dodge_land") {
-   selected = { clip: "land_soft", index: 0 };
+  if (enabled && state === "LANDING_LAG" && isPack04FighterId(this.artId) && art?.land_soft && selected?.clip !== "air_dodge_land" && selected?.clip !== "land_heavy") {
+   selected = { clip: "land_soft", index: Math.floor(Math.max(0, frame) / 3) };
   }
   if(this.artId&&selected?.clip.startsWith('takeoff_')&&state==='AIRBORNE'&&(prepared.artCueFrame??0)>=6){
    selected=selectPreparedFrame(state,frame,vy,{...prepared,artCue:undefined,facing})??selected;
@@ -267,7 +267,7 @@ export class FullBodyPilot {
   } else {
    this.fastFallStart = undefined;
   }
-  if (pack03 && selected?.clip === 'roll' && (prepared.dodgeKind === 'backward' ||
+  if ((pack03 || isPack04FighterId(this.artId)) && selected?.clip === 'roll' && (prepared.dodgeKind === 'backward' ||
       (prepared.dodgeKind === undefined && rollDirection === -1)) && art?.roll_back) {
    selected = { ...selected, clip: 'roll_back' };
   }
@@ -303,7 +303,7 @@ export class FullBodyPilot {
     const age=frame-(this.reaction.start??frame);
     const index=clip.frames.length>=4&&clip.durations
      ?dojoFrame(clip,age)
-     :Math.min(2,1+Math.floor(age/6));
+     :isPack04FighterId(this.artId)?selected.index:Math.min(2,1+Math.floor(age/6));
     selected={...selected,index};
    }else if(move&&clip.activeWindow&&(state==='ATTACK'||state==='AIR_ATTACK')){
     const data=getMoveDataForCharacter(this.characterId,move);
@@ -434,7 +434,7 @@ export class FullBodyPilot {
   if(newcomerHeld)this.sprite.scale.x*=-1;
   const airRoot = state === 'AIR_ATTACK' || (isPack04FighterId(this.artId) && (state === 'AIR_DODGE' || state === 'HELPLESS' || state === 'HITSTUN' || selected.clip === 'tumble' || (selected.clip === 'tumble_recover' && !prepared.isGrounded) || selected.clip === 'wall_tech' || selected.clip === 'wall_tech_jump' || selected.clip === 'ceiling_tech' || selected.clip === 'ledge_jump' || selected.clip === 'ledge_drop' || selected.clip === 'ledge_trump')) || (pack03 && (airborne || state === 'HELPLESS' || state === 'AIR_DODGE' || selected.clip === 'shield_break_launch' ||
       (state === 'HITSTUN' && ['hit_air','hit_launch','tumble','footstool_air_victim'].includes(selected.clip)))) ? drawing.airRoot : undefined;
-  const fallRoot = isPack04FighterId(this.artId) && selected.clip === 'air_fall_loop'
+  const fallRoot = isPack04FighterId(this.artId) && (selected.clip === 'air_fall_loop' || selected.clip === 'air_fastfall_loop')
     ? [drawing.root[0], Math.round(drawing.texture.frame.height * 0.54)] : undefined;
   const root = airRoot ?? fallRoot ?? drawing.root;
   this.sprite.pivot.set(root[0],root[1]);
@@ -491,7 +491,11 @@ export class FullBodyPilot {
   if(selected.clip==='footstool_attacker'&&prepared.footstoolContact){
    const contact=prepared.footstoolContact,victim=this.assets.characters[contact.artId??contact.characterId]?.[contact.role==='ground'?'footstool_ground_victim':'footstool_air_victim'];
    const vi=footstoolFrameIndex(contact.frame,victim?.frames.length??0,Boolean(contact.artId)),sole=footstoolPoint(clip,selected.index,'footstoolSole',facing),head=victim?footstoolPoint(victim,vi,'footstoolHead',contact.facing):null;
-   if(sole&&head&&this.artId){contactCorrection={kind:"footstool",x:contact.dx+head[0]-sole[0],y:contact.dy+head[1]-sole[1]};}
+   if(sole&&head&&this.artId){
+    const weight=isPack04FighterId(this.artId)
+      ? Math.max(0,1-Math.max(0,(prepared.footstoolFrame??0)-2)/6) : 1;
+    contactCorrection={kind:"footstool",x:(contact.dx+head[0]-sole[0])*weight,y:(contact.dy+head[1]-sole[1])*weight};
+   }
    else if(sole&&head){const weight=this.artId?1:Math.max(0,1-(prepared.footstoolFrame??0)/6);this.sprite.position.x+=(contact.dx+head[0]-sole[0])*facing*weight;this.sprite.position.y+=(contact.dy+head[1]-sole[1])*weight;}
   }
   const floorRoll=selected.clip.startsWith('getup_roll')||selected.clip==='trip_roll';

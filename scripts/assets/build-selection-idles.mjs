@@ -10,7 +10,9 @@ for (const [pack, manifestPath] of [
   ['pilot-v1', 'manifest.json'],
   ['newcomers-v1', 'manifest.json'],
   ['pack-03-v1', 'manifest.json'],
+  ['pack-04-v1', 'manifest.json'],
 ]) {
+  if (process.argv[2] && process.argv[2] !== pack) continue;
   const directory = path.join(publicDir, 'fighter-art-' + pack);
   const { characters } = JSON.parse(await fs.readFile(path.join(directory, manifestPath), 'utf8'));
   for (const [id, character] of Object.entries(characters)) {
@@ -38,6 +40,14 @@ for (const [pack, manifestPath] of [
     await sharp(Buffer.concat(pages), { raw: { width, height: height * pages.length, pageHeight: height, channels: 4 } })
       .webp({ quality: 92, alphaQuality: 100, loop: 0, delay: idle.frames.map((_, i) => Math.round((idle.durations?.[i] ?? 12) * 1000 / 60)) })
       .toFile(file);
+    if (pack === 'pack-04-v1') {
+      for (const [size, maxHeight] of [['hero', 360], ['tile', 128]]) {
+        await sharp(pages[0], { raw: { width, height, channels: 4 } })
+          .resize({ height: maxHeight, withoutEnlargement: true })
+          .webp({ quality: 92, alphaQuality: 100 })
+          .toFile(path.join(publicDir, 'menu-art', id + '-select-' + size + '.webp'));
+      }
+    }
     const metadata = await sharp(file, { animated: true }).metadata();
     if ((metadata.pages ?? 1) !== pages.length) throw Error(id + ' idle frame count mismatch');
     console.log(id, pages.length, (await fs.stat(file)).size);

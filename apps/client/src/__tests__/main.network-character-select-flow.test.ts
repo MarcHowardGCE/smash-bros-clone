@@ -419,7 +419,10 @@ describe("main network character-select flow wiring", () => {
     expect(call?.myPlayerId).toBe("player-1");
     expect(call?.playerIds).toEqual(playerIds);
     expect(call?.fighters).toHaveLength(10);
-    expect(call?.fighters.map(fighter => fighter.id)).toEqual(expect.arrayContaining(['zane-corvo', 'velvet-reply']));
+    expect(call?.fighters).toEqual(expect.arrayContaining([
+      expect.objectContaining({ id: 'zane-corvo' }),
+      expect.objectContaining({ id: 'velvet-reply' }),
+    ]));
     expect(typeof call?.onSelect).toBe("function");
     expect(typeof call?.onConfirm).toBe("function");
   });

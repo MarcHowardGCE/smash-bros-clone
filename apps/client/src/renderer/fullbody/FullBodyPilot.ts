@@ -5,16 +5,16 @@ import {PREPARED_LIVE_CLIPS,selectPreparedFrame,type PreparedContext} from './pr
 import {getMoveDataForCharacter} from '@smash/engine';
 import {grabHoldFrameIndex,solveGrabContact} from "./contactPose.js";
 import { Assets, ImageSource, Rectangle, Sprite, Texture } from 'pixi.js';
-import { getCharacterStats, isPack03PilotId, type CharacterId, type MoveId, type Pack03PilotId, type PlayerId } from '@smash/shared';
+import { getCharacterStats, isPack03PilotId, isPack04FighterId, type CharacterId, type MoveId, type Pack03PilotId, type PlayerId } from '@smash/shared';
 import { selectPilotFrame, type PilotClip } from './pilotTimeline.js';
 export interface GrabContactContext {artId?:DojoArtId;characterId:CharacterId;state:string;frame:number;move:MoveId|null;dx:number;dy:number;facing:1|-1}
-interface Frame { mirrorSource?:boolean;image?:string; sockets?:Record<string,number[]>; rect: number[]; root: number[]; offsetY?: number; airRoot?: number[] }
+interface Frame { scale?: number; mirrorSource?:boolean;image?:string; sockets?:Record<string,number[]>; rect: number[]; root: number[]; offsetY?: number; airRoot?: number[] }
 interface Clip { durations?:number[]; activeWindow?:[number,number]; rotationPeriod?:number; previewOnly?:boolean; mirrorSource?: boolean; image: string; scale: number; frames: Frame[] }
 interface CharacterManifest { clips: Partial<Record<PilotClip, Clip>> }
-export type DojoArtId = 'moonshine' | 'hulk-hoagie' | Pack03PilotId;
+export type DojoArtId = 'moonshine' | 'hulk-hoagie' | Pack03PilotId | 'zane-corvo' | 'velvet-reply';
 type FighterArtId = CharacterId | DojoArtId;
 interface Manifest extends CharacterManifest { revision?:number;production?:{sourceRevision:number}; effects?:Record<string,Clip & {rotation?:number;durations:number[]}>; version: number; characters?: Partial<Record<FighterArtId, CharacterManifest>> }
-type LoadedClip = { durations?:number[]; activeWindow?:[number,number]; rotationPeriod?:number; mirrorSource?: boolean; scale: number; frames: { texture: Texture;mirrorSource?:boolean; root: number[]; offsetY: number; sockets?:Record<string,number[]>; airRoot?: number[] }[] };
+type LoadedClip = { durations?:number[]; activeWindow?:[number,number]; rotationPeriod?:number; mirrorSource?: boolean; scale: number; frames: { texture: Texture; scale?: number;mirrorSource?:boolean; root: number[]; offsetY: number; sockets?:Record<string,number[]>; airRoot?: number[] }[] };
 export interface FullBodyPilotAssets {
  readonly packing?:"atlas"|"source";
  readonly effects?:Record<string,{scale:number;rotation:number;durations:number[];frames:{texture:Texture;root:number[]}[]}>;
@@ -75,11 +75,12 @@ function loadManifest(url: string): Promise<Manifest> {
 export async function preloadFullBodyPilot(dojo=false, selected?: readonly CharacterId[], includeEffects = true, requireIdle = false): Promise<FullBodyPilotAssets | undefined> {
  if(new URLSearchParams(window.location.search).get('renderer')==='legacy')return undefined;
  try {
+  const pack04 = dojo && selected?.some(isPack04FighterId);
   const pack03 = dojo && selected?.some(isPack03PilotId);
-  const base = pack03 ? '/fighter-art-pack-03-v1/' : dojo ? '/fighter-art-newcomers-v1/' : '/fighter-art-pilot-v1/';
-  const sourceUrl = base + (dojo && !pack03 ? 'dojo/manifest.json' : 'manifest.json');
+  const base = pack04 ? '/fighter-art-pack-04-v1/' : pack03 ? '/fighter-art-pack-03-v1/' : dojo ? '/fighter-art-newcomers-v1/' : '/fighter-art-pilot-v1/';
+  const sourceUrl = base + (dojo && !pack03 && !pack04 ? 'dojo/manifest.json' : 'manifest.json');
   let manifest: Manifest | undefined;
-  if ((!dojo || pack03) && new URLSearchParams(window.location.search).get('atlas') !== 'source') {
+  if ((!dojo || pack03 || pack04) && new URLSearchParams(window.location.search).get('atlas') !== 'source') {
     try {
       const revisionUrl = import.meta.env.PROD ? base + 'source-revision.json' : sourceUrl;
       const [candidate, source] = await Promise.all([
@@ -117,7 +118,7 @@ export async function preloadFullBodyPilot(dojo=false, selected?: readonly Chara
     let timer:ReturnType<typeof setTimeout>|undefined;
     try {
      const bases=await Promise.race([Promise.all(clip.frames.map(f=>loadPage(f.image??clip.image))),new Promise<never>((_,reject)=>{timer=setTimeout(()=>reject(new Error('Pilot texture timeout')),textureTimeoutMs);})]);
-     return [name,{durations:clip.durations,activeWindow:clip.activeWindow,rotationPeriod:clip.rotationPeriod,mirrorSource:clip.mirrorSource,scale:clip.scale,frames:clip.frames.map((frame,i)=>({texture:new Texture({source:bases[i]!.source,frame:new Rectangle(frame.rect[0],frame.rect[1],frame.rect[2],frame.rect[3])}),root:frame.root,mirrorSource:frame.mirrorSource,sockets:frame.sockets,offsetY:dojo?getCharacterStats(characterId).hurtboxRadius:frame.offsetY??28,airRoot:frame.airRoot}))}] as const;
+     return [name,{durations:clip.durations,activeWindow:clip.activeWindow,rotationPeriod:clip.rotationPeriod,mirrorSource:clip.mirrorSource,scale:clip.scale,frames:clip.frames.map((frame,i)=>({texture:new Texture({source:bases[i]!.source,frame:new Rectangle(frame.rect[0],frame.rect[1],frame.rect[2],frame.rect[3])}),root:frame.root,scale:frame.scale,mirrorSource:frame.mirrorSource,sockets:frame.sockets,offsetY:dojo?getCharacterStats(characterId).hurtboxRadius:frame.offsetY??28,airRoot:frame.airRoot}))}] as const;
     } catch (error) {
      console.warn('[fighter-art-pilot] Missing clip; using existing artwork', characterId, name, error);
      if (requireIdle && name === 'idle') throw error;
@@ -167,7 +168,7 @@ export class FullBodyPilot {
  }
  private lastContact:[number,number]=[0,0];private lastContactFacing:1|-1=1;private contactRebase=false;private lastHolder:{clip:LoadedClip;index:number;owner:GrabContactContext}|null=null;
  private ledgeFacing:1|-1=1;private previousState="";private ledgeRelease:{clip:PilotClip;start:number}|null=null;
- private contactExit?:{kind:"ledge"|"footstool";x:number;y:number;state?:string;start?:number};
+ private contactExit?:{kind:"ledge"|"footstool";x:number;y:number;state?:string;start?:number;baseY?:number};
  private previousDoubleJump:boolean|undefined;
  private resultStart:number|null=null;private resultKind:string|undefined;
  private doubleJumpCue:{state:string;frame:number;elapsed:number}|null=null;
@@ -239,6 +240,9 @@ export class FullBodyPilot {
   if(prepared.result){if(this.resultStart===null||this.resultKind!==prepared.result){this.resultStart=performance.now();this.resultKind=prepared.result;}selected=selectResultFrame(prepared.result,prepared.presentationVariant??0,(performance.now()-this.resultStart)*.06);this.effectSprite.visible=false;}
   else{this.resultStart=null;this.resultKind=undefined;}
   const art = this.assets.characters[this.artId??this.characterId];
+  if (enabled && state === "LANDING_LAG" && isPack04FighterId(this.artId) && art?.land_soft && selected?.clip !== "air_dodge_land" && selected?.clip !== "land_heavy") {
+   selected = { clip: "land_soft", index: Math.floor(Math.max(0, frame) / 3) };
+  }
   if(this.artId&&selected?.clip.startsWith('takeoff_')&&state==='AIRBORNE'&&(prepared.artCueFrame??0)>=6){
    selected=selectPreparedFrame(state,frame,vy,{...prepared,artCue:undefined,facing})??selected;
   }
@@ -263,7 +267,7 @@ export class FullBodyPilot {
   } else {
    this.fastFallStart = undefined;
   }
-  if (pack03 && selected?.clip === 'roll' && (prepared.dodgeKind === 'backward' ||
+  if ((pack03 || isPack04FighterId(this.artId)) && selected?.clip === 'roll' && (prepared.dodgeKind === 'backward' ||
       (prepared.dodgeKind === undefined && rollDirection === -1)) && art?.roll_back) {
    selected = { ...selected, clip: 'roll_back' };
   }
@@ -299,7 +303,7 @@ export class FullBodyPilot {
     const age=frame-(this.reaction.start??frame);
     const index=clip.frames.length>=4&&clip.durations
      ?dojoFrame(clip,age)
-     :Math.min(2,1+Math.floor(age/6));
+     :isPack04FighterId(this.artId)?selected.index:Math.min(2,1+Math.floor(age/6));
     selected={...selected,index};
    }else if(move&&clip.activeWindow&&(state==='ATTACK'||state==='AIR_ATTACK')){
     const data=getMoveDataForCharacter(this.characterId,move);
@@ -417,36 +421,39 @@ export class FullBodyPilot {
   this.sprite.texture=drawing.texture;
   this.sprite.rotation=clip.rotationPeriod?(rotationAge%clip.rotationPeriod)/clip.rotationPeriod*Math.PI*2:0;
   const impactVx = prepared.impactVx ?? 0;
-  const launchFlip = pack03 && (selected.clip === 'hit_launch' || selected.clip === 'tumble') &&
+  const launchFlip = (pack03 || isPack04FighterId(this.artId)) && (selected.clip === 'hit_launch' || selected.clip === 'tumble') &&
     Math.abs(impactVx) > 0.2 ? -Math.sign(impactVx)*facing : 1;
   // The wall side identifies the contacted face of the platform.
   const wallSide = prepared.wallTechSide;
-  const wallFlip = pack03 && wallSide && selected.index < 5 &&
+  const wallFlip = (pack03 || isPack04FighterId(this.artId)) && wallSide && selected.index < 5 &&
     (selected.clip === 'wall_tech' || selected.clip === 'wall_tech_jump')
     ? (wallSide === 'left' ? 1 : -1) * facing : 1;
-  this.sprite.scale.set(wallFlip*launchFlip*clip.scale*(clip.mirrorSource?-1:1)*(drawing.mirrorSource?-1:1)*(this.reaction?reactionFlip:selected.clip==='grab_release'?this.lastVictimFlip:['grabbed','pummel_victim'].includes(selected.clip)?victimFlip:((selected.clip==='roll'&&!pack03)||selected.clip==='tech_roll')?rollDirection:1),clip.scale);
+  const drawingScale = drawing.scale ?? clip.scale;
+  this.sprite.scale.set(wallFlip*launchFlip*drawingScale*(clip.mirrorSource?-1:1)*(drawing.mirrorSource?-1:1)*(this.reaction?reactionFlip:selected.clip==='grab_release'?this.lastVictimFlip:['grabbed','pummel_victim'].includes(selected.clip)?victimFlip:((selected.clip==='roll'&&!pack03)||selected.clip==='tech_roll')?rollDirection:1),drawingScale);
   const newcomerHeld=this.artId&&['grabbed','pummel_victim','grab_release'].includes(selected.clip);
   if(newcomerHeld)this.sprite.scale.x*=-1;
-  const airRoot = state === 'AIR_ATTACK' || (pack03 && (airborne || state === 'HELPLESS' || state === 'AIR_DODGE' || selected.clip === 'shield_break_launch' ||
+  const airRoot = state === 'AIR_ATTACK' || (isPack04FighterId(this.artId) && (state === 'AIR_DODGE' || state === 'HELPLESS' || state === 'HITSTUN' || selected.clip === 'tumble' || (selected.clip === 'tumble_recover' && !prepared.isGrounded) || selected.clip === 'wall_tech' || selected.clip === 'wall_tech_jump' || selected.clip === 'ceiling_tech' || selected.clip === 'ledge_jump' || selected.clip === 'ledge_drop' || selected.clip === 'ledge_trump')) || (pack03 && (airborne || state === 'HELPLESS' || state === 'AIR_DODGE' || selected.clip === 'shield_break_launch' ||
       (state === 'HITSTUN' && ['hit_air','hit_launch','tumble','footstool_air_victim'].includes(selected.clip)))) ? drawing.airRoot : undefined;
-  const root = airRoot ?? drawing.root;
+  const fallRoot = isPack04FighterId(this.artId) && (selected.clip === 'air_fall_loop' || selected.clip === 'air_fastfall_loop')
+    ? [drawing.root[0], Math.round(drawing.texture.frame.height * 0.54)] : undefined;
+  const root = airRoot ?? fallRoot ?? drawing.root;
   this.sprite.pivot.set(root[0],root[1]);
   const floorOffset=this.artId?getCharacterStats(this.characterId).hurtboxRadius:drawing.offsetY;
-  this.sprite.position.set(0,airRoot ? 0 : floorOffset);
+  this.sprite.position.set(0,airRoot || fallRoot ? 0 : floorOffset);
   if(grabVictim&&grabOwner){
    const owner=selectPilotFrame(grabOwner.state,grabOwner.frame,grabOwner.move,0,true,false,grabOwner.characterId);
    const holder=owner?this.assets.characters[grabOwner.artId??grabOwner.characterId]?.[owner.clip]:undefined;
    if(owner&&holder){
     const authoredPummel = grabOwner.artId && owner.clip === 'pummel' && holder.activeWindow;
-    const pack03Throw = isPack03PilotId(grabOwner.artId) && owner.clip.endsWith('_throw');
+    const authoredThrow = (isPack03PilotId(grabOwner.artId) || isPack04FighterId(grabOwner.artId)) && owner.clip.endsWith('_throw');
     const startup = grabOwner.move ? getMoveDataForCharacter(grabOwner.characterId, grabOwner.move).startupFrames : 1;
     const heldThrowAge = Math.min(grabOwner.frame / Math.max(1, startup), 0.999) * (holder.activeWindow?.[0] ?? 0);
-    const hi=owner.clip==='grab_hold'?grabHoldFrameIndex(grabOwner.frame,holder.frames.length):pack03Throw?dojoFrame(holder,heldThrowAge):authoredPummel?authoredAttackFrame(holder,Math.max(0,grabOwner.frame),startup,getMoveDataForCharacter(grabOwner.characterId,grabOwner.move!).activeFrames):grabOwner.artId?(owner.index>=3?1:0):owner.index;
+    const hi=owner.clip==='grab_hold'?grabHoldFrameIndex(grabOwner.frame,holder.frames.length):authoredThrow?dojoFrame(holder,heldThrowAge):authoredPummel?authoredAttackFrame(holder,Math.max(0,grabOwner.frame),startup,getMoveDataForCharacter(grabOwner.characterId,grabOwner.move!).activeFrames):grabOwner.artId?(owner.index>=3?1:0):owner.index;
     const receiver=newcomerHeld?{...clip,mirrorSource:!clip.mirrorSource}:clip;
     this.lastHolder={clip:holder,index:hi,owner:grabOwner};
     this.lastContactFacing=grabOwner.facing;
     this.contactRebase=false;
-    this.lastContact=solveGrabContact(holder,hi,receiver,selected.index,grabOwner.dx,grabOwner.dy,!pack03Throw && owner.clip.endsWith('_throw'));
+    this.lastContact=solveGrabContact(holder,hi,receiver,selected.index,grabOwner.dx,grabOwner.dy,!authoredThrow && owner.clip.endsWith('_throw'));
     this.sprite.position.x=this.lastContact[0]*grabOwner.facing*facing;
     this.sprite.position.y+=this.lastContact[1];
    }
@@ -484,33 +491,43 @@ export class FullBodyPilot {
   if(selected.clip==='footstool_attacker'&&prepared.footstoolContact){
    const contact=prepared.footstoolContact,victim=this.assets.characters[contact.artId??contact.characterId]?.[contact.role==='ground'?'footstool_ground_victim':'footstool_air_victim'];
    const vi=footstoolFrameIndex(contact.frame,victim?.frames.length??0,Boolean(contact.artId)),sole=footstoolPoint(clip,selected.index,'footstoolSole',facing),head=victim?footstoolPoint(victim,vi,'footstoolHead',contact.facing):null;
-   if(sole&&head&&this.artId){contactCorrection={kind:"footstool",x:contact.dx+head[0]-sole[0],y:contact.dy+head[1]-sole[1]};}
+   if(sole&&head&&this.artId){
+    const weight=isPack04FighterId(this.artId)
+      ? Math.max(0,1-Math.max(0,(prepared.footstoolFrame??0)-2)/6) : 1;
+    contactCorrection={kind:"footstool",x:(contact.dx+head[0]-sole[0])*weight,y:(contact.dy+head[1]-sole[1])*weight};
+   }
    else if(sole&&head){const weight=this.artId?1:Math.max(0,1-(prepared.footstoolFrame??0)/6);this.sprite.position.x+=(contact.dx+head[0]-sole[0])*facing*weight;this.sprite.position.y+=(contact.dy+head[1]-sole[1])*weight;}
   }
   const floorRoll=selected.clip.startsWith('getup_roll')||selected.clip==='trip_roll';
-  if(floorRoll&&(!this.artId||selected.index===(selected.clip==='trip_roll'?2:3)))this.sprite.scale.x=Math.abs(this.sprite.scale.x)*(prepared.floorRollDirection??facing)*facing*(drawing.mirrorSource?-1:1);
+  if(floorRoll&&(!this.artId||selected.index===(selected.clip==='trip_roll'||isPack04FighterId(this.artId)?2:3)))this.sprite.scale.x=Math.abs(this.sprite.scale.x)*(prepared.floorRollDirection??facing)*facing*(drawing.mirrorSource?-1:1);
   if(ledgeId)this.ledgeFacing=ledgeId==='left'?1:-1;
   if(selected.clip.startsWith('ledge_')){
    const inward=this.ledgeFacing;
    this.sprite.scale.x=Math.abs(this.sprite.scale.x)*inward*facing;
    const contact=prepared.ledgeContact;
-   const grip=this.artId&&contact?footstoolPoint(clip,selected.index,'ledgeGrip',inward):null;
+   const grip=this.artId&&contact?footstoolPoint(clip,Math.max(0,Math.min(clip.frames.length-1,selected.index)),'ledgeGrip',inward):null;
    if(contact&&grip){
     contactCorrection={kind:"ledge",x:contact.dx-grip[0],y:contact.dy-grip[1]};
-   }else if(pack03 && contact && selected.index>=2 &&
+   }else if((pack03 || isPack04FighterId(this.artId)) && contact && selected.index>=2 &&
        (selected.clip==='ledge_climb' || selected.clip==='ledge_roll' || selected.clip==='ledge_attack')){
     // The simulation holds its ledge position until the getup completes.
     contactCorrection={kind:'ledge',x:0,y:contact.dy-floorOffset};
 
    }
   }
-  if(contactCorrection)this.contactExit=contactCorrection;
+  if(contactCorrection)this.contactExit={
+   ...contactCorrection,
+   baseY:this.sprite.position.y,
+  };
   const exit=this.contactExit;
   if(exit){
    const followsContact=exit.kind==='ledge'?selected.clip.startsWith('ledge_'):selected.clip==='footstool_attacker'||state==='AIRBORNE'||state==='DOUBLE_JUMP';
    if(!contactCorrection&&followsContact&&exit.state!==state){exit.state=state;exit.start=frame;}
-   const weight=contactCorrection?1:followsContact?Math.max(0,1-(frame-(exit.start??frame)+1)/6):0;
-   if(weight>0){this.sprite.position.x+=exit.x*facing*weight;this.sprite.position.y+=exit.y*weight;}
+   const pack04LedgeRelease=isPack04FighterId(this.artId) && exit.kind==='ledge' &&
+     (selected.clip==='ledge_drop' || selected.clip==='ledge_trump');
+   const elapsed=frame-(exit.start??frame);
+   const weight=contactCorrection?1:followsContact?Math.max(0,1-(elapsed+(pack04LedgeRelease?0:1))/6):0;
+   if(weight>0){this.sprite.position.x+=exit.x*facing*weight;this.sprite.position.y+=(exit.y+(pack04LedgeRelease?(exit.baseY??0)-this.sprite.position.y:0))*weight;}
    else this.contactExit=undefined;
   }
   return true;

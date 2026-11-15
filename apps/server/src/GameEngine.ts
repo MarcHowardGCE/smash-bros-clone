@@ -1889,6 +1889,8 @@ export class GameEngine {
 			return player;
 		}
 
+    if (player.state === PlayerStateEnum.AIR_ATTACK) return player;
+
     // Grounded side attacks keep the direction chosen at startup. On the first
     // tick, a right-stick side attack has already chosen facing in the transition.
     const sideAttack = player.isGrounded && player.state === PlayerStateEnum.ATTACK &&

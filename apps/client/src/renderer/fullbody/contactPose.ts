@@ -3,11 +3,12 @@ export function grabHoldFrameIndex(age: number, frameCount: number): number {
  const tick = Number.isFinite(age) ? Math.max(0, Math.floor(age)) : 0;
  return Math.min(Math.max(0, frameCount - 1), Math.floor(tick / 12) % 4);
 }
-export interface ContactFrame {root:number[];offsetY?:number;mirrorSource?:boolean;sockets?:Record<string,number[]>}
+export interface ContactFrame {root:number[];scale?:number;offsetY?:number;mirrorSource?:boolean;sockets?:Record<string,number[]>}
 export interface ContactClip {scale:number;mirrorSource?:boolean;frames:ContactFrame[]}
 export function socketPoint(clip:ContactClip,frame:ContactFrame|undefined,name:string):[number,number]|null{
  const p=frame?.sockets?.[name];if(!frame||!p||p.length<2||frame.root.length<2)return null;
- return [(p[0]!-frame.root[0]!)*clip.scale*(clip.mirrorSource?-1:1)*(frame.mirrorSource?-1:1),(p[1]!-frame.root[1]!)*clip.scale+(frame.offsetY??0)];
+ const scale=frame.scale??clip.scale;
+ return [(p[0]!-frame.root[0]!)*scale*(clip.mirrorSource?-1:1)*(frame.mirrorSource?-1:1),(p[1]!-frame.root[1]!)*scale+(frame.offsetY??0)];
 }
 /** Artwork-only attachment. The simulation's body positions and hitboxes never move here. */
 export function solveGrabContact(holder:ContactClip,hi:number,victim:ContactClip,vi:number,deltaX:number,deltaY:number,throwing=false):[number,number]{

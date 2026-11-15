@@ -8,7 +8,8 @@
 /** String union of all playable character identifiers. */
 export type MatchCharacterId = 'all-rounder' | 'abe-lincoln' | 'swift';
 export type Pack03PilotId = 'mr-wrong' | 'loopy' | 'mrs-tasselbottom';
-export type CharacterId = MatchCharacterId | 'moonshine' | 'hulk-hoagie' | Pack03PilotId;
+export type Pack04FighterId = 'zane-corvo' | 'velvet-reply';
+export type CharacterId = Pack04FighterId | MatchCharacterId | 'moonshine' | 'hulk-hoagie' | Pack03PilotId;
 
 /**
  * Per-character physics overrides applied by the engine in place of global

@@ -1,4 +1,4 @@
-import { PACK_03_PILOT_FIGHTERS, isPack03PilotId } from '@smash/shared';
+import { PACK_03_PILOT_FIGHTERS, PACK_04_PILOT_FIGHTERS, isPack03PilotId, isPack04FighterId } from '@smash/shared';
 import { MenuNavigator, type MenuButton } from '../ui/MenuNavigator';
 import { controllerPrompt, type PromptRenderer } from '../ui/controllerPrompts';
 import { getControllerProfile, type ControllerProfile } from '../input/controllerProfiles';
@@ -13,7 +13,7 @@ const roster = [
 ] as const;
 const fighters = [
   ...roster,
-  ...PACK_03_PILOT_FIGHTERS.map(({ id, name }) => [id, name] as const),
+  ...[...PACK_03_PILOT_FIGHTERS, ...PACK_04_PILOT_FIGHTERS].map(({ id, name }) => [id, name] as const),
 ];
 const modes: readonly DummyMode[] = ['still','shield','jab','mixed','up-smash','grab'];
 const behaviorNames = ['Passive','Shield','Telegraphed jab','Alternating attack / special','Telegraphed two-hit up smash','Telegraphed grab'];
@@ -84,7 +84,9 @@ export function renderPracticeSetup(
     label('dojo-stage','World · '+STAGES[stage]!.displayName);
     label('dojo-behavior','Partner behavior · '+behaviorNames[mode]);
     for (const [element, id] of [['dojo-fighter-art', fighters[fighter]![0]], ['dojo-partner-art', fighters[partner]![0]]] as const) {
-      get<HTMLImageElement>(element).src = isPack03PilotId(id)
+      get<HTMLImageElement>(element).src = isPack04FighterId(id)
+        ? import.meta.env.BASE_URL + 'fighter-art-pack-04-v1/' + id + '-idle.png'
+        : isPack03PilotId(id)
         ? import.meta.env.BASE_URL + 'fighter-art-pack-03-v1/' + id + '-idle.png'
         : fighterPortrait(id);
     }

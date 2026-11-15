@@ -182,6 +182,91 @@ const TASSELBOTTOM_DOWN_THROW: MoveData = {
   })),
 };
 
+const ZANE_MOVES: ReadonlyMap<MoveId, MoveData> = new Map([
+  ...[MOVE_FORWARD_SMASH, MOVE_UP_SMASH].map((move, index): [MoveId, MoveData] => {
+    const [dx, dy] = ([[4,-8],[5,-8]] as const)[index]!;
+    return [move.id, {
+      ...move,
+      hitboxPerActiveFrame: move.hitboxPerActiveFrame.map(hit => ({
+        ...hit, offsetX: hit.offsetX + dx, offsetY: hit.offsetY + dy,
+      })),
+    }];
+  }),
+  ...[MOVE_JAB, MOVE_JAB_2, MOVE_JAB_3].map((move, index): [MoveId, MoveData] => [
+    move.id, {
+      ...move,
+      recoveryFrames: move.recoveryFrames - 1,
+      hitboxPerActiveFrame: move.hitboxPerActiveFrame.map(hit => ({
+        ...hit, offsetX: index < 2 ? hit.offsetX + 4 : hit.offsetX - 5,
+        offsetY: index < 2 ? -20 : hit.offsetY, radius: hit.radius - 2,
+      })),
+    },
+  ]),
+  [MoveId.FORWARD_TILT, {
+    ...MOVE_FORWARD_TILT,
+    startupFrames: 6,
+    hitboxPerActiveFrame: MOVE_FORWARD_TILT.hitboxPerActiveFrame.map(hit => ({
+      ...hit, offsetX: 50, offsetY: -17, radius: 23,
+    })),
+  }],
+  [MoveId.FORWARD_THROW, {
+    ...MOVE_FORWARD_THROW,
+    hitboxPerActiveFrame: MOVE_FORWARD_THROW.hitboxPerActiveFrame.map(hit => ({
+      ...hit, baseKnockback: hit.baseKnockback - 1, knockbackGrowth: hit.knockbackGrowth - 6,
+    })),
+  }],
+]);
+
+const VELVET_MOVES: ReadonlyMap<MoveId, MoveData> = new Map([
+  ...[MOVE_FORWARD_SMASH, MOVE_UP_SMASH].map((move, index): [MoveId, MoveData] => {
+    const [dx, dy] = ([[6,-4],[16,-8]] as const)[index]!;
+    return [move.id, {
+      ...move,
+      hitboxPerActiveFrame: move.hitboxPerActiveFrame.map(hit => ({
+        ...hit, offsetX: hit.offsetX + dx, offsetY: hit.offsetY + dy,
+      })),
+    }];
+  }),
+  ...[MOVE_JAB, MOVE_JAB_2].map((move): [MoveId, MoveData] => [
+    move.id, {
+      ...move,
+      hitboxPerActiveFrame: move.hitboxPerActiveFrame.map(hit => ({
+        ...hit, offsetX: hit.offsetX + 5, offsetY: -21,
+      })),
+    },
+  ]),
+  [MoveId.UP_TILT, {
+    ...MOVE_UP_TILT,
+    hitboxPerActiveFrame: MOVE_UP_TILT.hitboxPerActiveFrame.map(hit => ({
+      ...hit, offsetX: 16, offsetY: -60,
+    })),
+  }],
+  [MoveId.FORWARD_TILT, {
+    ...MOVE_FORWARD_TILT,
+    startupFrames: 9,
+    recoveryFrames: 16,
+    hitboxPerActiveFrame: MOVE_FORWARD_TILT.hitboxPerActiveFrame.map(hit => ({
+      ...hit, offsetX: 65, radius: 26,
+    })),
+  }],
+  [MoveId.FORWARD_AIR, {
+    ...MOVE_FORWARD_AIR,
+    startupFrames: 10,
+    recoveryFrames: 21,
+    autoCancel: { earlyEnd: 4, lateStart: 28 },
+    hitboxPerActiveFrame: MOVE_FORWARD_AIR.hitboxPerActiveFrame.map(hit => ({
+      ...hit, offsetX: hit.offsetX + 12,
+    })),
+  }],
+  [MoveId.BACK_THROW, {
+    ...MOVE_BACK_THROW,
+    recoveryFrames: 17,
+    hitboxPerActiveFrame: MOVE_BACK_THROW.hitboxPerActiveFrame.map(hit => ({
+      ...hit, knockbackAngle: 145,
+    })),
+  }],
+]);
+
 /**
  * Get character-aware move data. Checks character-specific overrides first,
  * then falls back to shared MOVE_REGISTRY.
@@ -191,6 +276,8 @@ const TASSELBOTTOM_DOWN_THROW: MoveData = {
  * @returns MoveData with character-specific hitbox stats and default frame timing
  */
 export function getMoveDataForCharacter(characterId: CharacterId | undefined, id: MoveId): MoveData {
+  if (characterId === 'zane-corvo') return ZANE_MOVES.get(id) ?? getMoveData(id);
+  if (characterId === 'velvet-reply') return VELVET_MOVES.get(id) ?? getMoveData(id);
   if (characterId === 'mr-wrong' && id === MoveId.FORWARD_TILT) return MR_WRONG_FORWARD_TILT;
   if (characterId === 'loopy' && id === MoveId.DASH_ATTACK) return LOOPY_DASH_ATTACK;
   if (characterId === 'mrs-tasselbottom' && id === MoveId.DOWN_THROW) return TASSELBOTTOM_DOWN_THROW;
@@ -224,3 +311,4 @@ export function getMoveDataForCharacter(characterId: CharacterId | undefined, id
 }
 
 export { MoveId };
+

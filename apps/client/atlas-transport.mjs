@@ -109,7 +109,7 @@ export function compactAtlasPlugin() {
       for (const [pack, folder] of packs) {
         await compressPack(path.resolve(dir, pack, folder), folder);
       }
-      for (const [pack, folder] of [...packs, ['fighter-art-pack-03-v1', 'production']]) {
+      for (const [pack, folder] of [...packs, ['fighter-art-pack-03-v1', 'production'], ['fighter-art-pack-04-v1', 'production']]) {
         const base = path.resolve(dir, pack);
         const manifestPath = path.join(base, folder, 'manifest.json');
         let manifest;

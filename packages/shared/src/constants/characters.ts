@@ -72,6 +72,15 @@ const HOAGIE_STATS: CharacterStats = {
   gravity: .665, fallSpeed: 18.5, fastFallSpeed: 29.6,
 };
 
+export const PACK_04_PILOT_FIGHTERS = [
+  { id: 'zane-corvo', name: 'Zane Corvo' },
+  { id: 'velvet-reply', name: 'The Velvet Reply' },
+] as const;
+
+export function isPack04FighterId(value: unknown): value is typeof PACK_04_PILOT_FIGHTERS[number]['id'] {
+  return PACK_04_PILOT_FIGHTERS.some(fighter => fighter.id === value);
+}
+
 export const PACK_03_PILOT_FIGHTERS = [
   { id: 'mr-wrong', name: 'Mr. Wrong' },
   { id: 'loopy', name: 'Loopy' },
@@ -88,6 +97,8 @@ export const CHARACTER_REGISTRY: Record<CharacterId, CharacterStats> = {
   'swift': SWIFT_STATS,
   'moonshine': MOONSHINE_STATS,
   'hulk-hoagie': HOAGIE_STATS,
+  'zane-corvo': { ...ALL_ROUNDER_STATS },
+  'velvet-reply': { ...ALL_ROUNDER_STATS },
   'mr-wrong': {
     ...ALL_ROUNDER_STATS,
     fighterWeight: 93, walkSpeed: 3.6, runSpeed: 6.75, airSpeed: 5.1, airAcceleration: 0.14,

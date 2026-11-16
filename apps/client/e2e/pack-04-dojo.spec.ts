@@ -1437,16 +1437,27 @@ for (const fighter of ['zane-corvo', 'velvet-reply']) {
       expect((await pair()).map(p => p?.clip)).toEqual(['grab_hold', 'grabbed']);
       await tap('KeyZ');
       let contact = false;
+      const offsets = [];
       for (let tick = 0; tick < 25; tick++) {
         const [holder, victim] = await pair();
+        const offset = await page.evaluate(() => {
+          const debug = window.__smashDebug!;
+          const victim = Object.values(debug.getSnapshot().players).find(player => player.slotIndex === 1)!;
+          const art = debug.getArtState!().players.find(player => player.slot === 1)!;
+          return { clip: art.clip, pose: art.frameRect, grounded: victim.isGrounded, y: art.bodyY - victim.y };
+        });
+        offsets.push({ tick, ...offset });
         expect(holder?.bodyVisible && victim?.bodyVisible).toBe(true);
         if (victim?.clip === 'pummel_victim') {
           expect(holder?.clip).toBe('pummel');
+          expect(offset.grounded).toBe(true);
+          expect(offset.y).toBeCloseTo(28);
           contact = true;
         }
         if (contact && holder?.clip === 'grab_hold' && victim?.clip === 'grabbed') break;
         await step();
       }
+      await test.info().attach('pummel-offset-' + facing, { body: JSON.stringify(offsets), contentType: 'application/json' });
       expect(contact).toBe(true);
       expect((await pair()).map(p => p?.clip)).toEqual(['grab_hold', 'grabbed']);
     }

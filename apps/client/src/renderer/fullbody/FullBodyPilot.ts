@@ -455,7 +455,9 @@ export class FullBodyPilot {
     this.contactRebase=false;
     this.lastContact=solveGrabContact(holder,hi,receiver,selected.index,grabOwner.dx,grabOwner.dy,!authoredThrow && owner.clip.endsWith('_throw'));
     this.sprite.position.x=this.lastContact[0]*grabOwner.facing*facing;
-    this.sprite.position.y+=this.lastContact[1];
+    // Grounded pummel recoil stays planted while the grip drives horizontal registration.
+    const plantedPummel = isPack04FighterId(this.artId) && prepared.isGrounded && authoredPummel;
+    if (!plantedPummel) this.sprite.position.y+=this.lastContact[1];
    }
   }else if(this.reaction||showingRelease){
    if (this.contactRebase && this.reaction) {

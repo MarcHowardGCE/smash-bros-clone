@@ -2858,3 +2858,40 @@ URLs are unchanged. Six selection integration tests and client
 typecheck passed. Hosted browser verification remains open.
 
 Two local Chromium checks held back Velvet's artwork during selection. The prior portrait was removed, and the new one appeared after release in both animated and reduced-motion modes. Confirm on the public build after deployment.
+
+Public release 3fe1800 passed both delayed-portrait Chromium checks on November 16. The live page served the expected revision. Paired combat visual signoff remains open.
+
+### Pack 04 paired combat recordings
+
+Six local Chromium Dojo tests passed with recording enabled. Both
+fighters were tested in both facings. Sampled frames showed the
+paired pummel returning to hold and grounded and airborne footstools
+separating. Normal-speed throw tests passed. The recording samples
+are too widely spaced to verify exact grip or sole contact on every
+tick. No art edits were made. Exact contact and hosted human visual
+signoff remain open.
+
+#### Close-up pummel and footstool samples
+
+Reviewed cropped frames at 40 ms intervals from the local recordings.
+The opening footstool drawings show the attacking boot meeting the
+victim's head, followed by separation. Pummels show the holder's
+extended arm overlapping the victim's upper torso and a return to
+hold. The victim's feet visibly rise during some pummel samples and
+settle on return. Next, measure that vertical displacement against
+the per-frame grip anchors to distinguish deliberate recoil from a
+registration jump. These samples do not establish tick-exact contact
+or hosted signoff.
+
+#### Grounded pummel floor correction
+
+Stepped traces showed the grounded victim's sprite origin moving
+between 16.22 and 42.77 world units below the simulation center
+during pummel playback, against a planted offset of 28. The vertical
+grip correction caused the lift and return snap. For grounded Pack 04
+victims, pummel rendering now retains the floor anchor and applies the
+horizontal grip correction. The stepped test asserts the planted
+offset during the victim reaction in both facings. Both pummel and
+all four throw tests passed. This prioritizes feet over exact
+vertical hand alignment during grounded pummels. Visual retest on
+production remains open.

@@ -2895,3 +2895,75 @@ offset during the victim reaction in both facings. Both pummel and
 all four throw tests passed. This prioritizes feet over exact
 vertical hand alignment during grounded pummels. Visual retest on
 production remains open.
+
+#### Hosted grounded pummel retest
+
+Both Pack 04 fighters landed a pummel against each other in the
+public Guided Dojo. Stepped strike screenshots showed the victim
+planted at contact in both role assignments, with the lesson
+crediting the hit. This hosted check used the default facing.
+Both facings were covered by the earlier local regression.
+
+#### Hosted Pack 04 grab escape
+
+Zane and Velvet each completed all three repetitions of Break a Grab
+against the other fighter on the public build. The keyboard test waited
+for the partner's held-player state and alternated Attack and Jump.
+An initial test polled a nonexistent victim field and missed the grab
+window. The corrected runs passed. This verifies lesson credit and live
+escape playback in the default setup. Exact release-pose spacing
+and hardware signoff remain open.
+
+#### Hosted grab-escape release samples
+
+Close-up samples at 40 ms intervals show both escape poses briefly
+overlapping the holder before separation. Velvet returns to a grounded
+stance in the sampled sequence. Zane jumps immediately after release
+in the keyboard recording, which included Jump inputs. A stepped
+escape using fresh buttons and no Jump is the next check to isolate
+the release offset from the buffered jump. No artwork changed.
+
+#### Hosted frame-stepped escape without Jump
+
+Both fighters earned lesson credit with Attack taps only. The first
+attempt continued tapping after release and interrupted the cue after
+two sampled ticks. Stopping input on the first release tick exposed
+all 12 ticks for both fighters. Their gameplay positions stayed at
+(615, 472) and grounded throughout. Strike-free screenshots show
+sprite overlap on the opening pose. The snapshot confirms no movement
+jump. Rendered horizontal separation still needs measurement against
+the held pose and the end of the release.
+
+#### Pack 04 grab-escape horizontal registration
+
+Measured the shipped packed hand and chest sockets across the four
+synchronized hold poses using the standard 31-unit body gap. Zane
+holding Velvet yields horizontal corrections of -6.81, -10.87,
+-6.32 and -8.81 world units. Velvet holding Zane yields -7.73,
+-12.84, -3.83 and -7.86. These values mirror with facing. The renderer
+carries the last correction into release tick zero and removes one
+twelfth per tick. This yields up to 1.07 world units of horizontal
+separation per tick, including the return to the ordinary anchor.
+
+This is a packed-socket calculation, alongside the hosted capture
+that showed unchanged simulation position. The visible overlap on
+the first escape drawing comes with the pose change while the
+attachment offset is preserved. No renderer change was made.
+
+#### Pack 04 opening grab-escape pose
+
+Revision 104 uses each fighter's existing high recoil drawing as the
+opening escape cel. Its shoulders lean away and its hands open as
+the grip breaks. The cue duration and renderer attachment decay are
+untouched. The packed WebP pages remain byte-identical because the
+drawing was already packed. All six focused pummel and directional
+throw checks passed. A frame-stepped visual capture of the revised
+escape remains open.
+
+#### Revision 104 stepped escape review
+
+Both fighters stayed grounded through all 12 local Dojo release
+ticks with no Jump input. Captures at ticks 0, 3, 6 and 9 show a
+clearer head and shoulder separation on the opening pose compared with
+the hosted revision 103 captures. The opening reach and lower legs
+still overlap at the close grab distance. Revision 104 is local.

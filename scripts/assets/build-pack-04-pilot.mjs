@@ -592,7 +592,7 @@ for (const [id, pivots] of Object.entries(walkPivots)) {
       durations: [1, 2, 1, 2, 2, 4], activeWindow: [3, 6] },
     grab_hold: grabPose([hold, hold, hold, hold]),
     grabbed: grabPose([held, held, held, held]),
-    grab_release: grabPose([grabRelease, { ...standingTurn, scale: stanceScale }, idleBetween[0], techStand]),
+    grab_release: grabPose([reactionFrame('hit_high'), { ...standingTurn, scale: stanceScale }, idleBetween[0], techStand]),
   });
   clips.grab_dash = {
     ...grabPose([{ ...stride, scale: runScale }, { ...passing, scale: runScale }, reach, grabExtension, { ...brake, scale: runScale }, techStand]),
@@ -883,6 +883,6 @@ for (const [id, pivots] of Object.entries(walkPivots)) {
     clips.air_fastfall_loop.frames = [sized(dive, 69), air[4], sized(descend, 82)];
   }
 }
-fs.writeFileSync(output + '/manifest.json', JSON.stringify({ version: 1, revision: 103, characters }, null, 2) + '\n');
+fs.writeFileSync(output + '/manifest.json', JSON.stringify({ version: 1, revision: 104, characters }, null, 2) + '\n');
 
 

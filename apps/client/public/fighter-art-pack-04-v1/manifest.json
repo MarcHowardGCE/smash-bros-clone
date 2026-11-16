@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "revision": 103,
+  "revision": 104,
   "characters": {
     "zane-corvo": {
       "clips": {
@@ -6809,21 +6809,22 @@
           ]
         },
         "grab_release": {
-          "image": "zane-corvo-grab-3.png",
+          "image": "zane-corvo-hit-variants-0.png",
           "scale": 0.14017094017094017,
           "frames": [
             {
-              "image": "zane-corvo-grab-3.png",
+              "image": "zane-corvo-hit-variants-0.png",
               "rect": [
                 0,
                 0,
-                431,
-                557
+                509,
+                713
               ],
               "root": [
-                206,
-                557
-              ]
+                309,
+                713
+              ],
+              "scale": 0.1150070126227209
             },
             {
               "image": "zane-corvo-stance-0.png",
@@ -17850,21 +17851,22 @@
           ]
         },
         "grab_release": {
-          "image": "velvet-reply-grab-3.png",
+          "image": "velvet-reply-hit-variants-0.png",
           "scale": 0.14828209764918626,
           "frames": [
             {
-              "image": "velvet-reply-grab-3.png",
+              "image": "velvet-reply-hit-variants-0.png",
               "rect": [
                 0,
                 0,
-                435,
-                587
+                427,
+                694
               ],
               "root": [
-                167,
-                587
-              ]
+                278,
+                694
+              ],
+              "scale": 0.11815561959654179
             },
             {
               "image": "velvet-reply-stance-0.png",

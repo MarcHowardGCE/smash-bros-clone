@@ -481,7 +481,12 @@ export class FullBodyPilot {
    }
    const start=this.reaction?.start;
    const t=start==null?(showingRelease?releaseAge:12):frame-start;
-   const weight=Math.max(0,1-t/12);
+   const attachmentWeight = Math.max(0, 1 - t / 12);
+   const remaining = prepared.hitstunFramesRemaining;
+   // Short low-percent back throws can return to idle before the usual blend ends.
+   const weight = isPack04FighterId(this.artId) && this.reaction?.move === 'BACK_THROW' && remaining !== undefined
+     ? Math.min(attachmentWeight, Math.max(0, (remaining - 1) / 4))
+     : attachmentWeight;
    this.sprite.position.x=this.lastContact[0]*this.lastContactFacing*facing*weight;
    this.sprite.position.y+=this.lastContact[1]*weight;
   }else {

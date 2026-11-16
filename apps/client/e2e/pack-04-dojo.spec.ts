@@ -1553,3 +1553,51 @@ test('Pack 04 airborne hit and tumble recovery play in the live Dojo', async ({ 
   }
 });
 
+
+for (const fighter of ['zane-corvo', 'velvet-reply']) {
+  test(fighter + ' zero-percent back throw settles in Guided Dojo', async ({ page }) => {
+    const dummy = fighter === 'zane-corvo' ? 'velvet-reply' : 'zane-corvo';
+    await page.addInitScript(config => localStorage.setItem('eth:dojo:setup:v1', JSON.stringify(config)),
+      { fighter, dummy, lessonId: 'back-throw', stageId: 'stage1', dummyMode: 'still' });
+    await page.goto('/');
+    for (const id of ['splash-screen', 'practice-btn', 'dojo-start-lesson']) {
+      await page.locator('#' + id).click();
+    }
+    const pair = () => page.evaluate(() => {
+      const debug = window.__smashDebug!;
+      const state = debug.getSnapshot();
+      const holder = state?.players['local-p1'];
+      const victim = state?.players['local-p2'];
+      const victimArt = debug.getArtState?.().players.find(player => player.slot === 1);
+      return { holder, victim, victimArt };
+    });
+    await expect.poll(async () => (await pair()).victim?.percent).toBe(0);
+    await page.keyboard.press('c', { delay: 45 });
+    await expect.poll(async () => (await pair()).holder?.grabbedPlayerId).toBe('local-p2');
+    const facing = (await pair()).holder!.facing;
+    await page.keyboard.press('F6');
+    const direction = facing === 1 ? 'ArrowLeft' : 'ArrowRight';
+    await page.keyboard.down(direction);
+    await page.keyboard.press('F7');
+    await page.keyboard.up(direction);
+    let checkedLastHitstun = false;
+    for (let tick = 0; tick < 35; tick++) {
+      await page.keyboard.press('F7');
+      const { victim, victimArt } = await pair();
+      if (victim?.hitstunFramesRemaining === 1 && victimArt?.clip === 'throw_victim') {
+        expect(victimArt.bodyX).toBeCloseTo(victim.x);
+        checkedLastHitstun = true;
+      }
+    }
+    expect(checkedLastHitstun).toBe(true);
+    await expect(page.getByText('1 / 3 successful repetitions', { exact: true })).toBeVisible();
+    await expect.poll(async () => {
+      const { holder, victim, victimArt } = await pair();
+      if (!holder || !victim || victimArt?.clip !== 'idle' || !victimArt.bodyVisible) return null;
+      return (victimArt.bodyX - holder.x) * facing;
+    }).toBeGreaterThan(0);
+    const { holder, victim, victimArt } = await pair();
+    expect(victimArt!.bodyX).toBeCloseTo(victim!.x);
+    console.log(fighter + ' front gap after return to idle:', Math.abs(victim!.x - holder!.x).toFixed(2));
+  });
+}

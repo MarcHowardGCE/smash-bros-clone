@@ -2967,3 +2967,133 @@ ticks with no Jump input. Captures at ticks 0, 3, 6 and 9 show a
 clearer head and shoulder separation on the opening pose compared with
 the hosted revision 103 captures. The opening reach and lower legs
 still overlap at the close grab distance. Revision 104 is local.
+
+#### Revision 104 hosted escape playback
+
+Both fighters earned escape credit with Attack taps at normal speed
+on the public Dojo. Close-up samples show the revised backward lean
+on release, with heads separating clearly before both return to idle.
+Hands and boots still briefly overlap at grab distance. This verifies
+the default grounded keyboard setup. No additional art changes were
+needed for this sequence.
+
+#### Hosted directional throw playback
+
+Six public Guided Dojo recordings at normal speed earned lesson
+credit for back, up, and down throws with each Pack 04 fighter
+holding the other. The default facing was used. Sampled frames showed
+both sprites present through release. Both back throws ended with
+the idle silhouettes still overlapping at the lesson's close spacing.
+Next, trace post-release body positions and artwork offsets to identify
+whether the overlap follows lesson setup or the back-throw handoff.
+No art or physics changes were made.
+
+#### Pack 04 back-throw spacing trace
+
+Both local Guided Dojo throws earned credit. At the end of the
+40-step trace, the victim's sprite and gameplay X coordinates were
+identical. Idle center spacing was 13.48 world units with Zane
+throwing and 16.14 with Velvet throwing, down from a 40-unit hold
+gap. The throw animation carries the victim artwork behind the holder
+while the gameplay body starts in front. At the lesson's default
+setup, the body travels toward the holder but settles on the
+original side. The final overlap persists after the sprite offset
+has cleared. Next compare regular match behavior and other damage
+presets before changing back-throw release position or knockback.
+
+#### Back-throw damage and match-mode comparison
+
+The shared GameEngine reproduced the 0 percent overlap in regular
+match and practice modes. A 24-case matrix used both throwers, both
+facings, both modes, and 0, 50 and 100 percent. At 0 percent the
+victim settled 13.47 units in front of Zane and 16.13 in front of
+Velvet. At 50 percent they settled 62.71 and 52.53 units behind.
+At 100 percent they settled 115.90 and 113.95 units behind. Both
+modes and facings matched. The final run verified the starting
+percent in each case after correcting the regular-match fixture.
+This is an engine test from a staged hold. Next audit the back-throw
+release point against the authored rear handoff and stage collision.
+
+#### Back-throw release-point audit
+
+The held body stays 40 world units in front of the thrower through
+windup. The back-throw hitbox sits 50 units behind. Hit resolution
+temporarily places a copy of the victim at that hitbox, but the
+actual launch starts at the front hold position. The renderer
+already pulls the artwork behind during windup. This discrepancy
+explains the close idle spacing at low percent.
+
+Prototype a rear release at the confirmed throw tick, preserving
+victim height and respecting solid stage geometry. Test center and
+both edges, including a rear release beyond the ledge with no floor
+beneath it, and airborne throws next to walls. Verify the existing
+down-throw floor regression and other directions. No gameplay
+changes were made in this audit.
+
+#### Back-throw rear release prototype
+
+On a confirmed back throw the victim now launches from the rear hit
+point at their held height. The horizontal sweep is checked against the
+solid main platform. If it intersects the platform, release stays at the
+held position and normal launch collision handles the wall. The hit event
+uses the same release coordinates as the body.
+
+All 58 grab tests and server type checking passed. The new cases cover
+center and rear-ledge releases in both facings and directly test the
+wall guard. An initial staged airborne windup failed to isolate the
+wall because the fixture moved before release. Existing inward ledge
+and down-throw floor regressions passed. Live Dojo and online release
+presentation, full airborne wall sequences, and KO thresholds remain
+to be checked before shipping.
+
+#### Rear-release Guided Dojo verification
+
+The four existing stepped and normal-speed paired throw tests passed.
+Two new normal-speed Guided Dojo regressions reproduced the original
+zero-percent setup and confirmed the victim returned to idle behind
+the holder, with the rendered X matching simulation X. At the sampled
+idle frame the gap was 76.49 units for Zane's throw and 73.75 for
+Velvet's, versus both victims finishing in front before the fix.
+The new browser checks use the default facing. Online playback,
+airborne wall sequences and KO thresholds remain open.
+
+#### Rear-release KO threshold comparison
+
+Stage 1 engine probes compared the original front start and rear
+prototype in both facings at four distances from the rear ledge.
+Thresholds are the first KO on a 5-point grid through 200 percent,
+with no DI and a 120-tick observation window.
+
+| Distance | Zane original / rear | Velvet original / rear |
+| --- | --- | --- |
+| 24 | 60 / 5 | 65 / 5 |
+| 80 | 80 / 35 | 85 / 35 |
+| 160 | 125 / 80 | 125 / 80 |
+| 450 (center) | >200 / 195 | >200 / 200 |
+
+The full rear relocation materially changes balance. Keep this
+prototype local. Next evaluate a presentation-only solution or a
+smaller gameplay correction measured against these KO baselines.
+
+#### Presentation-only back-throw handoff
+
+Removed the rear relocation experiment after the KO threshold audit.
+The Pack 04 back-throw victim now fades the attachment correction to
+zero by the final hitstun tick when recovery starts before the
+ordinary twelve-tick blend can finish. All four stepped and normal
+paired-throw cases passed. Two zero-percent stepped Dojo checks
+confirmed alignment on the final hitstun tick and after idle, with
+front gaps of 13.50 and 16.16 units. Close idle overlap can still
+occur because gameplay spacing stays at baseline. Next review the
+visual handoff at speed and verify it with two clients.
+
+#### Two-client presentation-only back throws
+
+Two local online rooms exercised keyboard back throws at gameplay
+speed, one per Pack 04 thrower. The guest trace showed visible
+throw-victim art followed by visible idle in both cases. Guest
+recordings showed the release drawing and the return to close
+idle spacing. The low-percent silhouettes still overlap at idle,
+consistent with the unchanged gameplay positions. These cases used
+a local server and the default facing. This pass did not deploy the
+renderer change.

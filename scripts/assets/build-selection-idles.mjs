@@ -44,12 +44,20 @@ for (const [pack, manifestPath] of [
       .webp({ quality: 92, alphaQuality: 100, loop: 0, delay: idle.frames.map((_, i) => Math.round((idle.durations?.[i] ?? 12) * 1000 / 60)) })
       .toFile(file);
     if (pack === 'pack-04-v1') {
-      for (const [size, maxHeight] of [['hero', 360], ['tile', 128]]) {
+      for (const [size, maxHeight] of [['hero', 360]]) {
         await sharp(pages[0], { raw: { width, height, channels: 4 } })
           .resize({ height: maxHeight, withoutEnlargement: true })
           .webp({ quality: 92, alphaQuality: 100 })
           .toFile(path.join(publicDir, 'menu-art', id + '-select-' + size + '.webp'));
       }
+    }
+    if (pack === 'pack-04-v1') {
+      const left = Math.round(width * (id === 'zane-corvo' ? .16 : .10));
+      const side = Math.min(width - left, Math.round(height * .36));
+      await sharp(pages[0], { raw: { width, height, channels: 4 } })
+        .extract({ left, top: 0, width: side, height: side })
+        .resize(144, 144).webp({ quality: 92, alphaQuality: 100 })
+        .toFile(path.join(publicDir, 'menu-art', id + '-select-tile-v2.webp'));
     }
     const metadata = await sharp(file, { animated: true }).metadata();
     if ((metadata.pages ?? 1) !== pages.length) throw Error(id + ' idle frame count mismatch');

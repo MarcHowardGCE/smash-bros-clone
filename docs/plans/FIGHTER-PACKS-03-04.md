@@ -2816,3 +2816,11 @@ Velvet's varies by one pixel. The packed gameplay atlas already
 applied per-frame scale.
 
 Bluehost served the corrected bytes at the original URLs with a one-year immutable cache policy. Pack 04 previews now use new versioned filenames so cached copies cannot mask the sizing fix.
+
+### Pack 04 shared previews and Guided Lessons
+
+Fighter Select now shares one idle URL resolver across comparison and
+local seat previews. Pack 04 roster tiles use versioned head-and-shoulder
+crops. Guided Lessons uses the full Dojo roster for both roles and
+preserves selections when changing modes. Regression tests cover two
+and three local players and launching a guided lesson with both fighters.

@@ -10,9 +10,14 @@ const metrics = [
 
 export function selectionPortrait(id: string, size: 'hero' | 'tile'): string {
   if (Object.hasOwn(FIGHTER_PRESENTATION, id)) {
-    return (import.meta.env.BASE_URL || '/') + 'menu-art/' + id + '-select-' + size + '.webp';
+    return (import.meta.env.BASE_URL || '/') + 'menu-art/' + id + '-select-' + size + (size === 'tile' && isPack04FighterId(id) ? '-v2' : '') + '.webp';
   }
   return fighterPortrait(id);
+}
+
+export function selectionIdle(id: string): string {
+  if (!Object.hasOwn(FIGHTER_PRESENTATION, id)) return '';
+  return (import.meta.env.BASE_URL || '/') + 'menu-art/' + id + (isPack04FighterId(id) ? '-select-idle-v2.webp' : '-select-idle.webp');
 }
 
 export function fighterTile(fighter: FighterChoice, faceoff = false): string {
@@ -39,9 +44,7 @@ export function fighterComparison(root: HTMLElement, roster: readonly FighterCho
     const image = panel.querySelector('img')!;
     const portrait = faceoff ? selectionPortrait(id, 'hero') : fighterPortrait(id);
     const source = panel.querySelector('source');
-    const idle = Object.hasOwn(FIGHTER_PRESENTATION, id)
-      ? (import.meta.env.BASE_URL || '/') + 'menu-art/' + id + (isPack04FighterId(id) ? '-select-idle-v2.webp' : '-select-idle.webp')
-      : '';
+    const idle = selectionIdle(id);
     if (source && source.getAttribute('srcset') !== idle) source.setAttribute('srcset', idle);
     if (image.getAttribute('src') !== portrait) image.src = portrait;
   }

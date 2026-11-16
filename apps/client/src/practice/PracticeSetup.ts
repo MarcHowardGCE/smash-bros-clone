@@ -74,10 +74,6 @@ export function renderPracticeSetup(
     catch { return false; }
   };
   function refresh(highlight = 'dojo-mode-free'): void {
-    if (guided) {
-      if (fighter >= roster.length) fighter = 0;
-      if (partner >= roster.length) partner = 0;
-    }
     try { localStorage.setItem(selectionKey, JSON.stringify(config(guided ? lesson.id : null))); } catch { /* session still works */ }
     label('dojo-fighter','Fighter · '+fighters[fighter]![1]);
     label('dojo-partner','Partner · '+fighters[partner]![1]);
@@ -128,7 +124,7 @@ export function renderPracticeSetup(
   }
   bind('dojo-mode-free',()=>{guided=false;refresh('dojo-mode-free');});
   bind('dojo-mode-lessons',()=>{guided=true;refresh('dojo-mode-lessons');});
-  const availableFighters = () => guided ? roster.length : fighters.length;
+  const availableFighters = () => fighters.length;
   cycle('dojo-fighter',availableFighters,()=>fighter,value=>{fighter=value;});
   cycle('dojo-partner',availableFighters,()=>partner,value=>{partner=value;});
   cycle('dojo-stage',STAGES.length,()=>stage,value=>{stage=value;});

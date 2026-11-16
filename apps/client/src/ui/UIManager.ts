@@ -5,7 +5,7 @@ import type{PracticeConfig}from'../practice/curriculum.js';
 import type { PracticeLabAction } from '../practice/PracticePanel';
 import {renderVisualSettingsScreen} from './VisualSettingsScreen';
 import type {StageBackdrop} from '../renderer/StageBackdrop';
-import { fighterComparison, fighterTile } from './FighterComparison';
+import { fighterComparison, fighterTile, selectionIdle } from './FighterComparison';
 import { renderDojoPause } from './DojoPause';
 import { homeMenu, onlineEntry, roomLobby, roomSeats, type LobbySeat } from './EntryMenus';
 import { FIGHTER_PRESENTATION, escapeHtml, fighterPortrait } from './selectionContent';
@@ -545,9 +545,7 @@ export class UIManager {
       const source = fighterPortrait(fighter.id);
       if (portrait && source && portrait.getAttribute('src') !== source) portrait.src = source;
       const animation = portrait?.parentElement?.querySelector('source');
-      const idle = Object.hasOwn(FIGHTER_PRESENTATION, fighter.id)
-        ? (import.meta.env.BASE_URL || '/') + 'menu-art/' + fighter.id + '-select-idle.webp'
-        : '';
+      const idle = selectionIdle(fighter.id);
       if (animation && animation.getAttribute('srcset') !== idle) animation.setAttribute('srcset', idle);
       refreshRoster();
       showComparison();

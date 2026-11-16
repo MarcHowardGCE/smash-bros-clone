@@ -34,3 +34,18 @@ it('previews a lesson without starting and keeps existing per-fighter completion
   expect(start).toHaveBeenCalledWith(expect.objectContaining({lessonId:'parry'}));
   handle.destroy();
 });
+
+it('can select Pack 04 fighters and retain them when switching to guided lessons', () => {
+  const root = document.body.appendChild(document.createElement('div'));
+  const start = vi.fn();
+  const handle = renderPracticeSetup(root, null, start, vi.fn());
+  const click = (id: string) => root.querySelector<HTMLButtonElement>('#' + id)!.click();
+  for (let i = 0; i < 8; i++) click('dojo-fighter');
+  click('dojo-mode-lessons');
+  for (let i = 0; i < 9; i++) click('dojo-partner');
+  click('dojo-start-lesson');
+  expect(start).toHaveBeenCalledWith(expect.objectContaining({
+    fighter: 'zane-corvo', dummy: 'velvet-reply', lessonId: expect.any(String),
+  }));
+  handle.destroy();
+});

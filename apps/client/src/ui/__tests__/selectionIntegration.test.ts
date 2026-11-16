@@ -38,3 +38,21 @@ describe('illustrated selection integration',()=>{
  it('cancels pending character work when switching screens',()=>{vi.useFakeTimers();const el=document.createElement('div');document.body.append(el);const ui=new UIManager(el),done=vi.fn();ui.showCharacterSelect(fighters,2,done,[1]);ui.showLobby();vi.advanceTimersByTime(1000);window.dispatchEvent(new KeyboardEvent('keydown',{key:'Enter',code:'Enter'}));expect(done).not.toHaveBeenCalled();ui.showMatch();});
  it('browses world stories without committing and selects the focused world',()=>{const el=document.createElement('div');document.body.append(el);const done=vi.fn();renderStageSelectScreen(el,STAGES,done);expect(el.querySelector('h2')?.textContent).toBe(STAGES[0]!.displayName);window.dispatchEvent(new KeyboardEvent('keydown',{key:'ArrowRight'}));expect(el.querySelector('h2')?.textContent).toBe(STAGES[1]!.displayName);expect(el.querySelector<HTMLElement>('#stage-story')?.hidden).toBe(false);expect(el.querySelector('#stage-story')?.textContent).toBe(WORLD_STORIES[STAGES[1]!.id]!.story);expect(el.querySelector('#stage-story-toggle')).toBeNull();expect(done).not.toHaveBeenCalled();window.dispatchEvent(new KeyboardEvent('keydown',{key:'Enter'}));expect(done).toHaveBeenCalledOnce();expect(done).toHaveBeenCalledWith(STAGES[1]);});
 });
+
+it.each([2, 3])('uses current Pack 04 preview artwork for %i local players', count => {
+  const root = document.body.appendChild(document.createElement('div'));
+  const ui = new UIManager(root);
+  const pack = [{ id: 'zane-corvo', displayName: 'Zane Corvo' },
+    { id: 'velvet-reply', displayName: 'The Velvet Reply' }];
+  ui.showCharacterSelect([...pack, ...fighters], count, vi.fn(), [],
+    undefined, undefined, pack);
+  expect(root.querySelector('.fighter-hero source')?.getAttribute('srcset')).toContain('zane-corvo-select-idle-v2.webp');
+  if (count === 3) {
+    expect(root.querySelector('[data-seat-portrait="1"]')?.parentElement?.querySelector('source')
+      ?.getAttribute('srcset')).toContain('velvet-reply-select-idle-v2.webp');
+  }
+  for (const { id } of pack) {
+    expect(root.querySelector('[data-id="' + id + '"] img')?.getAttribute('src')).toContain(id + '-select-tile-v2.webp');
+  }
+  ui.showMatch();
+});

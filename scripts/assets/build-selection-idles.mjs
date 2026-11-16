@@ -39,7 +39,7 @@ for (const [pack, manifestPath] of [
         .composite([{ input: f.image, left: originX - f.x, top: originY - f.y }])
         .raw().toBuffer()
     ));
-    const file = path.join(publicDir, 'menu-art', id + '-select-idle.webp');
+    const file = path.join(publicDir, 'menu-art', id + (pack === 'pack-04-v1' ? '-select-idle-v2.webp' : '-select-idle.webp'));
     await sharp(Buffer.concat(pages), { raw: { width, height: height * pages.length, pageHeight: height, channels: 4 } })
       .webp({ quality: 92, alphaQuality: 100, loop: 0, delay: idle.frames.map((_, i) => Math.round((idle.durations?.[i] ?? 12) * 1000 / 60)) })
       .toFile(file);

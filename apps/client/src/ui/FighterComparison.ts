@@ -1,4 +1,4 @@
-import { CHARACTER_REGISTRY, type CharacterId } from '@smash/shared';
+import { CHARACTER_REGISTRY, isPack04FighterId, type CharacterId } from '@smash/shared';
 import type { FighterChoice } from '../local/types';
 import { escapeHtml, fighterPortrait, FIGHTER_PRESENTATION } from './selectionContent';
 
@@ -40,7 +40,7 @@ export function fighterComparison(root: HTMLElement, roster: readonly FighterCho
     const portrait = faceoff ? selectionPortrait(id, 'hero') : fighterPortrait(id);
     const source = panel.querySelector('source');
     const idle = Object.hasOwn(FIGHTER_PRESENTATION, id)
-      ? (import.meta.env.BASE_URL || '/') + 'menu-art/' + id + '-select-idle.webp'
+      ? (import.meta.env.BASE_URL || '/') + 'menu-art/' + id + (isPack04FighterId(id) ? '-select-idle-v2.webp' : '-select-idle.webp')
       : '';
     if (source && source.getAttribute('srcset') !== idle) source.setAttribute('srcset', idle);
     if (image.getAttribute('src') !== portrait) image.src = portrait;

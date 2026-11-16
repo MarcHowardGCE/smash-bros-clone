@@ -18,9 +18,12 @@ for (const [pack, manifestPath] of [
   for (const [id, character] of Object.entries(characters)) {
     const idle = character.clips.idle;
     const sourceFrames = pack === "pack-03-v1" ? await readIdleSheet(id) : idle.frames;
-    const scale = Math.min(1, 360 / Math.max(...sourceFrames.map(frame => frame.rect[3])));
+    // Pack 04 source frames use different drawing resolutions for the same world height.
+    const relativeScale = frame => pack === 'pack-04-v1' ? (frame.scale ?? idle.scale) / idle.scale : 1;
+    const fitScale = Math.min(1, 360 / Math.max(...sourceFrames.map(frame => frame.rect[3] * relativeScale(frame))));
     const frames = await Promise.all(sourceFrames.map(async frame => {
       const [left, top, width, height] = frame.rect;
+      const scale = fitScale * relativeScale(frame);
       const w = Math.round(width * scale);
       const h = Math.round(height * scale);
       const image = await sharp(path.resolve(directory, frame.image ?? idle.image))

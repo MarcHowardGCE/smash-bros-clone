@@ -2804,3 +2804,13 @@ lineup reached live play 19.14 s after selecting the stage again.
 Both fighters also passed regular local selection and match startup.
 Hosted timing and visual review of the remaining short transitions
 stay open.
+
+### Pack 04 Fighter Select idle sizing hotfix
+
+The animated menu previews had used one resize factor across source
+drawings of different resolutions. The generator now applies authored
+Pack 04 frame scales before fitting and aligning each pose. Decoding
+the resulting WebPs verified four poses per fighter with the same
+bottom edge. Zane's silhouette height is 360 pixels throughout and
+Velvet's varies by one pixel. The packed gameplay atlas already
+applied per-frame scale.

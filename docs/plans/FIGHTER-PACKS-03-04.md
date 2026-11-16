@@ -2824,3 +2824,37 @@ local seat previews. Pack 04 roster tiles use versioned head-and-shoulder
 crops. Guided Lessons uses the full Dojo roster for both roles and
 preserves selections when changing modes. Regression tests cover two
 and three local players and launching a guided lesson with both fighters.
+
+### Pack 04 hosted 8 Mbps verification
+
+On November 16, two Chromium checks passed on play.zandarecords.com
+with fresh browser contexts, 8 Mbps download and upload per client,
+and 80 ms simulated latency. Zane versus Velvet reached live play
+40.97 s after navigation and 20.37 s after stage selection. The
+latter was 0.18 s slower than the local production baseline.
+
+Resetting one guest atlas page triggered the artwork alert in 0.12 s
+and held match start. Reconfirming the same lineup and selecting the
+stage again reached live play in 19.37 s, 0.23 s slower than the local
+retry baseline. These are single trials. Live visual signoff remains
+open.
+
+### Pack 04 hosted visual smoke
+
+Both fighters reached live play from public Local Play against
+All-Rounder. Sampled recordings show the correct sprites during the
+versus countdown and at match start. One Velvet selection sample
+still showed the previous All-Rounder artwork under Velvet's name
+during the selection change. Inspect the preview image handoff during
+loading next. These recordings end at match startup and leave
+combat-transition visual signoff open.
+
+### Fighter Select preview handoff
+
+Fighter comparison and player seats now replace the preview element
+when the selected artwork changes. This removes the prior decoded
+image while the new one loads and preserves the element when the
+URLs are unchanged. Six selection integration tests and client
+typecheck passed. Hosted browser verification remains open.
+
+Two local Chromium checks held back Velvet's artwork during selection. The prior portrait was removed, and the new one appeared after release in both animated and reduced-motion modes. Confirm on the public build after deployment.

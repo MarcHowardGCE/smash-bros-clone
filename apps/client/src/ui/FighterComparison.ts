@@ -20,6 +20,23 @@ export function selectionIdle(id: string): string {
   return (import.meta.env.BASE_URL || '/') + 'menu-art/' + id + (isPack04FighterId(id) ? '-select-idle-v2.webp' : '-select-idle.webp');
 }
 
+export function updateSelectionArtwork(image: HTMLImageElement, portrait: string, idle: string): void {
+  const picture = image.closest('picture');
+  const source = picture?.querySelector('source');
+  if (image.getAttribute('src') === portrait && (source?.getAttribute('srcset') ?? '') === idle) return;
+
+  // A reused image can keep painting its last decoded resource while the new one loads.
+  const current = picture ?? image;
+  const replacement = current.cloneNode(true) as HTMLPictureElement | HTMLImageElement;
+  const nextImage = picture ? replacement.querySelector('img')! : replacement;
+  const nextSource = replacement.querySelector('source');
+  if (idle) nextSource?.setAttribute('srcset', idle);
+  else nextSource?.removeAttribute('srcset');
+  if (portrait) nextImage.setAttribute('src', portrait);
+  else nextImage.removeAttribute('src');
+  current.replaceWith(replacement);
+}
+
 export function fighterTile(fighter: FighterChoice, faceoff = false): string {
   return `<img src="${faceoff ? selectionPortrait(fighter.id, 'tile') : fighterPortrait(fighter.id)}" alt="" draggable="false"><span>${escapeHtml(fighter.displayName)}</span>`;
 }
@@ -43,10 +60,7 @@ export function fighterComparison(root: HTMLElement, roster: readonly FighterCho
   function updateArtwork(panel: Element, id: string): void {
     const image = panel.querySelector('img')!;
     const portrait = faceoff ? selectionPortrait(id, 'hero') : fighterPortrait(id);
-    const source = panel.querySelector('source');
-    const idle = selectionIdle(id);
-    if (source && source.getAttribute('srcset') !== idle) source.setAttribute('srcset', idle);
-    if (image.getAttribute('src') !== portrait) image.src = portrait;
+    updateSelectionArtwork(image, portrait, faceoff ? selectionIdle(id) : '');
   }
   function render(): void {
     if (!current || !reference) return;

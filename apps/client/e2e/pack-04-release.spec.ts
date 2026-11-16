@@ -101,3 +101,33 @@ for (const fighter of ['zane-corvo', 'velvet-reply']) {
     })).toBe(fighter);
   });
 }
+
+for (const motion of ['reduce', 'no-preference'] as const) {
+  test('Fighter Select removes the previous portrait while the next one loads (' + motion + ')', async ({ page }) => {
+    await page.emulateMedia({ reducedMotion: motion });
+    let unblock!: () => void;
+    const gate = new Promise<void>(resolve => { unblock = resolve; });
+    await page.route(motion === 'reduce' ? '**/velvet-reply-select-hero.webp' : '**/velvet-reply-select-idle-v2.webp', async route => {
+      await gate;
+      await route.continue();
+    });
+    try {
+      await page.goto('/');
+      await page.locator('#splash-screen').click();
+      await page.locator('#local-play-btn').click();
+      await page.locator('#lps-start-btn').click();
+      const hero = page.locator('.fighter-hero');
+      const image = hero.locator('img');
+      await expect.poll(() => image.evaluate(node => node.naturalWidth)).toBeGreaterThan(0);
+      const previous = await image.elementHandle();
+      await page.locator('.fighter-option[data-id="velvet-reply"]').click();
+      await expect(hero.locator('h2')).toHaveText('The Velvet Reply');
+      expect(await previous?.evaluate(node => node.isConnected)).toBe(false);
+      expect(await image.evaluate(node => node.naturalWidth)).toBe(0);
+      unblock();
+      await expect.poll(() => image.evaluate(node => node.naturalWidth)).toBeGreaterThan(0);
+    } finally {
+      unblock();
+    }
+  });
+}

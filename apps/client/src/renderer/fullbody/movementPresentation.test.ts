@@ -403,3 +403,18 @@ it('carries the displayed prone frame into all Pack 03 get-up options', () => {
   draw('ATTACK', 6, 3, MoveId.FLOOR_ATTACK_DOWN);
   draw('ATTACK', 8, 4, MoveId.FLOOR_ATTACK_DOWN);
 });
+
+it('holds Pack 04 airborne phase endpoints and uses a consistent center pivot', () => {
+  const frame = (height: number) => ({
+    texture: new Texture({ source: Texture.WHITE.source, frame: Texture.WHITE.frame }),
+    root: [0, height], offsetY: 28,
+  });
+  const clips = Object.fromEntries(['air_rise_loop', 'air_apex_loop', 'air_fall_loop'].map(name =>
+    [name, { scale: 1, durations: [5, 5], frames: [frame(100), frame(80)] }]));
+  const pilot = new FullBodyPilot({ characters: { 'zane-corvo': clips } }, 'zane-corvo', 'zane-corvo');
+  for (const [age, vy] of [[0,-8],[6,-8],[12,-8],[18,0],[24,0],[30,8],[36,8],[42,8]] as const) {
+    pilot.update('AIRBORNE', age, null, true, vy, true, false, 1, 0, false, 1, 1, undefined, null, {});
+    expect(pilot.sprite.position.y).toBe(0);
+    expect(pilot.sprite.pivot.y).toBe(Math.round(pilot.sprite.texture.frame.height * 0.54));
+  }
+});

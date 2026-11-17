@@ -173,6 +173,8 @@ export class FullBodyPilot {
  private resultStart:number|null=null;private resultKind:string|undefined;
  private doubleJumpCue:{state:string;frame:number;elapsed:number}|null=null;
  private fastFallStart?:number;
+ private airMotionClip?:string;
+ private airMotionStart=0;
  private dojoProneFrame=0;
  private shieldBreakGroundStart?:number;
  private lastFrame=0;private counterStart:number|null=null;
@@ -280,6 +282,9 @@ export class FullBodyPilot {
   if (launch && selected?.clip === 'tumble' && frame < launchDuration) {
    selected = { clip: 'hit_launch', index: dojoFrame(launch, frame) };
   }
+  if (!selected || !['air_rise_loop','air_apex_loop','air_fall_loop','air_fastfall_loop'].includes(selected.clip)) {
+   this.airMotionClip = undefined;
+  }
   let clip=selected?art?.[selected.clip]:undefined;
   if(this.artId&&selected&&clip){
    if(selected.clip==='hit_launch'){
@@ -348,7 +353,13 @@ export class FullBodyPilot {
     selected = { ...selected, index: dojoFrame(clip, frame - (this.counterStart ?? frame)) };
    }else if(pack03 && clip.durations && selected.clip === 'double_jump_transition'){
     selected = { ...selected, index: dojoFrame(clip, this.doubleJumpCue?.elapsed ?? frame) };
-   }else if(pack03 && selected.clip === 'air_apex_loop'){
+   }else if(isPack04FighterId(this.artId) && ['air_rise_loop','air_apex_loop','air_fall_loop','air_fastfall_loop'].includes(selected.clip)){
+    if (this.airMotionClip !== selected.clip || frame < this.airMotionStart) {
+     this.airMotionClip = selected.clip;
+     this.airMotionStart = frame;
+    }
+    // Progress into the phase and hold its final pose instead of rocking between endpoints.
+    selected = { ...selected, index: dojoFrame(clip, frame - this.airMotionStart) };   }else if(pack03 && selected.clip === 'air_apex_loop'){
     // Advance once as vertical motion changes from rising to falling.
     selected = { ...selected, index: (vy ?? 0) < 0 ? 0 : Math.min(1, clip.frames.length - 1) };
    }else if(pack03 && clip.durations && selected.clip === 'air_fastfall_loop'){
@@ -434,12 +445,16 @@ export class FullBodyPilot {
   if(newcomerHeld)this.sprite.scale.x*=-1;
   const airRoot = state === 'AIR_ATTACK' || (isPack04FighterId(this.artId) && (state === 'AIR_DODGE' || state === 'HELPLESS' || state === 'HITSTUN' || selected.clip === 'tumble' || (selected.clip === 'tumble_recover' && !prepared.isGrounded) || selected.clip === 'wall_tech' || selected.clip === 'wall_tech_jump' || selected.clip === 'ceiling_tech' || selected.clip === 'ledge_jump' || selected.clip === 'ledge_drop' || selected.clip === 'ledge_trump')) || (pack03 && (airborne || state === 'HELPLESS' || state === 'AIR_DODGE' || selected.clip === 'shield_break_launch' ||
       (state === 'HITSTUN' && ['hit_air','hit_launch','tumble','footstool_air_victim'].includes(selected.clip)))) ? drawing.airRoot : undefined;
-  const fallRoot = isPack04FighterId(this.artId) && (selected.clip === 'air_fall_loop' || selected.clip === 'air_fastfall_loop')
+  const fallRoot = isPack04FighterId(this.artId) && (['air_rise_loop','air_apex_loop','air_fall_loop','air_fastfall_loop'].includes(selected.clip))
     ? [drawing.root[0], Math.round(drawing.texture.frame.height * 0.54)] : undefined;
-  const root = airRoot ?? fallRoot ?? drawing.root;
+  const takeoffBlend = isPack04FighterId(this.artId) && selected.clip.startsWith('takeoff_')
+    ? Math.min(1, Math.max(0, (prepared.artCueFrame ?? frame) / 5)) : undefined;
+  const takeoffRoot = takeoffBlend === undefined ? undefined
+    : [drawing.root[0], drawing.root[1]! + (Math.round(drawing.texture.frame.height * 0.54) - drawing.root[1]!) * takeoffBlend];
+  const root = airRoot ?? fallRoot ?? takeoffRoot ?? drawing.root;
   this.sprite.pivot.set(root[0],root[1]);
   const floorOffset=this.artId?getCharacterStats(this.characterId).hurtboxRadius:drawing.offsetY;
-  this.sprite.position.set(0,airRoot || fallRoot ? 0 : floorOffset);
+  this.sprite.position.set(0,airRoot || fallRoot ? 0 : floorOffset * (1 - (takeoffBlend ?? 0)));
   if(grabVictim&&grabOwner){
    const owner=selectPilotFrame(grabOwner.state,grabOwner.frame,grabOwner.move,0,true,false,grabOwner.characterId);
    const holder=owner?this.assets.characters[grabOwner.artId??grabOwner.characterId]?.[owner.clip]:undefined;

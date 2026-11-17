@@ -229,3 +229,25 @@ at contact, so pose parity at that frame remains a refinement. Hosted
 playtest remains pending.
 
 Controller regression: menu polling could see a standard controller exposed after startup while gameplay had no seat assignment if the browser missed the connection event. Polling now registers that device once. Physical Switch Pro mapping and live gameplay verification remain open.
+
+## November 17 vertical CPU pursuit and Pack 04 jump correction
+
+The supplied 10.2-second recording shows Zane repeating jumps below
+an occupied platform with abrupt changes in his airborne pose.
+Pack 04 rise, apex and fall used looping endpoint drawings, and
+rise and fall used different pivot conventions. Their phases now
+advance once and hold the final pose, with a consistent center
+pivot. Takeoff eases from the floor registration over five ticks.
+This presentation correction also applies to Velvet.
+
+CPU neutral pursuit had no descent branch for an opponent directly
+below a soft platform. It now presses Down to drop through, steers
+only when outside the horizontal deadzone, and attempts down aerials
+while aligned above a vulnerable opponent. Execution error still
+applies. The main solid floor is excluded from the drop decision.
+
+Validation passed 28 AI unit tests, three server platform pursuit
+tests including descent and attacking in both facings, 18 movement
+presentation tests, client and server type checks, and both Pack 04
+Dojo jump-through-fast-fall landing tests. Human review of the new
+jump cadence and public deployment remain pending.

@@ -182,3 +182,33 @@ describe('GameEngine AI platform jump integration', () => {
     expect(getMutableState(engine).players[opponentId]!.percent).toBeGreaterThan(0);
   });
 });
+
+it('descends from a soft platform and attacks a target directly below in either facing', () => {
+  for (const facing of [-1, 1] as const) {
+    const engine = new GameEngine({ playerIds: ['bot', 'opponent'] });
+    const platform = STAGE.PLATFORMS[0]!;
+    const x = platform.x + platform.width / 2;
+    for (const [id, y] of [['bot', platform.y], ['opponent', STAGE.MAIN_PLATFORM.y]] as const) {
+      primePlayer(engine, id, { x, y: y - PHYSICS.HURTBOX_RADIUS, vx: 0, vy: 0,
+        facing, state: PlayerStateEnum.IDLE, stateFrame: 0, isGrounded: true,
+        isInvincible: false, invincibilityFrames: 0, respawnTimer: 0, ledgeId: null });
+    }
+    let memory = createBotMemory(1337);
+    let lastHeld = 0;
+    let descended = false;
+    let attacked = false;
+    for (let tick = 1; tick <= 180; tick++) {
+      const input = computeAiInputEvent(getMutableState(engine), 'bot', 'opponent',
+        { ...BOT_DIFFICULTY_PRESETS.hard, executionErrorRate: 0 }, memory, lastHeld, tick);
+      memory = input.nextMemory;
+      lastHeld = input.nextLastHeld;
+      engine.tickGame(new Map([['bot', input.event], ['opponent', null]]));
+      const bot = getMutableState(engine).players.bot!;
+      descended ||= bot.y > platform.y + 5;
+      attacked ||= bot.state === PlayerStateEnum.AIR_ATTACK || bot.state === PlayerStateEnum.ATTACK;
+    }
+    expect(descended).toBe(true);
+    expect(attacked).toBe(true);
+    expect(getMutableState(engine).players.bot!.isKnockedOut).toBe(false);
+  }
+});

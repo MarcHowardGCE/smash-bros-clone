@@ -275,6 +275,19 @@ export function decideBotInput(
   const toward = dx < 0 ? INPUT_BITS.LEFT : INPUT_BITS.RIGHT;
   const press = (bits: InputBitmask) => applyExecutionError(bits, difficultyConfig.executionErrorRate, memory);
 
+  // Descend through a soft platform before trying to resolve a horizontal tie.
+  const feet = self.y + getCharacterStats(self.characterId).hurtboxRadius;
+  const softPlatform = self.isGrounded && layout.platforms.some(platform =>
+    !platform.solid && Math.abs(feet - platform.y) <= 3 &&
+    self.x >= platform.x && self.x <= platform.x + platform.width);
+  if (dy > 45 && softPlatform) {
+    return press(INPUT_BITS.DOWN | (Math.abs(dx) > APPROACH_DEADZONE_X ? toward : 0));
+  }
+  if (!self.isGrounded && dy > 30 && Math.abs(dx) <= 55 && !opponent.isInvincible) {
+    const roll = nextRandom(memory);
+    return applyExecutionError(INPUT_BITS.DOWN | (roll.value < 0.6 ? INPUT_BITS.ATTACK : 0),
+      difficultyConfig.executionErrorRate, roll.nextMemory);
+  }
   if (Math.abs(dx) <= APPROACH_DEADZONE_X && Math.abs(dy) <= 45 && !(opponent.isGrounded && dy < -12 && self.hasDoubleJump && !self.isGrounded) && !opponent.isInvincible) {
     if (Math.abs(dx) > 1 && Math.sign(dx) !== self.facing) return press(toward);
     const roll = nextRandom(memory);

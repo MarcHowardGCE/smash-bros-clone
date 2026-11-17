@@ -7,7 +7,7 @@ on:
       atlas_quality_96:
         description: Build with quality-96 fighter atlases
         type: boolean
-        default: false
+        default: true
   pull_request:
     branches: [main]
     paths:
@@ -37,7 +37,7 @@ jobs:
       - run: pnpm install --frozen-lockfile
       - run: pnpm build
         env:
-          SMASH_ATLAS_QUALITY_96: ${{ inputs.atlas_quality_96 && '1' || '0' }}
+          SMASH_ATLAS_QUALITY_96: ${{ (github.event_name != 'workflow_dispatch' || inputs.atlas_quality_96) && '1' || '0' }}
           VITE_SERVER_URL: https://everybody-throws-hands.onrender.com
       - run: node scripts/stage-bluehost-client.mjs bluehost-client "$(git rev-parse HEAD)"
       - name: Verify staged online endpoint

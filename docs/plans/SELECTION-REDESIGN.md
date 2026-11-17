@@ -262,3 +262,39 @@ The checked-out revision supplies the artifact release marker.
 A main-branch manual run follows the existing publication gate,
 so enabling the option there can publish the trial to the public
 client. Push and pull-request builds use the default encoder.
+
+#### Hosted quality-96 release verification
+
+Release run 44109419351 published commit 12438e9 to Bluehost.
+The public Pack 04 manifest listed all four -q96.webp pages.
+At 8 Mbps and 80 ms latency, the cold Zane versus Velvet online
+match took 15.35 s from arena selection to live play. The
+interrupted guest atlas alert appeared 397 ms after the reset.
+Both clients stayed out of live play at the failure checkpoint
+and the same lineup entered play 13.36 s after arena reselection.
+A separate Zane local-match replay in the same browser context
+took 24.48 s cold and 4.98 s warm from arena selection. These
+single runs use different lineups and cannot be compared across
+modes. Regular releases still default to the original encoder.
+
+#### Hosted comparison for the original lineup
+
+At 8 Mbps and 80 ms latency, Mr. Wrong versus All-Rounder on the
+first arena reached play 28.08 s after direct lineup confirmation
+in a fresh Bluehost browser context. Repeating in the same context
+took 5.73 s. Both runs requested seven quality-96 fighter pages.
+Chromium reported 13.70 MB of total atlas transfer cold and
+0.73 MB warm. The prior direct-confirm Render run for the same
+lineup took 49.22 s and transferred 28.39 MB. The comparison spans
+hosts and uses one run per cache condition. Next, decide whether
+to make quality 96 the release default based on the visual and
+retry checks already recorded.
+
+#### Quality-96 release default
+
+The Bluehost workflow now selects quality 96 for push and pull
+request builds. Manual runs default to the same setting and can
+uncheck atlas_quality_96 to publish the original encodes through
+the existing release gate. Local builds still require the opt-in.
+The default workflow change is verified locally and awaits its
+first automatic release.

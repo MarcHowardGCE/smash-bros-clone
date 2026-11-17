@@ -368,3 +368,51 @@ the selected tile. Enter on a roster tile still confirms the
 keyboard seat. Ten focused interaction and integration tests
 passed, including a regression for entry focus, browsing and
 Enter confirmation. Deployment and native Narrator review remain.
+
+#### Hosted fighter focus fix verification
+
+The automatic release passed and Bluehost served 4a24dc7.
+Browser keyboard checks focused All-Rounder on entry, moved focus
+to Abe Lincoln with roster browsing, confirmed with Enter and
+opened World Select. Escape restored the Ready control on Fighter
+Select. Actual Narrator speech remains pending.
+
+#### Native speech verification handoff
+
+The Windows automation surface can inspect app accessibility trees
+and send input, but the available API provides no system-audio
+capture or Narrator speech transcript. Native spoken-output signoff
+therefore remains unverified. On deployed 4a24dc7 or newer, check
+the initial focused fighter name, successive roster names while
+browsing, Enter confirmation, the first world name, and the Ready
+control after Escape. Listen for duplicate or stale names during
+rapid browsing and compare against the visible selection.
+
+#### Deployed keyboard focus contrast sample
+
+The focused fighter and world buttons display a two-pixel mint
+outline and match :focus-visible after keyboard navigation.
+Against their computed solid fills, outline contrast was 8.16:1
+and 9.14:1 respectively. Cream text on those fills measured
+10.27:1 and 11.49:1. World captions shared the cream text color.
+This sample checks selected button fills. It does not measure
+every artwork pixel, hovered state or outer outline adjacency.
+Native Narrator listening remains pending.
+
+#### World caption artwork contrast correction
+
+A conservative pixel scan of the full hovered caption rectangles
+on the public ten-world selector found bright pixels with contrast
+as low as 1.01:1 against the cream caption text. This full-rectangle
+method does not identify which pixels are directly behind glyphs.
+Added an opaque dark caption strip to prevent artwork from affecting
+the label background. Verify rendered caption contrast locally and
+on the deployed revision before closing the artwork contrast check.
+
+Previewed the new strip by applying the exact CSS in a fresh
+public-browser session. Labels fit the ten-world layout. Nine
+hovered caption interiors measured 15.06:1; the focused first
+tile's rectangle still included a brighter boundary at 1.74:1.
+That rectangle result does not establish contrast directly behind
+the text. Keep focus-boundary contrast separate from label-fill
+contrast during the deployed review.

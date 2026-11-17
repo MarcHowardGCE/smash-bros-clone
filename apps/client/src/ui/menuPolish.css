@@ -685,3 +685,8 @@ body:has(.dojo-console) .dojo-panel {visibility:hidden}
 @media(max-width:540px) {
   .fighter-picker-multiplayer .fighter-seats {grid-template-columns:repeat(2,minmax(0,1fr))}
 }
+
+.world-tile > span {
+  background: #201627;
+  color: #fbedD3;
+}

@@ -1,10 +1,11 @@
 import { cp, mkdir, readdir, readFile, stat, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 
-const source = 'apps/client/dist';
+const source = process.argv[4] ?? 'apps/client/dist';
 const output = process.argv[2];
-if (!output || path.relative(source, output).startsWith('..') === false) {
-  throw new Error('Choose a new staging directory outside apps/client/dist');
+const relativeOutput = output && path.relative(source, output);
+if (!relativeOutput || !(path.isAbsolute(relativeOutput) || relativeOutput.startsWith('..' + path.sep))) {
+  throw new Error('Choose a new staging directory outside the client build directory');
 }
 await mkdir(output);
 

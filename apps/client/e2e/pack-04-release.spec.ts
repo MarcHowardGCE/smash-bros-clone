@@ -26,7 +26,7 @@ for (const interrupt of [false, true]) {
           }
         });
       }
-      await host.goto(baseURL!);
+      await host.goto(process.env.PACK04_TEST_URL ?? baseURL!);
       await host.locator('#splash-screen').click();
       await host.locator('#online-play-btn').click();
       await host.locator('#create-btn').click();
@@ -37,7 +37,7 @@ for (const interrupt of [false, true]) {
       const fighters = ['zane-corvo', 'velvet-reply'];
       let interruptedAt = 0;
       if (interrupt) {
-        await guest.route(/\/fighter-art-pack-04-v1\/production\/atlas-zane-corvo-live-0\.webp(?:\?|$)/, async route => {
+        await guest.route(/\/fighter-art-pack-04-v1\/production\/atlas-zane-corvo-live-0(?:-q96)?\.webp(?:\?|$)/, async route => {
           if (interruptedAt) return route.continue();
           interruptedAt = Date.now();
           await route.abort('connectionreset');

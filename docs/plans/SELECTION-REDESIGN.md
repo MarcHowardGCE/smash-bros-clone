@@ -120,3 +120,145 @@ Tested the deployed client bundle index-BbKs5JYs.js in Chromium at 1280 × 720. 
 At 8 Mbps with 80 ms configured latency, local setup to Fighter Select took 69 ms with cache disabled and 36 and 33 ms with cache enabled. Lineup confirmation to live play, including a Back and reconfirm step and the countdown, took 47.56 s with cache disabled (28.38 MB in atlas transfer) and 6.78 and 5.98 s with cache enabled. The cold result remains a performance issue. The two-client retry blocked countdown after a deliberately interrupted Pack 03 atlas request. The guest displayed the alert 81 ms after the intercepted reset on the successful rerun. Reconfirming the same lineup fetched the atlas and both clients entered play. An initial run used a 25-second match timeout, which was too short for cold transfer.
 
 This verifies the requested hosted flows and automated accessibility behavior at the tested viewport. Spoken screen-reader output and full contrast measurement on the latest deployed artwork were not rerun.
+
+### November 17 cold-load budget
+
+The recorded Render cold run transferred 28.38 MB of fighter atlases.
+At 8 Mbps that transfer alone needs about 28.4 seconds at line rate,
+compared with the measured 47.56 seconds through countdown. The
+scenario also includes Back and reconfirm, so the remaining time
+cannot be attributed to decoding from this measurement. In the
+local production build, the two largest Mrs. Tasselbottom live pages
+total 12.18 MB. Next, measure a direct-confirm run and record atlas
+transfer, decode readiness and countdown separately. Use that split
+to evaluate loading opening-match poses first while retaining the
+countdown and retry checks.
+
+#### Direct-confirm hosted timing
+
+A fresh Chromium context with cache bypassed at 8 Mbps and 80 ms
+latency confirmed Mr. Wrong versus All-Rounder once and selected
+the first arena. From lineup confirmation, stage selection took
+0.91 s, the last atlas response completed at 45.08 s, and the
+match phase appeared at 49.22 s. Eight atlas responses transferred
+28.39 MB including response overhead. The remaining 4.14 s covers
+any decode, preparation and countdown after the final transfer.
+The exposed match snapshot did not yield a separate countdown
+boundary in this run. Next, timestamp the visible countdown and
+instrument decoded-art readiness in the local production preview.
+
+#### Local production transfer and decode split
+
+On November 17, a direct-confirm run on the local production server
+used the same Mr. Wrong versus All-Rounder lineup, first arena,
+cache bypass, 8 Mbps and 80 ms latency. The eight atlas response
+bodies finished by 44.219 s after confirmation. The last bitmap
+decode finished at 44.282 s, the visible countdown began at
+44.285 s, and live play was observed at 48.362 s. The slowest
+individual atlas decode took 63.2 ms. This single run identifies
+transfer as the measured bottleneck. Next, evaluate a smaller
+opening artwork payload while preserving complete fighter rendering
+and the same-lineup retry behavior.
+
+#### Atlas compression trial
+
+Encoded all seven fighter pages from the measured lineup in memory,
+keeping the original atlas dimensions and using WebP alpha quality
+100. Quality 96 reduced the fighter payload from 28.26 MB to
+14.30 MB (49.4%). Quality 92 reduced it to 12.77 MB (54.8%).
+The shared effects page was outside the trial. These are encoder
+measurements, with no runtime or visual result yet. Next, compare
+quality 96 with the lossless originals at gameplay scale and zoom,
+including thin outlines and translucent edges, then time a local
+production build if the comparison passes.
+
+Quality 96 preserved every decoded alpha pixel on the seven sampled
+atlas pages. A side-by-side review of idle, jab, wall tech and throw
+victim crops for both fighters showed no obvious outline or halo
+difference on light and dark backgrounds at the tested scales.
+This is a two-fighter sample. Next, build an isolated quality-96
+production candidate and retest cold transfer and artwork retry.
+
+#### Isolated quality-96 production candidate
+
+A separate local build recompressed only the seven fighter pages
+for Mr. Wrong versus All-Rounder. At 8 Mbps, 80 ms latency and
+cache bypass, eight atlas responses transferred 14.43 MB including
+the shared effects, the final transfer finished at 30.30 s, and
+live play began at 34.50 s. The lossless local run took 48.36 s
+to live play. These are single runs.
+
+In a two-client match, intentionally aborting the guest's Mr. Wrong
+atlas produced the artwork alert in 31 ms. Neither client had a
+match snapshot at that checkpoint. Reconfirming the same lineup
+and arena brought both clients into live play. The test sampled
+the failure checkpoint and the recovered match. Next, add a
+repeatable production encoder path and expand visual and retry
+coverage before changing the default build.
+
+#### Repeatable quality-96 build
+
+Set SMASH_ATLAS_QUALITY_96=1 and run
+pnpm -F @smash/client exec vite build --outDir dist-quality96
+to create an isolated trial. The opt-in recompresses live fighter
+WebP pages and validates dimensions and exact alpha before writing
+each smaller page. The default build uses the existing encodes.
+The trial uses distinct page URLs with a -q96.webp suffix.
+
+The isolated build passed and reduced 26 live pages by 50.51 MB
+across the original fighter pack and Packs 03 and 04. This is
+aggregate build output, not a per-match download. Next, review
+representative poses from each pack and repeat cold-load and retry
+checks with the repeatable build.
+
+#### Quality-96 two-client Pack 04 comparison
+
+At 8 Mbps and 80 ms latency in fresh local production browser
+contexts, Zane versus Velvet reached live play in 15.20 s from
+arena selection with the opt-in output versus 21.28 s with the
+default output. Navigation to live took 29.95 s versus 36.20 s.
+These were single cold runs. The interrupted-atlas trial raised
+the guest artwork alert in 497 ms, kept both clients out of live
+play at the failure checkpoint, and loaded the same lineup after
+reconfirmation. Both opt-in cases and the baseline case passed.
+Broader visual review remains open.
+
+#### Quality-96 roster sample review
+
+Compared 24 idle, jab and throw-victim crops for the eight fighters
+in the affected production packs, at a 120-pixel review scale on
+light and dark backgrounds. No obvious halo or loss of outline
+readability was visible in the samples. Moonshine and Hoagie use
+the newcomer pack, which this encoder option leaves lossless.
+This review sampled three poses per affected fighter. Before a
+hosted trial, give the opt-in pages distinct URLs so browsers
+can distinguish them from the existing lossless pages.
+
+#### Quality-96 cache separation
+
+The opt-in build now gives each recompressed page a -q96.webp
+suffix and updates the page list and clip/frame references before
+generating the Brotli manifest. The build passed and all references
+resolved across the three packs, including all 26 renamed pages.
+At 8 Mbps the two-client retry passed using the new filename.
+The alert appeared 432 ms after the reset. The same lineup reached
+live play 14.13 s after arena reselection. Next is a hosted trial
+with cold and warm cache checks.
+
+#### Bluehost quality-96 staging rehearsal
+
+Built the opt-in client with the Render online endpoint and staged
+it with the Bluehost packaging script from the isolated build
+directory. All 26 renamed pages were included, all fighter frame
+references in the three affected production manifests resolved,
+and each Brotli copy matched its JSON. This local rehearsal used
+working-tree output. An artifact from the eventual release commit
+should carry that commit's release marker before publication.
+Hosted cache and retry verification remain pending.
+
+The Bluehost release workflow now exposes the boolean
+atlas_quality_96 input for manual runs. It defaults to false.
+The checked-out revision supplies the artifact release marker.
+A main-branch manual run follows the existing publication gate,
+so enabling the option there can publish the trial to the public
+client. Push and pull-request builds use the default encoder.

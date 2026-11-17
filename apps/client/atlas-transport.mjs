@@ -1,4 +1,4 @@
-import { readFile, stat, unlink, writeFile } from 'node:fs/promises';
+import { readFile, readdir, stat, unlink, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 import { brotliCompressSync } from 'node:zlib';
 import sharp from 'sharp';
@@ -8,16 +8,16 @@ const packs = [
   ['fighter-art-newcomers-v1', 'dojo'],
 ];
 
-function verifyPixels(source, decoded, width, height, file) {
+function verifyPixels(source, decoded, width, height, file, alphaOnly = false) {
   if (decoded.info.width !== width || decoded.info.height !== height || decoded.info.channels !== 4) {
     throw new Error(`Unexpected decoded atlas dimensions for ${file}`);
   }
   for (let i = 0; i < source.length; i += 4) {
     const alpha = source[i + 3];
-    if (alpha !== decoded.data[i + 3] || (alpha !== 0 && (
+    if (alpha !== decoded.data[i + 3] || (!alphaOnly && alpha !== 0 && (
       source[i] !== decoded.data[i] || source[i + 1] !== decoded.data[i + 1] ||
       source[i + 2] !== decoded.data[i + 2]
-    ))) throw new Error(`Lossless atlas validation failed for ${file} at pixel ${i / 4}`);
+    ))) throw new Error(`Atlas pixel validation failed for ${file} at pixel ${i / 4}`);
   }
 }
 
@@ -101,6 +101,47 @@ async function compressPack(directory, folder) {
   return true;
 }
 
+async function compressTrialPages(directory) {
+  const files = await readdir(directory).catch(error => {
+    if (error.code === 'ENOENT') return [];
+    throw error;
+  });
+  const replacements = new Map();
+  for (const file of files.filter(file => /^atlas-(?!effects-)[a-z0-9-]+-live-\d+\.webp$/.test(file))) {
+    const target = path.join(directory, file);
+    const original = await readFile(target);
+    const candidate = await sharp(original).webp({ quality: 96, alphaQuality: 100, effort: 4 }).toBuffer();
+    if (candidate.length >= original.length) continue;
+    const source = await sharp(original).ensureAlpha().raw().toBuffer({ resolveWithObject: true });
+    const decoded = await sharp(candidate).ensureAlpha().raw().toBuffer({ resolveWithObject: true });
+    verifyPixels(source.data, decoded, source.info.width, source.info.height, file, true);
+    const replacement = file.replace(/\.webp$/, '-q96.webp');
+    await writeFile(path.join(directory, replacement), candidate);
+    replacements.set(file, replacement);
+  }
+  if (!replacements.size) return;
+
+  const manifestPath = path.join(directory, 'manifest.json');
+  const manifest = JSON.parse(await readFile(manifestPath, 'utf8'));
+  const replaceImage = image => {
+    const replacement = replacements.get(path.posix.basename(image ?? ''));
+    return replacement ? 'production/' + replacement : image;
+  };
+  for (const character of Object.values(manifest.characters)) {
+    for (const clip of Object.values(character.clips)) {
+      if (clip.image) clip.image = replaceImage(clip.image);
+      for (const frame of clip.frames) {
+        if (frame.image) frame.image = replaceImage(frame.image);
+      }
+    }
+  }
+  manifest.production.pages = manifest.production.pages.map(file => replacements.get(file) ?? file);
+  await writeFile(manifestPath, JSON.stringify(manifest));
+  for (const file of replacements.keys()) {
+    await unlink(path.join(directory, file));
+  }
+}
+
 export function compactAtlasPlugin() {
   return {
     name: 'smash-compact-fighter-atlases',
@@ -111,6 +152,9 @@ export function compactAtlasPlugin() {
       }
       for (const [pack, folder] of [...packs, ['fighter-art-pack-03-v1', 'production'], ['fighter-art-pack-04-v1', 'production']]) {
         const base = path.resolve(dir, pack);
+        if (folder === 'production' && process.env.SMASH_ATLAS_QUALITY_96 === '1') {
+          await compressTrialPages(path.join(base, folder));
+        }
         const manifestPath = path.join(base, folder, 'manifest.json');
         let manifest;
         try {

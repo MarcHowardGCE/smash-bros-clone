@@ -416,3 +416,13 @@ tile's rectangle still included a brighter boundary at 1.74:1.
 That rectangle result does not establish contrast directly behind
 the text. Keep focus-boundary contrast separate from label-fill
 contrast during the deployed review.
+
+#### Deployed world caption verification
+
+Release 20b648d passed and is served by Bluehost. All ten hovered
+world captions computed to an opaque rgb(32,22,39) fill and cream
+rgb(251,237,211) text, yielding 15.06:1 contrast for that pair.
+No caption had horizontal overflow at the tested 1280 by 720
+viewport. Keyboard focus retained the two-pixel mint outline.
+This verifies caption fill contrast. Outer focus adjacency and
+native Narrator speech remain outside this check.

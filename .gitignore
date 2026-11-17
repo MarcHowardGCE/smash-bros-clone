@@ -28,3 +28,6 @@ test-results.json
 /version-*.png
 /docs/assets/evidence
 /docs/assets/evidence
+
+# Isolated atlas compression trial build
+/apps/client/dist-quality96/

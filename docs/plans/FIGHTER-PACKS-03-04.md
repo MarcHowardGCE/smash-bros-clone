@@ -3339,12 +3339,8 @@ in the default facing, floor attack playback through idle, and
 paired throw, pummel and footstool playback in both facings.
 
 - Floor-attack and taunt alignment reviewed locally in both facings.
-- Verify the back-throw horizontal release blend on the public
-  revision that contains it. Use the 0% Guided Dojo back-throw
-  lesson with each fighter in both facings.
-- Finish live visual signoff for the brief paired and recovery
-  transitions. Prior recordings were sampled and can miss
-  single-tick discontinuities.
+- Hosted back-throw verification passed on 3cf9c2c for both fighters and facings.
+- Live visual signoff remains. In the public Dojo, check both fighters in both facings for a visible snap at pummel-to-hold, grounded and airborne footstool separation, wall-tech-to-ledge catch or fall, and floor-attack-to-idle. Record the fighter, facing, and transition for any issue.
 
 #### Pack 04 floor-attack contact review
 
@@ -3382,3 +3378,19 @@ horizontal release blend is still a local working-tree change.
 Hosted verification of the blend remains pending deployment.
 After deployment, verify the served commit and run the four 0%
 Guided Dojo cases across both fighters and facings.
+
+Render subsequently served 3cf9c2c, which includes the five-tick
+release blend. The public Guided Dojo awarded lesson credit during
+the hosted run, but the stepped and live diagnostic assertions
+could not verify sprite offsets or recovery clips. The production
+build omits getArtState, which those assertions require. Hosted
+visual signoff should use recorded gameplay and visible lesson
+credit. Numeric anchor checks remain available in the local Dojo.
+
+Hosted revision 3cf9c2c passed all four 0% back throws at 1x.
+Each earned lesson credit and returned to idle. Frames sampled
+every 50 ms near the end of the four recordings show the victim
+moving outward before the fighters settle at close idle spacing.
+The idle silhouettes still overlap. These samples verify the
+visible late release and recovery on Render. Exact per-tick
+anchor verification comes from the local trace.

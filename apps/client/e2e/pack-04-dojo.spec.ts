@@ -1722,6 +1722,10 @@ for (const fighter of ['zane-corvo', 'velvet-reply']) {
     if (process.env.PACK04_LIVE_THROW === '1') {
       await page.keyboard.press(facing === 1 ? 'ArrowLeft' : 'ArrowRight', { delay: 45 });
       await expect(page.getByText('1 / 3 successful repetitions', { exact: true })).toBeVisible();
+      if (process.env.PACK04_HOSTED_VISUAL === '1') {
+        await expect.poll(async () => (await pair()).holder?.state).toBe('IDLE');
+        return;
+      }
       await expect.poll(async () => {
         const { victim, victimArt } = await pair();
         if (!victim || victimArt?.clip !== 'idle' || !victimArt.bodyVisible) return null;

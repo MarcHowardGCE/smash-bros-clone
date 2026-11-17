@@ -303,6 +303,12 @@ for (const fighter of ['zane-corvo', 'velvet-reply']) {
         await page.keyboard.press('F7');
       }
       expect((await art()).find(p => p.slot === 1)?.clip).toBe('grabbed');
+      const capture = async (phase: string) => {
+        if (!realtime && facing === -1) {
+          await page.screenshot({ path: test.info().outputPath(move + '-' + phase + '.png') });
+        }
+      };
+      await capture('hold');
       await page.keyboard.down(key);
       await page.keyboard.press('F7');
       await page.keyboard.up(key);
@@ -324,6 +330,7 @@ for (const fighter of ['zane-corvo', 'velvet-reply']) {
         if (frames.find(p => p.slot === 1)?.clip !== 'throw_victim') continue;
         expect(frames.find(p => p.slot === 0)?.clip).toBe(move.toLowerCase());
         expect(frames.every(p => p.bodyVisible)).toBe(true);
+        await capture('release');
         released = true;
         break;
       }
@@ -333,6 +340,7 @@ for (const fighter of ['zane-corvo', 'velvet-reply']) {
         await page.keyboard.press('F7');
         const victim = (await art()).find(p => p.slot === 1);
         expect(victim?.bodyVisible).toBe(true);
+        if (tick < 4 && (move === 'UP_THROW' || move === 'FORWARD_THROW')) await capture('release-plus-' + (tick + 1));
         if (move === "DOWN_THROW" && victim?.clip !== "throw_victim") {
           expect(victim?.clip).toMatch(/^(hit_.*|knockdown_.*|prone_.*|idle|air_fall_loop|tumble|reaction)$/);
           reachedTumblePose = true;
@@ -344,6 +352,7 @@ for (const fighter of ['zane-corvo', 'velvet-reply']) {
         break;
       }
       expect(reachedTumblePose, move + ' facing ' + facing).toBe(true);
+      await capture('separation');
     }
   });
 }
@@ -600,10 +609,37 @@ for (const fighter of ['zane-corvo', 'velvet-reply']) {
     await page.locator('#practice-free').click();
     const clip = () => page.evaluate(() => window.__smashDebug?.getArtState?.().players.find(p => p.slot === 0)?.clip);
     await expect.poll(clip).toBe('idle');
-    for (const [key, kind] of [['Digit1', 'up'], ['Digit2', 'side'], ['Digit3', 'down']]) {
-      await page.keyboard.press(key);
-      await expect.poll(clip).toBe('taunt_' + kind);
-      await expect.poll(clip).toBe('idle');
+    for (const facing of [-1, 1]) {
+      await page.keyboard.press(facing === -1 ? 'ArrowLeft' : 'ArrowRight', { delay: 50 });
+      await expect.poll(() => page.evaluate(() => window.__smashDebug?.getArtState?.().players.find(p => p.slot === 0)))
+        .toMatchObject({ clip: 'idle', bodyFacing: facing });
+      for (const [key, kind] of [['Digit1', 'up'], ['Digit2', 'side'], ['Digit3', 'down']]) {
+        await page.keyboard.press(key);
+        const playback = await page.evaluate(async ({ expected, facing }) => {
+          const crops = new Set<string>();
+          let maxFloorError = 0;
+          let aligned = true;
+          const deadline = performance.now() + 2000;
+          while (performance.now() < deadline) {
+            const debug = window.__smashDebug!;
+            const frame = debug.getArtState?.().players.find(p => p.slot === 0);
+            if (frame?.clip === 'idle' && crops.size) {
+              return { crops: crops.size, aligned, maxFloorError, visible: frame.bodyVisible && frame.bodyFacing === facing };
+            }
+            if (frame?.clip === expected) {
+              const player = debug.getSnapshot().players['local-p1']!;
+              aligned &&= frame.bodyVisible && frame.bodyFacing === facing;
+              maxFloorError = Math.max(maxFloorError, Math.abs(frame.bodyY - player.y - 28));
+              if (frame.frameRect) crops.add(frame.frameRect);
+            }
+            await new Promise(requestAnimationFrame);
+          }
+          return { crops: crops.size, aligned, maxFloorError, visible: false };
+        }, { expected: 'taunt_' + kind, facing });
+        expect(playback.crops, kind + ' renders distinct poses').toBeGreaterThan(1);
+        expect(playback).toMatchObject({ visible: true, aligned: true });
+        expect(playback.maxFloorError).toBeCloseTo(0);
+      }
     }
     await page.locator('.dojo-launch summary').click();
     for (const kind of ['screen', 'star']) {
@@ -802,6 +838,7 @@ for (const attacker of ['zane-corvo', 'velvet-reply']) {
         expect(sprites?.find(p => p.slot === 1)).toMatchObject({
           clip: ground ? 'footstool_ground_victim' : 'footstool_air_victim', bodyFacing: -facing, bodyVisible: true,
         });
+        await page.screenshot({ path: test.info().outputPath(['footstool', ground ? 'ground' : 'air', facing].join('-') + '.png') });
         const playback = page.evaluate(async () => {
           const frames = [];
           for (let frame = 0; frame < 32; frame++) {
@@ -1238,6 +1275,46 @@ for (const fighter of ['zane-corvo', 'velvet-reply']) {
           await page.keyboard.press('F7');
           await page.keyboard.up(key);
           expect(await art()).toMatchObject({ clip: prefix + '_' + orientation, bodyVisible: true, bodyFacing: facing });
+          if (prefix === 'floor_attack') {
+            const poses = new Set<string>();
+            let returnedToIdle = false;
+            for (let tick = 0; tick < 40; tick++) {
+              const frame = await page.evaluate(() => {
+                const debug = window.__smashDebug!;
+                const player = debug.getSnapshot().players['local-p1']!;
+                const sprite = debug.getArtState!().players.find(entry => entry.slot === 0)!;
+                return { ...sprite, floorOffset: sprite.bodyY - player.y };
+              });
+              if (frame.clip === 'idle') {
+                returnedToIdle = true;
+                break;
+              }
+              expect(frame.clip).toBe('floor_attack_' + orientation);
+              expect(frame.bodyVisible).toBe(true);
+              expect(frame.floorOffset).toBeCloseTo(28);
+              if (frame.frameRect && !poses.has(frame.frameRect)) {
+                await page.screenshot({ path: test.info().outputPath(['floor', facing, orientation, tick].join('_') + '.png') });
+              }
+              if (frame.frameRect) poses.add(frame.frameRect);
+              await page.keyboard.press('F7');
+            }
+            expect(returnedToIdle).toBe(true);
+            // The opening two ticks reuse the current prone crop before the attack poses.
+            expect(poses.size).toBe(6);
+
+            await page.evaluate(({ facing, orientation }) => {
+              const player = window.__smashDebug!.getSnapshot().players['local-p1']!;
+              Object.assign(player, { facing, state: 'HARD_LANDING', stateFrame: 18,
+                floorOrientation: orientation, isGrounded: true, vx: 0, vy: 0 });
+            }, { facing, orientation });
+            await page.keyboard.down(key);
+            await page.keyboard.press('F7');
+            await page.keyboard.up(key);
+            expect(await art()).toMatchObject({ clip: prefix + '_' + orientation, bodyVisible: true });
+            await page.keyboard.press('F6');
+            await expect.poll(art).toMatchObject({ clip: 'idle', bodyVisible: true, bodyFacing: facing });
+            await page.keyboard.press('F6');
+          }
         }
       }
     }
@@ -1313,6 +1390,7 @@ for (const fighter of ['zane-corvo', 'velvet-reply']) {
     await expect.poll(art).toMatchObject({ character: fighter, clip: 'idle' });
     await page.keyboard.press('F3');
     await page.keyboard.press('F6');
+    await page.addStyleTag({ content: '.dojo-panel { visibility: hidden }' });
     for (const clip of ['tech_neutral', 'tech_roll', 'wall_tech', 'wall_tech_jump', 'ceiling_tech']) for (const facing of [-1, 1]) {
       await page.keyboard.press('r');
       await page.keyboard.press('F7');
@@ -1329,6 +1407,47 @@ for (const fighter of ['zane-corvo', 'velvet-reply']) {
       if (direction) await page.keyboard.up(direction);
       expect(await art(), clip + ' ' + facing).toMatchObject({ clip, bodyVisible: true });
       await page.screenshot({ path: test.info().outputPath(clip + '-' + facing + '.png') });
+
+      if (clip === 'wall_tech' || clip === 'wall_tech_jump') {
+        const poses = new Set<string>();
+        let exitClip: string | undefined;
+        for (let tick = 0; tick < 30; tick++) {
+          const frame = await art();
+          expect(frame?.bodyVisible).toBe(true);
+          if (tick <= 12 || frame?.clip !== clip) {
+            await page.screenshot({ path: test.info().outputPath([clip, facing, tick].join('_') + '.png') });
+          }
+          if (frame?.clip !== clip) {
+            expect(frame?.clip).toMatch(/^(jump|air|fall|ledge_catch)/);
+            exitClip = frame?.clip;
+            break;
+          }
+          if (frame.frameRect) poses.add(frame.frameRect);
+          await page.keyboard.press('F7');
+        }
+        expect(exitClip).toBeDefined();
+        expect(poses.size).toBeGreaterThan(exitClip === "ledge_catch" ? 0 : 1);
+
+        await page.keyboard.press('r');
+        await page.keyboard.press('F7');
+        await page.evaluate(({ facing, clip }) => {
+          const debug = window.__smashDebug as typeof window.__smashDebug & { testTechLaunch(facing: number, clip: string): void };
+          debug.testTechLaunch(facing, clip);
+        }, { facing, clip });
+        if (direction) await page.keyboard.down(direction);
+        await page.keyboard.down('ShiftLeft');
+        await page.keyboard.press('F7');
+        await page.keyboard.up('ShiftLeft');
+        for (let tick = 0; tick < 25 && (await art())?.clip !== clip; tick++) await page.keyboard.press('F7');
+        if (direction) await page.keyboard.up(direction);
+        expect(await art()).toMatchObject({ clip, bodyVisible: true });
+        await page.keyboard.press('F6');
+        await expect.poll(async () => {
+          const frame = await art();
+          return frame?.bodyVisible && frame.clip !== clip;
+        }).toBe(true);
+        await page.keyboard.press('F6');
+      }
     }
   });
 }
@@ -1452,6 +1571,7 @@ for (const fighter of ['zane-corvo', 'velvet-reply']) {
           expect(holder?.clip).toBe('pummel');
           expect(offset.grounded).toBe(true);
           expect(offset.y).toBeCloseTo(28);
+          if (!contact) await page.screenshot({ path: test.info().outputPath('pummel-' + facing + '.png') });
           contact = true;
         }
         if (contact && holder?.clip === 'grab_hold' && victim?.clip === 'grabbed') break;
@@ -1460,6 +1580,19 @@ for (const fighter of ['zane-corvo', 'velvet-reply']) {
       await test.info().attach('pummel-offset-' + facing, { body: JSON.stringify(offsets), contentType: 'application/json' });
       expect(contact).toBe(true);
       expect((await pair()).map(p => p?.clip)).toEqual(['grab_hold', 'grabbed']);
+
+      await tap('KeyZ');
+      const playback = page.waitForFunction(() => {
+        const sprites = window.__smashDebug?.getArtState?.().players;
+        return sprites?.some(p => p.slot === 0 && p.clip === 'pummel' && p.bodyVisible) &&
+          sprites.some(p => p.slot === 1 && p.clip === 'pummel_victim' && p.bodyVisible);
+      });
+      await page.keyboard.press('F6');
+      await playback;
+      await expect.poll(async () => (await pair()).map(p => [p?.clip, p?.bodyVisible])).toEqual([
+        ['grab_hold', true], ['grabbed', true],
+      ]);
+      await page.keyboard.press('F6');
     }
   });
 }
@@ -1555,11 +1688,11 @@ test('Pack 04 airborne hit and tumble recovery play in the live Dojo', async ({ 
 
 
 for (const fighter of ['zane-corvo', 'velvet-reply']) {
-  test(fighter + ' zero-percent back throw settles in Guided Dojo', async ({ page }) => {
+  for (const mirrored of [false, true]) test(fighter + ' zero-percent back throw settles in Guided Dojo' + (mirrored ? ' mirrored' : ''), async ({ page }) => {
     const dummy = fighter === 'zane-corvo' ? 'velvet-reply' : 'zane-corvo';
     await page.addInitScript(config => localStorage.setItem('eth:dojo:setup:v1', JSON.stringify(config)),
       { fighter, dummy, lessonId: 'back-throw', stageId: 'stage1', dummyMode: 'still' });
-    await page.goto('/');
+    await page.goto(process.env.PACK04_TEST_URL ?? '/');
     for (const id of ['splash-screen', 'practice-btn', 'dojo-start-lesson']) {
       await page.locator('#' + id).click();
     }
@@ -1572,24 +1705,70 @@ for (const fighter of ['zane-corvo', 'velvet-reply']) {
       return { holder, victim, victimArt };
     });
     await expect.poll(async () => (await pair()).victim?.percent).toBe(0);
+    if (mirrored) {
+      await page.evaluate(() => {
+        const { players } = window.__smashDebug!.getSnapshot();
+        const holder = players['local-p1']!;
+        const victim = players['local-p2']!;
+        victim.x = 2 * holder.x - victim.x;
+        holder.facing = holder.facing === 1 ? -1 : 1;
+        victim.facing = victim.facing === 1 ? -1 : 1;
+      });
+    }
     await page.keyboard.press('c', { delay: 45 });
     await expect.poll(async () => (await pair()).holder?.grabbedPlayerId).toBe('local-p2');
     const facing = (await pair()).holder!.facing;
+
+    if (process.env.PACK04_LIVE_THROW === '1') {
+      await page.keyboard.press(facing === 1 ? 'ArrowLeft' : 'ArrowRight', { delay: 45 });
+      await expect(page.getByText('1 / 3 successful repetitions', { exact: true })).toBeVisible();
+      await expect.poll(async () => {
+        const { victim, victimArt } = await pair();
+        if (!victim || victimArt?.clip !== 'idle' || !victimArt.bodyVisible) return null;
+        return Math.abs(victimArt.bodyX - victim.x);
+      }).toBeLessThan(0.1);
+      return;
+    }
     await page.keyboard.press('F6');
     const direction = facing === 1 ? 'ArrowLeft' : 'ArrowRight';
     await page.keyboard.down(direction);
     await page.keyboard.press('F7');
     await page.keyboard.up(direction);
+    let releaseTick: number | undefined;
+    const releaseTrace = [];
+    const capture = (phase: string) => page.screenshot({ path: test.info().outputPath(phase + '.png') });
     let checkedLastHitstun = false;
     for (let tick = 0; tick < 35; tick++) {
       await page.keyboard.press('F7');
-      const { victim, victimArt } = await pair();
+      const { holder, victim, victimArt } = await pair();
+      if (releaseTick === undefined && victimArt?.clip === 'throw_victim') {
+        releaseTick = tick;
+        await capture('zero-percent-release');
+      }
+      if (releaseTick !== undefined && tick === releaseTick + 4) await capture('zero-percent-release-plus-4');
+      if (releaseTick !== undefined && tick - releaseTick <= 4 && holder && victim && victimArt) {
+        releaseTrace.push({
+          tick: tick - releaseTick,
+          crop: victimArt.frameRect,
+          gameplayGap: Number(((victim.x - holder.x) * facing).toFixed(2)),
+          artOffsetX: Number(((victimArt.bodyX - victim.x) * facing).toFixed(2)),
+          artOffsetY: Number((victimArt.bodyY - victim.y).toFixed(2)),
+        });
+      }
       if (victim?.hitstunFramesRemaining === 1 && victimArt?.clip === 'throw_victim') {
         expect(victimArt.bodyX).toBeCloseTo(victim.x);
         checkedLastHitstun = true;
       }
     }
     expect(checkedLastHitstun).toBe(true);
+    expect(releaseTrace).toHaveLength(5);
+    expect(Math.abs(releaseTrace[0]!.artOffsetX)).toBeGreaterThan(40);
+    expect(Math.abs(releaseTrace[4]!.artOffsetX)).toBeLessThan(10);
+    await test.info().attach('release-trace', {
+      body: JSON.stringify(releaseTrace, null, 2),
+      contentType: 'application/json',
+    });
+    console.log(fighter, mirrored, JSON.stringify(releaseTrace));
     await expect(page.getByText('1 / 3 successful repetitions', { exact: true })).toBeVisible();
     await expect.poll(async () => {
       const { holder, victim, victimArt } = await pair();
@@ -1598,6 +1777,7 @@ for (const fighter of ['zane-corvo', 'velvet-reply']) {
     }).toBeGreaterThan(0);
     const { holder, victim, victimArt } = await pair();
     expect(victimArt!.bodyX).toBeCloseTo(victim!.x);
+    await capture('zero-percent-idle');
     console.log(fighter + ' front gap after return to idle:', Math.abs(victim!.x - holder!.x).toFixed(2));
   });
 }

@@ -3097,3 +3097,288 @@ idle spacing. The low-percent silhouettes still overlap at idle,
 consistent with the unchanged gameplay positions. These cases used
 a local server and the default facing. This pass did not deploy the
 renderer change.
+
+#### Hosted presentation-only back-throw retest
+
+On release 6b38cdd, both Pack 04 fighters landed a zero-percent
+back throw at normal speed in the public Guided Dojo and earned
+lesson credit. Sampled guest-free recordings showed visible release
+and idle poses. Close idle overlap remains at the stock gameplay
+spacing. The exact final-hitstun sprite anchor was verified by
+the stepped local regression. This hosted sample used the default
+facing against the other Pack 04 fighter.
+
+#### Pack 04 ledge and floor recovery pass
+
+Four local Chromium Dojo tests passed with video enabled. Both
+fighters exercised ledge options at both stage edges and floor
+recovery in both facings and knockdown orientations. Sampled footage
+showed ledge catch, recovery and prone art. The floor matrix steps
+to the selected cue and does not play the full attack at normal
+speed. Reviewed samples do not establish exact foot or hand contact.
+No art changes were made. Full-speed floor attacks, wall recovery,
+taunts and opposite-facing paired review remain open.
+
+#### Pack 04 floor attack playback trace
+
+Six live Dojo browser checks passed at device pixel ratios 1, 2 and 3.
+For Zane and Velvet, the test stepped each face-up and face-down floor
+attack in both facings through the return to idle. It checked sprite
+visibility, the 28-unit floor anchor offset and six distinct rendered
+crops per case. The opening two ticks reuse the current prone crop,
+so the number of rendered crops differs from the seven authored slots.
+Normal-speed visual review, including exact foot contact, remains open.
+
+The floor recovery test also replayed each floor attack on the live
+Dojo clock after its first tick. Both Chromium tests passed, covering
+eight cases across the two fighters, two facings and two orientations.
+Every case returned to visible idle in the expected facing. Visual
+verification of exact footwear contact and wall recovery remain open.
+
+#### Pack 04 wall recovery handoff
+
+Two local Chromium Dojo checks passed. Zane and Velvet each performed
+wall tech and wall-tech jump on both wall sides. The test stepped from
+contact through the first exit clip and verified sprite visibility.
+The nearby ledge can interrupt after one displayed wall-tech pose.
+The check requires multiple poses when the exit is into airborne
+movement. Exact contact placement and normal-speed cadence remain
+open. The next pass should review uninterrupted wall recovery and
+the wall-to-ledge transition at gameplay speed.
+
+The live-clock replay passed for both fighters, both sides and both
+wall tech variants (eight cases). After stepping to the first wall
+tech pose, the test resumed the Dojo clock and verified visible art
+after leaving the clip. The stepped trace still identifies the first
+exit. Exact hand placement and visual cadence at gameplay speed
+remain open alongside taunts and opposite-facing paired playback.
+
+#### Pack 04 wall-contact capture review
+
+The first-tick wall-tech screenshots for Zane and Velvet show the
+collision outline on the left, but the fighter art is not discernible.
+The right-wall wall-tech-jump screenshots place the contact behind
+the Dojo panel. These captures cannot establish hand placement.
+For the next visual pass, record consecutive frames with the Dojo
+panel out of the playfield and verify that the capture includes a
+discernible fighter silhouette at each wall before reviewing cadence.
+
+The Dojo capture now hides the panel in the test browser and saves
+consecutive wall-tech frames plus the first exit frame on both sides.
+Both Chromium checks passed. In the sampled right-wall jump at tick 6,
+Zane's brace is visible with a gap from the platform edge, and Velvet
+is faint at the corresponding tick. These samples show separation but
+do not establish a hand-placement error on the actual impact tick.
+Next, compare the first discernible brace against the collision line
+before changing either sprite anchor.
+
+The early right-wall tech-jump captures show both fighters bracing
+with the wall-side boot at the collision edge within a few screen
+pixels. Their raised palms sit above the platform top, so the boot
+is the useful contact landmark for these poses. The earlier tick-six
+gap is consistent with separation. No anchor change was made from
+these samples. Left-wall contact and the plain wall-tech brace still
+need equivalent visual confirmation.
+
+Reviewed the remaining early contact captures for both fighters.
+At tick 2 the left-wall plain tech and tech jump show the wall-side
+boot at the vertical edge within a few screen pixels. The right-wall
+plain tech shows the same alignment in Zane's readable tick-2 frame
+and Velvet's faint early frames. This closes the sampled brace
+alignment check with no anchor adjustment. Next is gameplay-speed
+taunt playback and return to idle for both fighters.
+
+#### Pack 04 live taunt playback
+
+Both Chromium Dojo presentation tests passed. At normal speed, each
+up, side and down taunt displayed multiple distinct visible atlas
+crops and returned to visible idle for Zane and Velvet. Screen and
+Star KO preview selection also passed in the same run. This automated
+pass used the default facing and sampled rendered frames. It did not
+assess pose alignment by eye. Next is opposite-facing paired playback.
+
+#### Pack 04 opposite-facing paired playback
+
+Eight local Chromium Dojo tests passed. The throw suite covered all
+four directions with each fighter as the thrower in both facings,
+frame by frame and at 1x. The pummel suite verified the holder and
+victim reaction and return to the hold in both facings. Both paired
+footstool tests also passed. This run verified the automated playback
+assertions. Next is visual review of grip, contact and separation in
+the mirrored sequences.
+
+The mirrored throw regression now saves hold, first release and
+separation checkpoints for all eight thrower/direction combinations.
+Both Chromium tests passed and produced 24 captures. Visual inspection
+of all eight first-release frames flagged substantial torso overlap
+on both up throws and Velvet's boot overlapping the platform lip
+when Zane releases forward throw. The first release is sampled while
+the launch readout still shows zero displacement. Check adjacent
+ticks before changing anchors to distinguish release-pose placement
+from clipping that persists during launch. Visual pummel and
+footstool review remains open.
+
+Both mirrored throw regressions passed with four additional
+post-release frames for each forward and up throw. At 200% partner
+damage, the fourth tick shows clear separation on both forward
+throws and no platform overlap under Velvet's boot. Both up throws
+have cleared the torso overlap by that tick, with Velvet's boot
+still near Zane's head. This narrows the flagged overlap to the
+release handoff in these cases. Lower-percent release placement
+and mirrored pummel and footstool visual checks remain open.
+
+The 0% variant of the mirrored Free Practice fixture reached the grab
+hold for both fighters but failed to observe forward-throw release
+in its 24-tick trace. This happened before mirrored capture, so it
+does not establish a gameplay regression or low-percent visual
+result. The temporary variant was removed. Next, use the existing
+Guided Dojo zero-percent release test as the fixture for the visual
+comparison.
+
+The 0% Guided Dojo back-throw tests passed with both fighters as the
+thrower in the lesson's default facing. Each earned lesson credit
+and captured release, release plus four ticks, and idle. Both
+four-tick captures still show the victim crossing the thrower's
+lower torso. The victim sprite converges to its gameplay position
+by the final hitstun tick, with an idle center gap of 13.50 units
+for Zane throwing and 16.16 for Velvet throwing. Next, sample the
+mirrored 0% back throw and compare the overlap before changing
+release alignment.
+
+All four 0% Guided Dojo cases passed across both throwers and facings.
+The mirrored release-plus-four captures reproduce the victim crossing
+the thrower's lower torso. Final hitstun aligns the victim sprite to
+its gameplay position, and the idle gaps match the default facing
+(13.50 units for Zane throwing and 16.16 for Velvet throwing).
+Next, tune the early back-throw release presentation symmetrically
+and retest all four cases.
+
+An eight-tick attachment blend was tested against the existing
+twelve-tick blend. All eight Chromium throw checks passed with the
+trial, but the mirrored Velvet-throwing capture still showed torso
+overlap at release plus four. The trial was reverted. Next, measure
+the victim crop and sprite anchor separately on the early release
+frames before choosing a placement correction.
+
+All four Guided Dojo cases passed with per-tick crop and anchor
+diagnostics. Each victim uses one crop across release ticks 0–4,
+and the facing-normalized positions match across both facings.
+At tick four, the gameplay gap is 29.96 units with Zane throwing
+and 30.51 with Velvet throwing. The renderer subtracts 30.15 and
+29.02 units respectively, leaving the victim anchor within 1.49
+units of the thrower's center in either case. The overlap therefore
+tracks the horizontal attachment offset. Next, revise the early
+horizontal release placement while preserving the initial grip
+and final hitstun alignment.
+
+Pack 04 back-throw victim art now blends out the horizontal grip
+offset over five ticks. All eight local Chromium throw tests passed.
+At 0%, both facings preserve the first release anchor and reduce
+the tick-four horizontal offset from about 29–30 to about 9 units.
+Final hitstun alignment and idle gaps match the previous trace.
+This is a renderer adjustment. Visual cadence and mirrored pummel
+and footstool contact checks remain open.
+
+The 0% Guided Dojo back throw also passed at 1x for both fighters
+and both facings using PACK04_LIVE_THROW=1. Each throw earned
+lesson credit and the victim returned to visible idle with less
+than 0.1 units of horizontal sprite offset. The initial local
+server startup timed out and the retry passed all four cases.
+This check verifies completion at 1x. A visual cadence review
+and mirrored pummel and footstool contact checks remain open.
+
+Reviewed all four revised release-plus-four captures at 0%.
+The victim's head and shoulders clear the thrower's torso in
+both facings for both fighters. The lower silhouettes still
+overlap near the thrower's legs. All four stepped Guided Dojo
+tests passed. This visual result covers the sampled checkpoint.
+Next is mirrored pummel and footstool contact review.
+
+#### Pack 04 mirrored pummel and footstool contact
+
+Four Chromium Dojo tests passed, covering both fighters and facings.
+The mirrored contact captures show each pummel reaching the partner
+as they recoil, and each footstool boot meeting the partner's head
+in the grounded and airborne cases. The pummel test verified the
+return to hold. The 1x footstool trace verified that the attacker
+sprite returned to its standard anchor by age eight. The visual
+review sampled contact frames. Next is reviewing paired separation
+and the return to hold in motion.
+
+A second pummel in the same hold now runs at 1x in the Dojo
+regression. Both fighters and facings displayed the synchronized
+strike and victim reaction, then returned to visible hold art.
+The paired footstool checks also passed for grounded and airborne
+partners in both facings. Four Chromium tests passed. This run
+checks the rendered states and anchor recovery. Motion footage
+review remains open.
+
+Recorded four Chromium Dojo videos with PACK04_RECORD_VIDEO=1.
+Both pummel and both footstool tests passed during recording.
+Each recording includes default and mirrored playback. The pummel
+tests include the 1x return to hold and the footstool tests include
+1x separation from grounded and airborne partners. Videos are
+generated under test-results. Motion review is pending.
+
+Reviewed sampled frames from all four paired match recordings at
+140 ms intervals. Both pummels show recoil followed by a grounded
+return to the hold in either facing. Both footstools show the
+attacker rising while the grounded partner recovers in place or
+the airborne partner drops. No obvious snap was visible in the
+sampled frames. This sampling can miss a single-tick discontinuity.
+Next, consolidate the Pack 04 visual review and list only the
+remaining release checks.
+
+### Pack 04 remaining release checks
+
+Both fighters are deployed and meet the pose-count targets for the
+139 shared clips. The hosted cold-load, artwork retry and delayed
+portrait checks passed on the recorded builds. Local evidence now
+covers wall brace alignment on both edges, all three taunts at 1x
+in the default facing, floor attack playback through idle, and
+paired throw, pummel and footstool playback in both facings.
+
+- Floor-attack and taunt alignment reviewed locally in both facings.
+- Verify the back-throw horizontal release blend on the public
+  revision that contains it. Use the 0% Guided Dojo back-throw
+  lesson with each fighter in both facings.
+- Finish live visual signoff for the brief paired and recovery
+  transitions. Prior recordings were sampled and can miss
+  single-tick discontinuities.
+
+#### Pack 04 floor-attack contact review
+
+Both local Chromium floor recovery tests passed. Reviewed 48 pose
+captures covering both fighters, both facings and both knockdown
+orientations. The support foot or bent leg stays at the same
+platform baseline through the sweep, crouch and standing recovery.
+The thin gap under standing footwear is also visible under the
+idle partner. No clear floor penetration or fighter-specific
+anchor jump was visible in the sampled poses, so no renderer
+adjustment was made. Next is taunt alignment in both facings.
+
+#### Pack 04 taunt alignment in both facings
+
+Two local Chromium presentation tests passed. The up, side and down
+taunts played at 1x for both fighters in both facings, for 12 cases.
+Sampled taunt frames used multiple distinct visible crops, preserved
+the expected facing and held the 28-unit vertical sprite anchor.
+Both fighters returned to visible idle in the same facing. This
+verified renderer alignment numerically. Exact contact of the
+drawn footwear has not been visually reviewed for these taunts.
+
+Recorded both presentation tests at 1x and reviewed frames sampled
+every 160 ms. The visible taunt poses in both facings keep their
+supporting footwear at the same baseline as the idle partner.
+No visible floor penetration or vertical snap was found in the
+samples. Both tests passed all 12 taunt cases. The next release
+check is the revised back throw on the public build.
+
+#### Pack 04 hosted back-throw revision check
+
+On November 17, Render reported commit 6b38cdd from /healthz.
+That commit includes the final hitstun alignment fix. The five-tick
+horizontal release blend is still a local working-tree change.
+Hosted verification of the blend remains pending deployment.
+After deployment, verify the served commit and run the four 0%
+Guided Dojo cases across both fighters and facings.

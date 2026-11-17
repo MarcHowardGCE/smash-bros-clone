@@ -487,7 +487,11 @@ export class FullBodyPilot {
    const weight = isPack04FighterId(this.artId) && this.reaction?.move === 'BACK_THROW' && remaining !== undefined
      ? Math.min(attachmentWeight, Math.max(0, (remaining - 1) / 4))
      : attachmentWeight;
-   this.sprite.position.x=this.lastContact[0]*this.lastContactFacing*facing*weight;
+   // Keep the release grip on its first tick, then clear the horizontal overlap.
+   const horizontalWeight = isPack04FighterId(this.artId) && this.reaction?.move === 'BACK_THROW'
+     ? Math.min(weight, Math.max(0, 1 - t / 5))
+     : weight;
+   this.sprite.position.x=this.lastContact[0]*this.lastContactFacing*facing*horizontalWeight;
    this.sprite.position.y+=this.lastContact[1]*weight;
   }else {
    this.lastContact=[0,0];

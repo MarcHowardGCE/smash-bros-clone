@@ -5,6 +5,7 @@ export default defineConfig({
   workers: 1,
   fullyParallel: false,
   use: {
+    video: process.env.PACK04_RECORD_VIDEO === '1' ? 'on' : 'off',
     baseURL: 'http://localhost:5173',
     headless: true,
     browserName: 'chromium',

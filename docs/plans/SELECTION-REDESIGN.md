@@ -1,6 +1,6 @@
 # Fighter and World Select redesign
 
-Status: Planned. First deliverable is an in-game Fighter Select prototype with existing art.
+Status: Implemented and deployed. Quality-96 fighter atlases are the verified Bluehost release default. Deployed spoken-output and contrast verification remain open for the redesigned selectors.
 
 ## Visual direction
 
@@ -296,5 +296,75 @@ The Bluehost workflow now selects quality 96 for push and pull
 request builds. Manual runs default to the same setting and can
 uncheck atlas_quality_96 to publish the original encodes through
 the existing release gate. Local builds still require the opt-in.
-The default workflow change is verified locally and awaits its
-first automatic release.
+The first automatic release passed and published d414a39 after a stalled test run was cancelled and retried.
+
+#### Automatic quality-96 release signoff
+
+The retried automatic run 44120387330 passed client checks and
+publication. Bluehost served d414a39 and listed all 26 quality-96
+pages across the three affected packs. At 8 Mbps, the cold Zane
+versus Velvet online match reached play 15.25 s after arena
+selection. The guest interrupted-atlas alert appeared in 48 ms,
+and retrying the same lineup reached play 15.33 s after arena
+reselection. Both two-client checks passed. These are single runs.
+
+### Current remaining selection signoff
+
+The selector implementation and quality-96 loading release are
+deployed. Hosted keyboard, reduced-motion, multiplayer layout and
+artwork retry evidence is recorded above. The next outstanding
+selector checks are deployed spoken announcements and focus
+restoration with Narrator, followed by contrast on the redesigned
+fighter and world screens. Use the current Bluehost release for
+those checks and record their scope separately from the earlier
+menu accessibility pass.
+
+#### Selector accessibility implementation preflight
+
+On November 17, ten local selector tests passed across stage
+selection, fighter interactions and roster integration. The world
+selector names each tile, provides a preview status region, and
+moves focus to the selected tile on keyboard navigation. Fighter
+comparison values use a polite live region. These are implementation
+checks. They do not verify actual spoken output or contrast over
+the deployed artwork. Next, inspect the public browser accessibility
+tree and rendered colors before the native Narrator pass.
+
+#### Deployed selector accessibility tree and color sample
+
+On November 17, Chromium on the public Bluehost client exposed
+the fighter comparison as a named table with column and row
+headers. World Select exposed all ten named worlds, Random and
+the layout description. Keyboard Right moved focus from Neighborhood
+to Cathedral. The preview status stayed empty during that keyboard
+move, with the focused button providing the world name.
+
+Sampled computed panel colors gave contrast ratios of 10.25:1 for
+gold comparison text, 14.36:1 for cream stat values and about 9.95:1
+for story text against the underlying dark story panel color.
+These calculations cover sampled panel text, not image pixels,
+focus outlines, all states or actual spoken output. Next, inspect
+focus restoration on Back and rapid navigation announcements
+before the native Narrator check.
+
+#### Deployed focus restoration check
+
+On November 17, World Select focused its first named world after
+opening. Repeated keyboard Right navigation kept the focused world
+and preview title consistent. Escape restored focus to Fighter
+Select's Ready button, and backing out again restored Choose
+Fighters in local setup.
+
+Initial Fighter Select entry left browser focus on BODY. A keyboard
+Right input also left browser focus there, despite the visual
+selection controls being present. This needs a focused entry control
+before native Narrator signoff. Next, set initial local Fighter
+Select focus to the selected fighter tile and verify keyboard
+navigation updates the focused tile as well as the visual choice.
+
+Local Fighter Select now focuses the first roster tile on entry,
+or the existing choice when reopening. Arrow browsing focuses
+the selected tile. Enter on a roster tile still confirms the
+keyboard seat. Ten focused interaction and integration tests
+passed, including a regression for entry focus, browsing and
+Enter confirmation. Deployment and native Narrator review remain.

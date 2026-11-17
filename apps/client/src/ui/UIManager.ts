@@ -632,7 +632,7 @@ export class UIManager {
       }
 
       if (e.code === 'KeyI') { e.preventDefault(); comparison.cycle(); return; }
-      if(e.key==='Enter' && (e.target as HTMLElement)?.closest?.('button'))return;
+      if(e.key==='Enter' && (e.target as HTMLElement)?.closest?.('button:not(.fighter-option)'))return;
       // Back navigation via Escape
       if(e.key==='Escape' && unlockSlot(0)){e.preventDefault();return;}
       if (e.key === 'Escape' && onBack) {
@@ -662,6 +662,7 @@ export class UIManager {
           const selectedFighter = fighters[selectedFighterIndex[slotIndex]];
           if (selectedFighter) {
             updateIdentity(slotIndex,selectedFighter);
+            options[selectedFighterIndex[slotIndex]!]?.focus({ preventScroll: true });
           }
         }
         return;
@@ -669,6 +670,7 @@ export class UIManager {
 
       for (let i = 0; i < playerCount; i++) {
         if (!confirmed[i] && CONFIRM_KEYS[i]?.includes(e.code)) {
+          e.preventDefault();
           if (applySelectedChoiceForSlot(i)) {
             confirmSlot(i);
           }
@@ -678,6 +680,7 @@ export class UIManager {
     };
 
     window.addEventListener('keydown', onKey);
+    options[Math.max(0, selectedFighterIndex[0] ?? 0)]?.focus({ preventScroll: true });
 
     // Gamepad polling for confirm (A) and back (B)
     if (typeof requestAnimationFrame !== 'undefined' && this._gamepadPoller) {

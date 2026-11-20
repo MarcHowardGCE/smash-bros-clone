@@ -2,7 +2,7 @@
 
 This index records where each workstream stands and what to do next. Detailed decisions, measurements, and test evidence belong in the linked documents. Older next-step notes are historical when superseded by this index.
 
-**Current movement checkpoint — November 20:** Local release preflight complete. Fixed late throw cues covering predicted takeoff;40 fresh-action cases/80 client checks passed under input delay and snapshot jitter. All package checks passed (final client1,220), production build/staging succeeded, ten-fighter production roster and online retry/reconnect smoke passed. Next: reviewed commit/CI, coordinated deployment, then hosted revision and smoke verification. Broader parity work remains separate. [Release checklist and exact evidence](ANIMATION-RELEASE-2026-11-20.md). Older checkpoints are historical.
+**Current movement checkpoint — November 20:** Released c6421bf to Render and Bluehost. Clean CI passed3,193 tests with14 existing skips; both hosted revision markers match. Eighteen hosted browser tests passed, plus live/paused Stage10 reconnect, resume and confirmed leave. All ten fighter sprites loaded;8 Mbps cold load and same-lineup artwork retry passed. This release checkpoint is complete. Unsampled matchups, extended network/hardware work and provisional Ultimate timing remain separate. [Release and hosted evidence](ANIMATION-RELEASE-2026-11-20.md#release-completion). Older checkpoints are historical.
 
 | Workstream | Status | Next action and completion evidence |
 | --- | --- | --- |

@@ -3394,3 +3394,8 @@ moving outward before the fighters settle at close idle spacing.
 The idle silhouettes still overlap. These samples verify the
 visible late release and recovery on Render. Exact per-tick
 anchor verification comes from the local trace.
+
+
+### November20 movement release completion
+
+Committed and deployed the accumulated movement/atlas and confirmed-throw presentation work as c6421bf. Both hosted revision markers match; clean CI and18 hosted browser checks passed, including the ten-fighter Dojo and Pack04 loading/retry checks. Live and paused reconnect with Zane/Velvet on Stage10 also passed. [Release record](ANIMATION-RELEASE-2026-11-20.md#release-completion). Broader unsampled transition/hardware/native timing checks remain scoped follow-ups; this closes the current commit/deployment checkpoint.

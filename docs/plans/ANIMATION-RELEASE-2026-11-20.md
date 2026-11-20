@@ -2,7 +2,7 @@
 
 ## Decision
 
-The local release preflight is complete for the accumulated movement/atlas work and throw-presentation fixes. Ready to prepare the reviewed commit, then use the coordinated Render/Bluehost workflow. No commit, push or deployment was performed in this pass. This is a working-tree verification, not a clean-clone run of a new commit or hosted signoff. Historical Ultimate timings stay provisional; unrelated exhaustive matchup, packet-loss and hardware work is not silently closed.
+Released runtime commit [c6421bf](https://github.com/MarcHowardGCE/smash-bros-clone/commit/c6421bf55d04c3464b8033b1ee5ba7b618084da3) to Render and Bluehost. The clean CI build/tests and coordinated publication passed, both hosted revision markers match, and post-deploy checks passed. The local preflight below is preserved as dated evidence. Historical Ultimate timings stay provisional; unrelated exhaustive matchup, packet-loss and hardware work is not silently closed.
 
 ## Completed checks
 
@@ -35,11 +35,13 @@ Staging into OneDrive failed with EPERM on chmod for an audio file. The unchange
 
 Named root test-results-* and playwright-report-* folders, plus isolated client dist-* builds, are ignored. Their files were preserved locally. Keep required source art/provenance, runtime manifests/atlases, source/tooling/tests, current docs and curated dated evidence. Do not use an indiscriminate add-all on raw browser output. The [file inventory](../assets/reviews/release-file-inventory-2026-11-20.json) records the reviewed candidate paths; none exceed GitHub's100 MiB per-file threshold. This remains a large accumulated art/evidence checkpoint; no history was deleted or source sheets discarded to shrink it.
 
-## Remaining release steps
+## Release completion
 
-1. Stage and review the intended files, commit, and push the release revision. A fresh CI run remains authoritative for that commit.
-2. Use the coordinated release workflow to verify the matching Render revision before publishing the Bluehost client.
-3. Verify both hosted revision markers, all-pack artwork loading, two-client play, live/paused refresh, resume, confirmed leave and artwork retry. Record actual deployment timings/revision.
+1. Reviewed and committed the accumulated checkpoint as c6421bf, then pushed main. Raw browser output and isolated builds stayed excluded; source art and curated history were retained. Extra EOF blank lines in51 new test/tool files were removed before commit; no behavioral changes were made during publication.
+2. [Coordinated workflow](https://github.com/MarcHowardGCE/smash-bros-clone/actions/runs/44812948686) succeeded. The clean runner passed3,193 tests with14 existing skips, built/staged the quality96 client, verified its Render endpoint, deployed the matching backend revision, then published Bluehost. The CI server suite ran three asset-serving checks skipped in the local gate.
+3. Both the client eth-release meta tag and Render healthz report c6421bf55d04c3464b8033b1ee5ba7b618084da3. Eighteen hosted browser tests passed, plus the separate Stage10 two-client live/paused reconnect, resume and confirmed-leave scenario. This release checkpoint is complete.
+
+The follow-up documentation-only commit records these results without rebuilding or redeploying unchanged runtime files. The published runtime version remains c6421bf.
 
 Broader visual coverage, unsampled paired matchups, loss/long-stall testing and version-matched Ultimate evidence remain follow-ups; this preflight does not claim to finish them. Previously approved human signoffs are not reopened.
 
@@ -49,3 +51,12 @@ Broader visual coverage, unsampled paired matchups, loss/long-stall testing and 
 - [Movement ledger](../assets/reviews/release-movement-ledger-2026-11-20.json)
 - [Source manifests](../assets/reviews/release-manifest-validation-2026-11-20.json) and [staged manifests](../assets/reviews/release-staged-manifest-validation-2026-11-20.json)
 - [Production roster board](../assets/reviews/release-roster-production-2026-11-20.png) and [asset responses](../assets/reviews/release-production-roster-2026-11-20.json)
+
+
+## Hosted verification — November20
+
+Fresh Chromium contexts at1280×720,DPR1 verified all ten fighters in Dojo, atlas responses, local movement/pause, the legacy-query local startup, Zane/Velvet local selection, and portrait replacement with normal/reduced motion. Reviewed the [hosted roster board](../assets/reviews/release-hosted-roster-c6421bf-2026-11-20.png); all ten fighter sprites appear in the sampled jump poses. These stills do not establish exhaustive animation smoothness.
+
+At8 Mbps/80 ms latency, the cold Zane/Velvet online trial reached live play32.239 seconds after navigation and16.334 seconds after stage confirmation. The reset trial showed the artwork alert450 ms after abort, kept the match blocked, and recovered the same lineup; retry stage confirmation to live took14.283 seconds. These are single cold/reset trials, not warm-cache or statistical latency claims.
+
+A separate fresh room used Zane/Velvet on Stage10. Movement reached both clients. Live refresh recovered the same Velvet seat in1.082 seconds; paused refresh took1.517 seconds and held tick99 during the250 ms observation. Resume advanced both clients; confirmed Leave cleared the guest room/session and returned the host to results. Zero uncaught page errors. [Machine-readable CI, hosted and reconnect evidence](../assets/reviews/release-hosted-c6421bf-2026-11-20.json).

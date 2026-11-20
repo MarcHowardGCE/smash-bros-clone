@@ -187,3 +187,10 @@ Two fresh Chromium clients used the old Render homepage and an old-format
 Render room invite, selected All-Rounder on Zanda Infinity, and reached live
 play. The invite preserved the room code. Guest refresh returned to the
 live match in 1.351 seconds.
+
+
+### Animation release verification — November20,2026
+
+Runtime c6421bf55d04c3464b8033b1ee5ba7b618084da3 was published by [workflow44812948686](https://github.com/MarcHowardGCE/smash-bros-clone/actions/runs/44812948686). The clean runner passed3,193 tests with14 existing skips. Render /healthz and the Bluehost eth-release marker both matched. Eighteen hosted browser tests passed, including all ten Dojo fighters and8 Mbps interrupted-artwork retry. A separate Stage10 room passed live refresh(1.082 s), paused refresh(1.517 s), resume and confirmed leave. These are single-run measurements. [Full release scope and evidence](../plans/ANIMATION-RELEASE-2026-11-20.md#hosted-verification--november20).
+
+A subsequent documentation-only record does not change the published runtime marker; use the recorded runtime SHA when comparing client/server versions.

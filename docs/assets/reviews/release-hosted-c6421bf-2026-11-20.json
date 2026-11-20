@@ -1,0 +1,198 @@
+{
+  "commit": "c6421bf55d04c3464b8033b1ee5ba7b618084da3",
+  "workflow": "https://github.com/MarcHowardGCE/smash-bros-clone/actions/runs/44812948686",
+  "workflowConclusion": "success",
+  "clientURL": "https://play.zandarecords.com/",
+  "backendURL": "https://everybody-throws-hands.onrender.com/",
+  "clientReleaseMarker": "c6421bf55d04c3464b8033b1ee5ba7b618084da3",
+  "backendHealthCommit": "c6421bf55d04c3464b8033b1ee5ba7b618084da3",
+  "ci": {
+    "gamepad": 76,
+    "shared": 33,
+    "engine": 1106,
+    "server": 758,
+    "client": 1220,
+    "totalPassed": 3193,
+    "existingSkipped": 14,
+    "docs": {
+      "links": 1477,
+      "markdownFiles": 68,
+      "broken": 0
+    }
+  },
+  "hostedBrowser": {
+    "passed": 18,
+    "viewport": [
+      1280,
+      720
+    ],
+    "dpr": 1,
+    "browser": "Chromium",
+    "roster": [
+      {
+        "fighter": "abe-lincoln",
+        "loaded": [
+          "/fighter-art-pilot-v1/production/atlas-abe-lincoln-live-0-q96.webp",
+          "/fighter-art-pilot-v1/production/atlas-abe-lincoln-live-2-q96.webp",
+          "/fighter-art-pilot-v1/production/atlas-abe-lincoln-live-1-q96.webp",
+          "/fighter-art-pilot-v1/production/atlas-abe-lincoln-live-3-q96.webp",
+          "/fighter-art-pilot-v1/production/atlas-abe-lincoln-live-4-q96.webp",
+          "/fighter-art-pilot-v1/production/atlas-all-rounder-live-0-q96.webp",
+          "/fighter-art-pilot-v1/production/atlas-all-rounder-live-1-q96.webp",
+          "/fighter-art-pilot-v1/production/atlas-all-rounder-live-2-q96.webp",
+          "/fighter-art-pilot-v1/production/atlas-all-rounder-live-3-q96.webp",
+          "/fighter-art-pilot-v1/production/atlas-effects-live-0.webp"
+        ],
+        "errors": []
+      },
+      {
+        "fighter": "all-rounder",
+        "loaded": [
+          "/fighter-art-pilot-v1/production/atlas-all-rounder-live-0-q96.webp",
+          "/fighter-art-pilot-v1/production/atlas-all-rounder-live-1-q96.webp",
+          "/fighter-art-pilot-v1/production/atlas-all-rounder-live-2-q96.webp",
+          "/fighter-art-pilot-v1/production/atlas-effects-live-0.webp",
+          "/fighter-art-pilot-v1/production/atlas-all-rounder-live-3-q96.webp"
+        ],
+        "errors": []
+      },
+      {
+        "fighter": "hulk-hoagie",
+        "loaded": [
+          "/fighter-art-pilot-v1/production/atlas-all-rounder-live-0-q96.webp",
+          "/fighter-art-pilot-v1/production/atlas-all-rounder-live-2-q96.webp",
+          "/fighter-art-pilot-v1/production/atlas-all-rounder-live-1-q96.webp",
+          "/fighter-art-pilot-v1/production/atlas-all-rounder-live-3-q96.webp",
+          "/fighter-art-pilot-v1/production/atlas-effects-live-0.webp",
+          "/fighter-art-newcomers-v1/dojo/atlas-hulk-hoagie-live-1.webp",
+          "/fighter-art-newcomers-v1/dojo/atlas-hulk-hoagie-live-0.webp"
+        ],
+        "errors": []
+      },
+      {
+        "fighter": "loopy",
+        "loaded": [
+          "/fighter-art-pack-03-v1/production/atlas-loopy-live-0-q96.webp",
+          "/fighter-art-pack-03-v1/production/atlas-loopy-live-1-q96.webp",
+          "/fighter-art-pack-03-v1/production/atlas-loopy-live-2-q96.webp",
+          "/fighter-art-pack-03-v1/production/atlas-loopy-live-3-q96.webp",
+          "/fighter-art-pilot-v1/production/atlas-all-rounder-live-2-q96.webp",
+          "/fighter-art-pilot-v1/production/atlas-all-rounder-live-1-q96.webp",
+          "/fighter-art-pilot-v1/production/atlas-all-rounder-live-0-q96.webp",
+          "/fighter-art-pilot-v1/production/atlas-all-rounder-live-3-q96.webp",
+          "/fighter-art-pilot-v1/production/atlas-effects-live-0.webp"
+        ],
+        "errors": []
+      },
+      {
+        "fighter": "moonshine",
+        "loaded": [
+          "/fighter-art-pilot-v1/production/atlas-all-rounder-live-1-q96.webp",
+          "/fighter-art-pilot-v1/production/atlas-all-rounder-live-0-q96.webp",
+          "/fighter-art-pilot-v1/production/atlas-all-rounder-live-2-q96.webp",
+          "/fighter-art-pilot-v1/production/atlas-all-rounder-live-3-q96.webp",
+          "/fighter-art-pilot-v1/production/atlas-effects-live-0.webp",
+          "/fighter-art-newcomers-v1/dojo/atlas-moonshine-live-0.webp",
+          "/fighter-art-newcomers-v1/dojo/atlas-moonshine-live-1.webp"
+        ],
+        "errors": []
+      },
+      {
+        "fighter": "mr-wrong",
+        "loaded": [
+          "/fighter-art-pilot-v1/production/atlas-all-rounder-live-0-q96.webp",
+          "/fighter-art-pilot-v1/production/atlas-all-rounder-live-1-q96.webp",
+          "/fighter-art-pilot-v1/production/atlas-effects-live-0.webp",
+          "/fighter-art-pilot-v1/production/atlas-all-rounder-live-2-q96.webp",
+          "/fighter-art-pilot-v1/production/atlas-all-rounder-live-3-q96.webp",
+          "/fighter-art-pack-03-v1/production/atlas-mr-wrong-live-0-q96.webp",
+          "/fighter-art-pack-03-v1/production/atlas-mr-wrong-live-1-q96.webp",
+          "/fighter-art-pack-03-v1/production/atlas-mr-wrong-live-2-q96.webp"
+        ],
+        "errors": []
+      },
+      {
+        "fighter": "mrs-tasselbottom",
+        "loaded": [
+          "/fighter-art-pilot-v1/production/atlas-all-rounder-live-0-q96.webp",
+          "/fighter-art-pilot-v1/production/atlas-all-rounder-live-2-q96.webp",
+          "/fighter-art-pilot-v1/production/atlas-all-rounder-live-1-q96.webp",
+          "/fighter-art-pilot-v1/production/atlas-all-rounder-live-3-q96.webp",
+          "/fighter-art-pilot-v1/production/atlas-effects-live-0.webp",
+          "/fighter-art-pack-03-v1/production/atlas-mrs-tasselbottom-live-0-q96.webp",
+          "/fighter-art-pack-03-v1/production/atlas-mrs-tasselbottom-live-1-q96.webp",
+          "/fighter-art-pack-03-v1/production/atlas-mrs-tasselbottom-live-2-q96.webp"
+        ],
+        "errors": []
+      },
+      {
+        "fighter": "swift",
+        "loaded": [
+          "/fighter-art-pilot-v1/production/atlas-swift-live-0-q96.webp",
+          "/fighter-art-pilot-v1/production/atlas-swift-live-2-q96.webp",
+          "/fighter-art-pilot-v1/production/atlas-swift-live-1-q96.webp",
+          "/fighter-art-pilot-v1/production/atlas-swift-live-3-q96.webp",
+          "/fighter-art-pilot-v1/production/atlas-all-rounder-live-0-q96.webp",
+          "/fighter-art-pilot-v1/production/atlas-all-rounder-live-1-q96.webp",
+          "/fighter-art-pilot-v1/production/atlas-all-rounder-live-2-q96.webp",
+          "/fighter-art-pilot-v1/production/atlas-all-rounder-live-3-q96.webp",
+          "/fighter-art-pilot-v1/production/atlas-effects-live-0.webp"
+        ],
+        "errors": []
+      },
+      {
+        "fighter": "velvet-reply",
+        "loaded": [
+          "/fighter-art-pack-04-v1/production/atlas-velvet-reply-live-1-q96.webp",
+          "/fighter-art-pack-04-v1/production/atlas-velvet-reply-live-0-q96.webp",
+          "/fighter-art-pilot-v1/production/atlas-all-rounder-live-3-q96.webp",
+          "/fighter-art-pilot-v1/production/atlas-all-rounder-live-0-q96.webp",
+          "/fighter-art-pilot-v1/production/atlas-all-rounder-live-2-q96.webp",
+          "/fighter-art-pilot-v1/production/atlas-all-rounder-live-1-q96.webp",
+          "/fighter-art-pilot-v1/production/atlas-effects-live-0.webp"
+        ],
+        "errors": []
+      },
+      {
+        "fighter": "zane-corvo",
+        "loaded": [
+          "/fighter-art-pack-04-v1/production/atlas-zane-corvo-live-0-q96.webp",
+          "/fighter-art-pack-04-v1/production/atlas-zane-corvo-live-1-q96.webp",
+          "/fighter-art-pilot-v1/production/atlas-all-rounder-live-0-q96.webp",
+          "/fighter-art-pilot-v1/production/atlas-all-rounder-live-1-q96.webp",
+          "/fighter-art-pilot-v1/production/atlas-all-rounder-live-2-q96.webp",
+          "/fighter-art-pilot-v1/production/atlas-effects-live-0.webp",
+          "/fighter-art-pilot-v1/production/atlas-all-rounder-live-3-q96.webp"
+        ],
+        "errors": []
+      }
+    ]
+  },
+  "throttled": {
+    "downloadMbps": 8,
+    "latencyMs": 80,
+    "coldNavigationToLiveMs": 32239,
+    "coldStageConfirmationToLiveMs": 16334,
+    "retryAlertAfterAbortMs": 450,
+    "retryNavigationToLiveMs": 33169,
+    "retryStageConfirmationToLiveMs": 14283,
+    "matchBlockedOnFailure": true,
+    "sameLineupRecovered": true,
+    "basis": "Single fresh-context trials, not medians or warm-cache measurements"
+  },
+  "reconnect": {
+    "expected": "c6421bf55d04c3464b8033b1ee5ba7b618084da3",
+    "host": "https://play.zandarecords.com",
+    "fighters": [
+      "zane-corvo",
+      "velvet-reply"
+    ],
+    "stageId": "stage10",
+    "liveReconnectMs": 1082,
+    "pausedReconnectMs": 1517,
+    "pauseTick": 99,
+    "resume": true,
+    "confirmedLeave": true,
+    "pageErrors": []
+  }
+}

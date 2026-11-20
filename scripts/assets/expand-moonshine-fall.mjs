@@ -1,0 +1,12 @@
+import fs from 'node:fs';import {createRequire} from 'node:module';
+const sharp=createRequire(new URL('../../apps/client/package.json',import.meta.url))('sharp');
+const base='apps/client/public/fighter-art-newcomers-v1/',file=base+'manifest.json',m=JSON.parse(fs.readFileSync(file,'utf8')),clip=m.characters.moonshine.clips.air_fall_loop;
+const existing=clip.frames.filter(f=>(f.image??clip.image)==='moonshine-air-loops-v1.png');if(existing.length!==2)throw Error('Expected two original fall drawings');
+const old=existing.map((f,i)=>{const scale=(i?75:74)/f.rect[3];return {...f,scale,root:[f.root[0],73/scale],registration:'fall common vertical anchor: 73 world units from crop top'};});const added=[],report=[];
+for(const[name,height,anchorX,limit]of[['early',75,.5,0],['mid',75,.5,0],['late',75,.48,7],['settle',75,.48,0]]){
+ const stem=`moonshine-fall-${name}-between-v1`,{data,info}=await sharp('concept-art/sprite/pack-02/'+stem+'.png').ensureAlpha().raw().toBuffer({resolveWithObject:true});let cleared=0,specks=0;
+ for(let i=3;i<data.length;i+=4)if(data[i]<=5){if(data[i])cleared++;data.fill(0,i-3,i+1);}
+ if(limit)for(let y=0;y<info.height;y++)for(let x=0;x<info.width;x++){const i=(y*info.width+x)*4;if(!data[i+3]||data[i+3]>limit)continue;let near=false;for(let dy=-4;dy<=4&&!near;dy++)for(let dx=-4;dx<=4;dx++){const xx=x+dx,yy=y+dy;if(xx>=0&&yy>=0&&xx<info.width&&yy<info.height&&data[(yy*info.width+xx)*4+3]>=128){near=true;break;}}if(!near){data.fill(0,i,i+4);specks++;}}
+ const prepared=await sharp(data,{raw:info}).trim().png().toBuffer(),meta=await sharp(prepared).metadata(),image=stem+'-prepared.png',scale=height/meta.height;fs.writeFileSync(base+image,prepared);added.push({image,scale,rect:[0,0,meta.width,meta.height],root:[meta.width*anchorX,73/scale],sourceSize:[meta.width,meta.height],trim:[0,0],visibleHeight:meta.height,registration:'fall common vertical anchor: 73 world units from crop top'});report.push({name,height,width:meta.width,pixelHeight:meta.height,cleared,specks});
+}
+const frames=[old[0],added[0],added[1],added[2],added[3],old[1]],durations=[2,2,2,2,2,2];const changed=JSON.stringify(clip.frames)!==JSON.stringify(frames)||JSON.stringify(clip.durations)!==JSON.stringify(durations)||clip.loop!==false;clip.frames=frames;clip.durations=durations;clip.loop=false;if(changed){m.revision++;fs.writeFileSync(file,JSON.stringify(m,null,2)+'\n');}console.log(JSON.stringify({changed,revision:m.revision,report,clips:Object.keys(m.characters.moonshine.clips).length}));

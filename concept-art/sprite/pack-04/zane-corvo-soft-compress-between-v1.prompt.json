@@ -1,0 +1,15 @@
+{
+  "tool": "built-in image_gen",
+  "date": "2026-11-18",
+  "identityReference": "zane-corvo-idle.png",
+  "prompt": "ONE full-body production sprite Zane Corvo facing RIGHT three-quarter: SOFT LANDING COMPRESSION immediately after reference2 contact. Ref1 exact shipped identity/costume and idle scale. Knees bend slightly deeper than contact, hips lower modestly, torso leans forward a little, fists remain around lower ribs/waist as landing balance, BOTH boot soles FLAT on SAME horizontal baseline. No raised arms, jumping, victory gesture or airborne feet. Exact brown-black silver-studded zip biker jacket, dark buttoned waistcoat, silver neck chain and square buckle, dark trousers, chunky cream-laced dark boots, tousled brown hair/stubble, half-lidded face. Same compact textured ink proportions. Full silhouette generous margins and clear soles. TRUE TRANSPARENT background. No floor drawing, shadow, ground line, glow, halo, mist, gradients, blur, text or effects.",
+  "poseReferences": [
+    "zane-corvo-air-5.png"
+  ],
+  "preparation": {
+    "alphaFloor": 5,
+    "worldHeight": 67,
+    "preserveSource": true,
+    "detachedCleanup": "rebound: only alpha <=7 farther than four pixels from solid ink"
+  }
+}

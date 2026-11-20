@@ -1,0 +1,24 @@
+{
+  "prompt": "Create ONE precise intermediate sprite between reference images 1 and 2. These are the SAME Mr. Wrong character in two shipped jump-squat poses. Match their exact squat silhouette and proportions: LOW BROAD crouch, thighs almost horizontal, short visible bent shins, tentacle feet spread wide, shoulders/arms wide, body occupies same width relative to the head and hat. The floppy hat hangs LEFT, NOT upright above his head. Keep the hat compact, grinning face long and broad, crouched body's total width nearly 80 percent of total height like these references. Keep torso and shorts bulky and limbs exactly as references. Change only small hand/torso positions to make one midpoint pose. Preserve yellow burgundy-polka-dot jacket, burgundy button vest, cream ruff and cuffs, pink dark-polka-dot shorts, lavender hair, cream/burgundy striped floppy cap, turquoise tentacle hands and feet with pink suckers. Right-facing 3/4 side view, both foot tentacles planted at same ground baseline. All anatomy and hat visible, transparent background. Fine engraved cartoon ink matching reference. No glow or haze or shadows or background or floor or lettering. Do not make a thinner smaller body or taller cap.",
+  "source": "exec-bd4539e3-6ea9-4060-8f40-3b834210677e.png",
+  "tool": "built-in image_gen",
+  "date": "2026-11-19",
+  "references": [
+    "mr-wrong-shipped-jump_squat-reference-0.png",
+    "mr-wrong-shipped-jump_squat-reference-1.png"
+  ],
+  "preparation": {
+    "alphaFloor": 5,
+    "worldHeight": 82.5,
+    "root": [
+      456.5,
+      1214
+    ],
+    "preparedSize": [
+      1026,
+      1216
+    ],
+    "cleared": 38616
+  },
+  "review": "v1 rejected for narrow torso/tall hat proportions. v2 reviewed against shipped crouches and both-facing Dojo; costume retained."
+}

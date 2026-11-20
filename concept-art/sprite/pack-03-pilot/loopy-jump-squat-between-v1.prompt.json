@@ -1,0 +1,17 @@
+{
+  "tool": "built-in image_gen",
+  "date": "2026-11-19",
+  "prompt": "ONE precise full-body right-facing Loopy jump-squat INTERMEDIATE game sprite. References1 and2 are shipped squat endpoints, reference3 authoritative shipped idle costume. Draw only a small midpoint between the squat poses: low wide crouch, broad bent knees, hooves planted flat on one horizontal baseline, elbows bent with fists in guard, body leaning forward slightly. EXACT shipped Loopy: lanky golden-yellow shaggy anthropomorphic deer, branching BROWN antlers, large ears, long black nose and sleepy grinning eyes, BLANK CREAM basketball jersey with PURPLE trim, ragged PURPLE shorts with cream/yellow ragged edge, purple/cream striped wristbands, dark brown split-toed HOOVES. Jersey absolutely BLANK: no numbers, no 49, no letters or logo. Match shipped head/body and antler proportions; no taller antlers or smaller torso. Entire antlers, ears, fists and hooves visible uncropped. Fine engraved cartoon inks with warm shading matching references. Genuine transparent background, crisp silhouette natural antialiasing only. NO glow, white haze, mist, aura, shadow, floor, background, effects, lettering or extra props.",
+  "source": "exec-c4be3dfd-6a55-4ec5-bfa6-3121d9e49f8a.png",
+  "references": [
+    "loopy-shipped-jump_squat-0.png",
+    "loopy-shipped-jump_squat-1.png",
+    "loopy-shipped-idle-0.png"
+  ],
+  "preparation": {
+    "alphaFloor": 5,
+    "worldHeight": 88.5,
+    "root": "planted hoof support midpoint, two source pixels above crop bottom"
+  },
+  "review": "Shipped blank cream jersey with purple trim; no numerals."
+}

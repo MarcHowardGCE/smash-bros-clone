@@ -1,0 +1,162 @@
+[
+  {
+    "facing": -1,
+    "kind": "soft",
+    "action": "none",
+    "contactState": "AIRBORNE",
+    "contactLag": 0,
+    "visualTicks": 12
+  },
+  {
+    "facing": -1,
+    "kind": "soft",
+    "action": "Jump",
+    "contactState": "AIRBORNE",
+    "contactLag": 0,
+    "firstInputState": "JUMPSQUAT"
+  },
+  {
+    "facing": -1,
+    "kind": "soft",
+    "action": "Attack",
+    "contactState": "AIRBORNE",
+    "contactLag": 0,
+    "firstInputState": "ATTACK"
+  },
+  {
+    "facing": -1,
+    "kind": "soft",
+    "action": "Shield",
+    "contactState": "AIRBORNE",
+    "contactLag": 0,
+    "firstInputState": "SHIELD"
+  },
+  {
+    "facing": -1,
+    "kind": "soft",
+    "action": "Special",
+    "contactState": "AIRBORNE",
+    "contactLag": 0,
+    "firstInputState": "ATTACK"
+  },
+  {
+    "facing": -1,
+    "kind": "heavy",
+    "action": "none",
+    "contactState": "AIRBORNE",
+    "contactLag": 0,
+    "visualTicks": 18
+  },
+  {
+    "facing": -1,
+    "kind": "heavy",
+    "action": "Jump",
+    "contactState": "AIRBORNE",
+    "contactLag": 0,
+    "firstInputState": "JUMPSQUAT"
+  },
+  {
+    "facing": -1,
+    "kind": "heavy",
+    "action": "Attack",
+    "contactState": "AIRBORNE",
+    "contactLag": 0,
+    "firstInputState": "ATTACK"
+  },
+  {
+    "facing": -1,
+    "kind": "heavy",
+    "action": "Shield",
+    "contactState": "AIRBORNE",
+    "contactLag": 0,
+    "firstInputState": "SHIELD"
+  },
+  {
+    "facing": -1,
+    "kind": "heavy",
+    "action": "Special",
+    "contactState": "AIRBORNE",
+    "contactLag": 0,
+    "firstInputState": "ATTACK"
+  },
+  {
+    "facing": 1,
+    "kind": "soft",
+    "action": "none",
+    "contactState": "AIRBORNE",
+    "contactLag": 0,
+    "visualTicks": 12
+  },
+  {
+    "facing": 1,
+    "kind": "soft",
+    "action": "Jump",
+    "contactState": "AIRBORNE",
+    "contactLag": 0,
+    "firstInputState": "JUMPSQUAT"
+  },
+  {
+    "facing": 1,
+    "kind": "soft",
+    "action": "Attack",
+    "contactState": "AIRBORNE",
+    "contactLag": 0,
+    "firstInputState": "ATTACK"
+  },
+  {
+    "facing": 1,
+    "kind": "soft",
+    "action": "Shield",
+    "contactState": "AIRBORNE",
+    "contactLag": 0,
+    "firstInputState": "SHIELD"
+  },
+  {
+    "facing": 1,
+    "kind": "soft",
+    "action": "Special",
+    "contactState": "AIRBORNE",
+    "contactLag": 0,
+    "firstInputState": "ATTACK"
+  },
+  {
+    "facing": 1,
+    "kind": "heavy",
+    "action": "none",
+    "contactState": "AIRBORNE",
+    "contactLag": 0,
+    "visualTicks": 18
+  },
+  {
+    "facing": 1,
+    "kind": "heavy",
+    "action": "Jump",
+    "contactState": "AIRBORNE",
+    "contactLag": 0,
+    "firstInputState": "JUMPSQUAT"
+  },
+  {
+    "facing": 1,
+    "kind": "heavy",
+    "action": "Attack",
+    "contactState": "AIRBORNE",
+    "contactLag": 0,
+    "firstInputState": "ATTACK"
+  },
+  {
+    "facing": 1,
+    "kind": "heavy",
+    "action": "Shield",
+    "contactState": "AIRBORNE",
+    "contactLag": 0,
+    "firstInputState": "SHIELD"
+  },
+  {
+    "facing": 1,
+    "kind": "heavy",
+    "action": "Special",
+    "contactState": "AIRBORNE",
+    "contactLag": 0,
+    "firstInputState": "ATTACK"
+  }
+]

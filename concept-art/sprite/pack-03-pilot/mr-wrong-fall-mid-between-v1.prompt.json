@@ -1,0 +1,15 @@
+{
+  "tool": "built-in image_gen",
+  "date": "2026-11-19",
+  "prompt": "ONE precise intermediate full-body 2D Mr. Wrong FALL MID sprite facing RIGHT. Reference1 and2 are the shipped fall endpoints; preserve their exact costume, proportions, face and compact floppy hat. Draw MID falling in-between: knees relaxed below broad shorts, tentacle feet hanging slightly lower and curling outward, hands in loose curved guard, torso upright. Small controlled movement between endpoints, not a redesign. EXACT yellow jacket with burgundy dots, burgundy vest with three yellow buttons, cream ruff/cuffs, pink dark-dot shorts with shipped patch, lavender curly hair, cream/burgundy striped floppy cap and cream pompom, TURQUOISE tentacle hands/feet with pink suckers. Maintain shipped long grinning face and head/body proportions. Entire cap, pompom and all tentacle curls visible uncropped. Fine engraved cartoon ink and warm shading matching references. Genuine transparent background with crisp natural antialiased silhouette. NO glow, mist, aura, shadow, floor, background, motion effects, lettering or props.",
+  "source": "exec-f0f74c17-c06b-4cbe-aa09-98047e8a2c7a.png",
+  "references": [
+    "mr-wrong-shipped-fall-0.png",
+    "mr-wrong-shipped-fall-1.png"
+  ],
+  "preparation": {
+    "alphaFloor": 5,
+    "worldHeight": 93,
+    "airRootWorldY": 60
+  }
+}

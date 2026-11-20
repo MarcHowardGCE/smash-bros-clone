@@ -161,8 +161,11 @@ export class LocalPredictor {
     if (player.isKnockedOut || player.hitlagFramesRemaining > 0 || player.hitstunFramesRemaining > 0
       || !movementStates.includes(player.state)) return clonePlayerState(player);
 		let nextPlayer = updateGroundIntent(clonePlayerState(player),input);
+    let freshTakeoff = false;
 		if ((input.pressed & INPUT_BITS.JUMP) !== 0) {
-			nextPlayer = startJump(nextPlayer, false);
+			const wasGrounded = nextPlayer.isGrounded;
+      nextPlayer = startJump(nextPlayer, false);
+      freshTakeoff = wasGrounded && !nextPlayer.isGrounded;
 		}
 		if(input.stickX!==undefined&&nextPlayer.isGrounded)nextPlayer={...nextPlayer,state:predictedGroundState(nextPlayer,input)};
 		const moved = applyMovementInput(nextPlayer, input,this.stage);
@@ -175,6 +178,14 @@ export class LocalPredictor {
       facing,
       state: nextState,
       stateFrame,
+      // A local takeoff must win over a throw event arriving after recovery.
+      ...(freshTakeoff ? {
+        artCue: Math.abs(moved.vx) < .5 ? 'takeoff_neutral' : moved.vx * facing > 0 ? 'takeoff_forward' : 'takeoff_backward',
+        artCueFrame: 0,
+      } : player.artCue?.startsWith('takeoff_') ? {
+        artCue: moved.isGrounded ? undefined : player.artCue,
+        artCueFrame: moved.isGrounded ? undefined : (player.artCueFrame ?? 0) + 1,
+      } : {}),
     };
   }
 

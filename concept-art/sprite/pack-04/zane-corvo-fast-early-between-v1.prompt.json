@@ -1,0 +1,15 @@
+{
+  "tool": "built-in image_gen",
+  "date": "2026-11-18",
+  "identityReference": "zane-corvo-idle.png",
+  "prompt": "ONE full-body production sprite Zane Corvo facing RIGHT three-quarter: EARLY FAST FALL intermediate halfway from reference2 compact fists-raised knee tuck toward reference3 streamlined leaning dive. Ref1 exact shipped costume identity palette/textured ink. Torso begins leaning forward, knees unfold halfway downward but remain bent, boots together under hips, elbows sweep back while fists lower from face toward ribs. Clearly intermediate silhouette, same head/torso size. Exact brown-black biker jacket silver studs/zips, dark buttoned waistcoat, silver neck chain and square belt buckle, dark trousers, chunky dark cream-laced boots, brown tousled hair and stubble. Fully airborne, complete extremities and generous margins. True TRANSPARENT background empty beyond crisp ink. NO ground, floor shadow, brown haze, halo, glow, mist, gradients, blur, writing, trails or effects. Do not copy reference background.",
+  "poseReferences": [
+    "zane-corvo-dash-fall-4.png",
+    "zane-corvo-air-4.png"
+  ],
+  "preparation": {
+    "alphaFloor": 5,
+    "worldHeight": 72,
+    "preserveSource": true
+  }
+}

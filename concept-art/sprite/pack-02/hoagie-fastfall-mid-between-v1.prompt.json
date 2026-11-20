@@ -1,0 +1,17 @@
+{
+  "tool": "built-in image_gen",
+  "date": "2026-11-19",
+  "prompt": "Create ONE dedicated 2D game sprite of Hulk Hoagie, facing RIGHT, entire body including cap and boot soles visible. Reference 1 is authoritative shipped costume/face/rendering; reference 2 is fastfall pose reference only. EXACT brown flat cap, square furious face short dark beard, huge muscular hairy wrestler, burgundy singlet with cream edging and straps, cream wrist/forearm wraps, dark studded rounded kneepads, tall brown cream-laced wrestling boots. Match engraved cartoon ink and warm shading, not 3D. Fast-fall MID in-between: shoulders slightly farther forward, fists tucked under ribs, knees pulled up together a little tighter, close boots pointing downward and a little back. Small controlled progression. A subtle intermediate animation drawing, preserve body proportions and recognizable face. Single isolated sprite, real transparent background, crisp hard ink silhouette and natural edge antialiasing only. Absolutely no glow, aura, mist, soft shadow, ground shadow, vignette, background, speed lines, text or extra props.",
+  "references": [
+    "hoagie-shipped-idle-reference.png",
+    "hoagie-shipped-fastfall-reference-1.png"
+  ],
+  "preparation": {
+    "alphaFloor": 5,
+    "worldHeight": 68,
+    "rootYWorld": 76,
+    "rootXFraction": 0.42,
+    "sourcePreserved": true
+  },
+  "review": "Single early pose reviewed before remaining drawings; shipped costume and dark/light registration reviewed."
+}

@@ -1,0 +1,14 @@
+{
+  "tool": "built-in image_gen",
+  "date": "2026-11-18",
+  "identityReference": "zane-corvo-idle.png",
+  "prompt": "ONE full-body production sprite Zane Corvo facing RIGHT three-quarter: HEAVY LANDING SETTLE between ref2 rebound and ref1 shipped idle. Ref1 exact identity costume ink proportions. Hips rise further, knees still more bent than idle, chest straightens, shoulders relax. Leading fist approaches chest guard, rear fist lowers toward hip. BOTH boot soles flat on same baseline, maintain stable stance width. Distinct recovery silhouette, no raised arms/hopping. Exact brown-black silver stud/zip biker jacket, dark buttoned waistcoat, silver chain/square buckle, dark trousers, chunky cream-laced boots, brown tousled hair/stubble/half-lidded face. Same head/torso size, textured ink. Complete silhouette generous margins true TRANSPARENT background. No floor line shadow glow halo haze mist gradient blur text or effects.",
+  "poseReferences": [
+    "zane-corvo-heavy-rebound-clean-review.png"
+  ],
+  "preparation": {
+    "alphaFloor": 5,
+    "worldHeight": 78,
+    "preserveSource": true
+  }
+}

@@ -1,0 +1,15 @@
+{
+  "tool": "built-in image_gen",
+  "date": "2026-11-18",
+  "identityReference": "velvet-reply-idle.png",
+  "prompt": "ONE full-body production sprite The Velvet Reply facing RIGHT three-quarter: SOFT LANDING RISE after reference2 rebound, before reference1 shipped idle. Ref1 exact identity costume ink proportions. Knees straighten further but stay slightly deeper than idle, hips rise, chest nearly upright. Leading open hand draws slightly inward near belt height, rear hand returns toward hip, shoulders still settling. BOTH heeled boots planted heel tips and forefoot soles on SAME baseline, stance width stays stable; no hopping or raised arms. Copper-auburn waves cheek beauty mark half-lidded face, exact plum-black FLARED jumpsuit gold piping, fishnet/crossed black straps high collar, SILVER rectangular buckle/cuffs/hoops, dark HEELED boots. Distinct intermediate silhouette. Full body clear margins crisp textured ink TRUE TRANSPARENT background. No floor line shadow glow halo haze mist gradient blur text or effects.",
+  "poseReferences": [
+    "velvet-reply-soft-rebound-clean-review.png"
+  ],
+  "preparation": {
+    "alphaFloor": 5,
+    "worldHeight": 79,
+    "preserveSource": true,
+    "detachedCleanup": "compression: one alpha-6 pixel farther than four pixels from solid ink"
+  }
+}

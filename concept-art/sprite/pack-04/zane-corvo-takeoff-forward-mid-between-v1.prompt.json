@@ -1,0 +1,16 @@
+{
+  "tool": "built-in image_gen",
+  "date": "2026-11-18",
+  "prompt": "Production full-body 2D fighter sprite, ONE pose facing right on genuinely transparent background. Reference 1 locks Zane's shipped identity and costume; reference 2 grounded squat extension; reference 3 airborne rise endpoint. Preserve brown-black biker jacket with SILVER studs/zips, dark BUTTONED waistcoat, silver chain/square buckle, dark trousers, chunky CREAM-laced boots, tousled brown hair, stubble and half-lidded face. Match original textured ink shading, crisp black outlines and adult proportions. Whole figure with margin. No floor, shadow, mist, halo, glow, blur, text, extra limbs or costume changes. FORWARD takeoff MIDPOINT: airborne toward screen RIGHT, modest forward lean gradually straightening toward reference 3 upright rise, leading knee lifted halfway to chest, rear leg bends slightly trailing below hips, fists ready below chest. Less lean than initial push-off and distinct from neutral.",
+  "references": [
+    "C:/Github/smash-bros-clone/concept-art/sprite/pack-04/zane-corvo-idle.png",
+    "C:/Github/smash-bros-clone/concept-art/sprite/pack-04/zane-corvo-squat-extend-between-v1.png",
+    "C:/Github/smash-bros-clone/apps/client/public/fighter-art-pack-04-v1/zane-corvo-air-0.png"
+  ],
+  "preparation": {
+    "alphaFloor": 5,
+    "worldHeight": 82,
+    "preserveSource": true
+  },
+  "review": "Neutral start reviewed first against shipped costume before remaining five drawings."
+}

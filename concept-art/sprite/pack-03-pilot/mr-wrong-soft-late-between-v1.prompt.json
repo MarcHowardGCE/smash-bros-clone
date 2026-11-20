@@ -1,0 +1,15 @@
+{
+  "tool": "built-in image_gen",
+  "date": "2026-11-19",
+  "prompt": "ONE precise full-body right-facing Mr. Wrong SOFT-LANDING LATE in-between sprite. Reference1 is shipped low landing contact; reference2 is shipped compressed recovery. Draw LATE recovery: nearly the shipped idle stance, knees lightly bent, torso upright, tentacle hands loose beside body, both turquoise tentacle feet planted on one horizontal baseline. Preserve exact shipped squat proportions, long grinning face and compact floppy hat. EXACT yellow burgundy-polka-dot jacket, burgundy vest with THREE yellow buttons, cream ruff/cuffs, pink dark-polka-dot shorts with shipped patch, lavender curly hair, cream/burgundy striped floppy cap and cream pompom, TURQUOISE hands/feet with pink suckers. Full figure including all curls and pompom visible uncropped. Fine engraved cartoon ink and warm shading matching references. Genuine transparent background, crisp silhouette natural antialiasing only. NO glow, mist, aura, shadow, ground, background, effects, lettering or props.",
+  "source": "exec-bb0fee9a-eb48-40b6-81e4-49511c7e84d5.png",
+  "references": [
+    "mr-wrong-shipped-soft-1.png",
+    "mr-wrong-shipped-soft-2.png"
+  ],
+  "preparation": {
+    "alphaFloor": 5,
+    "worldHeight": 87,
+    "root": "solid sole support midpoint, two pixels above crop bottom"
+  }
+}

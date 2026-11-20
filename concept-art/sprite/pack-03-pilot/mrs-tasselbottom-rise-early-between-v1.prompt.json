@@ -1,0 +1,12 @@
+{
+  "source": "C:\\Users\\misac\\.codex\\generated_images\\01a1d512-1266-7be0-b658-8ca4590e1a8c\\exec-521e1f24-9f3b-41d5-92c1-3fcc11b97d74.png",
+  "prompt": "Create ONE full-body transparent game sprite of Mrs. Tasselbottom, the EXACT shipped fighter shown in these references. Reference 1 is the first rising airborne pose; reference 2 is the final rise pose; reference 3 is shipped idle COSTUME and facial proportions. Draw the FIRST subtle in-between (20 percent from ref1 toward ref2): knees tucked, both buckled burgundy shoes together, fists guard, smiling face toward RIGHT in three-quarter view. Slightly settle the raised hem and shoulders from ref1, tiny counterclockwise body adjustment toward ref2. Keep LARGE head and hands relative to round gown exactly like shipped sprite. White/lavender tight curls, long pointed caricature nose, tiny tilted burgundy hat with gold crown and pins, HUGE royal-purple draped dress, gold rope swags and tassels and epaulets in same placements, cream ruffle cuffs and layered cream lace hem, burgundy shoes with gold buckles. Match bold outlined detailed illustrated game art, no redesign, no small head, no blue dress, no black dress. ALL crown, feet, ropes and gown inside image with clear transparent padding. Absolutely no red fringe from reference crop contamination, no white haze, glow, cast shadow, floor, smoke, motion streaks, effects, text or background. Single clean cutout with genuine alpha transparency, crisp opaque character interiors and clean antialiased silhouette.",
+  "references": [
+    "concept-art/sprite/pack-03-pilot/mrs-tasselbottom-shipped-rise-0.png",
+    "concept-art/sprite/pack-03-pilot/mrs-tasselbottom-shipped-rise-1.png",
+    "concept-art/sprite/pack-03-pilot/mrs-tasselbottom-shipped-idle-0.png"
+  ],
+  "date": "2026-11-20",
+  "tool": "built-in image_gen",
+  "status": "single-pose visual review passed; not registered in runtime"
+}

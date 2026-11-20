@@ -1,0 +1,19 @@
+{
+  "tool": "built-in image_gen",
+  "date": "2026-11-19",
+  "prompt": "Production full-body 2D Hulk Hoagie fighter sprite, ONE EARLY FALL in-between facing RIGHT on genuine transparent RGBA. First reference is exact shipped idle identity/costume; second shipped fall locks proportions and head size. Broad muscular wrestler, square angry face, short dark beard, BROWN flat cap, BURGUNDY wrestling singlet with CREAM edging/straps, bare hairy limbs/chest, cream wrist/forearm wraps, dark rounded studded knee pads, tall brown wrestling boots with CREAM laces. Crisp black textured ink shading, full-size head. Pose: MIDDLE FALL descent, torso upright with slight forward lean, knees softly bent and hanging below hips, near knee a little further forward and higher than far knee, rear boot trails slightly behind and down. Wrapped fists relax a little outward at waist for balance. A restrained airborne descending step, no straight stiff legs or kick or attack or arms overhead. Entire figure with margin. NO ground, backdrop, floor shadow, mist, haze, glow, halo, blur, motion lines, text, extra limbs. Ignore reference edge residue; empty pixels alpha zero.",
+  "references": [
+    "hoagie-shipped-idle-reference.png",
+    "hoagie-shipped-fall-reference-0.png"
+  ],
+  "preparation": {
+    "alphaFloor": 5,
+    "worldHeight": 82,
+    "rootYWorld": 83,
+    "detachedPixelsRemoved": 0,
+    "detachedAlphaLimit": 0,
+    "distanceFromSolid": 4,
+    "preserveSource": true
+  },
+  "review": "Early reviewed before remaining poses. Shipped costume, prepared alpha, apex-fall-landing registration and both-facing Dojo checked."
+}

@@ -1,0 +1,15 @@
+{
+  "tool": "built-in image_gen",
+  "date": "2026-11-18",
+  "prompt": "Production full-body 2D Moonshine fighter sprite, ONE airborne RISE in-between, facing RIGHT, genuine transparent RGBA. Use the supplied SHIPPED idle as the exact identity/costume reference. Preserve brown raccoon cap with striped tail behind, scruffy goatee/long nose/sleepy grin, CREAM sleeveless undershirt, dark suspenders, RED kerchief, cream hand/forearm wraps, patched BLUE jeans with rolled cuffs, hip rope, oversized brown boots with YELLOW laces. Wiry adult proportions, crisp black outlines and textured warm ink shading matching reference. Pose EARLY COMPACT RISE: both knees bent below waist, near knee slightly ahead, boots tucked backward under hips, elbows bent and wrapped fists near ribs. Torso upright. Do not spread legs long or raise arms overhead. Full figure with margin. NO backdrop, floor, shadows, glow, halo, white mist, brown haze, motion lines, text, blur, extra limbs or costume changes. Empty pixels alpha zero.",
+  "references": [
+    "moonshine-shipped-idle-reference.png"
+  ],
+  "preparation": {
+    "alphaFloor": 5,
+    "worldHeight": 66,
+    "preserveSource": true,
+    "detachedSettleAlpha7PixelsRemoved": 0
+  },
+  "review": "Early pose reviewed first against shipped costume and actual rise endpoints. A split-leg midpoint candidate was rejected before registration."
+}

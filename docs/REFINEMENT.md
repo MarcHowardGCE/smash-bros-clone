@@ -251,3 +251,19 @@ tests including descent and attacking in both facings, 18 movement
 presentation tests, client and server type checks, and both Pack 04
 Dojo jump-through-fast-fall landing tests. Human review of the new
 jump cadence and public deployment remain pending.
+
+### November 17 expanded roster verification
+
+The platform-descent integration test now enumerates all ten registered
+fighters and both facings, with fighter-specific hurtbox sizes. In each
+180-tick stationary-opponent scenario the CPU dropped below the soft
+platform, entered an attack and inflicted damage without being knocked
+out. All ten descent cases and the two existing pursuit controls passed.
+This matrix uses hard difficulty with execution errors disabled.
+
+On hosted 7700d56, a passive Dojo recording confirmed Zane's full jump
+from jump squat through airborne motion and idle. Frames sampled every
+50 ms showed the tucked rise/apex pose held without the previous repeated
+endpoint rocking, followed by fall and landing. This was one neutral
+jump in the default facing. Directional, double-jump and interrupted
+jump visual review remain part of the broader animation pass.

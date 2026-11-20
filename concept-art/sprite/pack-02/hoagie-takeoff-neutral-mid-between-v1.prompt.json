@@ -1,0 +1,16 @@
+{
+  "tool": "built-in image_gen",
+  "date": "2026-11-19",
+  "prompt": "Production full-body 2D Hulk Hoagie fighter sprite, ONE NEUTRAL TAKEOFF MIDPOINT facing RIGHT on genuinely transparent RGBA. Reference 1 is exact SHIPPED idle costume/identity, reference 2 existing neutral takeoff endpoint. Lock broad muscular wrestler frame, square angry face, short dark beard, BROWN flat cap, BURGUNDY wrestling singlet with CREAM edging and shoulder straps, bare hairy arms/legs/chest, cream wrist/forearm wraps, dark rounded studded knee pads, tall brown lace-up wrestling boots with CREAM laces. Match crisp black ink outlines and warm textured shading. Pose: rising from jump squat, torso upright, both knees moderately bent and beginning to straighten, boots together beneath hips with toes gently down, fists close beside waist and elbows bent. Halfway between planted crouch and extended airborne takeoff; both boots just leaving ground, no attack or kick, no arms overhead. Full figure with margin. NO floor, shadow, backdrop, haze, mist, halo, glow, blur, motion lines, text, extra limbs. Do not reproduce reference edge residue; empty pixels alpha zero.",
+  "references": [
+    "hoagie-shipped-idle-reference.png",
+    "hoagie-shipped-takeoff-neutral-reference.png"
+  ],
+  "preparation": {
+    "alphaFloor": 5,
+    "worldHeight": 80,
+    "rootYWorld": 81,
+    "preserveSource": true
+  },
+  "review": "Neutral reviewed first against shipped costume and actual takeoff endpoints. Prepared crops have no detached residue; both facings and momentum verified in Dojo."
+}

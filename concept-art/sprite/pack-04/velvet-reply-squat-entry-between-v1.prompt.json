@@ -1,0 +1,16 @@
+{
+  "tool": "built-in image_gen",
+  "date": "2026-11-18",
+  "prompt": "Production full-body 2D fighter sprite, ONE grounded jump-squat ENTRY pose facing right, true transparent background. Reference 1 is Velvet Reply's shipped identity and costume; reference 2 her low crouch. Draw a compression halfway between idle and low crouch: knees moderately bent, hips lowering, torso gently forward, hands near waist ready to launch. Both heeled boots' heel tips and forefoot soles planted on same ground baseline. Preserve dark plum-black fitted FLARED-LEG jumpsuit, fine gold piping, black fishnet sleeves and chest, crossed black straps/high collar, SILVER rectangular buckle belt, SILVER cuffs and hoop earrings, glossy dark heeled ankle boots, copper-auburn wavy hair, cheek beauty mark and half-lidded face. Match proportions, crisp black outlines and textured warm ink shading exactly. Full figure with transparent margins. No raised arms, no leap, no floor, shadows, halo, white mist, glow, blur, gradient, text or extra limbs.",
+  "references": [
+    "concept-art/sprite/pack-04/velvet-reply-idle.png",
+    "apps/client/public/fighter-art-pack-04-v1/velvet-reply-stance-1.png"
+  ],
+  "preparation": {
+    "alphaFloor": 5,
+    "worldHeight": 76,
+    "preserveSource": true
+  },
+  "review": "Entry reviewed before extension against shipped idle and crouch.",
+  "referenceNote": "The generation call included a mistyped crouch path. Valid canonical idle supplied; output visually compared with shipped crouch before acceptance."
+}

@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "revision": 72,
+  "revision": 108,
   "characters": {
     "mr-wrong": {
       "clips": {
@@ -2823,6 +2823,21 @@
               "image": "atlas-mr-wrong-presentation.png"
             },
             {
+              "image": "mr-wrong-jump-squat-between-v2-prepared.png",
+              "rect": [
+                0,
+                0,
+                1026,
+                1216
+              ],
+              "scale": 0.0678453947368421,
+              "root": [
+                456.5,
+                1214
+              ],
+              "registration": "planted tentacle sole"
+            },
+            {
               "rect": [
                 440,
                 1605,
@@ -2836,9 +2851,11 @@
             }
           ],
           "durations": [
-            2,
-            2
-          ]
+            1,
+            1,
+            1
+          ],
+          "loop": false
         },
         "crouch_enter": {
           "image": "atlas-mr-wrong-pilot.png",
@@ -3200,6 +3217,25 @@
               ]
             },
             {
+              "image": "mr-wrong-takeoff-neutral-between-v1-prepared.png",
+              "scale": 0.07547169811320754,
+              "rect": [
+                0,
+                0,
+                876,
+                1219
+              ],
+              "root": [
+                420.47999999999996,
+                1217
+              ],
+              "airRoot": [
+                420.47999999999996,
+                793.304
+              ],
+              "registration": "takeoff midpoint; airborne vertical anchor interpolated from shipped endpoints"
+            },
+            {
               "rect": [
                 1316,
                 1605,
@@ -3217,9 +3253,11 @@
             }
           ],
           "durations": [
-            4,
+            2,
+            2,
             2
-          ]
+          ],
+          "loop": false
         },
         "takeoff_forward": {
           "image": "atlas-mr-wrong-pilot.png",
@@ -3242,6 +3280,25 @@
               ]
             },
             {
+              "image": "mr-wrong-takeoff-forward-between-v1-prepared.png",
+              "scale": 0.08333333333333333,
+              "rect": [
+                0,
+                0,
+                1020,
+                1080
+              ],
+              "root": [
+                418.2,
+                1078
+              ],
+              "airRoot": [
+                418.2,
+                698.688
+              ],
+              "registration": "takeoff midpoint; airborne vertical anchor interpolated from shipped endpoints"
+            },
+            {
               "rect": [
                 1316,
                 1605,
@@ -3259,9 +3316,11 @@
             }
           ],
           "durations": [
-            4,
+            2,
+            2,
             2
-          ]
+          ],
+          "loop": false
         },
         "takeoff_backward": {
           "image": "atlas-mr-wrong-pilot.png",
@@ -3284,6 +3343,25 @@
               ]
             },
             {
+              "image": "mr-wrong-takeoff-backward-between-v1-prepared.png",
+              "scale": 0.08333333333333333,
+              "rect": [
+                0,
+                0,
+                857,
+                1080
+              ],
+              "root": [
+                394.22,
+                1078
+              ],
+              "airRoot": [
+                394.22,
+                725.652
+              ],
+              "registration": "takeoff midpoint; airborne vertical anchor interpolated from shipped endpoints"
+            },
+            {
               "rect": [
                 1316,
                 1605,
@@ -3301,9 +3379,11 @@
             }
           ],
           "durations": [
-            4,
+            2,
+            2,
             2
-          ]
+          ],
+          "loop": false
         },
         "air_rise_loop": {
           "image": "atlas-mr-wrong-pilot.png",
@@ -3326,6 +3406,82 @@
               ]
             },
             {
+              "image": "mr-wrong-rise-early-between-v1-prepared.png",
+              "scale": 0.07550335570469799,
+              "rect": [
+                0,
+                0,
+                881,
+                1192
+              ],
+              "root": [
+                422.88,
+                1190
+              ],
+              "airRoot": [
+                422.88,
+                794.6666666666666
+              ],
+              "registration": "rise airborne anchor 60 world units below crop top"
+            },
+            {
+              "image": "mr-wrong-rise-mid-between-v1-prepared.png",
+              "scale": 0.07482993197278912,
+              "rect": [
+                0,
+                0,
+                872,
+                1176
+              ],
+              "root": [
+                436,
+                1174
+              ],
+              "airRoot": [
+                436,
+                801.8181818181819
+              ],
+              "registration": "rise airborne anchor 60 world units below crop top"
+            },
+            {
+              "image": "mr-wrong-rise-late-between-v1-prepared.png",
+              "scale": 0.06957928802588997,
+              "rect": [
+                0,
+                0,
+                959,
+                1236
+              ],
+              "root": [
+                508.27000000000004,
+                1234
+              ],
+              "airRoot": [
+                508.27000000000004,
+                862.3255813953488
+              ],
+              "registration": "rise airborne anchor 60 world units below crop top"
+            },
+            {
+              "image": "mr-wrong-rise-settle-between-v1-prepared.png",
+              "scale": 0.06927465362673187,
+              "rect": [
+                0,
+                0,
+                893,
+                1227
+              ],
+              "root": [
+                500.08000000000004,
+                1225
+              ],
+              "airRoot": [
+                500.08000000000004,
+                866.1176470588235
+              ],
+              "registration": "rise airborne anchor 60 world units below crop top"
+            },
+            {
               "rect": [
                 2,
                 208,
@@ -3344,9 +3500,14 @@
             }
           ],
           "durations": [
-            6,
-            6
-          ]
+            2,
+            2,
+            2,
+            2,
+            2,
+            2
+          ],
+          "loop": false
         },
         "air_apex_loop": {
           "image": "atlas-mr-wrong-pilot.png",
@@ -3365,8 +3526,84 @@
               ],
               "airRoot": [
                 78.502,
-                114.351
+                120
               ]
+            },
+            {
+              "image": "mr-wrong-apex-early-between-v1-prepared.png",
+              "scale": 0.07104795737122557,
+              "rect": [
+                0,
+                0,
+                1235,
+                1126
+              ],
+              "root": [
+                605.15,
+                1124
+              ],
+              "airRoot": [
+                605.15,
+                844.5
+              ],
+              "registration": "apex airborne anchor 60 world units below crop top"
+            },
+            {
+              "image": "mr-wrong-apex-mid-between-v1-prepared.png",
+              "scale": 0.07570093457943926,
+              "rect": [
+                0,
+                0,
+                896,
+                1070
+              ],
+              "root": [
+                465.92,
+                1068
+              ],
+              "airRoot": [
+                465.92,
+                792.5925925925925
+              ],
+              "registration": "apex airborne anchor 60 world units below crop top"
+            },
+            {
+              "image": "mr-wrong-apex-late-between-v1-prepared.png",
+              "scale": 0.07529843893480258,
+              "rect": [
+                0,
+                0,
+                747,
+                1089
+              ],
+              "root": [
+                418.32000000000005,
+                1087
+              ],
+              "airRoot": [
+                418.32000000000005,
+                796.8292682926829
+              ],
+              "registration": "apex airborne anchor 60 world units below crop top"
+            },
+            {
+              "image": "mr-wrong-apex-settle-between-v1-prepared.png",
+              "scale": 0.0746606334841629,
+              "rect": [
+                0,
+                0,
+                919,
+                1105
+              ],
+              "root": [
+                551.4,
+                1103
+              ],
+              "airRoot": [
+                551.4,
+                803.6363636363636
+              ],
+              "registration": "apex airborne anchor 60 world units below crop top"
             },
             {
               "rect": [
@@ -3382,14 +3619,19 @@
               "image": "atlas-mr-wrong-presentation.png",
               "airRoot": [
                 92.798,
-                121.867
+                120
               ]
             }
           ],
           "durations": [
             2,
+            2,
+            2,
+            2,
+            2,
             2
-          ]
+          ],
+          "loop": false
         },
         "air_fall_loop": {
           "image": "atlas-mr-wrong-pilot.png",
@@ -3408,8 +3650,84 @@
               ],
               "airRoot": [
                 73.708,
-                122.74
+                120
               ]
+            },
+            {
+              "image": "mr-wrong-fall-early-between-v1-prepared.png",
+              "scale": 0.07131901840490798,
+              "rect": [
+                0,
+                0,
+                853,
+                1304
+              ],
+              "root": [
+                443.56,
+                1302
+              ],
+              "airRoot": [
+                443.56,
+                841.2903225806451
+              ],
+              "registration": "fall airborne anchor 60 world units below crop top"
+            },
+            {
+              "image": "mr-wrong-fall-mid-between-v1-prepared.png",
+              "scale": 0.07560975609756097,
+              "rect": [
+                0,
+                0,
+                861,
+                1230
+              ],
+              "root": [
+                464.94000000000005,
+                1228
+              ],
+              "airRoot": [
+                464.94000000000005,
+                793.5483870967743
+              ],
+              "registration": "fall airborne anchor 60 world units below crop top"
+            },
+            {
+              "image": "mr-wrong-fall-late-between-v1-prepared.png",
+              "scale": 0.07050796057619409,
+              "rect": [
+                0,
+                0,
+                868,
+                1319
+              ],
+              "root": [
+                486.08000000000004,
+                1317
+              ],
+              "airRoot": [
+                486.08000000000004,
+                850.9677419354839
+              ],
+              "registration": "fall airborne anchor 60 world units below crop top"
+            },
+            {
+              "image": "mr-wrong-fall-settle-between-v1-prepared.png",
+              "scale": 0.07237354085603113,
+              "rect": [
+                0,
+                0,
+                944,
+                1285
+              ],
+              "root": [
+                547.52,
+                1283
+              ],
+              "airRoot": [
+                547.52,
+                829.0322580645161
+              ],
+              "registration": "fall airborne anchor 60 world units below crop top"
             },
             {
               "rect": [
@@ -3425,14 +3743,19 @@
               "image": "atlas-mr-wrong-presentation.png",
               "airRoot": [
                 95.88,
-                122.114
+                120
               ]
             }
           ],
           "durations": [
-            6,
-            6
-          ]
+            2,
+            2,
+            2,
+            2,
+            2,
+            2
+          ],
+          "loop": false
         },
         "air_fastfall_loop": {
           "image": "atlas-mr-wrong-pilot.png",
@@ -3451,8 +3774,27 @@
               ],
               "airRoot": [
                 55.342,
-                126.399
+                140
               ]
+            },
+            {
+              "image": "mr-wrong-fastfall-early-between-v1-prepared.png",
+              "scale": 0.07195301027900147,
+              "rect": [
+                0,
+                0,
+                818,
+                1362
+              ],
+              "root": [
+                376.28000000000003,
+                1360
+              ],
+              "airRoot": [
+                376.28000000000003,
+                972.8571428571428
+              ],
+              "registration": "fast-fall common airborne anchor seventy world units below crop top"
             },
             {
               "rect": [
@@ -3468,8 +3810,46 @@
               "image": "atlas-mr-wrong-presentation.png",
               "airRoot": [
                 60.903,
-                151.077
+                140
               ]
+            },
+            {
+              "image": "mr-wrong-fastfall-mid-between-v1-prepared.png",
+              "scale": 0.07003367003367003,
+              "rect": [
+                0,
+                0,
+                799,
+                1485
+              ],
+              "root": [
+                351.56,
+                1483
+              ],
+              "airRoot": [
+                351.56,
+                999.5192307692308
+              ],
+              "registration": "fast-fall common airborne anchor seventy world units below crop top"
+            },
+            {
+              "image": "mr-wrong-fastfall-late-between-v1-prepared.png",
+              "scale": 0.07060333761232349,
+              "rect": [
+                0,
+                0,
+                848,
+                1558
+              ],
+              "root": [
+                339.20000000000005,
+                1556
+              ],
+              "airRoot": [
+                339.20000000000005,
+                991.4545454545455
+              ],
+              "registration": "fast-fall common airborne anchor seventy world units below crop top"
             },
             {
               "rect": [
@@ -3484,15 +3864,19 @@
               ],
               "airRoot": [
                 53.699,
-                134.071
+                140
               ]
             }
           ],
           "durations": [
-            3,
-            3,
-            5
-          ]
+            2,
+            2,
+            2,
+            2,
+            2,
+            2
+          ],
+          "loop": false
         },
         "platform_drop": {
           "image": "atlas-mr-wrong-pilot.png",
@@ -3677,8 +4061,27 @@
               ],
               "airRoot": [
                 71.311,
-                123.939
+                120
               ]
+            },
+            {
+              "image": "mr-wrong-double-early-between-v1-prepared.png",
+              "scale": 0.08013355592654424,
+              "rect": [
+                0,
+                0,
+                962,
+                1198
+              ],
+              "root": [
+                509.86,
+                1196
+              ],
+              "airRoot": [
+                509.86,
+                748.75
+              ],
+              "registration": "double-jump common airborne anchor sixty world units below crop top"
             },
             {
               "rect": [
@@ -3694,8 +4097,46 @@
               "image": "atlas-mr-wrong-presentation.png",
               "airRoot": [
                 72.537,
-                123.48
+                120
               ]
+            },
+            {
+              "image": "mr-wrong-double-mid-between-v1-prepared.png",
+              "scale": 0.07550335570469799,
+              "rect": [
+                0,
+                0,
+                1034,
+                1192
+              ],
+              "root": [
+                527.34,
+                1190
+              ],
+              "airRoot": [
+                527.34,
+                794.6666666666666
+              ],
+              "registration": "double-jump common airborne anchor sixty world units below crop top"
+            },
+            {
+              "image": "mr-wrong-double-late-between-v1-prepared.png",
+              "scale": 0.08014247551202137,
+              "rect": [
+                0,
+                0,
+                802,
+                1123
+              ],
+              "root": [
+                384.96,
+                1121
+              ],
+              "airRoot": [
+                384.96,
+                748.6666666666666
+              ],
+              "registration": "double-jump common airborne anchor sixty world units below crop top"
             },
             {
               "rect": [
@@ -3715,10 +4156,14 @@
             }
           ],
           "durations": [
-            4,
-            3,
-            5
-          ]
+            2,
+            2,
+            2,
+            2,
+            2,
+            2
+          ],
+          "loop": false
         },
         "land_soft": {
           "image": "atlas-mr-wrong-pilot.png",
@@ -3734,7 +4179,32 @@
               "root": [
                 74.882,
                 141.145
-              ]
+              ],
+              "scale": 0.5
+            },
+            {
+              "image": "mr-wrong-soft-early-between-v1-prepared.png",
+              "scale": 0.06630824372759857,
+              "rect": [
+                0,
+                0,
+                1053,
+                1116
+              ],
+              "root": [
+                531,
+                1114
+              ],
+              "sourceSize": [
+                1053,
+                1116
+              ],
+              "trim": [
+                0,
+                0
+              ],
+              "visibleHeight": 1116,
+              "registration": "planted landing sole: two source pixels above crop bottom"
             },
             {
               "rect": [
@@ -3746,7 +4216,56 @@
               "root": [
                 63.03,
                 152.997
-              ]
+              ],
+              "scale": 0.5
+            },
+            {
+              "image": "mr-wrong-soft-mid-between-v1-prepared.png",
+              "scale": 0.05886575735821967,
+              "rect": [
+                0,
+                0,
+                921,
+                1393
+              ],
+              "root": [
+                476,
+                1391
+              ],
+              "sourceSize": [
+                921,
+                1393
+              ],
+              "trim": [
+                0,
+                0
+              ],
+              "visibleHeight": 1393,
+              "registration": "planted landing sole: two source pixels above crop bottom"
+            },
+            {
+              "image": "mr-wrong-soft-late-between-v1-prepared.png",
+              "scale": 0.06113843991567112,
+              "rect": [
+                0,
+                0,
+                849,
+                1423
+              ],
+              "root": [
+                440.5,
+                1421
+              ],
+              "sourceSize": [
+                849,
+                1423
+              ],
+              "trim": [
+                0,
+                0
+              ],
+              "visibleHeight": 1423,
+              "registration": "planted landing sole: two source pixels above crop bottom"
             },
             {
               "rect": [
@@ -3758,14 +4277,19 @@
               "root": [
                 57.643,
                 180.471
-              ]
+              ],
+              "scale": 0.5
             }
           ],
           "durations": [
-            3,
-            3,
-            6
-          ]
+            2,
+            2,
+            2,
+            2,
+            2,
+            2
+          ],
+          "loop": false
         },
         "land_heavy": {
           "image": "atlas-mr-wrong-pilot.png",
@@ -3781,7 +4305,32 @@
               "root": [
                 74.882,
                 141.145
-              ]
+              ],
+              "scale": 0.5
+            },
+            {
+              "image": "mr-wrong-heavy-early-between-v1-prepared.png",
+              "scale": 0.0631768953068592,
+              "rect": [
+                0,
+                0,
+                1267,
+                1108
+              ],
+              "root": [
+                627,
+                1106
+              ],
+              "sourceSize": [
+                1267,
+                1108
+              ],
+              "trim": [
+                0,
+                0
+              ],
+              "visibleHeight": 1108,
+              "registration": "planted landing sole: two source pixels above crop bottom"
             },
             {
               "rect": [
@@ -3793,7 +4342,56 @@
               "root": [
                 63.03,
                 152.997
-              ]
+              ],
+              "scale": 0.5
+            },
+            {
+              "image": "mr-wrong-heavy-mid-between-v1-prepared.png",
+              "scale": 0.06020558002936858,
+              "rect": [
+                0,
+                0,
+                953,
+                1362
+              ],
+              "root": [
+                473,
+                1360
+              ],
+              "sourceSize": [
+                953,
+                1362
+              ],
+              "trim": [
+                0,
+                0
+              ],
+              "visibleHeight": 1362,
+              "registration": "planted landing sole: two source pixels above crop bottom"
+            },
+            {
+              "image": "mr-wrong-heavy-late-between-v1-prepared.png",
+              "scale": 0.05995864920744314,
+              "rect": [
+                0,
+                0,
+                834,
+                1451
+              ],
+              "root": [
+                428,
+                1449
+              ],
+              "sourceSize": [
+                834,
+                1451
+              ],
+              "trim": [
+                0,
+                0
+              ],
+              "visibleHeight": 1451,
+              "registration": "planted landing sole: two source pixels above crop bottom"
             },
             {
               "rect": [
@@ -3805,14 +4403,19 @@
               "root": [
                 57.643,
                 180.471
-              ]
+              ],
+              "scale": 0.5
             }
           ],
           "durations": [
-            5,
-            4,
-            9
-          ]
+            3,
+            3,
+            3,
+            3,
+            3,
+            3
+          ],
+          "loop": false
         },
         "ledge_catch": {
           "image": "atlas-mr-wrong-pilot.png",
@@ -13018,6 +13621,21 @@
               "image": "atlas-loopy-presentation.png"
             },
             {
+              "image": "loopy-jump-squat-between-v1-prepared.png",
+              "rect": [
+                0,
+                0,
+                982,
+                1353
+              ],
+              "scale": 0.06541019955654102,
+              "root": [
+                438,
+                1351
+              ],
+              "registration": "planted hoof support"
+            },
+            {
               "rect": [
                 1930,
                 1773,
@@ -13031,9 +13649,11 @@
             }
           ],
           "durations": [
-            2,
-            2
-          ]
+            1,
+            1,
+            1
+          ],
+          "loop": false
         },
         "crouch_enter": {
           "image": "atlas-loopy-pilot.png",
@@ -13395,6 +14015,25 @@
               ]
             },
             {
+              "image": "loopy-takeoff-neutral-between-v1-prepared.png",
+              "scale": 0.07777346780449962,
+              "rect": [
+                0,
+                0,
+                785,
+                1289
+              ],
+              "root": [
+                321.84999999999997,
+                1287
+              ],
+              "airRoot": [
+                321.84999999999997,
+                842.8838503740648
+              ],
+              "registration": "takeoff midpoint; airborne vertical anchor interpolated from shipped endpoints"
+            },
+            {
               "rect": [
                 2894,
                 1773,
@@ -13412,9 +14051,11 @@
             }
           ],
           "durations": [
-            4,
+            2,
+            2,
             2
-          ]
+          ],
+          "loop": false
         },
         "takeoff_forward": {
           "image": "atlas-loopy-pilot.png",
@@ -13437,6 +14078,25 @@
               ]
             },
             {
+              "image": "loopy-takeoff-forward-between-v1-prepared.png",
+              "scale": 0.08847926267281106,
+              "rect": [
+                0,
+                0,
+                789,
+                1085
+              ],
+              "root": [
+                315.6,
+                1083
+              ],
+              "airRoot": [
+                315.6,
+                735.6299999999999
+              ],
+              "registration": "takeoff midpoint; airborne vertical anchor interpolated from shipped endpoints"
+            },
+            {
               "rect": [
                 2894,
                 1773,
@@ -13454,9 +14114,11 @@
             }
           ],
           "durations": [
-            4,
+            2,
+            2,
             2
-          ]
+          ],
+          "loop": false
         },
         "takeoff_backward": {
           "image": "atlas-loopy-pilot.png",
@@ -13479,6 +14141,25 @@
               ]
             },
             {
+              "image": "loopy-takeoff-backward-between-v1-prepared.png",
+              "scale": 0.07702915681639086,
+              "rect": [
+                0,
+                0,
+                794,
+                1269
+              ],
+              "root": [
+                325.53999999999996,
+                1267
+              ],
+              "airRoot": [
+                325.53999999999996,
+                905.5272429667518
+              ],
+              "registration": "takeoff midpoint; airborne vertical anchor interpolated from shipped endpoints"
+            },
+            {
               "rect": [
                 2894,
                 1773,
@@ -13496,9 +14177,11 @@
             }
           ],
           "durations": [
-            4,
+            2,
+            2,
             2
-          ]
+          ],
+          "loop": false
         },
         "air_rise_loop": {
           "image": "atlas-loopy-pilot.png",
@@ -13521,6 +14204,82 @@
               ]
             },
             {
+              "image": "loopy-rise-early-between-v1-prepared.png",
+              "scale": 0.06977559607293128,
+              "rect": [
+                0,
+                0,
+                856,
+                1426
+              ],
+              "root": [
+                316.71999999999997,
+                1424
+              ],
+              "airRoot": [
+                316.71999999999997,
+                994.6170854271356
+              ],
+              "registration": "rise in-between; height and airborne anchor interpolate shipped endpoints"
+            },
+            {
+              "image": "loopy-rise-mid-between-v1-prepared.png",
+              "scale": 0.06962025316455696,
+              "rect": [
+                0,
+                0,
+                843,
+                1422
+              ],
+              "root": [
+                332.985,
+                1420
+              ],
+              "airRoot": [
+                332.985,
+                1002.5818181818182
+              ],
+              "registration": "rise in-between; height and airborne anchor interpolate shipped endpoints"
+            },
+            {
+              "image": "loopy-rise-late-between-v1-prepared.png",
+              "scale": 0.0673274094326726,
+              "rect": [
+                0,
+                0,
+                817,
+                1463
+              ],
+              "root": [
+                343.14,
+                1461
+              ],
+              "airRoot": [
+                343.14,
+                1042.6659898477158
+              ],
+              "registration": "rise in-between; height and airborne anchor interpolate shipped endpoints"
+            },
+            {
+              "image": "loopy-rise-settle-between-v1-prepared.png",
+              "scale": 0.06599326599326599,
+              "rect": [
+                0,
+                0,
+                818,
+                1485
+              ],
+              "root": [
+                364.01,
+                1483
+              ],
+              "airRoot": [
+                364.01,
+                1069.8061224489795
+              ],
+              "registration": "rise in-between; height and airborne anchor interpolate shipped endpoints"
+            },
+            {
               "rect": [
                 540,
                 235,
@@ -13539,9 +14298,14 @@
             }
           ],
           "durations": [
-            6,
-            6
-          ]
+            2,
+            2,
+            2,
+            2,
+            2,
+            2
+          ],
+          "loop": false
         },
         "air_apex_loop": {
           "image": "atlas-loopy-pilot.png",
@@ -13560,8 +14324,84 @@
               ],
               "airRoot": [
                 44.155,
-                132.974
+                142.216
               ]
+            },
+            {
+              "image": "loopy-apex-late-between-v2-prepared.png",
+              "scale": 0.06233333333333333,
+              "rect": [
+                0,
+                0,
+                919,
+                1500
+              ],
+              "root": [
+                372.19500000000005,
+                1498
+              ],
+              "airRoot": [
+                372.19500000000005,
+                1140.770053475936
+              ],
+              "registration": "apex airborne anchor 71.108 world units below crop top"
+            },
+            {
+              "image": "loopy-apex-settle-between-v2-prepared.png",
+              "scale": 0.06303630363036304,
+              "rect": [
+                0,
+                0,
+                915,
+                1515
+              ],
+              "root": [
+                404.43,
+                1513
+              ],
+              "airRoot": [
+                404.43,
+                1128.0483769633508
+              ],
+              "registration": "apex airborne anchor 71.108 world units below crop top"
+            },
+            {
+              "image": "loopy-apex-early-between-v1-prepared.png",
+              "scale": 0.06368386675375572,
+              "rect": [
+                0,
+                0,
+                872,
+                1531
+              ],
+              "root": [
+                417.688,
+                1529
+              ],
+              "airRoot": [
+                417.688,
+                1116.5779282051283
+              ],
+              "registration": "apex airborne anchor 71.108 world units below crop top"
+            },
+            {
+              "image": "loopy-apex-mid-between-v1-prepared.png",
+              "scale": 0.06611295681063123,
+              "rect": [
+                0,
+                0,
+                809,
+                1505
+              ],
+              "root": [
+                417.444,
+                1503
+              ],
+              "airRoot": [
+                417.444,
+                1075.5531658291459
+              ],
+              "registration": "apex airborne anchor 71.108 world units below crop top"
             },
             {
               "rect": [
@@ -13577,34 +14417,118 @@
               "image": "atlas-loopy-presentation.png",
               "airRoot": [
                 66.957,
-                145.858
+                142.216
               ]
             }
           ],
           "durations": [
             2,
+            2,
+            2,
+            2,
+            2,
             2
-          ]
+          ],
+          "loop": false
         },
         "air_fall_loop": {
           "image": "atlas-loopy-pilot.png",
           "scale": 0.5,
           "frames": [
             {
+              "image": "loopy-fall-start-clean-v1-prepared.png",
+              "scale": 0.06877444589308997,
               "rect": [
-                3376,
-                1773,
-                133,
-                211
+                0,
+                0,
+                961,
+                1534
               ],
               "root": [
-                64.678,
-                208.961
+                467.3343,
+                1532
               ],
               "airRoot": [
-                64.678,
-                141.059
-              ]
+                467.3343,
+                1033.9305402843602
+              ],
+              "registration": "fall sequence; consistent airborne top-to-root distance 71.108 world units"
+            },
+            {
+              "image": "loopy-fall-early-v1-prepared.png",
+              "scale": 0.07575757575757576,
+              "rect": [
+                0,
+                0,
+                871,
+                1386
+              ],
+              "root": [
+                433.758,
+                1384
+              ],
+              "airRoot": [
+                433.758,
+                938.6256000000001
+              ],
+              "registration": "fall sequence; consistent airborne top-to-root distance 71.108 world units"
+            },
+            {
+              "image": "loopy-fall-mid-v1-prepared.png",
+              "scale": 0.07328190743338009,
+              "rect": [
+                0,
+                0,
+                833,
+                1426
+              ],
+              "root": [
+                424.83,
+                1424
+              ],
+              "airRoot": [
+                424.83,
+                970.335004784689
+              ],
+              "registration": "fall sequence; consistent airborne top-to-root distance 71.108 world units"
+            },
+            {
+              "image": "loopy-fall-late-v1-prepared.png",
+              "scale": 0.07065217391304347,
+              "rect": [
+                0,
+                0,
+                814,
+                1472
+              ],
+              "root": [
+                424.908,
+                1470
+              ],
+              "airRoot": [
+                424.908,
+                1006.4516923076925
+              ],
+              "registration": "fall sequence; consistent airborne top-to-root distance 71.108 world units"
+            },
+            {
+              "image": "loopy-fall-settle-v1-prepared.png",
+              "scale": 0.06881648936170212,
+              "rect": [
+                0,
+                0,
+                860,
+                1504
+              ],
+              "root": [
+                459.24,
+                1502
+              ],
+              "airRoot": [
+                459.24,
+                1033.2988599033818
+              ],
+              "registration": "fall sequence; consistent airborne top-to-root distance 71.108 world units"
             },
             {
               "rect": [
@@ -13620,14 +14544,19 @@
               "image": "atlas-loopy-presentation.png",
               "airRoot": [
                 66.574,
-                141.359
+                142.216
               ]
             }
           ],
           "durations": [
-            6,
-            6
-          ]
+            2,
+            2,
+            2,
+            2,
+            2,
+            2
+          ],
+          "loop": false
         },
         "air_fastfall_loop": {
           "image": "atlas-loopy-pilot.png",
@@ -13646,8 +14575,27 @@
               ],
               "airRoot": [
                 58.667,
-                141.315
+                142.216
               ]
+            },
+            {
+              "image": "loopy-fastfall-early-between-v1-prepared.png",
+              "scale": 0.08897959183673469,
+              "rect": [
+                0,
+                0,
+                775,
+                1225
+              ],
+              "root": [
+                348.75,
+                1223
+              ],
+              "airRoot": [
+                348.75,
+                799.1495412844038
+              ],
+              "registration": "fast-fall common airborne anchor 71.108 world units below crop top"
             },
             {
               "rect": [
@@ -13663,8 +14611,46 @@
               "image": "atlas-loopy-presentation.png",
               "airRoot": [
                 77.576,
-                167.303
+                142.216
               ]
+            },
+            {
+              "image": "loopy-fastfall-mid-between-v2-prepared.png",
+              "scale": 0.08111888111888112,
+              "rect": [
+                0,
+                0,
+                854,
+                1430
+              ],
+              "root": [
+                401.38,
+                1428
+              ],
+              "airRoot": [
+                401.38,
+                876.59
+              ],
+              "registration": "fast-fall common airborne anchor 71.108 world units below crop top"
+            },
+            {
+              "image": "loopy-fastfall-late-between-v1-prepared.png",
+              "scale": 0.07756948933419522,
+              "rect": [
+                0,
+                0,
+                856,
+                1547
+              ],
+              "root": [
+                350.96,
+                1545
+              ],
+              "airRoot": [
+                350.96,
+                916.7006333333334
+              ],
+              "registration": "fast-fall common airborne anchor 71.108 world units below crop top"
             },
             {
               "rect": [
@@ -13679,15 +14665,19 @@
               ],
               "airRoot": [
                 49.694,
-                158.57
+                142.216
               ]
             }
           ],
           "durations": [
-            3,
-            3,
-            5
-          ]
+            2,
+            2,
+            2,
+            2,
+            2,
+            2
+          ],
+          "loop": false
         },
         "platform_drop": {
           "image": "atlas-loopy-pilot.png",
@@ -13860,20 +14850,42 @@
           "scale": 0.5,
           "frames": [
             {
+              "image": "loopy-double-start-clean-between-v1-prepared.png",
+              "scale": 0.06926546391752578,
               "rect": [
-                3617,
-                1773,
-                139,
-                215
+                0,
+                0,
+                978,
+                1552
               ],
               "root": [
-                60.947,
-                213.314
+                428.853,
+                1550
               ],
               "airRoot": [
-                60.947,
-                138.571
-              ]
+                428.853,
+                995.7992930232558
+              ],
+              "registration": "double-jump airborne anchor matches shipped final drawing and first rise"
+            },
+            {
+              "image": "loopy-double-early-between-v1-prepared.png",
+              "scale": 0.07222609909281229,
+              "rect": [
+                0,
+                0,
+                973,
+                1433
+              ],
+              "root": [
+                457.31,
+                1431
+              ],
+              "airRoot": [
+                457.31,
+                954.9802753623188
+              ],
+              "registration": "double-jump airborne anchor matches shipped final drawing and first rise"
             },
             {
               "rect": [
@@ -13889,8 +14901,46 @@
               "image": "atlas-loopy-presentation.png",
               "airRoot": [
                 68.429,
-                124.714
+                137.949
               ]
+            },
+            {
+              "image": "loopy-double-mid-between-v1-prepared.png",
+              "scale": 0.07215007215007214,
+              "rect": [
+                0,
+                0,
+                894,
+                1386
+              ],
+              "root": [
+                411.24,
+                1384
+              ],
+              "airRoot": [
+                411.24,
+                955.9865700000001
+              ],
+              "registration": "double-jump airborne anchor matches shipped final drawing and first rise"
+            },
+            {
+              "image": "loopy-double-late-between-v1-prepared.png",
+              "scale": 0.07072135785007072,
+              "rect": [
+                0,
+                0,
+                872,
+                1414
+              ],
+              "root": [
+                348.8,
+                1412
+              ],
+              "airRoot": [
+                348.8,
+                975.2994300000001
+              ],
+              "registration": "double-jump airborne anchor matches shipped final drawing and first rise"
             },
             {
               "rect": [
@@ -13910,10 +14960,14 @@
             }
           ],
           "durations": [
-            4,
-            3,
-            5
-          ]
+            2,
+            2,
+            2,
+            2,
+            2,
+            2
+          ],
+          "loop": false
         },
         "land_soft": {
           "image": "atlas-loopy-pilot.png",
@@ -13929,7 +14983,32 @@
               "root": [
                 79.17,
                 180.872
-              ]
+              ],
+              "scale": 0.5
+            },
+            {
+              "image": "loopy-soft-early-between-v1-prepared.png",
+              "scale": 0.07622203811101906,
+              "rect": [
+                0,
+                0,
+                1006,
+                1207
+              ],
+              "root": [
+                498,
+                1193.9033940217391
+              ],
+              "sourceSize": [
+                1006,
+                1207
+              ],
+              "trim": [
+                0,
+                0
+              ],
+              "visibleHeight": 1207,
+              "registration": "planted landing sole: world-depth interpolated from shipped endpoints"
             },
             {
               "rect": [
@@ -13941,7 +15020,56 @@
               "root": [
                 68.817,
                 185.135
-              ]
+              ],
+              "scale": 0.5
+            },
+            {
+              "image": "loopy-soft-mid-between-v2-prepared.png",
+              "scale": 0.07297096053611318,
+              "rect": [
+                0,
+                0,
+                958,
+                1343
+              ],
+              "root": [
+                472,
+                1331.5410580612245
+              ],
+              "sourceSize": [
+                958,
+                1343
+              ],
+              "trim": [
+                0,
+                0
+              ],
+              "visibleHeight": 1343,
+              "registration": "planted landing sole: world-depth interpolated from shipped endpoints"
+            },
+            {
+              "image": "loopy-soft-late-between-v2-prepared.png",
+              "scale": 0.06677524429967427,
+              "rect": [
+                0,
+                0,
+                817,
+                1535
+              ],
+              "root": [
+                390.5,
+                1523.9205946341463
+              ],
+              "sourceSize": [
+                817,
+                1535
+              ],
+              "trim": [
+                0,
+                0
+              ],
+              "visibleHeight": 1535,
+              "registration": "planted landing sole: world-depth interpolated from shipped endpoints"
             },
             {
               "rect": [
@@ -13953,14 +15081,19 @@
               "root": [
                 52.374,
                 210.713
-              ]
+              ],
+              "scale": 0.5
             }
           ],
           "durations": [
-            3,
-            3,
-            6
-          ]
+            2,
+            2,
+            2,
+            2,
+            2,
+            2
+          ],
+          "loop": false
         },
         "land_heavy": {
           "image": "atlas-loopy-pilot.png",
@@ -13976,7 +15109,32 @@
               "root": [
                 79.17,
                 180.872
-              ]
+              ],
+              "scale": 0.5
+            },
+            {
+              "image": "loopy-heavy-early-between-v1-prepared.png",
+              "scale": 0.0793010752688172,
+              "rect": [
+                0,
+                0,
+                974,
+                1116
+              ],
+              "root": [
+                467.5,
+                1103.4118983050848
+              ],
+              "sourceSize": [
+                974,
+                1116
+              ],
+              "trim": [
+                0,
+                0
+              ],
+              "visibleHeight": 1116,
+              "registration": "planted landing sole: world-depth interpolated from shipped endpoints"
             },
             {
               "rect": [
@@ -13988,7 +15146,56 @@
               "root": [
                 68.817,
                 185.135
-              ]
+              ],
+              "scale": 0.5
+            },
+            {
+              "image": "loopy-heavy-mid-between-v1-prepared.png",
+              "scale": 0.0763239875389408,
+              "rect": [
+                0,
+                0,
+                888,
+                1284
+              ],
+              "root": [
+                416.5,
+                1273.0444665306122
+              ],
+              "sourceSize": [
+                888,
+                1284
+              ],
+              "trim": [
+                0,
+                0
+              ],
+              "visibleHeight": 1284,
+              "registration": "planted landing sole: world-depth interpolated from shipped endpoints"
+            },
+            {
+              "image": "loopy-heavy-late-between-v1-prepared.png",
+              "scale": 0.07406069364161849,
+              "rect": [
+                0,
+                0,
+                865,
+                1384
+              ],
+              "root": [
+                379,
+                1374.0104905365854
+              ],
+              "sourceSize": [
+                865,
+                1384
+              ],
+              "trim": [
+                0,
+                0
+              ],
+              "visibleHeight": 1384,
+              "registration": "planted landing sole: world-depth interpolated from shipped endpoints"
             },
             {
               "rect": [
@@ -14000,14 +15207,19 @@
               "root": [
                 52.374,
                 210.713
-              ]
+              ],
+              "scale": 0.5
             }
           ],
           "durations": [
-            5,
-            4,
-            9
-          ]
+            3,
+            3,
+            3,
+            3,
+            3,
+            3
+          ],
+          "loop": false
         },
         "ledge_catch": {
           "image": "atlas-loopy-pilot.png",
@@ -23213,6 +24425,21 @@
               "image": "atlas-mrs-tasselbottom-presentation.png"
             },
             {
+              "image": "mrs-tasselbottom-jump-squat-between-v2-prepared.png",
+              "rect": [
+                0,
+                0,
+                1090,
+                1239
+              ],
+              "scale": 0.05851493139628733,
+              "root": [
+                537,
+                1228.0540758620689
+              ],
+              "registration": "planted shoe support; shipped sole depth 0.6405 world units"
+            },
+            {
               "rect": [
                 2027,
                 1409,
@@ -23226,9 +24453,11 @@
             }
           ],
           "durations": [
-            2,
-            2
-          ]
+            1,
+            1,
+            1
+          ],
+          "loop": false
         },
         "crouch_enter": {
           "image": "atlas-mrs-tasselbottom-pilot.png",
@@ -23590,6 +24819,25 @@
               ]
             },
             {
+              "image": "mrs-tasselbottom-takeoff-neutral-between-v1-prepared.png",
+              "scale": 0.06678921568627451,
+              "rect": [
+                0,
+                0,
+                957,
+                1224
+              ],
+              "root": [
+                445.005,
+                1222
+              ],
+              "airRoot": [
+                445.005,
+                660.6792660550459
+              ],
+              "registration": "takeoff midpoint; airborne vertical anchor interpolated from shipped endpoints"
+            },
+            {
               "rect": [
                 2927,
                 1409,
@@ -23607,9 +24855,11 @@
             }
           ],
           "durations": [
-            4,
+            2,
+            2,
             2
-          ]
+          ],
+          "loop": false
         },
         "takeoff_forward": {
           "image": "atlas-mrs-tasselbottom-pilot.png",
@@ -23632,6 +24882,25 @@
               ]
             },
             {
+              "image": "mrs-tasselbottom-takeoff-forward-between-v1-prepared.png",
+              "scale": 0.07003626473254759,
+              "rect": [
+                0,
+                0,
+                1022,
+                1103
+              ],
+              "root": [
+                445.592,
+                1101
+              ],
+              "airRoot": [
+                445.592,
+                610.5229935275081
+              ],
+              "registration": "takeoff midpoint; airborne vertical anchor interpolated from shipped endpoints"
+            },
+            {
               "rect": [
                 2927,
                 1409,
@@ -23649,9 +24918,11 @@
             }
           ],
           "durations": [
-            4,
+            2,
+            2,
             2
-          ]
+          ],
+          "loop": false
         },
         "takeoff_backward": {
           "image": "atlas-mrs-tasselbottom-pilot.png",
@@ -23674,6 +24945,25 @@
               ]
             },
             {
+              "image": "mrs-tasselbottom-takeoff-backward-between-v1-prepared.png",
+              "scale": 0.06639966273187184,
+              "rect": [
+                0,
+                0,
+                912,
+                1186
+              ],
+              "root": [
+                419.52000000000004,
+                1184
+              ],
+              "airRoot": [
+                419.52000000000004,
+                681.4078285714286
+              ],
+              "registration": "takeoff midpoint; airborne vertical anchor interpolated from shipped endpoints"
+            },
+            {
               "rect": [
                 2927,
                 1409,
@@ -23691,9 +24981,11 @@
             }
           ],
           "durations": [
-            4,
+            2,
+            2,
             2
-          ]
+          ],
+          "loop": false
         },
         "air_rise_loop": {
           "image": "atlas-mrs-tasselbottom-pilot.png",
@@ -23716,6 +25008,82 @@
               ]
             },
             {
+              "image": "mrs-tasselbottom-rise-early-between-v1-prepared.png",
+              "scale": 0.059278350515463915,
+              "rect": [
+                0,
+                0,
+                958,
+                1358
+              ],
+              "root": [
+                455.025649367605,
+                1356
+              ],
+              "airRoot": [
+                455.025649367605,
+                751.1663130434783
+              ],
+              "registration": "rise in-between; height and airborne anchor interpolate shipped endpoints"
+            },
+            {
+              "image": "mrs-tasselbottom-rise-mid-between-v1-prepared.png",
+              "scale": 0.055671537926235214,
+              "rect": [
+                0,
+                0,
+                964,
+                1437
+              ],
+              "root": [
+                477.23561387188903,
+                1435
+              ],
+              "airRoot": [
+                477.23561387188903,
+                802.5788699999999
+              ],
+              "registration": "rise in-between; height and airborne anchor interpolate shipped endpoints"
+            },
+            {
+              "image": "mrs-tasselbottom-rise-late-between-v1-prepared.png",
+              "scale": 0.05666429080541696,
+              "rect": [
+                0,
+                0,
+                982,
+                1403
+              ],
+              "root": [
+                505.8682652794778,
+                1401
+              ],
+              "airRoot": [
+                505.8682652794778,
+                791.2161144654089
+              ],
+              "registration": "rise in-between; height and airborne anchor interpolate shipped endpoints"
+            },
+            {
+              "image": "mrs-tasselbottom-rise-settle-between-v1-prepared.png",
+              "scale": 0.055909412597310686,
+              "rect": [
+                0,
+                0,
+                1004,
+                1413
+              ],
+              "root": [
+                537.3648042431661,
+                1411
+              ],
+              "airRoot": [
+                537.3648042431661,
+                804.6337443037976
+              ],
+              "registration": "rise in-between; height and airborne anchor interpolate shipped endpoints"
+            },
+            {
               "rect": [
                 2,
                 191,
@@ -23734,9 +25102,14 @@
             }
           ],
           "durations": [
-            6,
-            6
-          ]
+            1,
+            1,
+            1,
+            1,
+            2,
+            2
+          ],
+          "loop": false
         },
         "air_apex_loop": {
           "image": "atlas-mrs-tasselbottom-pilot.png",
@@ -23759,6 +25132,82 @@
               ]
             },
             {
+              "image": "mrs-tasselbottom-apex-early-between-v1-prepared.png",
+              "scale": 0.05465116279069768,
+              "rect": [
+                0,
+                0,
+                1068,
+                1376
+              ],
+              "root": [
+                523.9901224233784,
+                1374
+              ],
+              "airRoot": [
+                523.9901224233784,
+                779.1819574468084
+              ],
+              "registration": "apex in-between; height and airborne anchor interpolate shipped endpoints"
+            },
+            {
+              "image": "mrs-tasselbottom-apex-mid-between-v1-prepared.png",
+              "scale": 0.05346181299072092,
+              "rect": [
+                0,
+                0,
+                1069,
+                1401
+              ],
+              "root": [
+                539.1361227084819,
+                1399
+              ],
+              "airRoot": [
+                539.1361227084819,
+                809.5105193591455
+              ],
+              "registration": "apex in-between; height and airborne anchor interpolate shipped endpoints"
+            },
+            {
+              "image": "mrs-tasselbottom-apex-late-between-v1-prepared.png",
+              "scale": 0.053285714285714283,
+              "rect": [
+                0,
+                0,
+                1068,
+                1400
+              ],
+              "root": [
+                553.2734492373486,
+                1398
+              ],
+              "airRoot": [
+                553.2734492373486,
+                825.2230563002681
+              ],
+              "registration": "apex in-between; height and airborne anchor interpolate shipped endpoints"
+            },
+            {
+              "image": "mrs-tasselbottom-apex-settle-between-v1-prepared.png",
+              "scale": 0.05299572039942938,
+              "rect": [
+                0,
+                0,
+                1095,
+                1402
+              ],
+              "root": [
+                582.2725171774769,
+                1400
+              ],
+              "airRoot": [
+                582.2725171774769,
+                842.8473028263795
+              ],
+              "registration": "apex in-between; height and airborne anchor interpolate shipped endpoints"
+            },
+            {
               "rect": [
                 315,
                 191,
@@ -23778,8 +25227,13 @@
           ],
           "durations": [
             2,
+            2,
+            2,
+            2,
+            2,
             2
-          ]
+          ],
+          "loop": false
         },
         "air_fall_loop": {
           "image": "atlas-mrs-tasselbottom-pilot.png",
@@ -23802,6 +25256,82 @@
               ]
             },
             {
+              "image": "mrs-tasselbottom-fall-early-between-v1-prepared.png",
+              "scale": 0.05848082595870206,
+              "rect": [
+                0,
+                0,
+                1075,
+                1356
+              ],
+              "root": [
+                569.519391656072,
+                1354
+              ],
+              "airRoot": [
+                569.519391656072,
+                748.1768474148802
+              ],
+              "registration": "fall in-between; height and airborne anchor interpolate shipped endpoints"
+            },
+            {
+              "image": "mrs-tasselbottom-fall-mid-between-v1-prepared.png",
+              "scale": 0.0579646017699115,
+              "rect": [
+                0,
+                0,
+                1063,
+                1356
+              ],
+              "root": [
+                565.1662317774967,
+                1354
+              ],
+              "airRoot": [
+                565.1662317774967,
+                761.2835877862595
+              ],
+              "registration": "fall in-between; height and airborne anchor interpolate shipped endpoints"
+            },
+            {
+              "image": "mrs-tasselbottom-fall-late-between-v1-prepared.png",
+              "scale": 0.05736377025036819,
+              "rect": [
+                0,
+                0,
+                1052,
+                1358
+              ],
+              "root": [
+                561.3013768061052,
+                1356
+              ],
+              "airRoot": [
+                561.3013768061052,
+                775.7683953786906
+              ],
+              "registration": "fall in-between; height and airborne anchor interpolate shipped endpoints"
+            },
+            {
+              "image": "mrs-tasselbottom-fall-settle-between-v1-prepared.png",
+              "scale": 0.0553405017921147,
+              "rect": [
+                0,
+                0,
+                1056,
+                1395
+              ],
+              "root": [
+                565.4266700979051,
+                1393
+              ],
+              "airRoot": [
+                565.4266700979051,
+                810.8798898963729
+              ],
+              "registration": "fall in-between; height and airborne anchor interpolate shipped endpoints"
+            },
+            {
               "rect": [
                 628,
                 191,
@@ -23820,9 +25350,14 @@
             }
           ],
           "durations": [
-            6,
-            6
-          ]
+            1,
+            1,
+            1,
+            1,
+            1,
+            2
+          ],
+          "loop": false
         },
         "air_fastfall_loop": {
           "image": "atlas-mrs-tasselbottom-pilot.png",
@@ -23845,6 +25380,25 @@
               ]
             },
             {
+              "image": "mrs-tasselbottom-fastfall-early-between-v1-prepared.png",
+              "scale": 0.06123163051084675,
+              "rect": [
+                0,
+                0,
+                973,
+                1429
+              ],
+              "root": [
+                504.72126470588233,
+                1427
+              ],
+              "airRoot": [
+                504.72126470588233,
+                794.719977142857
+              ],
+              "registration": "fast-fall in-between; airborne anchor interpolated from shipped endpoints"
+            },
+            {
               "rect": [
                 941,
                 191,
@@ -23860,6 +25414,44 @@
                 74.381,
                 111.077
               ]
+            },
+            {
+              "image": "mrs-tasselbottom-fastfall-mid-between-v1-prepared.png",
+              "scale": 0.06221198156682028,
+              "rect": [
+                0,
+                0,
+                961,
+                1519
+              ],
+              "root": [
+                535.4277450980392,
+                1517
+              ],
+              "airRoot": [
+                535.4277450980392,
+                870.0896296296296
+              ],
+              "registration": "fast-fall in-between; airborne anchor interpolated from shipped endpoints"
+            },
+            {
+              "image": "mrs-tasselbottom-fastfall-late-between-v1-prepared.png",
+              "scale": 0.06290743155149935,
+              "rect": [
+                0,
+                0,
+                923,
+                1534
+              ],
+              "root": [
+                451.613299719888,
+                1532
+              ],
+              "airRoot": [
+                451.613299719888,
+                838.0806321243523
+              ],
+              "registration": "fast-fall in-between; airborne anchor interpolated from shipped endpoints"
             },
             {
               "rect": [
@@ -23879,10 +25471,14 @@
             }
           ],
           "durations": [
-            3,
-            3,
-            5
-          ]
+            2,
+            2,
+            2,
+            2,
+            2,
+            2
+          ],
+          "loop": false
         },
         "platform_drop": {
           "image": "atlas-mrs-tasselbottom-pilot.png",
@@ -24071,6 +25667,25 @@
               ]
             },
             {
+              "image": "mrs-tasselbottom-double-early-between-v1-prepared.png",
+              "scale": 0.060600578871201155,
+              "rect": [
+                0,
+                0,
+                1076,
+                1382
+              ],
+              "root": [
+                572.6305380597016,
+                1380
+              ],
+              "airRoot": [
+                572.6305380597016,
+                722.1383164179105
+              ],
+              "registration": "double-jump in-between; airborne anchor interpolated from shipped endpoints"
+            },
+            {
               "rect": [
                 1880,
                 2,
@@ -24086,6 +25701,44 @@
                 68.768,
                 87.293
               ]
+            },
+            {
+              "image": "mrs-tasselbottom-double-mid-between-v1-prepared.png",
+              "scale": 0.06069726611487334,
+              "rect": [
+                0,
+                0,
+                963,
+                1329
+              ],
+              "root": [
+                475.49072995487677,
+                1327
+              ],
+              "airRoot": [
+                475.49072995487677,
+                723.0858347107439
+              ],
+              "registration": "double-jump in-between; airborne anchor interpolated from shipped endpoints"
+            },
+            {
+              "image": "mrs-tasselbottom-double-late-between-v1-prepared.png",
+              "scale": 0.060503992015968074,
+              "rect": [
+                0,
+                0,
+                917,
+                1336
+              ],
+              "root": [
+                434.9566288711481,
+                1334
+              ],
+              "airRoot": [
+                434.9566288711481,
+                729.4091711340205
+              ],
+              "registration": "double-jump in-between; airborne anchor interpolated from shipped endpoints"
             },
             {
               "rect": [
@@ -24105,10 +25758,14 @@
             }
           ],
           "durations": [
-            4,
-            3,
-            5
-          ]
+            2,
+            2,
+            2,
+            2,
+            2,
+            2
+          ],
+          "loop": false
         },
         "land_soft": {
           "image": "atlas-mrs-tasselbottom-pilot.png",
@@ -24119,12 +25776,27 @@
                 2,
                 1208,
                 139,
-                136
+                129
               ],
               "root": [
                 74.754,
-                135.664
+                127.664
               ]
+            },
+            {
+              "image": "mrs-tasselbottom-soft-early-between-v2-prepared.png",
+              "scale": 0.05672268907563025,
+              "rect": [
+                0,
+                0,
+                1202,
+                1190
+              ],
+              "root": [
+                645.5,
+                1183.6489259259258
+              ],
+              "registration": "planted sole; depth interpolated from shipped landing endpoints"
             },
             {
               "rect": [
@@ -24137,6 +25809,36 @@
                 67.832,
                 132.895
               ]
+            },
+            {
+              "image": "mrs-tasselbottom-soft-mid-between-v1-prepared.png",
+              "scale": 0.060337552742616034,
+              "rect": [
+                0,
+                0,
+                1078,
+                1185
+              ],
+              "root": [
+                581,
+                1175.1912937062937
+              ],
+              "registration": "planted sole; depth interpolated from shipped landing endpoints"
+            },
+            {
+              "image": "mrs-tasselbottom-soft-late-between-v1-prepared.png",
+              "scale": 0.05390070921985816,
+              "rect": [
+                0,
+                0,
+                1050,
+                1410
+              ],
+              "root": [
+                519.5,
+                1398.290197368421
+              ],
+              "registration": "planted sole; depth interpolated from shipped landing endpoints"
             },
             {
               "rect": [
@@ -24152,10 +25854,14 @@
             }
           ],
           "durations": [
-            3,
-            3,
-            6
-          ]
+            2,
+            2,
+            2,
+            2,
+            2,
+            2
+          ],
+          "loop": false
         },
         "land_heavy": {
           "image": "atlas-mrs-tasselbottom-pilot.png",
@@ -24166,12 +25872,27 @@
                 2,
                 1208,
                 139,
-                136
+                129
               ],
               "root": [
                 74.754,
-                135.664
+                127.664
               ]
+            },
+            {
+              "image": "mrs-tasselbottom-heavy-early-between-v1-prepared.png",
+              "scale": 0.05537052456286428,
+              "rect": [
+                0,
+                0,
+                1221,
+                1201
+              ],
+              "root": [
+                605.5,
+                1194.4938308270678
+              ],
+              "registration": "planted sole; depth interpolated from shipped landing endpoints"
             },
             {
               "rect": [
@@ -24184,6 +25905,36 @@
                 67.832,
                 132.895
               ]
+            },
+            {
+              "image": "mrs-tasselbottom-heavy-mid-between-v1-prepared.png",
+              "scale": 0.06074766355140187,
+              "rect": [
+                0,
+                0,
+                1162,
+                1177
+              ],
+              "root": [
+                596.5,
+                1167.2575128205128
+              ],
+              "registration": "planted sole; depth interpolated from shipped landing endpoints"
+            },
+            {
+              "image": "mrs-tasselbottom-heavy-late-between-v1-prepared.png",
+              "scale": 0.05333333333333334,
+              "rect": [
+                0,
+                0,
+                1083,
+                1425
+              ],
+              "root": [
+                537,
+                1413.165625
+              ],
+              "registration": "planted sole; depth interpolated from shipped landing endpoints"
             },
             {
               "rect": [
@@ -24199,10 +25950,14 @@
             }
           ],
           "durations": [
-            5,
-            4,
-            9
-          ]
+            3,
+            3,
+            3,
+            3,
+            3,
+            3
+          ],
+          "loop": false
         },
         "ledge_catch": {
           "image": "atlas-mrs-tasselbottom-pilot.png",

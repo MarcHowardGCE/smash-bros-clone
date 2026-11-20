@@ -27,3 +27,23 @@ it('cues a gentle Pack 03 touchdown and cancels the presentation when movement r
  expect(withMovementArt(soft, { ...grounded, state: 'WALK' }, null, DEFAULT_STAGE).artCue).toBeUndefined();
  expect(withMovementArt({ ...descending, characterId: 'swift' }, { ...grounded, characterId: 'swift' }, null, DEFAULT_STAGE).artCue).toBeUndefined();
 });
+
+it('cues Pack 04 gentle ground contact immediately and preserves action interruption',()=>{
+ for(const characterId of ['zane-corvo','velvet-reply'] as const){
+  const grounded={...p,characterId};const before={...grounded,state:'AIRBORNE',isGrounded:false,vy:6};
+  const contact=withMovementArt(before,{...grounded,state:'AIRBORNE'},null,DEFAULT_STAGE);
+  expect(contact).toMatchObject({artCue:'land_soft',artCueFrame:0,isGrounded:true});
+  for(const state of ['JUMPSQUAT','ATTACK','SHIELD','WALK'] as const)expect(withMovementArt(contact,{...grounded,state},null,DEFAULT_STAGE).artCue).toBeUndefined();
+  expect(withMovementArt({...before,vy:14},grounded,null,DEFAULT_STAGE).artCue).toBe('land_heavy');
+ }
+});
+
+it('cues Pack 02 gentle contact without delaying actions or overriding heavy landings',()=>{
+ for(const characterId of ['moonshine','hulk-hoagie'] as const){
+  const grounded={...p,characterId};const before={...grounded,state:'AIRBORNE',isGrounded:false,vy:6};
+  const contact=withMovementArt(before,{...grounded,state:'AIRBORNE'},null,DEFAULT_STAGE);
+  expect(contact).toMatchObject({artCue:'land_soft',artCueFrame:0,isGrounded:true});
+  for(const state of ['JUMPSQUAT','ATTACK','SHIELD','WALK'] as const)expect(withMovementArt(contact,{...grounded,state},null,DEFAULT_STAGE).artCue).toBeUndefined();
+  expect(withMovementArt({...before,vy:14},grounded,null,DEFAULT_STAGE).artCue).toBe('land_heavy');
+ }
+});

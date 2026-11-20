@@ -1,0 +1,22 @@
+{
+  "tool": "built-in image_gen",
+  "date": "2026-11-18",
+  "prompt": "Production full-body 2D Moonshine fighter sprite, ONE neutral jump takeoff MIDPOINT, facing RIGHT, genuinely transparent background. The reference is his exact SHIPPED costume and identity: brown raccoon-skin cap with striped tail hanging behind, scruffy goatee, long nose and sleepy grin; CREAM sleeveless undershirt, dark suspenders, RED neckerchief, patched BLUE jeans with rolled cuffs, rope loop on hip, cream hand/forearm wraps and oversized brown boots with yellow laces. Match wiry adult proportions, ink outlines, textured warm illustration and colors exactly. Pose FORWARD takeoff MIDPOINT: facing RIGHT and lifting toward right, torso leans modestly right, front knee rising only partway, rear boot trailing back left and down, front wrapped fist near chest, back arm near hip. A transitional launch, not a kick, punch or sprint. No arm overhead or high tuck. Whole character with generous margins. NO backdrop, floor, shadows, glow, halo, white mist, brown haze, motion lines, blur, lettering, extra limbs or costume changes. Empty space must have alpha zero.",
+  "identityReference": "moonshine-shipped-idle-reference.png",
+  "referenceOrigin": {
+    "image": "apps/client/public/fighter-art-newcomers-v1/moonshine-idle-v1.png",
+    "rect": [
+      203,
+      23,
+      263,
+      576
+    ]
+  },
+  "preparation": {
+    "alphaFloor": 5,
+    "worldHeight": 74,
+    "preserveSource": true,
+    "detachedForwardAlpha6PixelsRemoved": 2
+  },
+  "review": "Neutral midpoint reviewed before generating forward/backward. Existing endpoints retained."
+}

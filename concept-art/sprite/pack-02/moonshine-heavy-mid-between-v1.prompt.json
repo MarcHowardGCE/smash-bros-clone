@@ -1,0 +1,16 @@
+{
+  "tool": "built-in image_gen",
+  "date": "2026-11-18",
+  "prompt": "Production full-body 2D Moonshine fighter sprite, ONE EARLY HEAVY-LANDING recovery pose facing RIGHT, genuinely transparent RGBA. First reference is SHIPPED idle identity/costume; second is SHIPPED deep heavy-landing pose and compact proportions. Preserve brown raccoon cap/striped tail, scruffy goatee/long nose/sleepy grin, CREAM sleeveless undershirt, dark suspenders, RED kerchief, cream hand/forearm wraps, patched BLUE jeans/rolled cuffs, hip rope, oversized brown YELLOW-laced boots. Crisp textured ink shading, wiry adult body, full-size head matching references. Pose: MIDDLE HEAVY-LANDING recovery. BOTH boot soles planted on same horizontal baseline in wide stance. Knees still deeply bent, torso rising partway from forward lean, head lifted and full size. Near wrapped hand lifting toward the near knee with relaxed open fingers, other wrapped fist moves forward beside waist. No hand touches ground; halfway from low three-point landing toward squat guard, no raised feet or kneeling. Whole body with margin. No drawn floor, shadow, backdrop, mist, haze, glow, halo, blur, motion streaks, text, extra limbs. Do NOT copy reference edge residue; empty pixels alpha zero.",
+  "references": [
+    "moonshine-shipped-idle-reference.png",
+    "moonshine-shipped-heavy-reference-0.png"
+  ],
+  "preparation": {
+    "alphaFloor": 5,
+    "worldHeight": 60,
+    "preserveSource": true,
+    "support": "center of solid boot soles in bottom two percent; rootY height minus two"
+  },
+  "review": "Early reviewed before remaining poses; shipped costume, idle-relative head scale and light/dark registration checked. Wide original recovery precedes new settling pose to avoid reopening stance at the end."
+}

@@ -1057,7 +1057,7 @@ test('Pack 04 soft and heavy landing soles stay on the floor', async ({ page }) 
       for (const facing of [-1, 1]) {
         for (const clip of ['land_soft', 'land_heavy']) {
           const textures = new Set();
-          for (let tick = 0; tick < 9; tick++) {
+          for (let tick = 0; tick < (clip === 'land_soft' ? 12 : 18); tick++) {
             pilot.update(clip === 'land_soft' ? 'LANDING_LAG' : 'IDLE', tick, null,
               true, 0, true, false, 1, 0, false, 1, facing, undefined, undefined,
               { isGrounded: true, artCue: clip, artCueFrame: tick });
@@ -1068,7 +1068,7 @@ test('Pack 04 soft and heavy landing soles stay on the floor', async ({ page }) 
             }
             textures.add(sprite.texture);
           }
-          if (textures.size !== 3) throw Error(id + ' ' + clip + ' failed to advance');
+          if (textures.size !== assets.characters[id][clip].frames.length) throw Error(id + ' ' + clip + ' failed to advance');
         }
       }
       pilot.sprite.destroy();
@@ -1784,4 +1784,610 @@ for (const fighter of ['zane-corvo', 'velvet-reply']) {
     await capture('zero-percent-idle');
     console.log(fighter + ' front gap after return to idle:', Math.abs(victim!.x - holder!.x).toFixed(2));
   });
+}
+
+for (const fighter of ['zane-corvo', 'velvet-reply']) {
+test(fighter + ' prepared air poses play once in both facings', async ({ page }, testInfo) => {
+  await page.addInitScript(id => localStorage.setItem('eth:dojo:setup:v1',
+    JSON.stringify({ fighter: id, dummy: 'all-rounder', dummyMode: 'still' })), fighter);
+  await page.goto('/');
+  await page.locator('#splash-screen').click();
+  await page.locator('#practice-btn').click();
+  await page.locator('#practice-free').click();
+  const sample = () => page.evaluate(() => {
+    const debug = window.__smashDebug!;
+    const player = Object.values(debug.getSnapshot()?.players ?? {}).find(p => p.slotIndex === 0);
+    const art = debug.getArtState?.().players.find(p => p.slot === 0);
+    return { grounded: player?.isGrounded, clip: art?.clip, rect: art?.frameRect,
+      facing: art?.bodyFacing, visible: art?.bodyVisible };
+  });
+  await expect.poll(sample).toMatchObject({ grounded: true, clip: 'idle' });
+  const manifest = await (await page.request.get('/fighter-art-pack-04-v1/production/manifest.json')).json();
+  const clips = manifest.characters[fighter].clips;
+  const rise = clips.air_rise_loop;
+  expect(rise.durations).toEqual([2, 2, 2, 2, 2, 2]);
+  expect(rise.frames).toHaveLength(6);
+  const expected = rise.frames.map((frame: { rect: number[] }) => frame.rect.join(','));
+  await page.keyboard.press('F6');
+  const step = () => page.keyboard.press('F7');
+  for (const [key, facing] of [['ArrowLeft', -1], ['ArrowRight', 1]] as const) {
+    await page.keyboard.press('r'); await step();
+    await page.keyboard.down(key); await step(); await page.keyboard.up(key);
+    await page.keyboard.down('KeyX'); await step();
+    let apexTicks = 0;
+    const seen: Record<string, string[]> = { air_rise_loop: [], air_apex_loop: [], air_fall_loop: [] };
+    for (let tick = 0; tick < 90; tick++) {
+      if (tick === 12) await page.keyboard.up('KeyX');
+      const frame = await sample();
+      if (frame.clip === 'air_apex_loop') apexTicks++;
+      expect(frame).toMatchObject({ facing, visible: true });
+      const sequence = seen[frame.clip!];
+      if (sequence && sequence.at(-1) !== frame.rect) {
+        sequence.push(frame.rect!);
+        await page.screenshot({ path: testInfo.outputPath(`${frame.clip}-${facing}-${sequence.length}.png`) });
+      }
+      if (tick > 5 && frame.grounded) break;
+      await step();
+    }
+    expect(apexTicks).toBeGreaterThanOrEqual(12);
+    await testInfo.attach(`apex-window-${facing}`, { body: JSON.stringify({ apexTicks }), contentType: 'application/json' });
+    expect(seen.air_rise_loop).toEqual(expected);
+    for (const phase of ['air_apex_loop', 'air_fall_loop']) {
+      expect(seen[phase]).toEqual(clips[phase].frames.map((frame: { rect: number[] }) => frame.rect.join(',')));
+      expect(seen[phase]).toHaveLength(6);
+    }
+    expect((await sample()).grounded).toBe(true);
+  }
+});
+}
+
+for (const fighter of ['zane-corvo', 'velvet-reply']) {
+test(fighter + ' directional takeoff and apex handoffs in both facings', async ({ page }, testInfo) => {
+  test.setTimeout(60_000);
+  await page.addInitScript(id => localStorage.setItem('eth:dojo:setup:v1',
+    JSON.stringify({ fighter: id, dummy: 'all-rounder', dummyMode: 'still' })), fighter);
+  await page.goto('/');
+  await page.locator('#splash-screen').click();
+  await page.locator('#practice-btn').click();
+  await page.locator('#practice-free').click();
+  const sample = () => page.evaluate(() => {
+    const debug = window.__smashDebug!;
+    const player = Object.values(debug.getSnapshot()?.players ?? {}).find(p => p.slotIndex === 0);
+    const art = debug.getArtState?.().players.find(p => p.slot === 0);
+    return { state: player?.state, stateFrame: player?.stateFrame, grounded: player?.isGrounded, clip: art?.clip, rect: art?.frameRect,
+      cue: player?.artCue, cueAge: player?.artCueFrame, facing: art?.bodyFacing, visible: art?.bodyVisible,
+      x: player?.x, y: player?.y, vx: player?.vx, vy: player?.vy,
+      offsetX: art && player ? art.bodyX - player.x : null,
+      offsetY: art && player ? art.bodyY - player.y : null };
+  });
+  await expect.poll(sample).toMatchObject({ grounded: true, clip: 'idle' });
+  await page.keyboard.press('F6');
+  const step = () => page.keyboard.press('F7');
+  for (const facing of [-1, 1]) for (const direction of ['neutral', 'forward', 'backward']) {
+    await page.keyboard.press('r'); await step();
+    const face = facing < 0 ? 'ArrowLeft' : 'ArrowRight';
+    await page.keyboard.down(face); await step(); await page.keyboard.up(face);
+    for (let tick = 0; tick < 12; tick++) await step();
+    const approach = direction === 'backward' ? (facing < 0 ? 'ArrowRight' : 'ArrowLeft') : face;
+    if (direction !== 'neutral') {
+      await page.keyboard.down(approach);
+      for (let tick = 0; tick < 4; tick++) await step();
+    }
+    await page.keyboard.down('KeyX'); await step();
+    const squatTrace = [await sample()];
+    await page.screenshot({path:testInfo.outputPath(`${facing}-${direction}-squat-first.png`)});
+    // Preserve approach momentum while turning during the grounded squat.
+    if (direction === 'backward') await page.keyboard.up(approach);
+    const drift = direction === 'neutral' ? null : face;
+    if (drift) await page.keyboard.down(drift);
+    await step();
+    squatTrace.push(await sample());
+    await page.screenshot({path:testInfo.outputPath(`${facing}-${direction}-squat-second.png`)});
+    const trace: Awaited<ReturnType<typeof sample>>[] = [];
+    let previous = '';
+    let previousRect = '';
+    for (let tick = 0; tick < 100; tick++) {
+      if (tick === 14) {
+        await page.keyboard.up('KeyX');
+        if (drift) await page.keyboard.up(drift);
+      }
+      const frame = await sample(); trace.push(frame);
+      expect(frame).toMatchObject({ facing, visible: true });
+      if (frame.clip !== previous || frame.rect !== previousRect) {
+        await page.screenshot({ path: testInfo.outputPath(`${facing}-${direction}-${tick}-${frame.clip}.png`) });
+        previous = frame.clip!; previousRect = frame.rect!;
+      }
+      if (tick > 5 && frame.grounded) break;
+      await step();
+    }
+    await page.keyboard.up('KeyX'); if (drift) await page.keyboard.up(drift);
+    const takeoff = trace.find(frame => frame.clip === `takeoff_${direction}`)!;
+    expect(takeoff.cueAge).toBe(0);
+    if (direction === 'backward') expect(takeoff.vx! * facing).toBeLessThan(-0.5);
+    if (direction === 'forward') expect(takeoff.vx! * facing).toBeGreaterThan(0.5);
+    if(['zane-corvo','velvet-reply'].includes(fighter)){
+      const m=await(await page.request.get('/fighter-art-pack-04-v1/production/manifest.json')).json();
+      const clip=m.characters[fighter].clips[`takeoff_${direction}`];expect(clip.durations).toEqual([2,2,2]);
+      const expected=clip.frames.map((f:{rect:number[]})=>f.rect.join(','));expect(new Set(expected).size).toBe(3);
+      const launch=trace.filter(f=>f.clip===`takeoff_${direction}`);expect(launch.map(f=>f.cueAge)).toEqual([0,1,2,3,4,5]);
+      expect(launch.map(f=>f.rect)).toEqual(expected.flatMap((r:string)=>[r,r]));
+      expect(trace.find(f=>f.clip==='air_rise_loop')?.rect).toBe(expected[2]);
+      const {writeFileSync}=await import('node:fs');writeFileSync(testInfo.outputPath(`${facing}-${direction}-takeoff-trace.json`),JSON.stringify(trace,null,2));
+    }
+    const clips = trace.map(frame => frame.clip);
+    expect(clips).toEqual(expect.arrayContaining([`takeoff_${direction}`, 'air_rise_loop', 'air_apex_loop', 'air_fall_loop']));
+    for (const frame of trace.filter(f => ['air_rise_loop', 'air_apex_loop', 'air_fall_loop'].includes(f.clip!))) {
+      expect(frame.offsetX).toBeCloseTo(0); expect(frame.offsetY).toBeCloseTo(0);
+    }
+    expect(trace.at(-1)?.grounded).toBe(true);
+    console.log('TAKEOFF_BUDGET',JSON.stringify({fighter,facing,direction,squat:squatTrace,early:trace.filter(f=>f.cue?.startsWith('takeoff_')&&f.cueAge!==undefined&&f.cueAge<8).map(f=>({clip:f.clip,cueAge:f.cueAge,rect:f.rect,offsetY:f.offsetY}))}));
+    await testInfo.attach(`${facing}-${direction}-squat-trace`,{body:JSON.stringify(squatTrace,null,2),contentType:'application/json'});
+    await testInfo.attach(`${facing}-${direction}-trace`, { body: JSON.stringify(trace, null, 2), contentType: 'application/json' });
+  }
+});
+}
+
+test('Zane authored backward takeoff keeps its root at the rise handoff', async ({ page }) => {
+  await page.goto('/');
+  await page.evaluate(async () => {
+    const path = '/src/renderer/fullbody/FullBodyPilot.ts';
+    const { FullBodyPilot, preloadFullBodyPilot } = await import(path);
+    const assets = await preloadFullBodyPilot(true, ['zane-corvo'], false, true);
+    for (const facing of [-1, 1]) {
+      const pilot = new FullBodyPilot(assets, 'zane-corvo', 'zane-corvo');
+      const trace: { clip: string; x: number; y: number; rootY: number }[] = [];
+      for (let tick = 0; tick < 36; tick++) {
+        const vy = tick < 24 ? -6 : tick < 30 ? 0 : 6;
+        pilot.update('AIRBORNE', tick, null, true, vy, true, false, 1, 0, false, 1, facing,
+          undefined, null, { isGrounded: false, artCue: 'takeoff_backward', artCueFrame: tick });
+        const sprite = pilot.sprite;
+        if (!sprite.visible || !Number.isFinite(sprite.scale.x) || !Number.isFinite(sprite.pivot.y)) {
+          throw Error('Invisible or invalid backward takeoff at ' + facing + ':' + tick);
+        }
+        trace.push({ clip: sprite.label, x: sprite.x, y: sprite.y, rootY: sprite.pivot.y });
+      }
+      for (let tick = 0; tick < 6; tick++) {
+        if (trace[tick]!.clip !== 'takeoff_backward') throw Error('Backward cue ended early');
+      }
+      if (trace[6]!.clip !== 'air_rise_loop' || trace[24]!.clip !== 'air_apex_loop' ||
+        trace[30]!.clip !== 'air_fall_loop') throw Error('Incorrect backward phase handoff');
+      for (const frame of trace.slice(5)) {
+        if (Math.abs(frame.x) > 0.001 || Math.abs(frame.y) > 0.001) throw Error('Backward root offset');
+      }
+      pilot.sprite.destroy(); pilot.effectSprite.destroy();
+    }
+  });
+});
+
+for (const fighter of ['moonshine', 'hulk-hoagie', 'mr-wrong', 'loopy', 'mrs-tasselbottom', 'zane-corvo', 'velvet-reply']) {
+  test(fighter + ' interrupted jump and first landing stay registered', async ({ page }, testInfo) => {
+    test.setTimeout(60_000);
+    await page.addInitScript(id => localStorage.setItem('eth:dojo:setup:v1', JSON.stringify({
+      fighter: id, dummy: 'all-rounder', dummyMode: 'still',
+    })), fighter);
+    await page.goto('/'); await page.locator('#splash-screen').click();
+    await page.locator('#practice-btn').click(); await page.locator('#practice-free').click();
+    const sample = () => page.evaluate(() => {
+      const debug = window.__smashDebug!;
+      const p = Object.values(debug.getSnapshot()?.players ?? {}).find(p => p.slotIndex === 0);
+      const a = debug.getArtState?.().players.find(p => p.slot === 0);
+      return { clip: a?.clip, rect: a?.frameRect, visible: a?.bodyVisible, facing: a?.bodyFacing,
+        grounded: p?.isGrounded, fast: p?.isFastFalling, vy: p?.vy,
+        offsetX: a && p ? a.bodyX - p.x : null, offsetY: a && p ? a.bodyY - p.y : null };
+    });
+    await expect.poll(sample).toMatchObject({ grounded: true, clip: 'idle' });
+    await page.keyboard.press('F6'); const step = () => page.keyboard.press('F7');
+    for (const facing of [-1, 1]) for (const phase of ['air_rise_loop', 'air_apex_loop']) {
+      await page.keyboard.press('r'); await step();
+      const key = facing < 0 ? 'ArrowLeft' : 'ArrowRight';
+      await page.keyboard.down(key); await step(); await page.keyboard.up(key);
+      for (let tick = 0; tick < 12; tick++) await step();
+      await page.keyboard.down('KeyX'); await step();
+      let found = false;
+      for (let tick = 0; tick < 45; tick++) {
+        if ((await sample()).clip === phase) { found = true; break; }
+        await step();
+      }
+      expect(found).toBe(true);
+      const before = await sample();
+      const expectedOffset = fighter === 'moonshine' || fighter === 'hulk-hoagie' ? before.offsetY! : 0;
+      expect(Number.isFinite(expectedOffset)).toBe(true);
+      await page.screenshot({ path: testInfo.outputPath(`${facing}-${phase}-before.png`) });
+      await page.keyboard.up('KeyX'); await step();
+      await page.keyboard.down('KeyX'); await step(); await page.keyboard.up('KeyX');
+      const first = await sample();
+      expect(first).toMatchObject({ clip: 'double_jump_transition', grounded: false, facing, visible: true });
+      expect(first.offsetX).toBeCloseTo(0); expect(first.offsetY).toBeCloseTo(expectedOffset);
+      await page.screenshot({ path: testInfo.outputPath(`${facing}-${phase}-double.png`) });
+      await page.keyboard.down('ArrowDown'); await step();
+      expect((await sample()).fast).toBe(false);
+      await page.keyboard.up('ArrowDown'); await step();
+      const trace = []; let pressedDown = false; let landed = false;
+      for (let tick = 0; tick < 90; tick++) {
+        let frame = await sample();
+        expect(frame).toMatchObject({ facing, visible: true });
+        if (!pressedDown && frame.vy! >= 0) {
+          await page.keyboard.down('ArrowDown'); await step();
+          pressedDown = true; frame = await sample();
+          expect(frame.fast).toBe(true);
+          await page.screenshot({ path: testInfo.outputPath(`${facing}-${phase}-fast.png`) });
+          await page.keyboard.up('ArrowDown');
+        }
+        trace.push(frame);
+        if (frame.grounded) {
+          landed = true;
+          expect(frame.fast).toBe(false);
+          expect(['land_soft', 'land_heavy']).toContain(frame.clip);
+          await page.screenshot({ path: testInfo.outputPath(`${facing}-${phase}-land.png`) });
+          break;
+        }
+        if (['double_jump_transition', 'air_rise_loop', 'air_apex_loop', 'air_fall_loop', 'air_fastfall_loop'].includes(frame.clip!)) {
+          expect(frame.offsetX).toBeCloseTo(0); expect(frame.offsetY).toBeCloseTo(expectedOffset);
+        }
+        await step();
+      }
+      expect(pressedDown).toBe(true); expect(landed).toBe(true);
+      expect(trace.some(frame => frame.clip === 'air_fastfall_loop')).toBe(true);
+      await testInfo.attach(`${facing}-${phase}-interruption`, { body: JSON.stringify(trace, null, 2), contentType: 'application/json' });
+    }
+  });
+}
+
+for (const fighter of ['moonshine', 'hulk-hoagie', 'mr-wrong', 'loopy', 'mrs-tasselbottom', 'zane-corvo', 'velvet-reply']) {
+  test(fighter + ' aerial attack and dodge interruption handoffs', async ({ page }, testInfo) => {
+    test.setTimeout(120_000);
+    await page.addInitScript(id => localStorage.setItem('eth:dojo:setup:v1', JSON.stringify({
+      fighter: id, dummy: 'all-rounder', dummyMode: 'still',
+    })), fighter);
+    await page.goto('/'); await page.locator('#splash-screen').click();
+    await page.locator('#practice-btn').click(); await page.locator('#practice-free').click();
+    const sample = () => page.evaluate(() => {
+      const debug = window.__smashDebug!;
+      const p = Object.values(debug.getSnapshot()?.players ?? {}).find(p => p.slotIndex === 0);
+      const a = debug.getArtState?.().players.find(p => p.slot === 0);
+      return { state: p?.state, clip: a?.clip, rect: a?.frameRect, visible: a?.bodyVisible,
+        facing: a?.bodyFacing, grounded: p?.isGrounded, move: p?.currentMoveId,
+        offsetX: a && p ? a.bodyX - p.x : null, offsetY: a && p ? a.bodyY - p.y : null };
+    });
+    await expect.poll(sample).toMatchObject({ grounded: true, clip: 'idle' });
+    await page.keyboard.press('F6'); const step = () => page.keyboard.press('F7');
+    for (const facing of [-1, 1]) for (const phase of ['air_rise_loop', 'air_apex_loop']) {
+      for (const action of ['neutral-air', 'forward-air', 'back-air', 'up-air', 'down-air', 'neutral-dodge', 'down-dodge']) {
+        const name = `${facing}-${phase}-${action}`;
+        await page.keyboard.press('r'); await step();
+        const key = facing < 0 ? 'ArrowLeft' : 'ArrowRight';
+        await page.keyboard.down(key); await step(); await page.keyboard.up(key);
+        for (let tick = 0; tick < 12; tick++) await step();
+        await page.keyboard.down('KeyX'); await step();
+        let found = false;
+        for (let tick = 0; tick < 45; tick++) {
+          if ((await sample()).clip === phase) { found = true; break; }
+          await step();
+        }
+        expect(found, name).toBe(true);
+        await page.keyboard.up('KeyX');
+        const before = await sample();
+        const expectedOffset = fighter === 'moonshine' || fighter === 'hulk-hoagie' ? before.offsetY! : 0;
+        expect(Number.isFinite(expectedOffset)).toBe(true);
+        await page.screenshot({ path: testInfo.outputPath(name + '-before.png') });
+        const attack = action.endsWith('-air');
+        const aim = action === 'forward-air' ? key : action === 'back-air' ?
+          (facing < 0 ? 'ArrowRight' : 'ArrowLeft') : action === 'up-air' ? 'ArrowUp' :
+          action === 'down-air' || action === 'down-dodge' ? 'ArrowDown' : null;
+        if (aim) await page.keyboard.down(aim);
+        const actionKey = attack ? 'KeyZ' : 'Shift';
+        await page.keyboard.down(actionKey); await step(); await page.keyboard.up(actionKey);
+        if (aim) await page.keyboard.up(aim);
+        const first = await sample();
+        expect(first, name).toMatchObject({ grounded: false, facing, visible: true,
+          clip: attack ? action.replace('-', '_') : action === 'down-dodge' ? 'air_dodge_down' : 'air_dodge_neutral' });
+        await page.screenshot({ path: testInfo.outputPath(name + '-action.png') });
+        const trace = []; let landed = false; let sawFall = false;
+        for (let tick = 0; tick < 150; tick++) {
+          const frame = await sample(); trace.push(frame);
+          expect(frame, name).toMatchObject({ facing, visible: true });
+          if (frame.grounded) {
+            landed = true;
+            expect(['land_soft', 'land_heavy', 'air_dodge_land'], name).toContain(frame.clip);
+            await page.screenshot({ path: testInfo.outputPath(name + '-land.png') });
+            break;
+          }
+          expect(frame.offsetX, name).toBeCloseTo(0); expect(frame.offsetY, name).toBeCloseTo(expectedOffset);
+          if (frame.clip === 'air_fall_loop' && !sawFall) {
+            sawFall = true;
+            await page.screenshot({ path: testInfo.outputPath(name + '-fall.png') });
+          }
+          await step();
+        }
+        expect(landed, name).toBe(true);
+        for (let tick = 0; tick < 90 && (await sample()).state !== 'IDLE'; tick++) await step();
+        expect(await sample(), name).toMatchObject({ state: 'IDLE', visible: true, grounded: true });
+        await testInfo.attach(name, { body: JSON.stringify({ sawFall, trace }, null, 2), contentType: 'application/json' });
+      }
+    }
+  });
+}
+
+test('Packs 02 and 03 landing soles stay on the floor', async ({ page }) => {
+  await page.goto('/');
+  await page.evaluate(async () => {
+    const path = '/src/renderer/fullbody/FullBodyPilot.ts';
+    const { FullBodyPilot, preloadFullBodyPilot } = await import(path);
+    for (const id of ['moonshine', 'hulk-hoagie', 'mr-wrong', 'loopy', 'mrs-tasselbottom']) {
+      const assets = await preloadFullBodyPilot(true, [id], false, true);
+      for (const facing of [-1, 1]) for (const clip of ['land_soft', 'land_heavy']) {
+        const pilot = new FullBodyPilot(assets, id, id);
+        const floorY = assets.characters[id][clip].frames[0].offsetY;
+        for (let tick = 0; tick < 13; tick++) {
+          pilot.update(clip === 'land_soft' ? 'LANDING_LAG' : 'IDLE', tick, null,
+            true, 0, true, false, 1, 0, false, 1, facing, undefined, null,
+            { isGrounded: true, artCue: clip, artCueFrame: tick });
+          const sprite = pilot.sprite;
+          const sole = sprite.toGlobal({ x: sprite.pivot.x, y: sprite.texture.frame.height });
+          if (!sprite.visible || sprite.label !== clip || Math.abs(sole.y - floorY) > 1.5) {
+            throw Error(`${id} ${clip} facing ${facing} tick ${tick}: floor gap ${sole.y - floorY}`);
+          }
+        }
+        pilot.sprite.destroy(); pilot.effectSprite.destroy();
+      }
+    }
+  });
+});
+
+for (const fighter of ['zane-corvo', 'velvet-reply']) {
+test(fighter + ' gameplay-speed airborne pose playback', async ({ page }, testInfo) => {
+  await page.addInitScript(id => localStorage.setItem('eth:dojo:setup:v1', JSON.stringify({
+    fighter: id, dummy: 'all-rounder', dummyMode: 'still',
+  })), fighter);
+  await page.goto('/'); await page.locator('#splash-screen').click();
+  await page.locator('#practice-btn').click(); await page.locator('#practice-free').click();
+  const ready = () => page.waitForFunction(() => {
+    const d = window.__smashDebug!;
+    return Object.values(d.getSnapshot()?.players ?? {}).some(p => p.slotIndex === 0 && p.state === 'IDLE') &&
+      d.getArtState?.().players.some(p => p.slot === 0 && p.clip === 'idle' && p.bodyVisible);
+  });
+  await ready();
+  const manifest = await (await page.request.get('/fighter-art-pack-04-v1/production/manifest.json')).json();
+  for (const [key, facing] of [['ArrowLeft', -1], ['ArrowRight', 1]] as const) {
+    await page.keyboard.down(key); await page.waitForTimeout(80); await page.keyboard.up(key);
+    await ready();
+    const recording = page.evaluate(() => new Promise<any[]>(resolve => {
+      const frames: any[] = []; const start = performance.now();
+      const sample = () => {
+        const d = window.__smashDebug!;
+        const p = Object.values(d.getSnapshot()?.players ?? {}).find(p => p.slotIndex === 0);
+        const a = d.getArtState?.().players.find(p => p.slot === 0);
+        frames.push({ elapsed: performance.now() - start, state: p?.state, clip: a?.clip,
+          rect: a?.frameRect, facing: a?.bodyFacing, visible: a?.bodyVisible });
+        if (performance.now() - start >= 1600) resolve(frames);
+        else requestAnimationFrame(sample);
+      }; requestAnimationFrame(sample);
+    }));
+    await page.keyboard.down('KeyX'); await page.waitForTimeout(220); await page.keyboard.up('KeyX');
+    const trace = await recording;
+    for (const phase of ['air_rise_loop', 'air_apex_loop', 'air_fall_loop']) {
+      const observed = [...new Set(trace.filter(f => f.clip === phase).map(f => f.rect))];
+      expect(observed).toEqual(manifest.characters[fighter].clips[phase].frames.map((f: {rect:number[]}) => f.rect.join(',')));
+    }
+    for (const frame of trace) expect(frame).toMatchObject({ facing, visible: true });
+    await ready();
+    await testInfo.attach(`realtime-${facing}`, { body: JSON.stringify(trace, null, 2), contentType: 'application/json' });
+  }
+});
+}
+
+for (const fighter of ['zane-corvo', 'velvet-reply'] as const) {
+for (const mode of ['stepped', 'normal-speed'] as const) {
+test(fighter + ' six double-jump poses ' + mode + ' in both facings', async ({ page }, testInfo) => {
+  await page.addInitScript(id => localStorage.setItem('eth:dojo:setup:v1', JSON.stringify({
+    fighter: id, dummy: 'all-rounder', dummyMode: 'still',
+  })), fighter);
+  await page.goto('/'); await page.locator('#splash-screen').click();
+  await page.locator('#practice-btn').click(); await page.locator('#practice-free').click();
+  const sample = () => page.evaluate(() => {
+    const d = window.__smashDebug!;
+    const p = Object.values(d.getSnapshot()?.players ?? {}).find(p => p.slotIndex === 0);
+    const a = d.getArtState?.().players.find(p => p.slot === 0);
+    return { clip: a?.clip, rect: a?.frameRect, facing: a?.bodyFacing, visible: a?.bodyVisible,
+      grounded: p?.isGrounded, offsetX: a && p ? a.bodyX-p.x : null, offsetY: a && p ? a.bodyY-p.y : null };
+  });
+  await expect.poll(sample).toMatchObject({ grounded: true, clip: 'idle' });
+  const manifest = await (await page.request.get('/fighter-art-pack-04-v1/production/manifest.json')).json();
+  const expected = manifest.characters[fighter].clips.double_jump_transition.frames.map((f: {rect:number[]}) => f.rect.join(','));
+  expect(new Set(expected).size).toBe(6);
+  if (mode === 'stepped') await page.keyboard.press('F6');
+  const step = () => page.keyboard.press('F7');
+  for (const [key, facing] of [['ArrowLeft', -1], ['ArrowRight', 1]] as const) {
+    if (mode === 'stepped') { await page.keyboard.press('r'); await step(); }
+    await page.keyboard.down(key);
+    if (mode === 'stepped') await step(); else await page.waitForTimeout(80);
+    await page.keyboard.up(key);
+    if (mode === 'normal-speed') await expect.poll(sample).toMatchObject({ grounded: true, clip: 'idle' });
+    await page.keyboard.down('KeyX');
+    if (mode === 'stepped') for (let i=0;i<12;i++) await step(); else await page.waitForTimeout(180);
+    await page.keyboard.up('KeyX');
+    if (mode === 'stepped') await step(); else await page.waitForTimeout(50);
+    let trace: Awaited<ReturnType<typeof sample>>[] = [];
+    if (mode === 'stepped') {
+      await page.keyboard.down('KeyX'); await step(); await page.keyboard.up('KeyX');
+      let last: string | undefined;
+      for (let i=0;i<30;i++) {
+        const f=await sample(); trace.push(f);
+        if (f.clip === 'double_jump_transition' && f.rect !== last) {
+          last=f.rect; await page.screenshot({ path:testInfo.outputPath(`double-${facing}-${new Set(trace.filter(t=>t.clip==='double_jump_transition').map(t=>t.rect)).size}.png`) });
+        }
+        await step();
+      }
+    } else {
+      const recording=page.evaluate(() => new Promise<any[]>(resolve => {
+        const frames:any[]=[]; const start=performance.now();
+        const tick=()=>{const d=window.__smashDebug!; const p=Object.values(d.getSnapshot()?.players??{}).find(p=>p.slotIndex===0); const a=d.getArtState?.().players.find(p=>p.slot===0);
+          frames.push({elapsed:performance.now()-start,clip:a?.clip,rect:a?.frameRect,facing:a?.bodyFacing,visible:a?.bodyVisible,grounded:p?.isGrounded,offsetX:a&&p?a.bodyX-p.x:null,offsetY:a&&p?a.bodyY-p.y:null});
+          if(performance.now()-start>1600)resolve(frames);else requestAnimationFrame(tick);}; requestAnimationFrame(tick);
+      }));
+      await page.keyboard.down('KeyX'); await page.waitForTimeout(80); await page.keyboard.up('KeyX');
+      trace=await recording;
+    }
+    await testInfo.attach(`double-preassert-${facing}`,{body:JSON.stringify(trace,null,2),contentType:'application/json'});
+    const observed=[...new Set(trace.filter(f=>f.clip==='double_jump_transition').map(f=>f.rect))];
+    expect(observed).toEqual(expected);
+    const end=trace.findIndex(f=>f.clip==='double_jump_transition');
+    expect(trace.slice(end).some(f=>f.clip==='air_rise_loop')).toBe(true);
+    const firstRise=trace.slice(end).find(f=>f.clip==='air_rise_loop');
+    expect(firstRise?.rect).toBe(manifest.characters[fighter].clips.air_rise_loop.frames.at(-1).rect.join(','));
+    for(const f of trace.filter(f=>['double_jump_transition','air_rise_loop','air_apex_loop','air_fall_loop'].includes(f.clip!))) {
+      expect(f).toMatchObject({facing,visible:true}); expect(f.offsetX).toBeCloseTo(0); expect(f.offsetY).toBeCloseTo(0);
+    }
+    await testInfo.attach(`double-${facing}`,{body:JSON.stringify(trace,null,2),contentType:'application/json'});
+    if(mode==='normal-speed') await expect.poll(sample).toMatchObject({grounded:true,clip:'idle'});
+  }
+});
+}
+
+}
+
+for (const fighter of ['zane-corvo','velvet-reply'] as const) {
+test(fighter + ' fast-fall presentation window and landing priority', async ({page},testInfo)=>{
+  test.setTimeout(90_000);
+  await page.addInitScript(id=>localStorage.setItem('eth:dojo:setup:v1',JSON.stringify({fighter:id,dummy:'all-rounder',dummyMode:'still'})),fighter);
+  await page.goto('/'); await page.locator('#splash-screen').click(); await page.locator('#practice-btn').click(); await page.locator('#practice-free').click();
+  const sample=()=>page.evaluate(()=>{const d=window.__smashDebug!;const p=Object.values(d.getSnapshot()?.players??{}).find(p=>p.slotIndex===0);const a=d.getArtState?.().players.find(p=>p.slot===0);return {clip:a?.clip,rect:a?.frameRect,visible:a?.bodyVisible,facing:a?.bodyFacing,grounded:p?.isGrounded,vy:p?.vy,fast:p?.isFastFalling,offsetX:a&&p?a.bodyX-p.x:null,offsetY:a&&p?a.bodyY-p.y:null};});
+  await expect.poll(sample).toMatchObject({grounded:true,clip:'idle'});
+  await page.keyboard.press('F6');const step=()=>page.keyboard.press('F7');const results=[];
+  const manifest=await(await page.request.get('/fighter-art-pack-04-v1/production/manifest.json')).json();
+  const clip=manifest.characters[fighter].clips.air_fastfall_loop;
+  const expected=clip.frames.map((f:{rect:number[]})=>f.rect.join(','));
+  for(const facing of [-1,1]) for(const activation of ['apex','late','double-apex']) {
+    await page.keyboard.press('r');await step(); const key=facing<0?'ArrowLeft':'ArrowRight';await page.keyboard.down(key);await step();await page.keyboard.up(key);
+    await page.keyboard.down('KeyX');for(let i=0;i<12;i++)await step();await page.keyboard.up('KeyX');await step();
+    if(activation==='double-apex'){await page.keyboard.down('KeyX');await step();await page.keyboard.up('KeyX');}
+    let before=await sample();let found=false;
+    for(let i=0;i<90;i++){before=await sample();if(!before.grounded&&before.vy! >= (activation==='late'?8:0)){found=true;break;}await step();}
+    expect(found).toBe(true);await page.keyboard.down('ArrowDown');await step();await page.keyboard.up('ArrowDown');
+    const trace=[];
+    for(let i=0;i<60;i++){const f=await sample();trace.push(f);expect(f).toMatchObject({visible:true,facing});
+      if(f.grounded){expect(f.fast).toBe(false);expect(['land_soft','land_heavy']).toContain(f.clip);await page.screenshot({path:testInfo.outputPath(`${activation}-${facing}-landing.png`)});break;}
+      expect(f.fast).toBe(true);expect(f.clip).toBe('air_fastfall_loop');expect(f.offsetX).toBeCloseTo(0);expect(f.offsetY).toBeCloseTo(0);await step();
+    }
+    expect(trace.at(-1)?.grounded).toBe(true);
+    const air=trace.filter(f=>!f.grounded);expect(air.length).toBeGreaterThan(0);
+    const observed=[...new Set(air.map(f=>f.rect))];expect(observed).toEqual(expected.slice(0,observed.length));
+    expect(observed.length).toBe(Math.min(expected.length, Math.ceil(air.length / 2)));
+    for(let age=0;age<air.length;age++){let n=age;let index=0;while(index<clip.durations.length-1&&n>=clip.durations[index])n-=clip.durations[index++];expect(air[age]!.rect).toBe(expected[index]);}
+    results.push({facing,activation,fastFallTicks:air.length,drawingsSeen:observed.length,landingClip:trace.at(-1)?.clip});
+    await testInfo.attach(`${activation}-${facing}`,{body:JSON.stringify({before,trace},null,2),contentType:'application/json'});
+  }
+  console.log('FAST_FALL_WINDOW '+fighter+' '+JSON.stringify(results));
+  await testInfo.attach('fast-fall-window-summary',{body:JSON.stringify(results,null,2),contentType:'application/json'});
+});
+}
+
+for(const fighter of ['zane-corvo','velvet-reply'] as const) {
+test(fighter+' normal-speed fast-fall pose exposure',async({page},testInfo)=>{
+ await page.addInitScript(id=>localStorage.setItem('eth:dojo:setup:v1',JSON.stringify({fighter:id,dummy:'all-rounder',dummyMode:'still'})),fighter);
+ await page.goto('/');await page.locator('#splash-screen').click();await page.locator('#practice-btn').click();await page.locator('#practice-free').click();
+ const ready=()=>page.waitForFunction(()=>{const d=window.__smashDebug!;return Object.values(d.getSnapshot()?.players??{}).some(p=>p.slotIndex===0&&p.isGrounded&&p.state==='IDLE');});await ready();
+ const m=await(await page.request.get('/fighter-art-pack-04-v1/production/manifest.json')).json();
+ const expected=m.characters[fighter].clips.air_fastfall_loop.frames.map((f:{rect:number[]})=>f.rect.join(','));
+ for(const[key,facing]of [['ArrowLeft',-1],['ArrowRight',1]] as const){
+  await page.keyboard.down(key);await page.waitForTimeout(80);await page.keyboard.up(key);await ready();
+  const recording=page.evaluate(()=>new Promise<any[]>(resolve=>{const out:any[]=[];const start=performance.now();const tick=()=>{const d=window.__smashDebug!;const p=Object.values(d.getSnapshot()?.players??{}).find(p=>p.slotIndex===0);const a=d.getArtState?.().players.find(p=>p.slot===0);out.push({elapsed:performance.now()-start,clip:a?.clip,rect:a?.frameRect,facing:a?.bodyFacing,visible:a?.bodyVisible,grounded:p?.isGrounded,fast:p?.isFastFalling});if(performance.now()-start>1600)resolve(out);else requestAnimationFrame(tick);};requestAnimationFrame(tick);}));
+  await page.keyboard.down('KeyX');await page.waitForTimeout(220);await page.keyboard.up('KeyX');
+  await page.waitForFunction(()=>Object.values(window.__smashDebug!.getSnapshot()?.players??{}).some(p=>p.slotIndex===0&&!p.isGrounded&&p.vy>=0),{},{polling:'raf'});
+  await page.keyboard.down('ArrowDown');await page.waitForTimeout(80);await page.keyboard.up('ArrowDown');
+  const trace=await recording;await testInfo.attach(`fastfall-${facing}`,{body:JSON.stringify(trace,null,2),contentType:'application/json'});
+  expect([...new Set(trace.filter(f=>f.clip==='air_fastfall_loop').map(f=>f.rect))]).toEqual(expected.slice(0,3));
+  for(const f of trace)expect(f).toMatchObject({visible:true,facing});
+  const first=trace.findIndex(f=>f.clip==='air_fastfall_loop');const landing=trace.slice(first).find(f=>f.grounded);
+  expect(landing?.fast).toBe(false);expect(['land_soft','land_heavy']).toContain(landing?.clip);await ready();
+ }
+});
+}
+
+for(const fighter of ['zane-corvo','velvet-reply'] as const) {
+for(const mode of ['stepped','normal-speed'] as const) {
+test(fighter+' six fast-fall poses high-drop '+mode,async({page},testInfo)=>{
+ await page.addInitScript(id=>localStorage.setItem('eth:dojo:setup:v1',JSON.stringify({fighter:id,dummy:'all-rounder',dummyMode:'still'})),fighter);
+ await page.goto('/');await page.locator('#splash-screen').click();await page.locator('#practice-btn').click();await page.locator('#practice-free').click();
+ const sample=()=>page.evaluate(()=>{const d=window.__smashDebug!;const p=Object.values(d.getSnapshot()?.players??{}).find(p=>p.slotIndex===0);const a=d.getArtState?.().players.find(p=>p.slot===0);return{y:p?.y,age:p?.stateFrame,tick:d.getSnapshot()?.tick,clip:a?.clip,rect:a?.frameRect,visible:a?.bodyVisible,facing:a?.bodyFacing,grounded:p?.isGrounded,fast:p?.isFastFalling,offsetX:a&&p?a.bodyX-p.x:null,offsetY:a&&p?a.bodyY-p.y:null};});
+ await expect.poll(sample).toMatchObject({grounded:true,clip:'idle'});
+ const manifest=await(await page.request.get('/fighter-art-pack-04-v1/production/manifest.json')).json();const expected=manifest.characters[fighter].clips.air_fastfall_loop.frames.map((f:{rect:number[]})=>f.rect.join(','));expect(new Set(expected).size).toBe(6);
+ if(mode==='stepped')await page.keyboard.press('F6');const step=()=>page.keyboard.press('F7');
+ for(const[key,facing]of [['ArrowLeft',-1],['ArrowRight',1]] as const){
+  if(mode==='stepped'){await page.keyboard.press('r');for(let settle=0;settle<30;settle++)await step();await expect.poll(sample).toMatchObject({grounded:true,clip:'idle'});}
+  await page.keyboard.down(key);if(mode==='stepped')await step();else await page.waitForTimeout(80);await page.keyboard.up(key);
+  if(mode==='stepped'){for(let settle=0;settle<30;settle++)await step();await expect.poll(sample).toMatchObject({grounded:true,clip:'idle'});}
+  if(mode==='normal-speed')await expect.poll(sample).toMatchObject({grounded:true,clip:'idle'});
+  // Controlled visual fixture, not a naturally reachable jump: start at (640, -100) and zero velocity, inside the top blast boundary.
+  expect(await page.evaluate(()=>{const d=window.__smashDebug!;const p=Object.values(d.getSnapshot()?.players??{}).find(p=>p.slotIndex===0);return p&&d.forcePosition(p.id,640,-100);})).toBe(true);
+  if(mode==='stepped')for(let settle=0;settle<8;settle++)await step();else await page.waitForTimeout(120);
+  let trace:any[]=[];
+  if(mode==='stepped'){
+   await page.keyboard.down('ArrowDown');await step();await page.keyboard.up('ArrowDown');let last:string|undefined;
+   for(let i=0;i<60;i++){const f=await sample();trace.push(f);if(f.clip==='air_fastfall_loop'&&f.rect!==last){last=f.rect;await page.screenshot({path:testInfo.outputPath(`fast-${facing}-${new Set(trace.filter(t=>t.clip==='air_fastfall_loop').map(t=>t.rect)).size}.png`)});}if(f.grounded)break;await step();}
+  }else{
+   const recording=page.evaluate(()=>new Promise<any[]>(resolve=>{const out:any[]=[];const start=performance.now();const tick=()=>{const d=window.__smashDebug!;const p=Object.values(d.getSnapshot()?.players??{}).find(p=>p.slotIndex===0);const a=d.getArtState?.().players.find(p=>p.slot===0);out.push({elapsed:performance.now()-start,clip:a?.clip,rect:a?.frameRect,visible:a?.bodyVisible,facing:a?.bodyFacing,grounded:p?.isGrounded,fast:p?.isFastFalling,offsetX:a&&p?a.bodyX-p.x:null,offsetY:a&&p?a.bodyY-p.y:null});if(performance.now()-start>1200)resolve(out);else requestAnimationFrame(tick);};requestAnimationFrame(tick);}));
+   await page.keyboard.down('ArrowDown');await page.waitForTimeout(80);await page.keyboard.up('ArrowDown');trace=await recording;
+  }
+  await testInfo.attach(`high-drop-${facing}`,{body:JSON.stringify(trace,null,2),contentType:'application/json'});
+  const air=trace.filter(f=>f.clip==='air_fastfall_loop');expect([...new Set(air.map(f=>f.rect))]).toEqual(expected);
+  for(const f of air){expect(f).toMatchObject({visible:true,facing,fast:true,grounded:false});expect(f.offsetX).toBeCloseTo(0);expect(f.offsetY).toBeCloseTo(0);}
+  const first=trace.findIndex(f=>f.clip==='air_fastfall_loop');const landing=trace.slice(first).find(f=>f.grounded);expect(landing?.fast).toBe(false);expect(['land_soft','land_heavy']).toContain(landing?.clip);
+  if(mode==='normal-speed')await expect.poll(sample).toMatchObject({grounded:true,clip:'idle'});
+ }
+});
+}
+
+}
+
+for(const fighter of ['zane-corvo','velvet-reply'] as const){
+test(fighter+' landing window contact and actionable handoff audit',async({page},testInfo)=>{
+ test.setTimeout(120_000);
+ await page.addInitScript(id=>localStorage.setItem('eth:dojo:setup:v1',JSON.stringify({fighter:id,dummy:'all-rounder',dummyMode:'still'})),fighter);
+ await page.goto('/');await page.locator('#splash-screen').click();await page.locator('#practice-btn').click();await page.locator('#practice-free').click();
+ const sample=()=>page.evaluate(()=>{const d=window.__smashDebug!;const p=Object.values(d.getSnapshot()?.players??{}).find(p=>p.slotIndex===0);const a=d.getArtState?.().players.find(p=>p.slot===0);return{state:p?.state,age:p?.stateFrame,cue:p?.artCue,cueAge:p?.artCueFrame,grounded:p?.isGrounded,lag:p?.landingLagFrames,move:p?.currentMoveId,y:p?.y,vy:p?.vy,clip:a?.clip,rect:a?.frameRect,facing:a?.bodyFacing,visible:a?.bodyVisible,offsetY:a&&p?a.bodyY-p.y:null};});
+ await expect.poll(sample).toMatchObject({state:'IDLE',grounded:true});await page.keyboard.press('F6');const step=()=>page.keyboard.press('F7');const results=[];
+ const m=await(await page.request.get('/fighter-art-pack-04-v1/production/manifest.json')).json();
+ for(const facing of [-1,1])for(const kind of ['soft','heavy'] as const)for(const action of ['none','Jump','Attack','Shield','Special'] as const){
+  await page.keyboard.press('r');for(let i=0;i<30;i++)await step();const key=facing<0?'ArrowLeft':'ArrowRight';await page.keyboard.down(key);await step();await page.keyboard.up(key);for(let i=0;i<30;i++)await step();
+  await expect.poll(sample).toMatchObject({state:'IDLE',grounded:true});
+  expect(await page.evaluate(y=>{const d=window.__smashDebug!;const p=Object.values(d.getSnapshot()?.players??{}).find(p=>p.slotIndex===0);return p&&d.forcePosition(p.id,640,y);},kind==='soft'?452:300)).toBe(true);
+  let contact=await sample();let found=false;
+  for(let i=0;i<60;i++){await step();contact=await sample();if(contact.grounded){found=true;break;}}
+  expect(found).toBe(true);expect(contact).toMatchObject({clip:'land_'+kind,cue:'land_'+kind,cueAge:0,lag:0,facing,visible:true});expect(contact.offsetY).toBeCloseTo(28);
+  const trace=[contact];
+  if(action==='none'){
+   let last=contact.rect;await page.screenshot({path:testInfo.outputPath(`land-${kind}-${facing}-1.png`)});
+   for(let i=0;i<22;i++){await step();const f=await sample();trace.push(f);expect(f).toMatchObject({grounded:true,facing,visible:true,lag:0});expect(f.offsetY).toBeCloseTo(28);if(f.clip==='land_'+kind&&f.rect!==last){last=f.rect;await page.screenshot({path:testInfo.outputPath(`land-${kind}-${facing}-${new Set(trace.filter(t=>t.clip==='land_'+kind).map(t=>t.rect)).size}.png`)});}}
+   const active=trace.filter(f=>f.clip==='land_'+kind);expect(active.length).toBe(kind==='soft'?12:18);
+   expect([...new Set(active.map(f=>f.rect))]).toEqual(m.characters[fighter].clips['land_'+kind].frames.map((f:{rect:number[]})=>f.rect.join(',')));
+   expect(trace.at(-1)?.clip).toBe('idle');
+  }else{
+   const actionKey={Jump:'KeyX',Attack:'KeyZ',Shield:'ShiftLeft',Special:'KeyS'}[action];await page.keyboard.down(actionKey);await step();trace.push(await sample());await page.keyboard.up(actionKey);
+   const expected={Jump:'JUMPSQUAT',Attack:'ATTACK',Shield:'SHIELD',Special:'ATTACK'}[action];expect(trace[1]?.state).toBe(expected);expect(trace[1]?.clip).not.toBe('land_'+kind);
+  }
+  results.push({facing,kind,action,contactState:contact.state,contactLag:contact.lag,visualTicks:action==='none'?trace.filter(f=>f.clip==='land_'+kind).length:undefined,firstInputState:action==='none'?undefined:trace[1]?.state});
+  await testInfo.attach(`${kind}-${facing}-${action}`,{body:JSON.stringify(trace,null,2),contentType:'application/json'});
+ }
+ console.log('LANDING_AUDIT '+fighter+' '+JSON.stringify(results));
+});
+}
+
+for(const [fighter,landing] of [['zane-corvo','soft'],['velvet-reply','soft'],['zane-corvo','heavy'],['velvet-reply','heavy']] as const){
+test(fighter+' six '+landing+'-landing poses at normal speed in both facings',async({page},testInfo)=>{
+ await page.addInitScript(id=>localStorage.setItem('eth:dojo:setup:v1',JSON.stringify({fighter:id,dummy:'all-rounder',dummyMode:'still'})),fighter);
+ await page.goto('/');await page.locator('#splash-screen').click();await page.locator('#practice-btn').click();await page.locator('#practice-free').click();
+ const ready=()=>page.waitForFunction(()=>{const d=window.__smashDebug!;return Object.values(d.getSnapshot()?.players??{}).some(p=>p.slotIndex===0&&p.isGrounded&&p.state==='IDLE')&&d.getArtState?.().players.some(a=>a.slot===0&&a.clip==='idle');});await ready();
+ const m=await(await page.request.get('/fighter-art-pack-04-v1/production/manifest.json')).json();const expected=m.characters[fighter].clips['land_'+landing].frames.map((f:{rect:number[]})=>f.rect.join(','));expect(new Set(expected).size).toBe(6);
+ for(const[key,facing]of [['ArrowLeft',-1],['ArrowRight',1]] as const){
+  await page.keyboard.down(key);await page.waitForTimeout(80);await page.keyboard.up(key);await ready();
+  const recording=page.evaluate(()=>new Promise<any[]>(resolve=>{const out:any[]=[];const start=performance.now();const tick=()=>{const d=window.__smashDebug!;const p=Object.values(d.getSnapshot()?.players??{}).find(p=>p.slotIndex===0);const a=d.getArtState?.().players.find(p=>p.slot===0);out.push({elapsed:performance.now()-start,clip:a?.clip,rect:a?.frameRect,visible:a?.bodyVisible,facing:a?.bodyFacing,grounded:p?.isGrounded,lag:p?.landingLagFrames,offsetY:a&&p?a.bodyY-p.y:null});if(performance.now()-start>1000)resolve(out);else requestAnimationFrame(tick);};requestAnimationFrame(tick);}));
+  expect(await page.evaluate(y=>{const d=window.__smashDebug!;const p=Object.values(d.getSnapshot()?.players??{}).find(p=>p.slotIndex===0);return p&&d.forcePosition(p.id,640,y);},landing==='soft'?452:300)).toBe(true);
+  const trace=await recording;await testInfo.attach(`soft-landing-${facing}`,{body:JSON.stringify(trace,null,2),contentType:'application/json'});
+  const land=trace.filter(f=>f.clip==='land_'+landing);expect([...new Set(land.map(f=>f.rect))]).toEqual(expected);
+  for(const f of land){expect(f).toMatchObject({visible:true,facing,grounded:true,lag:0});expect(f.offsetY).toBeCloseTo(28);}
+  await ready();
+ }
+});
+
 }

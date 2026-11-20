@@ -1,0 +1,15 @@
+{
+  "tool": "built-in image_gen",
+  "date": "2026-11-19",
+  "prompt": "ONE dedicated full-body right-facing Mr. Wrong DOUBLE-JUMP LATE in-between sprite. Reference1 is shipped arm-up double jump, reference2 next shipped jumping pose. Draw LATE double-jump in-between: nearly final upright rising tuck, hands in loose curved guard beside ribs, knees gathered beneath shorts, foot tentacles curled inward; subtly different from final endpoint. Preserve exact shipped proportions and compact floppy hat, not a taller hat or thinner torso. EXACT yellow burgundy-polka-dot jacket, burgundy vest with THREE yellow buttons, cream ruff/cuffs, pink dark-polka-dot shorts with shipped patch, lavender curly hair, cream/burgundy striped floppy cap and cream pompom, TURQUOISE tentacle hands/feet with pink suckers. Long grinning face matching shipped references. Entire figure including pompom, raised hand, all foot curls uncropped. Fine engraved cartoon inks and warm shading, genuine transparent background, natural antialiased crisp silhouette. NO glow, mist, aura, shadow, ground, background, effects, text or props.",
+  "source": "exec-44bd86b9-e6d3-4567-98ef-fe789e5ca5fc.png",
+  "references": [
+    "mr-wrong-shipped-double_jump_transition-1.png",
+    "mr-wrong-shipped-double_jump_transition-2.png"
+  ],
+  "preparation": {
+    "alphaFloor": 5,
+    "worldHeight": 90,
+    "airRootWorldY": 60
+  }
+}

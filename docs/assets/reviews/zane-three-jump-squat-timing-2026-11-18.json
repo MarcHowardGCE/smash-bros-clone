@@ -1,0 +1,242 @@
+[
+  {
+    "facing": -1,
+    "held": false,
+    "squat": [
+      {
+        "state": "JUMPSQUAT",
+        "frame": 0,
+        "grounded": true,
+        "x": 613.6667034809224,
+        "y": 472,
+        "vy": 0,
+        "clip": "jump_squat",
+        "rect": "1337,191,97,154",
+        "visible": true,
+        "facing": -1,
+        "offsetY": 28
+      },
+      {
+        "state": "JUMPSQUAT",
+        "frame": 1,
+        "grounded": true,
+        "x": 613.6667034809224,
+        "y": 472,
+        "vy": 0,
+        "clip": "jump_squat",
+        "rect": "1243,191,90,126",
+        "visible": true,
+        "facing": -1,
+        "offsetY": 28
+      },
+      {
+        "state": "JUMPSQUAT",
+        "frame": 2,
+        "grounded": true,
+        "x": 613.6667034809224,
+        "y": 472,
+        "vy": 0,
+        "clip": "jump_squat",
+        "rect": "1438,191,92,158",
+        "visible": true,
+        "facing": -1,
+        "offsetY": 28
+      }
+    ],
+    "launch": {
+      "state": "AIRBORNE",
+      "frame": 0,
+      "grounded": false,
+      "x": 613.6667034809224,
+      "y": 462.65,
+      "vy": -9.35,
+      "clip": "takeoff_neutral",
+      "rect": "1726,2,65,185",
+      "visible": true,
+      "facing": -1,
+      "offsetY": 28
+    },
+    "minimumY": 400,
+    "airStepsToLanding": 29
+  },
+  {
+    "facing": -1,
+    "held": true,
+    "squat": [
+      {
+        "state": "JUMPSQUAT",
+        "frame": 0,
+        "grounded": true,
+        "x": 613.6667034809224,
+        "y": 472,
+        "vy": 0,
+        "clip": "jump_squat",
+        "rect": "1337,191,97,154",
+        "visible": true,
+        "facing": -1,
+        "offsetY": 28
+      },
+      {
+        "state": "JUMPSQUAT",
+        "frame": 1,
+        "grounded": true,
+        "x": 613.6667034809224,
+        "y": 472,
+        "vy": 0,
+        "clip": "jump_squat",
+        "rect": "1243,191,90,126",
+        "visible": true,
+        "facing": -1,
+        "offsetY": 28
+      },
+      {
+        "state": "JUMPSQUAT",
+        "frame": 2,
+        "grounded": true,
+        "x": 613.6667034809224,
+        "y": 472,
+        "vy": 0,
+        "clip": "jump_squat",
+        "rect": "1438,191,92,158",
+        "visible": true,
+        "facing": -1,
+        "offsetY": 28
+      }
+    ],
+    "launch": {
+      "state": "AIRBORNE",
+      "frame": 0,
+      "grounded": false,
+      "x": 613.6667034809224,
+      "y": 456.65,
+      "vy": -15.35,
+      "clip": "takeoff_neutral",
+      "rect": "1726,2,65,185",
+      "visible": true,
+      "facing": -1,
+      "offsetY": 28
+    },
+    "minimumY": 283.00000000000006,
+    "airStepsToLanding": 48
+  },
+  {
+    "facing": 1,
+    "held": false,
+    "squat": [
+      {
+        "state": "JUMPSQUAT",
+        "frame": 0,
+        "grounded": true,
+        "x": 618.3332965190776,
+        "y": 472,
+        "vy": 0,
+        "clip": "jump_squat",
+        "rect": "1337,191,97,154",
+        "visible": true,
+        "facing": 1,
+        "offsetY": 28
+      },
+      {
+        "state": "JUMPSQUAT",
+        "frame": 1,
+        "grounded": true,
+        "x": 618.3332965190776,
+        "y": 472,
+        "vy": 0,
+        "clip": "jump_squat",
+        "rect": "1243,191,90,126",
+        "visible": true,
+        "facing": 1,
+        "offsetY": 28
+      },
+      {
+        "state": "JUMPSQUAT",
+        "frame": 2,
+        "grounded": true,
+        "x": 618.3332965190776,
+        "y": 472,
+        "vy": 0,
+        "clip": "jump_squat",
+        "rect": "1438,191,92,158",
+        "visible": true,
+        "facing": 1,
+        "offsetY": 28
+      }
+    ],
+    "launch": {
+      "state": "AIRBORNE",
+      "frame": 0,
+      "grounded": false,
+      "x": 618.3332965190776,
+      "y": 462.65,
+      "vy": -9.35,
+      "clip": "takeoff_neutral",
+      "rect": "1726,2,65,185",
+      "visible": true,
+      "facing": 1,
+      "offsetY": 28
+    },
+    "minimumY": 400,
+    "airStepsToLanding": 29
+  },
+  {
+    "facing": 1,
+    "held": true,
+    "squat": [
+      {
+        "state": "JUMPSQUAT",
+        "frame": 0,
+        "grounded": true,
+        "x": 618.3332965190776,
+        "y": 472,
+        "vy": 0,
+        "clip": "jump_squat",
+        "rect": "1337,191,97,154",
+        "visible": true,
+        "facing": 1,
+        "offsetY": 28
+      },
+      {
+        "state": "JUMPSQUAT",
+        "frame": 1,
+        "grounded": true,
+        "x": 618.3332965190776,
+        "y": 472,
+        "vy": 0,
+        "clip": "jump_squat",
+        "rect": "1243,191,90,126",
+        "visible": true,
+        "facing": 1,
+        "offsetY": 28
+      },
+      {
+        "state": "JUMPSQUAT",
+        "frame": 2,
+        "grounded": true,
+        "x": 618.3332965190776,
+        "y": 472,
+        "vy": 0,
+        "clip": "jump_squat",
+        "rect": "1438,191,92,158",
+        "visible": true,
+        "facing": 1,
+        "offsetY": 28
+      }
+    ],
+    "launch": {
+      "state": "AIRBORNE",
+      "frame": 0,
+      "grounded": false,
+      "x": 618.3332965190776,
+      "y": 456.65,
+      "vy": -15.35,
+      "clip": "takeoff_neutral",
+      "rect": "1726,2,65,185",
+      "visible": true,
+      "facing": 1,
+      "offsetY": 28
+    },
+    "minimumY": 283.00000000000006,
+    "airStepsToLanding": 48
+  }
+]

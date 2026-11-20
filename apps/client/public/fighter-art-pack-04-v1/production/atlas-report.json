@@ -1,42 +1,42 @@
 {
-  "sourceRevision": 104,
-  "frames": 1280,
+  "sourceRevision": 127,
+  "frames": 1330,
   "pages": 4,
   "livePages": 4,
   "liveTextureBytes": 67108864,
-  "downloadBytes": 9675238,
+  "downloadBytes": 11123670,
   "sampling": "premultiplied-alpha bilinear at two pixels per world unit; original artwork preserved",
   "files": [
     {
       "file": "atlas-zane-corvo-live-0.webp",
       "width": 2048,
       "height": 2048,
-      "bytes": 4382364,
-      "sha256": "cbab90a9c8ee3a71714bec643a7b46e1d738d77fd741cdb54df52653efac9e01",
+      "bytes": 3999572,
+      "sha256": "0028cd7c9b1687476f24a031fcd474a7f68547594dca6ca6a3ebd898315574c4",
       "live": true
     },
     {
       "file": "atlas-zane-corvo-live-1.webp",
       "width": 2048,
       "height": 2048,
-      "bytes": 414608,
-      "sha256": "75bbb386ff9222bdea6b2f97e046e224c24a539ac348eae509d824ba71d03a05",
+      "bytes": 1375356,
+      "sha256": "3ad1a83ae160ddfd5eb1f7308d96c598f685b1ac3659f28957a10b09321cc44d",
       "live": true
     },
     {
       "file": "atlas-velvet-reply-live-0.webp",
       "width": 2048,
       "height": 2048,
-      "bytes": 4131756,
-      "sha256": "64d01f93dcff80bde5be152a2e36d0cd7324cd479ce4a88c53c7a73e00875bc9",
+      "bytes": 4756152,
+      "sha256": "4a42ba642fe35380ee3372502a61f21bd2fbb5b9458646ce31a1ef3f1d484e90",
       "live": true
     },
     {
       "file": "atlas-velvet-reply-live-1.webp",
       "width": 2048,
       "height": 2048,
-      "bytes": 746510,
-      "sha256": "a8426a24165fe79f7090f52ee3ba2ffe8fe77e3c86e06900a8d8404b21dae5de",
+      "bytes": 992590,
+      "sha256": "d261d87bd7534d7cc5eb1b708a290ecd360b2dbecf7342c5b24f858112c8246b",
       "live": true
     }
   ]

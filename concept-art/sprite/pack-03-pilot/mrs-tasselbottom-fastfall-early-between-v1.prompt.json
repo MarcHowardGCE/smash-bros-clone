@@ -1,0 +1,10 @@
+{
+  "source": "C:\\Users\\misac\\.codex\\generated_images\\01a1d512-1266-7be0-b658-8ca4590e1a8c\\exec-2a9cd2e2-09e1-4d5f-a49c-c18ef794f6f4.png",
+  "prompt": "ONE full-body transparent game sprite Mrs. Tasselbottom, exact shipped character in references. Reference1 first fast-fall pose, reference2 second fast-fall pose. Draw midpoint between them: airborne descending briskly, leaning slightly forward with both fists close, knees together and shoes downward, head toward RIGHT three-quarter, sly smiling elderly long-nosed face. Match broad royal PURPLE draped gown with gold rope swags/tassels/epaulets same placement, cream lace hem and cuffs, white/lavender curls, tiny burgundy hat with gold crown pins, burgundy gold-buckled shoes. LARGE head and hands relative to rounded gown exactly shipped proportions. Whole crown and shoes inside clear transparent padding. Bold outlined detailed illustrated game sprite, genuine transparent alpha and opaque interiors. No white mist, haze, glow, cast shadow, floor, particles, motion effects, lettering, background, or reference crop red fringe. Single pose, no redesign.",
+  "references": [
+    "mrs-tasselbottom-shipped-fastfall-0.png",
+    "mrs-tasselbottom-shipped-fastfall-1.png"
+  ],
+  "tool": "built-in image_gen",
+  "date": "2026-11-20"
+}

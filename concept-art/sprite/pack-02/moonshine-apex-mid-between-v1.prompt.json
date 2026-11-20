@@ -1,0 +1,18 @@
+{
+  "tool": "built-in image_gen",
+  "date": "2026-11-18",
+  "prompt": "Production full-body 2D Moonshine fighter sprite, ONE early APEX transition facing RIGHT, genuinely transparent RGBA. Exact SHIPPED reference costume/identity: brown raccoon cap with striped tail, scruffy goatee/long nose/sleepy grin, CREAM sleeveless undershirt, dark suspenders, RED kerchief, cream wraps on hands/forearms, patched BLUE jeans with rolled cuffs, hip rope, oversized brown YELLOW-laced boots. Match wiry adult anatomy, crisp ink outlines and textured warm shading. Pose MIDDLE APEX transition: knees begin to lower from compact tuck while remaining bent, front knee a little higher, both boots relaxing downward close beneath hips. Upright torso, one wrapped fist near chest and other near waist. Weightless crest moment, no long straight leg, no attack or arms overhead. Whole body with transparent margin; no backdrop, floor, shadow, halo, mist, haze, glow, motion lines, blur, text or extra limbs. Empty background alpha zero.",
+  "references": [
+    "moonshine-shipped-idle-reference.png"
+  ],
+  "preparation": {
+    "alphaFloor": 5,
+    "worldHeight": 70,
+    "rootYWorld": 73,
+    "preserveSource": true,
+    "detachedPixelsRemoved": 0,
+    "detachedAlphaLimit": 0,
+    "detachedDistanceFromSolid": 4
+  },
+  "review": "Early pose reviewed before remaining poses. Shipped costume, dark/light registration and both-facing Dojo review; original two apex drawings retained."
+}

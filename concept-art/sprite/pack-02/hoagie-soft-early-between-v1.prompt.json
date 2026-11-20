@@ -1,0 +1,15 @@
+{
+  "tool": "built-in image_gen",
+  "date": "2026-11-19",
+  "prompt": "ONE full-body right-facing 2D sprite of Hulk Hoagie for a fighting-game soft landing. Reference1 is authoritative shipped costume and proportions, reference2 is the landing crouch. EXACT brown flat cap, angry square face short dark beard, broad hairy muscular wrestler, BURGUNDY singlet with narrow CREAM trim/straps, cream forearm wraps, rounded dark studded kneepads, tall brown boots with cream laces. Match shipped engraved cartoon inks and warm shading, not 3D. Draw EARLY landing in-between: knees bend into impact absorption, torso forward slightly, fists low beside abdomen; both entire boots firmly planted at the same horizontal floor level, heels and soles visible. Moderate crouch between contact and deepest compression, no airborne feet. Entire body, cap and soles uncropped, only one figure on genuine transparent background. Natural edge antialiasing and crisp ink silhouette. Absolutely NO glow, aura, haze, shadow, floor, smoke, background, speed marks, text or props. Preserve costume identity and body proportions.",
+  "references": [
+    "hoagie-shipped-idle-reference.png",
+    "hoagie-shipped-soft-reference-1.png"
+  ],
+  "source": "exec-77ed7750-196b-470b-8203-a13b3c4e9d37.png",
+  "preparation": {
+    "alphaFloor": 5,
+    "worldHeight": 79,
+    "root": "planted sole, two source pixels above crop bottom"
+  }
+}

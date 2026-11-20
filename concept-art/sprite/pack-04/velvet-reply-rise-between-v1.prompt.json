@@ -1,0 +1,12 @@
+{
+  "tool": "built-in image_gen",
+  "date": "2026-11-17",
+  "transparent_background": true,
+  "references": [
+    "concept-art/sprite/pack-04/velvet-reply-idle.png",
+    "apps/client/public/fighter-art-pack-04-v1/velvet-reply-air-0.png",
+    "apps/client/public/fighter-art-pack-04-v1/velvet-reply-air-1.png"
+  ],
+  "prompt": "Create ONE production full-body game sprite: The Velvet Reply, facing RIGHT, three-quarter side view. Reference 1 is the authoritative identity, costume, colors, drawing style and anatomy. References 2 and 3 are ONLY the adjacent rise poses to interpolate between: draw a distinct intermediate pose between the leading knee lift (2) and the two-knee airborne tuck (3). Leading thigh stays raised, trailing knee has started bending and drawing forward underneath the pelvis; both feet airborne, arms relax partway toward the two-knee tuck, hair trails left. Preserve exact shipped wardrobe from reference 1: dark plum-black fitted flared-leg jumpsuit with fine warm gold piping, black fishnet sleeves and upper chest with crossed black straps, high dark collar, wide SILVER rectangular buckle belt, SILVER wrist cuffs, SILVER hoop earrings, glossy dark heeled ankle boots, flowing copper-auburn wavy hair, small cheek beauty mark, composed half-lidded expression. Maintain the same compact illustrated ink outlines, textured clothing and realistic same character proportions as the references. Do not redesign the face, neckline, shoulders or costume. Entire silhouette and both boot tips visible with generous transparent margins. No scene, no ground, no floor shadow, NO ambient shadow, NO halo, NO mist, NO glow, NO gradient, NO soft color fringe, no text, no motion streaks. Actual transparent background. Crisp antialiased ink edges with empty transparent pixels outside silhouette. Do not reproduce the dark backdrop of references 2 or 3.",
+  "preparation": "Builder zeros RGBA where alpha <= 5, crops at alpha >= 128, and scales this intermediate pose to 70 world units in height after head/torso comparison. Original source remains untouched."
+}

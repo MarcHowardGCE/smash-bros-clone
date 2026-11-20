@@ -1,4 +1,4 @@
-import{getCharacterStats,INPUT_BITS,isPack03PilotId,type PlayerState,type InputEvent}from'@smash/shared';import type{StageData}from'./types.js';
+import{getCharacterStats,INPUT_BITS,isPack03PilotId,isPack04FighterId,type PlayerState,type InputEvent}from'@smash/shared';import type{StageData}from'./types.js';
 /** Visual transition cues do not add turn/brake/edge gameplay lockout. */
 export function withMovementArt(before:PlayerState,after:PlayerState,input:InputEvent|null,stage:StageData):PlayerState{
  const neutral=['IDLE','WALK','DASH','RUN','AIRBORNE','CROUCH','LANDING_LAG'].includes(after.state)&&!after.isKnockedOut&&after.stocks>0;
@@ -23,7 +23,7 @@ export function withMovementArt(before:PlayerState,after:PlayerState,input:Input
  else if(before.state==='CROUCH'&&after.state==='IDLE')set('crouch_exit');
  else if(!before.isGrounded&&after.isGrounded&&before.vy>10&&['IDLE','AIRBORNE'].includes(after.state))set('land_heavy');
  else if(!before.isGrounded&&after.isGrounded&&['IDLE','AIRBORNE'].includes(after.state)&&
-  (before.state==='AIRBORNE'||before.state==='DOUBLE_JUMP')&&isPack03PilotId(after.characterId))set('land_soft');
+  (before.state==='AIRBORNE'||before.state==='DOUBLE_JUMP')&&(isPack03PilotId(after.characterId)||isPack04FighterId(after.characterId)||after.characterId==='moonshine'||after.characterId==='hulk-hoagie'))set('land_soft');
  else if(input?.stickX!==undefined&&after.state==='DASH'&&(before.state==='IDLE'||before.state==='WALK')){cue=undefined;age=0;}
  else if(before.facing!==after.facing&&['IDLE','WALK','DASH','RUN'].includes(after.state))set(before.state==='RUN'?'turn_run':'turn_stand');
  else if(before.state==='RUN'&&after.state==='IDLE'&&Math.abs(before.vx)>.3)set('brake');

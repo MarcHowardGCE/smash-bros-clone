@@ -1,0 +1,10 @@
+{
+  "tool": "built-in image_gen",
+  "date": "2026-11-19",
+  "prompt": "Create ONE transparent-background full-body 2D gameplay sprite: Loopy apex-animation in-between matching the TWO attached shipped endpoints exactly in identity, costume, colors, lanky body proportions and inked cartoon style. Face RIGHT. Golden yellow shaggy deer, brown branching antlers, long black nose, sleepy grinning eyes, cream ankle fur and dark brown split hooves. BLANK CREAM basketball jersey with PURPLE trim, ragged PURPLE shorts, purple/cream wristbands. NO number49, no numbers, letters or logos. Both feet airborne, knees softly bent, loose boxing guard. Keep whole antlers and hooves with transparent padding. Flat cel shading INSIDE silhouette ONLY. HARD CUTOUT: alpha ZERO immediately outside crisp black contour, including antler/limb gaps. NO external diffuse lighting, shadows, halo, aura, blur, haze, background, particles, ground or text. Preserve head/torso/antler ratios. Pose4 of6, 60% transition from compact first reference to extending second reference: slightly more upright chest, knees lower with left/rear hoof softly lagging, guard relaxed at waist. Subtle float beginning descent; no kick or new gesture.",
+  "source": "C:\\Users\\misac\\.codex\\generated_images\\01a1d512-1266-7be0-b658-8ca4590e1a8c\\exec-2711951e-c49e-4d4c-8813-30fb458853fe.png",
+  "references": [
+    "loopy-shipped-air_apex_loop-0.png",
+    "loopy-shipped-air_apex_loop-1.png"
+  ]
+}

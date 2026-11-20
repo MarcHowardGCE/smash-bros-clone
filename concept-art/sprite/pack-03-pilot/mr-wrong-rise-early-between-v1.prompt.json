@@ -1,0 +1,15 @@
+{
+  "tool": "built-in image_gen",
+  "date": "2026-11-19",
+  "prompt": "ONE dedicated full-body Mr. Wrong RISE EARLY in-between 2D gameplay sprite. Reference1 and2 are shipped rise endpoints: interpolate between them with only a SMALL pose change. Face RIGHT. Keep exact compact floppy cream/burgundy striped cap, lavender curly hair, long grinning face, yellow jacket with burgundy dots, burgundy yellow-button vest, cream ruff/cuffs, pink dark-dot shorts with shipped patch, TURQUOISE tentacle hands/feet and pink suckers. Body proportions must match endpoints: broad shorts and hands, head-to-body same size, no taller hat or thinner body. Pose early rising: knees a little more tucked beneath broad shorts than first reference, foot tentacles curling upward slightly, arms slightly closer to body, upright airborne torso. Entire cap, pompom, all curling tentacles uncropped. Fine engraved cartoon inks matching shipped art; natural edge antialiasing, genuine transparent background. NO glow, white mist, aura, shadow, background, floor, motion effects, text or props.",
+  "source": "exec-b8f1fb97-62ec-4904-96c2-1991c2c1d647.png",
+  "references": [
+    "mr-wrong-shipped-air_rise_loop-0.png",
+    "mr-wrong-shipped-air_rise_loop-1.png"
+  ],
+  "preparation": {
+    "alphaFloor": 5,
+    "worldHeight": 90,
+    "airRootWorldY": 60
+  }
+}

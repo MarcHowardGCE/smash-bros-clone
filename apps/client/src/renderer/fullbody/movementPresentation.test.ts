@@ -418,3 +418,110 @@ it('holds Pack 04 airborne phase endpoints and uses a consistent center pivot', 
     expect(pilot.sprite.pivot.y).toBe(Math.round(pilot.sprite.texture.frame.height * 0.54));
   }
 });
+
+it('uses Pack 03 mid-hit art when a hitstun snapshot has no specialized reaction cue', () => {
+  const clip = { scale: 1, durations: [4, 4], frames: [0, 1].map(() => ({
+    texture: Texture.EMPTY, root: [0, 0], offsetY: 28,
+  })) };
+  for (const id of ['mr-wrong', 'loopy', 'mrs-tasselbottom'] as const) {
+    const pilot = new FullBodyPilot({ characters: { [id]: { hit_mid: clip, idle: clip } } }, id, id);
+    pilot.update('HITSTUN', 0, null, true, 0, true, false, 1, 0, false, 1, 1, undefined, null, {});
+    expect(pilot.sprite.visible).toBe(true);
+    expect(pilot.sprite.label).toBe('hit_mid');
+  }
+});
+
+it('keeps Pack 04 double jumps on the airborne anchor through their return to rise', () => {
+  const clip = { scale: 0.5, durations: [3, 3], frames: [0, 1].map(() => ({
+    texture: Texture.EMPTY, root: [20, 100], offsetY: 28,
+  })) };
+  for (const id of ['zane-corvo', 'velvet-reply'] as const) for (const facing of [-1, 1] as const) {
+    const pilot = new FullBodyPilot({ characters: { [id]: {
+      air_rise_loop: clip, double_jump_transition: clip,
+    } } }, id, id);
+    for (const [state, age] of [['AIRBORNE', 8], ['DOUBLE_JUMP', 0], ['DOUBLE_JUMP', 3], ['AIRBORNE', 12]] as const) {
+      expect(pilot.update(state, age, null, true, -8, state !== 'DOUBLE_JUMP', false,
+        1, 0, false, 1, facing, undefined, null, { isGrounded: false })).toBe(true);
+      expect(pilot.sprite.position.y).toBe(0);
+      expect(pilot.sprite.pivot.y).toBe(Math.round(pilot.sprite.texture.frame.height * 0.54));
+    }
+  }
+});
+
+it('reserves Pack 04 apex art around the crest without overriding fast fall', () => {
+  const clip = { scale: 1, durations: [2,2,2,2,2,2], frames: Array.from({ length: 6 }, () => ({
+    texture: Texture.EMPTY, root: [0, 0], offsetY: 28,
+  })) };
+  for (const id of ['zane-corvo', 'velvet-reply'] as const) for (const facing of [-1,1] as const) {
+    const pilot = new FullBodyPilot({ characters: { [id]: {
+      air_rise_loop: clip, air_apex_loop: clip, air_fall_loop: clip, air_fastfall_loop: clip,
+    } } }, id, id);
+    for (const [age, vy, expected] of [[0,-4.1,'air_rise_loop'],[1,-4,'air_apex_loop'],
+      [7,0,'air_apex_loop'],[12,4,'air_apex_loop'],[13,4.1,'air_fall_loop']] as const) {
+      pilot.update('AIRBORNE', age, null, true, vy, true, false, 1, 0, false, 1, facing,
+        undefined, null, { isGrounded: false });
+      expect(pilot.sprite.label).toBe(expected);
+    }
+    pilot.update('AIRBORNE', 14, null, true, 3, true, false, 1, 0, false, 1, facing,
+      undefined, null, { isGrounded: false, isFastFalling: true });
+    expect(pilot.sprite.label).toBe('air_fastfall_loop');
+  }
+});
+
+it('keeps the completed Pack 04 double-jump tuck instead of restarting extended rise', () => {
+  const frames = Array.from({length:6}, () => ({texture:new Texture({source:Texture.WHITE.source,frame:Texture.WHITE.frame}),root:[0,0],offsetY:28}));
+  const clip={scale:1,durations:[2,2,2,2,2,2],frames};
+  for(const id of ['zane-corvo','velvet-reply'] as const) for(const facing of [-1,1] as const) {
+    const pilot=new FullBodyPilot({characters:{[id]:{air_rise_loop:clip,double_jump_transition:clip}}},id,id);
+    const draw=(age:number,available:boolean)=>pilot.update('AIRBORNE',age,null,true,-8,available,false,1,0,false,1,facing,undefined,null,{isGrounded:false});
+    draw(0,true); draw(1,false); draw(11,false); draw(13,false);
+    expect(pilot.sprite.label).toBe('air_rise_loop');
+    expect(pilot.sprite.texture).toBe(frames[5]!.texture);
+    draw(14,false); expect(pilot.sprite.texture).toBe(frames[5]!.texture);
+  }
+});
+
+it('plays authored Pack 04 landing durations by cue age while preserving floor roots',()=>{
+ const frames=Array.from({length:6},()=>({texture:new Texture({source:Texture.WHITE.source,frame:Texture.WHITE.frame}),root:[0,1],offsetY:28}));
+ const clip={scale:1,durations:[2,2,2,2,2,2],frames};
+ for(const facing of [-1,1] as const){
+  const pilot=new FullBodyPilot({characters:{'zane-corvo':{land_soft:clip}}},'zane-corvo','zane-corvo');
+  for(let age=0;age<12;age++){
+   pilot.update('IDLE',100+age,null,true,0,true,false,1,0,false,1,facing,undefined,null,{isGrounded:true,artCue:'land_soft',artCueFrame:age});
+   expect(pilot.sprite.texture).toBe(frames[Math.floor(age/2)]!.texture);
+   expect(pilot.sprite.position.y).toBe(28);expect(pilot.sprite.pivot.y).toBe(1);
+  }
+ }
+});
+
+it('plays Tasselbottom rise by local age and holds its final drawing without widening apex',()=>{
+ const frames=Array.from({length:6},()=>({texture:new Texture({source:Texture.WHITE.source,frame:Texture.WHITE.frame}),root:[0,0],offsetY:34}));
+ const clip={scale:1,durations:[1,1,1,1,2,2],frames};
+ for(const facing of [-1,1] as const){
+  const pilot=new FullBodyPilot({characters:{'mrs-tasselbottom':{air_rise_loop:clip,air_apex_loop:clip}}},'mrs-tasselbottom','mrs-tasselbottom');
+  for(let n=0;n<12;n++){
+   pilot.update('AIRBORNE',6+n,null,true,-7,true,false,1,0,false,1,facing,undefined,null,{isGrounded:false});
+   expect(pilot.sprite.label).toBe('air_rise_loop');
+   expect(pilot.sprite.texture).toBe(frames[n<4?n:n<6?4:5]!.texture);
+  }
+ }
+});
+
+it('preserves Tasselbottom rise while extending apex artwork into descent and yielding to fast fall',()=>{
+ const frames=Array.from({length:6},()=>({texture:new Texture({source:Texture.WHITE.source,frame:Texture.WHITE.frame}),root:[0,0],offsetY:34}));const clip={scale:1,durations:[2,2,2,2,2,2],frames};
+ for(const facing of [-1,1] as const){
+  const pilot=new FullBodyPilot({characters:{'mrs-tasselbottom':{air_rise_loop:clip,air_apex_loop:clip,air_fall_loop:clip,air_fastfall_loop:clip}}},'mrs-tasselbottom','mrs-tasselbottom');
+  const draw=(age:number,vy:number,fast=false)=>pilot.update('AIRBORNE',age,null,true,vy,true,false,1,0,false,1,facing,undefined,null,{isGrounded:false,isFastFalling:fast});
+  draw(6,-2.01);expect(pilot.sprite.label).toBe('air_rise_loop');
+  for(let n=0;n<12;n++){draw(7+n,-1.5+n*.74);expect(pilot.sprite.label).toBe('air_apex_loop');expect(pilot.sprite.texture).toBe(frames[Math.floor(n/2)]!.texture);}
+  draw(19,6.76);expect(pilot.sprite.label).toBe('air_fall_loop');
+  draw(20,3,true);expect(pilot.sprite.label).toBe('air_fastfall_loop');
+ }
+});
+
+it('advances Tasselbottom fall once over seven ticks and holds the landing-ready pose',()=>{
+ const frames=Array.from({length:6},()=>({texture:new Texture({source:Texture.WHITE.source,frame:Texture.WHITE.frame}),root:[0,0],offsetY:34}));const clip={scale:1,durations:[1,1,1,1,1,2],frames};
+ for(const facing of [-1,1] as const){const pilot=new FullBodyPilot({characters:{'mrs-tasselbottom':{air_fall_loop:clip}}},'mrs-tasselbottom','mrs-tasselbottom');
+  for(let n=0;n<14;n++){pilot.update('AIRBORNE',25+n,null,true,8,true,false,1,0,false,1,facing,undefined,null,{isGrounded:false});expect(pilot.sprite.label).toBe('air_fall_loop');expect(pilot.sprite.texture).toBe(frames[Math.min(5,n)]!.texture);}
+ }
+});

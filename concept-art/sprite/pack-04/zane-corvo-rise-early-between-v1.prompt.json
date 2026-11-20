@@ -1,0 +1,15 @@
+{
+  "tool": "built-in image_gen",
+  "date": "2026-11-18",
+  "identityReference": "concept-art/sprite/pack-04/zane-corvo-idle.png",
+  "poseReferenceSources": [
+    "apps/client/public/fighter-art-pack-04-v1/zane-corvo-air-0.png",
+    "apps/client/public/fighter-art-pack-04-v1/zane-corvo-rise-between-prepared-v1.png"
+  ],
+  "prompt": "Draw ONE new full-body production sprite for Zane Corvo, right-facing three-quarter side view, a subtle EARLY RISE in-between. Reference 1 is the authoritative exact identity/costume/ink style. References 2 and 3 are the two neighboring rise poses, NOT style redesigns. Interpolate only about one-third from ref 2 toward ref 3: leading knee stays lifted, trailing leg has JUST begun bending (slight heel lift toward the body); keep the trailing boot mostly below the pelvis. Rear hand just starts opening, forward fist remains clenched near chest. Do not repeat either endpoint. Both boots airborne. Maintain same head/torso proportions and composed half-lidded face with stubble, tousled brown hair. Exact shipped dark brown-black biker leather jacket with silver studs/zips, buttoned dark waistcoat, silver neck chain, belt, dark trousers, dark chunky boots with cream laces. Same textured ink/hatching art, no new accessories or garment changes. Entire silhouette visible, generous margins, true transparent background. Crisp ink edges, NO floor, shadows, mist, glow, halo, gradient, blur, lettering or motion streaks. Preserve empty alpha outside the drawing.",
+  "preparation": {
+    "clearAlphaAtMost": 5,
+    "worldHeight": 82,
+    "preserveSource": true
+  }
+}

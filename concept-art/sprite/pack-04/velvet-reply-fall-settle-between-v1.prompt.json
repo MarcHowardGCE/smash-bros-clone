@@ -1,0 +1,12 @@
+{
+  "tool": "built-in image_gen",
+  "date": "2026-11-18",
+  "identityReference": "velvet-reply-idle.png",
+  "prompt": "Draw ONE full-body production sprite of The Velvet Reply facing RIGHT, three-quarter side view: FALL SETTLE just before final extended fall. Reference1 exact canonical costume/identity/ink texture; reference2 late fall; reference3 final fall. Make distinct transition two-thirds from late to final: legs nearly straight but knees softly bent, boots slightly separated forward/back, toes down, arms long by sides with hands relaxed slightly behind hip line. Torso upright, same head and body proportions; hair lifts gently behind. Copper-auburn waves, cheek beauty mark, half-lidded face, dark plum-black fitted FLARED jumpsuit with fine gold piping, fishnet chest/sleeves with crossed black straps, high collar, SILVER rectangular belt buckle/cuffs/hoops, dark HEELED ankle boots. Preserve costume exactly. No effects. Whole body all extremities with generous clear margins. TRUE TRANSPARENT background, crisp textured ink; NO floor, shadow, mist, glow, halo, gradients, blur, text or motion lines.",
+  "preparation": {
+    "alphaFloor": 5,
+    "worldHeight": 82,
+    "preserveSource": true,
+    "detachedPixelCleanup": "settle: alpha 6, farther than four pixels from solid ink"
+  }
+}

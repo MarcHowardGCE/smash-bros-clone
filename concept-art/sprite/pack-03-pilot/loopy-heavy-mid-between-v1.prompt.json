@@ -1,0 +1,15 @@
+{
+  "tool": "built-in image_gen",
+  "date": "2026-11-20",
+  "prompt": "Create ONE full-body transparent-background 2D gameplay sprite: a dedicated Loopy HEAVY landing in-between using the TWO attached SHIPPED references. Preserve exact identity, head/torso/antler proportions, body mass, costume, colors and inked cartoon style. Golden shaggy deer, brown branching antlers, long black nose, sleepy grin, cream ankle fur, brown split hooves. BLANK CREAM jersey with PURPLE trim, ragged PURPLE shorts and purple/cream striped wristbands. NO number49, numbers, lettering or logos. Face RIGHT. Both hooves flat on one baseline; preserve natural stance. PROPORTION LOCK: broad chest, large reference head, short compact bent legs, no elongated shins/neck or narrow torso. Full antlers and hooves, generous transparent padding. Flat cel shading ONLY inside crisp black outline. Alpha ZERO outside silhouette and in limb/antler gaps. NO glow, haze, blur, diffuse lighting, cast shadow, ground line, dust, particles, impact effects or text. Heavy landing recovery just above reference1's crouch: copy reference1's broad chest, large head and compact bent legs, then open knees only slightly and lift hips a little. Weight still low after impact, fists loose at waist. Do NOT lengthen shin/neck, do NOT make torso narrow or tall. A small first recovery pose, both hooves flat.",
+  "source": "C:\\Users\\misac\\.codex\\generated_images\\01a1d512-1266-7be0-b658-8ca4590e1a8c\\exec-a1740132-bdcc-492c-b17d-36bcfb3959c1.png",
+  "references": [
+    "loopy-shipped-heavy-1.png",
+    "loopy-shipped-heavy-2.png"
+  ],
+  "preparation": {
+    "worldHeight": 98,
+    "soleDepthWorld": 0.83617,
+    "alphaFloor": 5
+  }
+}

@@ -159,11 +159,11 @@ function throwReleaseIndex(clip: LoadedClip): number | undefined {
 export class FullBodyPilot {
  readonly sprite=new Sprite();
  readonly effectSprite=new Sprite();
- private reaction: { move: MoveId; facing: 1 | -1; start: number | null; ownerId?: PlayerId } | null = null;
+ private reaction: { move: MoveId; facing: 1 | -1; start: number | null; ownerId?: PlayerId; age: number; waitAge: number; lastState?: string; lastFrame?: number } | null = null;
  private wasVictim=false;private lastVictimFlip=1;private releaseStart:number|null=null;
  get throwOwnerId(): PlayerId | undefined { return this.reaction?.ownerId; }
  startGrabReaction(move: MoveId, facing: 1 | -1, ownerId?: PlayerId): void {
-  this.reaction = { move, facing, start: null, ownerId: move === 'PUMMEL' ? undefined : ownerId };
+  this.reaction = { move, facing, start: null, ownerId: move === 'PUMMEL' ? undefined : ownerId, age: 0, waitAge: 0 };
   this.contactRebase = true;
  }
  private lastContact:[number,number]=[0,0];private lastContactFacing:1|-1=1;private contactRebase=false;private lastHolder:{clip:LoadedClip;index:number;owner:GrabContactContext}|null=null;
@@ -188,6 +188,7 @@ export class FullBodyPilot {
  update(state:string,frame:number,move:MoveId|null,enabled:boolean,vy?:number,hasDoubleJump=true,isTumbling=false,rollDirection:1|-1=1,chargeFrames=0,grabVictim=false,victimFlip=1,facing:1|-1=1,grabOwner?:GrabContactContext,ledgeId?:string|null,prepared:PreparedContext={}):boolean {
   enabled=enabled||Boolean(prepared.result);
   const pack03 = isPack03PilotId(this.artId);
+  const pack02 = this.artId === 'moonshine' || this.artId === 'hulk-hoagie';
   if (this.throwRelease && (!enabled || state !== 'ATTACK' || move !== this.throwRelease.move)) {
    this.throwRelease = null;
   }
@@ -211,6 +212,7 @@ export class FullBodyPilot {
     selected = { clip: 'idle', index: 0 };
    }
   }
+  const doubleJumpWasActive = this.doubleJumpCue !== null;
   const airborne=state==='AIRBORNE'||state==='DOUBLE_JUMP';
   if(enabled&&airborne&&this.previousDoubleJump===true&&!hasDoubleJump)this.doubleJumpCue={state,frame,elapsed:0};
   else if(this.doubleJumpCue){const cue=this.doubleJumpCue;if(!enabled||!airborne)this.doubleJumpCue=null;else{cue.elapsed+=cue.state===state?Math.max(0,frame-cue.frame):Math.max(1,frame);cue.state=state;cue.frame=frame;if(cue.elapsed>=12)this.doubleJumpCue=null;}}
@@ -230,7 +232,41 @@ export class FullBodyPilot {
   const showingRelease=enabled&&releaseState&&releaseAge!==null&&releaseAge>=0&&releaseAge<12;
   if(showingRelease)selected={clip:'grab_release',index:Math.floor(releaseAge/3)};
   else this.releaseStart=null;
-  if(this.reaction){const r=this.reaction,pummel=r.move==='PUMMEL';if(r.start===null)r.start=frame;const t=frame-r.start;const valid=pummel?state==='GRAB_HOLDING':state==='HITSTUN';if(enabled&&valid&&t>=0&&t<(pummel?8:18)){const direction=r.move==='FORWARD_THROW'?0:r.move==='BACK_THROW'?1:r.move==='UP_THROW'?2:3;selected=pummel?{clip:'pummel_victim',index:Math.min(3,Math.floor(t/2))}:{clip:'throw_victim',index:t<6?direction:r.move==='DOWN_THROW'&&t<12?4:5};reactionFlip=r.facing*facing;}else this.reaction=null;}
+  if (this.reaction) {
+   const r = this.reaction, previousReactionState = r.lastState, pummel = r.move === 'PUMMEL';
+   const step = r.lastFrame === undefined ? 0 : r.lastState === state
+    ? Math.max(0, frame - r.lastFrame) : Math.max(1, frame);
+   r.lastState = state;
+   r.lastFrame = frame;
+   const waitingForRelease = !pummel && r.start === null && state === 'GRAB_HOLDING';
+   if (enabled && waitingForRelease && (r.waitAge += step) <= 6) {
+    // The confirmed event can precede the interpolated release state briefly.
+   } else if (waitingForRelease || !enabled) this.reaction = null;
+   else {
+    const freshTakeoff = state === 'AIRBORNE' && (previousReactionState === 'IDLE' || previousReactionState === 'HARD_LANDING' || prepared.artCue?.startsWith('takeoff_') === true);
+    const passiveRecovery = state === 'IDLE' || (state === 'AIRBORNE' && !freshTakeoff) || state === 'HARD_LANDING';
+    if (r.start === null) {
+     r.start = frame;
+     if (!pummel && passiveRecovery) {
+      // A late event must not pull an already released victim back to an old grip.
+      this.lastHolder = null;
+      this.lastContact = [0, 0];
+      this.contactRebase = false;
+     }
+    } else if (!pummel) r.age += step;
+    if (pummel) r.age = frame - r.start;
+    // Six presentation ticks survive recovery, but fresh actions always win.
+    // This changes artwork only; gameplay hitstun and input unlocks are untouched.
+    const valid = pummel ? state === 'GRAB_HOLDING' : state === 'HITSTUN' || (passiveRecovery && r.age < 6);
+    if (valid && r.age >= 0 && r.age < (pummel ? 8 : 18)) {
+     const direction = r.move === 'FORWARD_THROW' ? 0 : r.move === 'BACK_THROW' ? 1 : r.move === 'UP_THROW' ? 2 : 3;
+     selected = pummel ? {clip:'pummel_victim',index:Math.min(3,Math.floor(r.age/2))}
+      : {clip:'throw_victim',index:r.age<6?direction:r.move==='DOWN_THROW'&&r.age<12?4:5};
+     reactionFlip = r.facing * facing;
+     if (!pummel) this.releaseStart = null;
+    } else this.reaction = null;
+   }
+  }
   this.effectSprite.visible=false;
   if(enabled&&selected&&(state==='ATTACK'||state==='AIR_ATTACK')&&move){
    const key=selected.clip==='neutral_special'?'neutral_burst':selected.clip==='side_special'?'side_trail':selected.clip==='up_special'?'recovery_trail':selected.clip==='counter_success'?'counter_flash':null;
@@ -282,8 +318,27 @@ export class FullBodyPilot {
   if (launch && selected?.clip === 'tumble' && frame < launchDuration) {
    selected = { clip: 'hit_launch', index: dojoFrame(launch, frame) };
   }
+  // Reserve a readable twelve-tick apex presentation around the crest.
+  // This changes art selection only; authoritative velocity and input windows are untouched.
+  if ((isPack04FighterId(this.artId) || this.artId==='moonshine' || this.artId==='mr-wrong' || this.artId==='loopy') && selected && Number.isFinite(vy) &&
+      ['air_rise_loop', 'air_apex_loop', 'air_fall_loop'].includes(selected.clip) && Math.abs(vy!) <= 4) {
+   selected = { clip: 'air_apex_loop', index: 0 };
+  }
+  // Hoagie's asymmetric crest band preserves twelve full-rise ticks for six poses.
+  if (this.artId==='hulk-hoagie' && selected && Number.isFinite(vy) &&
+      ['air_rise_loop','air_apex_loop','air_fall_loop'].includes(selected.clip) && vy! >= -3.5 && vy! <= 4.5) {
+   selected = {clip:'air_apex_loop',index:0};
+  }
+  // Tasselbottom preserves her eight rise ticks; apex art continues into early descent.
+  if (this.artId==='mrs-tasselbottom' && selected && Number.isFinite(vy) &&
+      ['air_rise_loop','air_apex_loop','air_fall_loop'].includes(selected.clip) && vy! >= -2 && vy! <= 6.75) {
+   selected = {clip:'air_apex_loop',index:0};
+  }
   if (!selected || !['air_rise_loop','air_apex_loop','air_fall_loop','air_fastfall_loop'].includes(selected.clip)) {
    this.airMotionClip = undefined;
+  }
+  if (selected?.clip === 'reaction' && !art?.reaction && art?.hit_mid) {
+   selected = { clip: 'hit_mid', index: selected.index };
   }
   let clip=selected?art?.[selected.clip]:undefined;
   if(this.artId&&selected&&clip){
@@ -305,7 +360,7 @@ export class FullBodyPilot {
    }else if(selected.clip==='throw_victim'&&this.reaction){
     const name={BACK_THROW:'back_throw_victim_preview',UP_THROW:'up_throw_victim_preview',DOWN_THROW:'down_throw_victim_preview'}[this.reaction.move as 'BACK_THROW'|'UP_THROW'|'DOWN_THROW'];
     if(name)clip=(art as Record<string,LoadedClip>)[name]??clip;
-    const age=frame-(this.reaction.start??frame);
+    const age=this.reaction.age;
     const index=clip.frames.length>=4&&clip.durations
      ?dojoFrame(clip,age)
      :isPack04FighterId(this.artId)?selected.index:Math.min(2,1+Math.floor(age/6));
@@ -353,10 +408,14 @@ export class FullBodyPilot {
     selected = { ...selected, index: dojoFrame(clip, frame - (this.counterStart ?? frame)) };
    }else if(pack03 && clip.durations && selected.clip === 'double_jump_transition'){
     selected = { ...selected, index: dojoFrame(clip, this.doubleJumpCue?.elapsed ?? frame) };
-   }else if(isPack04FighterId(this.artId) && ['air_rise_loop','air_apex_loop','air_fall_loop','air_fastfall_loop'].includes(selected.clip)){
+   }else if((this.artId==='mrs-tasselbottom' && ['air_rise_loop','air_apex_loop','air_fall_loop'].includes(selected.clip)) || (isPack04FighterId(this.artId) && ['air_rise_loop','air_apex_loop','air_fall_loop','air_fastfall_loop'].includes(selected.clip)) || (this.artId==='moonshine' && ['air_rise_loop','air_apex_loop','air_fall_loop','air_fastfall_loop'].includes(selected.clip)) || (this.artId==='hulk-hoagie' && ['air_rise_loop','air_apex_loop','air_fall_loop','air_fastfall_loop'].includes(selected.clip)) || (this.artId==='mr-wrong' && ['air_rise_loop','air_apex_loop','air_fall_loop','air_fastfall_loop'].includes(selected.clip)) || (this.artId==='loopy' && ['air_rise_loop','air_apex_loop','air_fall_loop','air_fastfall_loop'].includes(selected.clip))){
     if (this.airMotionClip !== selected.clip || frame < this.airMotionStart) {
      this.airMotionClip = selected.clip;
      this.airMotionStart = frame;
+     // The double-jump clip already ends in the rise tuck; do not reopen its legs.
+     if (this.artId !== 'mr-wrong' && this.artId !== 'loopy' && doubleJumpWasActive && !this.doubleJumpCue && selected.clip === 'air_rise_loop') {
+      this.airMotionStart -= clip.durations?.reduce((sum, ticks) => sum + ticks, 0) ?? 0;
+     }
     }
     // Progress into the phase and hold its final pose instead of rocking between endpoints.
     selected = { ...selected, index: dojoFrame(clip, frame - this.airMotionStart) };   }else if(pack03 && selected.clip === 'air_apex_loop'){
@@ -364,6 +423,8 @@ export class FullBodyPilot {
     selected = { ...selected, index: (vy ?? 0) < 0 ? 0 : Math.min(1, clip.frames.length - 1) };
    }else if(pack03 && clip.durations && selected.clip === 'air_fastfall_loop'){
     selected = { ...selected, index: dojoFrame(clip, frame - (this.fastFallStart ?? frame)) };
+   }else if(clip.durations && ((isPack04FighterId(this.artId) && ['land_soft','land_heavy'].includes(selected.clip)) || (pack02 && selected.clip==='land_soft') || ((this.artId==='moonshine'||this.artId==='hulk-hoagie') && selected.clip==='land_heavy'))){
+    selected = { ...selected, index: dojoFrame(clip, selected.clip === prepared.artCue ? prepared.artCueFrame ?? 0 : frame) };
    }else if(pack03 && clip.durations && (
     selected.clip.startsWith('takeoff_') || selected.clip === 'dash_start' || selected.clip === 'land_soft' ||
     ['land_heavy','brake','turn_stand','turn_run','platform_drop','tumble_recover','down_special','helpless_land','knockdown_up','knockdown_down'].includes(selected.clip)
@@ -377,7 +438,7 @@ export class FullBodyPilot {
    }else if(selected.clip.startsWith('footstool_')){
     selected={...selected,index:footstoolFrameIndex(prepared.footstoolFrame??0,clip.frames.length,true)};
    }else if(clip.durations&&selected.clip.startsWith('takeoff_')&&state==='AIRBORNE'){
-    selected={...selected,index:clip.frames.length-1};
+    selected={...selected,index:(isPack04FighterId(this.artId)||pack02) ? dojoFrame(clip,prepared.artCueFrame??frame) : clip.frames.length-1};
    }else if(clip.durations&&(selected.clip==='prone_up'||selected.clip==='prone_down'||selected.clip==='trip_prone')){
     const period=clip.durations.reduce((sum,ticks)=>sum+ticks,0);
     const age=selected.clip==='trip_prone'?frame:Math.max(0,frame-18);
@@ -445,7 +506,7 @@ export class FullBodyPilot {
   if(newcomerHeld)this.sprite.scale.x*=-1;
   const airRoot = state === 'AIR_ATTACK' || (isPack04FighterId(this.artId) && (state === 'AIR_DODGE' || state === 'HELPLESS' || state === 'HITSTUN' || selected.clip === 'tumble' || (selected.clip === 'tumble_recover' && !prepared.isGrounded) || selected.clip === 'wall_tech' || selected.clip === 'wall_tech_jump' || selected.clip === 'ceiling_tech' || selected.clip === 'ledge_jump' || selected.clip === 'ledge_drop' || selected.clip === 'ledge_trump')) || (pack03 && (airborne || state === 'HELPLESS' || state === 'AIR_DODGE' || selected.clip === 'shield_break_launch' ||
       (state === 'HITSTUN' && ['hit_air','hit_launch','tumble','footstool_air_victim'].includes(selected.clip)))) ? drawing.airRoot : undefined;
-  const fallRoot = isPack04FighterId(this.artId) && (['air_rise_loop','air_apex_loop','air_fall_loop','air_fastfall_loop'].includes(selected.clip))
+  const fallRoot = isPack04FighterId(this.artId) && (['air_rise_loop','air_apex_loop','air_fall_loop','air_fastfall_loop','double_jump_transition'].includes(selected.clip))
     ? [drawing.root[0], Math.round(drawing.texture.frame.height * 0.54)] : undefined;
   const takeoffBlend = isPack04FighterId(this.artId) && selected.clip.startsWith('takeoff_')
     ? Math.min(1, Math.max(0, (prepared.artCueFrame ?? frame) / 5)) : undefined;
@@ -482,7 +543,15 @@ export class FullBodyPilot {
     if (owner && contactMove !== 'PUMMEL') {
      const pose = selectPilotFrame('ATTACK', 0, contactMove, 0, true, false, owner.characterId);
      const throwClip = pose && this.assets.characters[owner.artId ?? owner.characterId]?.[pose.clip];
-     const index = throwClip ? throwReleaseIndex(throwClip) : undefined;
+     let index = throwClip ? throwReleaseIndex(throwClip) : undefined;
+     // Pack 04 release drawings can omit the grip after separation. Reconstruct
+     // the last authored held grip instead of retaining the last rendered pose,
+     // which may differ when normal playback skips a simulation tick.
+     if (throwClip && index !== undefined && !throwClip.frames[index]?.sockets?.grabGrip && isPack04FighterId(owner.artId)) {
+      for (let heldIndex = index - 1; heldIndex >= 0; heldIndex--) {
+       if (throwClip.frames[heldIndex]?.sockets?.grabGrip) { index = heldIndex; break; }
+      }
+     }
      if (throwClip && index !== undefined && throwClip.frames[index]?.sockets?.grabGrip) {
       // Express the victim's drawn mirror in the thrower's coordinate system.
       const receiver = reactionFacing === owner.facing ? clip : { ...clip, mirrorSource: !clip.mirrorSource };
@@ -495,7 +564,7 @@ export class FullBodyPilot {
     this.contactRebase = false;
    }
    const start=this.reaction?.start;
-   const t=start==null?(showingRelease?releaseAge:12):frame-start;
+   const t=this.reaction?this.reaction.age:start==null?(showingRelease?releaseAge:12):frame-start;
    const attachmentWeight = Math.max(0, 1 - t / 12);
    const remaining = prepared.hitstunFramesRemaining;
    // Short low-percent back throws can return to idle before the usual blend ends.
@@ -559,6 +628,3 @@ export class FullBodyPilot {
   return true;
  }
 }
-
-
-

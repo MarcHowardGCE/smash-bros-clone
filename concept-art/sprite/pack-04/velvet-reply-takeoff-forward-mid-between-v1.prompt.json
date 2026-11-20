@@ -1,0 +1,15 @@
+{
+  "tool": "built-in image_gen",
+  "date": "2026-11-18",
+  "prompt": "Production full-body 2D fighter sprite, ONE pose facing right on genuinely transparent background. Reference 1 locks Velvet Reply's shipped identity/costume; reference 2 squat extension; reference 3 airborne rise endpoint. Preserve dark plum-black fitted FLARED-LEG jumpsuit, fine GOLD piping, BLACK FISHNET sleeves/chest, crossed black straps/high collar, SILVER rectangular belt buckle/cuffs/hoop earrings, glossy dark HEELED ankle boots, copper-auburn waves, cheek beauty mark, half-lidded face. Match shipped adult proportions, crisp black ink outlines and textured warm shading. Full figure with margins. No floor, shadows, mist, halo, glow, blur, text or extra limbs. FORWARD takeoff MIDPOINT: airborne toward screen RIGHT, slight forward lean easing upright, leading knee lifted to hip height, rear leg softly trailing below hips, poised hands below chest. Less lean than initial push-off. CRITICAL zero brown/gold haze; empty space fully transparent, crisp ink silhouette.",
+  "references": [
+    "C:/Github/smash-bros-clone/concept-art/sprite/pack-04/velvet-reply-idle.png",
+    "C:/Github/smash-bros-clone/concept-art/sprite/pack-04/velvet-reply-squat-extend-between-v1.png"
+  ],
+  "preparation": {
+    "alphaFloor": 5,
+    "worldHeight": 82,
+    "preserveSource": true
+  },
+  "review": "Neutral start reviewed first. First midpoint candidate with brown halo rejected; regenerated using clean idle and squat references."
+}

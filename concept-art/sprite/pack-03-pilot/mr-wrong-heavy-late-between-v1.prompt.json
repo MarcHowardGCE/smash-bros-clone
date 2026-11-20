@@ -1,0 +1,17 @@
+{
+  "tool": "built-in image_gen",
+  "date": "2026-11-19",
+  "prompt": "ONE dedicated full-body right-facing Mr. Wrong HEAVY-LANDING LATE recovery in-between sprite. Two shipped landing references define his exact costume and proportions. Draw LATE heavy-landing recovery: nearly upright guard, knees slightly bent, shoulders settling, tentacle hands relaxed beside torso, both tentacle feet planted on one horizontal baseline. EXACT yellow jacket with burgundy dots, burgundy vest with THREE yellow buttons, cream ruff/cuffs, pink dark-polka-dot shorts with shipped patch, lavender curly hair, compact cream/burgundy striped floppy cap and cream pompom, TURQUOISE tentacle hands/feet with pink suckers. Preserve long grinning face and shipped head/body proportions; no taller cap or thinner torso. Entire figure including all tentacles and pompom uncropped. Fine engraved cartoon inks and warm shading, genuine transparent background, crisp natural antialiasing. NO glow, haze, aura, shadows, floor, background, motion marks, lettering or props.",
+  "source": "exec-8c35cd60-f189-41b6-a550-8a40e0ceddb0.png",
+  "references": [
+    "mr-wrong-shipped-heavy-1.png",
+    "mr-wrong-shipped-heavy-2.png"
+  ],
+  "preparation": {
+    "alphaFloor": 5,
+    "detachedAlphaLimit": 6,
+    "distanceFromSolid": 4,
+    "worldHeight": 87,
+    "root": "solid sole support midpoint, two pixels above crop bottom"
+  }
+}

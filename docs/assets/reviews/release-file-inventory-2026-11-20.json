@@ -1,0 +1,5956 @@
+{
+  "basis": "Candidate snapshot before writing this inventory file; raw browser outputs ignored, no files staged or committed",
+  "files": 1487,
+  "totalBytes": 1391486453,
+  "oversize": [],
+  "rows": [
+    {
+      "path": "apps/client/e2e/hoagie-double.spec.ts",
+      "bytes": 4878
+    },
+    {
+      "path": "apps/client/e2e/hoagie-fastfall.spec.ts",
+      "bytes": 4608
+    },
+    {
+      "path": "apps/client/e2e/hoagie-heavy.spec.ts",
+      "bytes": 3891
+    },
+    {
+      "path": "apps/client/e2e/hoagie-jump-normal.spec.ts",
+      "bytes": 5109
+    },
+    {
+      "path": "apps/client/e2e/hoagie-soft.spec.ts",
+      "bytes": 3228
+    },
+    {
+      "path": "apps/client/e2e/loopy-apex-normal.spec.ts",
+      "bytes": 5016
+    },
+    {
+      "path": "apps/client/e2e/loopy-double-rise.spec.ts",
+      "bytes": 5022
+    },
+    {
+      "path": "apps/client/e2e/loopy-fall-normal.spec.ts",
+      "bytes": 4814
+    },
+    {
+      "path": "apps/client/e2e/loopy-fastfall.spec.ts",
+      "bytes": 4606
+    },
+    {
+      "path": "apps/client/e2e/loopy-heavy.spec.ts",
+      "bytes": 3882
+    },
+    {
+      "path": "apps/client/e2e/loopy-rise-normal.spec.ts",
+      "bytes": 4600
+    },
+    {
+      "path": "apps/client/e2e/loopy-soft.spec.ts",
+      "bytes": 3219
+    },
+    {
+      "path": "apps/client/e2e/loopy-squat.spec.ts",
+      "bytes": 3442
+    },
+    {
+      "path": "apps/client/e2e/loopy-takeoffs-normal.spec.ts",
+      "bytes": 4383
+    },
+    {
+      "path": "apps/client/e2e/loopy-takeoffs.spec.ts",
+      "bytes": 3057
+    },
+    {
+      "path": "apps/client/e2e/moonshine-double.spec.ts",
+      "bytes": 4876
+    },
+    {
+      "path": "apps/client/e2e/moonshine-fastfall.spec.ts",
+      "bytes": 4606
+    },
+    {
+      "path": "apps/client/e2e/moonshine-jump-normal.spec.ts",
+      "bytes": 5600
+    },
+    {
+      "path": "apps/client/e2e/movement-phase-budget.spec.ts",
+      "bytes": 19400
+    },
+    {
+      "path": "apps/client/e2e/mr-wrong-apex-normal.spec.ts",
+      "bytes": 4812
+    },
+    {
+      "path": "apps/client/e2e/mr-wrong-double-rise.spec.ts",
+      "bytes": 4884
+    },
+    {
+      "path": "apps/client/e2e/mr-wrong-fall-normal.spec.ts",
+      "bytes": 4600
+    },
+    {
+      "path": "apps/client/e2e/mr-wrong-fastfall.spec.ts",
+      "bytes": 4609
+    },
+    {
+      "path": "apps/client/e2e/mr-wrong-heavy.spec.ts",
+      "bytes": 3891
+    },
+    {
+      "path": "apps/client/e2e/mr-wrong-rise-normal.spec.ts",
+      "bytes": 4603
+    },
+    {
+      "path": "apps/client/e2e/mr-wrong-soft.spec.ts",
+      "bytes": 3228
+    },
+    {
+      "path": "apps/client/e2e/mr-wrong-squat.spec.ts",
+      "bytes": 3451
+    },
+    {
+      "path": "apps/client/e2e/mr-wrong-takeoffs-normal.spec.ts",
+      "bytes": 4386
+    },
+    {
+      "path": "apps/client/e2e/mr-wrong-takeoffs.spec.ts",
+      "bytes": 3066
+    },
+    {
+      "path": "apps/client/e2e/pack-02-movement-fixes.spec.ts",
+      "bytes": 9664
+    },
+    {
+      "path": "apps/client/e2e/pack-04-jump-normal.spec.ts",
+      "bytes": 4403
+    },
+    {
+      "path": "apps/client/e2e/pack-04-squat.spec.ts",
+      "bytes": 4196
+    },
+    {
+      "path": "apps/client/e2e/paired-delayed-online.spec.ts",
+      "bytes": 9791
+    },
+    {
+      "path": "apps/client/e2e/release-roster.spec.ts",
+      "bytes": 3298
+    },
+    {
+      "path": "apps/client/e2e/roster-paired-normal.spec.ts",
+      "bytes": 5208
+    },
+    {
+      "path": "apps/client/e2e/roster-paired-transitions.spec.ts",
+      "bytes": 6144
+    },
+    {
+      "path": "apps/client/e2e/tasselbottom-apex-normal.spec.ts",
+      "bytes": 5036
+    },
+    {
+      "path": "apps/client/e2e/tasselbottom-double.spec.ts",
+      "bytes": 4977
+    },
+    {
+      "path": "apps/client/e2e/tasselbottom-fall-normal.spec.ts",
+      "bytes": 5317
+    },
+    {
+      "path": "apps/client/e2e/tasselbottom-fastfall.spec.ts",
+      "bytes": 4799
+    },
+    {
+      "path": "apps/client/e2e/tasselbottom-heavy.spec.ts",
+      "bytes": 5855
+    },
+    {
+      "path": "apps/client/e2e/tasselbottom-rise-normal.spec.ts",
+      "bytes": 4877
+    },
+    {
+      "path": "apps/client/e2e/tasselbottom-soft.spec.ts",
+      "bytes": 5039
+    },
+    {
+      "path": "apps/client/e2e/tasselbottom-squat.spec.ts",
+      "bytes": 3475
+    },
+    {
+      "path": "apps/client/e2e/tasselbottom-takeoffs-normal.spec.ts",
+      "bytes": 4394
+    },
+    {
+      "path": "apps/client/e2e/tasselbottom-takeoffs.spec.ts",
+      "bytes": 3090
+    },
+    {
+      "path": "apps/client/public/fighter-art-newcomers-v1/hoagie-apex-early-between-v1-prepared.png",
+      "bytes": 1794931
+    },
+    {
+      "path": "apps/client/public/fighter-art-newcomers-v1/hoagie-apex-late-between-v1-prepared.png",
+      "bytes": 1838488
+    },
+    {
+      "path": "apps/client/public/fighter-art-newcomers-v1/hoagie-apex-mid-between-v1-prepared.png",
+      "bytes": 2134932
+    },
+    {
+      "path": "apps/client/public/fighter-art-newcomers-v1/hoagie-apex-settle-between-v1-prepared.png",
+      "bytes": 2150898
+    },
+    {
+      "path": "apps/client/public/fighter-art-newcomers-v1/hoagie-double-early-between-v1-prepared.png",
+      "bytes": 1994958
+    },
+    {
+      "path": "apps/client/public/fighter-art-newcomers-v1/hoagie-double-late-between-v1-prepared.png",
+      "bytes": 2404930
+    },
+    {
+      "path": "apps/client/public/fighter-art-newcomers-v1/hoagie-double-mid-between-v1-prepared.png",
+      "bytes": 2079950
+    },
+    {
+      "path": "apps/client/public/fighter-art-newcomers-v1/hoagie-fall-early-between-v1-prepared.png",
+      "bytes": 2276252
+    },
+    {
+      "path": "apps/client/public/fighter-art-newcomers-v1/hoagie-fall-late-between-v1-prepared.png",
+      "bytes": 2116902
+    },
+    {
+      "path": "apps/client/public/fighter-art-newcomers-v1/hoagie-fall-mid-between-v1-prepared.png",
+      "bytes": 2280944
+    },
+    {
+      "path": "apps/client/public/fighter-art-newcomers-v1/hoagie-fall-settle-between-v1-prepared.png",
+      "bytes": 2114443
+    },
+    {
+      "path": "apps/client/public/fighter-art-newcomers-v1/hoagie-fastfall-early-between-v1-prepared.png",
+      "bytes": 2141047
+    },
+    {
+      "path": "apps/client/public/fighter-art-newcomers-v1/hoagie-fastfall-late-between-v1-prepared.png",
+      "bytes": 2206739
+    },
+    {
+      "path": "apps/client/public/fighter-art-newcomers-v1/hoagie-fastfall-mid-between-v1-prepared.png",
+      "bytes": 2253907
+    },
+    {
+      "path": "apps/client/public/fighter-art-newcomers-v1/hoagie-fastfall-settle-between-v1-prepared.png",
+      "bytes": 2120758
+    },
+    {
+      "path": "apps/client/public/fighter-art-newcomers-v1/hoagie-heavy-early-between-v1-prepared.png",
+      "bytes": 2208376
+    },
+    {
+      "path": "apps/client/public/fighter-art-newcomers-v1/hoagie-heavy-late-between-v1-prepared.png",
+      "bytes": 1981244
+    },
+    {
+      "path": "apps/client/public/fighter-art-newcomers-v1/hoagie-heavy-mid-between-v1-prepared.png",
+      "bytes": 2397072
+    },
+    {
+      "path": "apps/client/public/fighter-art-newcomers-v1/hoagie-heavy-settle-between-v1-prepared.png",
+      "bytes": 2184942
+    },
+    {
+      "path": "apps/client/public/fighter-art-newcomers-v1/hoagie-rise-early-between-v1-prepared.png",
+      "bytes": 1894406
+    },
+    {
+      "path": "apps/client/public/fighter-art-newcomers-v1/hoagie-rise-late-between-v1-prepared.png",
+      "bytes": 1918868
+    },
+    {
+      "path": "apps/client/public/fighter-art-newcomers-v1/hoagie-rise-mid-between-v1-prepared.png",
+      "bytes": 2302511
+    },
+    {
+      "path": "apps/client/public/fighter-art-newcomers-v1/hoagie-rise-settle-between-v1-prepared.png",
+      "bytes": 1800845
+    },
+    {
+      "path": "apps/client/public/fighter-art-newcomers-v1/hoagie-soft-early-between-v1-prepared.png",
+      "bytes": 2517746
+    },
+    {
+      "path": "apps/client/public/fighter-art-newcomers-v1/hoagie-soft-late-between-v1-prepared.png",
+      "bytes": 2278796
+    },
+    {
+      "path": "apps/client/public/fighter-art-newcomers-v1/hoagie-soft-mid-between-v1-prepared.png",
+      "bytes": 2344906
+    },
+    {
+      "path": "apps/client/public/fighter-art-newcomers-v1/hoagie-takeoff-backward-mid-between-v1-prepared.png",
+      "bytes": 1655164
+    },
+    {
+      "path": "apps/client/public/fighter-art-newcomers-v1/hoagie-takeoff-forward-mid-between-v1-prepared.png",
+      "bytes": 1688215
+    },
+    {
+      "path": "apps/client/public/fighter-art-newcomers-v1/hoagie-takeoff-neutral-mid-between-v1-prepared.png",
+      "bytes": 1795628
+    },
+    {
+      "path": "apps/client/public/fighter-art-newcomers-v1/moonshine-apex-early-between-v1-prepared.png",
+      "bytes": 2061118
+    },
+    {
+      "path": "apps/client/public/fighter-art-newcomers-v1/moonshine-apex-late-between-v1-prepared.png",
+      "bytes": 2145208
+    },
+    {
+      "path": "apps/client/public/fighter-art-newcomers-v1/moonshine-apex-mid-between-v1-prepared.png",
+      "bytes": 1601082
+    },
+    {
+      "path": "apps/client/public/fighter-art-newcomers-v1/moonshine-apex-settle-between-v1-prepared.png",
+      "bytes": 1534236
+    },
+    {
+      "path": "apps/client/public/fighter-art-newcomers-v1/moonshine-double-early-between-v1-prepared.png",
+      "bytes": 1590430
+    },
+    {
+      "path": "apps/client/public/fighter-art-newcomers-v1/moonshine-double-late-between-v1-prepared.png",
+      "bytes": 1379261
+    },
+    {
+      "path": "apps/client/public/fighter-art-newcomers-v1/moonshine-double-mid-between-v1-prepared.png",
+      "bytes": 1330564
+    },
+    {
+      "path": "apps/client/public/fighter-art-newcomers-v1/moonshine-fall-early-between-v1-prepared.png",
+      "bytes": 2126306
+    },
+    {
+      "path": "apps/client/public/fighter-art-newcomers-v1/moonshine-fall-late-between-v1-prepared.png",
+      "bytes": 1913907
+    },
+    {
+      "path": "apps/client/public/fighter-art-newcomers-v1/moonshine-fall-mid-between-v1-prepared.png",
+      "bytes": 1580873
+    },
+    {
+      "path": "apps/client/public/fighter-art-newcomers-v1/moonshine-fall-settle-between-v1-prepared.png",
+      "bytes": 1798670
+    },
+    {
+      "path": "apps/client/public/fighter-art-newcomers-v1/moonshine-fastfall-early-between-v1-prepared.png",
+      "bytes": 1460282
+    },
+    {
+      "path": "apps/client/public/fighter-art-newcomers-v1/moonshine-fastfall-late-between-v1-prepared.png",
+      "bytes": 1735836
+    },
+    {
+      "path": "apps/client/public/fighter-art-newcomers-v1/moonshine-fastfall-mid-between-v1-prepared.png",
+      "bytes": 1605804
+    },
+    {
+      "path": "apps/client/public/fighter-art-newcomers-v1/moonshine-fastfall-settle-between-v1-prepared.png",
+      "bytes": 1620424
+    },
+    {
+      "path": "apps/client/public/fighter-art-newcomers-v1/moonshine-heavy-early-between-v1-prepared.png",
+      "bytes": 2179276
+    },
+    {
+      "path": "apps/client/public/fighter-art-newcomers-v1/moonshine-heavy-late-between-v1-prepared.png",
+      "bytes": 1899772
+    },
+    {
+      "path": "apps/client/public/fighter-art-newcomers-v1/moonshine-heavy-mid-between-v1-prepared.png",
+      "bytes": 1837488
+    },
+    {
+      "path": "apps/client/public/fighter-art-newcomers-v1/moonshine-heavy-settle-between-v1-prepared.png",
+      "bytes": 1782468
+    },
+    {
+      "path": "apps/client/public/fighter-art-newcomers-v1/moonshine-rise-early-between-v1-prepared.png",
+      "bytes": 1387848
+    },
+    {
+      "path": "apps/client/public/fighter-art-newcomers-v1/moonshine-rise-late-between-v1-prepared.png",
+      "bytes": 1660704
+    },
+    {
+      "path": "apps/client/public/fighter-art-newcomers-v1/moonshine-rise-mid-between-v1-prepared.png",
+      "bytes": 1322294
+    },
+    {
+      "path": "apps/client/public/fighter-art-newcomers-v1/moonshine-rise-settle-between-v1-prepared.png",
+      "bytes": 1848794
+    },
+    {
+      "path": "apps/client/public/fighter-art-newcomers-v1/moonshine-soft-early-between-v2-prepared.png",
+      "bytes": 2487419
+    },
+    {
+      "path": "apps/client/public/fighter-art-newcomers-v1/moonshine-soft-late-between-v1-prepared.png",
+      "bytes": 2057784
+    },
+    {
+      "path": "apps/client/public/fighter-art-newcomers-v1/moonshine-soft-mid-between-v1-prepared.png",
+      "bytes": 2109178
+    },
+    {
+      "path": "apps/client/public/fighter-art-newcomers-v1/moonshine-takeoff-backward-mid-between-v1-prepared.png",
+      "bytes": 1527140
+    },
+    {
+      "path": "apps/client/public/fighter-art-newcomers-v1/moonshine-takeoff-forward-mid-between-v1-prepared.png",
+      "bytes": 1344296
+    },
+    {
+      "path": "apps/client/public/fighter-art-newcomers-v1/moonshine-takeoff-neutral-mid-between-v1-prepared.png",
+      "bytes": 1257311
+    },
+    {
+      "path": "apps/client/public/fighter-art-pack-03-v1/loopy-apex-early-between-v1-prepared.png",
+      "bytes": 1631451
+    },
+    {
+      "path": "apps/client/public/fighter-art-pack-03-v1/loopy-apex-late-between-v1-prepared.png",
+      "bytes": 1410191
+    },
+    {
+      "path": "apps/client/public/fighter-art-pack-03-v1/loopy-apex-late-between-v2-prepared.png",
+      "bytes": 1597655
+    },
+    {
+      "path": "apps/client/public/fighter-art-pack-03-v1/loopy-apex-mid-between-v1-prepared.png",
+      "bytes": 1437142
+    },
+    {
+      "path": "apps/client/public/fighter-art-pack-03-v1/loopy-apex-settle-between-v1-prepared.png",
+      "bytes": 1398045
+    },
+    {
+      "path": "apps/client/public/fighter-art-pack-03-v1/loopy-apex-settle-between-v2-prepared.png",
+      "bytes": 1707146
+    },
+    {
+      "path": "apps/client/public/fighter-art-pack-03-v1/loopy-double-early-between-v1-prepared.png",
+      "bytes": 1274137
+    },
+    {
+      "path": "apps/client/public/fighter-art-pack-03-v1/loopy-double-late-between-v1-prepared.png",
+      "bytes": 1374450
+    },
+    {
+      "path": "apps/client/public/fighter-art-pack-03-v1/loopy-double-mid-between-v1-prepared.png",
+      "bytes": 1368373
+    },
+    {
+      "path": "apps/client/public/fighter-art-pack-03-v1/loopy-double-start-clean-between-v1-prepared.png",
+      "bytes": 1910644
+    },
+    {
+      "path": "apps/client/public/fighter-art-pack-03-v1/loopy-fall-early-v1-prepared.png",
+      "bytes": 1444384
+    },
+    {
+      "path": "apps/client/public/fighter-art-pack-03-v1/loopy-fall-late-v1-prepared.png",
+      "bytes": 1414943
+    },
+    {
+      "path": "apps/client/public/fighter-art-pack-03-v1/loopy-fall-mid-v1-prepared.png",
+      "bytes": 1415544
+    },
+    {
+      "path": "apps/client/public/fighter-art-pack-03-v1/loopy-fall-settle-v1-prepared.png",
+      "bytes": 1525135
+    },
+    {
+      "path": "apps/client/public/fighter-art-pack-03-v1/loopy-fall-start-clean-v1-prepared.png",
+      "bytes": 2073793
+    },
+    {
+      "path": "apps/client/public/fighter-art-pack-03-v1/loopy-fastfall-early-between-v1-prepared.png",
+      "bytes": 1060931
+    },
+    {
+      "path": "apps/client/public/fighter-art-pack-03-v1/loopy-fastfall-late-between-v1-prepared.png",
+      "bytes": 1265521
+    },
+    {
+      "path": "apps/client/public/fighter-art-pack-03-v1/loopy-fastfall-mid-between-v2-prepared.png",
+      "bytes": 1281999
+    },
+    {
+      "path": "apps/client/public/fighter-art-pack-03-v1/loopy-heavy-early-between-v1-prepared.png",
+      "bytes": 1316881
+    },
+    {
+      "path": "apps/client/public/fighter-art-pack-03-v1/loopy-heavy-late-between-v1-prepared.png",
+      "bytes": 1388833
+    },
+    {
+      "path": "apps/client/public/fighter-art-pack-03-v1/loopy-heavy-mid-between-v1-prepared.png",
+      "bytes": 1363841
+    },
+    {
+      "path": "apps/client/public/fighter-art-pack-03-v1/loopy-jump-squat-between-v1-prepared.png",
+      "bytes": 2075379
+    },
+    {
+      "path": "apps/client/public/fighter-art-pack-03-v1/loopy-rise-early-between-v1-prepared.png",
+      "bytes": 1540103
+    },
+    {
+      "path": "apps/client/public/fighter-art-pack-03-v1/loopy-rise-late-between-v1-prepared.png",
+      "bytes": 1344526
+    },
+    {
+      "path": "apps/client/public/fighter-art-pack-03-v1/loopy-rise-mid-between-v1-prepared.png",
+      "bytes": 1393821
+    },
+    {
+      "path": "apps/client/public/fighter-art-pack-03-v1/loopy-rise-settle-between-v1-prepared.png",
+      "bytes": 1358647
+    },
+    {
+      "path": "apps/client/public/fighter-art-pack-03-v1/loopy-soft-early-between-v1-prepared.png",
+      "bytes": 1388397
+    },
+    {
+      "path": "apps/client/public/fighter-art-pack-03-v1/loopy-soft-late-between-v1-prepared.png",
+      "bytes": 1480203
+    },
+    {
+      "path": "apps/client/public/fighter-art-pack-03-v1/loopy-soft-late-between-v2-prepared.png",
+      "bytes": 1502874
+    },
+    {
+      "path": "apps/client/public/fighter-art-pack-03-v1/loopy-soft-mid-between-v1-prepared.png",
+      "bytes": 1226594
+    },
+    {
+      "path": "apps/client/public/fighter-art-pack-03-v1/loopy-soft-mid-between-v2-prepared.png",
+      "bytes": 1436434
+    },
+    {
+      "path": "apps/client/public/fighter-art-pack-03-v1/loopy-takeoff-backward-between-v1-prepared.png",
+      "bytes": 1129424
+    },
+    {
+      "path": "apps/client/public/fighter-art-pack-03-v1/loopy-takeoff-forward-between-v1-prepared.png",
+      "bytes": 980829
+    },
+    {
+      "path": "apps/client/public/fighter-art-pack-03-v1/loopy-takeoff-neutral-between-v1-prepared.png",
+      "bytes": 1361945
+    },
+    {
+      "path": "apps/client/public/fighter-art-pack-03-v1/mr-wrong-apex-early-between-v1-prepared.png",
+      "bytes": 2194027
+    },
+    {
+      "path": "apps/client/public/fighter-art-pack-03-v1/mr-wrong-apex-late-between-v1-prepared.png",
+      "bytes": 1600219
+    },
+    {
+      "path": "apps/client/public/fighter-art-pack-03-v1/mr-wrong-apex-mid-between-v1-prepared.png",
+      "bytes": 1674133
+    },
+    {
+      "path": "apps/client/public/fighter-art-pack-03-v1/mr-wrong-apex-settle-between-v1-prepared.png",
+      "bytes": 1890358
+    },
+    {
+      "path": "apps/client/public/fighter-art-pack-03-v1/mr-wrong-double-early-between-v1-prepared.png",
+      "bytes": 1975800
+    },
+    {
+      "path": "apps/client/public/fighter-art-pack-03-v1/mr-wrong-double-late-between-v1-prepared.png",
+      "bytes": 1735094
+    },
+    {
+      "path": "apps/client/public/fighter-art-pack-03-v1/mr-wrong-double-mid-between-v1-prepared.png",
+      "bytes": 2000777
+    },
+    {
+      "path": "apps/client/public/fighter-art-pack-03-v1/mr-wrong-fall-early-between-v1-prepared.png",
+      "bytes": 1904882
+    },
+    {
+      "path": "apps/client/public/fighter-art-pack-03-v1/mr-wrong-fall-late-between-v1-prepared.png",
+      "bytes": 1873250
+    },
+    {
+      "path": "apps/client/public/fighter-art-pack-03-v1/mr-wrong-fall-mid-between-v1-prepared.png",
+      "bytes": 1815046
+    },
+    {
+      "path": "apps/client/public/fighter-art-pack-03-v1/mr-wrong-fall-settle-between-v1-prepared.png",
+      "bytes": 2120748
+    },
+    {
+      "path": "apps/client/public/fighter-art-pack-03-v1/mr-wrong-fastfall-early-between-v1-prepared.png",
+      "bytes": 2212839
+    },
+    {
+      "path": "apps/client/public/fighter-art-pack-03-v1/mr-wrong-fastfall-late-between-v1-prepared.png",
+      "bytes": 2248491
+    },
+    {
+      "path": "apps/client/public/fighter-art-pack-03-v1/mr-wrong-fastfall-mid-between-v1-prepared.png",
+      "bytes": 2162475
+    },
+    {
+      "path": "apps/client/public/fighter-art-pack-03-v1/mr-wrong-heavy-early-between-v1-prepared.png",
+      "bytes": 2659400
+    },
+    {
+      "path": "apps/client/public/fighter-art-pack-03-v1/mr-wrong-heavy-late-between-v1-prepared.png",
+      "bytes": 2372295
+    },
+    {
+      "path": "apps/client/public/fighter-art-pack-03-v1/mr-wrong-heavy-mid-between-v1-prepared.png",
+      "bytes": 2528776
+    },
+    {
+      "path": "apps/client/public/fighter-art-pack-03-v1/mr-wrong-jump-squat-between-v1-prepared.png",
+      "bytes": 2452927
+    },
+    {
+      "path": "apps/client/public/fighter-art-pack-03-v1/mr-wrong-jump-squat-between-v2-prepared.png",
+      "bytes": 2770871
+    },
+    {
+      "path": "apps/client/public/fighter-art-pack-03-v1/mr-wrong-rise-early-between-v1-prepared.png",
+      "bytes": 2103225
+    },
+    {
+      "path": "apps/client/public/fighter-art-pack-03-v1/mr-wrong-rise-late-between-v1-prepared.png",
+      "bytes": 2234453
+    },
+    {
+      "path": "apps/client/public/fighter-art-pack-03-v1/mr-wrong-rise-mid-between-v1-prepared.png",
+      "bytes": 1925331
+    },
+    {
+      "path": "apps/client/public/fighter-art-pack-03-v1/mr-wrong-rise-settle-between-v1-prepared.png",
+      "bytes": 2155256
+    },
+    {
+      "path": "apps/client/public/fighter-art-pack-03-v1/mr-wrong-soft-early-between-v1-prepared.png",
+      "bytes": 2167402
+    },
+    {
+      "path": "apps/client/public/fighter-art-pack-03-v1/mr-wrong-soft-late-between-v1-prepared.png",
+      "bytes": 2379006
+    },
+    {
+      "path": "apps/client/public/fighter-art-pack-03-v1/mr-wrong-soft-mid-between-v1-prepared.png",
+      "bytes": 2472146
+    },
+    {
+      "path": "apps/client/public/fighter-art-pack-03-v1/mr-wrong-takeoff-backward-between-v1-prepared.png",
+      "bytes": 1782091
+    },
+    {
+      "path": "apps/client/public/fighter-art-pack-03-v1/mr-wrong-takeoff-forward-between-v1-prepared.png",
+      "bytes": 1830249
+    },
+    {
+      "path": "apps/client/public/fighter-art-pack-03-v1/mr-wrong-takeoff-neutral-between-v1-prepared.png",
+      "bytes": 2048175
+    },
+    {
+      "path": "apps/client/public/fighter-art-pack-03-v1/mrs-tasselbottom-apex-early-between-v1-prepared.png",
+      "bytes": 2646196
+    },
+    {
+      "path": "apps/client/public/fighter-art-pack-03-v1/mrs-tasselbottom-apex-late-between-v1-prepared.png",
+      "bytes": 2494749
+    },
+    {
+      "path": "apps/client/public/fighter-art-pack-03-v1/mrs-tasselbottom-apex-mid-between-v1-prepared.png",
+      "bytes": 2561452
+    },
+    {
+      "path": "apps/client/public/fighter-art-pack-03-v1/mrs-tasselbottom-apex-settle-between-v1-prepared.png",
+      "bytes": 2640600
+    },
+    {
+      "path": "apps/client/public/fighter-art-pack-03-v1/mrs-tasselbottom-double-early-between-v1-prepared.png",
+      "bytes": 2069245
+    },
+    {
+      "path": "apps/client/public/fighter-art-pack-03-v1/mrs-tasselbottom-double-late-between-v1-prepared.png",
+      "bytes": 2033016
+    },
+    {
+      "path": "apps/client/public/fighter-art-pack-03-v1/mrs-tasselbottom-double-mid-between-v1-prepared.png",
+      "bytes": 1948078
+    },
+    {
+      "path": "apps/client/public/fighter-art-pack-03-v1/mrs-tasselbottom-fall-early-between-v1-prepared.png",
+      "bytes": 2518509
+    },
+    {
+      "path": "apps/client/public/fighter-art-pack-03-v1/mrs-tasselbottom-fall-late-between-v1-prepared.png",
+      "bytes": 2411947
+    },
+    {
+      "path": "apps/client/public/fighter-art-pack-03-v1/mrs-tasselbottom-fall-mid-between-v1-prepared.png",
+      "bytes": 2400426
+    },
+    {
+      "path": "apps/client/public/fighter-art-pack-03-v1/mrs-tasselbottom-fall-settle-between-v1-prepared.png",
+      "bytes": 2364385
+    },
+    {
+      "path": "apps/client/public/fighter-art-pack-03-v1/mrs-tasselbottom-fastfall-early-between-v1-prepared.png",
+      "bytes": 2199949
+    },
+    {
+      "path": "apps/client/public/fighter-art-pack-03-v1/mrs-tasselbottom-fastfall-late-between-v1-prepared.png",
+      "bytes": 2240724
+    },
+    {
+      "path": "apps/client/public/fighter-art-pack-03-v1/mrs-tasselbottom-fastfall-mid-between-v1-prepared.png",
+      "bytes": 2156694
+    },
+    {
+      "path": "apps/client/public/fighter-art-pack-03-v1/mrs-tasselbottom-heavy-early-between-v1-prepared.png",
+      "bytes": 2846969
+    },
+    {
+      "path": "apps/client/public/fighter-art-pack-03-v1/mrs-tasselbottom-heavy-late-between-v1-prepared.png",
+      "bytes": 2587181
+    },
+    {
+      "path": "apps/client/public/fighter-art-pack-03-v1/mrs-tasselbottom-heavy-mid-between-v1-prepared.png",
+      "bytes": 2390537
+    },
+    {
+      "path": "apps/client/public/fighter-art-pack-03-v1/mrs-tasselbottom-jump-squat-between-v1-prepared.png",
+      "bytes": 1937655
+    },
+    {
+      "path": "apps/client/public/fighter-art-pack-03-v1/mrs-tasselbottom-jump-squat-between-v2-prepared.png",
+      "bytes": 2517677
+    },
+    {
+      "path": "apps/client/public/fighter-art-pack-03-v1/mrs-tasselbottom-rise-early-between-v1-prepared.png",
+      "bytes": 2201132
+    },
+    {
+      "path": "apps/client/public/fighter-art-pack-03-v1/mrs-tasselbottom-rise-late-between-v1-prepared.png",
+      "bytes": 2384178
+    },
+    {
+      "path": "apps/client/public/fighter-art-pack-03-v1/mrs-tasselbottom-rise-mid-between-v1-prepared.png",
+      "bytes": 2412917
+    },
+    {
+      "path": "apps/client/public/fighter-art-pack-03-v1/mrs-tasselbottom-rise-settle-between-v1-prepared.png",
+      "bytes": 2367947
+    },
+    {
+      "path": "apps/client/public/fighter-art-pack-03-v1/mrs-tasselbottom-soft-early-between-v2-prepared.png",
+      "bytes": 2629057
+    },
+    {
+      "path": "apps/client/public/fighter-art-pack-03-v1/mrs-tasselbottom-soft-late-between-v1-prepared.png",
+      "bytes": 2660720
+    },
+    {
+      "path": "apps/client/public/fighter-art-pack-03-v1/mrs-tasselbottom-soft-mid-between-v1-prepared.png",
+      "bytes": 2257294
+    },
+    {
+      "path": "apps/client/public/fighter-art-pack-03-v1/mrs-tasselbottom-takeoff-backward-between-v1-prepared.png",
+      "bytes": 1560117
+    },
+    {
+      "path": "apps/client/public/fighter-art-pack-03-v1/mrs-tasselbottom-takeoff-forward-between-v1-prepared.png",
+      "bytes": 1584149
+    },
+    {
+      "path": "apps/client/public/fighter-art-pack-03-v1/mrs-tasselbottom-takeoff-neutral-between-v1-prepared.png",
+      "bytes": 1681565
+    },
+    {
+      "path": "apps/client/public/fighter-art-pack-03-v1/production/atlas-loopy-live-3.webp",
+      "bytes": 451622
+    },
+    {
+      "path": "apps/client/public/fighter-art-pack-04-v1/velvet-reply-apex-between-prepared-v1.png",
+      "bytes": 1421267
+    },
+    {
+      "path": "apps/client/public/fighter-art-pack-04-v1/velvet-reply-apex-early-between-prepared-v1.png",
+      "bytes": 1647719
+    },
+    {
+      "path": "apps/client/public/fighter-art-pack-04-v1/velvet-reply-apex-late-between-prepared-v1.png",
+      "bytes": 1440718
+    },
+    {
+      "path": "apps/client/public/fighter-art-pack-04-v1/velvet-reply-apex-settle-between-prepared-v1.png",
+      "bytes": 1439090
+    },
+    {
+      "path": "apps/client/public/fighter-art-pack-04-v1/velvet-reply-double-early-between-prepared-v1.png",
+      "bytes": 1291573
+    },
+    {
+      "path": "apps/client/public/fighter-art-pack-04-v1/velvet-reply-double-settle-between-prepared-v1.png",
+      "bytes": 1341092
+    },
+    {
+      "path": "apps/client/public/fighter-art-pack-04-v1/velvet-reply-double-tuck-between-prepared-v1.png",
+      "bytes": 1394315
+    },
+    {
+      "path": "apps/client/public/fighter-art-pack-04-v1/velvet-reply-fall-between-prepared-v1.png",
+      "bytes": 1427722
+    },
+    {
+      "path": "apps/client/public/fighter-art-pack-04-v1/velvet-reply-fall-early-between-prepared-v1.png",
+      "bytes": 1420426
+    },
+    {
+      "path": "apps/client/public/fighter-art-pack-04-v1/velvet-reply-fall-late-between-prepared-v1.png",
+      "bytes": 1578698
+    },
+    {
+      "path": "apps/client/public/fighter-art-pack-04-v1/velvet-reply-fall-settle-between-prepared-v1.png",
+      "bytes": 1604843
+    },
+    {
+      "path": "apps/client/public/fighter-art-pack-04-v1/velvet-reply-fast-early-between-prepared-v1.png",
+      "bytes": 1389090
+    },
+    {
+      "path": "apps/client/public/fighter-art-pack-04-v1/velvet-reply-fast-late-between-prepared-v2.png",
+      "bytes": 939446
+    },
+    {
+      "path": "apps/client/public/fighter-art-pack-04-v1/velvet-reply-fast-settle-between-prepared-v1.png",
+      "bytes": 1325082
+    },
+    {
+      "path": "apps/client/public/fighter-art-pack-04-v1/velvet-reply-heavy-compress-between-prepared-v1.png",
+      "bytes": 1563519
+    },
+    {
+      "path": "apps/client/public/fighter-art-pack-04-v1/velvet-reply-heavy-rebound-between-prepared-v1.png",
+      "bytes": 1329127
+    },
+    {
+      "path": "apps/client/public/fighter-art-pack-04-v1/velvet-reply-heavy-settle-between-prepared-v1.png",
+      "bytes": 1241918
+    },
+    {
+      "path": "apps/client/public/fighter-art-pack-04-v1/velvet-reply-rise-between-prepared-v1.png",
+      "bytes": 1120167
+    },
+    {
+      "path": "apps/client/public/fighter-art-pack-04-v1/velvet-reply-rise-early-between-prepared-v1.png",
+      "bytes": 1604185
+    },
+    {
+      "path": "apps/client/public/fighter-art-pack-04-v1/velvet-reply-rise-late-between-prepared-v1.png",
+      "bytes": 1509297
+    },
+    {
+      "path": "apps/client/public/fighter-art-pack-04-v1/velvet-reply-rise-settle-between-prepared-v1.png",
+      "bytes": 1645835
+    },
+    {
+      "path": "apps/client/public/fighter-art-pack-04-v1/velvet-reply-soft-compress-between-prepared-v1.png",
+      "bytes": 1324528
+    },
+    {
+      "path": "apps/client/public/fighter-art-pack-04-v1/velvet-reply-soft-rebound-between-prepared-v1.png",
+      "bytes": 1570557
+    },
+    {
+      "path": "apps/client/public/fighter-art-pack-04-v1/velvet-reply-soft-rise-between-prepared-v1.png",
+      "bytes": 1182370
+    },
+    {
+      "path": "apps/client/public/fighter-art-pack-04-v1/velvet-reply-soft-settle-between-prepared-v1.png",
+      "bytes": 1196250
+    },
+    {
+      "path": "apps/client/public/fighter-art-pack-04-v1/velvet-reply-squat-entry-between-prepared-v1.png",
+      "bytes": 1302775
+    },
+    {
+      "path": "apps/client/public/fighter-art-pack-04-v1/velvet-reply-squat-extend-between-prepared-v1.png",
+      "bytes": 1313634
+    },
+    {
+      "path": "apps/client/public/fighter-art-pack-04-v1/velvet-reply-takeoff-backward-mid-between-prepared-v1.png",
+      "bytes": 1167948
+    },
+    {
+      "path": "apps/client/public/fighter-art-pack-04-v1/velvet-reply-takeoff-backward-start-between-prepared-v1.png",
+      "bytes": 1272616
+    },
+    {
+      "path": "apps/client/public/fighter-art-pack-04-v1/velvet-reply-takeoff-forward-mid-between-prepared-v1.png",
+      "bytes": 1140367
+    },
+    {
+      "path": "apps/client/public/fighter-art-pack-04-v1/velvet-reply-takeoff-forward-start-between-prepared-v1.png",
+      "bytes": 1201021
+    },
+    {
+      "path": "apps/client/public/fighter-art-pack-04-v1/velvet-reply-takeoff-neutral-mid-between-prepared-v1.png",
+      "bytes": 1107800
+    },
+    {
+      "path": "apps/client/public/fighter-art-pack-04-v1/velvet-reply-takeoff-neutral-start-between-prepared-v1.png",
+      "bytes": 1164131
+    },
+    {
+      "path": "apps/client/public/fighter-art-pack-04-v1/zane-corvo-apex-between-prepared-v1.png",
+      "bytes": 1399334
+    },
+    {
+      "path": "apps/client/public/fighter-art-pack-04-v1/zane-corvo-apex-early-between-prepared-v1.png",
+      "bytes": 1465148
+    },
+    {
+      "path": "apps/client/public/fighter-art-pack-04-v1/zane-corvo-apex-late-between-prepared-v1.png",
+      "bytes": 1351216
+    },
+    {
+      "path": "apps/client/public/fighter-art-pack-04-v1/zane-corvo-apex-settle-between-prepared-v1.png",
+      "bytes": 1455187
+    },
+    {
+      "path": "apps/client/public/fighter-art-pack-04-v1/zane-corvo-double-early-between-prepared-v1.png",
+      "bytes": 1331590
+    },
+    {
+      "path": "apps/client/public/fighter-art-pack-04-v1/zane-corvo-double-settle-between-prepared-v1.png",
+      "bytes": 1502900
+    },
+    {
+      "path": "apps/client/public/fighter-art-pack-04-v1/zane-corvo-double-tuck-between-prepared-v1.png",
+      "bytes": 1389987
+    },
+    {
+      "path": "apps/client/public/fighter-art-pack-04-v1/zane-corvo-fall-between-prepared-v1.png",
+      "bytes": 1153342
+    },
+    {
+      "path": "apps/client/public/fighter-art-pack-04-v1/zane-corvo-fall-early-between-prepared-v2.png",
+      "bytes": 1225816
+    },
+    {
+      "path": "apps/client/public/fighter-art-pack-04-v1/zane-corvo-fall-late-between-prepared-v1.png",
+      "bytes": 1617368
+    },
+    {
+      "path": "apps/client/public/fighter-art-pack-04-v1/zane-corvo-fall-settle-between-prepared-v1.png",
+      "bytes": 1457874
+    },
+    {
+      "path": "apps/client/public/fighter-art-pack-04-v1/zane-corvo-fast-early-between-prepared-v1.png",
+      "bytes": 1237807
+    },
+    {
+      "path": "apps/client/public/fighter-art-pack-04-v1/zane-corvo-fast-late-between-prepared-v1.png",
+      "bytes": 1311546
+    },
+    {
+      "path": "apps/client/public/fighter-art-pack-04-v1/zane-corvo-fast-settle-between-prepared-v1.png",
+      "bytes": 1253694
+    },
+    {
+      "path": "apps/client/public/fighter-art-pack-04-v1/zane-corvo-heavy-compress-between-prepared-v1.png",
+      "bytes": 1307715
+    },
+    {
+      "path": "apps/client/public/fighter-art-pack-04-v1/zane-corvo-heavy-rebound-between-prepared-v1.png",
+      "bytes": 1414136
+    },
+    {
+      "path": "apps/client/public/fighter-art-pack-04-v1/zane-corvo-heavy-settle-between-prepared-v1.png",
+      "bytes": 1164175
+    },
+    {
+      "path": "apps/client/public/fighter-art-pack-04-v1/zane-corvo-rise-between-prepared-v1.png",
+      "bytes": 1095268
+    },
+    {
+      "path": "apps/client/public/fighter-art-pack-04-v1/zane-corvo-rise-early-between-prepared-v1.png",
+      "bytes": 1485437
+    },
+    {
+      "path": "apps/client/public/fighter-art-pack-04-v1/zane-corvo-rise-late-between-prepared-v1.png",
+      "bytes": 1362816
+    },
+    {
+      "path": "apps/client/public/fighter-art-pack-04-v1/zane-corvo-rise-settle-between-prepared-v1.png",
+      "bytes": 1464169
+    },
+    {
+      "path": "apps/client/public/fighter-art-pack-04-v1/zane-corvo-soft-compress-between-prepared-v1.png",
+      "bytes": 1233351
+    },
+    {
+      "path": "apps/client/public/fighter-art-pack-04-v1/zane-corvo-soft-rebound-between-prepared-v1.png",
+      "bytes": 1730870
+    },
+    {
+      "path": "apps/client/public/fighter-art-pack-04-v1/zane-corvo-soft-rise-between-prepared-v1.png",
+      "bytes": 1288978
+    },
+    {
+      "path": "apps/client/public/fighter-art-pack-04-v1/zane-corvo-soft-settle-between-prepared-v1.png",
+      "bytes": 1106604
+    },
+    {
+      "path": "apps/client/public/fighter-art-pack-04-v1/zane-corvo-squat-entry-between-prepared-v1.png",
+      "bytes": 1047836
+    },
+    {
+      "path": "apps/client/public/fighter-art-pack-04-v1/zane-corvo-squat-extend-between-prepared-v1.png",
+      "bytes": 1040804
+    },
+    {
+      "path": "apps/client/public/fighter-art-pack-04-v1/zane-corvo-takeoff-backward-mid-between-prepared-v1.png",
+      "bytes": 1157636
+    },
+    {
+      "path": "apps/client/public/fighter-art-pack-04-v1/zane-corvo-takeoff-backward-start-between-prepared-v1.png",
+      "bytes": 1150179
+    },
+    {
+      "path": "apps/client/public/fighter-art-pack-04-v1/zane-corvo-takeoff-forward-mid-between-prepared-v1.png",
+      "bytes": 996161
+    },
+    {
+      "path": "apps/client/public/fighter-art-pack-04-v1/zane-corvo-takeoff-forward-start-between-prepared-v1.png",
+      "bytes": 1118390
+    },
+    {
+      "path": "apps/client/public/fighter-art-pack-04-v1/zane-corvo-takeoff-neutral-mid-between-prepared-v1.png",
+      "bytes": 1010706
+    },
+    {
+      "path": "apps/client/public/fighter-art-pack-04-v1/zane-corvo-takeoff-neutral-start-between-prepared-v1.png",
+      "bytes": 1021599
+    },
+    {
+      "path": "apps/client/src/network/LocalPredictor.takeoff-cue.test.ts",
+      "bytes": 1095
+    },
+    {
+      "path": "apps/client/src/renderer/fullbody/rosterInterruptions.test.ts",
+      "bytes": 2997
+    },
+    {
+      "path": "concept-art/sprite/pack-02/hoagie-apex-early-between-v1.png",
+      "bytes": 1442695
+    },
+    {
+      "path": "concept-art/sprite/pack-02/hoagie-apex-early-between-v1.prompt.json",
+      "bytes": 1555
+    },
+    {
+      "path": "concept-art/sprite/pack-02/hoagie-apex-late-between-v1.png",
+      "bytes": 1485704
+    },
+    {
+      "path": "concept-art/sprite/pack-02/hoagie-apex-late-between-v1.prompt.json",
+      "bytes": 1629
+    },
+    {
+      "path": "concept-art/sprite/pack-02/hoagie-apex-mid-between-v1.png",
+      "bytes": 1690805
+    },
+    {
+      "path": "concept-art/sprite/pack-02/hoagie-apex-mid-between-v1.prompt.json",
+      "bytes": 1615
+    },
+    {
+      "path": "concept-art/sprite/pack-02/hoagie-apex-settle-between-v1.png",
+      "bytes": 1713065
+    },
+    {
+      "path": "concept-art/sprite/pack-02/hoagie-apex-settle-between-v1.prompt.json",
+      "bytes": 1670
+    },
+    {
+      "path": "concept-art/sprite/pack-02/hoagie-double-early-between-v1.png",
+      "bytes": 1608182
+    },
+    {
+      "path": "concept-art/sprite/pack-02/hoagie-double-early-between-v1.prompt.json",
+      "bytes": 1308
+    },
+    {
+      "path": "concept-art/sprite/pack-02/hoagie-double-late-between-v1.png",
+      "bytes": 1914007
+    },
+    {
+      "path": "concept-art/sprite/pack-02/hoagie-double-late-between-v1.prompt.json",
+      "bytes": 1289
+    },
+    {
+      "path": "concept-art/sprite/pack-02/hoagie-double-mid-between-v1.png",
+      "bytes": 1649874
+    },
+    {
+      "path": "concept-art/sprite/pack-02/hoagie-double-mid-between-v1.prompt.json",
+      "bytes": 1276
+    },
+    {
+      "path": "concept-art/sprite/pack-02/hoagie-fall-early-between-v1.png",
+      "bytes": 1873645
+    },
+    {
+      "path": "concept-art/sprite/pack-02/hoagie-fall-early-between-v1.prompt.json",
+      "bytes": 1560
+    },
+    {
+      "path": "concept-art/sprite/pack-02/hoagie-fall-late-between-v1.png",
+      "bytes": 1710790
+    },
+    {
+      "path": "concept-art/sprite/pack-02/hoagie-fall-late-between-v1.prompt.json",
+      "bytes": 1643
+    },
+    {
+      "path": "concept-art/sprite/pack-02/hoagie-fall-mid-between-v1.png",
+      "bytes": 1845386
+    },
+    {
+      "path": "concept-art/sprite/pack-02/hoagie-fall-mid-between-v1.prompt.json",
+      "bytes": 1623
+    },
+    {
+      "path": "concept-art/sprite/pack-02/hoagie-fall-settle-between-v1.png",
+      "bytes": 1801466
+    },
+    {
+      "path": "concept-art/sprite/pack-02/hoagie-fall-settle-between-v1.prompt.json",
+      "bytes": 1654
+    },
+    {
+      "path": "concept-art/sprite/pack-02/hoagie-fastfall-early-between-v1.png",
+      "bytes": 1615897
+    },
+    {
+      "path": "concept-art/sprite/pack-02/hoagie-fastfall-early-between-v1.prompt.json",
+      "bytes": 1504
+    },
+    {
+      "path": "concept-art/sprite/pack-02/hoagie-fastfall-late-between-v1.png",
+      "bytes": 1774429
+    },
+    {
+      "path": "concept-art/sprite/pack-02/hoagie-fastfall-late-between-v1.prompt.json",
+      "bytes": 1497
+    },
+    {
+      "path": "concept-art/sprite/pack-02/hoagie-fastfall-mid-between-v1.png",
+      "bytes": 1813182
+    },
+    {
+      "path": "concept-art/sprite/pack-02/hoagie-fastfall-mid-between-v1.prompt.json",
+      "bytes": 1491
+    },
+    {
+      "path": "concept-art/sprite/pack-02/hoagie-fastfall-settle-between-v1.png",
+      "bytes": 1677738
+    },
+    {
+      "path": "concept-art/sprite/pack-02/hoagie-fastfall-settle-between-v1.prompt.json",
+      "bytes": 1526
+    },
+    {
+      "path": "concept-art/sprite/pack-02/hoagie-heavy-early-between-v1.png",
+      "bytes": 1779693
+    },
+    {
+      "path": "concept-art/sprite/pack-02/hoagie-heavy-early-between-v1.prompt.json",
+      "bytes": 1422
+    },
+    {
+      "path": "concept-art/sprite/pack-02/hoagie-heavy-late-between-v1.png",
+      "bytes": 1650788
+    },
+    {
+      "path": "concept-art/sprite/pack-02/hoagie-heavy-late-between-v1.prompt.json",
+      "bytes": 1355
+    },
+    {
+      "path": "concept-art/sprite/pack-02/hoagie-heavy-mid-between-v1.png",
+      "bytes": 1898919
+    },
+    {
+      "path": "concept-art/sprite/pack-02/hoagie-heavy-mid-between-v1.prompt.json",
+      "bytes": 1361
+    },
+    {
+      "path": "concept-art/sprite/pack-02/hoagie-heavy-settle-between-v1.png",
+      "bytes": 1796294
+    },
+    {
+      "path": "concept-art/sprite/pack-02/hoagie-heavy-settle-between-v1.prompt.json",
+      "bytes": 1356
+    },
+    {
+      "path": "concept-art/sprite/pack-02/hoagie-rise-early-between-v1.png",
+      "bytes": 1570203
+    },
+    {
+      "path": "concept-art/sprite/pack-02/hoagie-rise-early-between-v1.prompt.json",
+      "bytes": 1472
+    },
+    {
+      "path": "concept-art/sprite/pack-02/hoagie-rise-late-between-v1.png",
+      "bytes": 1567079
+    },
+    {
+      "path": "concept-art/sprite/pack-02/hoagie-rise-late-between-v1.prompt.json",
+      "bytes": 1513
+    },
+    {
+      "path": "concept-art/sprite/pack-02/hoagie-rise-mid-between-v1.png",
+      "bytes": 1832426
+    },
+    {
+      "path": "concept-art/sprite/pack-02/hoagie-rise-mid-between-v1.prompt.json",
+      "bytes": 1535
+    },
+    {
+      "path": "concept-art/sprite/pack-02/hoagie-rise-settle-between-v1.png",
+      "bytes": 1543750
+    },
+    {
+      "path": "concept-art/sprite/pack-02/hoagie-rise-settle-between-v1.prompt.json",
+      "bytes": 1580
+    },
+    {
+      "path": "concept-art/sprite/pack-02/hoagie-shipped-apex-reference-0.png",
+      "bytes": 225319
+    },
+    {
+      "path": "concept-art/sprite/pack-02/hoagie-shipped-apex-reference-1.png",
+      "bytes": 223730
+    },
+    {
+      "path": "concept-art/sprite/pack-02/hoagie-shipped-double-reference-0.png",
+      "bytes": 233382
+    },
+    {
+      "path": "concept-art/sprite/pack-02/hoagie-shipped-double-reference-1.png",
+      "bytes": 348769
+    },
+    {
+      "path": "concept-art/sprite/pack-02/hoagie-shipped-double-reference-2.png",
+      "bytes": 295458
+    },
+    {
+      "path": "concept-art/sprite/pack-02/hoagie-shipped-fall-reference-0.png",
+      "bytes": 241197
+    },
+    {
+      "path": "concept-art/sprite/pack-02/hoagie-shipped-fall-reference-1.png",
+      "bytes": 241852
+    },
+    {
+      "path": "concept-art/sprite/pack-02/hoagie-shipped-fastfall-reference-0.png",
+      "bytes": 199624
+    },
+    {
+      "path": "concept-art/sprite/pack-02/hoagie-shipped-fastfall-reference-1.png",
+      "bytes": 195534
+    },
+    {
+      "path": "concept-art/sprite/pack-02/hoagie-shipped-heavy-reference-0.png",
+      "bytes": 379734
+    },
+    {
+      "path": "concept-art/sprite/pack-02/hoagie-shipped-heavy-reference-1.png",
+      "bytes": 339775
+    },
+    {
+      "path": "concept-art/sprite/pack-02/hoagie-shipped-idle-reference.png",
+      "bytes": 353367
+    },
+    {
+      "path": "concept-art/sprite/pack-02/hoagie-shipped-rise-reference-0.png",
+      "bytes": 228920
+    },
+    {
+      "path": "concept-art/sprite/pack-02/hoagie-shipped-rise-reference-1.png",
+      "bytes": 198745
+    },
+    {
+      "path": "concept-art/sprite/pack-02/hoagie-shipped-soft-reference-0.png",
+      "bytes": 303144
+    },
+    {
+      "path": "concept-art/sprite/pack-02/hoagie-shipped-soft-reference-1.png",
+      "bytes": 317853
+    },
+    {
+      "path": "concept-art/sprite/pack-02/hoagie-shipped-soft-reference-2.png",
+      "bytes": 321800
+    },
+    {
+      "path": "concept-art/sprite/pack-02/hoagie-shipped-takeoff-backward-reference.png",
+      "bytes": 311692
+    },
+    {
+      "path": "concept-art/sprite/pack-02/hoagie-shipped-takeoff-forward-reference.png",
+      "bytes": 315170
+    },
+    {
+      "path": "concept-art/sprite/pack-02/hoagie-shipped-takeoff-neutral-reference.png",
+      "bytes": 244420
+    },
+    {
+      "path": "concept-art/sprite/pack-02/hoagie-soft-early-between-v1.png",
+      "bytes": 1946542
+    },
+    {
+      "path": "concept-art/sprite/pack-02/hoagie-soft-early-between-v1.prompt.json",
+      "bytes": 1407
+    },
+    {
+      "path": "concept-art/sprite/pack-02/hoagie-soft-late-between-v1.png",
+      "bytes": 1862506
+    },
+    {
+      "path": "concept-art/sprite/pack-02/hoagie-soft-late-between-v1.prompt.json",
+      "bytes": 1321
+    },
+    {
+      "path": "concept-art/sprite/pack-02/hoagie-soft-mid-between-v1.png",
+      "bytes": 1852694
+    },
+    {
+      "path": "concept-art/sprite/pack-02/hoagie-soft-mid-between-v1.prompt.json",
+      "bytes": 1317
+    },
+    {
+      "path": "concept-art/sprite/pack-02/hoagie-takeoff-backward-mid-between-v1.png",
+      "bytes": 1357246
+    },
+    {
+      "path": "concept-art/sprite/pack-02/hoagie-takeoff-backward-mid-between-v1.prompt.json",
+      "bytes": 1643
+    },
+    {
+      "path": "concept-art/sprite/pack-02/hoagie-takeoff-forward-mid-between-v1.png",
+      "bytes": 1374055
+    },
+    {
+      "path": "concept-art/sprite/pack-02/hoagie-takeoff-forward-mid-between-v1.prompt.json",
+      "bytes": 1619
+    },
+    {
+      "path": "concept-art/sprite/pack-02/hoagie-takeoff-neutral-mid-between-v1.png",
+      "bytes": 1506050
+    },
+    {
+      "path": "concept-art/sprite/pack-02/hoagie-takeoff-neutral-mid-between-v1.prompt.json",
+      "bytes": 1567
+    },
+    {
+      "path": "concept-art/sprite/pack-02/moonshine-apex-early-between-v1.png",
+      "bytes": 1717442
+    },
+    {
+      "path": "concept-art/sprite/pack-02/moonshine-apex-early-between-v1.prompt.json",
+      "bytes": 1429
+    },
+    {
+      "path": "concept-art/sprite/pack-02/moonshine-apex-late-between-v1.png",
+      "bytes": 1670340
+    },
+    {
+      "path": "concept-art/sprite/pack-02/moonshine-apex-late-between-v1.prompt.json",
+      "bytes": 1476
+    },
+    {
+      "path": "concept-art/sprite/pack-02/moonshine-apex-mid-between-v1.png",
+      "bytes": 1308897
+    },
+    {
+      "path": "concept-art/sprite/pack-02/moonshine-apex-mid-between-v1.prompt.json",
+      "bytes": 1467
+    },
+    {
+      "path": "concept-art/sprite/pack-02/moonshine-apex-settle-between-v1.png",
+      "bytes": 1288339
+    },
+    {
+      "path": "concept-art/sprite/pack-02/moonshine-apex-settle-between-v1.prompt.json",
+      "bytes": 1509
+    },
+    {
+      "path": "concept-art/sprite/pack-02/moonshine-double-early-between-v1.png",
+      "bytes": 1333078
+    },
+    {
+      "path": "concept-art/sprite/pack-02/moonshine-double-early-between-v1.prompt.json",
+      "bytes": 1560
+    },
+    {
+      "path": "concept-art/sprite/pack-02/moonshine-double-late-between-v1.png",
+      "bytes": 1191219
+    },
+    {
+      "path": "concept-art/sprite/pack-02/moonshine-double-late-between-v1.prompt.json",
+      "bytes": 1562
+    },
+    {
+      "path": "concept-art/sprite/pack-02/moonshine-double-mid-between-v1.png",
+      "bytes": 1834938
+    },
+    {
+      "path": "concept-art/sprite/pack-02/moonshine-double-mid-between-v1.prompt.json",
+      "bytes": 1505
+    },
+    {
+      "path": "concept-art/sprite/pack-02/moonshine-fall-early-between-v1.png",
+      "bytes": 1802572
+    },
+    {
+      "path": "concept-art/sprite/pack-02/moonshine-fall-early-between-v1.prompt.json",
+      "bytes": 1458
+    },
+    {
+      "path": "concept-art/sprite/pack-02/moonshine-fall-late-between-v1.png",
+      "bytes": 1656288
+    },
+    {
+      "path": "concept-art/sprite/pack-02/moonshine-fall-late-between-v1.prompt.json",
+      "bytes": 1592
+    },
+    {
+      "path": "concept-art/sprite/pack-02/moonshine-fall-mid-between-v1.png",
+      "bytes": 2065557
+    },
+    {
+      "path": "concept-art/sprite/pack-02/moonshine-fall-mid-between-v1.prompt.json",
+      "bytes": 1577
+    },
+    {
+      "path": "concept-art/sprite/pack-02/moonshine-fall-settle-between-v1.png",
+      "bytes": 1574959
+    },
+    {
+      "path": "concept-art/sprite/pack-02/moonshine-fall-settle-between-v1.prompt.json",
+      "bytes": 1587
+    },
+    {
+      "path": "concept-art/sprite/pack-02/moonshine-fastfall-early-between-v1.png",
+      "bytes": 1267674
+    },
+    {
+      "path": "concept-art/sprite/pack-02/moonshine-fastfall-early-between-v1.prompt.json",
+      "bytes": 1425
+    },
+    {
+      "path": "concept-art/sprite/pack-02/moonshine-fastfall-late-between-v1.png",
+      "bytes": 1439868
+    },
+    {
+      "path": "concept-art/sprite/pack-02/moonshine-fastfall-late-between-v1.prompt.json",
+      "bytes": 1488
+    },
+    {
+      "path": "concept-art/sprite/pack-02/moonshine-fastfall-mid-between-v1.png",
+      "bytes": 1363286
+    },
+    {
+      "path": "concept-art/sprite/pack-02/moonshine-fastfall-mid-between-v1.prompt.json",
+      "bytes": 1541
+    },
+    {
+      "path": "concept-art/sprite/pack-02/moonshine-fastfall-settle-between-v1.png",
+      "bytes": 1374369
+    },
+    {
+      "path": "concept-art/sprite/pack-02/moonshine-fastfall-settle-between-v1.prompt.json",
+      "bytes": 1502
+    },
+    {
+      "path": "concept-art/sprite/pack-02/moonshine-heavy-early-between-v1.png",
+      "bytes": 1779123
+    },
+    {
+      "path": "concept-art/sprite/pack-02/moonshine-heavy-early-between-v1.prompt.json",
+      "bytes": 1670
+    },
+    {
+      "path": "concept-art/sprite/pack-02/moonshine-heavy-late-between-v1.png",
+      "bytes": 1523380
+    },
+    {
+      "path": "concept-art/sprite/pack-02/moonshine-heavy-late-between-v1.prompt.json",
+      "bytes": 1722
+    },
+    {
+      "path": "concept-art/sprite/pack-02/moonshine-heavy-mid-between-v1.png",
+      "bytes": 1471962
+    },
+    {
+      "path": "concept-art/sprite/pack-02/moonshine-heavy-mid-between-v1.prompt.json",
+      "bytes": 1777
+    },
+    {
+      "path": "concept-art/sprite/pack-02/moonshine-heavy-settle-between-v1.png",
+      "bytes": 1454533
+    },
+    {
+      "path": "concept-art/sprite/pack-02/moonshine-heavy-settle-between-v1.prompt.json",
+      "bytes": 1772
+    },
+    {
+      "path": "concept-art/sprite/pack-02/moonshine-rise-early-between-v1.png",
+      "bytes": 1819859
+    },
+    {
+      "path": "concept-art/sprite/pack-02/moonshine-rise-early-between-v1.prompt.json",
+      "bytes": 1394
+    },
+    {
+      "path": "concept-art/sprite/pack-02/moonshine-rise-late-between-v1.png",
+      "bytes": 1391468
+    },
+    {
+      "path": "concept-art/sprite/pack-02/moonshine-rise-late-between-v1.prompt.json",
+      "bytes": 1586
+    },
+    {
+      "path": "concept-art/sprite/pack-02/moonshine-rise-mid-between-v1.png",
+      "bytes": 1786639
+    },
+    {
+      "path": "concept-art/sprite/pack-02/moonshine-rise-mid-between-v1.prompt.json",
+      "bytes": 1610
+    },
+    {
+      "path": "concept-art/sprite/pack-02/moonshine-rise-settle-between-v1.png",
+      "bytes": 1457568
+    },
+    {
+      "path": "concept-art/sprite/pack-02/moonshine-rise-settle-between-v1.prompt.json",
+      "bytes": 1545
+    },
+    {
+      "path": "concept-art/sprite/pack-02/moonshine-shipped-heavy-reference-0.png",
+      "bytes": 381880
+    },
+    {
+      "path": "concept-art/sprite/pack-02/moonshine-shipped-idle-reference.png",
+      "bytes": 309582
+    },
+    {
+      "path": "concept-art/sprite/pack-02/moonshine-shipped-soft-reference-0.png",
+      "bytes": 352546
+    },
+    {
+      "path": "concept-art/sprite/pack-02/moonshine-shipped-soft-reference-1.png",
+      "bytes": 345770
+    },
+    {
+      "path": "concept-art/sprite/pack-02/moonshine-shipped-soft-reference-2.png",
+      "bytes": 345300
+    },
+    {
+      "path": "concept-art/sprite/pack-02/moonshine-soft-early-between-v1.png",
+      "bytes": 1519912
+    },
+    {
+      "path": "concept-art/sprite/pack-02/moonshine-soft-early-between-v1.prompt.json",
+      "bytes": 1312
+    },
+    {
+      "path": "concept-art/sprite/pack-02/moonshine-soft-early-between-v2.png",
+      "bytes": 1952826
+    },
+    {
+      "path": "concept-art/sprite/pack-02/moonshine-soft-early-between-v2.prompt.json",
+      "bytes": 2031
+    },
+    {
+      "path": "concept-art/sprite/pack-02/moonshine-soft-late-between-v1.png",
+      "bytes": 1643631
+    },
+    {
+      "path": "concept-art/sprite/pack-02/moonshine-soft-late-between-v1.prompt.json",
+      "bytes": 2052
+    },
+    {
+      "path": "concept-art/sprite/pack-02/moonshine-soft-mid-between-v1.png",
+      "bytes": 1705328
+    },
+    {
+      "path": "concept-art/sprite/pack-02/moonshine-soft-mid-between-v1.prompt.json",
+      "bytes": 2121
+    },
+    {
+      "path": "concept-art/sprite/pack-02/moonshine-takeoff-backward-mid-between-v1.png",
+      "bytes": 1250284
+    },
+    {
+      "path": "concept-art/sprite/pack-02/moonshine-takeoff-backward-mid-between-v1.prompt.json",
+      "bytes": 1699
+    },
+    {
+      "path": "concept-art/sprite/pack-02/moonshine-takeoff-forward-mid-between-v1.png",
+      "bytes": 1152658
+    },
+    {
+      "path": "concept-art/sprite/pack-02/moonshine-takeoff-forward-mid-between-v1.prompt.json",
+      "bytes": 1649
+    },
+    {
+      "path": "concept-art/sprite/pack-02/moonshine-takeoff-neutral-mid-between-v1.png",
+      "bytes": 1828892
+    },
+    {
+      "path": "concept-art/sprite/pack-02/moonshine-takeoff-neutral-mid-between-v1.prompt.json",
+      "bytes": 1744
+    },
+    {
+      "path": "concept-art/sprite/pack-03-pilot/loopy-apex-early-between-v1.png",
+      "bytes": 1292190
+    },
+    {
+      "path": "concept-art/sprite/pack-03-pilot/loopy-apex-early-between-v1.prompt.json",
+      "bytes": 1461
+    },
+    {
+      "path": "concept-art/sprite/pack-03-pilot/loopy-apex-late-between-v1.png",
+      "bytes": 1163462
+    },
+    {
+      "path": "concept-art/sprite/pack-03-pilot/loopy-apex-late-between-v1.prompt.json",
+      "bytes": 1461
+    },
+    {
+      "path": "concept-art/sprite/pack-03-pilot/loopy-apex-late-between-v2.png",
+      "bytes": 1341348
+    },
+    {
+      "path": "concept-art/sprite/pack-03-pilot/loopy-apex-late-between-v2.prompt.json",
+      "bytes": 1857
+    },
+    {
+      "path": "concept-art/sprite/pack-03-pilot/loopy-apex-mid-between-v1.png",
+      "bytes": 1206353
+    },
+    {
+      "path": "concept-art/sprite/pack-03-pilot/loopy-apex-mid-between-v1.prompt.json",
+      "bytes": 1459
+    },
+    {
+      "path": "concept-art/sprite/pack-03-pilot/loopy-apex-settle-between-v1.png",
+      "bytes": 1177945
+    },
+    {
+      "path": "concept-art/sprite/pack-03-pilot/loopy-apex-settle-between-v1.prompt.json",
+      "bytes": 1475
+    },
+    {
+      "path": "concept-art/sprite/pack-03-pilot/loopy-apex-settle-between-v2.png",
+      "bytes": 1360484
+    },
+    {
+      "path": "concept-art/sprite/pack-03-pilot/loopy-apex-settle-between-v2.prompt.json",
+      "bytes": 1851
+    },
+    {
+      "path": "concept-art/sprite/pack-03-pilot/loopy-double-early-between-v1.png",
+      "bytes": 1128528
+    },
+    {
+      "path": "concept-art/sprite/pack-03-pilot/loopy-double-early-between-v1.prompt.json",
+      "bytes": 1490
+    },
+    {
+      "path": "concept-art/sprite/pack-03-pilot/loopy-double-late-between-v1.png",
+      "bytes": 1152536
+    },
+    {
+      "path": "concept-art/sprite/pack-03-pilot/loopy-double-late-between-v1.prompt.json",
+      "bytes": 1495
+    },
+    {
+      "path": "concept-art/sprite/pack-03-pilot/loopy-double-mid-between-v1.png",
+      "bytes": 1175267
+    },
+    {
+      "path": "concept-art/sprite/pack-03-pilot/loopy-double-mid-between-v1.prompt.json",
+      "bytes": 1509
+    },
+    {
+      "path": "concept-art/sprite/pack-03-pilot/loopy-double-start-clean-between-v1.png",
+      "bytes": 1399874
+    },
+    {
+      "path": "concept-art/sprite/pack-03-pilot/loopy-double-start-clean-between-v1.prompt.json",
+      "bytes": 897
+    },
+    {
+      "path": "concept-art/sprite/pack-03-pilot/loopy-fall-early-v1.png",
+      "bytes": 1163427
+    },
+    {
+      "path": "concept-art/sprite/pack-03-pilot/loopy-fall-early-v1.prompt.json",
+      "bytes": 1605
+    },
+    {
+      "path": "concept-art/sprite/pack-03-pilot/loopy-fall-late-v1.png",
+      "bytes": 1171544
+    },
+    {
+      "path": "concept-art/sprite/pack-03-pilot/loopy-fall-late-v1.prompt.json",
+      "bytes": 1582
+    },
+    {
+      "path": "concept-art/sprite/pack-03-pilot/loopy-fall-mid-v1.png",
+      "bytes": 1150884
+    },
+    {
+      "path": "concept-art/sprite/pack-03-pilot/loopy-fall-mid-v1.prompt.json",
+      "bytes": 1585
+    },
+    {
+      "path": "concept-art/sprite/pack-03-pilot/loopy-fall-settle-v1.png",
+      "bytes": 1252761
+    },
+    {
+      "path": "concept-art/sprite/pack-03-pilot/loopy-fall-settle-v1.prompt.json",
+      "bytes": 1570
+    },
+    {
+      "path": "concept-art/sprite/pack-03-pilot/loopy-fall-start-clean-v1.png",
+      "bytes": 1443605
+    },
+    {
+      "path": "concept-art/sprite/pack-03-pilot/loopy-fall-start-clean-v1.prompt.json",
+      "bytes": 898
+    },
+    {
+      "path": "concept-art/sprite/pack-03-pilot/loopy-fastfall-early-between-v1.png",
+      "bytes": 908964
+    },
+    {
+      "path": "concept-art/sprite/pack-03-pilot/loopy-fastfall-early-between-v1.prompt.json",
+      "bytes": 1425
+    },
+    {
+      "path": "concept-art/sprite/pack-03-pilot/loopy-fastfall-late-between-v1.png",
+      "bytes": 1093762
+    },
+    {
+      "path": "concept-art/sprite/pack-03-pilot/loopy-fastfall-late-between-v1.prompt.json",
+      "bytes": 1585
+    },
+    {
+      "path": "concept-art/sprite/pack-03-pilot/loopy-fastfall-mid-between-v2.png",
+      "bytes": 1098701
+    },
+    {
+      "path": "concept-art/sprite/pack-03-pilot/loopy-fastfall-mid-between-v2.prompt.json",
+      "bytes": 2979
+    },
+    {
+      "path": "concept-art/sprite/pack-03-pilot/loopy-heavy-early-between-v1.png",
+      "bytes": 1137267
+    },
+    {
+      "path": "concept-art/sprite/pack-03-pilot/loopy-heavy-early-between-v1.prompt.json",
+      "bytes": 1701
+    },
+    {
+      "path": "concept-art/sprite/pack-03-pilot/loopy-heavy-late-between-v1.png",
+      "bytes": 1189796
+    },
+    {
+      "path": "concept-art/sprite/pack-03-pilot/loopy-heavy-late-between-v1.prompt.json",
+      "bytes": 1706
+    },
+    {
+      "path": "concept-art/sprite/pack-03-pilot/loopy-heavy-mid-between-v1.png",
+      "bytes": 1150878
+    },
+    {
+      "path": "concept-art/sprite/pack-03-pilot/loopy-heavy-mid-between-v1.prompt.json",
+      "bytes": 1699
+    },
+    {
+      "path": "concept-art/sprite/pack-03-pilot/loopy-jump-squat-between-v1.png",
+      "bytes": 1544415
+    },
+    {
+      "path": "concept-art/sprite/pack-03-pilot/loopy-jump-squat-between-v1.prompt.json",
+      "bytes": 1613
+    },
+    {
+      "path": "concept-art/sprite/pack-03-pilot/loopy-rise-early-between-v1.png",
+      "bytes": 1228569
+    },
+    {
+      "path": "concept-art/sprite/pack-03-pilot/loopy-rise-early-between-v1.prompt.json",
+      "bytes": 1425
+    },
+    {
+      "path": "concept-art/sprite/pack-03-pilot/loopy-rise-late-between-v1.png",
+      "bytes": 1134910
+    },
+    {
+      "path": "concept-art/sprite/pack-03-pilot/loopy-rise-late-between-v1.prompt.json",
+      "bytes": 1456
+    },
+    {
+      "path": "concept-art/sprite/pack-03-pilot/loopy-rise-mid-between-v1.png",
+      "bytes": 1167352
+    },
+    {
+      "path": "concept-art/sprite/pack-03-pilot/loopy-rise-mid-between-v1.prompt.json",
+      "bytes": 1434
+    },
+    {
+      "path": "concept-art/sprite/pack-03-pilot/loopy-rise-settle-between-v1.png",
+      "bytes": 1133387
+    },
+    {
+      "path": "concept-art/sprite/pack-03-pilot/loopy-rise-settle-between-v1.prompt.json",
+      "bytes": 1481
+    },
+    {
+      "path": "concept-art/sprite/pack-03-pilot/loopy-shipped-air_apex_loop-0.png",
+      "bytes": 55210
+    },
+    {
+      "path": "concept-art/sprite/pack-03-pilot/loopy-shipped-air_apex_loop-1.png",
+      "bytes": 53627
+    },
+    {
+      "path": "concept-art/sprite/pack-03-pilot/loopy-shipped-air_fall_loop-0.png",
+      "bytes": 66225
+    },
+    {
+      "path": "concept-art/sprite/pack-03-pilot/loopy-shipped-air_fall_loop-1.png",
+      "bytes": 55000
+    },
+    {
+      "path": "concept-art/sprite/pack-03-pilot/loopy-shipped-air_rise_loop-0.png",
+      "bytes": 58981
+    },
+    {
+      "path": "concept-art/sprite/pack-03-pilot/loopy-shipped-air_rise_loop-1.png",
+      "bytes": 56298
+    },
+    {
+      "path": "concept-art/sprite/pack-03-pilot/loopy-shipped-double-0.png",
+      "bytes": 65170
+    },
+    {
+      "path": "concept-art/sprite/pack-03-pilot/loopy-shipped-double-1.png",
+      "bytes": 46178
+    },
+    {
+      "path": "concept-art/sprite/pack-03-pilot/loopy-shipped-double-2.png",
+      "bytes": 58981
+    },
+    {
+      "path": "concept-art/sprite/pack-03-pilot/loopy-shipped-fastfall-0.png",
+      "bytes": 69440
+    },
+    {
+      "path": "concept-art/sprite/pack-03-pilot/loopy-shipped-fastfall-1.png",
+      "bytes": 65793
+    },
+    {
+      "path": "concept-art/sprite/pack-03-pilot/loopy-shipped-fastfall-2.png",
+      "bytes": 74058
+    },
+    {
+      "path": "concept-art/sprite/pack-03-pilot/loopy-shipped-heavy-0.png",
+      "bytes": 66887
+    },
+    {
+      "path": "concept-art/sprite/pack-03-pilot/loopy-shipped-heavy-1.png",
+      "bytes": 65536
+    },
+    {
+      "path": "concept-art/sprite/pack-03-pilot/loopy-shipped-heavy-2.png",
+      "bytes": 60553
+    },
+    {
+      "path": "concept-art/sprite/pack-03-pilot/loopy-shipped-idle-0.png",
+      "bytes": 51641
+    },
+    {
+      "path": "concept-art/sprite/pack-03-pilot/loopy-shipped-jump_squat-0.png",
+      "bytes": 57034
+    },
+    {
+      "path": "concept-art/sprite/pack-03-pilot/loopy-shipped-jump_squat-1.png",
+      "bytes": 67036
+    },
+    {
+      "path": "concept-art/sprite/pack-03-pilot/loopy-shipped-soft-0.png",
+      "bytes": 66887
+    },
+    {
+      "path": "concept-art/sprite/pack-03-pilot/loopy-shipped-soft-1.png",
+      "bytes": 65536
+    },
+    {
+      "path": "concept-art/sprite/pack-03-pilot/loopy-shipped-soft-2.png",
+      "bytes": 60553
+    },
+    {
+      "path": "concept-art/sprite/pack-03-pilot/loopy-shipped-takeoff-backward-0.png",
+      "bytes": 59266
+    },
+    {
+      "path": "concept-art/sprite/pack-03-pilot/loopy-shipped-takeoff-backward-1.png",
+      "bytes": 58981
+    },
+    {
+      "path": "concept-art/sprite/pack-03-pilot/loopy-shipped-takeoff-forward-0.png",
+      "bytes": 59421
+    },
+    {
+      "path": "concept-art/sprite/pack-03-pilot/loopy-shipped-takeoff-forward-1.png",
+      "bytes": 58981
+    },
+    {
+      "path": "concept-art/sprite/pack-03-pilot/loopy-shipped-takeoff-neutral-0.png",
+      "bytes": 60515
+    },
+    {
+      "path": "concept-art/sprite/pack-03-pilot/loopy-shipped-takeoff-neutral-1.png",
+      "bytes": 58981
+    },
+    {
+      "path": "concept-art/sprite/pack-03-pilot/loopy-soft-early-between-v1.png",
+      "bytes": 1162424
+    },
+    {
+      "path": "concept-art/sprite/pack-03-pilot/loopy-soft-early-between-v1.prompt.json",
+      "bytes": 1620
+    },
+    {
+      "path": "concept-art/sprite/pack-03-pilot/loopy-soft-late-between-v1.png",
+      "bytes": 1188490
+    },
+    {
+      "path": "concept-art/sprite/pack-03-pilot/loopy-soft-late-between-v1.prompt.json",
+      "bytes": 1672
+    },
+    {
+      "path": "concept-art/sprite/pack-03-pilot/loopy-soft-late-between-v2.png",
+      "bytes": 1260166
+    },
+    {
+      "path": "concept-art/sprite/pack-03-pilot/loopy-soft-late-between-v2.prompt.json",
+      "bytes": 3159
+    },
+    {
+      "path": "concept-art/sprite/pack-03-pilot/loopy-soft-mid-between-v1.png",
+      "bytes": 1090617
+    },
+    {
+      "path": "concept-art/sprite/pack-03-pilot/loopy-soft-mid-between-v1.prompt.json",
+      "bytes": 1614
+    },
+    {
+      "path": "concept-art/sprite/pack-03-pilot/loopy-soft-mid-between-v2.png",
+      "bytes": 1247482
+    },
+    {
+      "path": "concept-art/sprite/pack-03-pilot/loopy-soft-mid-between-v2.prompt.json",
+      "bytes": 3080
+    },
+    {
+      "path": "concept-art/sprite/pack-03-pilot/loopy-takeoff-backward-between-v1.png",
+      "bytes": 978161
+    },
+    {
+      "path": "concept-art/sprite/pack-03-pilot/loopy-takeoff-backward-between-v1.prompt.json",
+      "bytes": 1828
+    },
+    {
+      "path": "concept-art/sprite/pack-03-pilot/loopy-takeoff-forward-between-v1.png",
+      "bytes": 844374
+    },
+    {
+      "path": "concept-art/sprite/pack-03-pilot/loopy-takeoff-forward-between-v1.prompt.json",
+      "bytes": 1778
+    },
+    {
+      "path": "concept-art/sprite/pack-03-pilot/loopy-takeoff-neutral-between-v1.png",
+      "bytes": 1046553
+    },
+    {
+      "path": "concept-art/sprite/pack-03-pilot/loopy-takeoff-neutral-between-v1.prompt.json",
+      "bytes": 1870
+    },
+    {
+      "path": "concept-art/sprite/pack-03-pilot/mr-wrong-apex-early-between-v1.png",
+      "bytes": 1791824
+    },
+    {
+      "path": "concept-art/sprite/pack-03-pilot/mr-wrong-apex-early-between-v1.prompt.json",
+      "bytes": 1356
+    },
+    {
+      "path": "concept-art/sprite/pack-03-pilot/mr-wrong-apex-late-between-v1.png",
+      "bytes": 1340314
+    },
+    {
+      "path": "concept-art/sprite/pack-03-pilot/mr-wrong-apex-late-between-v1.prompt.json",
+      "bytes": 1250
+    },
+    {
+      "path": "concept-art/sprite/pack-03-pilot/mr-wrong-apex-mid-between-v1.png",
+      "bytes": 1326258
+    },
+    {
+      "path": "concept-art/sprite/pack-03-pilot/mr-wrong-apex-mid-between-v1.prompt.json",
+      "bytes": 1250
+    },
+    {
+      "path": "concept-art/sprite/pack-03-pilot/mr-wrong-apex-settle-between-v1.png",
+      "bytes": 1464502
+    },
+    {
+      "path": "concept-art/sprite/pack-03-pilot/mr-wrong-apex-settle-between-v1.prompt.json",
+      "bytes": 1286
+    },
+    {
+      "path": "concept-art/sprite/pack-03-pilot/mr-wrong-double-early-between-v1.png",
+      "bytes": 1526123
+    },
+    {
+      "path": "concept-art/sprite/pack-03-pilot/mr-wrong-double-early-between-v1.prompt.json",
+      "bytes": 1409
+    },
+    {
+      "path": "concept-art/sprite/pack-03-pilot/mr-wrong-double-late-between-v1.png",
+      "bytes": 1350030
+    },
+    {
+      "path": "concept-art/sprite/pack-03-pilot/mr-wrong-double-late-between-v1.prompt.json",
+      "bytes": 1394
+    },
+    {
+      "path": "concept-art/sprite/pack-03-pilot/mr-wrong-double-mid-between-v1.png",
+      "bytes": 1517409
+    },
+    {
+      "path": "concept-art/sprite/pack-03-pilot/mr-wrong-double-mid-between-v1.prompt.json",
+      "bytes": 1425
+    },
+    {
+      "path": "concept-art/sprite/pack-03-pilot/mr-wrong-fall-early-between-v1.png",
+      "bytes": 1467136
+    },
+    {
+      "path": "concept-art/sprite/pack-03-pilot/mr-wrong-fall-early-between-v1.prompt.json",
+      "bytes": 1364
+    },
+    {
+      "path": "concept-art/sprite/pack-03-pilot/mr-wrong-fall-late-between-v1.png",
+      "bytes": 1467511
+    },
+    {
+      "path": "concept-art/sprite/pack-03-pilot/mr-wrong-fall-late-between-v1.prompt.json",
+      "bytes": 1360
+    },
+    {
+      "path": "concept-art/sprite/pack-03-pilot/mr-wrong-fall-mid-between-v1.png",
+      "bytes": 1461911
+    },
+    {
+      "path": "concept-art/sprite/pack-03-pilot/mr-wrong-fall-mid-between-v1.prompt.json",
+      "bytes": 1350
+    },
+    {
+      "path": "concept-art/sprite/pack-03-pilot/mr-wrong-fall-settle-between-v1.png",
+      "bytes": 1657250
+    },
+    {
+      "path": "concept-art/sprite/pack-03-pilot/mr-wrong-fall-settle-between-v1.prompt.json",
+      "bytes": 1372
+    },
+    {
+      "path": "concept-art/sprite/pack-03-pilot/mr-wrong-fastfall-early-between-v1.png",
+      "bytes": 1701291
+    },
+    {
+      "path": "concept-art/sprite/pack-03-pilot/mr-wrong-fastfall-early-between-v1.prompt.json",
+      "bytes": 1501
+    },
+    {
+      "path": "concept-art/sprite/pack-03-pilot/mr-wrong-fastfall-late-between-v1.png",
+      "bytes": 1713042
+    },
+    {
+      "path": "concept-art/sprite/pack-03-pilot/mr-wrong-fastfall-late-between-v1.prompt.json",
+      "bytes": 1508
+    },
+    {
+      "path": "concept-art/sprite/pack-03-pilot/mr-wrong-fastfall-mid-between-v1.png",
+      "bytes": 1686248
+    },
+    {
+      "path": "concept-art/sprite/pack-03-pilot/mr-wrong-fastfall-mid-between-v1.prompt.json",
+      "bytes": 1486
+    },
+    {
+      "path": "concept-art/sprite/pack-03-pilot/mr-wrong-heavy-early-between-v1.png",
+      "bytes": 2167371
+    },
+    {
+      "path": "concept-art/sprite/pack-03-pilot/mr-wrong-heavy-early-between-v1.prompt.json",
+      "bytes": 1534
+    },
+    {
+      "path": "concept-art/sprite/pack-03-pilot/mr-wrong-heavy-late-between-v1.png",
+      "bytes": 1912187
+    },
+    {
+      "path": "concept-art/sprite/pack-03-pilot/mr-wrong-heavy-late-between-v1.prompt.json",
+      "bytes": 1400
+    },
+    {
+      "path": "concept-art/sprite/pack-03-pilot/mr-wrong-heavy-mid-between-v1.png",
+      "bytes": 2662701
+    },
+    {
+      "path": "concept-art/sprite/pack-03-pilot/mr-wrong-heavy-mid-between-v1.prompt.json",
+      "bytes": 1448
+    },
+    {
+      "path": "concept-art/sprite/pack-03-pilot/mr-wrong-jump-squat-between-v1.png",
+      "bytes": 1946965
+    },
+    {
+      "path": "concept-art/sprite/pack-03-pilot/mr-wrong-jump-squat-between-v1.prompt.json",
+      "bytes": 1523
+    },
+    {
+      "path": "concept-art/sprite/pack-03-pilot/mr-wrong-jump-squat-between-v2.png",
+      "bytes": 2111478
+    },
+    {
+      "path": "concept-art/sprite/pack-03-pilot/mr-wrong-jump-squat-between-v2.prompt.json",
+      "bytes": 1790
+    },
+    {
+      "path": "concept-art/sprite/pack-03-pilot/mr-wrong-rise-early-between-v1.png",
+      "bytes": 1619664
+    },
+    {
+      "path": "concept-art/sprite/pack-03-pilot/mr-wrong-rise-early-between-v1.prompt.json",
+      "bytes": 1336
+    },
+    {
+      "path": "concept-art/sprite/pack-03-pilot/mr-wrong-rise-late-between-v1.png",
+      "bytes": 1731602
+    },
+    {
+      "path": "concept-art/sprite/pack-03-pilot/mr-wrong-rise-late-between-v1.prompt.json",
+      "bytes": 1304
+    },
+    {
+      "path": "concept-art/sprite/pack-03-pilot/mr-wrong-rise-mid-between-v1.png",
+      "bytes": 1556337
+    },
+    {
+      "path": "concept-art/sprite/pack-03-pilot/mr-wrong-rise-mid-between-v1.prompt.json",
+      "bytes": 1300
+    },
+    {
+      "path": "concept-art/sprite/pack-03-pilot/mr-wrong-rise-settle-between-v1.png",
+      "bytes": 1665499
+    },
+    {
+      "path": "concept-art/sprite/pack-03-pilot/mr-wrong-rise-settle-between-v1.prompt.json",
+      "bytes": 1358
+    },
+    {
+      "path": "concept-art/sprite/pack-03-pilot/mr-wrong-shipped-air_rise_loop-0.png",
+      "bytes": 64655
+    },
+    {
+      "path": "concept-art/sprite/pack-03-pilot/mr-wrong-shipped-air_rise_loop-1.png",
+      "bytes": 52197
+    },
+    {
+      "path": "concept-art/sprite/pack-03-pilot/mr-wrong-shipped-apex-0.png",
+      "bytes": 61813
+    },
+    {
+      "path": "concept-art/sprite/pack-03-pilot/mr-wrong-shipped-apex-1.png",
+      "bytes": 52459
+    },
+    {
+      "path": "concept-art/sprite/pack-03-pilot/mr-wrong-shipped-double_jump_transition-0.png",
+      "bytes": 60033
+    },
+    {
+      "path": "concept-art/sprite/pack-03-pilot/mr-wrong-shipped-double_jump_transition-1.png",
+      "bytes": 50659
+    },
+    {
+      "path": "concept-art/sprite/pack-03-pilot/mr-wrong-shipped-double_jump_transition-2.png",
+      "bytes": 64655
+    },
+    {
+      "path": "concept-art/sprite/pack-03-pilot/mr-wrong-shipped-fall-0.png",
+      "bytes": 69028
+    },
+    {
+      "path": "concept-art/sprite/pack-03-pilot/mr-wrong-shipped-fall-1.png",
+      "bytes": 61721
+    },
+    {
+      "path": "concept-art/sprite/pack-03-pilot/mr-wrong-shipped-fastfall-0.png",
+      "bytes": 58420
+    },
+    {
+      "path": "concept-art/sprite/pack-03-pilot/mr-wrong-shipped-fastfall-1.png",
+      "bytes": 55262
+    },
+    {
+      "path": "concept-art/sprite/pack-03-pilot/mr-wrong-shipped-fastfall-2.png",
+      "bytes": 70543
+    },
+    {
+      "path": "concept-art/sprite/pack-03-pilot/mr-wrong-shipped-heavy-0.png",
+      "bytes": 61005
+    },
+    {
+      "path": "concept-art/sprite/pack-03-pilot/mr-wrong-shipped-heavy-1.png",
+      "bytes": 58824
+    },
+    {
+      "path": "concept-art/sprite/pack-03-pilot/mr-wrong-shipped-heavy-2.png",
+      "bytes": 65087
+    },
+    {
+      "path": "concept-art/sprite/pack-03-pilot/mr-wrong-shipped-idle-reference-0.png",
+      "bytes": 50175
+    },
+    {
+      "path": "concept-art/sprite/pack-03-pilot/mr-wrong-shipped-jump_squat-reference-0.png",
+      "bytes": 55455
+    },
+    {
+      "path": "concept-art/sprite/pack-03-pilot/mr-wrong-shipped-jump_squat-reference-1.png",
+      "bytes": 61110
+    },
+    {
+      "path": "concept-art/sprite/pack-03-pilot/mr-wrong-shipped-soft-0.png",
+      "bytes": 61005
+    },
+    {
+      "path": "concept-art/sprite/pack-03-pilot/mr-wrong-shipped-soft-1.png",
+      "bytes": 58824
+    },
+    {
+      "path": "concept-art/sprite/pack-03-pilot/mr-wrong-shipped-soft-2.png",
+      "bytes": 65087
+    },
+    {
+      "path": "concept-art/sprite/pack-03-pilot/mr-wrong-shipped-takeoff-backward-0.png",
+      "bytes": 61161
+    },
+    {
+      "path": "concept-art/sprite/pack-03-pilot/mr-wrong-shipped-takeoff-backward-1.png",
+      "bytes": 64655
+    },
+    {
+      "path": "concept-art/sprite/pack-03-pilot/mr-wrong-shipped-takeoff-forward-0.png",
+      "bytes": 64383
+    },
+    {
+      "path": "concept-art/sprite/pack-03-pilot/mr-wrong-shipped-takeoff-forward-1.png",
+      "bytes": 64655
+    },
+    {
+      "path": "concept-art/sprite/pack-03-pilot/mr-wrong-shipped-takeoff-neutral-0.png",
+      "bytes": 66009
+    },
+    {
+      "path": "concept-art/sprite/pack-03-pilot/mr-wrong-shipped-takeoff-neutral-1.png",
+      "bytes": 64655
+    },
+    {
+      "path": "concept-art/sprite/pack-03-pilot/mr-wrong-soft-early-between-v1.png",
+      "bytes": 1733559
+    },
+    {
+      "path": "concept-art/sprite/pack-03-pilot/mr-wrong-soft-early-between-v1.prompt.json",
+      "bytes": 1359
+    },
+    {
+      "path": "concept-art/sprite/pack-03-pilot/mr-wrong-soft-late-between-v1.png",
+      "bytes": 1883150
+    },
+    {
+      "path": "concept-art/sprite/pack-03-pilot/mr-wrong-soft-late-between-v1.prompt.json",
+      "bytes": 1344
+    },
+    {
+      "path": "concept-art/sprite/pack-03-pilot/mr-wrong-soft-mid-between-v1.png",
+      "bytes": 1961042
+    },
+    {
+      "path": "concept-art/sprite/pack-03-pilot/mr-wrong-soft-mid-between-v1.prompt.json",
+      "bytes": 1357
+    },
+    {
+      "path": "concept-art/sprite/pack-03-pilot/mr-wrong-takeoff-backward-between-v1.png",
+      "bytes": 1302728
+    },
+    {
+      "path": "concept-art/sprite/pack-03-pilot/mr-wrong-takeoff-backward-between-v1.prompt.json",
+      "bytes": 1338
+    },
+    {
+      "path": "concept-art/sprite/pack-03-pilot/mr-wrong-takeoff-forward-between-v1.png",
+      "bytes": 1412137
+    },
+    {
+      "path": "concept-art/sprite/pack-03-pilot/mr-wrong-takeoff-forward-between-v1.prompt.json",
+      "bytes": 1365
+    },
+    {
+      "path": "concept-art/sprite/pack-03-pilot/mr-wrong-takeoff-neutral-between-v1.png",
+      "bytes": 1551221
+    },
+    {
+      "path": "concept-art/sprite/pack-03-pilot/mr-wrong-takeoff-neutral-between-v1.prompt.json",
+      "bytes": 1284
+    },
+    {
+      "path": "concept-art/sprite/pack-03-pilot/mrs-tasselbottom-apex-early-between-v1.png",
+      "bytes": 1696022
+    },
+    {
+      "path": "concept-art/sprite/pack-03-pilot/mrs-tasselbottom-apex-early-between-v1.prompt.json",
+      "bytes": 1270
+    },
+    {
+      "path": "concept-art/sprite/pack-03-pilot/mrs-tasselbottom-apex-late-between-v1.png",
+      "bytes": 1541215
+    },
+    {
+      "path": "concept-art/sprite/pack-03-pilot/mrs-tasselbottom-apex-late-between-v1.prompt.json",
+      "bytes": 1388
+    },
+    {
+      "path": "concept-art/sprite/pack-03-pilot/mrs-tasselbottom-apex-mid-between-v1.png",
+      "bytes": 1625518
+    },
+    {
+      "path": "concept-art/sprite/pack-03-pilot/mrs-tasselbottom-apex-mid-between-v1.prompt.json",
+      "bytes": 1346
+    },
+    {
+      "path": "concept-art/sprite/pack-03-pilot/mrs-tasselbottom-apex-settle-between-v1.png",
+      "bytes": 1590171
+    },
+    {
+      "path": "concept-art/sprite/pack-03-pilot/mrs-tasselbottom-apex-settle-between-v1.prompt.json",
+      "bytes": 1423
+    },
+    {
+      "path": "concept-art/sprite/pack-03-pilot/mrs-tasselbottom-double-early-between-v1.png",
+      "bytes": 1358391
+    },
+    {
+      "path": "concept-art/sprite/pack-03-pilot/mrs-tasselbottom-double-early-between-v1.prompt.json",
+      "bytes": 1295
+    },
+    {
+      "path": "concept-art/sprite/pack-03-pilot/mrs-tasselbottom-double-late-between-v1.png",
+      "bytes": 1330274
+    },
+    {
+      "path": "concept-art/sprite/pack-03-pilot/mrs-tasselbottom-double-late-between-v1.prompt.json",
+      "bytes": 1328
+    },
+    {
+      "path": "concept-art/sprite/pack-03-pilot/mrs-tasselbottom-double-mid-between-v1.png",
+      "bytes": 1249304
+    },
+    {
+      "path": "concept-art/sprite/pack-03-pilot/mrs-tasselbottom-double-mid-between-v1.prompt.json",
+      "bytes": 1327
+    },
+    {
+      "path": "concept-art/sprite/pack-03-pilot/mrs-tasselbottom-fall-early-between-v1.png",
+      "bytes": 1638925
+    },
+    {
+      "path": "concept-art/sprite/pack-03-pilot/mrs-tasselbottom-fall-early-between-v1.prompt.json",
+      "bytes": 1333
+    },
+    {
+      "path": "concept-art/sprite/pack-03-pilot/mrs-tasselbottom-fall-late-between-v1.png",
+      "bytes": 1493833
+    },
+    {
+      "path": "concept-art/sprite/pack-03-pilot/mrs-tasselbottom-fall-late-between-v1.prompt.json",
+      "bytes": 1419
+    },
+    {
+      "path": "concept-art/sprite/pack-03-pilot/mrs-tasselbottom-fall-mid-between-v1.png",
+      "bytes": 1445707
+    },
+    {
+      "path": "concept-art/sprite/pack-03-pilot/mrs-tasselbottom-fall-mid-between-v1.prompt.json",
+      "bytes": 1391
+    },
+    {
+      "path": "concept-art/sprite/pack-03-pilot/mrs-tasselbottom-fall-settle-between-v1.png",
+      "bytes": 1468614
+    },
+    {
+      "path": "concept-art/sprite/pack-03-pilot/mrs-tasselbottom-fall-settle-between-v1.prompt.json",
+      "bytes": 1463
+    },
+    {
+      "path": "concept-art/sprite/pack-03-pilot/mrs-tasselbottom-fastfall-early-between-v1.png",
+      "bytes": 1533054
+    },
+    {
+      "path": "concept-art/sprite/pack-03-pilot/mrs-tasselbottom-fastfall-early-between-v1.prompt.json",
+      "bytes": 1293
+    },
+    {
+      "path": "concept-art/sprite/pack-03-pilot/mrs-tasselbottom-fastfall-late-between-v1.png",
+      "bytes": 1460345
+    },
+    {
+      "path": "concept-art/sprite/pack-03-pilot/mrs-tasselbottom-fastfall-late-between-v1.prompt.json",
+      "bytes": 1380
+    },
+    {
+      "path": "concept-art/sprite/pack-03-pilot/mrs-tasselbottom-fastfall-mid-between-v1.png",
+      "bytes": 1385589
+    },
+    {
+      "path": "concept-art/sprite/pack-03-pilot/mrs-tasselbottom-fastfall-mid-between-v1.prompt.json",
+      "bytes": 1328
+    },
+    {
+      "path": "concept-art/sprite/pack-03-pilot/mrs-tasselbottom-heavy-early-between-v1.png",
+      "bytes": 1835476
+    },
+    {
+      "path": "concept-art/sprite/pack-03-pilot/mrs-tasselbottom-heavy-early-between-v1.prompt.json",
+      "bytes": 1553
+    },
+    {
+      "path": "concept-art/sprite/pack-03-pilot/mrs-tasselbottom-heavy-late-between-v1.png",
+      "bytes": 1708208
+    },
+    {
+      "path": "concept-art/sprite/pack-03-pilot/mrs-tasselbottom-heavy-late-between-v1.prompt.json",
+      "bytes": 1549
+    },
+    {
+      "path": "concept-art/sprite/pack-03-pilot/mrs-tasselbottom-heavy-mid-between-v1.png",
+      "bytes": 1586544
+    },
+    {
+      "path": "concept-art/sprite/pack-03-pilot/mrs-tasselbottom-heavy-mid-between-v1.prompt.json",
+      "bytes": 1562
+    },
+    {
+      "path": "concept-art/sprite/pack-03-pilot/mrs-tasselbottom-jump-squat-between-v1.png",
+      "bytes": 1448215
+    },
+    {
+      "path": "concept-art/sprite/pack-03-pilot/mrs-tasselbottom-jump-squat-between-v1.prompt.json",
+      "bytes": 1984
+    },
+    {
+      "path": "concept-art/sprite/pack-03-pilot/mrs-tasselbottom-jump-squat-between-v2.png",
+      "bytes": 1761761
+    },
+    {
+      "path": "concept-art/sprite/pack-03-pilot/mrs-tasselbottom-jump-squat-between-v2.prompt.json",
+      "bytes": 3235
+    },
+    {
+      "path": "concept-art/sprite/pack-03-pilot/mrs-tasselbottom-rise-early-between-v1.png",
+      "bytes": 1350197
+    },
+    {
+      "path": "concept-art/sprite/pack-03-pilot/mrs-tasselbottom-rise-early-between-v1.prompt.json",
+      "bytes": 1915
+    },
+    {
+      "path": "concept-art/sprite/pack-03-pilot/mrs-tasselbottom-rise-late-between-v1.png",
+      "bytes": 1511828
+    },
+    {
+      "path": "concept-art/sprite/pack-03-pilot/mrs-tasselbottom-rise-late-between-v1.prompt.json",
+      "bytes": 1305
+    },
+    {
+      "path": "concept-art/sprite/pack-03-pilot/mrs-tasselbottom-rise-mid-between-v1.png",
+      "bytes": 1660462
+    },
+    {
+      "path": "concept-art/sprite/pack-03-pilot/mrs-tasselbottom-rise-mid-between-v1.prompt.json",
+      "bytes": 1218
+    },
+    {
+      "path": "concept-art/sprite/pack-03-pilot/mrs-tasselbottom-rise-settle-between-v1.png",
+      "bytes": 1457067
+    },
+    {
+      "path": "concept-art/sprite/pack-03-pilot/mrs-tasselbottom-rise-settle-between-v1.prompt.json",
+      "bytes": 1325
+    },
+    {
+      "path": "concept-art/sprite/pack-03-pilot/mrs-tasselbottom-shipped-apex-0.png",
+      "bytes": 60239
+    },
+    {
+      "path": "concept-art/sprite/pack-03-pilot/mrs-tasselbottom-shipped-apex-1.png",
+      "bytes": 53028
+    },
+    {
+      "path": "concept-art/sprite/pack-03-pilot/mrs-tasselbottom-shipped-double-0.png",
+      "bytes": 64511
+    },
+    {
+      "path": "concept-art/sprite/pack-03-pilot/mrs-tasselbottom-shipped-double-1.png",
+      "bytes": 52357
+    },
+    {
+      "path": "concept-art/sprite/pack-03-pilot/mrs-tasselbottom-shipped-double-2.png",
+      "bytes": 63542
+    },
+    {
+      "path": "concept-art/sprite/pack-03-pilot/mrs-tasselbottom-shipped-fall-0.png",
+      "bytes": 65257
+    },
+    {
+      "path": "concept-art/sprite/pack-03-pilot/mrs-tasselbottom-shipped-fall-1.png",
+      "bytes": 56068
+    },
+    {
+      "path": "concept-art/sprite/pack-03-pilot/mrs-tasselbottom-shipped-fastfall-0.png",
+      "bytes": 71497
+    },
+    {
+      "path": "concept-art/sprite/pack-03-pilot/mrs-tasselbottom-shipped-fastfall-1.png",
+      "bytes": 60518
+    },
+    {
+      "path": "concept-art/sprite/pack-03-pilot/mrs-tasselbottom-shipped-fastfall-2.png",
+      "bytes": 69315
+    },
+    {
+      "path": "concept-art/sprite/pack-03-pilot/mrs-tasselbottom-shipped-heavy-0.png",
+      "bytes": 71785
+    },
+    {
+      "path": "concept-art/sprite/pack-03-pilot/mrs-tasselbottom-shipped-heavy-1.png",
+      "bytes": 72197
+    },
+    {
+      "path": "concept-art/sprite/pack-03-pilot/mrs-tasselbottom-shipped-heavy-2.png",
+      "bytes": 70802
+    },
+    {
+      "path": "concept-art/sprite/pack-03-pilot/mrs-tasselbottom-shipped-idle-0.png",
+      "bytes": 49999
+    },
+    {
+      "path": "concept-art/sprite/pack-03-pilot/mrs-tasselbottom-shipped-jump_squat-0.png",
+      "bytes": 42035
+    },
+    {
+      "path": "concept-art/sprite/pack-03-pilot/mrs-tasselbottom-shipped-jump_squat-1.png",
+      "bytes": 50040
+    },
+    {
+      "path": "concept-art/sprite/pack-03-pilot/mrs-tasselbottom-shipped-rise-0.png",
+      "bytes": 63542
+    },
+    {
+      "path": "concept-art/sprite/pack-03-pilot/mrs-tasselbottom-shipped-rise-1.png",
+      "bytes": 53698
+    },
+    {
+      "path": "concept-art/sprite/pack-03-pilot/mrs-tasselbottom-shipped-soft-0.png",
+      "bytes": 71785
+    },
+    {
+      "path": "concept-art/sprite/pack-03-pilot/mrs-tasselbottom-shipped-soft-1.png",
+      "bytes": 72197
+    },
+    {
+      "path": "concept-art/sprite/pack-03-pilot/mrs-tasselbottom-shipped-soft-2.png",
+      "bytes": 70802
+    },
+    {
+      "path": "concept-art/sprite/pack-03-pilot/mrs-tasselbottom-shipped-takeoff_backward-0.png",
+      "bytes": 47832
+    },
+    {
+      "path": "concept-art/sprite/pack-03-pilot/mrs-tasselbottom-shipped-takeoff_backward-1.png",
+      "bytes": 46719
+    },
+    {
+      "path": "concept-art/sprite/pack-03-pilot/mrs-tasselbottom-shipped-takeoff_forward-0.png",
+      "bytes": 45622
+    },
+    {
+      "path": "concept-art/sprite/pack-03-pilot/mrs-tasselbottom-shipped-takeoff_forward-1.png",
+      "bytes": 46719
+    },
+    {
+      "path": "concept-art/sprite/pack-03-pilot/mrs-tasselbottom-shipped-takeoff_neutral-0.png",
+      "bytes": 49645
+    },
+    {
+      "path": "concept-art/sprite/pack-03-pilot/mrs-tasselbottom-shipped-takeoff_neutral-1.png",
+      "bytes": 46719
+    },
+    {
+      "path": "concept-art/sprite/pack-03-pilot/mrs-tasselbottom-soft-early-between-v1-rejected-color.png",
+      "bytes": 1770061
+    },
+    {
+      "path": "concept-art/sprite/pack-03-pilot/mrs-tasselbottom-soft-early-between-v1-rejected-color.prompt.json",
+      "bytes": 1204
+    },
+    {
+      "path": "concept-art/sprite/pack-03-pilot/mrs-tasselbottom-soft-early-between-v2.png",
+      "bytes": 1827040
+    },
+    {
+      "path": "concept-art/sprite/pack-03-pilot/mrs-tasselbottom-soft-early-between-v2.prompt.json",
+      "bytes": 2447
+    },
+    {
+      "path": "concept-art/sprite/pack-03-pilot/mrs-tasselbottom-soft-late-between-v1.png",
+      "bytes": 1739578
+    },
+    {
+      "path": "concept-art/sprite/pack-03-pilot/mrs-tasselbottom-soft-late-between-v1.prompt.json",
+      "bytes": 1596
+    },
+    {
+      "path": "concept-art/sprite/pack-03-pilot/mrs-tasselbottom-soft-mid-between-v1.png",
+      "bytes": 1565545
+    },
+    {
+      "path": "concept-art/sprite/pack-03-pilot/mrs-tasselbottom-soft-mid-between-v1.prompt.json",
+      "bytes": 1566
+    },
+    {
+      "path": "concept-art/sprite/pack-03-pilot/mrs-tasselbottom-takeoff-backward-between-v1.png",
+      "bytes": 1253221
+    },
+    {
+      "path": "concept-art/sprite/pack-03-pilot/mrs-tasselbottom-takeoff-backward-between-v1.prompt.json",
+      "bytes": 1821
+    },
+    {
+      "path": "concept-art/sprite/pack-03-pilot/mrs-tasselbottom-takeoff-forward-between-v1.png",
+      "bytes": 1267325
+    },
+    {
+      "path": "concept-art/sprite/pack-03-pilot/mrs-tasselbottom-takeoff-forward-between-v1.prompt.json",
+      "bytes": 1772
+    },
+    {
+      "path": "concept-art/sprite/pack-03-pilot/mrs-tasselbottom-takeoff-neutral-between-v1.png",
+      "bytes": 1356168
+    },
+    {
+      "path": "concept-art/sprite/pack-03-pilot/mrs-tasselbottom-takeoff-neutral-between-v1.prompt.json",
+      "bytes": 1720
+    },
+    {
+      "path": "concept-art/sprite/pack-04/velvet-reply-apex-between-v1.png",
+      "bytes": 2238264
+    },
+    {
+      "path": "concept-art/sprite/pack-04/velvet-reply-apex-between-v1.prompt.json",
+      "bytes": 1806
+    },
+    {
+      "path": "concept-art/sprite/pack-04/velvet-reply-apex-early-between-v1.png",
+      "bytes": 1775545
+    },
+    {
+      "path": "concept-art/sprite/pack-04/velvet-reply-apex-early-between-v1.prompt.json",
+      "bytes": 1215
+    },
+    {
+      "path": "concept-art/sprite/pack-04/velvet-reply-apex-late-between-v1.png",
+      "bytes": 1546123
+    },
+    {
+      "path": "concept-art/sprite/pack-04/velvet-reply-apex-late-between-v1.prompt.json",
+      "bytes": 1212
+    },
+    {
+      "path": "concept-art/sprite/pack-04/velvet-reply-apex-settle-between-v1.png",
+      "bytes": 1554507
+    },
+    {
+      "path": "concept-art/sprite/pack-04/velvet-reply-apex-settle-between-v1.prompt.json",
+      "bytes": 1275
+    },
+    {
+      "path": "concept-art/sprite/pack-04/velvet-reply-double-early-between-v1.png",
+      "bytes": 2071571
+    },
+    {
+      "path": "concept-art/sprite/pack-04/velvet-reply-double-early-between-v1.prompt.json",
+      "bytes": 1231
+    },
+    {
+      "path": "concept-art/sprite/pack-04/velvet-reply-double-settle-between-v1.png",
+      "bytes": 1454799
+    },
+    {
+      "path": "concept-art/sprite/pack-04/velvet-reply-double-settle-between-v1.prompt.json",
+      "bytes": 1278
+    },
+    {
+      "path": "concept-art/sprite/pack-04/velvet-reply-double-tuck-between-v1.png",
+      "bytes": 1503001
+    },
+    {
+      "path": "concept-art/sprite/pack-04/velvet-reply-double-tuck-between-v1.prompt.json",
+      "bytes": 1239
+    },
+    {
+      "path": "concept-art/sprite/pack-04/velvet-reply-fall-between-v1.png",
+      "bytes": 1546160
+    },
+    {
+      "path": "concept-art/sprite/pack-04/velvet-reply-fall-between-v1.prompt.json",
+      "bytes": 1705
+    },
+    {
+      "path": "concept-art/sprite/pack-04/velvet-reply-fall-early-between-v1.png",
+      "bytes": 1532664
+    },
+    {
+      "path": "concept-art/sprite/pack-04/velvet-reply-fall-early-between-v1.prompt.json",
+      "bytes": 1611
+    },
+    {
+      "path": "concept-art/sprite/pack-04/velvet-reply-fall-late-between-v1.png",
+      "bytes": 1687483
+    },
+    {
+      "path": "concept-art/sprite/pack-04/velvet-reply-fall-late-between-v1.prompt.json",
+      "bytes": 1191
+    },
+    {
+      "path": "concept-art/sprite/pack-04/velvet-reply-fall-settle-between-v1.png",
+      "bytes": 1737237
+    },
+    {
+      "path": "concept-art/sprite/pack-04/velvet-reply-fall-settle-between-v1.prompt.json",
+      "bytes": 1316
+    },
+    {
+      "path": "concept-art/sprite/pack-04/velvet-reply-fast-early-between-v1.png",
+      "bytes": 1515882
+    },
+    {
+      "path": "concept-art/sprite/pack-04/velvet-reply-fast-early-between-v1.prompt.json",
+      "bytes": 1226
+    },
+    {
+      "path": "concept-art/sprite/pack-04/velvet-reply-fast-late-between-v1.png",
+      "bytes": 1571573
+    },
+    {
+      "path": "concept-art/sprite/pack-04/velvet-reply-fast-late-between-v1.prompt.json",
+      "bytes": 1316
+    },
+    {
+      "path": "concept-art/sprite/pack-04/velvet-reply-fast-late-between-v2.png",
+      "bytes": 1048339
+    },
+    {
+      "path": "concept-art/sprite/pack-04/velvet-reply-fast-late-between-v2.prompt.json",
+      "bytes": 1368
+    },
+    {
+      "path": "concept-art/sprite/pack-04/velvet-reply-fast-settle-between-v1.png",
+      "bytes": 1439129
+    },
+    {
+      "path": "concept-art/sprite/pack-04/velvet-reply-fast-settle-between-v1.prompt.json",
+      "bytes": 1331
+    },
+    {
+      "path": "concept-art/sprite/pack-04/velvet-reply-heavy-compress-between-v1.png",
+      "bytes": 1681299
+    },
+    {
+      "path": "concept-art/sprite/pack-04/velvet-reply-heavy-compress-between-v1.prompt.json",
+      "bytes": 1393
+    },
+    {
+      "path": "concept-art/sprite/pack-04/velvet-reply-heavy-rebound-between-v1.png",
+      "bytes": 1449814
+    },
+    {
+      "path": "concept-art/sprite/pack-04/velvet-reply-heavy-rebound-between-v1.prompt.json",
+      "bytes": 1631
+    },
+    {
+      "path": "concept-art/sprite/pack-04/velvet-reply-heavy-settle-between-v1.png",
+      "bytes": 1357334
+    },
+    {
+      "path": "concept-art/sprite/pack-04/velvet-reply-heavy-settle-between-v1.prompt.json",
+      "bytes": 1647
+    },
+    {
+      "path": "concept-art/sprite/pack-04/velvet-reply-rise-between-v1.png",
+      "bytes": 1228101
+    },
+    {
+      "path": "concept-art/sprite/pack-04/velvet-reply-rise-between-v1.prompt.json",
+      "bytes": 2081
+    },
+    {
+      "path": "concept-art/sprite/pack-04/velvet-reply-rise-early-between-v1.png",
+      "bytes": 1727043
+    },
+    {
+      "path": "concept-art/sprite/pack-04/velvet-reply-rise-early-between-v1.prompt.json",
+      "bytes": 1749
+    },
+    {
+      "path": "concept-art/sprite/pack-04/velvet-reply-rise-late-between-v1.png",
+      "bytes": 1605765
+    },
+    {
+      "path": "concept-art/sprite/pack-04/velvet-reply-rise-late-between-v1.prompt.json",
+      "bytes": 1724
+    },
+    {
+      "path": "concept-art/sprite/pack-04/velvet-reply-rise-settle-between-v1.png",
+      "bytes": 1753749
+    },
+    {
+      "path": "concept-art/sprite/pack-04/velvet-reply-rise-settle-between-v1.prompt.json",
+      "bytes": 1904
+    },
+    {
+      "path": "concept-art/sprite/pack-04/velvet-reply-soft-compress-between-v1.png",
+      "bytes": 1437386
+    },
+    {
+      "path": "concept-art/sprite/pack-04/velvet-reply-soft-compress-between-v1.prompt.json",
+      "bytes": 1335
+    },
+    {
+      "path": "concept-art/sprite/pack-04/velvet-reply-soft-rebound-between-v1.png",
+      "bytes": 1692163
+    },
+    {
+      "path": "concept-art/sprite/pack-04/velvet-reply-soft-rebound-between-v1.prompt.json",
+      "bytes": 1345
+    },
+    {
+      "path": "concept-art/sprite/pack-04/velvet-reply-soft-rise-between-v1.png",
+      "bytes": 1287591
+    },
+    {
+      "path": "concept-art/sprite/pack-04/velvet-reply-soft-rise-between-v1.prompt.json",
+      "bytes": 1318
+    },
+    {
+      "path": "concept-art/sprite/pack-04/velvet-reply-soft-settle-between-v1.png",
+      "bytes": 1303785
+    },
+    {
+      "path": "concept-art/sprite/pack-04/velvet-reply-soft-settle-between-v1.prompt.json",
+      "bytes": 1397
+    },
+    {
+      "path": "concept-art/sprite/pack-04/velvet-reply-squat-entry-between-v1.png",
+      "bytes": 1416632
+    },
+    {
+      "path": "concept-art/sprite/pack-04/velvet-reply-squat-entry-between-v1.prompt.json",
+      "bytes": 1546
+    },
+    {
+      "path": "concept-art/sprite/pack-04/velvet-reply-squat-extend-between-v1.png",
+      "bytes": 1425704
+    },
+    {
+      "path": "concept-art/sprite/pack-04/velvet-reply-squat-extend-between-v1.prompt.json",
+      "bytes": 1583
+    },
+    {
+      "path": "concept-art/sprite/pack-04/velvet-reply-takeoff-backward-mid-between-v1.png",
+      "bytes": 1275417
+    },
+    {
+      "path": "concept-art/sprite/pack-04/velvet-reply-takeoff-backward-mid-between-v1.prompt.json",
+      "bytes": 1556
+    },
+    {
+      "path": "concept-art/sprite/pack-04/velvet-reply-takeoff-backward-start-between-v1.png",
+      "bytes": 1376919
+    },
+    {
+      "path": "concept-art/sprite/pack-04/velvet-reply-takeoff-backward-start-between-v1.prompt.json",
+      "bytes": 1534
+    },
+    {
+      "path": "concept-art/sprite/pack-04/velvet-reply-takeoff-forward-mid-between-v1.png",
+      "bytes": 1252695
+    },
+    {
+      "path": "concept-art/sprite/pack-04/velvet-reply-takeoff-forward-mid-between-v1.prompt.json",
+      "bytes": 1519
+    },
+    {
+      "path": "concept-art/sprite/pack-04/velvet-reply-takeoff-forward-start-between-v1.png",
+      "bytes": 1308783
+    },
+    {
+      "path": "concept-art/sprite/pack-04/velvet-reply-takeoff-forward-start-between-v1.prompt.json",
+      "bytes": 1531
+    },
+    {
+      "path": "concept-art/sprite/pack-04/velvet-reply-takeoff-neutral-mid-between-v1.png",
+      "bytes": 1215379
+    },
+    {
+      "path": "concept-art/sprite/pack-04/velvet-reply-takeoff-neutral-mid-between-v1.prompt.json",
+      "bytes": 1764
+    },
+    {
+      "path": "concept-art/sprite/pack-04/velvet-reply-takeoff-neutral-start-between-v1.png",
+      "bytes": 1268168
+    },
+    {
+      "path": "concept-art/sprite/pack-04/velvet-reply-takeoff-neutral-start-between-v1.prompt.json",
+      "bytes": 1563
+    },
+    {
+      "path": "concept-art/sprite/pack-04/zane-corvo-apex-between-v1.png",
+      "bytes": 1514954
+    },
+    {
+      "path": "concept-art/sprite/pack-04/zane-corvo-apex-between-v1.prompt.json",
+      "bytes": 1663
+    },
+    {
+      "path": "concept-art/sprite/pack-04/zane-corvo-apex-early-between-v1.png",
+      "bytes": 1576319
+    },
+    {
+      "path": "concept-art/sprite/pack-04/zane-corvo-apex-early-between-v1.prompt.json",
+      "bytes": 1196
+    },
+    {
+      "path": "concept-art/sprite/pack-04/zane-corvo-apex-late-between-v1.png",
+      "bytes": 1463082
+    },
+    {
+      "path": "concept-art/sprite/pack-04/zane-corvo-apex-late-between-v1.prompt.json",
+      "bytes": 1215
+    },
+    {
+      "path": "concept-art/sprite/pack-04/zane-corvo-apex-settle-between-v1.png",
+      "bytes": 1562960
+    },
+    {
+      "path": "concept-art/sprite/pack-04/zane-corvo-apex-settle-between-v1.prompt.json",
+      "bytes": 1252
+    },
+    {
+      "path": "concept-art/sprite/pack-04/zane-corvo-double-early-between-v1.png",
+      "bytes": 2145803
+    },
+    {
+      "path": "concept-art/sprite/pack-04/zane-corvo-double-early-between-v1.prompt.json",
+      "bytes": 1123
+    },
+    {
+      "path": "concept-art/sprite/pack-04/zane-corvo-double-settle-between-v1.png",
+      "bytes": 1602391
+    },
+    {
+      "path": "concept-art/sprite/pack-04/zane-corvo-double-settle-between-v1.prompt.json",
+      "bytes": 1184
+    },
+    {
+      "path": "concept-art/sprite/pack-04/zane-corvo-double-tuck-between-v1.png",
+      "bytes": 1487704
+    },
+    {
+      "path": "concept-art/sprite/pack-04/zane-corvo-double-tuck-between-v1.prompt.json",
+      "bytes": 1173
+    },
+    {
+      "path": "concept-art/sprite/pack-04/zane-corvo-fall-between-v1.png",
+      "bytes": 1245881
+    },
+    {
+      "path": "concept-art/sprite/pack-04/zane-corvo-fall-between-v1.prompt.json",
+      "bytes": 1725
+    },
+    {
+      "path": "concept-art/sprite/pack-04/zane-corvo-fall-early-between-v1.png",
+      "bytes": 1262487
+    },
+    {
+      "path": "concept-art/sprite/pack-04/zane-corvo-fall-early-between-v1.prompt.json",
+      "bytes": 1759
+    },
+    {
+      "path": "concept-art/sprite/pack-04/zane-corvo-fall-early-between-v2.png",
+      "bytes": 1321127
+    },
+    {
+      "path": "concept-art/sprite/pack-04/zane-corvo-fall-early-between-v2.prompt.json",
+      "bytes": 1692
+    },
+    {
+      "path": "concept-art/sprite/pack-04/zane-corvo-fall-late-between-v1.png",
+      "bytes": 1711415
+    },
+    {
+      "path": "concept-art/sprite/pack-04/zane-corvo-fall-late-between-v1.prompt.json",
+      "bytes": 1878
+    },
+    {
+      "path": "concept-art/sprite/pack-04/zane-corvo-fall-settle-between-v1.png",
+      "bytes": 1549346
+    },
+    {
+      "path": "concept-art/sprite/pack-04/zane-corvo-fall-settle-between-v1.prompt.json",
+      "bytes": 1709
+    },
+    {
+      "path": "concept-art/sprite/pack-04/zane-corvo-fast-early-between-v1.png",
+      "bytes": 1325205
+    },
+    {
+      "path": "concept-art/sprite/pack-04/zane-corvo-fast-early-between-v1.prompt.json",
+      "bytes": 1233
+    },
+    {
+      "path": "concept-art/sprite/pack-04/zane-corvo-fast-late-between-v1.png",
+      "bytes": 1396120
+    },
+    {
+      "path": "concept-art/sprite/pack-04/zane-corvo-fast-late-between-v1.prompt.json",
+      "bytes": 1165
+    },
+    {
+      "path": "concept-art/sprite/pack-04/zane-corvo-fast-settle-between-v1.png",
+      "bytes": 1332618
+    },
+    {
+      "path": "concept-art/sprite/pack-04/zane-corvo-fast-settle-between-v1.prompt.json",
+      "bytes": 1215
+    },
+    {
+      "path": "concept-art/sprite/pack-04/zane-corvo-heavy-compress-between-v1.png",
+      "bytes": 1400016
+    },
+    {
+      "path": "concept-art/sprite/pack-04/zane-corvo-heavy-compress-between-v1.prompt.json",
+      "bytes": 1230
+    },
+    {
+      "path": "concept-art/sprite/pack-04/zane-corvo-heavy-rebound-between-v1.png",
+      "bytes": 1513423
+    },
+    {
+      "path": "concept-art/sprite/pack-04/zane-corvo-heavy-rebound-between-v1.prompt.json",
+      "bytes": 1194
+    },
+    {
+      "path": "concept-art/sprite/pack-04/zane-corvo-heavy-settle-between-v1.png",
+      "bytes": 1261309
+    },
+    {
+      "path": "concept-art/sprite/pack-04/zane-corvo-heavy-settle-between-v1.prompt.json",
+      "bytes": 1123
+    },
+    {
+      "path": "concept-art/sprite/pack-04/zane-corvo-rise-between-clean-v1.png",
+      "bytes": 1177816
+    },
+    {
+      "path": "concept-art/sprite/pack-04/zane-corvo-rise-between-prepared-v1.png",
+      "bytes": 1302888
+    },
+    {
+      "path": "concept-art/sprite/pack-04/zane-corvo-rise-between-v1.png",
+      "bytes": 1205439
+    },
+    {
+      "path": "concept-art/sprite/pack-04/zane-corvo-rise-early-between-v1.png",
+      "bytes": 1594115
+    },
+    {
+      "path": "concept-art/sprite/pack-04/zane-corvo-rise-early-between-v1.prompt.json",
+      "bytes": 1604
+    },
+    {
+      "path": "concept-art/sprite/pack-04/zane-corvo-rise-late-between-v1.png",
+      "bytes": 1465752
+    },
+    {
+      "path": "concept-art/sprite/pack-04/zane-corvo-rise-late-between-v1.prompt.json",
+      "bytes": 1648
+    },
+    {
+      "path": "concept-art/sprite/pack-04/zane-corvo-rise-settle-between-v1.png",
+      "bytes": 1563273
+    },
+    {
+      "path": "concept-art/sprite/pack-04/zane-corvo-rise-settle-between-v1.prompt.json",
+      "bytes": 1689
+    },
+    {
+      "path": "concept-art/sprite/pack-04/zane-corvo-soft-compress-between-v1.png",
+      "bytes": 1339085
+    },
+    {
+      "path": "concept-art/sprite/pack-04/zane-corvo-soft-compress-between-v1.prompt.json",
+      "bytes": 1232
+    },
+    {
+      "path": "concept-art/sprite/pack-04/zane-corvo-soft-rebound-between-v1.png",
+      "bytes": 1824593
+    },
+    {
+      "path": "concept-art/sprite/pack-04/zane-corvo-soft-rebound-between-v1.prompt.json",
+      "bytes": 1258
+    },
+    {
+      "path": "concept-art/sprite/pack-04/zane-corvo-soft-rise-between-v1.png",
+      "bytes": 1396579
+    },
+    {
+      "path": "concept-art/sprite/pack-04/zane-corvo-soft-rise-between-v1.prompt.json",
+      "bytes": 1320
+    },
+    {
+      "path": "concept-art/sprite/pack-04/zane-corvo-soft-settle-between-v1.png",
+      "bytes": 1208347
+    },
+    {
+      "path": "concept-art/sprite/pack-04/zane-corvo-soft-settle-between-v1.prompt.json",
+      "bytes": 1354
+    },
+    {
+      "path": "concept-art/sprite/pack-04/zane-corvo-squat-entry-between-v1.png",
+      "bytes": 1137424
+    },
+    {
+      "path": "concept-art/sprite/pack-04/zane-corvo-squat-entry-between-v1.prompt.json",
+      "bytes": 1343
+    },
+    {
+      "path": "concept-art/sprite/pack-04/zane-corvo-squat-extend-between-v1.png",
+      "bytes": 1133243
+    },
+    {
+      "path": "concept-art/sprite/pack-04/zane-corvo-squat-extend-between-v1.prompt.json",
+      "bytes": 1592
+    },
+    {
+      "path": "concept-art/sprite/pack-04/zane-corvo-takeoff-backward-mid-between-v1.png",
+      "bytes": 1265254
+    },
+    {
+      "path": "concept-art/sprite/pack-04/zane-corvo-takeoff-backward-mid-between-v1.prompt.json",
+      "bytes": 1505
+    },
+    {
+      "path": "concept-art/sprite/pack-04/zane-corvo-takeoff-backward-start-between-v1.png",
+      "bytes": 1244268
+    },
+    {
+      "path": "concept-art/sprite/pack-04/zane-corvo-takeoff-backward-start-between-v1.prompt.json",
+      "bytes": 1560
+    },
+    {
+      "path": "concept-art/sprite/pack-04/zane-corvo-takeoff-forward-mid-between-v1.png",
+      "bytes": 1089843
+    },
+    {
+      "path": "concept-art/sprite/pack-04/zane-corvo-takeoff-forward-mid-between-v1.prompt.json",
+      "bytes": 1502
+    },
+    {
+      "path": "concept-art/sprite/pack-04/zane-corvo-takeoff-forward-start-between-v1.png",
+      "bytes": 1217410
+    },
+    {
+      "path": "concept-art/sprite/pack-04/zane-corvo-takeoff-forward-start-between-v1.prompt.json",
+      "bytes": 1505
+    },
+    {
+      "path": "concept-art/sprite/pack-04/zane-corvo-takeoff-neutral-mid-between-v1.png",
+      "bytes": 1106346
+    },
+    {
+      "path": "concept-art/sprite/pack-04/zane-corvo-takeoff-neutral-mid-between-v1.prompt.json",
+      "bytes": 1453
+    },
+    {
+      "path": "concept-art/sprite/pack-04/zane-corvo-takeoff-neutral-start-between-v1.png",
+      "bytes": 1120206
+    },
+    {
+      "path": "concept-art/sprite/pack-04/zane-corvo-takeoff-neutral-start-between-v1.prompt.json",
+      "bytes": 1490
+    },
+    {
+      "path": "docs/assets/FULL-ROSTER-ANIMATION-AUDIT.md",
+      "bytes": 284177
+    },
+    {
+      "path": "docs/assets/reviews/all-roster-movement-after-residue-2026-11-20.json",
+      "bytes": 39585
+    },
+    {
+      "path": "docs/assets/reviews/all-roster-movement-parity-final-2026-11-20.json",
+      "bytes": 39585
+    },
+    {
+      "path": "docs/assets/reviews/hoagie-six-apex-both-facings-2026-11-19.png",
+      "bytes": 1586439
+    },
+    {
+      "path": "docs/assets/reviews/hoagie-six-apex-normal-overview-2026-11-19.png",
+      "bytes": 3757318
+    },
+    {
+      "path": "docs/assets/reviews/hoagie-six-apex-normal-speed-2026-11-19.webm",
+      "bytes": 2609434
+    },
+    {
+      "path": "docs/assets/reviews/hoagie-six-apex-normal-summary-2026-11-19.json",
+      "bytes": 4935
+    },
+    {
+      "path": "docs/assets/reviews/hoagie-six-apex-registration-dark-2026-11-19.png",
+      "bytes": 642679
+    },
+    {
+      "path": "docs/assets/reviews/hoagie-six-apex-registration-light-2026-11-19.png",
+      "bytes": 654194
+    },
+    {
+      "path": "docs/assets/reviews/hoagie-six-apex-traces-2026-11-19.json",
+      "bytes": 496379
+    },
+    {
+      "path": "docs/assets/reviews/hoagie-six-double-both-facings-2026-11-19.png",
+      "bytes": 2013981
+    },
+    {
+      "path": "docs/assets/reviews/hoagie-six-double-normal-overview-2026-11-19.png",
+      "bytes": 1311892
+    },
+    {
+      "path": "docs/assets/reviews/hoagie-six-double-normal-speed-2026-11-19.webm",
+      "bytes": 915253
+    },
+    {
+      "path": "docs/assets/reviews/hoagie-six-double-registration-dark-2026-11-19.png",
+      "bytes": 836849
+    },
+    {
+      "path": "docs/assets/reviews/hoagie-six-double-registration-light-2026-11-19.png",
+      "bytes": 849671
+    },
+    {
+      "path": "docs/assets/reviews/hoagie-six-double-traces-2026-11-19.json",
+      "bytes": 246379
+    },
+    {
+      "path": "docs/assets/reviews/hoagie-six-fall-both-facings-2026-11-19.png",
+      "bytes": 1795531
+    },
+    {
+      "path": "docs/assets/reviews/hoagie-six-fall-normal-overview-2026-11-19.png",
+      "bytes": 3893164
+    },
+    {
+      "path": "docs/assets/reviews/hoagie-six-fall-normal-speed-2026-11-19.webm",
+      "bytes": 2595172
+    },
+    {
+      "path": "docs/assets/reviews/hoagie-six-fall-normal-summary-2026-11-19.json",
+      "bytes": 4918
+    },
+    {
+      "path": "docs/assets/reviews/hoagie-six-fall-registration-dark-2026-11-19.png",
+      "bytes": 762736
+    },
+    {
+      "path": "docs/assets/reviews/hoagie-six-fall-registration-light-2026-11-19.png",
+      "bytes": 778032
+    },
+    {
+      "path": "docs/assets/reviews/hoagie-six-fall-traces-2026-11-19.json",
+      "bytes": 476105
+    },
+    {
+      "path": "docs/assets/reviews/hoagie-six-fastfall-both-facings-2026-11-19.png",
+      "bytes": 1983840
+    },
+    {
+      "path": "docs/assets/reviews/hoagie-six-fastfall-normal-overview-2026-11-19.png",
+      "bytes": 1081916
+    },
+    {
+      "path": "docs/assets/reviews/hoagie-six-fastfall-normal-speed-2026-11-19.webm",
+      "bytes": 824399
+    },
+    {
+      "path": "docs/assets/reviews/hoagie-six-fastfall-registration-dark-2026-11-19.png",
+      "bytes": 681339
+    },
+    {
+      "path": "docs/assets/reviews/hoagie-six-fastfall-registration-light-2026-11-19.png",
+      "bytes": 692609
+    },
+    {
+      "path": "docs/assets/reviews/hoagie-six-fastfall-traces-2026-11-19.json",
+      "bytes": 211924
+    },
+    {
+      "path": "docs/assets/reviews/hoagie-six-heavy-both-facings-2026-11-19.png",
+      "bytes": 2142608
+    },
+    {
+      "path": "docs/assets/reviews/hoagie-six-heavy-fast-normal-speed-2026-11-19.webm",
+      "bytes": 840288
+    },
+    {
+      "path": "docs/assets/reviews/hoagie-six-heavy-fast-overview-2026-11-19.png",
+      "bytes": 1089541
+    },
+    {
+      "path": "docs/assets/reviews/hoagie-six-heavy-full-normal-speed-2026-11-19.webm",
+      "bytes": 812998
+    },
+    {
+      "path": "docs/assets/reviews/hoagie-six-heavy-full-overview-2026-11-19.png",
+      "bytes": 1122415
+    },
+    {
+      "path": "docs/assets/reviews/hoagie-six-heavy-registration-dark-2026-11-19.png",
+      "bytes": 964345
+    },
+    {
+      "path": "docs/assets/reviews/hoagie-six-heavy-registration-light-2026-11-19.png",
+      "bytes": 980082
+    },
+    {
+      "path": "docs/assets/reviews/hoagie-six-heavy-traces-2026-11-19.json",
+      "bytes": 340202
+    },
+    {
+      "path": "docs/assets/reviews/hoagie-six-rise-both-facings-2026-11-19.png",
+      "bytes": 2303569
+    },
+    {
+      "path": "docs/assets/reviews/hoagie-six-rise-normal-overview-2026-11-19.png",
+      "bytes": 3877642
+    },
+    {
+      "path": "docs/assets/reviews/hoagie-six-rise-normal-speed-2026-11-19.webm",
+      "bytes": 2625985
+    },
+    {
+      "path": "docs/assets/reviews/hoagie-six-rise-normal-summary-2026-11-19.json",
+      "bytes": 4877
+    },
+    {
+      "path": "docs/assets/reviews/hoagie-six-rise-registration-dark-2026-11-19.png",
+      "bytes": 705800
+    },
+    {
+      "path": "docs/assets/reviews/hoagie-six-rise-registration-light-2026-11-19.png",
+      "bytes": 716515
+    },
+    {
+      "path": "docs/assets/reviews/hoagie-six-rise-traces-2026-11-19.json",
+      "bytes": 478853
+    },
+    {
+      "path": "docs/assets/reviews/hoagie-six-soft-both-facings-2026-11-19.png",
+      "bytes": 2014424
+    },
+    {
+      "path": "docs/assets/reviews/hoagie-six-soft-normal-overview-2026-11-19.png",
+      "bytes": 1149179
+    },
+    {
+      "path": "docs/assets/reviews/hoagie-six-soft-normal-speed-2026-11-19.webm",
+      "bytes": 867064
+    },
+    {
+      "path": "docs/assets/reviews/hoagie-six-soft-registration-dark-2026-11-19.png",
+      "bytes": 990060
+    },
+    {
+      "path": "docs/assets/reviews/hoagie-six-soft-registration-light-2026-11-19.png",
+      "bytes": 1006300
+    },
+    {
+      "path": "docs/assets/reviews/hoagie-six-soft-traces-2026-11-19.json",
+      "bytes": 241257
+    },
+    {
+      "path": "docs/assets/reviews/hoagie-three-takeoffs-both-facings-2026-11-19.png",
+      "bytes": 1314768
+    },
+    {
+      "path": "docs/assets/reviews/hoagie-three-takeoffs-normal-overview-2026-11-19.png",
+      "bytes": 3990013
+    },
+    {
+      "path": "docs/assets/reviews/hoagie-three-takeoffs-normal-speed-2026-11-19.webm",
+      "bytes": 2661648
+    },
+    {
+      "path": "docs/assets/reviews/hoagie-three-takeoffs-normal-summary-2026-11-19.json",
+      "bytes": 4880
+    },
+    {
+      "path": "docs/assets/reviews/hoagie-three-takeoffs-registration-dark-2026-11-19.png",
+      "bytes": 962409
+    },
+    {
+      "path": "docs/assets/reviews/hoagie-three-takeoffs-registration-light-2026-11-19.png",
+      "bytes": 977570
+    },
+    {
+      "path": "docs/assets/reviews/hoagie-three-takeoffs-traces-2026-11-19.json",
+      "bytes": 615906
+    },
+    {
+      "path": "docs/assets/reviews/hulk-hoagie-current-squat-takeoff-2026-11-18.png",
+      "bytes": 219951
+    },
+    {
+      "path": "docs/assets/reviews/hulk-hoagie-soft-landing-restored-2026-11-18.png",
+      "bytes": 1234179
+    },
+    {
+      "path": "docs/assets/reviews/landing-edge-board-after-2026-11-20.png",
+      "bytes": 2103703
+    },
+    {
+      "path": "docs/assets/reviews/landing-edge-board-before-2026-11-20.png",
+      "bytes": 2082011
+    },
+    {
+      "path": "docs/assets/reviews/landing-edge-scan-after-2026-11-20.json",
+      "bytes": 13498
+    },
+    {
+      "path": "docs/assets/reviews/landing-edge-scan-before-2026-11-20.json",
+      "bytes": 13497
+    },
+    {
+      "path": "docs/assets/reviews/landing-residue-and-interruptions-2026-11-20.json",
+      "bytes": 389500
+    },
+    {
+      "path": "docs/assets/reviews/loopy-current-squat-takeoff-2026-11-18.png",
+      "bytes": 223111
+    },
+    {
+      "path": "docs/assets/reviews/loopy-six-apex-both-facings-2026-11-19.png",
+      "bytes": 1918836
+    },
+    {
+      "path": "docs/assets/reviews/loopy-six-apex-dark-2026-11-19.png",
+      "bytes": 548760
+    },
+    {
+      "path": "docs/assets/reviews/loopy-six-apex-double-normal-2026-11-19.webm",
+      "bytes": 890565
+    },
+    {
+      "path": "docs/assets/reviews/loopy-six-apex-double-overview-2026-11-19.png",
+      "bytes": 1191749
+    },
+    {
+      "path": "docs/assets/reviews/loopy-six-apex-light-2026-11-19.png",
+      "bytes": 569358
+    },
+    {
+      "path": "docs/assets/reviews/loopy-six-apex-normal-2026-11-19.webm",
+      "bytes": 2678168
+    },
+    {
+      "path": "docs/assets/reviews/loopy-six-apex-normal-summary-2026-11-19.json",
+      "bytes": 4846
+    },
+    {
+      "path": "docs/assets/reviews/loopy-six-apex-overview-2026-11-19.png",
+      "bytes": 4022735
+    },
+    {
+      "path": "docs/assets/reviews/loopy-six-apex-traces-2026-11-19.json",
+      "bytes": 556580
+    },
+    {
+      "path": "docs/assets/reviews/loopy-six-double-both-facings-2026-11-19.png",
+      "bytes": 2048940
+    },
+    {
+      "path": "docs/assets/reviews/loopy-six-double-dark-2026-11-19.png",
+      "bytes": 604750
+    },
+    {
+      "path": "docs/assets/reviews/loopy-six-double-light-2026-11-19.png",
+      "bytes": 624900
+    },
+    {
+      "path": "docs/assets/reviews/loopy-six-double-normal-2026-11-19.webm",
+      "bytes": 909485
+    },
+    {
+      "path": "docs/assets/reviews/loopy-six-double-overview-2026-11-19.png",
+      "bytes": 1241296
+    },
+    {
+      "path": "docs/assets/reviews/loopy-six-double-traces-2026-11-19.json",
+      "bytes": 254298
+    },
+    {
+      "path": "docs/assets/reviews/loopy-six-fall-both-facings-2026-11-19.png",
+      "bytes": 1777006
+    },
+    {
+      "path": "docs/assets/reviews/loopy-six-fall-capture-attempt-2026-11-19.json",
+      "bytes": 98005
+    },
+    {
+      "path": "docs/assets/reviews/loopy-six-fall-dark-2026-11-19.png",
+      "bytes": 583949
+    },
+    {
+      "path": "docs/assets/reviews/loopy-six-fall-double-normal-2026-11-19.webm",
+      "bytes": 852691
+    },
+    {
+      "path": "docs/assets/reviews/loopy-six-fall-double-overview-2026-11-19.png",
+      "bytes": 1167278
+    },
+    {
+      "path": "docs/assets/reviews/loopy-six-fall-light-2026-11-19.png",
+      "bytes": 606102
+    },
+    {
+      "path": "docs/assets/reviews/loopy-six-fall-normal-2026-11-19.webm",
+      "bytes": 2673119
+    },
+    {
+      "path": "docs/assets/reviews/loopy-six-fall-normal-summary-2026-11-19.json",
+      "bytes": 4850
+    },
+    {
+      "path": "docs/assets/reviews/loopy-six-fall-overview-2026-11-19.png",
+      "bytes": 3841869
+    },
+    {
+      "path": "docs/assets/reviews/loopy-six-fall-traces-2026-11-19.json",
+      "bytes": 549238
+    },
+    {
+      "path": "docs/assets/reviews/loopy-six-fastfall-both-facings-2026-11-19.png",
+      "bytes": 1996207
+    },
+    {
+      "path": "docs/assets/reviews/loopy-six-fastfall-dark-2026-11-19.png",
+      "bytes": 726720
+    },
+    {
+      "path": "docs/assets/reviews/loopy-six-fastfall-light-2026-11-19.png",
+      "bytes": 753933
+    },
+    {
+      "path": "docs/assets/reviews/loopy-six-fastfall-normal-2026-11-19.webm",
+      "bytes": 832293
+    },
+    {
+      "path": "docs/assets/reviews/loopy-six-fastfall-overview-2026-11-19.png",
+      "bytes": 1035571
+    },
+    {
+      "path": "docs/assets/reviews/loopy-six-fastfall-traces-2026-11-19.json",
+      "bytes": 214876
+    },
+    {
+      "path": "docs/assets/reviews/loopy-six-heavy-both-facings-2026-11-20.png",
+      "bytes": 2097989
+    },
+    {
+      "path": "docs/assets/reviews/loopy-six-heavy-dark-2026-11-20.png",
+      "bytes": 688881
+    },
+    {
+      "path": "docs/assets/reviews/loopy-six-heavy-fast-normal-2026-11-20.webm",
+      "bytes": 764963
+    },
+    {
+      "path": "docs/assets/reviews/loopy-six-heavy-fast-overview-2026-11-20.png",
+      "bytes": 978234
+    },
+    {
+      "path": "docs/assets/reviews/loopy-six-heavy-full-normal-2026-11-20.webm",
+      "bytes": 790070
+    },
+    {
+      "path": "docs/assets/reviews/loopy-six-heavy-full-overview-2026-11-20.png",
+      "bytes": 973594
+    },
+    {
+      "path": "docs/assets/reviews/loopy-six-heavy-light-2026-11-20.png",
+      "bytes": 718267
+    },
+    {
+      "path": "docs/assets/reviews/loopy-six-heavy-traces-2026-11-20.json",
+      "bytes": 347296
+    },
+    {
+      "path": "docs/assets/reviews/loopy-six-rise-both-facings-2026-11-19.png",
+      "bytes": 2181233
+    },
+    {
+      "path": "docs/assets/reviews/loopy-six-rise-dark-2026-11-19.png",
+      "bytes": 559145
+    },
+    {
+      "path": "docs/assets/reviews/loopy-six-rise-double-normal-2026-11-19.webm",
+      "bytes": 909727
+    },
+    {
+      "path": "docs/assets/reviews/loopy-six-rise-double-overview-2026-11-19.png",
+      "bytes": 1207887
+    },
+    {
+      "path": "docs/assets/reviews/loopy-six-rise-light-2026-11-19.png",
+      "bytes": 579024
+    },
+    {
+      "path": "docs/assets/reviews/loopy-six-rise-normal-2026-11-19.webm",
+      "bytes": 2632860
+    },
+    {
+      "path": "docs/assets/reviews/loopy-six-rise-normal-summary-2026-11-19.json",
+      "bytes": 4890
+    },
+    {
+      "path": "docs/assets/reviews/loopy-six-rise-overview-2026-11-19.png",
+      "bytes": 3827068
+    },
+    {
+      "path": "docs/assets/reviews/loopy-six-rise-traces-2026-11-19.json",
+      "bytes": 560690
+    },
+    {
+      "path": "docs/assets/reviews/loopy-six-soft-both-facings-2026-11-19.png",
+      "bytes": 1946275
+    },
+    {
+      "path": "docs/assets/reviews/loopy-six-soft-dark-2026-11-19.png",
+      "bytes": 665523
+    },
+    {
+      "path": "docs/assets/reviews/loopy-six-soft-light-2026-11-19.png",
+      "bytes": 694926
+    },
+    {
+      "path": "docs/assets/reviews/loopy-six-soft-normal-2026-11-19.webm",
+      "bytes": 820709
+    },
+    {
+      "path": "docs/assets/reviews/loopy-six-soft-overview-2026-11-19.png",
+      "bytes": 1034210
+    },
+    {
+      "path": "docs/assets/reviews/loopy-six-soft-traces-2026-11-19.json",
+      "bytes": 244770
+    },
+    {
+      "path": "docs/assets/reviews/loopy-three-squat-dark-2026-11-19.png",
+      "bytes": 947884
+    },
+    {
+      "path": "docs/assets/reviews/loopy-three-squat-held-normal-2026-11-19.webm",
+      "bytes": 848765
+    },
+    {
+      "path": "docs/assets/reviews/loopy-three-squat-light-2026-11-19.png",
+      "bytes": 982131
+    },
+    {
+      "path": "docs/assets/reviews/loopy-three-squat-overview-2026-11-19.png",
+      "bytes": 978644
+    },
+    {
+      "path": "docs/assets/reviews/loopy-three-squat-tapped-normal-2026-11-19.webm",
+      "bytes": 761969
+    },
+    {
+      "path": "docs/assets/reviews/loopy-three-squat-traces-2026-11-19.json",
+      "bytes": 317060
+    },
+    {
+      "path": "docs/assets/reviews/loopy-three-takeoffs-dark-2026-11-19.png",
+      "bytes": 960392
+    },
+    {
+      "path": "docs/assets/reviews/loopy-three-takeoffs-light-2026-11-19.png",
+      "bytes": 994626
+    },
+    {
+      "path": "docs/assets/reviews/loopy-three-takeoffs-normal-2026-11-19.webm",
+      "bytes": 2647432
+    },
+    {
+      "path": "docs/assets/reviews/loopy-three-takeoffs-normal-summary-2026-11-19.json",
+      "bytes": 4878
+    },
+    {
+      "path": "docs/assets/reviews/loopy-three-takeoffs-overview-2026-11-19.png",
+      "bytes": 3766443
+    },
+    {
+      "path": "docs/assets/reviews/loopy-three-takeoffs-traces-2026-11-19.json",
+      "bytes": 957778
+    },
+    {
+      "path": "docs/assets/reviews/moonshine-current-squat-takeoff-2026-11-18.png",
+      "bytes": 217610
+    },
+    {
+      "path": "docs/assets/reviews/moonshine-heavy-initial-takeoff-capture-2026-11-18.json",
+      "bytes": 19180
+    },
+    {
+      "path": "docs/assets/reviews/moonshine-rise-early-dark-2026-11-18.png",
+      "bytes": 221333
+    },
+    {
+      "path": "docs/assets/reviews/moonshine-rise-early-light-2026-11-18.png",
+      "bytes": 226961
+    },
+    {
+      "path": "docs/assets/reviews/moonshine-rise-late-dark-2026-11-18.png",
+      "bytes": 225030
+    },
+    {
+      "path": "docs/assets/reviews/moonshine-rise-late-light-2026-11-18.png",
+      "bytes": 230928
+    },
+    {
+      "path": "docs/assets/reviews/moonshine-rise-mid-dark-2026-11-18.png",
+      "bytes": 220145
+    },
+    {
+      "path": "docs/assets/reviews/moonshine-rise-mid-light-2026-11-18.png",
+      "bytes": 225489
+    },
+    {
+      "path": "docs/assets/reviews/moonshine-rise-settle-dark-2026-11-18.png",
+      "bytes": 212522
+    },
+    {
+      "path": "docs/assets/reviews/moonshine-rise-settle-light-2026-11-18.png",
+      "bytes": 218006
+    },
+    {
+      "path": "docs/assets/reviews/moonshine-six-apex-both-facings-2026-11-18.png",
+      "bytes": 1387823
+    },
+    {
+      "path": "docs/assets/reviews/moonshine-six-apex-normal-overview-2026-11-18.png",
+      "bytes": 3834060
+    },
+    {
+      "path": "docs/assets/reviews/moonshine-six-apex-normal-speed-2026-11-18.webm",
+      "bytes": 2631290
+    },
+    {
+      "path": "docs/assets/reviews/moonshine-six-apex-normal-summary-2026-11-18.json",
+      "bytes": 4816
+    },
+    {
+      "path": "docs/assets/reviews/moonshine-six-apex-physical-comparison-2026-11-18.json",
+      "bytes": 190
+    },
+    {
+      "path": "docs/assets/reviews/moonshine-six-apex-registration-dark-2026-11-18.png",
+      "bytes": 554600
+    },
+    {
+      "path": "docs/assets/reviews/moonshine-six-apex-registration-light-2026-11-18.png",
+      "bytes": 568929
+    },
+    {
+      "path": "docs/assets/reviews/moonshine-six-apex-traces-2026-11-18.json",
+      "bytes": 491130
+    },
+    {
+      "path": "docs/assets/reviews/moonshine-six-double-both-facings-2026-11-18.png",
+      "bytes": 1234086
+    },
+    {
+      "path": "docs/assets/reviews/moonshine-six-double-normal-overview-2026-11-18.png",
+      "bytes": 1318407
+    },
+    {
+      "path": "docs/assets/reviews/moonshine-six-double-normal-speed-2026-11-18.webm",
+      "bytes": 874370
+    },
+    {
+      "path": "docs/assets/reviews/moonshine-six-double-registration-dark-2026-11-18.png",
+      "bytes": 583959
+    },
+    {
+      "path": "docs/assets/reviews/moonshine-six-double-registration-light-2026-11-18.png",
+      "bytes": 598407
+    },
+    {
+      "path": "docs/assets/reviews/moonshine-six-double-traces-2026-11-18.json",
+      "bytes": 258673
+    },
+    {
+      "path": "docs/assets/reviews/moonshine-six-fall-both-facings-2026-11-18.png",
+      "bytes": 1194623
+    },
+    {
+      "path": "docs/assets/reviews/moonshine-six-fall-normal-overview-2026-11-18.png",
+      "bytes": 3842508
+    },
+    {
+      "path": "docs/assets/reviews/moonshine-six-fall-normal-speed-2026-11-18.webm",
+      "bytes": 2625608
+    },
+    {
+      "path": "docs/assets/reviews/moonshine-six-fall-normal-summary-2026-11-18.json",
+      "bytes": 4881
+    },
+    {
+      "path": "docs/assets/reviews/moonshine-six-fall-physical-comparison-2026-11-18.json",
+      "bytes": 165
+    },
+    {
+      "path": "docs/assets/reviews/moonshine-six-fall-registration-dark-2026-11-18.png",
+      "bytes": 597220
+    },
+    {
+      "path": "docs/assets/reviews/moonshine-six-fall-registration-light-2026-11-18.png",
+      "bytes": 612645
+    },
+    {
+      "path": "docs/assets/reviews/moonshine-six-fall-traces-2026-11-18.json",
+      "bytes": 493738
+    },
+    {
+      "path": "docs/assets/reviews/moonshine-six-fastfall-both-facings-2026-11-18.png",
+      "bytes": 1448182
+    },
+    {
+      "path": "docs/assets/reviews/moonshine-six-fastfall-normal-overview-2026-11-18.png",
+      "bytes": 1168840
+    },
+    {
+      "path": "docs/assets/reviews/moonshine-six-fastfall-normal-speed-2026-11-18.webm",
+      "bytes": 836312
+    },
+    {
+      "path": "docs/assets/reviews/moonshine-six-fastfall-registration-dark-2026-11-18.png",
+      "bytes": 530431
+    },
+    {
+      "path": "docs/assets/reviews/moonshine-six-fastfall-registration-light-2026-11-18.png",
+      "bytes": 543189
+    },
+    {
+      "path": "docs/assets/reviews/moonshine-six-fastfall-traces-2026-11-18.json",
+      "bytes": 221832
+    },
+    {
+      "path": "docs/assets/reviews/moonshine-six-heavy-actions-2026-11-18.json",
+      "bytes": 3082
+    },
+    {
+      "path": "docs/assets/reviews/moonshine-six-heavy-both-facings-2026-11-18.png",
+      "bytes": 1995588
+    },
+    {
+      "path": "docs/assets/reviews/moonshine-six-heavy-normal-overview-2026-11-18.png",
+      "bytes": 3812782
+    },
+    {
+      "path": "docs/assets/reviews/moonshine-six-heavy-normal-speed-2026-11-18.webm",
+      "bytes": 2640611
+    },
+    {
+      "path": "docs/assets/reviews/moonshine-six-heavy-normal-summary-2026-11-18.json",
+      "bytes": 4887
+    },
+    {
+      "path": "docs/assets/reviews/moonshine-six-heavy-registration-dark-2026-11-18.png",
+      "bytes": 684897
+    },
+    {
+      "path": "docs/assets/reviews/moonshine-six-heavy-registration-light-2026-11-18.png",
+      "bytes": 700136
+    },
+    {
+      "path": "docs/assets/reviews/moonshine-six-heavy-sole-check-2026-11-18.json",
+      "bytes": 187
+    },
+    {
+      "path": "docs/assets/reviews/moonshine-six-heavy-traces-2026-11-18.json",
+      "bytes": 538057
+    },
+    {
+      "path": "docs/assets/reviews/moonshine-six-rise-both-facings-2026-11-18.png",
+      "bytes": 1809940
+    },
+    {
+      "path": "docs/assets/reviews/moonshine-six-rise-normal-overview-2026-11-18.png",
+      "bytes": 4097728
+    },
+    {
+      "path": "docs/assets/reviews/moonshine-six-rise-normal-speed-2026-11-18.webm",
+      "bytes": 2704955
+    },
+    {
+      "path": "docs/assets/reviews/moonshine-six-rise-normal-summary-2026-11-18.json",
+      "bytes": 4862
+    },
+    {
+      "path": "docs/assets/reviews/moonshine-six-rise-traces-2026-11-18.json",
+      "bytes": 675866
+    },
+    {
+      "path": "docs/assets/reviews/moonshine-six-soft-actions-2026-11-18.json",
+      "bytes": 3082
+    },
+    {
+      "path": "docs/assets/reviews/moonshine-six-soft-both-facings-2026-11-18.png",
+      "bytes": 2267794
+    },
+    {
+      "path": "docs/assets/reviews/moonshine-six-soft-normal-overview-2026-11-18.png",
+      "bytes": 3883743
+    },
+    {
+      "path": "docs/assets/reviews/moonshine-six-soft-normal-speed-2026-11-18.webm",
+      "bytes": 2624605
+    },
+    {
+      "path": "docs/assets/reviews/moonshine-six-soft-normal-summary-2026-11-18.json",
+      "bytes": 4825
+    },
+    {
+      "path": "docs/assets/reviews/moonshine-six-soft-registration-dark-2026-11-18.png",
+      "bytes": 567274
+    },
+    {
+      "path": "docs/assets/reviews/moonshine-six-soft-registration-light-2026-11-18.png",
+      "bytes": 580870
+    },
+    {
+      "path": "docs/assets/reviews/moonshine-six-soft-sole-check-2026-11-18.json",
+      "bytes": 191
+    },
+    {
+      "path": "docs/assets/reviews/moonshine-six-soft-traces-2026-11-18.json",
+      "bytes": 548681
+    },
+    {
+      "path": "docs/assets/reviews/moonshine-soft-landing-restored-2026-11-18.png",
+      "bytes": 1243893
+    },
+    {
+      "path": "docs/assets/reviews/moonshine-takeoff-backward-mid-dark-2026-11-18.png",
+      "bytes": 294263
+    },
+    {
+      "path": "docs/assets/reviews/moonshine-takeoff-backward-mid-light-2026-11-18.png",
+      "bytes": 301750
+    },
+    {
+      "path": "docs/assets/reviews/moonshine-takeoff-forward-mid-dark-2026-11-18.png",
+      "bytes": 272657
+    },
+    {
+      "path": "docs/assets/reviews/moonshine-takeoff-forward-mid-light-2026-11-18.png",
+      "bytes": 279702
+    },
+    {
+      "path": "docs/assets/reviews/moonshine-takeoff-neutral-mid-dark-2026-11-18.png",
+      "bytes": 262148
+    },
+    {
+      "path": "docs/assets/reviews/moonshine-takeoff-neutral-mid-light-2026-11-18.png",
+      "bytes": 268768
+    },
+    {
+      "path": "docs/assets/reviews/moonshine-three-directional-takeoffs-both-facings-2026-11-18.png",
+      "bytes": 3051487
+    },
+    {
+      "path": "docs/assets/reviews/moonshine-three-takeoffs-dojo-traces-2026-11-18.json",
+      "bytes": 654014
+    },
+    {
+      "path": "docs/assets/reviews/moonshine-three-takeoffs-normal-overview-2026-11-18.png",
+      "bytes": 3975251
+    },
+    {
+      "path": "docs/assets/reviews/moonshine-three-takeoffs-normal-speed-2026-11-18.webm",
+      "bytes": 2801651
+    },
+    {
+      "path": "docs/assets/reviews/moonshine-three-takeoffs-normal-summary-2026-11-18.json",
+      "bytes": 4854
+    },
+    {
+      "path": "docs/assets/reviews/mr-wrong-current-squat-takeoff-2026-11-18.png",
+      "bytes": 257297
+    },
+    {
+      "path": "docs/assets/reviews/mr-wrong-six-apex-both-facings-2026-11-19.png",
+      "bytes": 1930925
+    },
+    {
+      "path": "docs/assets/reviews/mr-wrong-six-apex-dark-2026-11-19.png",
+      "bytes": 613044
+    },
+    {
+      "path": "docs/assets/reviews/mr-wrong-six-apex-light-2026-11-19.png",
+      "bytes": 628811
+    },
+    {
+      "path": "docs/assets/reviews/mr-wrong-six-apex-normal-2026-11-19.webm",
+      "bytes": 2651959
+    },
+    {
+      "path": "docs/assets/reviews/mr-wrong-six-apex-normal-summary-2026-11-19.json",
+      "bytes": 4890
+    },
+    {
+      "path": "docs/assets/reviews/mr-wrong-six-apex-overview-2026-11-19.png",
+      "bytes": 3842325
+    },
+    {
+      "path": "docs/assets/reviews/mr-wrong-six-apex-traces-2026-11-19.json",
+      "bytes": 564630
+    },
+    {
+      "path": "docs/assets/reviews/mr-wrong-six-double-both-facings-2026-11-19.png",
+      "bytes": 2089775
+    },
+    {
+      "path": "docs/assets/reviews/mr-wrong-six-double-dark-2026-11-19.png",
+      "bytes": 685593
+    },
+    {
+      "path": "docs/assets/reviews/mr-wrong-six-double-light-2026-11-19.png",
+      "bytes": 703223
+    },
+    {
+      "path": "docs/assets/reviews/mr-wrong-six-double-normal-2026-11-19.webm",
+      "bytes": 923685
+    },
+    {
+      "path": "docs/assets/reviews/mr-wrong-six-double-overview-2026-11-19.png",
+      "bytes": 1255728
+    },
+    {
+      "path": "docs/assets/reviews/mr-wrong-six-double-traces-2026-11-19.json",
+      "bytes": 251540
+    },
+    {
+      "path": "docs/assets/reviews/mr-wrong-six-fall-both-facings-2026-11-19.png",
+      "bytes": 1843234
+    },
+    {
+      "path": "docs/assets/reviews/mr-wrong-six-fall-dark-2026-11-19.png",
+      "bytes": 643522
+    },
+    {
+      "path": "docs/assets/reviews/mr-wrong-six-fall-light-2026-11-19.png",
+      "bytes": 659318
+    },
+    {
+      "path": "docs/assets/reviews/mr-wrong-six-fall-normal-2026-11-19.webm",
+      "bytes": 1589512
+    },
+    {
+      "path": "docs/assets/reviews/mr-wrong-six-fall-normal-summary-2026-11-19.json",
+      "bytes": 2466
+    },
+    {
+      "path": "docs/assets/reviews/mr-wrong-six-fall-overview-2026-11-19.png",
+      "bytes": 2115580
+    },
+    {
+      "path": "docs/assets/reviews/mr-wrong-six-fall-traces-2026-11-19.json",
+      "bytes": 596808
+    },
+    {
+      "path": "docs/assets/reviews/mr-wrong-six-fastfall-both-facings-2026-11-19.png",
+      "bytes": 2000028
+    },
+    {
+      "path": "docs/assets/reviews/mr-wrong-six-fastfall-dark-2026-11-19.png",
+      "bytes": 686820
+    },
+    {
+      "path": "docs/assets/reviews/mr-wrong-six-fastfall-light-2026-11-19.png",
+      "bytes": 701404
+    },
+    {
+      "path": "docs/assets/reviews/mr-wrong-six-fastfall-normal-2026-11-19.webm",
+      "bytes": 769411
+    },
+    {
+      "path": "docs/assets/reviews/mr-wrong-six-fastfall-overview-2026-11-19.png",
+      "bytes": 971220
+    },
+    {
+      "path": "docs/assets/reviews/mr-wrong-six-fastfall-traces-2026-11-19.json",
+      "bytes": 217389
+    },
+    {
+      "path": "docs/assets/reviews/mr-wrong-six-heavy-both-facings-2026-11-19.png",
+      "bytes": 2176288
+    },
+    {
+      "path": "docs/assets/reviews/mr-wrong-six-heavy-dark-2026-11-19.png",
+      "bytes": 616383
+    },
+    {
+      "path": "docs/assets/reviews/mr-wrong-six-heavy-fast-normal-2026-11-19.webm",
+      "bytes": 855745
+    },
+    {
+      "path": "docs/assets/reviews/mr-wrong-six-heavy-fast-overview-2026-11-19.png",
+      "bytes": 1038392
+    },
+    {
+      "path": "docs/assets/reviews/mr-wrong-six-heavy-full-normal-2026-11-19.webm",
+      "bytes": 863426
+    },
+    {
+      "path": "docs/assets/reviews/mr-wrong-six-heavy-full-overview-2026-11-19.png",
+      "bytes": 1036181
+    },
+    {
+      "path": "docs/assets/reviews/mr-wrong-six-heavy-light-2026-11-19.png",
+      "bytes": 631335
+    },
+    {
+      "path": "docs/assets/reviews/mr-wrong-six-heavy-traces-2026-11-19.json",
+      "bytes": 345636
+    },
+    {
+      "path": "docs/assets/reviews/mr-wrong-six-rise-both-facings-2026-11-19.png",
+      "bytes": 2159993
+    },
+    {
+      "path": "docs/assets/reviews/mr-wrong-six-rise-dark-2026-11-19.png",
+      "bytes": 647512
+    },
+    {
+      "path": "docs/assets/reviews/mr-wrong-six-rise-double-normal-2026-11-19.webm",
+      "bytes": 893087
+    },
+    {
+      "path": "docs/assets/reviews/mr-wrong-six-rise-double-overview-2026-11-19.png",
+      "bytes": 1132832
+    },
+    {
+      "path": "docs/assets/reviews/mr-wrong-six-rise-light-2026-11-19.png",
+      "bytes": 663191
+    },
+    {
+      "path": "docs/assets/reviews/mr-wrong-six-rise-normal-2026-11-19.webm",
+      "bytes": 2648183
+    },
+    {
+      "path": "docs/assets/reviews/mr-wrong-six-rise-normal-summary-2026-11-19.json",
+      "bytes": 4856
+    },
+    {
+      "path": "docs/assets/reviews/mr-wrong-six-rise-overview-2026-11-19.png",
+      "bytes": 3849979
+    },
+    {
+      "path": "docs/assets/reviews/mr-wrong-six-rise-traces-2026-11-19.json",
+      "bytes": 553930
+    },
+    {
+      "path": "docs/assets/reviews/mr-wrong-six-soft-both-facings-2026-11-19.png",
+      "bytes": 2055378
+    },
+    {
+      "path": "docs/assets/reviews/mr-wrong-six-soft-dark-2026-11-19.png",
+      "bytes": 603100
+    },
+    {
+      "path": "docs/assets/reviews/mr-wrong-six-soft-light-2026-11-19.png",
+      "bytes": 618813
+    },
+    {
+      "path": "docs/assets/reviews/mr-wrong-six-soft-normal-2026-11-19.webm",
+      "bytes": 803707
+    },
+    {
+      "path": "docs/assets/reviews/mr-wrong-six-soft-overview-2026-11-19.png",
+      "bytes": 963989
+    },
+    {
+      "path": "docs/assets/reviews/mr-wrong-six-soft-traces-2026-11-19.json",
+      "bytes": 244907
+    },
+    {
+      "path": "docs/assets/reviews/mr-wrong-three-squat-both-facings-2026-11-19.png",
+      "bytes": 1057976
+    },
+    {
+      "path": "docs/assets/reviews/mr-wrong-three-squat-dark-2026-11-19.png",
+      "bytes": 996819
+    },
+    {
+      "path": "docs/assets/reviews/mr-wrong-three-squat-held-normal-2026-11-19.webm",
+      "bytes": 789569
+    },
+    {
+      "path": "docs/assets/reviews/mr-wrong-three-squat-light-2026-11-19.png",
+      "bytes": 1022345
+    },
+    {
+      "path": "docs/assets/reviews/mr-wrong-three-squat-overview-2026-11-19.png",
+      "bytes": 999880
+    },
+    {
+      "path": "docs/assets/reviews/mr-wrong-three-squat-tapped-normal-2026-11-19.webm",
+      "bytes": 794882
+    },
+    {
+      "path": "docs/assets/reviews/mr-wrong-three-squat-traces-2026-11-19.json",
+      "bytes": 317426
+    },
+    {
+      "path": "docs/assets/reviews/mr-wrong-three-takeoffs-both-facings-2026-11-19.png",
+      "bytes": 1740075
+    },
+    {
+      "path": "docs/assets/reviews/mr-wrong-three-takeoffs-dark-2026-11-19.png",
+      "bytes": 1071427
+    },
+    {
+      "path": "docs/assets/reviews/mr-wrong-three-takeoffs-light-2026-11-19.png",
+      "bytes": 1099682
+    },
+    {
+      "path": "docs/assets/reviews/mr-wrong-three-takeoffs-normal-2026-11-19.webm",
+      "bytes": 2638648
+    },
+    {
+      "path": "docs/assets/reviews/mr-wrong-three-takeoffs-normal-summary-2026-11-19.json",
+      "bytes": 4924
+    },
+    {
+      "path": "docs/assets/reviews/mr-wrong-three-takeoffs-overview-2026-11-19.png",
+      "bytes": 3795071
+    },
+    {
+      "path": "docs/assets/reviews/mr-wrong-three-takeoffs-traces-2026-11-19.json",
+      "bytes": 956635
+    },
+    {
+      "path": "docs/assets/reviews/mrs-tasselbottom-current-squat-takeoff-2026-11-18.png",
+      "bytes": 272345
+    },
+    {
+      "path": "docs/assets/reviews/pack-02-03-aerial-handoffs-2026-11-17.png",
+      "bytes": 3386110
+    },
+    {
+      "path": "docs/assets/reviews/pack-02-jump-landing-2026-11-17.png",
+      "bytes": 3043217
+    },
+    {
+      "path": "docs/assets/reviews/pack-03-jump-landing-2026-11-17.png",
+      "bytes": 4754743
+    },
+    {
+      "path": "docs/assets/reviews/pack02-03-ledger-after-hoagie-apex-2026-11-19.json",
+      "bytes": 18453
+    },
+    {
+      "path": "docs/assets/reviews/pack02-03-ledger-after-hoagie-double-2026-11-19.json",
+      "bytes": 18576
+    },
+    {
+      "path": "docs/assets/reviews/pack02-03-ledger-after-hoagie-fall-2026-11-19.json",
+      "bytes": 18498
+    },
+    {
+      "path": "docs/assets/reviews/pack02-03-ledger-after-hoagie-fastfall-2026-11-19.json",
+      "bytes": 18543
+    },
+    {
+      "path": "docs/assets/reviews/pack02-03-ledger-after-hoagie-heavy-2026-11-19.json",
+      "bytes": 18653
+    },
+    {
+      "path": "docs/assets/reviews/pack02-03-ledger-after-hoagie-rise-2026-11-19.json",
+      "bytes": 18408
+    },
+    {
+      "path": "docs/assets/reviews/pack02-03-ledger-after-hoagie-soft-2026-11-19.json",
+      "bytes": 18609
+    },
+    {
+      "path": "docs/assets/reviews/pack02-03-ledger-after-hoagie-takeoffs-2026-11-19.json",
+      "bytes": 18363
+    },
+    {
+      "path": "docs/assets/reviews/pack02-03-ledger-after-loopy-apex-2026-11-19.json",
+      "bytes": 19093
+    },
+    {
+      "path": "docs/assets/reviews/pack02-03-ledger-after-loopy-double-2026-11-19.json",
+      "bytes": 19203
+    },
+    {
+      "path": "docs/assets/reviews/pack02-03-ledger-after-loopy-fall-2026-11-19.json",
+      "bytes": 19137
+    },
+    {
+      "path": "docs/assets/reviews/pack02-03-ledger-after-loopy-fastfall-2026-11-19.json",
+      "bytes": 19170
+    },
+    {
+      "path": "docs/assets/reviews/pack02-03-ledger-after-loopy-heavy-2026-11-20.json",
+      "bytes": 19269
+    },
+    {
+      "path": "docs/assets/reviews/pack02-03-ledger-after-loopy-rise-2026-11-19.json",
+      "bytes": 19062
+    },
+    {
+      "path": "docs/assets/reviews/pack02-03-ledger-after-loopy-soft-2026-11-19.json",
+      "bytes": 19236
+    },
+    {
+      "path": "docs/assets/reviews/pack02-03-ledger-after-loopy-squat-2026-11-19.json",
+      "bytes": 18972
+    },
+    {
+      "path": "docs/assets/reviews/pack02-03-ledger-after-loopy-takeoffs-2026-11-19.json",
+      "bytes": 19018
+    },
+    {
+      "path": "docs/assets/reviews/pack02-03-ledger-after-moonshine-apex-2026-11-18.json",
+      "bytes": 18130
+    },
+    {
+      "path": "docs/assets/reviews/pack02-03-ledger-after-moonshine-double-2026-11-18.json",
+      "bytes": 18253
+    },
+    {
+      "path": "docs/assets/reviews/pack02-03-ledger-after-moonshine-fall-2026-11-18.json",
+      "bytes": 18175
+    },
+    {
+      "path": "docs/assets/reviews/pack02-03-ledger-after-moonshine-fastfall-2026-11-18.json",
+      "bytes": 18220
+    },
+    {
+      "path": "docs/assets/reviews/pack02-03-ledger-after-moonshine-heavy-2026-11-18.json",
+      "bytes": 18330
+    },
+    {
+      "path": "docs/assets/reviews/pack02-03-ledger-after-moonshine-rise-2026-11-18.json",
+      "bytes": 18085
+    },
+    {
+      "path": "docs/assets/reviews/pack02-03-ledger-after-moonshine-soft-2026-11-18.json",
+      "bytes": 18286
+    },
+    {
+      "path": "docs/assets/reviews/pack02-03-ledger-after-moonshine-takeoffs-2026-11-18.json",
+      "bytes": 18040
+    },
+    {
+      "path": "docs/assets/reviews/pack02-03-ledger-after-mr-wrong-apex-2026-11-19.json",
+      "bytes": 18785
+    },
+    {
+      "path": "docs/assets/reviews/pack02-03-ledger-after-mr-wrong-double-2026-11-19.json",
+      "bytes": 18895
+    },
+    {
+      "path": "docs/assets/reviews/pack02-03-ledger-after-mr-wrong-fall-2026-11-19.json",
+      "bytes": 18829
+    },
+    {
+      "path": "docs/assets/reviews/pack02-03-ledger-after-mr-wrong-fastfall-2026-11-19.json",
+      "bytes": 18862
+    },
+    {
+      "path": "docs/assets/reviews/pack02-03-ledger-after-mr-wrong-heavy-2026-11-19.json",
+      "bytes": 18961
+    },
+    {
+      "path": "docs/assets/reviews/pack02-03-ledger-after-mr-wrong-rise-2026-11-19.json",
+      "bytes": 18741
+    },
+    {
+      "path": "docs/assets/reviews/pack02-03-ledger-after-mr-wrong-soft-2026-11-19.json",
+      "bytes": 18928
+    },
+    {
+      "path": "docs/assets/reviews/pack02-03-ledger-after-mr-wrong-squat-2026-11-19.json",
+      "bytes": 18664
+    },
+    {
+      "path": "docs/assets/reviews/pack02-03-ledger-after-mr-wrong-takeoffs-2026-11-19.json",
+      "bytes": 18697
+    },
+    {
+      "path": "docs/assets/reviews/pack02-03-ledger-after-tasselbottom-apex-2026-11-20.json",
+      "bytes": 19434
+    },
+    {
+      "path": "docs/assets/reviews/pack02-03-ledger-after-tasselbottom-double-2026-11-20.json",
+      "bytes": 19544
+    },
+    {
+      "path": "docs/assets/reviews/pack02-03-ledger-after-tasselbottom-fall-2026-11-20.json",
+      "bytes": 19478
+    },
+    {
+      "path": "docs/assets/reviews/pack02-03-ledger-after-tasselbottom-fastfall-2026-11-20.json",
+      "bytes": 19511
+    },
+    {
+      "path": "docs/assets/reviews/pack02-03-ledger-after-tasselbottom-rise-2026-11-20.json",
+      "bytes": 19357
+    },
+    {
+      "path": "docs/assets/reviews/pack02-03-ledger-after-tasselbottom-soft-2026-11-20.json",
+      "bytes": 19577
+    },
+    {
+      "path": "docs/assets/reviews/pack02-03-ledger-after-tasselbottom-squat-2026-11-20.json",
+      "bytes": 19280
+    },
+    {
+      "path": "docs/assets/reviews/pack02-03-ledger-after-tasselbottom-takeoffs-2026-11-20.json",
+      "bytes": 19313
+    },
+    {
+      "path": "docs/assets/reviews/pack02-03-movement-budgets-2026-11-18.json",
+      "bytes": 882208
+    },
+    {
+      "path": "docs/assets/reviews/pack02-03-movement-ledger-2026-11-18.json",
+      "bytes": 18007
+    },
+    {
+      "path": "docs/assets/reviews/pack02-movement-fix-results-2026-11-18.json",
+      "bytes": 675316
+    },
+    {
+      "path": "docs/assets/reviews/pack03-04-paired-foot-contacts-2026-11-20.png",
+      "bytes": 3944082
+    },
+    {
+      "path": "docs/assets/reviews/pack03-04-paired-throw-contacts-2026-11-20.png",
+      "bytes": 4008054
+    },
+    {
+      "path": "docs/assets/reviews/pack03-04-paired-transition-audit-2026-11-20.json",
+      "bytes": 8479615
+    },
+    {
+      "path": "docs/assets/reviews/pack03-delayed-and-paired-jitter-2026-11-20.json",
+      "bytes": 4035329
+    },
+    {
+      "path": "docs/assets/reviews/pack04-complete-jumps-normal-speed-summary-2026-11-18.json",
+      "bytes": 11126
+    },
+    {
+      "path": "docs/assets/reviews/pack04-complete-jumps-normal-speed-traces-2026-11-18.json",
+      "bytes": 589236
+    },
+    {
+      "path": "docs/assets/reviews/paired-cue-fixed-loopy-2026-11-20.png",
+      "bytes": 2466846
+    },
+    {
+      "path": "docs/assets/reviews/paired-cue-fixed-loopy-left-detail-2026-11-20.json",
+      "bytes": 773635
+    },
+    {
+      "path": "docs/assets/reviews/paired-cue-fixed-loopy-left-down-2026-11-20.png",
+      "bytes": 1139365
+    },
+    {
+      "path": "docs/assets/reviews/paired-cue-fixed-mr-wrong-2026-11-20.png",
+      "bytes": 2489130
+    },
+    {
+      "path": "docs/assets/reviews/paired-cue-fixed-mrs-tasselbottom-2026-11-20.png",
+      "bytes": 2460193
+    },
+    {
+      "path": "docs/assets/reviews/paired-cue-fixed-velvet-reply-2026-11-20.png",
+      "bytes": 2415913
+    },
+    {
+      "path": "docs/assets/reviews/paired-cue-fixed-zane-corvo-2026-11-20.png",
+      "bytes": 2390567
+    },
+    {
+      "path": "docs/assets/reviews/paired-cue-handoff-before-after-2026-11-20.json",
+      "bytes": 6694693
+    },
+    {
+      "path": "docs/assets/reviews/paired-delayed-online-2026-11-20.json",
+      "bytes": 1112353
+    },
+    {
+      "path": "docs/assets/reviews/paired-hit-flash-detail-2026-11-20.png",
+      "bytes": 1093850
+    },
+    {
+      "path": "docs/assets/reviews/paired-jitter-loopy-2026-11-20.png",
+      "bytes": 3111643
+    },
+    {
+      "path": "docs/assets/reviews/paired-jitter-mr-wrong-2026-11-20.png",
+      "bytes": 3120587
+    },
+    {
+      "path": "docs/assets/reviews/paired-jitter-mrs-tasselbottom-2026-11-20.png",
+      "bytes": 3085003
+    },
+    {
+      "path": "docs/assets/reviews/paired-jitter-velvet-reply-2026-11-20.png",
+      "bytes": 3065912
+    },
+    {
+      "path": "docs/assets/reviews/paired-jitter-zane-corvo-2026-11-20.png",
+      "bytes": 3052663
+    },
+    {
+      "path": "docs/assets/reviews/paired-normal-comparison-after-2026-11-20.json",
+      "bytes": 21414
+    },
+    {
+      "path": "docs/assets/reviews/paired-normal-comparison-before-2026-11-20.json",
+      "bytes": 52222
+    },
+    {
+      "path": "docs/assets/reviews/paired-normal-loopy-2026-11-20.png",
+      "bytes": 3473565
+    },
+    {
+      "path": "docs/assets/reviews/paired-normal-mr-wrong-2026-11-20.png",
+      "bytes": 3371008
+    },
+    {
+      "path": "docs/assets/reviews/paired-normal-mrs-tasselbottom-2026-11-20.png",
+      "bytes": 3568535
+    },
+    {
+      "path": "docs/assets/reviews/paired-normal-traces-2026-11-20.json",
+      "bytes": 1944544
+    },
+    {
+      "path": "docs/assets/reviews/paired-normal-velvet-reply-2026-11-20.png",
+      "bytes": 3423147
+    },
+    {
+      "path": "docs/assets/reviews/paired-normal-zane-corvo-2026-11-20.png",
+      "bytes": 3399735
+    },
+    {
+      "path": "docs/assets/reviews/paired-stepped-release-fixed-2026-11-20.json",
+      "bytes": 3257157
+    },
+    {
+      "path": "docs/assets/reviews/paired-victim-untinted-reference-2026-11-20.png",
+      "bytes": 168627
+    },
+    {
+      "path": "docs/assets/reviews/release-live-action-cancellation-2026-11-20.json",
+      "bytes": 3983433
+    },
+    {
+      "path": "docs/assets/reviews/release-manifest-validation-2026-11-20.json",
+      "bytes": 488
+    },
+    {
+      "path": "docs/assets/reviews/release-movement-ledger-2026-11-20.json",
+      "bytes": 39585
+    },
+    {
+      "path": "docs/assets/reviews/release-production-roster-2026-11-20.json",
+      "bytes": 6500
+    },
+    {
+      "path": "docs/assets/reviews/release-roster-production-2026-11-20.png",
+      "bytes": 1145944
+    },
+    {
+      "path": "docs/assets/reviews/release-staged-manifest-validation-2026-11-20.json",
+      "bytes": 488
+    },
+    {
+      "path": "docs/assets/reviews/tasselbottom-rise-budget-2026-11-20.json",
+      "bytes": 150718
+    },
+    {
+      "path": "docs/assets/reviews/tasselbottom-rise-first-dark-2026-11-20.png",
+      "bytes": 461641
+    },
+    {
+      "path": "docs/assets/reviews/tasselbottom-rise-first-light-2026-11-20.png",
+      "bytes": 469010
+    },
+    {
+      "path": "docs/assets/reviews/tasselbottom-rise-first-review-2026-11-20.json",
+      "bytes": 306
+    },
+    {
+      "path": "docs/assets/reviews/tasselbottom-six-apex-both-facings-2026-11-20.png",
+      "bytes": 1091571
+    },
+    {
+      "path": "docs/assets/reviews/tasselbottom-six-apex-dark-2026-11-20.png",
+      "bytes": 957794
+    },
+    {
+      "path": "docs/assets/reviews/tasselbottom-six-apex-light-2026-11-20.png",
+      "bytes": 974722
+    },
+    {
+      "path": "docs/assets/reviews/tasselbottom-six-apex-normal-2026-11-20.webm",
+      "bytes": 2587284
+    },
+    {
+      "path": "docs/assets/reviews/tasselbottom-six-apex-normal-summary-2026-11-20.json",
+      "bytes": 4917
+    },
+    {
+      "path": "docs/assets/reviews/tasselbottom-six-apex-overview-2026-11-20.png",
+      "bytes": 3827315
+    },
+    {
+      "path": "docs/assets/reviews/tasselbottom-six-apex-traces-2026-11-20.json",
+      "bytes": 460869
+    },
+    {
+      "path": "docs/assets/reviews/tasselbottom-six-double-both-facings-2026-11-20.png",
+      "bytes": 1314772
+    },
+    {
+      "path": "docs/assets/reviews/tasselbottom-six-double-dark-2026-11-20.png",
+      "bytes": 1049912
+    },
+    {
+      "path": "docs/assets/reviews/tasselbottom-six-double-light-2026-11-20.png",
+      "bytes": 1066222
+    },
+    {
+      "path": "docs/assets/reviews/tasselbottom-six-double-normal-2026-11-20.webm",
+      "bytes": 901879
+    },
+    {
+      "path": "docs/assets/reviews/tasselbottom-six-double-overview-2026-11-20.png",
+      "bytes": 1204483
+    },
+    {
+      "path": "docs/assets/reviews/tasselbottom-six-double-traces-2026-11-20.json",
+      "bytes": 226025
+    },
+    {
+      "path": "docs/assets/reviews/tasselbottom-six-fall-both-facings-2026-11-20.png",
+      "bytes": 1292133
+    },
+    {
+      "path": "docs/assets/reviews/tasselbottom-six-fall-dark-2026-11-20.png",
+      "bytes": 1035361
+    },
+    {
+      "path": "docs/assets/reviews/tasselbottom-six-fall-light-2026-11-20.png",
+      "bytes": 1052041
+    },
+    {
+      "path": "docs/assets/reviews/tasselbottom-six-fall-normal-2026-11-20.webm",
+      "bytes": 2574629
+    },
+    {
+      "path": "docs/assets/reviews/tasselbottom-six-fall-normal-summary-2026-11-20.json",
+      "bytes": 4842
+    },
+    {
+      "path": "docs/assets/reviews/tasselbottom-six-fall-overview-2026-11-20.png",
+      "bytes": 3686170
+    },
+    {
+      "path": "docs/assets/reviews/tasselbottom-six-fall-traces-2026-11-20.json",
+      "bytes": 468682
+    },
+    {
+      "path": "docs/assets/reviews/tasselbottom-six-fastfall-both-facings-2026-11-20.png",
+      "bytes": 1282197
+    },
+    {
+      "path": "docs/assets/reviews/tasselbottom-six-fastfall-dark-2026-11-20.png",
+      "bytes": 1205201
+    },
+    {
+      "path": "docs/assets/reviews/tasselbottom-six-fastfall-light-2026-11-20.png",
+      "bytes": 1223603
+    },
+    {
+      "path": "docs/assets/reviews/tasselbottom-six-fastfall-normal-2026-11-20.webm",
+      "bytes": 782215
+    },
+    {
+      "path": "docs/assets/reviews/tasselbottom-six-fastfall-overview-2026-11-20.png",
+      "bytes": 978446
+    },
+    {
+      "path": "docs/assets/reviews/tasselbottom-six-fastfall-traces-2026-11-20.json",
+      "bytes": 187048
+    },
+    {
+      "path": "docs/assets/reviews/tasselbottom-six-heavy-both-facings-2026-11-20.png",
+      "bytes": 1286569
+    },
+    {
+      "path": "docs/assets/reviews/tasselbottom-six-heavy-dark-2026-11-20.png",
+      "bytes": 1133289
+    },
+    {
+      "path": "docs/assets/reviews/tasselbottom-six-heavy-fast-normal-2026-11-20.webm",
+      "bytes": 814719
+    },
+    {
+      "path": "docs/assets/reviews/tasselbottom-six-heavy-fast-overview-2026-11-20.png",
+      "bytes": 1008776
+    },
+    {
+      "path": "docs/assets/reviews/tasselbottom-six-heavy-full-normal-2026-11-20.webm",
+      "bytes": 808797
+    },
+    {
+      "path": "docs/assets/reviews/tasselbottom-six-heavy-full-overview-2026-11-20.png",
+      "bytes": 967291
+    },
+    {
+      "path": "docs/assets/reviews/tasselbottom-six-heavy-light-2026-11-20.png",
+      "bytes": 1158922
+    },
+    {
+      "path": "docs/assets/reviews/tasselbottom-six-heavy-traces-2026-11-20.json",
+      "bytes": 1025452
+    },
+    {
+      "path": "docs/assets/reviews/tasselbottom-six-rise-both-facings-2026-11-20.png",
+      "bytes": 1236769
+    },
+    {
+      "path": "docs/assets/reviews/tasselbottom-six-rise-dark-2026-11-20.png",
+      "bytes": 1000801
+    },
+    {
+      "path": "docs/assets/reviews/tasselbottom-six-rise-light-2026-11-20.png",
+      "bytes": 1016018
+    },
+    {
+      "path": "docs/assets/reviews/tasselbottom-six-rise-normal-2026-11-20.webm",
+      "bytes": 2613734
+    },
+    {
+      "path": "docs/assets/reviews/tasselbottom-six-rise-normal-summary-2026-11-20.json",
+      "bytes": 4918
+    },
+    {
+      "path": "docs/assets/reviews/tasselbottom-six-rise-overview-2026-11-20.png",
+      "bytes": 3779391
+    },
+    {
+      "path": "docs/assets/reviews/tasselbottom-six-rise-traces-2026-11-20.json",
+      "bytes": 453005
+    },
+    {
+      "path": "docs/assets/reviews/tasselbottom-six-soft-both-facings-2026-11-20.png",
+      "bytes": 1293909
+    },
+    {
+      "path": "docs/assets/reviews/tasselbottom-six-soft-dark-2026-11-20.png",
+      "bytes": 1120117
+    },
+    {
+      "path": "docs/assets/reviews/tasselbottom-six-soft-light-2026-11-20.png",
+      "bytes": 1142994
+    },
+    {
+      "path": "docs/assets/reviews/tasselbottom-six-soft-normal-2026-11-20.webm",
+      "bytes": 804397
+    },
+    {
+      "path": "docs/assets/reviews/tasselbottom-six-soft-overview-2026-11-20.png",
+      "bytes": 990081
+    },
+    {
+      "path": "docs/assets/reviews/tasselbottom-six-soft-traces-2026-11-20.json",
+      "bytes": 218409
+    },
+    {
+      "path": "docs/assets/reviews/tasselbottom-soft-palette-check-2026-11-20.png",
+      "bytes": 419923
+    },
+    {
+      "path": "docs/assets/reviews/tasselbottom-three-squat-both-facings-2026-11-20.png",
+      "bytes": 1060416
+    },
+    {
+      "path": "docs/assets/reviews/tasselbottom-three-squat-dark-2026-11-20.png",
+      "bytes": 850996
+    },
+    {
+      "path": "docs/assets/reviews/tasselbottom-three-squat-held-normal-2026-11-20.webm",
+      "bytes": 797502
+    },
+    {
+      "path": "docs/assets/reviews/tasselbottom-three-squat-light-2026-11-20.png",
+      "bytes": 867603
+    },
+    {
+      "path": "docs/assets/reviews/tasselbottom-three-squat-overview-2026-11-20.png",
+      "bytes": 993462
+    },
+    {
+      "path": "docs/assets/reviews/tasselbottom-three-squat-tapped-normal-2026-11-20.webm",
+      "bytes": 777522
+    },
+    {
+      "path": "docs/assets/reviews/tasselbottom-three-squat-traces-2026-11-20.json",
+      "bytes": 288552
+    },
+    {
+      "path": "docs/assets/reviews/tasselbottom-three-takeoffs-dark-2026-11-20.png",
+      "bytes": 847359
+    },
+    {
+      "path": "docs/assets/reviews/tasselbottom-three-takeoffs-light-2026-11-20.png",
+      "bytes": 861580
+    },
+    {
+      "path": "docs/assets/reviews/tasselbottom-three-takeoffs-normal-2026-11-20.webm",
+      "bytes": 2556448
+    },
+    {
+      "path": "docs/assets/reviews/tasselbottom-three-takeoffs-normal-summary-2026-11-20.json",
+      "bytes": 4896
+    },
+    {
+      "path": "docs/assets/reviews/tasselbottom-three-takeoffs-overview-2026-11-20.png",
+      "bytes": 3599521
+    },
+    {
+      "path": "docs/assets/reviews/tasselbottom-three-takeoffs-traces-2026-11-20.json",
+      "bytes": 941775
+    },
+    {
+      "path": "docs/assets/reviews/velvet-aerial-dodge-handoffs-2026-11-17.png",
+      "bytes": 4955945
+    },
+    {
+      "path": "docs/assets/reviews/velvet-apex-dark-2026-11-18.png",
+      "bytes": 249463
+    },
+    {
+      "path": "docs/assets/reviews/velvet-apex-early-dark-2026-11-18.png",
+      "bytes": 235317
+    },
+    {
+      "path": "docs/assets/reviews/velvet-apex-early-light-2026-11-18.png",
+      "bytes": 242802
+    },
+    {
+      "path": "docs/assets/reviews/velvet-apex-fall-both-facings-2026-11-18.png",
+      "bytes": 952587
+    },
+    {
+      "path": "docs/assets/reviews/velvet-apex-fall-normal-speed-2026-11-18.webm",
+      "bytes": 829546
+    },
+    {
+      "path": "docs/assets/reviews/velvet-apex-late-dark-2026-11-18.png",
+      "bytes": 247691
+    },
+    {
+      "path": "docs/assets/reviews/velvet-apex-late-light-2026-11-18.png",
+      "bytes": 255990
+    },
+    {
+      "path": "docs/assets/reviews/velvet-apex-light-2026-11-18.png",
+      "bytes": 257758
+    },
+    {
+      "path": "docs/assets/reviews/velvet-apex-settle-dark-2026-11-18.png",
+      "bytes": 243577
+    },
+    {
+      "path": "docs/assets/reviews/velvet-apex-settle-light-2026-11-18.png",
+      "bytes": 251638
+    },
+    {
+      "path": "docs/assets/reviews/velvet-backward-boundaries-2026-11-17.png",
+      "bytes": 1644550
+    },
+    {
+      "path": "docs/assets/reviews/velvet-complete-jumps-dense-full-jump-2026-11-18.png",
+      "bytes": 1751502
+    },
+    {
+      "path": "docs/assets/reviews/velvet-complete-jumps-normal-speed-2026-11-18.webm",
+      "bytes": 2617382
+    },
+    {
+      "path": "docs/assets/reviews/velvet-complete-jumps-overview-2026-11-18.png",
+      "bytes": 3941299
+    },
+    {
+      "path": "docs/assets/reviews/velvet-double-early-dark-2026-11-18.png",
+      "bytes": 268236
+    },
+    {
+      "path": "docs/assets/reviews/velvet-double-early-light-2026-11-18.png",
+      "bytes": 277203
+    },
+    {
+      "path": "docs/assets/reviews/velvet-double-settle-dark-2026-11-18.png",
+      "bytes": 242791
+    },
+    {
+      "path": "docs/assets/reviews/velvet-double-settle-light-2026-11-18.png",
+      "bytes": 251139
+    },
+    {
+      "path": "docs/assets/reviews/velvet-double-tuck-dark-2026-11-18.png",
+      "bytes": 265076
+    },
+    {
+      "path": "docs/assets/reviews/velvet-double-tuck-light-2026-11-18.png",
+      "bytes": 273932
+    },
+    {
+      "path": "docs/assets/reviews/velvet-fall-dark-2026-11-18.png",
+      "bytes": 245342
+    },
+    {
+      "path": "docs/assets/reviews/velvet-fall-light-2026-11-18.png",
+      "bytes": 253928
+    },
+    {
+      "path": "docs/assets/reviews/velvet-fastfall-early-dark-2026-11-18.png",
+      "bytes": 236063
+    },
+    {
+      "path": "docs/assets/reviews/velvet-fastfall-early-light-2026-11-18.png",
+      "bytes": 243444
+    },
+    {
+      "path": "docs/assets/reviews/velvet-fastfall-late-dark-2026-11-18.png",
+      "bytes": 201641
+    },
+    {
+      "path": "docs/assets/reviews/velvet-fastfall-late-light-2026-11-18.png",
+      "bytes": 208032
+    },
+    {
+      "path": "docs/assets/reviews/velvet-fastfall-settle-dark-2026-11-18.png",
+      "bytes": 188578
+    },
+    {
+      "path": "docs/assets/reviews/velvet-fastfall-settle-light-2026-11-18.png",
+      "bytes": 194931
+    },
+    {
+      "path": "docs/assets/reviews/velvet-heavy-landing-compress-dark-2026-11-18.png",
+      "bytes": 307585
+    },
+    {
+      "path": "docs/assets/reviews/velvet-heavy-landing-compress-light-2026-11-18.png",
+      "bytes": 316611
+    },
+    {
+      "path": "docs/assets/reviews/velvet-heavy-landing-rebound-dark-2026-11-18.png",
+      "bytes": 282464
+    },
+    {
+      "path": "docs/assets/reviews/velvet-heavy-landing-rebound-light-2026-11-18.png",
+      "bytes": 290631
+    },
+    {
+      "path": "docs/assets/reviews/velvet-heavy-landing-settle-dark-2026-11-18.png",
+      "bytes": 290776
+    },
+    {
+      "path": "docs/assets/reviews/velvet-heavy-landing-settle-light-2026-11-18.png",
+      "bytes": 298861
+    },
+    {
+      "path": "docs/assets/reviews/velvet-interruption-landing-2026-11-17.png",
+      "bytes": 3077643
+    },
+    {
+      "path": "docs/assets/reviews/velvet-jump-squat-entry-dark-2026-11-18.png",
+      "bytes": 293762
+    },
+    {
+      "path": "docs/assets/reviews/velvet-jump-squat-entry-light-2026-11-18.png",
+      "bytes": 302926
+    },
+    {
+      "path": "docs/assets/reviews/velvet-jump-squat-extend-dark-2026-11-18.png",
+      "bytes": 292336
+    },
+    {
+      "path": "docs/assets/reviews/velvet-jump-squat-extend-light-2026-11-18.png",
+      "bytes": 301335
+    },
+    {
+      "path": "docs/assets/reviews/velvet-live-handoffs-2026-11-17.png",
+      "bytes": 6971145
+    },
+    {
+      "path": "docs/assets/reviews/velvet-reply-fastfall-cadence-2026-11-18.webm",
+      "bytes": 795509
+    },
+    {
+      "path": "docs/assets/reviews/velvet-reply-landing-audit-2026-11-18.png",
+      "bytes": 2380177
+    },
+    {
+      "path": "docs/assets/reviews/velvet-reply-squat-takeoff-audit-2026-11-18.png",
+      "bytes": 1709780
+    },
+    {
+      "path": "docs/assets/reviews/velvet-rise-both-facings-2026-11-17.png",
+      "bytes": 686075
+    },
+    {
+      "path": "docs/assets/reviews/velvet-rise-early-dark-2026-11-18.png",
+      "bytes": 258056
+    },
+    {
+      "path": "docs/assets/reviews/velvet-rise-early-light-2026-11-18.png",
+      "bytes": 266474
+    },
+    {
+      "path": "docs/assets/reviews/velvet-rise-late-dark-2026-11-18.png",
+      "bytes": 239444
+    },
+    {
+      "path": "docs/assets/reviews/velvet-rise-late-light-2026-11-18.png",
+      "bytes": 246657
+    },
+    {
+      "path": "docs/assets/reviews/velvet-rise-scale-dark-2026-11-17.png",
+      "bytes": 249747
+    },
+    {
+      "path": "docs/assets/reviews/velvet-rise-scale-light-2026-11-17.png",
+      "bytes": 258629
+    },
+    {
+      "path": "docs/assets/reviews/velvet-rise-settle-dark-2026-11-18.png",
+      "bytes": 240223
+    },
+    {
+      "path": "docs/assets/reviews/velvet-rise-settle-light-2026-11-18.png",
+      "bytes": 247060
+    },
+    {
+      "path": "docs/assets/reviews/velvet-six-apex-both-facings-2026-11-18.png",
+      "bytes": 939474
+    },
+    {
+      "path": "docs/assets/reviews/velvet-six-apex-normal-speed-2026-11-18.webm",
+      "bytes": 846084
+    },
+    {
+      "path": "docs/assets/reviews/velvet-six-double-both-facings-2026-11-18.png",
+      "bytes": 991192
+    },
+    {
+      "path": "docs/assets/reviews/velvet-six-double-normal-speed-2026-11-18.webm",
+      "bytes": 922260
+    },
+    {
+      "path": "docs/assets/reviews/velvet-six-fall-both-facings-2026-11-18.png",
+      "bytes": 736832
+    },
+    {
+      "path": "docs/assets/reviews/velvet-six-fall-normal-speed-2026-11-18.webm",
+      "bytes": 862311
+    },
+    {
+      "path": "docs/assets/reviews/velvet-six-fastfall-both-facings-2026-11-18.png",
+      "bytes": 1304820
+    },
+    {
+      "path": "docs/assets/reviews/velvet-six-fastfall-highdrop-normal-speed-2026-11-18.webm",
+      "bytes": 819337
+    },
+    {
+      "path": "docs/assets/reviews/velvet-six-heavy-landing-both-facings-2026-11-18.png",
+      "bytes": 2119217
+    },
+    {
+      "path": "docs/assets/reviews/velvet-six-heavy-landing-normal-speed-2026-11-18.webm",
+      "bytes": 774244
+    },
+    {
+      "path": "docs/assets/reviews/velvet-six-rise-both-facings-2026-11-18.png",
+      "bytes": 991615
+    },
+    {
+      "path": "docs/assets/reviews/velvet-six-rise-normal-speed-2026-11-18.webm",
+      "bytes": 840489
+    },
+    {
+      "path": "docs/assets/reviews/velvet-six-soft-landing-both-facings-2026-11-18.png",
+      "bytes": 2292849
+    },
+    {
+      "path": "docs/assets/reviews/velvet-six-soft-landing-normal-speed-2026-11-18.webm",
+      "bytes": 627242
+    },
+    {
+      "path": "docs/assets/reviews/velvet-soft-landing-compress-dark-2026-11-18.png",
+      "bytes": 292836
+    },
+    {
+      "path": "docs/assets/reviews/velvet-soft-landing-compress-light-2026-11-18.png",
+      "bytes": 302111
+    },
+    {
+      "path": "docs/assets/reviews/velvet-soft-landing-rebound-dark-2026-11-18.png",
+      "bytes": 288919
+    },
+    {
+      "path": "docs/assets/reviews/velvet-soft-landing-rebound-light-2026-11-18.png",
+      "bytes": 297955
+    },
+    {
+      "path": "docs/assets/reviews/velvet-soft-landing-rise-dark-2026-11-18.png",
+      "bytes": 287502
+    },
+    {
+      "path": "docs/assets/reviews/velvet-soft-landing-rise-light-2026-11-18.png",
+      "bytes": 296559
+    },
+    {
+      "path": "docs/assets/reviews/velvet-soft-landing-settle-dark-2026-11-18.png",
+      "bytes": 294278
+    },
+    {
+      "path": "docs/assets/reviews/velvet-soft-landing-settle-light-2026-11-18.png",
+      "bytes": 303852
+    },
+    {
+      "path": "docs/assets/reviews/velvet-takeoff-six-new-drawings-2026-11-18.png",
+      "bytes": 551315
+    },
+    {
+      "path": "docs/assets/reviews/velvet-three-directional-takeoffs-both-facings-2026-11-18.png",
+      "bytes": 3023152
+    },
+    {
+      "path": "docs/assets/reviews/velvet-three-directional-takeoffs-traces-2026-11-18.json",
+      "bytes": 116272
+    },
+    {
+      "path": "docs/assets/reviews/velvet-three-jump-squat-both-facings-2026-11-18.png",
+      "bytes": 671480
+    },
+    {
+      "path": "docs/assets/reviews/velvet-three-jump-squat-timing-2026-11-18.json",
+      "bytes": 5170
+    },
+    {
+      "path": "docs/assets/reviews/zane-aerial-dodge-handoffs-2026-11-17.png",
+      "bytes": 4900800
+    },
+    {
+      "path": "docs/assets/reviews/zane-apex-dark-2026-11-17.png",
+      "bytes": 255193
+    },
+    {
+      "path": "docs/assets/reviews/zane-apex-early-dark-2026-11-18.png",
+      "bytes": 241092
+    },
+    {
+      "path": "docs/assets/reviews/zane-apex-early-light-2026-11-18.png",
+      "bytes": 249530
+    },
+    {
+      "path": "docs/assets/reviews/zane-apex-fall-both-facings-2026-11-17.png",
+      "bytes": 987628
+    },
+    {
+      "path": "docs/assets/reviews/zane-apex-fall-normal-speed-2026-11-17.webm",
+      "bytes": 845864
+    },
+    {
+      "path": "docs/assets/reviews/zane-apex-late-dark-2026-11-18.png",
+      "bytes": 253777
+    },
+    {
+      "path": "docs/assets/reviews/zane-apex-late-light-2026-11-18.png",
+      "bytes": 262477
+    },
+    {
+      "path": "docs/assets/reviews/zane-apex-light-2026-11-17.png",
+      "bytes": 265622
+    },
+    {
+      "path": "docs/assets/reviews/zane-apex-settle-dark-2026-11-18.png",
+      "bytes": 259162
+    },
+    {
+      "path": "docs/assets/reviews/zane-apex-settle-light-2026-11-18.png",
+      "bytes": 268441
+    },
+    {
+      "path": "docs/assets/reviews/zane-backward-boundaries-2026-11-17.png",
+      "bytes": 1666674
+    },
+    {
+      "path": "docs/assets/reviews/zane-complete-jumps-dense-full-jump-2026-11-18.png",
+      "bytes": 1752258
+    },
+    {
+      "path": "docs/assets/reviews/zane-complete-jumps-normal-speed-2026-11-18.webm",
+      "bytes": 2641799
+    },
+    {
+      "path": "docs/assets/reviews/zane-complete-jumps-overview-2026-11-18.png",
+      "bytes": 3840630
+    },
+    {
+      "path": "docs/assets/reviews/zane-corvo-fastfall-cadence-2026-11-18.webm",
+      "bytes": 816818
+    },
+    {
+      "path": "docs/assets/reviews/zane-corvo-landing-audit-2026-11-18.png",
+      "bytes": 2382831
+    },
+    {
+      "path": "docs/assets/reviews/zane-corvo-squat-takeoff-audit-2026-11-18.png",
+      "bytes": 1705183
+    },
+    {
+      "path": "docs/assets/reviews/zane-double-early-dark-2026-11-18.png",
+      "bytes": 264144
+    },
+    {
+      "path": "docs/assets/reviews/zane-double-early-light-2026-11-18.png",
+      "bytes": 274381
+    },
+    {
+      "path": "docs/assets/reviews/zane-double-settle-dark-2026-11-18.png",
+      "bytes": 245480
+    },
+    {
+      "path": "docs/assets/reviews/zane-double-settle-light-2026-11-18.png",
+      "bytes": 254900
+    },
+    {
+      "path": "docs/assets/reviews/zane-double-tuck-dark-2026-11-18.png",
+      "bytes": 267877
+    },
+    {
+      "path": "docs/assets/reviews/zane-double-tuck-light-2026-11-18.png",
+      "bytes": 277498
+    },
+    {
+      "path": "docs/assets/reviews/zane-fall-dark-2026-11-17.png",
+      "bytes": 260635
+    },
+    {
+      "path": "docs/assets/reviews/zane-fall-early-dark-2026-11-18.png",
+      "bytes": 262048
+    },
+    {
+      "path": "docs/assets/reviews/zane-fall-early-light-2026-11-18.png",
+      "bytes": 271130
+    },
+    {
+      "path": "docs/assets/reviews/zane-fall-late-dark-2026-11-18.png",
+      "bytes": 248244
+    },
+    {
+      "path": "docs/assets/reviews/zane-fall-late-light-2026-11-18.png",
+      "bytes": 255980
+    },
+    {
+      "path": "docs/assets/reviews/zane-fall-light-2026-11-17.png",
+      "bytes": 270173
+    },
+    {
+      "path": "docs/assets/reviews/zane-fall-settle-dark-2026-11-18.png",
+      "bytes": 250510
+    },
+    {
+      "path": "docs/assets/reviews/zane-fall-settle-light-2026-11-18.png",
+      "bytes": 258221
+    },
+    {
+      "path": "docs/assets/reviews/zane-fastfall-early-dark-2026-11-18.png",
+      "bytes": 227055
+    },
+    {
+      "path": "docs/assets/reviews/zane-fastfall-early-light-2026-11-18.png",
+      "bytes": 234569
+    },
+    {
+      "path": "docs/assets/reviews/zane-fastfall-late-dark-2026-11-18.png",
+      "bytes": 208438
+    },
+    {
+      "path": "docs/assets/reviews/zane-fastfall-late-light-2026-11-18.png",
+      "bytes": 215352
+    },
+    {
+      "path": "docs/assets/reviews/zane-fastfall-settle-dark-2026-11-18.png",
+      "bytes": 212426
+    },
+    {
+      "path": "docs/assets/reviews/zane-fastfall-settle-light-2026-11-18.png",
+      "bytes": 219194
+    },
+    {
+      "path": "docs/assets/reviews/zane-heavy-landing-compress-dark-2026-11-18.png",
+      "bytes": 270748
+    },
+    {
+      "path": "docs/assets/reviews/zane-heavy-landing-compress-light-2026-11-18.png",
+      "bytes": 279897
+    },
+    {
+      "path": "docs/assets/reviews/zane-heavy-landing-rebound-dark-2026-11-18.png",
+      "bytes": 267916
+    },
+    {
+      "path": "docs/assets/reviews/zane-heavy-landing-rebound-light-2026-11-18.png",
+      "bytes": 275245
+    },
+    {
+      "path": "docs/assets/reviews/zane-heavy-landing-settle-dark-2026-11-18.png",
+      "bytes": 268994
+    },
+    {
+      "path": "docs/assets/reviews/zane-heavy-landing-settle-light-2026-11-18.png",
+      "bytes": 276520
+    },
+    {
+      "path": "docs/assets/reviews/zane-interruption-landing-2026-11-17.png",
+      "bytes": 3084113
+    },
+    {
+      "path": "docs/assets/reviews/zane-jump-squat-entry-dark-2026-11-18.png",
+      "bytes": 275221
+    },
+    {
+      "path": "docs/assets/reviews/zane-jump-squat-entry-light-2026-11-18.png",
+      "bytes": 283342
+    },
+    {
+      "path": "docs/assets/reviews/zane-jump-squat-extend-dark-2026-11-18.png",
+      "bytes": 269155
+    },
+    {
+      "path": "docs/assets/reviews/zane-jump-squat-extend-light-2026-11-18.png",
+      "bytes": 277349
+    },
+    {
+      "path": "docs/assets/reviews/zane-phase-handoffs-2026-11-17.png",
+      "bytes": 4633472
+    },
+    {
+      "path": "docs/assets/reviews/zane-rise-both-facings-2026-11-17.png",
+      "bytes": 717549
+    },
+    {
+      "path": "docs/assets/reviews/zane-rise-early-dark-2026-11-18.png",
+      "bytes": 291345
+    },
+    {
+      "path": "docs/assets/reviews/zane-rise-early-light-2026-11-18.png",
+      "bytes": 300799
+    },
+    {
+      "path": "docs/assets/reviews/zane-rise-late-dark-2026-11-18.png",
+      "bytes": 285299
+    },
+    {
+      "path": "docs/assets/reviews/zane-rise-late-light-2026-11-18.png",
+      "bytes": 293793
+    },
+    {
+      "path": "docs/assets/reviews/zane-rise-settle-dark-2026-11-18.png",
+      "bytes": 275290
+    },
+    {
+      "path": "docs/assets/reviews/zane-rise-settle-light-2026-11-18.png",
+      "bytes": 283750
+    },
+    {
+      "path": "docs/assets/reviews/zane-six-apex-both-facings-2026-11-18.png",
+      "bytes": 949493
+    },
+    {
+      "path": "docs/assets/reviews/zane-six-apex-normal-speed-2026-11-18.webm",
+      "bytes": 841749
+    },
+    {
+      "path": "docs/assets/reviews/zane-six-double-both-facings-2026-11-18.png",
+      "bytes": 993850
+    },
+    {
+      "path": "docs/assets/reviews/zane-six-double-normal-speed-2026-11-18.webm",
+      "bytes": 898377
+    },
+    {
+      "path": "docs/assets/reviews/zane-six-fall-both-facings-2026-11-18.png",
+      "bytes": 734284
+    },
+    {
+      "path": "docs/assets/reviews/zane-six-fall-normal-speed-2026-11-18.webm",
+      "bytes": 851178
+    },
+    {
+      "path": "docs/assets/reviews/zane-six-fastfall-both-facings-2026-11-18.png",
+      "bytes": 1307564
+    },
+    {
+      "path": "docs/assets/reviews/zane-six-fastfall-highdrop-normal-speed-2026-11-18.webm",
+      "bytes": 799848
+    },
+    {
+      "path": "docs/assets/reviews/zane-six-heavy-landing-both-facings-2026-11-18.png",
+      "bytes": 2113435
+    },
+    {
+      "path": "docs/assets/reviews/zane-six-heavy-landing-normal-speed-2026-11-18.webm",
+      "bytes": 671963
+    },
+    {
+      "path": "docs/assets/reviews/zane-six-rise-both-facings-2026-11-18.png",
+      "bytes": 1053843
+    },
+    {
+      "path": "docs/assets/reviews/zane-six-rise-normal-speed-2026-11-18.webm",
+      "bytes": 845843
+    },
+    {
+      "path": "docs/assets/reviews/zane-six-soft-landing-both-facings-2026-11-18.png",
+      "bytes": 2288852
+    },
+    {
+      "path": "docs/assets/reviews/zane-six-soft-landing-normal-speed-2026-11-18.webm",
+      "bytes": 751957
+    },
+    {
+      "path": "docs/assets/reviews/zane-soft-landing-compress-dark-2026-11-18.png",
+      "bytes": 258132
+    },
+    {
+      "path": "docs/assets/reviews/zane-soft-landing-compress-light-2026-11-18.png",
+      "bytes": 266517
+    },
+    {
+      "path": "docs/assets/reviews/zane-soft-landing-rebound-dark-2026-11-18.png",
+      "bytes": 253812
+    },
+    {
+      "path": "docs/assets/reviews/zane-soft-landing-rebound-light-2026-11-18.png",
+      "bytes": 262434
+    },
+    {
+      "path": "docs/assets/reviews/zane-soft-landing-rise-dark-2026-11-18.png",
+      "bytes": 260335
+    },
+    {
+      "path": "docs/assets/reviews/zane-soft-landing-rise-light-2026-11-18.png",
+      "bytes": 268656
+    },
+    {
+      "path": "docs/assets/reviews/zane-soft-landing-settle-dark-2026-11-18.png",
+      "bytes": 266173
+    },
+    {
+      "path": "docs/assets/reviews/zane-soft-landing-settle-light-2026-11-18.png",
+      "bytes": 275020
+    },
+    {
+      "path": "docs/assets/reviews/zane-takeoff-six-new-drawings-2026-11-18.png",
+      "bytes": 505552
+    },
+    {
+      "path": "docs/assets/reviews/zane-three-directional-takeoffs-both-facings-2026-11-18.png",
+      "bytes": 2985496
+    },
+    {
+      "path": "docs/assets/reviews/zane-three-directional-takeoffs-traces-2026-11-18.json",
+      "bytes": 116324
+    },
+    {
+      "path": "docs/assets/reviews/zane-three-jump-squat-both-facings-2026-11-18.png",
+      "bytes": 662416
+    },
+    {
+      "path": "docs/assets/reviews/zane-three-jump-squat-timing-2026-11-18.json",
+      "bytes": 5166
+    },
+    {
+      "path": "docs/plans/ANIMATION-RELEASE-2026-11-20.md",
+      "bytes": 6496
+    },
+    {
+      "path": "docs/plans/PRODUCTION-READINESS-AUDIT.md",
+      "bytes": 7310
+    },
+    {
+      "path": "scripts/assets/audit-movement-parity.mjs",
+      "bytes": 3177
+    },
+    {
+      "path": "scripts/assets/expand-hoagie-apex.mjs",
+      "bytes": 2518
+    },
+    {
+      "path": "scripts/assets/expand-hoagie-double.mjs",
+      "bytes": 2543
+    },
+    {
+      "path": "scripts/assets/expand-hoagie-fall.mjs",
+      "bytes": 2525
+    },
+    {
+      "path": "scripts/assets/expand-hoagie-fastfall.mjs",
+      "bytes": 2545
+    },
+    {
+      "path": "scripts/assets/expand-hoagie-heavy.mjs",
+      "bytes": 2754
+    },
+    {
+      "path": "scripts/assets/expand-hoagie-rise.mjs",
+      "bytes": 2015
+    },
+    {
+      "path": "scripts/assets/expand-hoagie-soft.mjs",
+      "bytes": 2779
+    },
+    {
+      "path": "scripts/assets/expand-hoagie-takeoffs.mjs",
+      "bytes": 1920
+    },
+    {
+      "path": "scripts/assets/expand-loopy-apex.mjs",
+      "bytes": 1804
+    },
+    {
+      "path": "scripts/assets/expand-loopy-double.mjs",
+      "bytes": 2090
+    },
+    {
+      "path": "scripts/assets/expand-loopy-fall.mjs",
+      "bytes": 1694
+    },
+    {
+      "path": "scripts/assets/expand-loopy-fastfall.mjs",
+      "bytes": 1889
+    },
+    {
+      "path": "scripts/assets/expand-loopy-heavy.mjs",
+      "bytes": 2823
+    },
+    {
+      "path": "scripts/assets/expand-loopy-rise.mjs",
+      "bytes": 1662
+    },
+    {
+      "path": "scripts/assets/expand-loopy-soft.mjs",
+      "bytes": 2842
+    },
+    {
+      "path": "scripts/assets/expand-loopy-squat.mjs",
+      "bytes": 1818
+    },
+    {
+      "path": "scripts/assets/expand-loopy-takeoffs.mjs",
+      "bytes": 1717
+    },
+    {
+      "path": "scripts/assets/expand-moonshine-apex.mjs",
+      "bytes": 2511
+    },
+    {
+      "path": "scripts/assets/expand-moonshine-double.mjs",
+      "bytes": 2533
+    },
+    {
+      "path": "scripts/assets/expand-moonshine-fall.mjs",
+      "bytes": 2512
+    },
+    {
+      "path": "scripts/assets/expand-moonshine-fastfall.mjs",
+      "bytes": 2534
+    },
+    {
+      "path": "scripts/assets/expand-moonshine-heavy.mjs",
+      "bytes": 2745
+    },
+    {
+      "path": "scripts/assets/expand-moonshine-rise.mjs",
+      "bytes": 2277
+    },
+    {
+      "path": "scripts/assets/expand-moonshine-soft.mjs",
+      "bytes": 2793
+    },
+    {
+      "path": "scripts/assets/expand-moonshine-takeoffs.mjs",
+      "bytes": 2290
+    },
+    {
+      "path": "scripts/assets/expand-mr-wrong-apex.mjs",
+      "bytes": 1686
+    },
+    {
+      "path": "scripts/assets/expand-mr-wrong-double.mjs",
+      "bytes": 1872
+    },
+    {
+      "path": "scripts/assets/expand-mr-wrong-fall.mjs",
+      "bytes": 1684
+    },
+    {
+      "path": "scripts/assets/expand-mr-wrong-fastfall.mjs",
+      "bytes": 1859
+    },
+    {
+      "path": "scripts/assets/expand-mr-wrong-heavy.mjs",
+      "bytes": 2768
+    },
+    {
+      "path": "scripts/assets/expand-mr-wrong-rise.mjs",
+      "bytes": 1621
+    },
+    {
+      "path": "scripts/assets/expand-mr-wrong-soft.mjs",
+      "bytes": 2764
+    },
+    {
+      "path": "scripts/assets/expand-mr-wrong-squat.mjs",
+      "bytes": 1831
+    },
+    {
+      "path": "scripts/assets/expand-mr-wrong-takeoffs.mjs",
+      "bytes": 1716
+    },
+    {
+      "path": "scripts/assets/expand-tasselbottom-apex.mjs",
+      "bytes": 1757
+    },
+    {
+      "path": "scripts/assets/expand-tasselbottom-double.mjs",
+      "bytes": 2094
+    },
+    {
+      "path": "scripts/assets/expand-tasselbottom-fall.mjs",
+      "bytes": 1753
+    },
+    {
+      "path": "scripts/assets/expand-tasselbottom-fastfall.mjs",
+      "bytes": 1885
+    },
+    {
+      "path": "scripts/assets/expand-tasselbottom-heavy.mjs",
+      "bytes": 2200
+    },
+    {
+      "path": "scripts/assets/expand-tasselbottom-rise.mjs",
+      "bytes": 1753
+    },
+    {
+      "path": "scripts/assets/expand-tasselbottom-soft.mjs",
+      "bytes": 2218
+    },
+    {
+      "path": "scripts/assets/expand-tasselbottom-squat.mjs",
+      "bytes": 1926
+    },
+    {
+      "path": "scripts/assets/expand-tasselbottom-takeoffs.mjs",
+      "bytes": 1750
+    },
+    {
+      "path": "scripts/assets/fix-newcomer-landing-roots.mjs",
+      "bytes": 659
+    },
+    {
+      "path": "scripts/assets/fix-newcomer-movement-timing.mjs",
+      "bytes": 1543
+    },
+    {
+      "path": ".gitignore",
+      "bytes": 656
+    },
+    {
+      "path": "apps/client/e2e/pack-04-dojo.spec.ts",
+      "bytes": 138899
+    },
+    {
+      "path": "apps/client/public/fighter-art-newcomers-v1/dojo/atlas-hulk-hoagie-live-0.png",
+      "bytes": 5857309
+    },
+    {
+      "path": "apps/client/public/fighter-art-newcomers-v1/dojo/atlas-hulk-hoagie-live-1.png",
+      "bytes": 4396703
+    },
+    {
+      "path": "apps/client/public/fighter-art-newcomers-v1/dojo/atlas-moonshine-live-0.png",
+      "bytes": 6292032
+    },
+    {
+      "path": "apps/client/public/fighter-art-newcomers-v1/dojo/atlas-moonshine-live-1.png",
+      "bytes": 2170315
+    },
+    {
+      "path": "apps/client/public/fighter-art-newcomers-v1/dojo/atlas-report.json",
+      "bytes": 1169
+    },
+    {
+      "path": "apps/client/public/fighter-art-newcomers-v1/dojo/manifest.json",
+      "bytes": 270728
+    },
+    {
+      "path": "apps/client/public/fighter-art-newcomers-v1/index.html",
+      "bytes": 256949
+    },
+    {
+      "path": "apps/client/public/fighter-art-newcomers-v1/manifest.json",
+      "bytes": 757233
+    },
+    {
+      "path": "apps/client/public/fighter-art-pack-03-v1/manifest.json",
+      "bytes": 698683
+    },
+    {
+      "path": "apps/client/public/fighter-art-pack-03-v1/production/atlas-loopy-live-0.webp",
+      "bytes": 4872084
+    },
+    {
+      "path": "apps/client/public/fighter-art-pack-03-v1/production/atlas-loopy-live-1.webp",
+      "bytes": 5003828
+    },
+    {
+      "path": "apps/client/public/fighter-art-pack-03-v1/production/atlas-loopy-live-2.webp",
+      "bytes": 5129682
+    },
+    {
+      "path": "apps/client/public/fighter-art-pack-03-v1/production/atlas-mr-wrong-live-0.webp",
+      "bytes": 5328204
+    },
+    {
+      "path": "apps/client/public/fighter-art-pack-03-v1/production/atlas-mr-wrong-live-1.webp",
+      "bytes": 5763568
+    },
+    {
+      "path": "apps/client/public/fighter-art-pack-03-v1/production/atlas-mr-wrong-live-2.webp",
+      "bytes": 3558378
+    },
+    {
+      "path": "apps/client/public/fighter-art-pack-03-v1/production/atlas-mrs-tasselbottom-live-0.webp",
+      "bytes": 5825930
+    },
+    {
+      "path": "apps/client/public/fighter-art-pack-03-v1/production/atlas-mrs-tasselbottom-live-1.webp",
+      "bytes": 6165054
+    },
+    {
+      "path": "apps/client/public/fighter-art-pack-03-v1/production/atlas-mrs-tasselbottom-live-2.webp",
+      "bytes": 1248470
+    },
+    {
+      "path": "apps/client/public/fighter-art-pack-03-v1/production/atlas-report.json",
+      "bytes": 2542
+    },
+    {
+      "path": "apps/client/public/fighter-art-pack-03-v1/production/manifest.json",
+      "bytes": 271330
+    },
+    {
+      "path": "apps/client/public/fighter-art-pack-04-v1/manifest.json",
+      "bytes": 525902
+    },
+    {
+      "path": "apps/client/public/fighter-art-pack-04-v1/production/atlas-report.json",
+      "bytes": 1177
+    },
+    {
+      "path": "apps/client/public/fighter-art-pack-04-v1/production/atlas-velvet-reply-live-0.webp",
+      "bytes": 4756152
+    },
+    {
+      "path": "apps/client/public/fighter-art-pack-04-v1/production/atlas-velvet-reply-live-1.webp",
+      "bytes": 992590
+    },
+    {
+      "path": "apps/client/public/fighter-art-pack-04-v1/production/atlas-zane-corvo-live-0.webp",
+      "bytes": 3999572
+    },
+    {
+      "path": "apps/client/public/fighter-art-pack-04-v1/production/atlas-zane-corvo-live-1.webp",
+      "bytes": 1375356
+    },
+    {
+      "path": "apps/client/public/fighter-art-pack-04-v1/production/manifest.json",
+      "bytes": 192074
+    },
+    {
+      "path": "apps/client/src/network/LocalPredictor.ts",
+      "bytes": 10637
+    },
+    {
+      "path": "apps/client/src/practice/curriculum.integration.test.ts",
+      "bytes": 4473
+    },
+    {
+      "path": "apps/client/src/renderer/fullbody/FullBodyPilot.ts",
+      "bytes": 46141
+    },
+    {
+      "path": "apps/client/src/renderer/fullbody/doubleJumpCue.test.ts",
+      "bytes": 2038
+    },
+    {
+      "path": "apps/client/src/renderer/fullbody/movementPresentation.test.ts",
+      "bytes": 29491
+    },
+    {
+      "path": "apps/client/src/renderer/fullbody/throwReleaseContact.test.ts",
+      "bytes": 12596
+    },
+    {
+      "path": "apps/server/src/GameEngine.aiPlatformJump.test.ts",
+      "bytes": 6303
+    },
+    {
+      "path": "docs/REFINEMENT.md",
+      "bytes": 25620
+    },
+    {
+      "path": "docs/TRAINING-DOJO.md",
+      "bytes": 28711
+    },
+    {
+      "path": "docs/assets/FIGHTER-PACK-PRODUCTION.md",
+      "bytes": 48903
+    },
+    {
+      "path": "docs/plans/ACTIVE-WORK.md",
+      "bytes": 64510
+    },
+    {
+      "path": "packages/engine/src/physics/movementArt.test.ts",
+      "bytes": 4818
+    },
+    {
+      "path": "packages/engine/src/physics/movementArt.ts",
+      "bytes": 4028
+    },
+    {
+      "path": "scripts/assets/build-newcomer-pilot.mjs",
+      "bytes": 52923
+    },
+    {
+      "path": "scripts/assets/build-pack-04-pilot.mjs",
+      "bytes": 50234
+    }
+  ]
+}

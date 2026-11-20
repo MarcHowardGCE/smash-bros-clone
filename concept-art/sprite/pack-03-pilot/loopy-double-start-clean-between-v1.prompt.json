@@ -1,0 +1,9 @@
+{
+  "tool": "built-in image_gen",
+  "date": "2026-11-19",
+  "prompt": "Clean this exact Loopy double-jump sprite by removing bright RED stray pixels outside his silhouette (behind shoulder/arm and in leg gaps). Preserve the same raised front fist, rear loose fist, asymmetric bent-knee pose, body proportions, head, antlers, golden fur, BLANK cream jersey with purple trim, purple shorts, wristbands and brown hooves as closely as possible. These red spots are crop contamination, not costume. Full body with padding, true transparent background, alpha zero outside crisp ink contour. NO halo, haze, glow, shadow, particles or text. Do not redesign costume, straighten legs or invent a new pose.",
+  "source": "C:\\Users\\misac\\.codex\\generated_images\\01a1d512-1266-7be0-b658-8ca4590e1a8c\\exec-d0e74827-c707-4a60-bd67-176e617ae6aa.png",
+  "references": [
+    "loopy-shipped-double-0.png"
+  ]
+}

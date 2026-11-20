@@ -1,0 +1,12 @@
+{
+  "tool": "built-in image_gen",
+  "date": "2026-11-18",
+  "identityReference": "velvet-reply-idle.png",
+  "prompt": "Draw ONE full-body production sprite of The Velvet Reply, facing RIGHT, three-quarter side view: EARLY FALL in-between. Reference 1 is the canonical exact identity, face, proportions, costume, palette and ink/hatching style. References 2 and 3 are adjacent fall poses. Draw only one-third of the motion from reference 2's open arms toward reference 3's lowered arms: forearms still visibly away from the hips, elbows open, hands spread but beginning to relax down. Keep the knees slightly bent, leading heel a little forward and trailing heel a little back, both boots fully airborne. Make this a genuinely intermediate silhouette, not a redraw of reference 3. Keep head and torso steady and same size. Exact copper-auburn flowing hair, cheek beauty mark, half-lidded face; dark plum-black fitted FLARED-LEG jumpsuit with fine gold piping, black fishnet sleeves/chest and crossed black straps, high collar, SILVER rectangular buckle belt/cuffs/hoop earrings, glossy dark HEELED ankle boots. No wardrobe/accessory changes. Same compact textured ink illustration. Entire silhouette and extremities with clear generous margins, TRUE TRANSPARENT background. No ground, floor/ambient shadow, glow, halo, mist, gradient, blur, lettering or motion streaks. Crisp antialiased ink, empty alpha outside.",
+  "preparation": {
+    "alphaFloor": 5,
+    "worldHeight": 82,
+    "preserveSource": true,
+    "detachedPixelCleanup": "settle: alpha 6, farther than four pixels from solid ink"
+  }
+}

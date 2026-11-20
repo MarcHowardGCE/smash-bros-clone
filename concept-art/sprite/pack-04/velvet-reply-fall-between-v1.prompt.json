@@ -1,0 +1,16 @@
+{
+  "tool": "built-in image_gen",
+  "date": "2026-11-18",
+  "transparent_background": true,
+  "identityReference": "concept-art/sprite/pack-04/velvet-reply-idle.png",
+  "poseReferences": [
+    "apps/client/public/fighter-art-pack-04-v1/velvet-reply-air-2.png",
+    "apps/client/public/fighter-art-pack-04-v1/velvet-reply-dash-fall-3.png"
+  ],
+  "prompt": "Create ONE full-body production game sprite of The Velvet Reply facing RIGHT, three-quarter side view. Reference 1 is authoritative identity, exact costume, face, anatomy, color and compact ink/hatching style. References 2 and 3 are ONLY adjacent fall poses. Draw a new distinct IN-BETWEEN halfway from the open-handed relaxed descent (2) toward the arms-lowered descent (3): arms move halfway down beside the hips, elbows slightly bent and hands still loose; knees slightly relax and boots separate subtly while both remain entirely airborne. No running or walking stance. Maintain head/torso proportions, copper-auburn wavy hair, cheek beauty mark, half-lidded face. Preserve the shipped dark plum-black fitted jumpsuit with FLARED LEGS and fine gold piping, fishnet sleeves and chest, crossed black chest straps, high dark collar, SILVER rectangular buckle belt, SILVER wrist cuffs and hoop earrings, and glossy dark HEELED ANKLE BOOTS. All fingers and boots fully visible, generous clear margins. TRUE TRANSPARENT background. NO scene, ground, floor shadow, ambient shadow, glow, mist, halo, brown gradient, blur, motion streaks or text. Outside crisp antialiased ink must be fully empty alpha. Do not reproduce pose-reference backgrounds.",
+  "preparation": {
+    "clearAlphaAtMost": 5,
+    "worldHeight": 82,
+    "preserveSource": true
+  }
+}

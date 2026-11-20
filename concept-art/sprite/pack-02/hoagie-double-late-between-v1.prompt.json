@@ -1,0 +1,15 @@
+{
+  "tool": "built-in image_gen",
+  "date": "2026-11-19",
+  "prompt": "ONE full-body 2D fighting-game sprite of Hulk Hoagie facing RIGHT, isolated on genuine transparent background. Reference1 authoritative shipped costume and identity; reference2 starting double-jump tuck. Exact brown flat cap, angry square face and short dark beard, broad hairy muscular wrestler, BURGUNDY singlet with CREAM narrow edging/straps, cream forearm wraps, dark studded rounded kneepads, tall brown boots with cream laces. Preserve shipped engraved cartoon ink, proportions, warm colors. Draw a double-jump LATE in-between: settle into guarded rising tuck, fists near chest and elbows close, knees bent beneath hips, boots angled down and slightly separated. Almost reference2's final pose. Entire cap, fists and soles visible; no crop. One subtle transition drawing, no costume redesign. Clean hard ink silhouette, natural edge antialiasing only. NO glow, aura, mist, shadow, ground, background, motion lines, text, extra props or extra figures.",
+  "references": [
+    "hoagie-shipped-idle-reference.png",
+    "hoagie-shipped-double-reference-2.png"
+  ],
+  "source": "exec-dfd9c444-a4fa-4df2-a58e-abcc4cbef6fc.png",
+  "preparation": {
+    "alphaFloor": 5,
+    "worldHeight": 88,
+    "rootYWorld": 83
+  }
+}

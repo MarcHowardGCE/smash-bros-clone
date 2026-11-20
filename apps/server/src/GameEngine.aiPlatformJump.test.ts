@@ -2,6 +2,9 @@ import { describe, expect, it } from 'vitest';
 import { createBotMemory, decideBotInput, type BotMemory } from '@smash/engine';
 import {
   BOT_DIFFICULTY_PRESETS,
+  CHARACTER_REGISTRY,
+  getCharacterStats,
+  type CharacterId,
   INPUT_BITS,
   PHYSICS,
   PlayerStateEnum,
@@ -183,13 +186,13 @@ describe('GameEngine AI platform jump integration', () => {
   });
 });
 
-it('descends from a soft platform and attacks a target directly below in either facing', () => {
+it.each(Object.keys(CHARACTER_REGISTRY) as CharacterId[])('%s descends from a soft platform and attacks a target directly below in either facing', characterId => {
   for (const facing of [-1, 1] as const) {
-    const engine = new GameEngine({ playerIds: ['bot', 'opponent'] });
+    const engine = new GameEngine({ playerIds: ['bot', 'opponent'], characterIds: { bot: characterId } });
     const platform = STAGE.PLATFORMS[0]!;
     const x = platform.x + platform.width / 2;
     for (const [id, y] of [['bot', platform.y], ['opponent', STAGE.MAIN_PLATFORM.y]] as const) {
-      primePlayer(engine, id, { x, y: y - PHYSICS.HURTBOX_RADIUS, vx: 0, vy: 0,
+      primePlayer(engine, id, { x, y: y - getCharacterStats(id === 'bot' ? characterId : 'all-rounder').hurtboxRadius, vx: 0, vy: 0,
         facing, state: PlayerStateEnum.IDLE, stateFrame: 0, isGrounded: true,
         isInvincible: false, invincibilityFrames: 0, respawnTimer: 0, ledgeId: null });
     }
@@ -209,6 +212,7 @@ it('descends from a soft platform and attacks a target directly below in either 
     }
     expect(descended).toBe(true);
     expect(attacked).toBe(true);
+    expect(getMutableState(engine).players.opponent!.percent).toBeGreaterThan(0);
     expect(getMutableState(engine).players.bot!.isKnockedOut).toBe(false);
   }
 });

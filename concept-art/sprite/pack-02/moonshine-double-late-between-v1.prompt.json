@@ -1,0 +1,18 @@
+{
+  "tool": "built-in image_gen",
+  "date": "2026-11-18",
+  "prompt": "Production full-body 2D Moonshine sprite, ONE EARLY DOUBLE-JUMP in-between facing RIGHT, genuinely transparent RGBA. Supplied image is exact SHIPPED identity and costume reference: brown raccoon cap with striped tail, scruffy goatee/long nose/sleepy grin, CREAM sleeveless undershirt, dark suspenders, RED kerchief, cream hand/forearm wraps, patched BLUE jeans/rolled cuffs, hip rope, oversized brown YELLOW-laced boots. Match wiry adult anatomy, crisp black ink outlines and warm textured shading. Pose: LATE DOUBLE-JUMP recoil, torso upright with slight forward lean, both knees returning beneath waist with front knee higher and drawn toward belly, rear knee bent and boot tucked back under hip, wrapped fists in close guard beside ribs. Compact airborne rising step, halfway from extended legs to final rise tuck. No kick, no straight leg or arms overhead. Whole figure with margin. NO ground, backdrop, floor shadows, glow, halo, mist, haze, blur, motion lines, text or extra limbs. Empty background alpha zero.",
+  "references": [
+    "moonshine-shipped-idle-reference.png"
+  ],
+  "preparation": {
+    "alphaFloor": 5,
+    "worldHeight": 74,
+    "rootYWorld": 73,
+    "preserveSource": true,
+    "detachedPixelsRemoved": 5,
+    "detachedAlphaLimit": 9,
+    "distanceFromSolid": 4
+  },
+  "review": "Early pose reviewed before remaining poses. New head scale aligned with existing drawings; shipped costume preserved. Alpha cleanup, registered sequence and both-facing Dojo reviewed."
+}

@@ -1,0 +1,16 @@
+{
+  "tool": "built-in image_gen",
+  "date": "2026-11-19",
+  "prompt": "ONE dedicated full-body Mr. Wrong fast-fall EARLY in-between game sprite facing RIGHT. References are shipped fast-fall poses; preserve exact head/body proportions, costume, compact floppy hat and rendering. Pose: hunched shoulders and tucked elbows, knees together under broad shorts, feet tentacles gathered closely downward, long grinning face angled forward, a subtle midpoint between reference1 and reference2. EXACT yellow jacket with burgundy dots, burgundy vest with THREE yellow buttons, cream ruff/cuffs, pink dark-dot shorts with shipped patch, lavender hair, cream/burgundy striped floppy cap with cream pompom, TURQUOISE tentacle hands/feet with pink suckers. Hands down close to thighs, airborne. Entire figure uncropped with all tentacle curls. Fine engraved cartoon ink and warm shading matching references, not 3D. Genuine transparent background; crisp silhouette with natural antialiasing only. NO glow, white mist, aura, shadow, floor, background, motion streaks, lettering or props.",
+  "source": "exec-65ee0048-e67d-41c9-9000-9ded557be21d.png",
+  "references": [
+    "mr-wrong-shipped-fastfall-0.png",
+    "mr-wrong-shipped-fastfall-1.png"
+  ],
+  "preparation": {
+    "alphaFloor": 5,
+    "worldHeight": 98,
+    "airRootWorldY": 70
+  },
+  "review": "Early pose reviewed first. Final common airborne anchor replaces initial interpolated registration after board review; both-facing final Dojo checks passed."
+}

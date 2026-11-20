@@ -1,0 +1,10 @@
+{
+  "source": "C:\\Users\\misac\\.codex\\generated_images\\01a1d512-1266-7be0-b658-8ca4590e1a8c\\exec-c054593b-17d5-4982-bfb8-7e61644b2a39.png",
+  "prompt": "ONE full-body transparent game sprite: Mrs. Tasselbottom rising in air, facing RIGHT. Exact shipped references 1 start and 2 finish. Draw subtle SETTLE in-between 80% toward final pose: broad royal purple draped gown, gold ropes and tassels same arrangement, cream cuffs and lace hem, large pale elderly smiling face, long nose, white lavender tight curls, small tilted burgundy hat gold crown pins, burgundy gold-buckled shoes together tucked under lifted hem, both fists guard. Nearly final pose, knees tucked closely together beneath hem, shoulders gently forward toward final pose, fists close to chest. Small incremental movement, no new gesture. Preserve large head/hands relative to broad rounded gown, all anatomy and costume of references. Bold outlined detailed illustrated game sprite. Full crown and shoes inside transparent padding. NO red fringe/crop contamination, no glow/haze/shadow, floor, particles, text or background. Genuine alpha, opaque interior, clean antialiased silhouette.",
+  "references": [
+    "mrs-tasselbottom-shipped-rise-0.png",
+    "mrs-tasselbottom-shipped-rise-1.png"
+  ],
+  "tool": "built-in image_gen",
+  "date": "2026-11-20"
+}

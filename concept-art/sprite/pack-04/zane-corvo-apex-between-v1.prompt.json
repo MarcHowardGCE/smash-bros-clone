@@ -1,0 +1,16 @@
+{
+  "tool": "built-in image_gen",
+  "date": "2026-11-17",
+  "transparent_background": true,
+  "references": [
+    "concept-art/sprite/pack-04/zane-corvo-idle.png",
+    "apps/client/public/fighter-art-pack-04-v1/zane-corvo-air-1.png",
+    "apps/client/public/fighter-art-pack-04-v1/zane-corvo-air-2.png"
+  ],
+  "prompt": "Create ONE full-body production game sprite of Zane Corvo facing RIGHT in three-quarter side view. Reference 1 is the authoritative identity, exact costume, anatomy, palette and ink drawing style. References 2 and 3 are ONLY adjacent pose references. Draw a new apex in-between halfway from the tight two-knee tuck in reference 2 to the relaxed descending legs in reference 3: thighs beginning to lower, both knees still bent, boots dropping just below the hips, hands opening partway and easing outward. Both boots entirely airborne. Keep the head and torso proportions exactly consistent with reference 1, with tousled brown hair, stubble, half-lidded expression, brown-black biker jacket with silver studs and zips, buttoned dark waistcoat, silver chain, belt, dark trousers, and dark chunky boots with cream laces. Same detailed flat ink-and-hatching game artwork; do not redesign or change costume. Full silhouette centered with generous clear margins and both boot soles visible. TRUE transparent background. NO ground, floor shadow, ambient shadow, glow, halo, mist, gradients, motion streaks, text, or colored fringe. Outside crisp antialiased ink edges must be fully empty. Never reproduce the dark backdrop of pose references.",
+  "preparation": {
+    "clearAlphaAtMost": 5,
+    "worldHeight": 74,
+    "preserveSource": true
+  }
+}

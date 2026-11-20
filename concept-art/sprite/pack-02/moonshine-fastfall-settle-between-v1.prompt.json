@@ -1,0 +1,18 @@
+{
+  "tool": "built-in image_gen",
+  "date": "2026-11-18",
+  "prompt": "Production full-body 2D Moonshine fighter sprite, ONE early FAST FALL transition facing RIGHT on genuine transparent RGBA. Supplied image is exact SHIPPED identity/costume reference: brown raccoon cap with striped tail, scruffy goatee, long nose/sleepy grin, CREAM sleeveless undershirt, dark suspenders, RED kerchief, cream hand/forearm wraps, patched BLUE jeans/rolled cuffs, hip rope, oversized brown YELLOW-laced boots. Match wiry adult proportions and crisp textured ink shading. SETTLING FAST FALL: maintain compact tuck, knees close with near knee slightly ahead and lower, torso leaned forward, boots hanging beneath the knees with toes gently down, wrapped fists held close at the waist. Relax shoulders slightly as a braced descent prepares touchdown. Still airborne, no planted foot. A tight descending brace, not attack or seated floor pose. Whole figure with margin. No ground, backdrop, floor shadow, mist, haze, glow, halo, text, blur, motion lines, extra limbs. Background alpha zero.",
+  "references": [
+    "moonshine-shipped-idle-reference.png"
+  ],
+  "preparation": {
+    "alphaFloor": 5,
+    "worldHeight": 60,
+    "rootYWorld": 73,
+    "preserveSource": true,
+    "detachedPixelsRemoved": 0,
+    "detachedAlphaLimit": 0,
+    "distanceFromSolid": 4
+  },
+  "review": "Early reviewed before remaining poses against shipped costume and existing endpoints; prepared alpha inspected and both-facing Dojo tested."
+}

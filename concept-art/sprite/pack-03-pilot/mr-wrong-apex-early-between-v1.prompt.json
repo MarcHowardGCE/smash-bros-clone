@@ -1,0 +1,15 @@
+{
+  "tool": "built-in image_gen",
+  "date": "2026-11-19",
+  "prompt": "ONE dedicated full-body right-facing Mr. Wrong APEX EARLY in-between game sprite. Interpolate between two shipped apex references with a SMALL controlled change. Keep exact proportions: compact floppy cream/burgundy striped cap hanging left, lavender curly hair, long grinning face, yellow jacket with burgundy dots, burgundy vest with yellow buttons, cream ruff/cuffs, pink shorts with dark dots and patch, TURQUOISE tentacle hands and feet with pink suckers. No redesign, no taller hat or thinner body. Apex early pose: compact knees raised beneath broad shorts, tentacle feet coiled under knees but starting to relax a little, arms curved out beside body, torso upright in air. Match reference 1's broad silhouette moving slightly toward reference 2's relaxed posture. Entire pompom, fingers and tentacle curls visible uncropped. Fine engraved cartoon ink matching references. Genuine transparent background, crisp silhouette natural edge antialiasing only. NO glow, haze, aura, shadow, background, floor, motion marks, text or props.",
+  "source": "exec-2fc8ee98-c61b-4b2c-a90a-885259f7d022.png",
+  "references": [
+    "mr-wrong-shipped-apex-0.png",
+    "mr-wrong-shipped-apex-1.png"
+  ],
+  "preparation": {
+    "alphaFloor": 5,
+    "worldHeight": 80,
+    "airRootWorldY": 60
+  }
+}

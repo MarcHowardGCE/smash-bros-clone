@@ -1,42 +1,42 @@
 {
-  "sourceRevision": 73,
-  "frames": 1014,
+  "sourceRevision": 93,
+  "frames": 1072,
   "pages": 4,
   "livePages": 4,
   "liveTextureBytes": 67108864,
-  "downloadBytes": 17356819,
+  "downloadBytes": 18716359,
   "sampling": "premultiplied-alpha bilinear at two pixels per world unit; original artwork preserved",
   "files": [
     {
       "file": "atlas-moonshine-live-0.png",
       "width": 2048,
       "height": 2048,
-      "bytes": 6319802,
-      "sha256": "d9c967f8a5f2b88e078008e5e391517aad41c79b6e773072a0dd56959dcf2106",
+      "bytes": 6292032,
+      "sha256": "67760966452e310a1aa3690b0a79cd38b66d0822d64cb79902a8e45530f90822",
       "live": true
     },
     {
       "file": "atlas-moonshine-live-1.png",
       "width": 2048,
       "height": 2048,
-      "bytes": 1512219,
-      "sha256": "fd988390bc4e4ee438c0018bc20b681c89f6e4e06628e5d624c15ee527f1b588",
+      "bytes": 2170315,
+      "sha256": "2b4817282eef3b57fc3d7172899acc117598879ec414e9a173071d67a3b9058a",
       "live": true
     },
     {
       "file": "atlas-hulk-hoagie-live-0.png",
       "width": 2048,
       "height": 2048,
-      "bytes": 6005888,
-      "sha256": "3cad902e36eee82ec3349076cb5dbf7197426c8a796256a25af98ab666567527",
+      "bytes": 5857309,
+      "sha256": "0b94656bef06f16b079b7d74b43d64c81edeb68f47a2338f95a143c2c7f2a1f7",
       "live": true
     },
     {
       "file": "atlas-hulk-hoagie-live-1.png",
       "width": 2048,
       "height": 2048,
-      "bytes": 3518910,
-      "sha256": "095ed54af9c4fd8bd2fc596cee36d4afaebe1d02d515331c8bbd4160bfa5186b",
+      "bytes": 4396703,
+      "sha256": "3c9af3a2b4339c93eb1e1938d66c4791ad36b44b38da93da855a71b9a31f52d9",
       "live": true
     }
   ]

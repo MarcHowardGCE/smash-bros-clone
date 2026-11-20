@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "revision": 104,
+  "revision": 127,
   "characters": {
     "zane-corvo": {
       "clips": {
@@ -764,17 +764,18 @@
           "scale": 0.13874788494077833,
           "frames": [
             {
-              "image": "zane-corvo-stance-3.png",
+              "image": "zane-corvo-squat-entry-between-prepared-v1.png",
               "rect": [
                 0,
                 0,
-                232,
-                664
+                725,
+                1157
               ],
               "root": [
-                123,
-                664
-              ]
+                362.5,
+                1157
+              ],
+              "scale": 0.0665514261019879
             },
             {
               "image": "zane-corvo-stance-1.png",
@@ -788,11 +789,26 @@
                 130,
                 453
               ]
+            },
+            {
+              "image": "zane-corvo-squat-extend-between-prepared-v1.png",
+              "rect": [
+                0,
+                0,
+                709,
+                1227
+              ],
+              "root": [
+                354.5,
+                1227
+              ],
+              "scale": 0.06438467807660962
             }
           ],
           "durations": [
             1,
-            2
+            1,
+            1
           ]
         },
         "air_rise_loop": {
@@ -813,6 +829,62 @@
               ]
             },
             {
+              "image": "zane-corvo-rise-early-between-prepared-v1.png",
+              "rect": [
+                0,
+                0,
+                825,
+                1507
+              ],
+              "root": [
+                412.5,
+                1507
+              ],
+              "scale": 0.054412740544127404
+            },
+            {
+              "image": "zane-corvo-rise-between-prepared-v1.png",
+              "rect": [
+                0,
+                0,
+                727,
+                1169
+              ],
+              "root": [
+                363.5,
+                1169
+              ],
+              "scale": 0.07014542343883662
+            },
+            {
+              "image": "zane-corvo-rise-late-between-prepared-v1.png",
+              "rect": [
+                0,
+                0,
+                886,
+                1294
+              ],
+              "root": [
+                443,
+                1294
+              ],
+              "scale": 0.05873261205564142
+            },
+            {
+              "image": "zane-corvo-rise-settle-between-prepared-v1.png",
+              "rect": [
+                0,
+                0,
+                898,
+                1329
+              ],
+              "root": [
+                449,
+                1329
+              ],
+              "scale": 0.0526711813393529
+            },
+            {
               "image": "zane-corvo-air-1.png",
               "rect": [
                 0,
@@ -827,8 +899,12 @@
             }
           ],
           "durations": [
-            5,
-            5
+            2,
+            2,
+            2,
+            2,
+            2,
+            2
           ]
         },
         "air_apex_loop": {
@@ -849,6 +925,62 @@
               ]
             },
             {
+              "image": "zane-corvo-apex-early-between-prepared-v1.png",
+              "rect": [
+                0,
+                0,
+                962,
+                1411
+              ],
+              "root": [
+                481,
+                1411
+              ],
+              "scale": 0.04961020552799433
+            },
+            {
+              "image": "zane-corvo-apex-between-prepared-v1.png",
+              "rect": [
+                0,
+                0,
+                948,
+                1370
+              ],
+              "root": [
+                474,
+                1370
+              ],
+              "scale": 0.05401459854014599
+            },
+            {
+              "image": "zane-corvo-apex-late-between-prepared-v1.png",
+              "rect": [
+                0,
+                0,
+                995,
+                1448
+              ],
+              "root": [
+                497.5,
+                1448
+              ],
+              "scale": 0.052486187845303865
+            },
+            {
+              "image": "zane-corvo-apex-settle-between-prepared-v1.png",
+              "rect": [
+                0,
+                0,
+                1004,
+                1468
+              ],
+              "root": [
+                502,
+                1468
+              ],
+              "scale": 0.052452316076294275
+            },
+            {
               "image": "zane-corvo-air-2.png",
               "rect": [
                 0,
@@ -863,8 +995,12 @@
             }
           ],
           "durations": [
-            5,
-            5
+            2,
+            2,
+            2,
+            2,
+            2,
+            2
           ]
         },
         "air_fall_loop": {
@@ -885,6 +1021,62 @@
               ]
             },
             {
+              "image": "zane-corvo-fall-early-between-prepared-v2.png",
+              "rect": [
+                0,
+                0,
+                946,
+                1410
+              ],
+              "root": [
+                473,
+                1410
+              ],
+              "scale": 0.05815602836879433
+            },
+            {
+              "image": "zane-corvo-fall-between-prepared-v1.png",
+              "rect": [
+                0,
+                0,
+                679,
+                1416
+              ],
+              "root": [
+                339.5,
+                1416
+              ],
+              "scale": 0.05790960451977401
+            },
+            {
+              "image": "zane-corvo-fall-late-between-prepared-v1.png",
+              "rect": [
+                0,
+                0,
+                729,
+                1753
+              ],
+              "root": [
+                364.5,
+                1753
+              ],
+              "scale": 0.04677695379349686
+            },
+            {
+              "image": "zane-corvo-fall-settle-between-prepared-v1.png",
+              "rect": [
+                0,
+                0,
+                640,
+                1648
+              ],
+              "root": [
+                320,
+                1648
+              ],
+              "scale": 0.04975728155339806
+            },
+            {
               "image": "zane-corvo-dash-fall-3.png",
               "rect": [
                 0,
@@ -900,8 +1092,12 @@
             }
           ],
           "durations": [
-            6,
-            6
+            2,
+            2,
+            2,
+            2,
+            2,
+            2
           ]
         },
         "double_jump_transition": {
@@ -922,17 +1118,18 @@
               ]
             },
             {
-              "image": "zane-corvo-air-3.png",
+              "image": "zane-corvo-double-early-between-prepared-v1.png",
               "rect": [
                 0,
                 0,
-                234,
-                465
+                776,
+                1503
               ],
               "root": [
-                109,
-                465
-              ]
+                388,
+                1503
+              ],
+              "scale": 0.054557551563539586
             },
             {
               "image": "zane-corvo-air-0.png",
@@ -948,30 +1145,32 @@
               ]
             },
             {
-              "image": "zane-corvo-air-0.png",
+              "image": "zane-corvo-double-tuck-between-prepared-v1.png",
               "rect": [
                 0,
                 0,
-                244,
-                464
+                868,
+                1306
               ],
               "root": [
-                116,
-                464
-              ]
+                434,
+                1306
+              ],
+              "scale": 0.05742725880551302
             },
             {
-              "image": "zane-corvo-air-1.png",
+              "image": "zane-corvo-double-settle-between-prepared-v1.png",
               "rect": [
                 0,
                 0,
-                251,
-                366
+                913,
+                1418
               ],
               "root": [
-                124,
-                366
-              ]
+                456.5,
+                1418
+              ],
+              "scale": 0.04724964739069112
             },
             {
               "image": "zane-corvo-air-1.png",
@@ -986,6 +1185,14 @@
                 366
               ]
             }
+          ],
+          "durations": [
+            2,
+            2,
+            2,
+            2,
+            2,
+            2
           ]
         },
         "air_fastfall_loop": {
@@ -1007,6 +1214,20 @@
               "scale": 0.17737789203084833
             },
             {
+              "image": "zane-corvo-fast-early-between-prepared-v1.png",
+              "rect": [
+                0,
+                0,
+                758,
+                1420
+              ],
+              "root": [
+                379,
+                1420
+              ],
+              "scale": 0.05070422535211268
+            },
+            {
               "image": "zane-corvo-air-4.png",
               "rect": [
                 0,
@@ -1018,6 +1239,34 @@
                 140,
                 418
               ]
+            },
+            {
+              "image": "zane-corvo-fast-late-between-prepared-v1.png",
+              "rect": [
+                0,
+                0,
+                809,
+                1738
+              ],
+              "root": [
+                404.5,
+                1738
+              ],
+              "scale": 0.05063291139240506
+            },
+            {
+              "image": "zane-corvo-fast-settle-between-prepared-v1.png",
+              "rect": [
+                0,
+                0,
+                671,
+                1694
+              ],
+              "root": [
+                335.5,
+                1694
+              ],
+              "scale": 0.05194805194805195
             },
             {
               "image": "zane-corvo-dash-fall-5.png",
@@ -1035,27 +1284,45 @@
             }
           ],
           "durations": [
-            4,
-            4,
-            4
+            2,
+            2,
+            2,
+            2,
+            2,
+            2
           ]
         },
         "takeoff_neutral": {
-          "image": "zane-corvo-stance-3.png",
-          "scale": 0.13874788494077833,
+          "image": "zane-corvo-air-0.png",
+          "scale": 0.17672413793103448,
           "frames": [
             {
-              "image": "zane-corvo-stance-3.png",
+              "image": "zane-corvo-takeoff-neutral-start-between-prepared-v1.png",
               "rect": [
                 0,
                 0,
-                232,
-                664
+                640,
+                1323
               ],
               "root": [
-                123,
-                664
-              ]
+                320,
+                1323
+              ],
+              "scale": 0.06198034769463341
+            },
+            {
+              "image": "zane-corvo-takeoff-neutral-mid-between-prepared-v1.png",
+              "rect": [
+                0,
+                0,
+                587,
+                1425
+              ],
+              "root": [
+                293.5,
+                1425
+              ],
+              "scale": 0.05754385964912281
             },
             {
               "image": "zane-corvo-air-0.png",
@@ -1071,6 +1338,11 @@
               ],
               "scale": 0.17672413793103448
             }
+          ],
+          "durations": [
+            2,
+            2,
+            2
           ]
         },
         "takeoff_forward": {
@@ -1078,18 +1350,32 @@
           "scale": 0.17672413793103448,
           "frames": [
             {
-              "image": "zane-corvo-stance-3.png",
+              "image": "zane-corvo-takeoff-forward-start-between-prepared-v1.png",
               "rect": [
                 0,
                 0,
-                232,
-                664
+                983,
+                1229
               ],
               "root": [
-                123,
-                664
+                491.5,
+                1229
               ],
-              "scale": 0.13874788494077833
+              "scale": 0.06672091131000814
+            },
+            {
+              "image": "zane-corvo-takeoff-forward-mid-between-prepared-v1.png",
+              "rect": [
+                0,
+                0,
+                655,
+                1288
+              ],
+              "root": [
+                327.5,
+                1288
+              ],
+              "scale": 0.06366459627329192
             },
             {
               "image": "zane-corvo-air-0.png",
@@ -1102,41 +1388,67 @@
               "root": [
                 116,
                 464
-              ]
+              ],
+              "scale": 0.17672413793103448
             }
+          ],
+          "durations": [
+            2,
+            2,
+            2
           ]
         },
         "takeoff_backward": {
-          "image": "zane-corvo-air-3.png",
+          "image": "zane-corvo-air-0.png",
           "scale": 0.17672413793103448,
           "frames": [
             {
-              "image": "zane-corvo-stance-3.png",
+              "image": "zane-corvo-takeoff-backward-start-between-prepared-v1.png",
               "rect": [
                 0,
                 0,
-                232,
-                664
+                1039,
+                1291
               ],
               "root": [
-                123,
-                664
+                519.5,
+                1291
               ],
-              "scale": 0.13874788494077833
+              "scale": 0.061967467079783116
             },
             {
-              "image": "zane-corvo-air-3.png",
+              "image": "zane-corvo-takeoff-backward-mid-between-prepared-v1.png",
               "rect": [
                 0,
                 0,
-                234,
-                465
+                695,
+                1374
               ],
               "root": [
-                109,
-                465
-              ]
+                347.5,
+                1374
+              ],
+              "scale": 0.05967976710334789
+            },
+            {
+              "image": "zane-corvo-air-0.png",
+              "rect": [
+                0,
+                0,
+                244,
+                464
+              ],
+              "root": [
+                116,
+                464
+              ],
+              "scale": 0.17672413793103448
             }
+          ],
+          "durations": [
+            2,
+            2,
+            2
           ]
         },
         "turn_run": {
@@ -8823,18 +9135,60 @@
               ]
             },
             {
-              "image": "zane-corvo-stance-3.png",
+              "image": "zane-corvo-soft-compress-between-prepared-v1.png",
               "rect": [
                 0,
                 0,
-                232,
-                664
+                644,
+                1230
               ],
               "root": [
-                123,
-                664
+                322,
+                1230
               ],
-              "scale": 0.13874788494077833
+              "scale": 0.05447154471544716
+            },
+            {
+              "image": "zane-corvo-soft-rebound-between-prepared-v1.png",
+              "rect": [
+                0,
+                0,
+                812,
+                1664
+              ],
+              "root": [
+                406,
+                1664
+              ],
+              "scale": 0.04326923076923077
+            },
+            {
+              "image": "zane-corvo-soft-rise-between-prepared-v1.png",
+              "rect": [
+                0,
+                0,
+                747,
+                1418
+              ],
+              "root": [
+                373.5,
+                1418
+              ],
+              "scale": 0.054301833568406205
+            },
+            {
+              "image": "zane-corvo-soft-settle-between-prepared-v1.png",
+              "rect": [
+                0,
+                0,
+                754,
+                1308
+              ],
+              "root": [
+                377,
+                1308
+              ],
+              "scale": 0.06116207951070336
             },
             {
               "image": "zane-corvo-idle.png",
@@ -8850,6 +9204,14 @@
               ],
               "scale": 0.062452399086062454
             }
+          ],
+          "durations": [
+            2,
+            2,
+            2,
+            2,
+            2,
+            2
           ]
         },
         "land_heavy": {
@@ -8871,6 +9233,20 @@
               "scale": 0.1759656652360515
             },
             {
+              "image": "zane-corvo-heavy-compress-between-prepared-v1.png",
+              "rect": [
+                0,
+                0,
+                810,
+                1195
+              ],
+              "root": [
+                405,
+                1195
+              ],
+              "scale": 0.05439330543933055
+            },
+            {
               "image": "zane-corvo-stance-1.png",
               "rect": [
                 0,
@@ -8883,6 +9259,34 @@
                 453
               ],
               "scale": 0.13874788494077833
+            },
+            {
+              "image": "zane-corvo-heavy-rebound-between-prepared-v1.png",
+              "rect": [
+                0,
+                0,
+                843,
+                1307
+              ],
+              "root": [
+                421.5,
+                1307
+              ],
+              "scale": 0.05432287681713849
+            },
+            {
+              "image": "zane-corvo-heavy-settle-between-prepared-v1.png",
+              "rect": [
+                0,
+                0,
+                747,
+                1289
+              ],
+              "root": [
+                373.5,
+                1289
+              ],
+              "scale": 0.060512024825446084
             },
             {
               "image": "zane-corvo-idle.png",
@@ -8898,6 +9302,14 @@
               ],
               "scale": 0.062452399086062454
             }
+          ],
+          "durations": [
+            3,
+            3,
+            3,
+            3,
+            3,
+            3
           ]
         },
         "ledge_drop": {
@@ -11807,17 +12219,18 @@
           "scale": 0.13036565977742448,
           "frames": [
             {
-              "image": "velvet-reply-stance-3.png",
+              "image": "velvet-reply-squat-entry-between-prepared-v1.png",
               "rect": [
                 0,
                 0,
-                270,
-                642
+                716,
+                1243
               ],
               "root": [
-                166,
-                642
-              ]
+                358,
+                1243
+              ],
+              "scale": 0.061142397425583264
             },
             {
               "image": "velvet-reply-stance-1.png",
@@ -11831,11 +12244,26 @@
                 153,
                 458
               ]
+            },
+            {
+              "image": "velvet-reply-squat-extend-between-prepared-v1.png",
+              "rect": [
+                0,
+                0,
+                744,
+                1316
+              ],
+              "root": [
+                372,
+                1316
+              ],
+              "scale": 0.06003039513677812
             }
           ],
           "durations": [
             1,
-            2
+            1,
+            1
           ]
         },
         "air_rise_loop": {
@@ -11856,6 +12284,62 @@
               ]
             },
             {
+              "image": "velvet-reply-rise-early-between-prepared-v1.png",
+              "rect": [
+                0,
+                0,
+                924,
+                1505
+              ],
+              "root": [
+                462,
+                1505
+              ],
+              "scale": 0.0504983388704319
+            },
+            {
+              "image": "velvet-reply-rise-between-prepared-v1.png",
+              "rect": [
+                0,
+                0,
+                773,
+                1208
+              ],
+              "root": [
+                386.5,
+                1208
+              ],
+              "scale": 0.057947019867549666
+            },
+            {
+              "image": "velvet-reply-rise-late-between-prepared-v1.png",
+              "rect": [
+                0,
+                0,
+                919,
+                1393
+              ],
+              "root": [
+                459.5,
+                1393
+              ],
+              "scale": 0.048815506101938265
+            },
+            {
+              "image": "velvet-reply-rise-settle-between-prepared-v1.png",
+              "rect": [
+                0,
+                0,
+                965,
+                1391
+              ],
+              "root": [
+                482.5,
+                1391
+              ],
+              "scale": 0.04708842559309849
+            },
+            {
               "image": "velvet-reply-air-1.png",
               "rect": [
                 0,
@@ -11870,8 +12354,12 @@
             }
           ],
           "durations": [
-            5,
-            5
+            2,
+            2,
+            2,
+            2,
+            2,
+            2
           ]
         },
         "air_apex_loop": {
@@ -11892,6 +12380,62 @@
               ]
             },
             {
+              "image": "velvet-reply-apex-early-between-prepared-v1.png",
+              "rect": [
+                0,
+                0,
+                943,
+                1476
+              ],
+              "root": [
+                471.5,
+                1476
+              ],
+              "scale": 0.046747967479674794
+            },
+            {
+              "image": "velvet-reply-apex-between-prepared-v1.png",
+              "rect": [
+                0,
+                0,
+                861,
+                1446
+              ],
+              "root": [
+                430.5,
+                1446
+              ],
+              "scale": 0.051175656984785614
+            },
+            {
+              "image": "velvet-reply-apex-late-between-prepared-v1.png",
+              "rect": [
+                0,
+                0,
+                854,
+                1559
+              ],
+              "root": [
+                427,
+                1559
+              ],
+              "scale": 0.04939063502245029
+            },
+            {
+              "image": "velvet-reply-apex-settle-between-prepared-v1.png",
+              "rect": [
+                0,
+                0,
+                857,
+                1663
+              ],
+              "root": [
+                428.5,
+                1663
+              ],
+              "scale": 0.04810583283223091
+            },
+            {
               "image": "velvet-reply-air-2.png",
               "rect": [
                 0,
@@ -11906,8 +12450,12 @@
             }
           ],
           "durations": [
-            5,
-            5
+            2,
+            2,
+            2,
+            2,
+            2,
+            2
           ]
         },
         "air_fall_loop": {
@@ -11928,6 +12476,62 @@
               ]
             },
             {
+              "image": "velvet-reply-fall-early-between-prepared-v1.png",
+              "rect": [
+                0,
+                0,
+                832,
+                1566
+              ],
+              "root": [
+                416,
+                1566
+              ],
+              "scale": 0.05236270753512133
+            },
+            {
+              "image": "velvet-reply-fall-between-prepared-v1.png",
+              "rect": [
+                0,
+                0,
+                715,
+                1622
+              ],
+              "root": [
+                357.5,
+                1622
+              ],
+              "scale": 0.05055487053020962
+            },
+            {
+              "image": "velvet-reply-fall-late-between-prepared-v1.png",
+              "rect": [
+                0,
+                0,
+                683,
+                1805
+              ],
+              "root": [
+                341.5,
+                1805
+              ],
+              "scale": 0.04542936288088643
+            },
+            {
+              "image": "velvet-reply-fall-settle-between-prepared-v1.png",
+              "rect": [
+                0,
+                0,
+                628,
+                1971
+              ],
+              "root": [
+                314,
+                1971
+              ],
+              "scale": 0.041603247082699135
+            },
+            {
               "image": "velvet-reply-dash-fall-3.png",
               "rect": [
                 0,
@@ -11943,8 +12547,12 @@
             }
           ],
           "durations": [
-            6,
-            6
+            2,
+            2,
+            2,
+            2,
+            2,
+            2
           ]
         },
         "double_jump_transition": {
@@ -11965,17 +12573,18 @@
               ]
             },
             {
-              "image": "velvet-reply-air-3.png",
+              "image": "velvet-reply-double-early-between-prepared-v1.png",
               "rect": [
                 0,
                 0,
-                282,
-                464
+                799,
+                1490
               ],
               "root": [
-                157,
-                464
-              ]
+                399.5,
+                1490
+              ],
+              "scale": 0.05503355704697987
             },
             {
               "image": "velvet-reply-air-0.png",
@@ -11991,30 +12600,32 @@
               ]
             },
             {
-              "image": "velvet-reply-air-0.png",
+              "image": "velvet-reply-double-tuck-between-prepared-v1.png",
               "rect": [
                 0,
                 0,
-                256,
-                480
+                867,
+                1222
               ],
               "root": [
-                132,
-                480
-              ]
+                433.5,
+                1222
+              ],
+              "scale": 0.057283142389525366
             },
             {
-              "image": "velvet-reply-air-1.png",
+              "image": "velvet-reply-double-settle-between-prepared-v1.png",
               "rect": [
                 0,
                 0,
-                243,
-                370
+                782,
+                1292
               ],
               "root": [
-                130,
-                370
-              ]
+                391,
+                1292
+              ],
+              "scale": 0.05030959752321981
             },
             {
               "image": "velvet-reply-air-1.png",
@@ -12029,6 +12640,14 @@
                 370
               ]
             }
+          ],
+          "durations": [
+            2,
+            2,
+            2,
+            2,
+            2,
+            2
           ]
         },
         "air_fastfall_loop": {
@@ -12050,6 +12669,20 @@
               "scale": 0.18548387096774194
             },
             {
+              "image": "velvet-reply-fast-early-between-prepared-v1.png",
+              "rect": [
+                0,
+                0,
+                796,
+                1517
+              ],
+              "root": [
+                398,
+                1517
+              ],
+              "scale": 0.049439683586025046
+            },
+            {
               "image": "velvet-reply-air-4.png",
               "rect": [
                 0,
@@ -12061,6 +12694,34 @@
                 135,
                 477
               ]
+            },
+            {
+              "image": "velvet-reply-fast-late-between-prepared-v2.png",
+              "rect": [
+                0,
+                0,
+                702,
+                1407
+              ],
+              "root": [
+                351,
+                1407
+              ],
+              "scale": 0.05828002842928216
+            },
+            {
+              "image": "velvet-reply-fast-settle-between-prepared-v1.png",
+              "rect": [
+                0,
+                0,
+                632,
+                1996
+              ],
+              "root": [
+                316,
+                1996
+              ],
+              "scale": 0.04208416833667335
             },
             {
               "image": "velvet-reply-dash-fall-5.png",
@@ -12078,27 +12739,45 @@
             }
           ],
           "durations": [
-            4,
-            4,
-            4
+            2,
+            2,
+            2,
+            2,
+            2,
+            2
           ]
         },
         "takeoff_neutral": {
-          "image": "velvet-reply-stance-3.png",
-          "scale": 0.13036565977742448,
+          "image": "velvet-reply-air-0.png",
+          "scale": 0.17083333333333334,
           "frames": [
             {
-              "image": "velvet-reply-stance-3.png",
+              "image": "velvet-reply-takeoff-neutral-start-between-prepared-v1.png",
               "rect": [
                 0,
                 0,
-                270,
-                642
+                655,
+                1318
               ],
               "root": [
-                166,
-                642
-              ]
+                327.5,
+                1318
+              ],
+              "scale": 0.0622154779969651
+            },
+            {
+              "image": "velvet-reply-takeoff-neutral-mid-between-prepared-v1.png",
+              "rect": [
+                0,
+                0,
+                784,
+                1392
+              ],
+              "root": [
+                392,
+                1392
+              ],
+              "scale": 0.05890804597701149
             },
             {
               "image": "velvet-reply-air-0.png",
@@ -12114,6 +12793,11 @@
               ],
               "scale": 0.17083333333333334
             }
+          ],
+          "durations": [
+            2,
+            2,
+            2
           ]
         },
         "takeoff_forward": {
@@ -12121,18 +12805,32 @@
           "scale": 0.17083333333333334,
           "frames": [
             {
-              "image": "velvet-reply-stance-3.png",
+              "image": "velvet-reply-takeoff-forward-start-between-prepared-v1.png",
               "rect": [
                 0,
                 0,
-                270,
-                642
+                1014,
+                1268
               ],
               "root": [
-                166,
-                642
+                507,
+                1268
               ],
-              "scale": 0.13036565977742448
+              "scale": 0.06466876971608833
+            },
+            {
+              "image": "velvet-reply-takeoff-forward-mid-between-prepared-v1.png",
+              "rect": [
+                0,
+                0,
+                737,
+                1336
+              ],
+              "root": [
+                368.5,
+                1336
+              ],
+              "scale": 0.061377245508982034
             },
             {
               "image": "velvet-reply-air-0.png",
@@ -12145,41 +12843,67 @@
               "root": [
                 132,
                 480
-              ]
+              ],
+              "scale": 0.17083333333333334
             }
+          ],
+          "durations": [
+            2,
+            2,
+            2
           ]
         },
         "takeoff_backward": {
-          "image": "velvet-reply-air-3.png",
+          "image": "velvet-reply-air-0.png",
           "scale": 0.17083333333333334,
           "frames": [
             {
-              "image": "velvet-reply-stance-3.png",
+              "image": "velvet-reply-takeoff-backward-start-between-prepared-v1.png",
               "rect": [
                 0,
                 0,
-                270,
-                642
+                1011,
+                1283
               ],
               "root": [
-                166,
-                642
+                505.5,
+                1283
               ],
-              "scale": 0.13036565977742448
+              "scale": 0.06235385814497272
             },
             {
-              "image": "velvet-reply-air-3.png",
+              "image": "velvet-reply-takeoff-backward-mid-between-prepared-v1.png",
               "rect": [
                 0,
                 0,
-                282,
-                464
+                886,
+                1324
               ],
               "root": [
-                157,
-                464
-              ]
+                443,
+                1324
+              ],
+              "scale": 0.061933534743202415
+            },
+            {
+              "image": "velvet-reply-air-0.png",
+              "rect": [
+                0,
+                0,
+                256,
+                480
+              ],
+              "root": [
+                132,
+                480
+              ],
+              "scale": 0.17083333333333334
             }
+          ],
+          "durations": [
+            2,
+            2,
+            2
           ]
         },
         "turn_run": {
@@ -19865,18 +20589,60 @@
               ]
             },
             {
-              "image": "velvet-reply-stance-3.png",
+              "image": "velvet-reply-soft-compress-between-prepared-v1.png",
               "rect": [
                 0,
                 0,
-                270,
-                642
+                730,
+                1264
               ],
               "root": [
-                166,
-                642
+                365,
+                1264
               ],
-              "scale": 0.13036565977742448
+              "scale": 0.05775316455696203
+            },
+            {
+              "image": "velvet-reply-soft-rebound-between-prepared-v1.png",
+              "rect": [
+                0,
+                0,
+                815,
+                1473
+              ],
+              "root": [
+                407.5,
+                1473
+              ],
+              "scale": 0.051595383570943655
+            },
+            {
+              "image": "velvet-reply-soft-rise-between-prepared-v1.png",
+              "rect": [
+                0,
+                0,
+                668,
+                1324
+              ],
+              "root": [
+                334,
+                1324
+              ],
+              "scale": 0.05966767371601209
+            },
+            {
+              "image": "velvet-reply-soft-settle-between-prepared-v1.png",
+              "rect": [
+                0,
+                0,
+                688,
+                1306
+              ],
+              "root": [
+                344,
+                1306
+              ],
+              "scale": 0.062021439509954056
             },
             {
               "image": "velvet-reply-idle.png",
@@ -19892,6 +20658,14 @@
               ],
               "scale": 0.061933534743202415
             }
+          ],
+          "durations": [
+            2,
+            2,
+            2,
+            2,
+            2,
+            2
           ]
         },
         "land_heavy": {
@@ -19913,6 +20687,20 @@
               "scale": 0.17672413793103448
             },
             {
+              "image": "velvet-reply-heavy-compress-between-prepared-v1.png",
+              "rect": [
+                0,
+                0,
+                900,
+                1172
+              ],
+              "root": [
+                450,
+                1172
+              ],
+              "scale": 0.052901023890784986
+            },
+            {
               "image": "velvet-reply-stance-1.png",
               "rect": [
                 0,
@@ -19925,6 +20713,34 @@
                 458
               ],
               "scale": 0.13036565977742448
+            },
+            {
+              "image": "velvet-reply-heavy-rebound-between-prepared-v1.png",
+              "rect": [
+                0,
+                0,
+                716,
+                1260
+              ],
+              "root": [
+                358,
+                1260
+              ],
+              "scale": 0.05634920634920635
+            },
+            {
+              "image": "velvet-reply-heavy-settle-between-prepared-v1.png",
+              "rect": [
+                0,
+                0,
+                680,
+                1297
+              ],
+              "root": [
+                340,
+                1297
+              ],
+              "scale": 0.06090979182729375
             },
             {
               "image": "velvet-reply-idle.png",
@@ -19940,6 +20756,14 @@
               ],
               "scale": 0.061933534743202415
             }
+          ],
+          "durations": [
+            3,
+            3,
+            3,
+            3,
+            3,
+            3
           ]
         },
         "ledge_drop": {

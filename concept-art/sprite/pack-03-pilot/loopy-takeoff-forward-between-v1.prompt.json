@@ -1,0 +1,15 @@
+{
+  "tool": "built-in image_gen",
+  "date": "2026-11-19",
+  "prompt": "Create ONE transparent-background full-body 2D gameplay sprite of Loopy, an in-between animation drawing matching the TWO attached shipped takeoff frames exactly in character identity, proportions, costume, colors and inked cartoon style. Golden shaggy deer, brown branching antlers, sleepy eyes, grinning long black nose, BLANK CREAM basketball jersey with PURPLE trim, ragged PURPLE shorts, purple/cream striped wristbands, brown split hooves and cream ankle fur. NO numbers, no 49, no letters or logo. Face RIGHT. Whole antlers and hooves inside image, plenty of transparent padding. No glow, no haze, no shadow, no ground line, no particles, no motion trails, no text. Draw a modest halfway pose between reference1 and reference2, preserving torso/head/antler proportions and limb lengths; do not redesign or exaggerate. Both feet airborne. Forward takeoff: torso gently leaning right, knees curling back/left between these exact two poses. Flat sprite shading within silhouette ONLY. Alpha MUST be zero immediately outside black contour. No diffuse lighting whatsoever.",
+  "source": "C:\\Users\\misac\\.codex\\generated_images\\01a1d512-1266-7be0-b658-8ca4590e1a8c\\exec-e62a53ea-ed04-4a46-b755-cd6fc962cb63.png",
+  "references": [
+    "loopy-shipped-takeoff-forward-0.png",
+    "loopy-shipped-takeoff-forward-1.png"
+  ],
+  "rejectedNeutralSources": {
+    "initial": "C:\\Users\\misac\\.codex\\generated_images\\01a1d512-1266-7be0-b658-8ca4590e1a8c\\exec-cc0f94e7-ec3c-41e8-bd96-b52092a92366.png",
+    "correction": "C:\\Users\\misac\\.codex\\generated_images\\01a1d512-1266-7be0-b658-8ca4590e1a8c\\exec-c263800c-95d9-4926-9a06-d55dad1f0551.png",
+    "reason": "diffuse halo; neither registered"
+  }
+}

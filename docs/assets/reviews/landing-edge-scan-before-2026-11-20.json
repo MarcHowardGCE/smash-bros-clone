@@ -1,0 +1,708 @@
+{
+  "revision": 106,
+  "basis": "Visible red is a candidate, not automatic deletion: mouths/skin can legitimately contain red.",
+  "frames": [
+    {
+      "clip": "jump_squat",
+      "index": 0,
+      "image": "production/atlas-mrs-tasselbottom-live-0.webp",
+      "rect": [
+        132,
+        997,
+        130,
+        145
+      ],
+      "redVisible": 0,
+      "redFaint": 2
+    },
+    {
+      "clip": "jump_squat",
+      "index": 1,
+      "image": "production/atlas-mrs-tasselbottom-live-0.webp",
+      "rect": [
+        266,
+        997,
+        128,
+        145
+      ],
+      "redVisible": 0,
+      "redFaint": 0
+    },
+    {
+      "clip": "jump_squat",
+      "index": 2,
+      "image": "production/atlas-mrs-tasselbottom-live-0.webp",
+      "rect": [
+        398,
+        997,
+        137,
+        145
+      ],
+      "redVisible": 2,
+      "redFaint": 201
+    },
+    {
+      "clip": "takeoff_neutral",
+      "index": 0,
+      "image": "production/atlas-mrs-tasselbottom-live-0.webp",
+      "rect": [
+        1283,
+        997,
+        140,
+        165
+      ],
+      "redVisible": 2,
+      "redFaint": 381
+    },
+    {
+      "clip": "takeoff_neutral",
+      "index": 1,
+      "image": "production/atlas-mrs-tasselbottom-live-0.webp",
+      "rect": [
+        1427,
+        997,
+        128,
+        164
+      ],
+      "redVisible": 0,
+      "redFaint": 0
+    },
+    {
+      "clip": "takeoff_neutral",
+      "index": 2,
+      "image": "production/atlas-mrs-tasselbottom-live-0.webp",
+      "rect": [
+        856,
+        167,
+        129,
+        162
+      ],
+      "redVisible": 3,
+      "redFaint": 289
+    },
+    {
+      "clip": "takeoff_forward",
+      "index": 0,
+      "image": "production/atlas-mrs-tasselbottom-live-0.webp",
+      "rect": [
+        1559,
+        997,
+        148,
+        147
+      ],
+      "redVisible": 5,
+      "redFaint": 262
+    },
+    {
+      "clip": "takeoff_forward",
+      "index": 1,
+      "image": "production/atlas-mrs-tasselbottom-live-0.webp",
+      "rect": [
+        1711,
+        997,
+        144,
+        155
+      ],
+      "redVisible": 0,
+      "redFaint": 0
+    },
+    {
+      "clip": "takeoff_forward",
+      "index": 2,
+      "image": "production/atlas-mrs-tasselbottom-live-0.webp",
+      "rect": [
+        856,
+        167,
+        129,
+        162
+      ],
+      "redVisible": 3,
+      "redFaint": 289
+    },
+    {
+      "clip": "takeoff_backward",
+      "index": 0,
+      "image": "production/atlas-mrs-tasselbottom-live-0.webp",
+      "rect": [
+        1859,
+        997,
+        137,
+        153
+      ],
+      "redVisible": 4,
+      "redFaint": 260
+    },
+    {
+      "clip": "takeoff_backward",
+      "index": 1,
+      "image": "production/atlas-mrs-tasselbottom-live-0.webp",
+      "rect": [
+        2,
+        1171,
+        122,
+        158
+      ],
+      "redVisible": 0,
+      "redFaint": 0
+    },
+    {
+      "clip": "takeoff_backward",
+      "index": 2,
+      "image": "production/atlas-mrs-tasselbottom-live-0.webp",
+      "rect": [
+        856,
+        167,
+        129,
+        162
+      ],
+      "redVisible": 3,
+      "redFaint": 289
+    },
+    {
+      "clip": "air_rise_loop",
+      "index": 0,
+      "image": "production/atlas-mrs-tasselbottom-live-0.webp",
+      "rect": [
+        856,
+        167,
+        129,
+        162
+      ],
+      "redVisible": 3,
+      "redFaint": 289
+    },
+    {
+      "clip": "air_rise_loop",
+      "index": 1,
+      "image": "production/atlas-mrs-tasselbottom-live-0.webp",
+      "rect": [
+        128,
+        1171,
+        114,
+        161
+      ],
+      "redVisible": 0,
+      "redFaint": 0
+    },
+    {
+      "clip": "air_rise_loop",
+      "index": 2,
+      "image": "production/atlas-mrs-tasselbottom-live-0.webp",
+      "rect": [
+        246,
+        1171,
+        108,
+        160
+      ],
+      "redVisible": 1,
+      "redFaint": 0
+    },
+    {
+      "clip": "air_rise_loop",
+      "index": 3,
+      "image": "production/atlas-mrs-tasselbottom-live-0.webp",
+      "rect": [
+        358,
+        1171,
+        112,
+        159
+      ],
+      "redVisible": 0,
+      "redFaint": 0
+    },
+    {
+      "clip": "air_rise_loop",
+      "index": 4,
+      "image": "production/atlas-mrs-tasselbottom-live-0.webp",
+      "rect": [
+        474,
+        1171,
+        113,
+        158
+      ],
+      "redVisible": 1,
+      "redFaint": 0
+    },
+    {
+      "clip": "air_rise_loop",
+      "index": 5,
+      "image": "production/atlas-mrs-tasselbottom-live-0.webp",
+      "rect": [
+        989,
+        167,
+        114,
+        157
+      ],
+      "redVisible": 0,
+      "redFaint": 6
+    },
+    {
+      "clip": "air_apex_loop",
+      "index": 0,
+      "image": "production/atlas-mrs-tasselbottom-live-0.webp",
+      "rect": [
+        880,
+        997,
+        122,
+        151
+      ],
+      "redVisible": 1,
+      "redFaint": 244
+    },
+    {
+      "clip": "air_apex_loop",
+      "index": 1,
+      "image": "production/atlas-mrs-tasselbottom-live-0.webp",
+      "rect": [
+        591,
+        1171,
+        117,
+        151
+      ],
+      "redVisible": 0,
+      "redFaint": 0
+    },
+    {
+      "clip": "air_apex_loop",
+      "index": 2,
+      "image": "production/atlas-mrs-tasselbottom-live-0.webp",
+      "rect": [
+        712,
+        1171,
+        115,
+        150
+      ],
+      "redVisible": 0,
+      "redFaint": 0
+    },
+    {
+      "clip": "air_apex_loop",
+      "index": 3,
+      "image": "production/atlas-mrs-tasselbottom-live-0.webp",
+      "rect": [
+        831,
+        1171,
+        114,
+        150
+      ],
+      "redVisible": 2,
+      "redFaint": 0
+    },
+    {
+      "clip": "air_apex_loop",
+      "index": 4,
+      "image": "production/atlas-mrs-tasselbottom-live-0.webp",
+      "rect": [
+        949,
+        1171,
+        117,
+        149
+      ],
+      "redVisible": 0,
+      "redFaint": 0
+    },
+    {
+      "clip": "air_apex_loop",
+      "index": 5,
+      "image": "production/atlas-mrs-tasselbottom-live-0.webp",
+      "rect": [
+        1070,
+        1171,
+        115,
+        148
+      ],
+      "redVisible": 0,
+      "redFaint": 17
+    },
+    {
+      "clip": "air_fall_loop",
+      "index": 0,
+      "image": "production/atlas-mrs-tasselbottom-live-0.webp",
+      "rect": [
+        1006,
+        997,
+        130,
+        160
+      ],
+      "redVisible": 3,
+      "redFaint": 311
+    },
+    {
+      "clip": "air_fall_loop",
+      "index": 1,
+      "image": "production/atlas-mrs-tasselbottom-live-0.webp",
+      "rect": [
+        1189,
+        1171,
+        126,
+        159
+      ],
+      "redVisible": 0,
+      "redFaint": 0
+    },
+    {
+      "clip": "air_fall_loop",
+      "index": 2,
+      "image": "production/atlas-mrs-tasselbottom-live-0.webp",
+      "rect": [
+        1319,
+        1171,
+        124,
+        158
+      ],
+      "redVisible": 2,
+      "redFaint": 0
+    },
+    {
+      "clip": "air_fall_loop",
+      "index": 3,
+      "image": "production/atlas-mrs-tasselbottom-live-0.webp",
+      "rect": [
+        1447,
+        1171,
+        121,
+        156
+      ],
+      "redVisible": 0,
+      "redFaint": 0
+    },
+    {
+      "clip": "air_fall_loop",
+      "index": 4,
+      "image": "production/atlas-mrs-tasselbottom-live-0.webp",
+      "rect": [
+        1572,
+        1171,
+        117,
+        155
+      ],
+      "redVisible": 0,
+      "redFaint": 0
+    },
+    {
+      "clip": "air_fall_loop",
+      "index": 5,
+      "image": "production/atlas-mrs-tasselbottom-live-0.webp",
+      "rect": [
+        1693,
+        1171,
+        121,
+        153
+      ],
+      "redVisible": 0,
+      "redFaint": 6
+    },
+    {
+      "clip": "air_fastfall_loop",
+      "index": 0,
+      "image": "production/atlas-mrs-tasselbottom-live-0.webp",
+      "rect": [
+        1818,
+        1171,
+        142,
+        165
+      ],
+      "redVisible": 0,
+      "redFaint": 3
+    },
+    {
+      "clip": "air_fastfall_loop",
+      "index": 1,
+      "image": "production/atlas-mrs-tasselbottom-live-0.webp",
+      "rect": [
+        2,
+        1340,
+        120,
+        175
+      ],
+      "redVisible": 2,
+      "redFaint": 0
+    },
+    {
+      "clip": "air_fastfall_loop",
+      "index": 2,
+      "image": "production/atlas-mrs-tasselbottom-live-0.webp",
+      "rect": [
+        126,
+        1340,
+        119,
+        185
+      ],
+      "redVisible": 1,
+      "redFaint": 1
+    },
+    {
+      "clip": "air_fastfall_loop",
+      "index": 3,
+      "image": "production/atlas-mrs-tasselbottom-live-0.webp",
+      "rect": [
+        249,
+        1340,
+        120,
+        189
+      ],
+      "redVisible": 1,
+      "redFaint": 0
+    },
+    {
+      "clip": "air_fastfall_loop",
+      "index": 4,
+      "image": "production/atlas-mrs-tasselbottom-live-0.webp",
+      "rect": [
+        373,
+        1340,
+        117,
+        193
+      ],
+      "redVisible": 0,
+      "redFaint": 0
+    },
+    {
+      "clip": "air_fastfall_loop",
+      "index": 5,
+      "image": "production/atlas-mrs-tasselbottom-live-0.webp",
+      "rect": [
+        494,
+        1340,
+        129,
+        197
+      ],
+      "redVisible": 0,
+      "redFaint": 0
+    },
+    {
+      "clip": "double_jump_transition",
+      "index": 0,
+      "image": "production/atlas-mrs-tasselbottom-live-0.webp",
+      "rect": [
+        594,
+        167,
+        120,
+        174
+      ],
+      "redVisible": 0,
+      "redFaint": 293
+    },
+    {
+      "clip": "double_jump_transition",
+      "index": 1,
+      "image": "production/atlas-mrs-tasselbottom-live-0.webp",
+      "rect": [
+        1903,
+        1340,
+        131,
+        168
+      ],
+      "redVisible": 0,
+      "redFaint": 0
+    },
+    {
+      "clip": "double_jump_transition",
+      "index": 2,
+      "image": "production/atlas-mrs-tasselbottom-live-0.webp",
+      "rect": [
+        718,
+        167,
+        134,
+        161
+      ],
+      "redVisible": 1,
+      "redFaint": 1
+    },
+    {
+      "clip": "double_jump_transition",
+      "index": 3,
+      "image": "production/atlas-mrs-tasselbottom-live-0.webp",
+      "rect": [
+        2,
+        1541,
+        117,
+        162
+      ],
+      "redVisible": 0,
+      "redFaint": 0
+    },
+    {
+      "clip": "double_jump_transition",
+      "index": 4,
+      "image": "production/atlas-mrs-tasselbottom-live-0.webp",
+      "rect": [
+        123,
+        1541,
+        111,
+        162
+      ],
+      "redVisible": 0,
+      "redFaint": 0
+    },
+    {
+      "clip": "double_jump_transition",
+      "index": 5,
+      "image": "production/atlas-mrs-tasselbottom-live-0.webp",
+      "rect": [
+        856,
+        167,
+        129,
+        162
+      ],
+      "redVisible": 3,
+      "redFaint": 289
+    },
+    {
+      "clip": "land_soft",
+      "index": 0,
+      "image": "production/atlas-mrs-tasselbottom-live-0.webp",
+      "rect": [
+        1140,
+        997,
+        139,
+        136
+      ],
+      "redVisible": 2,
+      "redFaint": 35
+    },
+    {
+      "clip": "land_soft",
+      "index": 1,
+      "image": "production/atlas-mrs-tasselbottom-live-0.webp",
+      "rect": [
+        238,
+        1541,
+        137,
+        135
+      ],
+      "redVisible": 0,
+      "redFaint": 0
+    },
+    {
+      "clip": "land_soft",
+      "index": 2,
+      "image": "production/atlas-mrs-tasselbottom-live-0.webp",
+      "rect": [
+        379,
+        1541,
+        137,
+        134
+      ],
+      "redVisible": 2,
+      "redFaint": 129
+    },
+    {
+      "clip": "land_soft",
+      "index": 3,
+      "image": "production/atlas-mrs-tasselbottom-live-0.webp",
+      "rect": [
+        520,
+        1541,
+        131,
+        143
+      ],
+      "redVisible": 0,
+      "redFaint": 0
+    },
+    {
+      "clip": "land_soft",
+      "index": 4,
+      "image": "production/atlas-mrs-tasselbottom-live-0.webp",
+      "rect": [
+        655,
+        1541,
+        114,
+        152
+      ],
+      "redVisible": 0,
+      "redFaint": 0
+    },
+    {
+      "clip": "land_soft",
+      "index": 5,
+      "image": "production/atlas-mrs-tasselbottom-live-0.webp",
+      "rect": [
+        259,
+        2,
+        122,
+        161
+      ],
+      "redVisible": 3,
+      "redFaint": 56
+    },
+    {
+      "clip": "land_heavy",
+      "index": 0,
+      "image": "production/atlas-mrs-tasselbottom-live-0.webp",
+      "rect": [
+        1140,
+        997,
+        139,
+        136
+      ],
+      "redVisible": 2,
+      "redFaint": 35
+    },
+    {
+      "clip": "land_heavy",
+      "index": 1,
+      "image": "production/atlas-mrs-tasselbottom-live-0.webp",
+      "rect": [
+        773,
+        1541,
+        136,
+        133
+      ],
+      "redVisible": 1,
+      "redFaint": 0
+    },
+    {
+      "clip": "land_heavy",
+      "index": 2,
+      "image": "production/atlas-mrs-tasselbottom-live-0.webp",
+      "rect": [
+        379,
+        1541,
+        137,
+        134
+      ],
+      "redVisible": 2,
+      "redFaint": 129
+    },
+    {
+      "clip": "land_heavy",
+      "index": 3,
+      "image": "production/atlas-mrs-tasselbottom-live-0.webp",
+      "rect": [
+        913,
+        1541,
+        142,
+        143
+      ],
+      "redVisible": 0,
+      "redFaint": 0
+    },
+    {
+      "clip": "land_heavy",
+      "index": 4,
+      "image": "production/atlas-mrs-tasselbottom-live-0.webp",
+      "rect": [
+        1059,
+        1541,
+        116,
+        152
+      ],
+      "redVisible": 0,
+      "redFaint": 0
+    },
+    {
+      "clip": "land_heavy",
+      "index": 5,
+      "image": "production/atlas-mrs-tasselbottom-live-0.webp",
+      "rect": [
+        259,
+        2,
+        122,
+        161
+      ],
+      "redVisible": 3,
+      "redFaint": 56
+    }
+  ]
+}

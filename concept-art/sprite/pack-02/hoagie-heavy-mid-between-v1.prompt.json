@@ -1,0 +1,15 @@
+{
+  "tool": "built-in image_gen",
+  "date": "2026-11-19",
+  "prompt": "ONE full-body right-facing 2D sprite of Hulk Hoagie for heavy-landing recovery. Reference1 authoritative shipped identity/costume, reference2 heavy landing floor-touch pose. EXACT brown flat cap, angry square face short dark beard, huge broad hairy muscular wrestler, BURGUNDY singlet with narrow CREAM edging and straps, cream forearm wraps, dark rounded studded kneepads, tall brown wrestling boots with cream laces. Match engraved cartoon inks and warm shaded rendering. MID recovery in-between: rising from deep squat, hips still low, open front hand curling toward fist beside knee, opposite fist at chin, chest lifting. Both boots fully planted at a common horizontal floor level. Entire cap, fingers, boot soles visible and uncropped. Genuine transparent background, crisp ink silhouette with natural antialiasing only. No glow, aura, mist, shadow, floor, smoke, background, text, impact effect, motion streaks or extra props. Single figure. Preserve body proportions and costume.",
+  "references": [
+    "hoagie-shipped-idle-reference.png",
+    "hoagie-shipped-heavy-reference-1.png"
+  ],
+  "source": "exec-397fb641-c94d-45a5-9e7b-750021a8398d.png",
+  "preparation": {
+    "alphaFloor": 5,
+    "worldHeight": 71,
+    "root": "planted sole, two source pixels above crop bottom"
+  }
+}

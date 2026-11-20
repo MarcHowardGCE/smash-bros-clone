@@ -1,0 +1,12 @@
+{
+  "tool": "built-in image_gen",
+  "date": "2026-11-18",
+  "prompt": "Create ONE full-body right-facing Velvet Reply heavy-landing compression animation sprite. Image 1 is the exact shipped identity/costume/style reference; image 2 is the preceding impact pose; image 3 is the following low crouch. Draw a distinct in-between: torso leans forward, knees deeply flexing, lowered open hands starting to pull toward guard, both heeled boots planted at the same ground baseline. Preserve anatomy, face, copper-auburn waves, dark plum-black fitted flared-leg jumpsuit with fine gold piping, fishnet sleeves/chest, crossed straps, high collar, SILVER rectangular belt buckle/cuffs/hoop earrings, glossy dark heeled ankle boots. Match crisp inked textured illustration, not 3D. Pose: final heavy-landing settle just BEFORE canonical idle: nearly upright torso, knees slightly softer than idle, both hands low in ready guard, both heeled boot soles planted, hair relaxing back. Clearly taller posture than rebound or squat; no jump. Full character with margin. True transparent background. NO floor, cast shadow, glow, mist, halo, gradient, blur, text, extra limbs. No airborne pose or raised arms.",
+  "identityReference": "concept-art/sprite/pack-04/velvet-reply-idle.png",
+  "preparation": {
+    "alphaFloor": 5,
+    "worldHeight": 79,
+    "preserveSource": true
+  },
+  "referenceNote": "Compression reviewed first against shipped idle, impact, and crouch. Rebound call contained a mistyped idle path; settle call contained a mistyped compression path. Retained valid reference and visually checked all outputs against shipped costume."
+}

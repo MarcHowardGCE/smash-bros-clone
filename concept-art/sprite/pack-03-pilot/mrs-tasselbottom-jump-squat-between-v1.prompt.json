@@ -1,0 +1,17 @@
+{
+  "tool": "built-in image_gen",
+  "date": "2026-11-20",
+  "prompt": "Create ONE full-body transparent-background 2D gameplay sprite of Mrs. Tasselbottom: the exact halfway jump-squat pose between attached shipped crouch references1 and2; image3 is shipped idle costume reference. Preserve exact identity, facial proportions, huge rounded dress silhouette, costume construction, color arrangement and inked cartoon rendering. Elderly smiling aristocratic woman, pale wrinkled face, long pointed nose, white/lavender tight curls, tiny burgundy tilted hat with gold crown and gold pin ornaments. Vivid ROYAL PURPLE draped ball gown with GOLD ropes forming curved swags and large GOLD tassels in the same rows as references, gold shoulder epaulets/brooches, CREAM ruffled collar/cuffs and cream multi-layer lace hem. Burgundy/purple shoes with gold buckles, visible beneath hem. NO black/brown dress, no alternate outfit. Face RIGHT, fists in loose guard, rounded body crouched slightly forward, dress compressing gently, BOTH shoes planted flat at same baseline. The two crouches differ subtly; make only modest halfway changes, no huge gesture, no exaggerated head/dress shrinkage. Whole hat/crown, hair, dress and shoes in frame with transparent padding. Flat cel shading ONLY inside crisp black contour. Alpha ZERO outside silhouette and gaps; NO halo, haze, glow, external lighting, cast shadow, dust, ground line, effects, letters or text. Ignore any stray RED pixels outside references: they are crop contamination, not costume.",
+  "source": "C:\\Users\\misac\\.codex\\generated_images\\01a1d512-1266-7be0-b658-8ca4590e1a8c\\exec-871d75b5-0510-4a68-80ad-1e34002fe257.png",
+  "references": [
+    "mrs-tasselbottom-shipped-jump_squat-0.png",
+    "mrs-tasselbottom-shipped-jump_squat-1.png",
+    "mrs-tasselbottom-shipped-idle-0.png"
+  ],
+  "preparation": {
+    "alphaFloor": 5,
+    "worldHeight": 72.5,
+    "soleDepthWorld": 0.6405,
+    "root": "solid shoe support midpoint"
+  }
+}

@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "revision": 73,
+  "revision": 93,
   "compatibilityAliases": {
     "reaction": "hit_mid",
     "air_dodge_directional": "air_dodge_side"
@@ -2611,9 +2611,12 @@
           "image": "moonshine-crouch-land-v1-candidate.png",
           "scale": 0.17067833698030635,
           "durations": [
-            3,
-            4,
-            6
+            2,
+            2,
+            2,
+            2,
+            2,
+            2
           ],
           "loop": false,
           "frames": [
@@ -2626,7 +2629,7 @@
               ],
               "root": [
                 157.5,
-                465
+                432
               ],
               "sourceSize": [
                 512,
@@ -2637,7 +2640,32 @@
                 9
               ],
               "visibleHeight": 430,
-              "registration": "shared landing baseline"
+              "registration": "planted landing sole",
+              "scale": 0.13654266958424507
+            },
+            {
+              "image": "moonshine-soft-early-between-v2-prepared.png",
+              "scale": 0.03891591382904795,
+              "rect": [
+                0,
+                0,
+                1008,
+                1439
+              ],
+              "root": [
+                394.5,
+                1437
+              ],
+              "sourceSize": [
+                1008,
+                1439
+              ],
+              "trim": [
+                0,
+                0
+              ],
+              "visibleHeight": 1439,
+              "registration": "planted landing sole: two source pixels above crop bottom"
             },
             {
               "rect": [
@@ -2659,7 +2687,56 @@
                 79
               ],
               "visibleHeight": 393,
-              "registration": "planted support"
+              "registration": "planted support",
+              "scale": 0.13654266958424507
+            },
+            {
+              "image": "moonshine-soft-mid-between-v1-prepared.png",
+              "scale": 0.04056338028169014,
+              "rect": [
+                0,
+                0,
+                761,
+                1420
+              ],
+              "root": [
+                380,
+                1418
+              ],
+              "sourceSize": [
+                761,
+                1420
+              ],
+              "trim": [
+                0,
+                0
+              ],
+              "visibleHeight": 1420,
+              "registration": "planted landing sole: two source pixels above crop bottom"
+            },
+            {
+              "image": "moonshine-soft-late-between-v1-prepared.png",
+              "scale": 0.04213444213444213,
+              "rect": [
+                0,
+                0,
+                723,
+                1443
+              ],
+              "root": [
+                361,
+                1441
+              ],
+              "sourceSize": [
+                723,
+                1443
+              ],
+              "trim": [
+                0,
+                0
+              ],
+              "visibleHeight": 1443,
+              "registration": "planted landing sole: two source pixels above crop bottom"
             },
             {
               "rect": [
@@ -2681,7 +2758,8 @@
                 14
               ],
               "visibleHeight": 457,
-              "registration": "planted support"
+              "registration": "planted support",
+              "scale": 0.13654266958424507
             }
           ]
         },
@@ -2801,6 +2879,9 @@
           "durations": [
             2,
             2,
+            2,
+            2,
+            2,
             2
           ],
           "loop": false,
@@ -2816,7 +2897,7 @@
               ],
               "root": [
                 98,
-                435.28571428571433
+                441.20879120879124
               ],
               "sourceSize": [
                 512,
@@ -2827,7 +2908,31 @@
                 73
               ],
               "visibleHeight": 356,
-              "registration": "guided pelvis"
+              "registration": "double-jump common vertical anchor: 73 world units from crop top"
+            },
+            {
+              "image": "moonshine-double-early-between-v1-prepared.png",
+              "scale": 0.05263157894736842,
+              "rect": [
+                0,
+                0,
+                624,
+                1482
+              ],
+              "root": [
+                312,
+                1387
+              ],
+              "sourceSize": [
+                624,
+                1482
+              ],
+              "trim": [
+                0,
+                0
+              ],
+              "visibleHeight": 1482,
+              "registration": "double-jump common vertical anchor: 73 world units from crop top"
             },
             {
               "image": "moonshine-jump-polish-v1.png",
@@ -2840,7 +2945,7 @@
               ],
               "root": [
                 128,
-                453.28571428571433
+                441.20879120879124
               ],
               "sourceSize": [
                 512,
@@ -2851,7 +2956,55 @@
                 24
               ],
               "visibleHeight": 479,
-              "registration": "guided pelvis"
+              "registration": "double-jump common vertical anchor: 73 world units from crop top"
+            },
+            {
+              "image": "moonshine-double-mid-between-v1-prepared.png",
+              "scale": 0.057103064066852366,
+              "rect": [
+                0,
+                0,
+                588,
+                1436
+              ],
+              "root": [
+                294,
+                1278.3902439024391
+              ],
+              "sourceSize": [
+                588,
+                1436
+              ],
+              "trim": [
+                0,
+                0
+              ],
+              "visibleHeight": 1436,
+              "registration": "double-jump common vertical anchor: 73 world units from crop top"
+            },
+            {
+              "image": "moonshine-double-late-between-v1-prepared.png",
+              "scale": 0.06571936056838366,
+              "rect": [
+                0,
+                0,
+                607,
+                1126
+              ],
+              "root": [
+                291.36,
+                1110.7837837837837
+              ],
+              "sourceSize": [
+                607,
+                1126
+              ],
+              "trim": [
+                0,
+                0
+              ],
+              "visibleHeight": 1126,
+              "registration": "double-jump common vertical anchor: 73 world units from crop top"
             },
             {
               "image": "moonshine-jump-polish-v1.png",
@@ -2864,7 +3017,7 @@
               ],
               "root": [
                 115,
-                457.28571428571433
+                441.20879120879124
               ],
               "sourceSize": [
                 512,
@@ -2875,7 +3028,7 @@
                 58
               ],
               "visibleHeight": 441,
-              "registration": "guided pelvis"
+              "registration": "double-jump common vertical anchor: 73 world units from crop top"
             }
           ]
         },
@@ -2883,14 +3036,66 @@
           "image": "moonshine-air-loops-v1.png",
           "scale": 0.13433333333333333,
           "durations": [
-            6,
-            6
+            2,
+            2,
+            2,
+            2,
+            2,
+            2
           ],
-          "loop": true,
+          "loop": false,
           "frames": [
             {
+              "image": "moonshine-apex-early-between-v1-prepared.png",
+              "scale": 0.04370515329419439,
+              "rect": [
+                0,
+                0,
+                730,
+                1533
+              ],
+              "root": [
+                365,
+                1670.2835820895523
+              ],
+              "sourceSize": [
+                730,
+                1533
+              ],
+              "trim": [
+                0,
+                0
+              ],
+              "visibleHeight": 1533,
+              "registration": "apex common vertical anchor: 73 world units from crop top"
+            },
+            {
+              "image": "moonshine-apex-mid-between-v1-prepared.png",
+              "scale": 0.05079825834542816,
+              "rect": [
+                0,
+                0,
+                589,
+                1378
+              ],
+              "root": [
+                294.5,
+                1437.057142857143
+              ],
+              "sourceSize": [
+                589,
+                1378
+              ],
+              "trim": [
+                0,
+                0
+              ],
+              "visibleHeight": 1378,
+              "registration": "apex common vertical anchor: 73 world units from crop top"
+            },
+            {
               "image": "moonshine-air-loops-v1.png",
-              "scale": 0.13433333333333333,
+              "scale": 0.14931237721021612,
               "rect": [
                 89,
                 86,
@@ -2899,7 +3104,7 @@
               ],
               "root": [
                 99,
-                538.7096774193549
+                488.9078947368421
               ],
               "sourceSize": [
                 374,
@@ -2910,11 +3115,59 @@
                 86
               ],
               "visibleHeight": 505,
-              "registration": "guided pelvis"
+              "registration": "apex common vertical anchor: 73 world units from crop top"
+            },
+            {
+              "image": "moonshine-apex-late-between-v1-prepared.png",
+              "scale": 0.04152823920265781,
+              "rect": [
+                0,
+                0,
+                745,
+                1806
+              ],
+              "root": [
+                357.59999999999997,
+                1757.84
+              ],
+              "sourceSize": [
+                745,
+                1806
+              ],
+              "trim": [
+                0,
+                0
+              ],
+              "visibleHeight": 1806,
+              "registration": "apex common vertical anchor: 73 world units from crop top"
+            },
+            {
+              "image": "moonshine-apex-settle-between-v1-prepared.png",
+              "scale": 0.052083333333333336,
+              "rect": [
+                0,
+                0,
+                571,
+                1440
+              ],
+              "root": [
+                274.08,
+                1401.6
+              ],
+              "sourceSize": [
+                571,
+                1440
+              ],
+              "trim": [
+                0,
+                0
+              ],
+              "visibleHeight": 1440,
+              "registration": "apex common vertical anchor: 73 world units from crop top"
             },
             {
               "image": "moonshine-air-loops-v1.png",
-              "scale": 0.13433333333333333,
+              "scale": 0.15,
               "rect": [
                 86,
                 779,
@@ -2923,7 +3176,7 @@
               ],
               "root": [
                 107,
-                528.7096774193549
+                486.6666666666667
               ],
               "sourceSize": [
                 374,
@@ -2934,7 +3187,7 @@
                 78
               ],
               "visibleHeight": 496,
-              "registration": "guided pelvis"
+              "registration": "apex common vertical anchor: 73 world units from crop top"
             }
           ]
         },
@@ -2942,14 +3195,18 @@
           "image": "moonshine-air-loops-v1.png",
           "scale": 0.13433333333333333,
           "durations": [
-            6,
-            6
+            2,
+            2,
+            2,
+            2,
+            2,
+            2
           ],
-          "loop": true,
+          "loop": false,
           "frames": [
             {
               "image": "moonshine-air-loops-v1.png",
-              "scale": 0.13433333333333333,
+              "scale": 0.13602941176470587,
               "rect": [
                 462,
                 86,
@@ -2958,7 +3215,7 @@
               ],
               "root": [
                 105,
-                547.7096774193549
+                536.6486486486486
               ],
               "sourceSize": [
                 374,
@@ -2969,11 +3226,107 @@
                 86
               ],
               "visibleHeight": 540,
-              "registration": "guided pelvis"
+              "registration": "fall common vertical anchor: 73 world units from crop top"
+            },
+            {
+              "image": "moonshine-fall-early-between-v1-prepared.png",
+              "scale": 0.041413583655438985,
+              "rect": [
+                0,
+                0,
+                643,
+                1811
+              ],
+              "root": [
+                321.5,
+                1762.7066666666667
+              ],
+              "sourceSize": [
+                643,
+                1811
+              ],
+              "trim": [
+                0,
+                0
+              ],
+              "visibleHeight": 1811,
+              "registration": "fall common vertical anchor: 73 world units from crop top"
+            },
+            {
+              "image": "moonshine-fall-mid-between-v1-prepared.png",
+              "scale": 0.05304101838755304,
+              "rect": [
+                0,
+                0,
+                592,
+                1414
+              ],
+              "root": [
+                296,
+                1376.2933333333333
+              ],
+              "sourceSize": [
+                592,
+                1414
+              ],
+              "trim": [
+                0,
+                0
+              ],
+              "visibleHeight": 1414,
+              "registration": "fall common vertical anchor: 73 world units from crop top"
+            },
+            {
+              "image": "moonshine-fall-late-between-v1-prepared.png",
+              "scale": 0.046758104738154616,
+              "rect": [
+                0,
+                0,
+                651,
+                1604
+              ],
+              "root": [
+                312.47999999999996,
+                1561.2266666666667
+              ],
+              "sourceSize": [
+                651,
+                1604
+              ],
+              "trim": [
+                0,
+                0
+              ],
+              "visibleHeight": 1604,
+              "registration": "fall common vertical anchor: 73 world units from crop top"
+            },
+            {
+              "image": "moonshine-fall-settle-between-v1-prepared.png",
+              "scale": 0.0471105527638191,
+              "rect": [
+                0,
+                0,
+                582,
+                1592
+              ],
+              "root": [
+                279.36,
+                1549.5466666666666
+              ],
+              "sourceSize": [
+                582,
+                1592
+              ],
+              "trim": [
+                0,
+                0
+              ],
+              "visibleHeight": 1592,
+              "registration": "fall common vertical anchor: 73 world units from crop top"
             },
             {
               "image": "moonshine-air-loops-v1.png",
-              "scale": 0.13433333333333333,
+              "scale": 0.14258555133079848,
               "rect": [
                 447,
                 778,
@@ -2982,7 +3335,7 @@
               ],
               "root": [
                 118,
-                529.7096774193549
+                511.97333333333336
               ],
               "sourceSize": [
                 374,
@@ -2993,7 +3346,7 @@
                 77
               ],
               "visibleHeight": 522,
-              "registration": "guided pelvis"
+              "registration": "fall common vertical anchor: 73 world units from crop top"
             }
           ]
         },
@@ -3085,14 +3438,18 @@
           "image": "moonshine-air-loops-v1.png",
           "scale": 0.13433333333333333,
           "durations": [
-            5,
-            5
+            2,
+            2,
+            2,
+            2,
+            2,
+            2
           ],
-          "loop": true,
+          "loop": false,
           "frames": [
             {
               "image": "moonshine-air-loops-v1.png",
-              "scale": 0.13433333333333333,
+              "scale": 0.14184397163120568,
               "rect": [
                 834,
                 138,
@@ -3101,7 +3458,7 @@
               ],
               "root": [
                 106,
-                512.7096774193549
+                514.65
               ],
               "sourceSize": [
                 374,
@@ -3112,11 +3469,107 @@
                 138
               ],
               "visibleHeight": 419,
-              "registration": "guided pelvis"
+              "registration": "fastfall common vertical anchor: 73 world units from crop top"
+            },
+            {
+              "image": "moonshine-fastfall-early-between-v1-prepared.png",
+              "scale": 0.049301561216105176,
+              "rect": [
+                0,
+                0,
+                683,
+                1217
+              ],
+              "root": [
+                341.5,
+                1480.6833333333334
+              ],
+              "sourceSize": [
+                683,
+                1217
+              ],
+              "trim": [
+                0,
+                0
+              ],
+              "visibleHeight": 1217,
+              "registration": "fastfall common vertical anchor: 73 world units from crop top"
+            },
+            {
+              "image": "moonshine-fastfall-mid-between-v1-prepared.png",
+              "scale": 0.045941807044410414,
+              "rect": [
+                0,
+                0,
+                597,
+                1306
+              ],
+              "root": [
+                298.5,
+                1588.9666666666667
+              ],
+              "sourceSize": [
+                597,
+                1306
+              ],
+              "trim": [
+                0,
+                0
+              ],
+              "visibleHeight": 1306,
+              "registration": "fastfall common vertical anchor: 73 world units from crop top"
+            },
+            {
+              "image": "moonshine-fastfall-late-between-v1-prepared.png",
+              "scale": 0.043134435657800146,
+              "rect": [
+                0,
+                0,
+                691,
+                1391
+              ],
+              "root": [
+                331.68,
+                1692.3833333333332
+              ],
+              "sourceSize": [
+                691,
+                1391
+              ],
+              "trim": [
+                0,
+                0
+              ],
+              "visibleHeight": 1391,
+              "registration": "fastfall common vertical anchor: 73 world units from crop top"
+            },
+            {
+              "image": "moonshine-fastfall-settle-between-v1-prepared.png",
+              "scale": 0.042796005706134094,
+              "rect": [
+                0,
+                0,
+                604,
+                1402
+              ],
+              "root": [
+                289.92,
+                1705.7666666666667
+              ],
+              "sourceSize": [
+                604,
+                1402
+              ],
+              "trim": [
+                0,
+                0
+              ],
+              "visibleHeight": 1402,
+              "registration": "fastfall common vertical anchor: 73 world units from crop top"
             },
             {
               "image": "moonshine-air-loops-v1.png",
-              "scale": 0.13433333333333333,
+              "scale": 0.14532019704433496,
               "rect": [
                 841,
                 828,
@@ -3125,7 +3578,7 @@
               ],
               "root": [
                 99,
-                491.7096774193548
+                502.3389830508475
               ],
               "sourceSize": [
                 374,
@@ -3136,7 +3589,7 @@
                 127
               ],
               "visibleHeight": 402,
-              "registration": "guided pelvis"
+              "registration": "fastfall common vertical anchor: 73 world units from crop top"
             }
           ]
         },
@@ -3199,8 +3652,12 @@
           "image": "moonshine-turn-heavy-land-v1.png",
           "scale": 0.1304727272727273,
           "durations": [
-            6,
-            9
+            3,
+            3,
+            3,
+            3,
+            3,
+            3
           ],
           "loop": false,
           "frames": [
@@ -3227,6 +3684,78 @@
               "registration": "guided midpoint between boots"
             },
             {
+              "image": "moonshine-heavy-early-between-v1-prepared.png",
+              "scale": 0.04912280701754386,
+              "rect": [
+                0,
+                0,
+                1226,
+                1140
+              ],
+              "root": [
+                612.5,
+                1138
+              ],
+              "sourceSize": [
+                1226,
+                1140
+              ],
+              "trim": [
+                0,
+                0
+              ],
+              "visibleHeight": 1140,
+              "registration": "planted landing sole: two source pixels above crop bottom"
+            },
+            {
+              "image": "moonshine-heavy-mid-between-v1-prepared.png",
+              "scale": 0.05097706032285471,
+              "rect": [
+                0,
+                0,
+                1058,
+                1177
+              ],
+              "root": [
+                528.5,
+                1175
+              ],
+              "sourceSize": [
+                1058,
+                1177
+              ],
+              "trim": [
+                0,
+                0
+              ],
+              "visibleHeight": 1177,
+              "registration": "planted landing sole: two source pixels above crop bottom"
+            },
+            {
+              "image": "moonshine-heavy-late-between-v1-prepared.png",
+              "scale": 0.05030959752321981,
+              "rect": [
+                0,
+                0,
+                1102,
+                1292
+              ],
+              "root": [
+                550.5,
+                1290
+              ],
+              "sourceSize": [
+                1102,
+                1292
+              ],
+              "trim": [
+                0,
+                0
+              ],
+              "visibleHeight": 1292,
+              "registration": "planted landing sole: two source pixels above crop bottom"
+            },
+            {
               "rect": [
                 706,
                 702,
@@ -3247,6 +3776,30 @@
               ],
               "visibleHeight": 550,
               "registration": "guided midpoint between boots"
+            },
+            {
+              "image": "moonshine-heavy-settle-between-v1-prepared.png",
+              "scale": 0.049829351535836175,
+              "rect": [
+                0,
+                0,
+                736,
+                1465
+              ],
+              "root": [
+                367,
+                1463
+              ],
+              "sourceSize": [
+                736,
+                1465
+              ],
+              "trim": [
+                0,
+                0
+              ],
+              "visibleHeight": 1465,
+              "registration": "planted landing sole: two source pixels above crop bottom"
             }
           ]
         },
@@ -14970,8 +15523,9 @@
           "image": "moonshine-takeoff-rise-v1.png",
           "scale": 0.16457142857142856,
           "durations": [
-            3,
-            6
+            2,
+            2,
+            2
           ],
           "loop": false,
           "frames": [
@@ -14998,6 +15552,30 @@
               "registration": "planted support",
               "image": "moonshine-crouch-land-v1-candidate.png",
               "scale": 0.17067833698030635
+            },
+            {
+              "image": "moonshine-takeoff-neutral-mid-between-v1-prepared.png",
+              "scale": 0.05801526717557252,
+              "rect": [
+                0,
+                0,
+                529,
+                1310
+              ],
+              "root": [
+                264.5,
+                1308
+              ],
+              "sourceSize": [
+                529,
+                1310
+              ],
+              "trim": [
+                0,
+                0
+              ],
+              "visibleHeight": 1310,
+              "registration": "takeoff intermediate support anchor"
             },
             {
               "image": "moonshine-takeoff-rise-v1.png",
@@ -15029,8 +15607,9 @@
           "image": "moonshine-takeoff-rise-v1.png",
           "scale": 0.16457142857142856,
           "durations": [
-            3,
-            6
+            2,
+            2,
+            2
           ],
           "loop": false,
           "frames": [
@@ -15057,6 +15636,30 @@
               "registration": "planted support",
               "image": "moonshine-crouch-land-v1-candidate.png",
               "scale": 0.17067833698030635
+            },
+            {
+              "image": "moonshine-takeoff-forward-mid-between-v1-prepared.png",
+              "scale": 0.05701078582434515,
+              "rect": [
+                0,
+                0,
+                719,
+                1298
+              ],
+              "root": [
+                373.88,
+                1296
+              ],
+              "sourceSize": [
+                719,
+                1298
+              ],
+              "trim": [
+                0,
+                0
+              ],
+              "visibleHeight": 1298,
+              "registration": "takeoff intermediate support anchor"
             },
             {
               "image": "moonshine-takeoff-rise-v1.png",
@@ -15088,8 +15691,9 @@
           "image": "moonshine-takeoff-rise-v1.png",
           "scale": 0.16457142857142856,
           "durations": [
-            3,
-            6
+            2,
+            2,
+            2
           ],
           "loop": false,
           "frames": [
@@ -15116,6 +15720,30 @@
               "registration": "planted support",
               "image": "moonshine-crouch-land-v1-candidate.png",
               "scale": 0.17067833698030635
+            },
+            {
+              "image": "moonshine-takeoff-backward-mid-between-v1-prepared.png",
+              "scale": 0.05967741935483871,
+              "rect": [
+                0,
+                0,
+                1058,
+                1240
+              ],
+              "root": [
+                476.1,
+                1238
+              ],
+              "sourceSize": [
+                1058,
+                1240
+              ],
+              "trim": [
+                0,
+                0
+              ],
+              "visibleHeight": 1240,
+              "registration": "takeoff intermediate support anchor"
             },
             {
               "image": "moonshine-takeoff-rise-v1.png",
@@ -15147,10 +15775,14 @@
           "image": "moonshine-takeoff-rise-v1.png",
           "scale": 0.16457142857142856,
           "durations": [
-            6,
-            6
+            2,
+            2,
+            2,
+            2,
+            2,
+            2
           ],
-          "loop": true,
+          "loop": false,
           "frames": [
             {
               "image": "moonshine-takeoff-rise-v1.png",
@@ -15175,6 +15807,102 @@
               ],
               "visibleHeight": 397,
               "registration": "guided pelvis"
+            },
+            {
+              "image": "moonshine-rise-early-between-v1-prepared.png",
+              "rect": [
+                0,
+                0,
+                576,
+                1248
+              ],
+              "root": [
+                288,
+                1380.3636363636365
+              ],
+              "sourceSize": [
+                576,
+                1248
+              ],
+              "trim": [
+                0,
+                0
+              ],
+              "visibleHeight": 1248,
+              "registration": "guided airborne support; seven world units below boot extent",
+              "scale": 0.052884615384615384
+            },
+            {
+              "image": "moonshine-rise-mid-between-v1-prepared.png",
+              "rect": [
+                0,
+                0,
+                568,
+                1232
+              ],
+              "root": [
+                284,
+                1364.676923076923
+              ],
+              "sourceSize": [
+                568,
+                1232
+              ],
+              "trim": [
+                0,
+                0
+              ],
+              "visibleHeight": 1232,
+              "registration": "guided airborne support; seven world units below boot extent",
+              "scale": 0.052759740259740256
+            },
+            {
+              "image": "moonshine-rise-late-between-v1-prepared.png",
+              "rect": [
+                0,
+                0,
+                675,
+                1305
+              ],
+              "root": [
+                324,
+                1443.409090909091
+              ],
+              "sourceSize": [
+                675,
+                1305
+              ],
+              "trim": [
+                0,
+                0
+              ],
+              "visibleHeight": 1305,
+              "registration": "guided airborne support; seven world units below boot extent",
+              "scale": 0.05057471264367816
+            },
+            {
+              "image": "moonshine-rise-settle-between-v1-prepared.png",
+              "rect": [
+                0,
+                0,
+                661,
+                1498
+              ],
+              "root": [
+                304.06,
+                1659.323076923077
+              ],
+              "sourceSize": [
+                661,
+                1498
+              ],
+              "trim": [
+                0,
+                0
+              ],
+              "visibleHeight": 1498,
+              "registration": "guided airborne support; seven world units below boot extent",
+              "scale": 0.043391188251001335
             },
             {
               "image": "moonshine-takeoff-rise-v1.png",
@@ -16454,9 +17182,12 @@
           "image": "hulk-hoagie-crouch-land-v1-candidate.png",
           "scale": 0.18333333333333332,
           "durations": [
-            3,
-            4,
-            6
+            2,
+            2,
+            2,
+            2,
+            2,
+            2
           ],
           "loop": false,
           "frames": [
@@ -16469,7 +17200,7 @@
               ],
               "root": [
                 133.5,
-                480
+                439
               ],
               "sourceSize": [
                 512,
@@ -16480,7 +17211,32 @@
                 27
               ],
               "visibleHeight": 437,
-              "registration": "shared landing baseline"
+              "registration": "planted landing sole",
+              "scale": 0.18333333333333332
+            },
+            {
+              "image": "hoagie-soft-early-between-v1-prepared.png",
+              "scale": 0.05204216073781291,
+              "rect": [
+                0,
+                0,
+                918,
+                1518
+              ],
+              "root": [
+                459.5,
+                1516
+              ],
+              "sourceSize": [
+                918,
+                1518
+              ],
+              "trim": [
+                0,
+                0
+              ],
+              "visibleHeight": 1518,
+              "registration": "planted landing sole: two source pixels above crop bottom"
             },
             {
               "rect": [
@@ -16502,7 +17258,56 @@
                 84
               ],
               "visibleHeight": 421,
-              "registration": "planted support"
+              "registration": "planted support",
+              "scale": 0.18333333333333332
+            },
+            {
+              "image": "hoagie-soft-mid-between-v1-prepared.png",
+              "scale": 0.05070250458155162,
+              "rect": [
+                0,
+                0,
+                862,
+                1637
+              ],
+              "root": [
+                431,
+                1635
+              ],
+              "sourceSize": [
+                862,
+                1637
+              ],
+              "trim": [
+                0,
+                0
+              ],
+              "visibleHeight": 1637,
+              "registration": "planted landing sole: two source pixels above crop bottom"
+            },
+            {
+              "image": "hoagie-soft-late-between-v1-prepared.png",
+              "scale": 0.05390334572490706,
+              "rect": [
+                0,
+                0,
+                843,
+                1614
+              ],
+              "root": [
+                421,
+                1612
+              ],
+              "sourceSize": [
+                843,
+                1614
+              ],
+              "trim": [
+                0,
+                0
+              ],
+              "visibleHeight": 1614,
+              "registration": "planted landing sole: two source pixels above crop bottom"
             },
             {
               "rect": [
@@ -16524,7 +17329,8 @@
                 26
               ],
               "visibleHeight": 480,
-              "registration": "planted support"
+              "registration": "planted support",
+              "scale": 0.18333333333333332
             }
           ]
         },
@@ -16644,6 +17450,9 @@
           "durations": [
             2,
             2,
+            2,
+            2,
+            2,
             2
           ],
           "loop": false,
@@ -16659,7 +17468,7 @@
               ],
               "root": [
                 121,
-                417.81632653061223
+                441.75556586270875
               ],
               "sourceSize": [
                 512,
@@ -16670,7 +17479,31 @@
                 92
               ],
               "visibleHeight": 353,
-              "registration": "guided pelvis"
+              "registration": "double-jump common vertical anchor: 83 world units from crop top"
+            },
+            {
+              "image": "hoagie-double-early-between-v1-prepared.png",
+              "scale": 0.05738278516445067,
+              "rect": [
+                0,
+                0,
+                1002,
+                1429
+              ],
+              "root": [
+                480.96,
+                1446.4268292682925
+              ],
+              "sourceSize": [
+                1002,
+                1429
+              ],
+              "trim": [
+                0,
+                0
+              ],
+              "visibleHeight": 1429,
+              "registration": "double-jump common vertical anchor: 83 world units from crop top"
             },
             {
               "image": "hulk-hoagie-jump-polish-v1.png",
@@ -16683,7 +17516,7 @@
               ],
               "root": [
                 149,
-                470.81632653061223
+                441.75556586270875
               ],
               "sourceSize": [
                 512,
@@ -16694,7 +17527,55 @@
                 18
               ],
               "visibleHeight": 499,
-              "registration": "guided pelvis"
+              "registration": "double-jump common vertical anchor: 83 world units from crop top"
+            },
+            {
+              "image": "hoagie-double-mid-between-v1-prepared.png",
+              "scale": 0.05908798972382787,
+              "rect": [
+                0,
+                0,
+                790,
+                1557
+              ],
+              "root": [
+                379.2,
+                1404.6847826086957
+              ],
+              "sourceSize": [
+                790,
+                1557
+              ],
+              "trim": [
+                0,
+                0
+              ],
+              "visibleHeight": 1557,
+              "registration": "double-jump common vertical anchor: 83 world units from crop top"
+            },
+            {
+              "image": "hoagie-double-late-between-v1-prepared.png",
+              "scale": 0.05699481865284974,
+              "rect": [
+                0,
+                0,
+                813,
+                1544
+              ],
+              "root": [
+                390.24,
+                1456.2727272727273
+              ],
+              "sourceSize": [
+                813,
+                1544
+              ],
+              "trim": [
+                0,
+                0
+              ],
+              "visibleHeight": 1544,
+              "registration": "double-jump common vertical anchor: 83 world units from crop top"
             },
             {
               "image": "hulk-hoagie-jump-polish-v1.png",
@@ -16707,7 +17588,7 @@
               ],
               "root": [
                 106,
-                456.81632653061223
+                441.75556586270875
               ],
               "sourceSize": [
                 512,
@@ -16718,7 +17599,7 @@
                 35
               ],
               "visibleHeight": 457,
-              "registration": "guided pelvis"
+              "registration": "double-jump common vertical anchor: 83 world units from crop top"
             }
           ]
         },
@@ -16726,11 +17607,63 @@
           "image": "hulk-hoagie-air-loops-v1.png",
           "scale": 0.17676025917926566,
           "durations": [
-            6,
-            6
+            2,
+            2,
+            2,
+            2,
+            2,
+            2
           ],
-          "loop": true,
+          "loop": false,
           "frames": [
+            {
+              "image": "hoagie-apex-early-between-v1-prepared.png",
+              "scale": 0.04885057471264368,
+              "rect": [
+                0,
+                0,
+                765,
+                1392
+              ],
+              "root": [
+                382.5,
+                1699.0588235294117
+              ],
+              "sourceSize": [
+                765,
+                1392
+              ],
+              "trim": [
+                0,
+                0
+              ],
+              "visibleHeight": 1392,
+              "registration": "apex common vertical anchor: 83 world units from crop top"
+            },
+            {
+              "image": "hoagie-apex-mid-between-v1-prepared.png",
+              "scale": 0.04353083434099154,
+              "rect": [
+                0,
+                0,
+                772,
+                1654
+              ],
+              "root": [
+                386,
+                1906.6944444444443
+              ],
+              "sourceSize": [
+                772,
+                1654
+              ],
+              "trim": [
+                0,
+                0
+              ],
+              "visibleHeight": 1654,
+              "registration": "apex common vertical anchor: 83 world units from crop top"
+            },
             {
               "image": "hulk-hoagie-air-loops-v1.png",
               "scale": 0.17676025917926566,
@@ -16742,7 +17675,7 @@
               ],
               "root": [
                 101,
-                479.96774193548384
+                469.56256109481916
               ],
               "sourceSize": [
                 512,
@@ -16753,7 +17686,55 @@
                 14
               ],
               "visibleHeight": 429,
-              "registration": "guided pelvis"
+              "registration": "apex common vertical anchor: 83 world units from crop top"
+            },
+            {
+              "image": "hoagie-apex-late-between-v1-prepared.png",
+              "scale": 0.047470331043098064,
+              "rect": [
+                0,
+                0,
+                697,
+                1601
+              ],
+              "root": [
+                348.5,
+                1748.4605263157894
+              ],
+              "sourceSize": [
+                697,
+                1601
+              ],
+              "trim": [
+                0,
+                0
+              ],
+              "visibleHeight": 1601,
+              "registration": "apex common vertical anchor: 83 world units from crop top"
+            },
+            {
+              "image": "hoagie-apex-settle-between-v1-prepared.png",
+              "scale": 0.044300059066745424,
+              "rect": [
+                0,
+                0,
+                732,
+                1693
+              ],
+              "root": [
+                366,
+                1873.5866666666666
+              ],
+              "sourceSize": [
+                732,
+                1693
+              ],
+              "trim": [
+                0,
+                0
+              ],
+              "visibleHeight": 1693,
+              "registration": "apex common vertical anchor: 83 world units from crop top"
             },
             {
               "image": "hulk-hoagie-air-loops-v1.png",
@@ -16766,7 +17747,7 @@
               ],
               "root": [
                 102,
-                470.96774193548384
+                469.56256109481916
               ],
               "sourceSize": [
                 512,
@@ -16777,7 +17758,7 @@
                 21
               ],
               "visibleHeight": 418,
-              "registration": "guided pelvis"
+              "registration": "apex common vertical anchor: 83 world units from crop top"
             }
           ]
         },
@@ -16785,10 +17766,14 @@
           "image": "hulk-hoagie-air-loops-v1.png",
           "scale": 0.17676025917926566,
           "durations": [
-            6,
-            6
+            2,
+            2,
+            2,
+            2,
+            2,
+            2
           ],
-          "loop": true,
+          "loop": false,
           "frames": [
             {
               "image": "hulk-hoagie-air-loops-v1.png",
@@ -16801,7 +17786,7 @@
               ],
               "root": [
                 104,
-                487.96774193548384
+                469.56256109481916
               ],
               "sourceSize": [
                 512,
@@ -16812,7 +17797,103 @@
                 14
               ],
               "visibleHeight": 463,
-              "registration": "guided pelvis"
+              "registration": "fall common vertical anchor: 83 world units from crop top"
+            },
+            {
+              "image": "hoagie-fall-early-between-v1-prepared.png",
+              "scale": 0.046617396247868106,
+              "rect": [
+                0,
+                0,
+                757,
+                1759
+              ],
+              "root": [
+                378.5,
+                1780.4512195121952
+              ],
+              "sourceSize": [
+                757,
+                1759
+              ],
+              "trim": [
+                0,
+                0
+              ],
+              "visibleHeight": 1759,
+              "registration": "fall common vertical anchor: 83 world units from crop top"
+            },
+            {
+              "image": "hoagie-fall-mid-between-v1-prepared.png",
+              "scale": 0.045580878265703166,
+              "rect": [
+                0,
+                0,
+                806,
+                1799
+              ],
+              "root": [
+                403,
+                1820.939024390244
+              ],
+              "sourceSize": [
+                806,
+                1799
+              ],
+              "trim": [
+                0,
+                0
+              ],
+              "visibleHeight": 1799,
+              "registration": "fall common vertical anchor: 83 world units from crop top"
+            },
+            {
+              "image": "hoagie-fall-late-between-v1-prepared.png",
+              "scale": 0.04957160342717258,
+              "rect": [
+                0,
+                0,
+                773,
+                1634
+              ],
+              "root": [
+                386.5,
+                1674.3456790123457
+              ],
+              "sourceSize": [
+                773,
+                1634
+              ],
+              "trim": [
+                0,
+                0
+              ],
+              "visibleHeight": 1634,
+              "registration": "fall common vertical anchor: 83 world units from crop top"
+            },
+            {
+              "image": "hoagie-fall-settle-between-v1-prepared.png",
+              "scale": 0.046511627906976744,
+              "rect": [
+                0,
+                0,
+                712,
+                1720
+              ],
+              "root": [
+                356,
+                1784.5
+              ],
+              "sourceSize": [
+                712,
+                1720
+              ],
+              "trim": [
+                0,
+                0
+              ],
+              "visibleHeight": 1720,
+              "registration": "fall common vertical anchor: 83 world units from crop top"
             },
             {
               "image": "hulk-hoagie-air-loops-v1.png",
@@ -16825,7 +17906,7 @@
               ],
               "root": [
                 104,
-                483.96774193548384
+                469.56256109481916
               ],
               "sourceSize": [
                 512,
@@ -16836,7 +17917,7 @@
                 17
               ],
               "visibleHeight": 451,
-              "registration": "guided pelvis"
+              "registration": "fall common vertical anchor: 83 world units from crop top"
             }
           ]
         },
@@ -16928,10 +18009,14 @@
           "image": "hulk-hoagie-air-loops-v1.png",
           "scale": 0.17676025917926566,
           "durations": [
-            5,
-            5
+            2,
+            2,
+            2,
+            2,
+            2,
+            2
           ],
-          "loop": true,
+          "loop": false,
           "frames": [
             {
               "image": "hulk-hoagie-air-loops-v1.png",
@@ -16944,7 +18029,7 @@
               ],
               "root": [
                 84,
-                427.96774193548384
+                429.960899315738
               ],
               "sourceSize": [
                 512,
@@ -16955,7 +18040,103 @@
                 56
               ],
               "visibleHeight": 383,
-              "registration": "guided pelvis"
+              "registration": "fastfall common vertical anchor: 83 world units from crop top"
+            },
+            {
+              "image": "hoagie-fastfall-early-between-v1-prepared.png",
+              "scale": 0.04342273307790549,
+              "rect": [
+                0,
+                0,
+                817,
+                1566
+              ],
+              "root": [
+                343.14,
+                1750.235294117647
+              ],
+              "sourceSize": [
+                817,
+                1566
+              ],
+              "trim": [
+                0,
+                0
+              ],
+              "visibleHeight": 1566,
+              "registration": "fastfall common vertical anchor: 83 world units from crop top"
+            },
+            {
+              "image": "hoagie-fastfall-mid-between-v1-prepared.png",
+              "scale": 0.04322949777495232,
+              "rect": [
+                0,
+                0,
+                861,
+                1573
+              ],
+              "root": [
+                361.62,
+                1758.0588235294117
+              ],
+              "sourceSize": [
+                861,
+                1573
+              ],
+              "trim": [
+                0,
+                0
+              ],
+              "visibleHeight": 1573,
+              "registration": "fastfall common vertical anchor: 83 world units from crop top"
+            },
+            {
+              "image": "hoagie-fastfall-late-between-v1-prepared.png",
+              "scale": 0.042633228840125395,
+              "rect": [
+                0,
+                0,
+                864,
+                1595
+              ],
+              "root": [
+                362.88,
+                1782.6470588235293
+              ],
+              "sourceSize": [
+                864,
+                1595
+              ],
+              "trim": [
+                0,
+                0
+              ],
+              "visibleHeight": 1595,
+              "registration": "fastfall common vertical anchor: 83 world units from crop top"
+            },
+            {
+              "image": "hoagie-fastfall-settle-between-v1-prepared.png",
+              "scale": 0.04367373153500321,
+              "rect": [
+                0,
+                0,
+                835,
+                1557
+              ],
+              "root": [
+                350.7,
+                1740.1764705882354
+              ],
+              "sourceSize": [
+                835,
+                1557
+              ],
+              "trim": [
+                0,
+                0
+              ],
+              "visibleHeight": 1557,
+              "registration": "fastfall common vertical anchor: 83 world units from crop top"
             },
             {
               "image": "hulk-hoagie-air-loops-v1.png",
@@ -16968,7 +18149,7 @@
               ],
               "root": [
                 82,
-                426.96774193548384
+                429.960899315738
               ],
               "sourceSize": [
                 512,
@@ -16979,7 +18160,7 @@
                 65
               ],
               "visibleHeight": 380,
-              "registration": "guided pelvis"
+              "registration": "fastfall common vertical anchor: 83 world units from crop top"
             }
           ]
         },
@@ -17042,8 +18223,12 @@
           "image": "hulk-hoagie-turn-heavy-land-v1.png",
           "scale": 0.15189493433395873,
           "durations": [
-            6,
-            9
+            3,
+            3,
+            3,
+            3,
+            3,
+            3
           ],
           "loop": false,
           "frames": [
@@ -17070,6 +18255,78 @@
               "registration": "guided midpoint between boots"
             },
             {
+              "image": "hoagie-heavy-early-between-v1-prepared.png",
+              "scale": 0.05716723549488054,
+              "rect": [
+                0,
+                0,
+                1216,
+                1172
+              ],
+              "root": [
+                607,
+                1170
+              ],
+              "sourceSize": [
+                1216,
+                1172
+              ],
+              "trim": [
+                0,
+                0
+              ],
+              "visibleHeight": 1172,
+              "registration": "planted landing sole: two source pixels above crop bottom"
+            },
+            {
+              "image": "hoagie-heavy-mid-between-v1-prepared.png",
+              "scale": 0.05003523608174771,
+              "rect": [
+                0,
+                0,
+                973,
+                1419
+              ],
+              "root": [
+                486,
+                1417
+              ],
+              "sourceSize": [
+                973,
+                1419
+              ],
+              "trim": [
+                0,
+                0
+              ],
+              "visibleHeight": 1419,
+              "registration": "planted landing sole: two source pixels above crop bottom"
+            },
+            {
+              "image": "hoagie-heavy-late-between-v1-prepared.png",
+              "scale": 0.05188679245283019,
+              "rect": [
+                0,
+                0,
+                770,
+                1484
+              ],
+              "root": [
+                386.5,
+                1482
+              ],
+              "sourceSize": [
+                770,
+                1484
+              ],
+              "trim": [
+                0,
+                0
+              ],
+              "visibleHeight": 1484,
+              "registration": "planted landing sole: two source pixels above crop bottom"
+            },
+            {
               "rect": [
                 743,
                 665,
@@ -17090,6 +18347,30 @@
               ],
               "visibleHeight": 533,
               "registration": "guided midpoint between boots"
+            },
+            {
+              "image": "hoagie-heavy-settle-between-v1-prepared.png",
+              "scale": 0.053952321204516936,
+              "rect": [
+                0,
+                0,
+                829,
+                1594
+              ],
+              "root": [
+                424,
+                1592
+              ],
+              "sourceSize": [
+                829,
+                1594
+              ],
+              "trim": [
+                0,
+                0
+              ],
+              "visibleHeight": 1594,
+              "registration": "planted landing sole: two source pixels above crop bottom"
             }
           ]
         },
@@ -28813,8 +30094,9 @@
           "image": "hulk-hoagie-takeoff-rise-v1.png",
           "scale": 0.18485776805251639,
           "durations": [
-            3,
-            6
+            2,
+            2,
+            2
           ],
           "loop": false,
           "frames": [
@@ -28841,6 +30123,30 @@
               "registration": "planted support",
               "image": "hulk-hoagie-crouch-land-v1-candidate.png",
               "scale": 0.18333333333333332
+            },
+            {
+              "image": "hoagie-takeoff-neutral-mid-between-v1-prepared.png",
+              "scale": 0.04984423676012461,
+              "rect": [
+                0,
+                0,
+                705,
+                1605
+              ],
+              "root": [
+                352.5,
+                1625.0625
+              ],
+              "sourceSize": [
+                705,
+                1605
+              ],
+              "trim": [
+                0,
+                0
+              ],
+              "visibleHeight": 1605,
+              "registration": "takeoff intermediate support anchor"
             },
             {
               "image": "hulk-hoagie-takeoff-rise-v1.png",
@@ -28872,8 +30178,9 @@
           "image": "hulk-hoagie-takeoff-rise-v1.png",
           "scale": 0.18485776805251639,
           "durations": [
-            3,
-            6
+            2,
+            2,
+            2
           ],
           "loop": false,
           "frames": [
@@ -28900,6 +30207,30 @@
               "registration": "planted support",
               "image": "hulk-hoagie-crouch-land-v1-candidate.png",
               "scale": 0.18333333333333332
+            },
+            {
+              "image": "hoagie-takeoff-forward-mid-between-v1-prepared.png",
+              "scale": 0.0576194086429113,
+              "rect": [
+                0,
+                0,
+                915,
+                1319
+              ],
+              "root": [
+                457.5,
+                1301.6447368421052
+              ],
+              "sourceSize": [
+                915,
+                1319
+              ],
+              "trim": [
+                0,
+                0
+              ],
+              "visibleHeight": 1319,
+              "registration": "takeoff intermediate support anchor"
             },
             {
               "image": "hulk-hoagie-takeoff-rise-v1.png",
@@ -28931,8 +30262,9 @@
           "image": "hulk-hoagie-takeoff-rise-v1.png",
           "scale": 0.18485776805251639,
           "durations": [
-            3,
-            6
+            2,
+            2,
+            2
           ],
           "loop": false,
           "frames": [
@@ -28959,6 +30291,30 @@
               "registration": "planted support",
               "image": "hulk-hoagie-crouch-land-v1-candidate.png",
               "scale": 0.18333333333333332
+            },
+            {
+              "image": "hoagie-takeoff-backward-mid-between-v1-prepared.png",
+              "scale": 0.0581039755351682,
+              "rect": [
+                0,
+                0,
+                1050,
+                1308
+              ],
+              "root": [
+                525,
+                1376.842105263158
+              ],
+              "sourceSize": [
+                1050,
+                1308
+              ],
+              "trim": [
+                0,
+                0
+              ],
+              "visibleHeight": 1308,
+              "registration": "takeoff intermediate support anchor"
             },
             {
               "image": "hulk-hoagie-takeoff-rise-v1.png",
@@ -28990,10 +30346,14 @@
           "image": "hulk-hoagie-takeoff-rise-v1.png",
           "scale": 0.18485776805251639,
           "durations": [
-            6,
-            6
+            2,
+            2,
+            2,
+            2,
+            2,
+            2
           ],
-          "loop": true,
+          "loop": false,
           "frames": [
             {
               "image": "hulk-hoagie-takeoff-rise-v1.png",
@@ -29006,7 +30366,7 @@
               ],
               "root": [
                 95,
-                439.5
+                448.99384469696975
               ],
               "sourceSize": [
                 512,
@@ -29017,7 +30377,103 @@
                 22
               ],
               "visibleHeight": 403,
-              "registration": "guided pelvis"
+              "registration": "rise common vertical anchor: 83 world units from crop top"
+            },
+            {
+              "image": "hoagie-rise-early-between-v1-prepared.png",
+              "rect": [
+                0,
+                0,
+                749,
+                1435
+              ],
+              "root": [
+                374.5,
+                1609.527027027027
+              ],
+              "sourceSize": [
+                749,
+                1435
+              ],
+              "trim": [
+                0,
+                0
+              ],
+              "visibleHeight": 1435,
+              "registration": "rise common vertical anchor: 83 world units from crop top",
+              "scale": 0.05156794425087108
+            },
+            {
+              "image": "hoagie-rise-mid-between-v1-prepared.png",
+              "rect": [
+                0,
+                0,
+                823,
+                1541
+              ],
+              "root": [
+                411.5,
+                1776.4305555555557
+              ],
+              "sourceSize": [
+                823,
+                1541
+              ],
+              "trim": [
+                0,
+                0
+              ],
+              "visibleHeight": 1541,
+              "registration": "rise common vertical anchor: 83 world units from crop top",
+              "scale": 0.04672290720311486
+            },
+            {
+              "image": "hoagie-rise-late-between-v1-prepared.png",
+              "rect": [
+                0,
+                0,
+                747,
+                1322
+              ],
+              "root": [
+                373.5,
+                1567.5142857142857
+              ],
+              "sourceSize": [
+                747,
+                1322
+              ],
+              "trim": [
+                0,
+                0
+              ],
+              "visibleHeight": 1322,
+              "registration": "rise common vertical anchor: 83 world units from crop top",
+              "scale": 0.0529500756429652
+            },
+            {
+              "image": "hoagie-rise-settle-between-v1-prepared.png",
+              "rect": [
+                0,
+                0,
+                679,
+                1348
+              ],
+              "root": [
+                339.5,
+                1645.3529411764705
+              ],
+              "sourceSize": [
+                679,
+                1348
+              ],
+              "trim": [
+                0,
+                0
+              ],
+              "visibleHeight": 1348,
+              "registration": "rise common vertical anchor: 83 world units from crop top",
+              "scale": 0.050445103857566766
             },
             {
               "image": "hulk-hoagie-takeoff-rise-v1.png",
@@ -29030,7 +30486,7 @@
               ],
               "root": [
                 79,
-                403.5
+                448.99384469696975
               ],
               "sourceSize": [
                 512,
@@ -29041,7 +30497,7 @@
                 13
               ],
               "visibleHeight": 361,
-              "registration": "guided pelvis"
+              "registration": "rise common vertical anchor: 83 world units from crop top"
             }
           ]
         },

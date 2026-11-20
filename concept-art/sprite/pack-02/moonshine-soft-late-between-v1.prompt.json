@@ -1,0 +1,16 @@
+{
+  "tool": "built-in image_gen",
+  "date": "2026-11-18",
+  "prompt": "Production full-body 2D Moonshine sprite, ONE EARLY SOFT-LANDING compression in-between facing RIGHT, genuinely transparent RGBA. Supplied image is exact SHIPPED identity/costume reference: brown raccoon cap with striped tail, scruffy goatee/long nose/sleepy grin, CREAM sleeveless undershirt, dark suspenders, RED kerchief, cream hand/forearm wraps, patched BLUE jeans/rolled cuffs, hip rope, oversized brown YELLOW-laced boots. Match wiry adult proportions, crisp black outlines and warm textured ink shading. Pose: LATE SOFT-LANDING settle toward standing guard. BOTH oversized boots firmly planted on same horizontal sole baseline, shoulder-width. Knees still slightly bent but nearly standing, torso upright, wrapped hands closing gently into relaxed fists close to lower ribs. Keep LARGE HEAD same size as shipped landing art and wiry short torso. Midway between recovering compression and original idle stance; no raised foot or attack. Entire figure with margin. NO drawn floor, contact shadow, backdrop, mist, haze, glow, halo, blur, motion lines, text, extra limbs. Empty pixels alpha zero. ADDITIONAL PROPORTION LOCK: second reference is shipped soft-landing art; match its LARGE HEAD, short wiry torso, short bent thighs and oversized boots, rather than realistic tall-body proportions. Match head-to-body ratio exactly. Bend knees deeper to compress pose, keep head full size and close to shoulders. The reference's surrounding haze is NOT artwork: use entirely transparent empty pixels, no haze.",
+  "references": [
+    "moonshine-shipped-idle-reference.png",
+    "moonshine-shipped-soft-reference-0.png"
+  ],
+  "preparation": {
+    "alphaFloor": 5,
+    "worldHeight": 60.8,
+    "preserveSource": true,
+    "support": "center of solid boot soles in bottom two percent; rootY height minus two"
+  },
+  "review": "Early v1 rejected for small head. Corrected v2 reviewed before remaining drawings. All landing scales reduced together to match fall and idle head size."
+}

@@ -1,0 +1,15 @@
+{
+  "tool": "built-in image_gen",
+  "date": "2026-11-18",
+  "identityReference": "zane-corvo-idle.png",
+  "prompt": "ONE full-body production sprite Zane Corvo facing RIGHT three-quarter: SOFT LANDING RISE, after reference2 rebound but before reference1 idle. Ref1 exact shipped identity/costume/ink and ending stance. Keep both soles flat on same floor baseline and stable stance. Knees straighten a little from rebound, hips rise, chest rotates upright, leading fist comes just below chest, rear fist slides from belt to hip; shoulders still slightly hunched from impact and elbows wider than idle. Distinct intermediate silhouette. Same head/torso proportions, brown-black biker jacket silver studs/zips, dark buttoned waistcoat, silver neck chain/square buckle, dark trousers, chunky cream-laced dark boots, brown tousled hair/stubble. No raised arms, hops, gestures. Full silhouette clear margins and soles. TRUE TRANSPARENT empty background, crisp textured ink; NO floor line, shadow, glow, halo, mist, gradients, blur, text or effects.",
+  "poseReferences": [
+    "zane-corvo-soft-rebound-clean-review.png"
+  ],
+  "preparation": {
+    "alphaFloor": 5,
+    "worldHeight": 77,
+    "preserveSource": true,
+    "detachedCleanup": "rebound: only alpha <=7 farther than four pixels from solid ink"
+  }
+}

@@ -1,0 +1,9 @@
+{
+  "tool": "built-in image_gen",
+  "date": "2026-11-18",
+  "prompt": "Production full-body 2D Moonshine sprite, ONE EARLY SOFT-LANDING compression in-between facing RIGHT, genuinely transparent RGBA. Supplied image is exact SHIPPED identity/costume reference: brown raccoon cap with striped tail, scruffy goatee/long nose/sleepy grin, CREAM sleeveless undershirt, dark suspenders, RED kerchief, cream hand/forearm wraps, patched BLUE jeans/rolled cuffs, hip rope, oversized brown YELLOW-laced boots. Match wiry adult proportions, crisp black outlines and warm textured ink shading. Pose: BOTH boots firmly planted on the same horizontal sole baseline, shoulder-width stance, knees bent into a moderate landing compression, torso leaning gently forward. Wrapped hands relaxed/open reaching forward at waist height, elbows bent. Halfway from initial touchdown into deeper knee compression; head lifted and sleepy grin visible. Grounded stance, no raised foot, attack, kneeling or hands on ground. Entire figure with margin. NO drawn floor, contact shadow, backdrop, mist, haze, glow, halo, blur, motion lines, text, extra limbs. Empty pixels alpha zero.",
+  "references": [
+    "moonshine-shipped-idle-reference.png"
+  ],
+  "status": "Rejected; small head relative to shipped landing drawings; not registered."
+}

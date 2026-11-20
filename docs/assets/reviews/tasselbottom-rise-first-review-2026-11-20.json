@@ -1,0 +1,21 @@
+{
+  "sourceSize": [
+    1098,
+    1433
+  ],
+  "alpha": {
+    "clear": 748258,
+    "opaque": 129,
+    "low": 26687
+  },
+  "trimmedSize": [
+    958,
+    1358
+  ],
+  "proposedRegistration": {
+    "worldHeight": 80.5,
+    "xFraction": 0.4749745818033455,
+    "airY": 44.5279
+  },
+  "runtimeRegistered": false
+}

@@ -1,0 +1,19 @@
+{
+  "tool": "built-in image_gen",
+  "date": "2026-11-19",
+  "prompt": "Production full-body 2D Hulk Hoagie fighter sprite, ONE EARLY APEX transition facing RIGHT on genuine transparent RGBA. First reference is exact shipped idle costume/identity; second is shipped compact rise for proportions. Broad muscular wrestler, square angry face, short dark beard, BROWN flat cap, BURGUNDY wrestling singlet with CREAM edging/straps, bare hairy limbs/chest, cream wrist/forearm wraps, dark rounded studded knee pads, tall brown wrestling boots with CREAM laces. Crisp black ink outlines and warm textured shading matching references, full-size head. Pose: torso upright, knees still drawn close below belly but beginning to loosen from tight rise tuck; boots close beneath knees, heels tucked back; wrapped fists loosen a little beside chest. A suspended crest transition, no long straight legs, kick or attack, no arms overhead. Whole body with margin. NO floor, shadow, backdrop, mist, haze, glow, halo, blur, motion lines, text or extra limbs. Ignore reference edge residue; empty pixels alpha zero.",
+  "references": [
+    "hoagie-shipped-idle-reference.png",
+    "hoagie-shipped-rise-reference-1.png"
+  ],
+  "preparation": {
+    "alphaFloor": 5,
+    "worldHeight": 68,
+    "rootYWorld": 83,
+    "detachedPixelsRemoved": 2,
+    "detachedAlphaLimit": 6,
+    "distanceFromSolid": 4,
+    "preserveSource": true
+  },
+  "review": "Early reviewed before remaining poses. Shipped costume, prepared alpha, rise-apex-fall registration and both-facing Dojo checked."
+}

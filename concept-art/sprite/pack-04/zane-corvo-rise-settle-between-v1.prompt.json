@@ -1,0 +1,16 @@
+{
+  "tool": "built-in image_gen",
+  "date": "2026-11-18",
+  "identityReference": "concept-art/sprite/pack-04/zane-corvo-idle.png",
+  "poseReferenceSources": [
+    "concept-art/sprite/pack-04/zane-corvo-rise-late-between-v1.png",
+    "apps/client/public/fighter-art-pack-04-v1/zane-corvo-air-1.png"
+  ],
+  "preparedPoseReference": "Alpha-cleaned review copy of the late pose was used.",
+  "prompt": "Draw ONE new production sprite of Zane Corvo facing RIGHT, full body in three-quarter side view, the final settling step into a two-knee airborne tuck. Reference 1 is exact shipped identity/costume/face/ink style. References 2 and 3 are pose neighbors. Interpolate halfway from the raised trailing-knee pose (2) toward the tight two-knee tuck (3): knees gathering close to the torso, trailing heel now lifting inward beside the leading boot, both boots close below the hips but still clearly separated. More tightly gathered than ref 2, slightly less compact than ref 3. Both hands open and lowering toward the hips, elbows slightly outward. Preserve exact head/torso proportions, half-lidded face, stubble, tousled brown hair, dark brown-black biker jacket with silver studs/zips, buttoned dark waistcoat, silver chain and belt, dark trousers and cream-laced chunky boots. Do not redesign the costume, hair or face, do not duplicate either endpoint. Both boots entirely airborne. Full silhouette with generous transparent margins. True transparent background, crisp antialiased ink edges, no floor/shadow/glow/halo/mist/gradient/blur/streaks/lettering, fully empty alpha outside ink.",
+  "preparation": {
+    "clearAlphaAtMost": 5,
+    "worldHeight": 70,
+    "preserveSource": true
+  }
+}

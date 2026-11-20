@@ -1,0 +1,17 @@
+{
+  "tool": "built-in image_gen",
+  "date": "2026-11-19",
+  "prompt": "ONE dedicated full-body right-facing Mr. Wrong HEAVY-LANDING EARLY impact-absorption in-between sprite. Two shipped landing references define his exact costume and proportions. Draw a deeper compressed crouch between contact and recovery: broad knees bent, torso leaning forward, tentacle hands lowered toward knees/floor for balance (not covering face), tentacle feet spread wide and firmly planted on one horizontal baseline. Heavier compression than soft landing, but no ground effect. EXACT yellow jacket with burgundy dots, burgundy vest with THREE yellow buttons, cream ruff/cuffs, pink dark-polka-dot shorts with shipped patch, lavender curly hair, compact cream/burgundy striped floppy cap and cream pompom, TURQUOISE tentacle hands/feet with pink suckers. Preserve long grinning face and shipped head/body proportions; no taller cap or thinner torso. Entire figure including all tentacles and pompom uncropped. Fine engraved cartoon inks and warm shading, genuine transparent background, crisp natural antialiasing. NO glow, haze, aura, shadows, floor, background, motion marks, lettering or props.",
+  "source": "exec-59abd427-39ca-4138-b2ee-0709bc6a6188.png",
+  "references": [
+    "mr-wrong-shipped-heavy-0.png",
+    "mr-wrong-shipped-heavy-1.png"
+  ],
+  "preparation": {
+    "alphaFloor": 5,
+    "detachedAlphaLimit": 27,
+    "distanceFromSolid": 4,
+    "worldHeight": 70,
+    "root": "solid sole support midpoint, two pixels above crop bottom"
+  }
+}

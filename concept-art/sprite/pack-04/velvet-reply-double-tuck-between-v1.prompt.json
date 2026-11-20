@@ -1,0 +1,15 @@
+{
+  "tool": "built-in image_gen",
+  "date": "2026-11-18",
+  "identityReference": "velvet-reply-idle.png",
+  "prompt": "ONE full-body production sprite The Velvet Reply facing RIGHT three-quarter: DOUBLE JUMP TUCK in-between, first third from reference2 raised knee open leading hand to reference3 compact tuck both hands lowered. Ref1 exact costume identity ink. Leading knee stays high, trailing knee folds upward beneath hips halfway from extension, trailing heeled boot drawing inward; leading forearm lowers toward waist and trailing fist opens. Steady torso/head. Distinct intermediate silhouette. Copper-auburn waves, cheek beauty mark, half-lidded face; exact dark plum-black FLARED jumpsuit gold piping, fishnet chest/sleeves crossed black straps high collar, SILVER rectangular belt buckle/cuffs/hoops, dark HEELED boots. Full airborne silhouette clear generous margins. TRUE TRANSPARENT empty background; no ground/shadow/brown haze/glow/halo/mist/gradient/blur/text/effects. Crisp textured ink, do not copy reference background.",
+  "poseReferences": [
+    "velvet-reply-air-0.png",
+    "velvet-reply-air-1.png"
+  ],
+  "preparation": {
+    "alphaFloor": 5,
+    "worldHeight": 70,
+    "preserveSource": true
+  }
+}

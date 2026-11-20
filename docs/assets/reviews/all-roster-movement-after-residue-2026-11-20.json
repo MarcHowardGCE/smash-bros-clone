@@ -1,0 +1,2121 @@
+{
+  "basis": "Shipped movement manifests (Dojo Packs 02/03, optional --all-roster); decoded RGBA crop hashes are not semantic pose approval. Zero-duration original squat slots are allowed if total duration is positive.",
+  "rows": [
+    {
+      "pack": "02",
+      "fighter": "moonshine",
+      "clip": "jump_squat",
+      "revision": 93,
+      "slots": 3,
+      "distinctRects": 3,
+      "distinctPixelHashes": 3,
+      "durations": [
+        1,
+        1,
+        1
+      ],
+      "loop": false,
+      "target": 3,
+      "minimumAdditionalDrawings": 0
+    },
+    {
+      "pack": "02",
+      "fighter": "moonshine",
+      "clip": "takeoff_neutral",
+      "revision": 93,
+      "slots": 3,
+      "distinctRects": 3,
+      "distinctPixelHashes": 3,
+      "durations": [
+        2,
+        2,
+        2
+      ],
+      "loop": false,
+      "target": 3,
+      "minimumAdditionalDrawings": 0
+    },
+    {
+      "pack": "02",
+      "fighter": "moonshine",
+      "clip": "takeoff_forward",
+      "revision": 93,
+      "slots": 3,
+      "distinctRects": 3,
+      "distinctPixelHashes": 3,
+      "durations": [
+        2,
+        2,
+        2
+      ],
+      "loop": false,
+      "target": 3,
+      "minimumAdditionalDrawings": 0
+    },
+    {
+      "pack": "02",
+      "fighter": "moonshine",
+      "clip": "takeoff_backward",
+      "revision": 93,
+      "slots": 3,
+      "distinctRects": 3,
+      "distinctPixelHashes": 3,
+      "durations": [
+        2,
+        2,
+        2
+      ],
+      "loop": false,
+      "target": 3,
+      "minimumAdditionalDrawings": 0
+    },
+    {
+      "pack": "02",
+      "fighter": "moonshine",
+      "clip": "air_rise_loop",
+      "revision": 93,
+      "slots": 6,
+      "distinctRects": 6,
+      "distinctPixelHashes": 6,
+      "durations": [
+        2,
+        2,
+        2,
+        2,
+        2,
+        2
+      ],
+      "loop": false,
+      "target": 6,
+      "minimumAdditionalDrawings": 0
+    },
+    {
+      "pack": "02",
+      "fighter": "moonshine",
+      "clip": "air_apex_loop",
+      "revision": 93,
+      "slots": 6,
+      "distinctRects": 6,
+      "distinctPixelHashes": 6,
+      "durations": [
+        2,
+        2,
+        2,
+        2,
+        2,
+        2
+      ],
+      "loop": false,
+      "target": 6,
+      "minimumAdditionalDrawings": 0
+    },
+    {
+      "pack": "02",
+      "fighter": "moonshine",
+      "clip": "air_fall_loop",
+      "revision": 93,
+      "slots": 6,
+      "distinctRects": 6,
+      "distinctPixelHashes": 6,
+      "durations": [
+        2,
+        2,
+        2,
+        2,
+        2,
+        2
+      ],
+      "loop": false,
+      "target": 6,
+      "minimumAdditionalDrawings": 0
+    },
+    {
+      "pack": "02",
+      "fighter": "moonshine",
+      "clip": "air_fastfall_loop",
+      "revision": 93,
+      "slots": 6,
+      "distinctRects": 6,
+      "distinctPixelHashes": 6,
+      "durations": [
+        2,
+        2,
+        2,
+        2,
+        2,
+        2
+      ],
+      "loop": false,
+      "target": 6,
+      "minimumAdditionalDrawings": 0
+    },
+    {
+      "pack": "02",
+      "fighter": "moonshine",
+      "clip": "double_jump_transition",
+      "revision": 93,
+      "slots": 6,
+      "distinctRects": 6,
+      "distinctPixelHashes": 6,
+      "durations": [
+        2,
+        2,
+        2,
+        2,
+        2,
+        2
+      ],
+      "loop": false,
+      "target": 6,
+      "minimumAdditionalDrawings": 0
+    },
+    {
+      "pack": "02",
+      "fighter": "moonshine",
+      "clip": "land_soft",
+      "revision": 93,
+      "slots": 6,
+      "distinctRects": 6,
+      "distinctPixelHashes": 6,
+      "durations": [
+        2,
+        2,
+        2,
+        2,
+        2,
+        2
+      ],
+      "loop": false,
+      "target": 6,
+      "minimumAdditionalDrawings": 0
+    },
+    {
+      "pack": "02",
+      "fighter": "moonshine",
+      "clip": "land_heavy",
+      "revision": 93,
+      "slots": 6,
+      "distinctRects": 6,
+      "distinctPixelHashes": 6,
+      "durations": [
+        3,
+        3,
+        3,
+        3,
+        3,
+        3
+      ],
+      "loop": false,
+      "target": 6,
+      "minimumAdditionalDrawings": 0
+    },
+    {
+      "pack": "02",
+      "fighter": "hulk-hoagie",
+      "clip": "jump_squat",
+      "revision": 93,
+      "slots": 3,
+      "distinctRects": 3,
+      "distinctPixelHashes": 3,
+      "durations": [
+        1,
+        1,
+        1
+      ],
+      "loop": false,
+      "target": 3,
+      "minimumAdditionalDrawings": 0
+    },
+    {
+      "pack": "02",
+      "fighter": "hulk-hoagie",
+      "clip": "takeoff_neutral",
+      "revision": 93,
+      "slots": 3,
+      "distinctRects": 3,
+      "distinctPixelHashes": 3,
+      "durations": [
+        2,
+        2,
+        2
+      ],
+      "loop": false,
+      "target": 3,
+      "minimumAdditionalDrawings": 0
+    },
+    {
+      "pack": "02",
+      "fighter": "hulk-hoagie",
+      "clip": "takeoff_forward",
+      "revision": 93,
+      "slots": 3,
+      "distinctRects": 3,
+      "distinctPixelHashes": 3,
+      "durations": [
+        2,
+        2,
+        2
+      ],
+      "loop": false,
+      "target": 3,
+      "minimumAdditionalDrawings": 0
+    },
+    {
+      "pack": "02",
+      "fighter": "hulk-hoagie",
+      "clip": "takeoff_backward",
+      "revision": 93,
+      "slots": 3,
+      "distinctRects": 3,
+      "distinctPixelHashes": 3,
+      "durations": [
+        2,
+        2,
+        2
+      ],
+      "loop": false,
+      "target": 3,
+      "minimumAdditionalDrawings": 0
+    },
+    {
+      "pack": "02",
+      "fighter": "hulk-hoagie",
+      "clip": "air_rise_loop",
+      "revision": 93,
+      "slots": 6,
+      "distinctRects": 6,
+      "distinctPixelHashes": 6,
+      "durations": [
+        2,
+        2,
+        2,
+        2,
+        2,
+        2
+      ],
+      "loop": false,
+      "target": 6,
+      "minimumAdditionalDrawings": 0
+    },
+    {
+      "pack": "02",
+      "fighter": "hulk-hoagie",
+      "clip": "air_apex_loop",
+      "revision": 93,
+      "slots": 6,
+      "distinctRects": 6,
+      "distinctPixelHashes": 6,
+      "durations": [
+        2,
+        2,
+        2,
+        2,
+        2,
+        2
+      ],
+      "loop": false,
+      "target": 6,
+      "minimumAdditionalDrawings": 0
+    },
+    {
+      "pack": "02",
+      "fighter": "hulk-hoagie",
+      "clip": "air_fall_loop",
+      "revision": 93,
+      "slots": 6,
+      "distinctRects": 6,
+      "distinctPixelHashes": 6,
+      "durations": [
+        2,
+        2,
+        2,
+        2,
+        2,
+        2
+      ],
+      "loop": false,
+      "target": 6,
+      "minimumAdditionalDrawings": 0
+    },
+    {
+      "pack": "02",
+      "fighter": "hulk-hoagie",
+      "clip": "air_fastfall_loop",
+      "revision": 93,
+      "slots": 6,
+      "distinctRects": 6,
+      "distinctPixelHashes": 6,
+      "durations": [
+        2,
+        2,
+        2,
+        2,
+        2,
+        2
+      ],
+      "loop": false,
+      "target": 6,
+      "minimumAdditionalDrawings": 0
+    },
+    {
+      "pack": "02",
+      "fighter": "hulk-hoagie",
+      "clip": "double_jump_transition",
+      "revision": 93,
+      "slots": 6,
+      "distinctRects": 6,
+      "distinctPixelHashes": 6,
+      "durations": [
+        2,
+        2,
+        2,
+        2,
+        2,
+        2
+      ],
+      "loop": false,
+      "target": 6,
+      "minimumAdditionalDrawings": 0
+    },
+    {
+      "pack": "02",
+      "fighter": "hulk-hoagie",
+      "clip": "land_soft",
+      "revision": 93,
+      "slots": 6,
+      "distinctRects": 6,
+      "distinctPixelHashes": 6,
+      "durations": [
+        2,
+        2,
+        2,
+        2,
+        2,
+        2
+      ],
+      "loop": false,
+      "target": 6,
+      "minimumAdditionalDrawings": 0
+    },
+    {
+      "pack": "02",
+      "fighter": "hulk-hoagie",
+      "clip": "land_heavy",
+      "revision": 93,
+      "slots": 6,
+      "distinctRects": 6,
+      "distinctPixelHashes": 6,
+      "durations": [
+        3,
+        3,
+        3,
+        3,
+        3,
+        3
+      ],
+      "loop": false,
+      "target": 6,
+      "minimumAdditionalDrawings": 0
+    },
+    {
+      "pack": "03",
+      "fighter": "mr-wrong",
+      "clip": "jump_squat",
+      "revision": 108,
+      "slots": 3,
+      "distinctRects": 3,
+      "distinctPixelHashes": 3,
+      "durations": [
+        1,
+        1,
+        1
+      ],
+      "loop": false,
+      "target": 3,
+      "minimumAdditionalDrawings": 0
+    },
+    {
+      "pack": "03",
+      "fighter": "mr-wrong",
+      "clip": "takeoff_neutral",
+      "revision": 108,
+      "slots": 3,
+      "distinctRects": 3,
+      "distinctPixelHashes": 3,
+      "durations": [
+        2,
+        2,
+        2
+      ],
+      "loop": false,
+      "target": 3,
+      "minimumAdditionalDrawings": 0
+    },
+    {
+      "pack": "03",
+      "fighter": "mr-wrong",
+      "clip": "takeoff_forward",
+      "revision": 108,
+      "slots": 3,
+      "distinctRects": 3,
+      "distinctPixelHashes": 3,
+      "durations": [
+        2,
+        2,
+        2
+      ],
+      "loop": false,
+      "target": 3,
+      "minimumAdditionalDrawings": 0
+    },
+    {
+      "pack": "03",
+      "fighter": "mr-wrong",
+      "clip": "takeoff_backward",
+      "revision": 108,
+      "slots": 3,
+      "distinctRects": 3,
+      "distinctPixelHashes": 3,
+      "durations": [
+        2,
+        2,
+        2
+      ],
+      "loop": false,
+      "target": 3,
+      "minimumAdditionalDrawings": 0
+    },
+    {
+      "pack": "03",
+      "fighter": "mr-wrong",
+      "clip": "air_rise_loop",
+      "revision": 108,
+      "slots": 6,
+      "distinctRects": 6,
+      "distinctPixelHashes": 6,
+      "durations": [
+        2,
+        2,
+        2,
+        2,
+        2,
+        2
+      ],
+      "loop": false,
+      "target": 6,
+      "minimumAdditionalDrawings": 0
+    },
+    {
+      "pack": "03",
+      "fighter": "mr-wrong",
+      "clip": "air_apex_loop",
+      "revision": 108,
+      "slots": 6,
+      "distinctRects": 6,
+      "distinctPixelHashes": 6,
+      "durations": [
+        2,
+        2,
+        2,
+        2,
+        2,
+        2
+      ],
+      "loop": false,
+      "target": 6,
+      "minimumAdditionalDrawings": 0
+    },
+    {
+      "pack": "03",
+      "fighter": "mr-wrong",
+      "clip": "air_fall_loop",
+      "revision": 108,
+      "slots": 6,
+      "distinctRects": 6,
+      "distinctPixelHashes": 6,
+      "durations": [
+        2,
+        2,
+        2,
+        2,
+        2,
+        2
+      ],
+      "loop": false,
+      "target": 6,
+      "minimumAdditionalDrawings": 0
+    },
+    {
+      "pack": "03",
+      "fighter": "mr-wrong",
+      "clip": "air_fastfall_loop",
+      "revision": 108,
+      "slots": 6,
+      "distinctRects": 6,
+      "distinctPixelHashes": 6,
+      "durations": [
+        2,
+        2,
+        2,
+        2,
+        2,
+        2
+      ],
+      "loop": false,
+      "target": 6,
+      "minimumAdditionalDrawings": 0
+    },
+    {
+      "pack": "03",
+      "fighter": "mr-wrong",
+      "clip": "double_jump_transition",
+      "revision": 108,
+      "slots": 6,
+      "distinctRects": 6,
+      "distinctPixelHashes": 6,
+      "durations": [
+        2,
+        2,
+        2,
+        2,
+        2,
+        2
+      ],
+      "loop": false,
+      "target": 6,
+      "minimumAdditionalDrawings": 0
+    },
+    {
+      "pack": "03",
+      "fighter": "mr-wrong",
+      "clip": "land_soft",
+      "revision": 108,
+      "slots": 6,
+      "distinctRects": 6,
+      "distinctPixelHashes": 6,
+      "durations": [
+        2,
+        2,
+        2,
+        2,
+        2,
+        2
+      ],
+      "loop": false,
+      "target": 6,
+      "minimumAdditionalDrawings": 0
+    },
+    {
+      "pack": "03",
+      "fighter": "mr-wrong",
+      "clip": "land_heavy",
+      "revision": 108,
+      "slots": 6,
+      "distinctRects": 6,
+      "distinctPixelHashes": 6,
+      "durations": [
+        3,
+        3,
+        3,
+        3,
+        3,
+        3
+      ],
+      "loop": false,
+      "target": 6,
+      "minimumAdditionalDrawings": 0
+    },
+    {
+      "pack": "03",
+      "fighter": "loopy",
+      "clip": "jump_squat",
+      "revision": 108,
+      "slots": 3,
+      "distinctRects": 3,
+      "distinctPixelHashes": 3,
+      "durations": [
+        1,
+        1,
+        1
+      ],
+      "loop": false,
+      "target": 3,
+      "minimumAdditionalDrawings": 0
+    },
+    {
+      "pack": "03",
+      "fighter": "loopy",
+      "clip": "takeoff_neutral",
+      "revision": 108,
+      "slots": 3,
+      "distinctRects": 3,
+      "distinctPixelHashes": 3,
+      "durations": [
+        2,
+        2,
+        2
+      ],
+      "loop": false,
+      "target": 3,
+      "minimumAdditionalDrawings": 0
+    },
+    {
+      "pack": "03",
+      "fighter": "loopy",
+      "clip": "takeoff_forward",
+      "revision": 108,
+      "slots": 3,
+      "distinctRects": 3,
+      "distinctPixelHashes": 3,
+      "durations": [
+        2,
+        2,
+        2
+      ],
+      "loop": false,
+      "target": 3,
+      "minimumAdditionalDrawings": 0
+    },
+    {
+      "pack": "03",
+      "fighter": "loopy",
+      "clip": "takeoff_backward",
+      "revision": 108,
+      "slots": 3,
+      "distinctRects": 3,
+      "distinctPixelHashes": 3,
+      "durations": [
+        2,
+        2,
+        2
+      ],
+      "loop": false,
+      "target": 3,
+      "minimumAdditionalDrawings": 0
+    },
+    {
+      "pack": "03",
+      "fighter": "loopy",
+      "clip": "air_rise_loop",
+      "revision": 108,
+      "slots": 6,
+      "distinctRects": 6,
+      "distinctPixelHashes": 6,
+      "durations": [
+        2,
+        2,
+        2,
+        2,
+        2,
+        2
+      ],
+      "loop": false,
+      "target": 6,
+      "minimumAdditionalDrawings": 0
+    },
+    {
+      "pack": "03",
+      "fighter": "loopy",
+      "clip": "air_apex_loop",
+      "revision": 108,
+      "slots": 6,
+      "distinctRects": 6,
+      "distinctPixelHashes": 6,
+      "durations": [
+        2,
+        2,
+        2,
+        2,
+        2,
+        2
+      ],
+      "loop": false,
+      "target": 6,
+      "minimumAdditionalDrawings": 0
+    },
+    {
+      "pack": "03",
+      "fighter": "loopy",
+      "clip": "air_fall_loop",
+      "revision": 108,
+      "slots": 6,
+      "distinctRects": 6,
+      "distinctPixelHashes": 6,
+      "durations": [
+        2,
+        2,
+        2,
+        2,
+        2,
+        2
+      ],
+      "loop": false,
+      "target": 6,
+      "minimumAdditionalDrawings": 0
+    },
+    {
+      "pack": "03",
+      "fighter": "loopy",
+      "clip": "air_fastfall_loop",
+      "revision": 108,
+      "slots": 6,
+      "distinctRects": 6,
+      "distinctPixelHashes": 6,
+      "durations": [
+        2,
+        2,
+        2,
+        2,
+        2,
+        2
+      ],
+      "loop": false,
+      "target": 6,
+      "minimumAdditionalDrawings": 0
+    },
+    {
+      "pack": "03",
+      "fighter": "loopy",
+      "clip": "double_jump_transition",
+      "revision": 108,
+      "slots": 6,
+      "distinctRects": 6,
+      "distinctPixelHashes": 6,
+      "durations": [
+        2,
+        2,
+        2,
+        2,
+        2,
+        2
+      ],
+      "loop": false,
+      "target": 6,
+      "minimumAdditionalDrawings": 0
+    },
+    {
+      "pack": "03",
+      "fighter": "loopy",
+      "clip": "land_soft",
+      "revision": 108,
+      "slots": 6,
+      "distinctRects": 6,
+      "distinctPixelHashes": 6,
+      "durations": [
+        2,
+        2,
+        2,
+        2,
+        2,
+        2
+      ],
+      "loop": false,
+      "target": 6,
+      "minimumAdditionalDrawings": 0
+    },
+    {
+      "pack": "03",
+      "fighter": "loopy",
+      "clip": "land_heavy",
+      "revision": 108,
+      "slots": 6,
+      "distinctRects": 6,
+      "distinctPixelHashes": 6,
+      "durations": [
+        3,
+        3,
+        3,
+        3,
+        3,
+        3
+      ],
+      "loop": false,
+      "target": 6,
+      "minimumAdditionalDrawings": 0
+    },
+    {
+      "pack": "03",
+      "fighter": "mrs-tasselbottom",
+      "clip": "jump_squat",
+      "revision": 108,
+      "slots": 3,
+      "distinctRects": 3,
+      "distinctPixelHashes": 3,
+      "durations": [
+        1,
+        1,
+        1
+      ],
+      "loop": false,
+      "target": 3,
+      "minimumAdditionalDrawings": 0
+    },
+    {
+      "pack": "03",
+      "fighter": "mrs-tasselbottom",
+      "clip": "takeoff_neutral",
+      "revision": 108,
+      "slots": 3,
+      "distinctRects": 3,
+      "distinctPixelHashes": 3,
+      "durations": [
+        2,
+        2,
+        2
+      ],
+      "loop": false,
+      "target": 3,
+      "minimumAdditionalDrawings": 0
+    },
+    {
+      "pack": "03",
+      "fighter": "mrs-tasselbottom",
+      "clip": "takeoff_forward",
+      "revision": 108,
+      "slots": 3,
+      "distinctRects": 3,
+      "distinctPixelHashes": 3,
+      "durations": [
+        2,
+        2,
+        2
+      ],
+      "loop": false,
+      "target": 3,
+      "minimumAdditionalDrawings": 0
+    },
+    {
+      "pack": "03",
+      "fighter": "mrs-tasselbottom",
+      "clip": "takeoff_backward",
+      "revision": 108,
+      "slots": 3,
+      "distinctRects": 3,
+      "distinctPixelHashes": 3,
+      "durations": [
+        2,
+        2,
+        2
+      ],
+      "loop": false,
+      "target": 3,
+      "minimumAdditionalDrawings": 0
+    },
+    {
+      "pack": "03",
+      "fighter": "mrs-tasselbottom",
+      "clip": "air_rise_loop",
+      "revision": 108,
+      "slots": 6,
+      "distinctRects": 6,
+      "distinctPixelHashes": 6,
+      "durations": [
+        1,
+        1,
+        1,
+        1,
+        2,
+        2
+      ],
+      "loop": false,
+      "target": 6,
+      "minimumAdditionalDrawings": 0
+    },
+    {
+      "pack": "03",
+      "fighter": "mrs-tasselbottom",
+      "clip": "air_apex_loop",
+      "revision": 108,
+      "slots": 6,
+      "distinctRects": 6,
+      "distinctPixelHashes": 6,
+      "durations": [
+        2,
+        2,
+        2,
+        2,
+        2,
+        2
+      ],
+      "loop": false,
+      "target": 6,
+      "minimumAdditionalDrawings": 0
+    },
+    {
+      "pack": "03",
+      "fighter": "mrs-tasselbottom",
+      "clip": "air_fall_loop",
+      "revision": 108,
+      "slots": 6,
+      "distinctRects": 6,
+      "distinctPixelHashes": 6,
+      "durations": [
+        1,
+        1,
+        1,
+        1,
+        1,
+        2
+      ],
+      "loop": false,
+      "target": 6,
+      "minimumAdditionalDrawings": 0
+    },
+    {
+      "pack": "03",
+      "fighter": "mrs-tasselbottom",
+      "clip": "air_fastfall_loop",
+      "revision": 108,
+      "slots": 6,
+      "distinctRects": 6,
+      "distinctPixelHashes": 6,
+      "durations": [
+        2,
+        2,
+        2,
+        2,
+        2,
+        2
+      ],
+      "loop": false,
+      "target": 6,
+      "minimumAdditionalDrawings": 0
+    },
+    {
+      "pack": "03",
+      "fighter": "mrs-tasselbottom",
+      "clip": "double_jump_transition",
+      "revision": 108,
+      "slots": 6,
+      "distinctRects": 6,
+      "distinctPixelHashes": 6,
+      "durations": [
+        2,
+        2,
+        2,
+        2,
+        2,
+        2
+      ],
+      "loop": false,
+      "target": 6,
+      "minimumAdditionalDrawings": 0
+    },
+    {
+      "pack": "03",
+      "fighter": "mrs-tasselbottom",
+      "clip": "land_soft",
+      "revision": 108,
+      "slots": 6,
+      "distinctRects": 6,
+      "distinctPixelHashes": 6,
+      "durations": [
+        2,
+        2,
+        2,
+        2,
+        2,
+        2
+      ],
+      "loop": false,
+      "target": 6,
+      "minimumAdditionalDrawings": 0
+    },
+    {
+      "pack": "03",
+      "fighter": "mrs-tasselbottom",
+      "clip": "land_heavy",
+      "revision": 108,
+      "slots": 6,
+      "distinctRects": 6,
+      "distinctPixelHashes": 6,
+      "durations": [
+        3,
+        3,
+        3,
+        3,
+        3,
+        3
+      ],
+      "loop": false,
+      "target": 6,
+      "minimumAdditionalDrawings": 0
+    },
+    {
+      "pack": "01",
+      "fighter": "all-rounder",
+      "clip": "jump_squat",
+      "revision": 20,
+      "slots": 6,
+      "distinctRects": 6,
+      "distinctPixelHashes": 6,
+      "durations": [
+        0,
+        1,
+        0,
+        1,
+        0,
+        1
+      ],
+      "loop": false,
+      "target": 3,
+      "minimumAdditionalDrawings": 0
+    },
+    {
+      "pack": "01",
+      "fighter": "all-rounder",
+      "clip": "takeoff_neutral",
+      "revision": 20,
+      "slots": 6,
+      "distinctRects": 6,
+      "distinctPixelHashes": 6,
+      "durations": [
+        4,
+        4,
+        4,
+        4,
+        4,
+        4
+      ],
+      "loop": false,
+      "target": 3,
+      "minimumAdditionalDrawings": 0
+    },
+    {
+      "pack": "01",
+      "fighter": "all-rounder",
+      "clip": "takeoff_forward",
+      "revision": 20,
+      "slots": 6,
+      "distinctRects": 6,
+      "distinctPixelHashes": 6,
+      "durations": [
+        4,
+        4,
+        4,
+        4,
+        4,
+        4
+      ],
+      "loop": false,
+      "target": 3,
+      "minimumAdditionalDrawings": 0
+    },
+    {
+      "pack": "01",
+      "fighter": "all-rounder",
+      "clip": "takeoff_backward",
+      "revision": 20,
+      "slots": 6,
+      "distinctRects": 6,
+      "distinctPixelHashes": 6,
+      "durations": [
+        4,
+        4,
+        4,
+        4,
+        4,
+        4
+      ],
+      "loop": false,
+      "target": 3,
+      "minimumAdditionalDrawings": 0
+    },
+    {
+      "pack": "01",
+      "fighter": "all-rounder",
+      "clip": "air_rise_loop",
+      "revision": 20,
+      "slots": 6,
+      "distinctRects": 6,
+      "distinctPixelHashes": 6,
+      "durations": [
+        6,
+        6,
+        6,
+        6,
+        6,
+        6
+      ],
+      "loop": true,
+      "target": 6,
+      "minimumAdditionalDrawings": 0
+    },
+    {
+      "pack": "01",
+      "fighter": "all-rounder",
+      "clip": "air_apex_loop",
+      "revision": 20,
+      "slots": 6,
+      "distinctRects": 6,
+      "distinctPixelHashes": 6,
+      "durations": [
+        6,
+        6,
+        6,
+        6,
+        6,
+        6
+      ],
+      "loop": true,
+      "target": 6,
+      "minimumAdditionalDrawings": 0
+    },
+    {
+      "pack": "01",
+      "fighter": "all-rounder",
+      "clip": "air_fall_loop",
+      "revision": 20,
+      "slots": 6,
+      "distinctRects": 6,
+      "distinctPixelHashes": 6,
+      "durations": [
+        6,
+        6,
+        6,
+        6,
+        6,
+        6
+      ],
+      "loop": true,
+      "target": 6,
+      "minimumAdditionalDrawings": 0
+    },
+    {
+      "pack": "01",
+      "fighter": "all-rounder",
+      "clip": "air_fastfall_loop",
+      "revision": 20,
+      "slots": 6,
+      "distinctRects": 6,
+      "distinctPixelHashes": 6,
+      "durations": [
+        6,
+        6,
+        6,
+        6,
+        6,
+        6
+      ],
+      "loop": true,
+      "target": 6,
+      "minimumAdditionalDrawings": 0
+    },
+    {
+      "pack": "01",
+      "fighter": "all-rounder",
+      "clip": "double_jump_transition",
+      "revision": 20,
+      "slots": 6,
+      "distinctRects": 6,
+      "distinctPixelHashes": 6,
+      "durations": [
+        4,
+        4,
+        4,
+        4,
+        4,
+        4
+      ],
+      "loop": false,
+      "target": 6,
+      "minimumAdditionalDrawings": 0
+    },
+    {
+      "pack": "01",
+      "fighter": "all-rounder",
+      "clip": "land_soft",
+      "revision": 20,
+      "slots": 6,
+      "distinctRects": 6,
+      "distinctPixelHashes": 6,
+      "durations": [
+        3,
+        3,
+        3,
+        3,
+        3,
+        3
+      ],
+      "loop": false,
+      "target": 6,
+      "minimumAdditionalDrawings": 0
+    },
+    {
+      "pack": "01",
+      "fighter": "all-rounder",
+      "clip": "land_heavy",
+      "revision": 20,
+      "slots": 6,
+      "distinctRects": 6,
+      "distinctPixelHashes": 6,
+      "durations": [
+        3,
+        3,
+        3,
+        3,
+        3,
+        3
+      ],
+      "loop": false,
+      "target": 6,
+      "minimumAdditionalDrawings": 0
+    },
+    {
+      "pack": "01",
+      "fighter": "abe-lincoln",
+      "clip": "jump_squat",
+      "revision": 20,
+      "slots": 6,
+      "distinctRects": 6,
+      "distinctPixelHashes": 6,
+      "durations": [
+        0,
+        1,
+        0,
+        1,
+        0,
+        1
+      ],
+      "loop": false,
+      "target": 3,
+      "minimumAdditionalDrawings": 0
+    },
+    {
+      "pack": "01",
+      "fighter": "abe-lincoln",
+      "clip": "takeoff_neutral",
+      "revision": 20,
+      "slots": 6,
+      "distinctRects": 6,
+      "distinctPixelHashes": 6,
+      "durations": [
+        4,
+        4,
+        4,
+        4,
+        4,
+        4
+      ],
+      "loop": false,
+      "target": 3,
+      "minimumAdditionalDrawings": 0
+    },
+    {
+      "pack": "01",
+      "fighter": "abe-lincoln",
+      "clip": "takeoff_forward",
+      "revision": 20,
+      "slots": 6,
+      "distinctRects": 6,
+      "distinctPixelHashes": 6,
+      "durations": [
+        4,
+        4,
+        4,
+        4,
+        4,
+        4
+      ],
+      "loop": false,
+      "target": 3,
+      "minimumAdditionalDrawings": 0
+    },
+    {
+      "pack": "01",
+      "fighter": "abe-lincoln",
+      "clip": "takeoff_backward",
+      "revision": 20,
+      "slots": 6,
+      "distinctRects": 6,
+      "distinctPixelHashes": 6,
+      "durations": [
+        4,
+        4,
+        4,
+        4,
+        4,
+        4
+      ],
+      "loop": false,
+      "target": 3,
+      "minimumAdditionalDrawings": 0
+    },
+    {
+      "pack": "01",
+      "fighter": "abe-lincoln",
+      "clip": "air_rise_loop",
+      "revision": 20,
+      "slots": 6,
+      "distinctRects": 6,
+      "distinctPixelHashes": 6,
+      "durations": [
+        6,
+        6,
+        6,
+        6,
+        6,
+        6
+      ],
+      "loop": true,
+      "target": 6,
+      "minimumAdditionalDrawings": 0
+    },
+    {
+      "pack": "01",
+      "fighter": "abe-lincoln",
+      "clip": "air_apex_loop",
+      "revision": 20,
+      "slots": 6,
+      "distinctRects": 6,
+      "distinctPixelHashes": 6,
+      "durations": [
+        6,
+        6,
+        6,
+        6,
+        6,
+        6
+      ],
+      "loop": true,
+      "target": 6,
+      "minimumAdditionalDrawings": 0
+    },
+    {
+      "pack": "01",
+      "fighter": "abe-lincoln",
+      "clip": "air_fall_loop",
+      "revision": 20,
+      "slots": 6,
+      "distinctRects": 6,
+      "distinctPixelHashes": 6,
+      "durations": [
+        6,
+        6,
+        6,
+        6,
+        6,
+        6
+      ],
+      "loop": true,
+      "target": 6,
+      "minimumAdditionalDrawings": 0
+    },
+    {
+      "pack": "01",
+      "fighter": "abe-lincoln",
+      "clip": "air_fastfall_loop",
+      "revision": 20,
+      "slots": 6,
+      "distinctRects": 6,
+      "distinctPixelHashes": 6,
+      "durations": [
+        6,
+        6,
+        6,
+        6,
+        6,
+        6
+      ],
+      "loop": true,
+      "target": 6,
+      "minimumAdditionalDrawings": 0
+    },
+    {
+      "pack": "01",
+      "fighter": "abe-lincoln",
+      "clip": "double_jump_transition",
+      "revision": 20,
+      "slots": 6,
+      "distinctRects": 6,
+      "distinctPixelHashes": 6,
+      "durations": [
+        4,
+        4,
+        4,
+        4,
+        4,
+        4
+      ],
+      "loop": false,
+      "target": 6,
+      "minimumAdditionalDrawings": 0
+    },
+    {
+      "pack": "01",
+      "fighter": "abe-lincoln",
+      "clip": "land_soft",
+      "revision": 20,
+      "slots": 6,
+      "distinctRects": 6,
+      "distinctPixelHashes": 6,
+      "durations": [
+        3,
+        3,
+        3,
+        3,
+        3,
+        3
+      ],
+      "loop": false,
+      "target": 6,
+      "minimumAdditionalDrawings": 0
+    },
+    {
+      "pack": "01",
+      "fighter": "abe-lincoln",
+      "clip": "land_heavy",
+      "revision": 20,
+      "slots": 6,
+      "distinctRects": 6,
+      "distinctPixelHashes": 6,
+      "durations": [
+        3,
+        3,
+        3,
+        3,
+        3,
+        3
+      ],
+      "loop": false,
+      "target": 6,
+      "minimumAdditionalDrawings": 0
+    },
+    {
+      "pack": "01",
+      "fighter": "swift",
+      "clip": "jump_squat",
+      "revision": 20,
+      "slots": 6,
+      "distinctRects": 6,
+      "distinctPixelHashes": 6,
+      "durations": [
+        0,
+        1,
+        0,
+        1,
+        0,
+        1
+      ],
+      "loop": false,
+      "target": 3,
+      "minimumAdditionalDrawings": 0
+    },
+    {
+      "pack": "01",
+      "fighter": "swift",
+      "clip": "takeoff_neutral",
+      "revision": 20,
+      "slots": 6,
+      "distinctRects": 6,
+      "distinctPixelHashes": 6,
+      "durations": [
+        4,
+        4,
+        4,
+        4,
+        4,
+        4
+      ],
+      "loop": false,
+      "target": 3,
+      "minimumAdditionalDrawings": 0
+    },
+    {
+      "pack": "01",
+      "fighter": "swift",
+      "clip": "takeoff_forward",
+      "revision": 20,
+      "slots": 6,
+      "distinctRects": 6,
+      "distinctPixelHashes": 6,
+      "durations": [
+        4,
+        4,
+        4,
+        4,
+        4,
+        4
+      ],
+      "loop": false,
+      "target": 3,
+      "minimumAdditionalDrawings": 0
+    },
+    {
+      "pack": "01",
+      "fighter": "swift",
+      "clip": "takeoff_backward",
+      "revision": 20,
+      "slots": 6,
+      "distinctRects": 6,
+      "distinctPixelHashes": 6,
+      "durations": [
+        4,
+        4,
+        4,
+        4,
+        4,
+        4
+      ],
+      "loop": false,
+      "target": 3,
+      "minimumAdditionalDrawings": 0
+    },
+    {
+      "pack": "01",
+      "fighter": "swift",
+      "clip": "air_rise_loop",
+      "revision": 20,
+      "slots": 6,
+      "distinctRects": 6,
+      "distinctPixelHashes": 6,
+      "durations": [
+        6,
+        6,
+        6,
+        6,
+        6,
+        6
+      ],
+      "loop": true,
+      "target": 6,
+      "minimumAdditionalDrawings": 0
+    },
+    {
+      "pack": "01",
+      "fighter": "swift",
+      "clip": "air_apex_loop",
+      "revision": 20,
+      "slots": 6,
+      "distinctRects": 6,
+      "distinctPixelHashes": 6,
+      "durations": [
+        6,
+        6,
+        6,
+        6,
+        6,
+        6
+      ],
+      "loop": true,
+      "target": 6,
+      "minimumAdditionalDrawings": 0
+    },
+    {
+      "pack": "01",
+      "fighter": "swift",
+      "clip": "air_fall_loop",
+      "revision": 20,
+      "slots": 6,
+      "distinctRects": 6,
+      "distinctPixelHashes": 6,
+      "durations": [
+        6,
+        6,
+        6,
+        6,
+        6,
+        6
+      ],
+      "loop": true,
+      "target": 6,
+      "minimumAdditionalDrawings": 0
+    },
+    {
+      "pack": "01",
+      "fighter": "swift",
+      "clip": "air_fastfall_loop",
+      "revision": 20,
+      "slots": 6,
+      "distinctRects": 6,
+      "distinctPixelHashes": 6,
+      "durations": [
+        6,
+        6,
+        6,
+        6,
+        6,
+        6
+      ],
+      "loop": true,
+      "target": 6,
+      "minimumAdditionalDrawings": 0
+    },
+    {
+      "pack": "01",
+      "fighter": "swift",
+      "clip": "double_jump_transition",
+      "revision": 20,
+      "slots": 6,
+      "distinctRects": 6,
+      "distinctPixelHashes": 6,
+      "durations": [
+        4,
+        4,
+        4,
+        4,
+        4,
+        4
+      ],
+      "loop": false,
+      "target": 6,
+      "minimumAdditionalDrawings": 0
+    },
+    {
+      "pack": "01",
+      "fighter": "swift",
+      "clip": "land_soft",
+      "revision": 20,
+      "slots": 6,
+      "distinctRects": 6,
+      "distinctPixelHashes": 6,
+      "durations": [
+        3,
+        3,
+        3,
+        3,
+        3,
+        3
+      ],
+      "loop": false,
+      "target": 6,
+      "minimumAdditionalDrawings": 0
+    },
+    {
+      "pack": "01",
+      "fighter": "swift",
+      "clip": "land_heavy",
+      "revision": 20,
+      "slots": 6,
+      "distinctRects": 6,
+      "distinctPixelHashes": 6,
+      "durations": [
+        3,
+        3,
+        3,
+        3,
+        3,
+        3
+      ],
+      "loop": false,
+      "target": 6,
+      "minimumAdditionalDrawings": 0
+    },
+    {
+      "pack": "04",
+      "fighter": "zane-corvo",
+      "clip": "jump_squat",
+      "revision": 127,
+      "slots": 3,
+      "distinctRects": 3,
+      "distinctPixelHashes": 3,
+      "durations": [
+        1,
+        1,
+        1
+      ],
+      "loop": false,
+      "target": 3,
+      "minimumAdditionalDrawings": 0
+    },
+    {
+      "pack": "04",
+      "fighter": "zane-corvo",
+      "clip": "takeoff_neutral",
+      "revision": 127,
+      "slots": 3,
+      "distinctRects": 3,
+      "distinctPixelHashes": 3,
+      "durations": [
+        2,
+        2,
+        2
+      ],
+      "loop": false,
+      "target": 3,
+      "minimumAdditionalDrawings": 0
+    },
+    {
+      "pack": "04",
+      "fighter": "zane-corvo",
+      "clip": "takeoff_forward",
+      "revision": 127,
+      "slots": 3,
+      "distinctRects": 3,
+      "distinctPixelHashes": 3,
+      "durations": [
+        2,
+        2,
+        2
+      ],
+      "loop": false,
+      "target": 3,
+      "minimumAdditionalDrawings": 0
+    },
+    {
+      "pack": "04",
+      "fighter": "zane-corvo",
+      "clip": "takeoff_backward",
+      "revision": 127,
+      "slots": 3,
+      "distinctRects": 3,
+      "distinctPixelHashes": 3,
+      "durations": [
+        2,
+        2,
+        2
+      ],
+      "loop": false,
+      "target": 3,
+      "minimumAdditionalDrawings": 0
+    },
+    {
+      "pack": "04",
+      "fighter": "zane-corvo",
+      "clip": "air_rise_loop",
+      "revision": 127,
+      "slots": 6,
+      "distinctRects": 6,
+      "distinctPixelHashes": 6,
+      "durations": [
+        2,
+        2,
+        2,
+        2,
+        2,
+        2
+      ],
+      "loop": false,
+      "target": 6,
+      "minimumAdditionalDrawings": 0
+    },
+    {
+      "pack": "04",
+      "fighter": "zane-corvo",
+      "clip": "air_apex_loop",
+      "revision": 127,
+      "slots": 6,
+      "distinctRects": 6,
+      "distinctPixelHashes": 6,
+      "durations": [
+        2,
+        2,
+        2,
+        2,
+        2,
+        2
+      ],
+      "loop": false,
+      "target": 6,
+      "minimumAdditionalDrawings": 0
+    },
+    {
+      "pack": "04",
+      "fighter": "zane-corvo",
+      "clip": "air_fall_loop",
+      "revision": 127,
+      "slots": 6,
+      "distinctRects": 6,
+      "distinctPixelHashes": 6,
+      "durations": [
+        2,
+        2,
+        2,
+        2,
+        2,
+        2
+      ],
+      "loop": false,
+      "target": 6,
+      "minimumAdditionalDrawings": 0
+    },
+    {
+      "pack": "04",
+      "fighter": "zane-corvo",
+      "clip": "air_fastfall_loop",
+      "revision": 127,
+      "slots": 6,
+      "distinctRects": 6,
+      "distinctPixelHashes": 6,
+      "durations": [
+        2,
+        2,
+        2,
+        2,
+        2,
+        2
+      ],
+      "loop": false,
+      "target": 6,
+      "minimumAdditionalDrawings": 0
+    },
+    {
+      "pack": "04",
+      "fighter": "zane-corvo",
+      "clip": "double_jump_transition",
+      "revision": 127,
+      "slots": 6,
+      "distinctRects": 6,
+      "distinctPixelHashes": 6,
+      "durations": [
+        2,
+        2,
+        2,
+        2,
+        2,
+        2
+      ],
+      "loop": false,
+      "target": 6,
+      "minimumAdditionalDrawings": 0
+    },
+    {
+      "pack": "04",
+      "fighter": "zane-corvo",
+      "clip": "land_soft",
+      "revision": 127,
+      "slots": 6,
+      "distinctRects": 6,
+      "distinctPixelHashes": 6,
+      "durations": [
+        2,
+        2,
+        2,
+        2,
+        2,
+        2
+      ],
+      "loop": false,
+      "target": 6,
+      "minimumAdditionalDrawings": 0
+    },
+    {
+      "pack": "04",
+      "fighter": "zane-corvo",
+      "clip": "land_heavy",
+      "revision": 127,
+      "slots": 6,
+      "distinctRects": 6,
+      "distinctPixelHashes": 6,
+      "durations": [
+        3,
+        3,
+        3,
+        3,
+        3,
+        3
+      ],
+      "loop": false,
+      "target": 6,
+      "minimumAdditionalDrawings": 0
+    },
+    {
+      "pack": "04",
+      "fighter": "velvet-reply",
+      "clip": "jump_squat",
+      "revision": 127,
+      "slots": 3,
+      "distinctRects": 3,
+      "distinctPixelHashes": 3,
+      "durations": [
+        1,
+        1,
+        1
+      ],
+      "loop": false,
+      "target": 3,
+      "minimumAdditionalDrawings": 0
+    },
+    {
+      "pack": "04",
+      "fighter": "velvet-reply",
+      "clip": "takeoff_neutral",
+      "revision": 127,
+      "slots": 3,
+      "distinctRects": 3,
+      "distinctPixelHashes": 3,
+      "durations": [
+        2,
+        2,
+        2
+      ],
+      "loop": false,
+      "target": 3,
+      "minimumAdditionalDrawings": 0
+    },
+    {
+      "pack": "04",
+      "fighter": "velvet-reply",
+      "clip": "takeoff_forward",
+      "revision": 127,
+      "slots": 3,
+      "distinctRects": 3,
+      "distinctPixelHashes": 3,
+      "durations": [
+        2,
+        2,
+        2
+      ],
+      "loop": false,
+      "target": 3,
+      "minimumAdditionalDrawings": 0
+    },
+    {
+      "pack": "04",
+      "fighter": "velvet-reply",
+      "clip": "takeoff_backward",
+      "revision": 127,
+      "slots": 3,
+      "distinctRects": 3,
+      "distinctPixelHashes": 3,
+      "durations": [
+        2,
+        2,
+        2
+      ],
+      "loop": false,
+      "target": 3,
+      "minimumAdditionalDrawings": 0
+    },
+    {
+      "pack": "04",
+      "fighter": "velvet-reply",
+      "clip": "air_rise_loop",
+      "revision": 127,
+      "slots": 6,
+      "distinctRects": 6,
+      "distinctPixelHashes": 6,
+      "durations": [
+        2,
+        2,
+        2,
+        2,
+        2,
+        2
+      ],
+      "loop": false,
+      "target": 6,
+      "minimumAdditionalDrawings": 0
+    },
+    {
+      "pack": "04",
+      "fighter": "velvet-reply",
+      "clip": "air_apex_loop",
+      "revision": 127,
+      "slots": 6,
+      "distinctRects": 6,
+      "distinctPixelHashes": 6,
+      "durations": [
+        2,
+        2,
+        2,
+        2,
+        2,
+        2
+      ],
+      "loop": false,
+      "target": 6,
+      "minimumAdditionalDrawings": 0
+    },
+    {
+      "pack": "04",
+      "fighter": "velvet-reply",
+      "clip": "air_fall_loop",
+      "revision": 127,
+      "slots": 6,
+      "distinctRects": 6,
+      "distinctPixelHashes": 6,
+      "durations": [
+        2,
+        2,
+        2,
+        2,
+        2,
+        2
+      ],
+      "loop": false,
+      "target": 6,
+      "minimumAdditionalDrawings": 0
+    },
+    {
+      "pack": "04",
+      "fighter": "velvet-reply",
+      "clip": "air_fastfall_loop",
+      "revision": 127,
+      "slots": 6,
+      "distinctRects": 6,
+      "distinctPixelHashes": 6,
+      "durations": [
+        2,
+        2,
+        2,
+        2,
+        2,
+        2
+      ],
+      "loop": false,
+      "target": 6,
+      "minimumAdditionalDrawings": 0
+    },
+    {
+      "pack": "04",
+      "fighter": "velvet-reply",
+      "clip": "double_jump_transition",
+      "revision": 127,
+      "slots": 6,
+      "distinctRects": 6,
+      "distinctPixelHashes": 6,
+      "durations": [
+        2,
+        2,
+        2,
+        2,
+        2,
+        2
+      ],
+      "loop": false,
+      "target": 6,
+      "minimumAdditionalDrawings": 0
+    },
+    {
+      "pack": "04",
+      "fighter": "velvet-reply",
+      "clip": "land_soft",
+      "revision": 127,
+      "slots": 6,
+      "distinctRects": 6,
+      "distinctPixelHashes": 6,
+      "durations": [
+        2,
+        2,
+        2,
+        2,
+        2,
+        2
+      ],
+      "loop": false,
+      "target": 6,
+      "minimumAdditionalDrawings": 0
+    },
+    {
+      "pack": "04",
+      "fighter": "velvet-reply",
+      "clip": "land_heavy",
+      "revision": 127,
+      "slots": 6,
+      "distinctRects": 6,
+      "distinctPixelHashes": 6,
+      "durations": [
+        3,
+        3,
+        3,
+        3,
+        3,
+        3
+      ],
+      "loop": false,
+      "target": 6,
+      "minimumAdditionalDrawings": 0
+    }
+  ]
+}

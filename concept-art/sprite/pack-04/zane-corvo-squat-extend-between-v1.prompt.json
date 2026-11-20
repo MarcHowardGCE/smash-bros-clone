@@ -1,0 +1,16 @@
+{
+  "tool": "built-in image_gen",
+  "date": "2026-11-18",
+  "prompt": "Use case: stylized-concept. Production full-body 2D fighter sprite, ONE pose, facing right, genuinely transparent background. Reference 1 is Zane's canonical shipped idle identity/costume; reference 2 is his low crouch. Draw the FINAL grounded jump-squat EXTENSION: after the deep crouch he pushes upward, knees partly straightened, hips rising, torso upright, elbows driving back with fists near his hips ready to launch. BOTH boots still planted at identical ground height; no airborne gap. His full silhouette is taller than the entry compression but below full standing height. Arms stay below shoulders. Preserve exact shipped proportions, brown-black biker jacket with silver studs and zips, dark buttoned waistcoat, silver chain and square belt buckle, dark trousers, chunky cream-laced boots, brown tousled hair, stubble and half-lidded face. Crisp dark outlines and warm textured ink shading exactly matching references. Whole body with generous transparent margin. No raised arms, no leap, no floor, shadow, white mist, glow, halo, blur, gradients, lettering or extra limbs.",
+  "references": [
+    "concept-art/sprite/pack-04/zane-corvo-idle.png",
+    "apps/client/public/fighter-art-pack-04-v1/zane-corvo-stance-1.png",
+    "concept-art/sprite/pack-04/zane-corvo-squat-entry-between-v1.png"
+  ],
+  "preparation": {
+    "alphaFloor": 5,
+    "worldHeight": 79,
+    "preserveSource": true
+  },
+  "review": "Entry reviewed first against shipped idle and low crouch before extension generation."
+}

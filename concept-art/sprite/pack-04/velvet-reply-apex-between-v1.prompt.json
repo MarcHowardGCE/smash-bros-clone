@@ -1,0 +1,16 @@
+{
+  "tool": "built-in image_gen",
+  "date": "2026-11-18",
+  "transparent_background": true,
+  "identityReference": "concept-art/sprite/pack-04/velvet-reply-idle.png",
+  "poseReferences": [
+    "apps/client/public/fighter-art-pack-04-v1/velvet-reply-air-1.png",
+    "apps/client/public/fighter-art-pack-04-v1/velvet-reply-air-2.png"
+  ],
+  "prompt": "Create ONE full-body production game sprite of The Velvet Reply facing RIGHT in three-quarter side view. Reference 1 is the authoritative identity, exact costume, anatomy, colors and ink drawing style. References 2 and 3 are ONLY adjacent apex poses. Draw a genuinely distinct intermediate pose HALF WAY from the two-knee airborne tuck (2) toward the lowered relaxed legs (3): thighs begin to lower, both knees remain bent, boots hang below the hips; hands easing outward halfway. Head and shoulders stay composed and level, copper hair floating behind. Preserve exact reference-1 wardrobe: dark plum-black fitted flared jumpsuit with fine gold piping, black fishnet sleeves and upper chest, crossed black chest straps, high dark collar, wide SILVER rectangular buckle belt, silver wrist cuffs and hoop earrings, glossy dark heeled ankle boots. Preserve copper-auburn wavy hair, cheek beauty mark, half-lidded eyes and exact face. Same compact illustrated ink outlines and textured clothing as shipped references; no redesign. Entire silhouette and all fingers and boot tips visible, generous clear margins. TRUE transparent background. No floor, scene, shadow, ambient shadow, mist, halo, glow, gradient, streaks, blur, text or colored fringe. Outside crisp antialiased ink must be fully transparent. Do not copy dark backdrops from pose references.",
+  "preparation": {
+    "clearAlphaAtMost": 5,
+    "worldHeight": 74,
+    "preserveSource": true
+  }
+}

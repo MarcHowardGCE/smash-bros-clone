@@ -152,3 +152,54 @@ it('aligns Pack 03 packed throw releases across all ordered pairings and facings
     }
   }
 });
+it('reconstructs Pack 04 release contact independently of the last rendered held pose',()=>{
+ const characters:Record<string,any>={};for(const file of ['fighter-art-pilot-v1/production/manifest.json','fighter-art-newcomers-v1/dojo/manifest.json','fighter-art-pack-03-v1/production/manifest.json','fighter-art-pack-04-v1/production/manifest.json']){const m=JSON.parse(readFileSync(new URL('../../../public/'+file,import.meta.url),'utf8'));for(const[id,c]of Object.entries(m.characters)as[string,any][]){characters[id]=Object.fromEntries(Object.entries(c.clips).map(([name,c]:[string,any])=>[name,{...c,frames:c.frames.map((f:any)=>({...f,texture:Texture.EMPTY,offsetY:getCharacterStats(id as any).hurtboxRadius}))}]));}}
+ for(const ownerId of ['zane-corvo','velvet-reply']as const)for(const victimId of Object.keys(characters))for(const move of [MoveId.FORWARD_THROW,MoveId.BACK_THROW,MoveId.UP_THROW,MoveId.DOWN_THROW])for(const facing of [-1,1]as const){
+  const positions=[];const startup=getMoveDataForCharacter(ownerId,move).startupFrames;
+  for(const age of [11,12]){const p=new FullBodyPilot({characters},victimId as any,['all-rounder','abe-lincoln','swift'].includes(victimId)?undefined:victimId as any);const owner={artId:ownerId,characterId:ownerId,state:'ATTACK',frame:startup-1,move,dx:40,dy:0,facing};
+   p.update('GRAB_HOLDING',age,null,true,0,true,false,1,0,true,1,facing,owner);
+   p.startGrabReaction(move,facing,'owner');p.update('HITSTUN',0,null,true,0,true,false,1,0,false,1,facing,{...owner,frame:startup});expect(p.sprite.label).toBe('throw_victim');positions.push([p.sprite.x,p.sprite.y]);
+  }
+  expect(positions[0],ownerId+' '+victimId+' '+move+' '+facing).toEqual(positions[1]);
+ }
+});
+
+
+describe('confirmed throw presentation across network handoffs', () => {
+ const create = () => {
+  const clip = { scale: 1, frames: Array.from({length: 6}, () => ({root:[0,0],texture:Texture.EMPTY,offsetY:0})) };
+  return new FullBodyPilot({characters:{'all-rounder':{idle:clip,air_fall_loop:clip,grabbed:clip,throw_victim:clip,jab:clip,shield:clip}}});
+ };
+ it('shows a bounded confirmed reaction when the event reaches a recovered idle victim', () => {
+  const p=create();p.update('IDLE',13,null,true);p.startGrabReaction(MoveId.FORWARD_THROW,1,'owner');
+  p.update('IDLE',14,null,true);expect(p.sprite.label).toBe('throw_victim');
+  p.update('IDLE',19,null,true);expect(p.sprite.label).toBe('throw_victim');
+  p.update('IDLE',20,null,true);expect(p.sprite.label).toBe('idle');
+ });
+ it('keeps the minimum visual handoff through a hitstun-to-idle frame reset', () => {
+  const p=create();p.startGrabReaction(MoveId.UP_THROW,1,'owner');p.update('HITSTUN',4,null,true);
+  p.update('IDLE',0,null,true);expect(p.sprite.label).toBe('throw_victim');
+  p.update('IDLE',5,null,true);expect(p.sprite.label).toBe('idle');
+ });
+ it.each(['ATTACK','SHIELD','DOUBLE_JUMP','AIRBORNE'])('never covers a newly actionable %s', state => {
+  const p=create();p.startGrabReaction(MoveId.FORWARD_THROW,1,'owner');p.update('IDLE',0,null,true);
+  p.update(state,0,state==='ATTACK'?MoveId.JAB:null,true);expect(p.sprite.label).not.toBe('throw_victim');expect(p.throwOwnerId).toBeUndefined();
+ });
+ it('waits briefly for a still-held rendered victim to reach throw hitstun', () => {
+  const p=create();p.startGrabReaction(MoveId.FORWARD_THROW,1,'owner');p.update('GRAB_HOLDING',30,null,true,0,true,false,1,0,true);
+  expect(p.sprite.label).toBe('grabbed');p.update('HITSTUN',0,null,true);expect(p.sprite.label).toBe('throw_victim');
+ });
+ it('does not replay a confirmed cue after the victim is hidden', () => {
+  const p=create();p.startGrabReaction(MoveId.FORWARD_THROW,1,'owner');p.update('IDLE',0,null,false);
+  p.update('IDLE',1,null,true);expect(p.sprite.label).toBe('idle');
+ });
+});
+
+it('does not let a late throw event cover a takeoff already in flight', () => {
+ const clip={scale:1,frames:Array.from({length:6},()=>({root:[0,0],texture:Texture.EMPTY,offsetY:0}))};
+ const p=new FullBodyPilot({characters:{'all-rounder':{idle:clip,throw_victim:clip,takeoff_neutral:clip}}});
+ p.update('AIRBORNE',3,null,true,-10,true,false,1,0,false,1,1,undefined,null,{artCue:'takeoff_neutral',artCueFrame:3});
+ p.startGrabReaction(MoveId.FORWARD_THROW,1,'owner');
+ p.update('AIRBORNE',4,null,true,-10,true,false,1,0,false,1,1,undefined,null,{artCue:'takeoff_neutral',artCueFrame:4});
+ expect(p.sprite.label).toBe('takeoff_neutral');expect(p.throwOwnerId).toBeUndefined();
+});

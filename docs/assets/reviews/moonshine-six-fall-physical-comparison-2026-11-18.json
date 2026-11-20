@@ -1,0 +1,14 @@
+{
+  "baseline": "six-apex",
+  "cases": 8,
+  "fields": [
+    "state",
+    "frame",
+    "y",
+    "vy",
+    "grounded",
+    "facing",
+    "fast"
+  ],
+  "equal": true
+}

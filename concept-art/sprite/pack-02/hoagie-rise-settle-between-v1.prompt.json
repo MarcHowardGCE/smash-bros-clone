@@ -1,0 +1,16 @@
+{
+  "tool": "built-in image_gen",
+  "date": "2026-11-19",
+  "prompt": "Production full-body 2D Hulk Hoagie sprite, ONE EARLY AIRBORNE RISE in-between facing RIGHT, genuinely transparent RGBA. Reference1 shipped idle locks identity/costume; reference2 shipped rise locks compact proportions and head size. Broad muscular wrestler, square angry face, short dark beard, BROWN flat cap, BURGUNDY singlet with CREAM edging/straps, bare hairy arms/legs/chest, cream wrist/forearm wraps, dark rounded studded knee pads, tall brown wrestling boots with CREAM laces. Match crisp black textured ink shading, full-size head and thick muscular limbs. Pose: SETTLING AIRBORNE RISE, tight compact tuck with both knees close below belly and slightly higher than mid-rise, boots tucked back under thighs and close together, torso upright with subtle forward inclination. Wrapped fists held beside chin, elbows close, shoulders relaxed slightly as climb slows toward crest. Preserve full-size head, no attack or straight leg or arms overhead. Whole figure with margin. No ground, backdrop, shadow, mist, haze, glow, halo, blur, motion lines, text, extra limbs. Ignore reference surrounding residue; empty pixels alpha zero.",
+  "references": [
+    "hoagie-shipped-idle-reference.png",
+    "hoagie-shipped-rise-reference-1.png"
+  ],
+  "preparation": {
+    "alphaFloor": 5,
+    "worldHeight": 68,
+    "rootYWorld": 83,
+    "preserveSource": true
+  },
+  "review": "Early reviewed before remaining poses. Shipped costume, prepared alpha, registered takeoff-rise-apex and both-facing Dojo reviewed."
+}

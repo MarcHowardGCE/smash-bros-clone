@@ -1,0 +1,16 @@
+{
+  "tool": "built-in image_gen",
+  "date": "2026-11-18",
+  "identityReference": "concept-art/sprite/pack-04/velvet-reply-idle.png",
+  "poseReferenceSources": [
+    "concept-art/sprite/pack-04/velvet-reply-rise-late-between-v1.png",
+    "apps/client/public/fighter-art-pack-04-v1/velvet-reply-air-1.png"
+  ],
+  "preparedPoseReference": "Alpha-cleaned review copy of the late pose was used.",
+  "prompt": "Draw ONE full-body production sprite for The Velvet Reply facing RIGHT in three-quarter side view, the settling frame just before a tight two-knee airborne tuck. Reference 1 is authoritative exact shipped identity, costume, face, anatomy and ink/hatching style. References 2 and 3 are neighboring motion poses. Draw a pose about three-quarters from the bent trailing leg (2) toward the compact tuck (3): BOTH knees now high and gathering together near the torso; trailing heel has lifted inward beside the leading boot, both boots clearly separated and close beneath the hips. Slightly less compact than ref 3, much more gathered than ref 2. Both open hands easing down beside the hips; elbows slightly outward. Same level head and shoulders, copper-auburn flowing wavy hair, cheek beauty mark, composed half-lidded expression and exact head/torso proportions. Exact plum-black fitted FLARED-LEG jumpsuit, fine gold piping, fishnet sleeves/chest with crossed black straps, high dark collar, SILVER buckle belt/wrist cuffs/hoop earrings, glossy dark HEELED ANKLE BOOTS. No new accessories or costume changes, no walking/running. Full silhouette and all extremities visible with generous margins. TRUE TRANSPARENT background; crisp antialiased ink only. No scene, floor, shadow, mist, glow, halo, gradient, blur, text or streaks. Do not duplicate either endpoint or copy reference backgrounds.",
+  "preparation": {
+    "clearAlphaAtMost": 5,
+    "worldHeight": 65.5,
+    "preserveSource": true
+  }
+}

@@ -1,0 +1,26 @@
+[
+  {
+    "pack": "fighter-art-pilot-v1",
+    "revision": 20,
+    "packedFrames": 2289,
+    "referencedImages": 424
+  },
+  {
+    "pack": "fighter-art-newcomers-v1",
+    "revision": 93,
+    "packedFrames": 1072,
+    "referencedImages": 196
+  },
+  {
+    "pack": "fighter-art-pack-03-v1",
+    "revision": 108,
+    "packedFrames": 1854,
+    "referencedImages": 117
+  },
+  {
+    "pack": "fighter-art-pack-04-v1",
+    "revision": 127,
+    "packedFrames": 1330,
+    "referencedImages": 504
+  }
+]

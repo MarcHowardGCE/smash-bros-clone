@@ -1,0 +1,17 @@
+{
+  "tool": "built-in image_gen",
+  "date": "2026-11-18",
+  "identityReference": "concept-art/sprite/pack-04/zane-corvo-idle.png",
+  "poseReferenceSources": [
+    "concept-art/sprite/pack-04/zane-corvo-fall-late-between-v1.png",
+    "apps/client/public/fighter-art-pack-04-v1/zane-corvo-dash-fall-3.png"
+  ],
+  "preparedPoseReference": "Alpha-cleaned late-pose review copy used.",
+  "status": "accepted",
+  "prompt": "Draw ONE full-body production game sprite of Zane Corvo facing RIGHT in three-quarter side view: the last SETTLING FALL in-between before a guarded airborne hold. Reference 1 is exact shipped identity/costume/face/anatomy/palette/ink style. References 2 and 3 are adjacent motion poses. Draw halfway from reference 2 toward reference 3, closer to the final guard: both elbows near ribs, hands almost clenched but fingers still settling, torso easing slightly upright, boots drifting a little closer beneath the body. Both knees bent and boots airborne, no running/walking or attack. Not a duplicate of either endpoint. Preserve head/torso proportions, tousled brown hair, stubble, half-lidded expression, dark brown-black biker jacket with silver studs/zips, buttoned dark waistcoat, silver chain and belt, dark trousers and dark chunky cream-laced boots. No costume changes or new accessories. Same compact textured ink/hatching artwork. Full silhouette, fingers and boot tips within generous transparent margins. TRUE transparent background; crisp antialiased ink edges with empty alpha outside. NO ground, shadows, mist, glow, halo, gradients, blur, text, streaks or colored fringe.",
+  "preparation": {
+    "clearAlphaAtMost": 5,
+    "worldHeight": 82,
+    "preserveSource": true
+  }
+}

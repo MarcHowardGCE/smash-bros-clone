@@ -1,0 +1,10 @@
+{
+  "tool": "built-in image_gen",
+  "date": "2026-11-19",
+  "prompt": "Create ONE full-body transparent-background 2D gameplay sprite: Loopy fast-fall in-between between the two SHIPPED references. Match exact character identity, head/torso/antler proportions, body mass, costume, colors and inked cartoon style. Face RIGHT. Golden shaggy deer, brown branching antlers, long black nose, sleepy grin, cream ankle fur and brown split hooves. BLANK CREAM basketball jersey with PURPLE trim, ragged PURPLE shorts, purple/cream striped wristbands. NO number49, no numbers/letters/logos. Loose fists in guard, feet airborne. Keep reference chest breadth and head size; no shrunken torso or exaggerated long shins. Full antlers and hooves, generous transparent padding. Flat cel shading ONLY inside crisp black contour. Alpha ZERO outside contour and between limbs/antlers. NO halo, haze, blur, external lighting, shadow, ground, speed streaks, particles or text. Draw a two-thirds transition from reference1's tucked knees toward reference2's downward legs: legs relaxed downward with modest knee bend remaining, feet nearly together. Keep head and torso the same size as references, long proportions only as shown in reference2. CRITICAL: flat sprite cutout, hard transparent alpha outside black outline. Absolutely no diffuse lighting or outer glow.",
+  "source": "C:\\Users\\misac\\.codex\\generated_images\\01a1d512-1266-7be0-b658-8ca4590e1a8c\\exec-7c3960ab-83ed-4ab7-b37c-27b232c3710e.png",
+  "references": [
+    "loopy-shipped-fastfall-1.png",
+    "loopy-shipped-fastfall-2.png"
+  ]
+}

@@ -1,0 +1,16 @@
+{
+  "tool": "built-in image_gen",
+  "date": "2026-11-18",
+  "identityReference": "concept-art/sprite/pack-04/zane-corvo-idle.png",
+  "poseReferenceSources": [
+    "concept-art/sprite/pack-04/zane-corvo-fall-early-between-v1.png",
+    "apps/client/public/fighter-art-pack-04-v1/zane-corvo-air-2.png"
+  ],
+  "status": "accepted",
+  "prompt": "Edit ONLY THE POSE of reference 1, preserving its exact face, costume, palette and ink rendering. It is too close to a guarded crouch and must become an EARLY fall in-between. Reference 2 is the canonical identity, reference 3 is the open-handed START pose. Move the arms substantially OUTWARD toward reference 3: elbows away from ribs, forearms open, hands only very slightly curled, not near fists. Straighten the torso toward reference 3 so it leans forward only a few degrees. Bring the trailing boot FORWARD, halfway between its current far-back position and the close-together boots of reference 3; keep both knees moderately bent and both boots airborne. This should retain roughly 70 percent of the open start pose and only 30 percent of the guarded change. Make these pose changes clearly visible; do not merely redraw the current pose. Preserve every item of reference-1 clothing: dark biker jacket with silver studs/zips, dark buttoned waistcoat, silver chain and belt, dark trousers and cream-laced chunky boots. Same full-body right-facing three-quarter viewpoint, same anatomy/head scale. Entire silhouette with generous margins. TRUE transparent background; NO shadows, glow, mist, halo, gradients, backdrop, text or motion marks.",
+  "preparation": {
+    "clearAlphaAtMost": 5,
+    "worldHeight": 82,
+    "preserveSource": true
+  }
+}

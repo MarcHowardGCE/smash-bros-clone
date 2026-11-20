@@ -1,0 +1,18 @@
+{
+  "tool": "built-in image_gen",
+  "date": "2026-11-20",
+  "prompt": "Create ONE exact halfway jump-squat sprite between these TWO shipped Mrs. Tasselbottom crouches. PROPORTION LOCK: match the references' LARGE HEAD/FACE and LARGE FISTS relative to the rounded dress. Do not shrink head/hands into a tiny figure on a large gown. Elderly broad smiling wrinkled face with long pointed nose, white/lavender tight curls, tiny burgundy hat with gold crown/pins. Same royal PURPLE draped gown, GOLD ropes/swags and tassels in the same layout, cream ruffled cuffs/collar and layered lace hem, burgundy shoes with gold buckles. Face right, fists guarding, body crouched slightly forward. Both shoes flat. Full hat and dress/shoes with padding. Keep the same total crouched silhouette and body mass, small halfway limb/face angle changes only. The facial expression should match these mature caricature faces, not a younger simplified face. Flat inked cartoon shading. Real transparent background, alpha ZERO outside contour and between limbs; NO halo, haze, shadow, diffuse lighting, ground line, dust, effects or text. Ignore red stray pixels outside the references.",
+  "source": "C:\\Users\\misac\\.codex\\generated_images\\01a1d512-1266-7be0-b658-8ca4590e1a8c\\exec-5e3c824b-1727-410b-937d-cb5e46a20f14.png",
+  "references": [
+    "mrs-tasselbottom-shipped-jump_squat-0.png",
+    "mrs-tasselbottom-shipped-jump_squat-1.png"
+  ],
+  "rejectedSource": "C:\\Users\\misac\\.codex\\generated_images\\01a1d512-1266-7be0-b658-8ca4590e1a8c\\exec-871d75b5-0510-4a68-80ad-1e34002fe257.png",
+  "rejectedPrompt": "Create ONE full-body transparent-background 2D gameplay sprite of Mrs. Tasselbottom: the exact halfway jump-squat pose between attached shipped crouch references1 and2; image3 is shipped idle costume reference. Preserve exact identity, facial proportions, huge rounded dress silhouette, costume construction, color arrangement and inked cartoon rendering. Elderly smiling aristocratic woman, pale wrinkled face, long pointed nose, white/lavender tight curls, tiny burgundy tilted hat with gold crown and gold pin ornaments. Vivid ROYAL PURPLE draped ball gown with GOLD ropes forming curved swags and large GOLD tassels in the same rows as references, gold shoulder epaulets/brooches, CREAM ruffled collar/cuffs and cream multi-layer lace hem. Burgundy/purple shoes with gold buckles, visible beneath hem. NO black/brown dress, no alternate outfit. Face RIGHT, fists in loose guard, rounded body crouched slightly forward, dress compressing gently, BOTH shoes planted flat at same baseline. The two crouches differ subtly; make only modest halfway changes, no huge gesture, no exaggerated head/dress shrinkage. Whole hat/crown, hair, dress and shoes in frame with transparent padding. Flat cel shading ONLY inside crisp black contour. Alpha ZERO outside silhouette and gaps; NO halo, haze, glow, external lighting, cast shadow, dust, ground line, effects, letters or text. Ignore any stray RED pixels outside references: they are crop contamination, not costume.",
+  "reason": "v1 face and fists too small relative to shipped crouches",
+  "preparation": {
+    "alphaFloor": 5,
+    "worldHeight": 72.5,
+    "soleDepthWorld": 0.6405
+  }
+}

@@ -31,3 +31,8 @@ test-results.json
 
 # Isolated atlas compression trial build
 /apps/client/dist-quality96/
+
+# Named local browser verification output (curated evidence lives in docs)
+/test-results-*/
+/playwright-report-*/
+/apps/client/dist-*/

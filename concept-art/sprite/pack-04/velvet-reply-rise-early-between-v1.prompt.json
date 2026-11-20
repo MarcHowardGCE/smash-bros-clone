@@ -1,0 +1,15 @@
+{
+  "tool": "built-in image_gen",
+  "date": "2026-11-18",
+  "identityReference": "concept-art/sprite/pack-04/velvet-reply-idle.png",
+  "poseReferenceSources": [
+    "apps/client/public/fighter-art-pack-04-v1/velvet-reply-air-0.png",
+    "apps/client/public/fighter-art-pack-04-v1/velvet-reply-rise-between-prepared-v1.png"
+  ],
+  "prompt": "Draw ONE new full-body production sprite for The Velvet Reply, right-facing three-quarter side view: EARLY RISE in-between. Reference 1 is authoritative shipped identity, face, exact costume, anatomy, palette and ink/hatching style. References 2 and 3 are adjacent rise poses. Draw one-third from ref 2 toward ref 3: leading knee held high; trailing leg only starts bending, heel curling upward slightly but still below the hips; rear fist beginning to open while forward hand stays loose near chest. Both boots fully airborne, not walking. Clearly distinct from either endpoint. Exact dark plum-black fitted jumpsuit with FLARED TROUSER LEGS, fine gold piping, black fishnet sleeves/chest with crossed black straps, high dark collar, silver rectangular buckle belt, silver wrist cuffs, silver hoop earrings, dark heeled ankle boots. Preserve copper-auburn flowing wavy hair, cheek beauty mark, half-lidded expression, same head/torso proportions. Same compact textured ink artwork. Entire silhouette, fingers and boot tips visible with generous clear margins. TRUE transparent background, crisp antialiased ink edges. No ground, scene, shadows, mist, halo, glow, gradient, blur, motion streaks, lettering or colored fringe. Outside ink must be empty alpha; do not reproduce dark reference backgrounds.",
+  "preparation": {
+    "clearAlphaAtMost": 5,
+    "worldHeight": 76,
+    "preserveSource": true
+  }
+}

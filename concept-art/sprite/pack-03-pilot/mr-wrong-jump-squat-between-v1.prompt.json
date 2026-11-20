@@ -1,0 +1,16 @@
+{
+  "tool": "built-in image_gen",
+  "date": "2026-11-19",
+  "prompt": "ONE full-body right-facing gameplay sprite of Mr. Wrong. Reference1 is the authoritative SHIPPED costume/identity/colors; references2 and3 are jump-squat endpoints. Draw a dedicated INTERMEDIATE jump-squat pose between these two crouches, knees bent and torso gently compressed, tentacle hands tucked near body, tentacle feet planted on one floor baseline. EXACT shipped design: long grinning face, lavender curly hair, floppy cream-and-burgundy striped nightcap with cream pompom, YELLOW jacket with burgundy polka dots and cream ruff/cuffs, burgundy vest with big yellow buttons, PINK shorts with dark polka dots, TURQUOISE tentacle hands and feet with pink suckers. No red tentacle limbs, no different clothes. Match shipped fine engraved cartoon ink texture and proportions. Entire hat/pompom, all hands, curling tentacle feet visible uncropped. Single sprite genuine transparent background. Crisp silhouette natural edge antialiasing only; no glow, white mist, aura, shadow, ground, background, motion lines, lettering or props. Small controlled intermediate motion, not a new redesign.",
+  "source": "exec-2cbae062-5a1a-4223-b15f-83188852683d.png",
+  "references": [
+    "mr-wrong-shipped-idle-reference-0.png",
+    "mr-wrong-shipped-jump_squat-reference-0.png",
+    "mr-wrong-shipped-jump_squat-reference-1.png"
+  ],
+  "preparation": {
+    "alphaFloor": 5,
+    "worldHeight": 82.5,
+    "root": "sole midpoint, two pixels above crop bottom"
+  }
+}

@@ -1,0 +1,10 @@
+{
+  "tool": "built-in image_gen",
+  "date": "2026-11-20",
+  "prompt": "Create ONE full-body transparent-background 2D gameplay sprite: an EXACT modest halfway takeoff pose between the TWO attached SHIPPED Mrs. Tasselbottom poses. Preserve exact face, mature caricature, LARGE head and LARGE hands relative to broad rounded gown, costume construction, colors and inked cartoon style. Elderly smiling woman with pale wrinkled face, long pointed nose, white/lavender curls, tiny burgundy tilted hat with gold crown/pins. ROYAL PURPLE draped gown with GOLD ropes/swags and tassels in same rows and layout, gold shoulder ornaments, CREAM ruffled cuffs/collar and layered lace hem. Burgundy/purple shoes with gold buckles. NO black/brown dress or alternate costume. Face RIGHT, whole crown/hair/gown/shoes in frame with generous transparent padding. BOTH feet AIRBORNE. Preserve body mass, head-to-gown ratio, compact legs; no tiny head/hands, no stretched body. Flat shading ONLY inside crisp black ink contour. Alpha ZERO outside silhouette and gaps. NO red stray marks, halo, haze, glow, diffuse lighting, cast shadow, ground, particles, effects or text. The red fringe in source is contamination: don't copy it. Backward takeoff midpoint: torso gently reclining LEFT while still facing right. Knees and shoes ease inward from reference1's forward/right extension toward reference2's tuck beneath the hem. Hands curling toward fists. Preserve the broad gown, large mature face and hands; small halfway movement, no kick or huge extra skirt flare.",
+  "source": "C:\\Users\\misac\\.codex\\generated_images\\01a1d512-1266-7be0-b658-8ca4590e1a8c\\exec-8ed3cb05-08e4-444b-9ca1-600b545902ea.png",
+  "references": [
+    "mrs-tasselbottom-shipped-takeoff_backward-0.png",
+    "mrs-tasselbottom-shipped-takeoff_backward-1.png"
+  ]
+}

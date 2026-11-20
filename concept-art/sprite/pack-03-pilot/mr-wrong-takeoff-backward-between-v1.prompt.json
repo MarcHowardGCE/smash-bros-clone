@@ -1,0 +1,15 @@
+{
+  "tool": "built-in image_gen",
+  "date": "2026-11-19",
+  "prompt": "ONE precise intermediate 2D sprite between the two shipped Mr. Wrong takeoff references. Reference1 is directional takeoff, reference2 is final airborne tuck. Keep same body proportions and compact floppy hat, not taller cap or thinner torso. Pose: BACKWARD takeoff MIDPOINT: still FACING RIGHT but drifting BACK to LEFT, torso leaning a little backward, knees forward toward RIGHT, tentacle feet curling in ahead of him, arms beginning to draw inward. Do not turn around or mirror. Entire figure uncropped. EXACT shipped costume: yellow burgundy-polka-dot jacket, burgundy vest with three yellow buttons, cream ruff/cuffs, pink shorts with dark dots, lavender hair, cream/burgundy striped floppy nightcap with cream pompom, TURQUOISE tentacle hands and feet with pink suckers. Grinning long face. Fine engraved cartoon ink and warm shading, match references. Single isolated full-body genuine transparent sprite, no glow, halo, mist, shadows, background, floor, motion marks, text or props.",
+  "source": "exec-e767105f-9d62-438b-9dc7-44fb97b6fd26.png",
+  "references": [
+    "mr-wrong-shipped-takeoff-backward-0.png",
+    "mr-wrong-shipped-takeoff-backward-1.png"
+  ],
+  "preparation": {
+    "alphaFloor": 5,
+    "worldHeight": 90,
+    "airRootWorldY": 60.471
+  }
+}

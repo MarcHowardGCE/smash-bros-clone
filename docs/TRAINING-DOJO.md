@@ -196,3 +196,12 @@ Task evidence: outputs/dojo-v1/setup.png, lesson-complete.png, parry-complete.pn
 6. **Presentation:** give the dojo its own illustrated title/crest and mentor personality after fighter canon is agreed. Completion stamps, restrained sound cues and optional lesson sequencing can deepen the surreal arcade feel without obstructing the arena.
 
 The next useful user test is to enter the dojo using a physical controller, complete a basic and a parry lesson, and assess whether instructions, partner cadence and panel placement are clear. This mode makes the current rules testable; it does not itself certify Ultimate parity or balance.
+
+## November 17 full-roster lesson regression
+
+The curriculum integration matrix now derives its fighters from
+CHARACTER_REGISTRY. All 410 cases passed, covering all 41 lessons for
+all ten fighters. Each case drives the real simulation and the lesson
+tracker through its repetition requirement. This closes the original
+five-fighter automation gap. It verifies lesson completion logic, with
+keyboard-bit inputs, rather than every rendered pose or physical pad.

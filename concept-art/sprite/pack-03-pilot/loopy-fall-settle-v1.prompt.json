@@ -1,0 +1,10 @@
+{
+  "tool": "built-in image_gen",
+  "date": "2026-11-19",
+  "prompt": "Create ONE transparent-background full-body 2D gameplay sprite, a subtle Loopy falling-animation in-between between the TWO attached SHIPPED reference poses. Preserve EXACT identity, lanky anatomy, head/torso/antler proportions, costume and inked cartoon rendering. Face RIGHT. Golden yellow shaggy deer, brown branching antlers, long black nose, sleepy grin, cream ankle fur, dark brown split hooves. BLANK CREAM basketball jersey with PURPLE trim, ragged PURPLE shorts, purple/cream striped wristbands. No number49, NO numbers/letters/logos. Both feet airborne, knees softly BENT, hands in loose boxing guard. Copy reference chest breadth and leg length; don't elongate shins or shrink torso. Full antlers and hooves with generous transparent padding. Flat cel shading inside silhouette ONLY. HARD CUTOUT: alpha ZERO immediately outside crisp black outline, including antler/limb gaps. NO external lighting, halo, aura, haze, blur, cast shadow, ground, particles, text or background. Pose5 of6: 80% transition, almost reference2, hooves close and knees flexed softly forward, wrists lowering slightly toward waist, torso stable and broad exactly as reference2. Subtle falling hold, no kick or stretched shins. Ignore red stray marks in reference1.",
+  "source": "C:\\Users\\misac\\.codex\\generated_images\\01a1d512-1266-7be0-b658-8ca4590e1a8c\\exec-b4d5e396-4330-4960-8ac5-205ad2654bdb.png",
+  "references": [
+    "loopy-shipped-air_fall_loop-0.png",
+    "loopy-shipped-air_fall_loop-1.png"
+  ]
+}

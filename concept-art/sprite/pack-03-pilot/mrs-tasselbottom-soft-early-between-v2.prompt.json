@@ -1,0 +1,15 @@
+{
+  "date": "2026-11-20",
+  "source": "C:\\Users\\misac\\.codex\\generated_images\\01a1d512-1266-7be0-b658-8ca4590e1a8c\\exec-68353c5d-53ba-4732-8a0b-dbed65eba82d.png",
+  "prompt": "COLOR CORRECTION ONLY to reference1 (soft-landing sprite draft). References2 and3 are SHIPPED palette authorities and override all colors in the draft. Keep draft pose, anatomy, outline and all pixels' geometry unchanged. Match the shipped gown's very DARK deep plum-purple: representative midtone RGB(74,5,62), hex #4A053E, near-black plum shadows, restrained dark plum highlights. The draft is too bright saturated magenta/violet: darken gown fabric and reduce that bright pink-purple appearance to match shipped references. Preserve gold tassels/ropes, warm cream lace, skin, white/lavender curls and dark burgundy hat/shoes using shipped references as color authority. Absolutely do not change pose or costume details. Keep genuine transparent background, no halo, haze, floor or shadow. Single corrected full-body pose with crown, hands and shoes fully contained.",
+  "rejected": {
+    "source": "C:\\Users\\misac\\.codex\\generated_images\\01a1d512-1266-7be0-b658-8ca4590e1a8c\\exec-39d80ff4-1e06-445d-8fc5-f6569e46625c.png",
+    "prompt": "ONE full-body transparent game sprite Mrs. Tasselbottom, EXACT shipped fighter. Reference1 initial compressed soft landing; reference2 second soft landing. Draw EARLY in-between halfway: grounded deep knee bend, wide buckled shoes firmly planted on common baseline, open hands forward near knees beginning to lift, shoulders settling before rising. Smiling pale elderly long-nosed face toward RIGHT three-quarter, LARGE head/hands relative to massive round gown. Exact royal PURPLE draped gown, gold rope swags/tassels/epaulets same placement, cream layered lace hem and cuffs, white lavender tight curls, tiny burgundy hat gold crown pins, burgundy gold-buckled shoes. Bold outlined detailed illustrated game sprite, no redesign. Entire crown, hands and both shoes contained with clear transparent padding. Genuine transparent alpha and opaque interiors. No red reference crop fringe, white mist, halo, glow, cast shadow, floor, dust, effects, text or background. Single pose.",
+    "reason": "User rejected incorrect bright magenta-purple gown"
+  },
+  "references": [
+    "mrs-tasselbottom-shipped-idle-0.png",
+    "mrs-tasselbottom-shipped-soft-0.png"
+  ],
+  "status": "Corrected review candidate; not registered"
+}

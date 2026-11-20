@@ -71,6 +71,42 @@ for (const [id, pivots] of Object.entries(walkPivots)) {
     : [281, 760, 1248, 280, 748, 1249], undefined, 3);
   const airScale = 82 / Math.max(air[0].rect[3], air[2].rect[3]);
   const airPose = index => ({ image: air[index].image, scale: airScale, frames: [air[index]] });
+  // Keep the generated ink unchanged; discard only near-transparent residue.
+  // The source remains untouched so this preparation is reproducible.
+  const prepareAirBetween = (action, worldHeight, version = 'v1') => {
+    const source = readSource(id + '-' + action + '-between-' + version + '.png');
+    for (let alpha = 3; alpha < source.data.length; alpha += 4) {
+      if (source.data[alpha] <= 5) source.data.fill(0, alpha - 3, alpha + 1);
+    }
+    // Measured detached specks: Zane late five, Velvet settle one, Zane soft rebound three.
+    // Keep nearby antialiasing; remove only the measured low-alpha speck.
+    if ((zane && ['fall-late','soft-rebound'].includes(action)) || (!zane && (action === 'fall-settle' || action === 'soft-compress'))) {
+      for (let y = 0; y < source.height; y++) for (let x = 0; x < source.width; x++) {
+        const offset = (y * source.width + x) * 4;
+        const alpha = source.data[offset + 3];
+        if (!alpha || alpha > (action === 'soft-rebound' ? 7 : action === 'soft-compress' ? 6 : 16)) continue;
+        let nearInk = false;
+        for (let dy = -4; dy <= 4 && !nearInk; dy++) for (let dx = -4; dx <= 4; dx++) {
+          const nx = x + dx, ny = y + dy;
+          if (nx >= 0 && ny >= 0 && nx < source.width && ny < source.height &&
+              source.data[(ny * source.width + nx) * 4 + 3] >= 128) { nearInk = true; break; }
+        }
+        if (!nearInk) source.data.fill(0, offset, offset + 4);
+      }
+    }
+    const frame = registerFrame(id + '-' + action + '-between-prepared-' + version + '.png', source);
+    return { ...frame, scale: worldHeight / frame.rect[3] };
+  };
+  // Match head/torso scale; the intermediate Velvet tuck is shorter.
+  const riseBetween = prepareAirBetween('rise', zane ? 82 : 70);
+  const riseFrames = [
+    air[0], prepareAirBetween('rise-early', zane ? 82 : 76), riseBetween,
+    prepareAirBetween('rise-late', zane ? 76 : 68),
+    prepareAirBetween('rise-settle', zane ? 70 : 65.5), air[1],
+  ];
+
+  const apexBetween = prepareAirBetween('apex', 74);
+
   const strikes = registerSheet(id, 'strikes', zane
     ? [233, 742, 1260, 272, 746, 1159]
     : [248, 756, 1230, 192, 748, 1180], undefined, 3);
@@ -121,21 +157,32 @@ for (const [id, pivots] of Object.entries(walkPivots)) {
     crouch_enter: pose(crouch),
     crouch_hold: pose(crouch),
     crouch_exit: pose(crouch),
-    jump_squat: { ...pose(crouch), durations: [1, 2], frames: [takeoff, crouch] },
-    air_rise_loop: { ...airPose(0), durations: [5, 5], frames: [air[0], air[1]] },
-    air_apex_loop: { ...airPose(1), durations: [5, 5], frames: [air[1], air[2]] },
+    jump_squat: { ...pose(crouch), durations: [1,1,1], frames: [
+      prepareAirBetween('squat-entry',zane ? 77 : 76), crouch, prepareAirBetween('squat-extend',79)] },
+    air_rise_loop: { ...airPose(0), durations: [2, 2, 2, 2, 2, 2], frames: riseFrames },
+    air_apex_loop: { ...airPose(1), durations: [2, 2, 2, 2, 2, 2], frames: [
+      air[1], prepareAirBetween('apex-early', zane ? 70 : 69), apexBetween,
+      prepareAirBetween('apex-late', zane ? 76 : 77),
+      prepareAirBetween('apex-settle', zane ? 77 : 80), air[2],
+    ] },
     air_fall_loop: { ...airPose(2), durations: [6, 6], frames: [air[2], air[2]] },
-    double_jump_transition: { ...airPose(3), frames: [air[3], air[3], air[0], air[0], air[1], air[1]] },
+    double_jump_transition: { ...airPose(3), durations: [2,2,2,2,2,2], frames: [
+      air[3], prepareAirBetween('double-early',82), air[0],
+      prepareAirBetween('double-tuck',zane ? 75 : 70),
+      prepareAirBetween('double-settle',zane ? 67 : 65), air[1],
+    ] },
     air_fastfall_loop: { ...airPose(4), durations: [4, 4, 4], frames: [air[4], air[4], air[4]] },
 
 
-    takeoff_neutral: { ...pose(takeoff), frames: [takeoff, { ...air[0], scale: airScale }] },
-    takeoff_forward: { ...airPose(0), frames: [
-      { ...takeoff, scale: stanceScale }, air[0],
-    ] },
-    takeoff_backward: { ...airPose(3), frames: [
-      { ...takeoff, scale: stanceScale }, air[3],
-    ] },
+    takeoff_neutral: { ...airPose(0), durations:[2,2,2], frames:[
+      prepareAirBetween('takeoff-neutral-start',82), prepareAirBetween('takeoff-neutral-mid',82),
+      { ...air[0], scale:airScale }] },
+    takeoff_forward: { ...airPose(0), durations:[2,2,2], frames:[
+      prepareAirBetween('takeoff-forward-start',82), prepareAirBetween('takeoff-forward-mid',82),
+      { ...air[0], scale:airScale }] },
+    takeoff_backward: { ...airPose(0), durations:[2,2,2], frames:[
+      prepareAirBetween('takeoff-backward-start',80), prepareAirBetween('takeoff-backward-mid',82),
+      { ...air[0], scale:airScale }] },
     turn_run: { image: turn.image, scale: runScale, frames: [turn, stride] },
   } };
   const lowStrikeImage = id + '-down-tilt.png';
@@ -746,12 +793,17 @@ for (const [id, pivots] of Object.entries(walkPivots)) {
     helpless_land: [special_landing, special_landing, standLedge],
   })) clips[name] = { image: frames[0].image, scale: recoveryScale, frames };
   clips.land_soft = {
-    ...airPose(5), frames: [air[5], { ...takeoff, scale: stanceScale }, standLedge],
+    ...airPose(5), durations:[2,2,2,2,2,2],
+    frames: [air[5], prepareAirBetween('soft-compress',zane ? 67 : 73),
+      prepareAirBetween('soft-rebound',zane ? 72 : 76),
+      prepareAirBetween('soft-rise',zane ? 77 : 79),
+      prepareAirBetween('soft-settle',zane ? 80 : 81), standLedge],
   };
   clips.land_heavy = {
-    ...airPose(5), frames: [
-      { ...special_landing, scale: recoveryScale }, { ...crouch, scale: stanceScale }, standLedge,
-    ],
+    ...airPose(5), durations:[3,3,3,3,3,3],
+    frames: [{ ...special_landing, scale: recoveryScale },
+      prepareAirBetween('heavy-compress',zane ? 65 : 62), { ...crouch, scale: stanceScale },
+      prepareAirBetween('heavy-rebound',71), prepareAirBetween('heavy-settle',zane ? 78 : 79), standLedge],
   };
   const crouchLow = { ...crouch, scale: stanceScale };
   const crouchBrace = { ...special_windup, scale: recoveryScale };
@@ -879,10 +931,21 @@ for (const [id, pivots] of Object.entries(walkPivots)) {
       clips.dash_start.frames[0], sized(lean, 81), sized(drive, 76),
       sized(sprint, 74), stride, passing,
     ];
-    clips.air_fall_loop.frames = [air[2], sized(fall, 82)];
-    clips.air_fastfall_loop.frames = [sized(dive, 69), air[4], sized(descend, 82)];
+    const fallBetween = prepareAirBetween('fall', 82);
+    clips.air_fall_loop.frames = [
+      air[2], prepareAirBetween('fall-early', 82, zane ? 'v2' : 'v1'), fallBetween,
+      prepareAirBetween('fall-late', 82), prepareAirBetween('fall-settle', 82), sized(fall, 82),
+    ];
+    clips.air_fall_loop.durations = [2, 2, 2, 2, 2, 2];
+    clips.air_fastfall_loop.frames = [
+      sized(dive,69), prepareAirBetween('fast-early',zane ? 72 : 75), air[4],
+      prepareAirBetween('fast-late',zane ? 88 : 82,zane ? 'v1' : 'v2'),
+      prepareAirBetween('fast-settle',zane ? 88 : 84), sized(descend,82),
+    ];
+    // Short natural falls expose only the available prefix; landing always wins.
+    clips.air_fastfall_loop.durations = [2,2,2,2,2,2];
   }
 }
-fs.writeFileSync(output + '/manifest.json', JSON.stringify({ version: 1, revision: 104, characters }, null, 2) + '\n');
+fs.writeFileSync(output + '/manifest.json', JSON.stringify({ version: 1, revision: 127, characters }, null, 2) + '\n');
 
 

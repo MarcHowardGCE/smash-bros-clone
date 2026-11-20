@@ -1,0 +1,15 @@
+{
+  "tool": "built-in image_gen",
+  "date": "2026-11-19",
+  "prompt": "Create ONE full-body transparent-background 2D gameplay sprite: Loopy soft-landing in-between matching the TWO attached SHIPPED reference poses in exact identity, anatomy, head/torso/antler proportions, costume, colors and inked cartoon style. Face RIGHT. Golden shaggy deer, brown branching antlers, long black nose, sleepy grin, cream ankle fur, brown split hooves. BLANK CREAM jersey with PURPLE trim, ragged PURPLE shorts and purple/cream wristbands. NO number49, numbers, lettering or logos. Both hooves PLANTED FLAT on the same baseline with consistent stance width, not floating or on tiptoes. Preserve head size, torso breadth and bent leg lengths; no stretched shins or shrunken body. Whole antlers and hooves, generous transparent padding. Flat cel shading INSIDE crisp black contour only; alpha ZERO outside contour and in limb/antler gaps. NO halo, haze, blur, diffuse lighting, cast shadow, floor line, dust, particles, effects or text. Halfway drawing between these two compressed landing poses: low squat with knees easing slightly upward, fists maintaining loose guard, chest still leaning forward. A small recovery from contact, not a deeper crouch. Keep exact broad planted-hoof stance from reference.",
+  "source": "C:\\Users\\misac\\.codex\\generated_images\\01a1d512-1266-7be0-b658-8ca4590e1a8c\\exec-4da65a06-b250-42d8-a3d3-788c39be33b2.png",
+  "references": [
+    "loopy-shipped-soft-0.png",
+    "loopy-shipped-soft-1.png"
+  ],
+  "preparation": {
+    "worldHeight": 92,
+    "soleDepthWorld": 0.99825,
+    "alphaFloor": 5
+  }
+}

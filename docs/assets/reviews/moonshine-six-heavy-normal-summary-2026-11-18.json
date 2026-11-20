@@ -1,0 +1,246 @@
+[
+  {
+    "label": "-1-neutral-short",
+    "frames": 56,
+    "minimumY": 396.95,
+    "observedTakeoff": [
+      "190,333,112,137",
+      "1135,496,62,152",
+      "1201,496,59,152"
+    ],
+    "clips": [
+      "idle",
+      "jump_squat",
+      "takeoff_neutral",
+      "air_rise_loop",
+      "air_apex_loop",
+      "air_fall_loop",
+      "land_soft"
+    ],
+    "maxRafGap": 31.799999952316284
+  },
+  {
+    "label": "-1-neutral-full",
+    "frames": 58,
+    "minimumY": 273.3849999999999,
+    "observedTakeoff": [
+      "190,333,112,137",
+      "1135,496,62,152",
+      "1201,496,59,152"
+    ],
+    "clips": [
+      "idle",
+      "jump_squat",
+      "takeoff_neutral",
+      "air_rise_loop",
+      "air_apex_loop",
+      "air_fall_loop",
+      "land_heavy"
+    ],
+    "maxRafGap": 26.59999990463257
+  },
+  {
+    "label": "-1-forward-short",
+    "frames": 57,
+    "minimumY": 396.95,
+    "observedTakeoff": [
+      "190,333,112,137",
+      "1264,496,82,148",
+      "1350,496,111,140"
+    ],
+    "clips": [
+      "dash_start",
+      "jump_squat",
+      "takeoff_forward",
+      "air_rise_loop",
+      "air_apex_loop",
+      "air_fall_loop",
+      "land_soft",
+      "idle"
+    ],
+    "maxRafGap": 28.299999952316284
+  },
+  {
+    "label": "-1-forward-full",
+    "frames": 57,
+    "minimumY": 273.3849999999999,
+    "observedTakeoff": [
+      "190,333,112,137",
+      "1264,496,82,148",
+      "1350,496,111,140"
+    ],
+    "clips": [
+      "dash_start",
+      "jump_squat",
+      "takeoff_forward",
+      "air_rise_loop",
+      "air_apex_loop",
+      "air_fall_loop",
+      "land_heavy",
+      "idle"
+    ],
+    "maxRafGap": 26.199999928474426
+  },
+  {
+    "label": "-1-backward-short",
+    "frames": 57,
+    "minimumY": 396.95,
+    "observedTakeoff": [
+      "190,333,112,137",
+      "1465,496,127,148",
+      "1596,496,120,147"
+    ],
+    "clips": [
+      "jump_squat",
+      "takeoff_backward",
+      "air_rise_loop",
+      "air_apex_loop",
+      "air_fall_loop",
+      "land_soft",
+      "idle"
+    ],
+    "maxRafGap": 26.399999976158142
+  },
+  {
+    "label": "-1-backward-full",
+    "frames": 58,
+    "minimumY": 273.1249999999999,
+    "observedTakeoff": [
+      "190,333,112,137",
+      "1465,496,127,148",
+      "1596,496,120,147"
+    ],
+    "clips": [
+      "jump_squat",
+      "takeoff_backward",
+      "air_rise_loop",
+      "air_apex_loop",
+      "air_fall_loop",
+      "land_heavy",
+      "idle"
+    ],
+    "maxRafGap": 26.09999990463257
+  },
+  {
+    "label": "1-neutral-short",
+    "frames": 58,
+    "minimumY": 396.95,
+    "observedTakeoff": [
+      "190,333,112,137",
+      "1135,496,62,152",
+      "1201,496,59,152"
+    ],
+    "clips": [
+      "idle",
+      "jump_squat",
+      "takeoff_neutral",
+      "air_rise_loop",
+      "air_apex_loop",
+      "air_fall_loop",
+      "land_soft"
+    ],
+    "maxRafGap": 26.299999952316284
+  },
+  {
+    "label": "1-neutral-full",
+    "frames": 59,
+    "minimumY": 273.1249999999999,
+    "observedTakeoff": [
+      "190,333,112,137",
+      "1135,496,62,152",
+      "1201,496,59,152"
+    ],
+    "clips": [
+      "idle",
+      "jump_squat",
+      "takeoff_neutral",
+      "air_rise_loop",
+      "air_apex_loop",
+      "air_fall_loop",
+      "land_heavy"
+    ],
+    "maxRafGap": 25.399999976158142
+  },
+  {
+    "label": "1-forward-short",
+    "frames": 58,
+    "minimumY": 396.95,
+    "observedTakeoff": [
+      "190,333,112,137",
+      "1264,496,82,148",
+      "1350,496,111,140"
+    ],
+    "clips": [
+      "dash_start",
+      "jump_squat",
+      "takeoff_forward",
+      "air_rise_loop",
+      "air_apex_loop",
+      "air_fall_loop",
+      "land_soft",
+      "idle"
+    ],
+    "maxRafGap": 30.699999928474426
+  },
+  {
+    "label": "1-forward-full",
+    "frames": 60,
+    "minimumY": 273.1249999999999,
+    "observedTakeoff": [
+      "190,333,112,137",
+      "1264,496,82,148",
+      "1350,496,111,140"
+    ],
+    "clips": [
+      "dash_start",
+      "jump_squat",
+      "takeoff_forward",
+      "air_rise_loop",
+      "air_apex_loop",
+      "air_fall_loop",
+      "land_heavy",
+      "idle"
+    ],
+    "maxRafGap": 25.299999952316284
+  },
+  {
+    "label": "1-backward-short",
+    "frames": 60,
+    "minimumY": 396.95,
+    "observedTakeoff": [
+      "190,333,112,137",
+      "1465,496,127,148",
+      "1596,496,120,147"
+    ],
+    "clips": [
+      "jump_squat",
+      "takeoff_backward",
+      "air_rise_loop",
+      "air_apex_loop",
+      "air_fall_loop",
+      "land_soft",
+      "idle"
+    ],
+    "maxRafGap": 25.100000023841858
+  },
+  {
+    "label": "1-backward-full",
+    "frames": 59,
+    "minimumY": 273.1249999999999,
+    "observedTakeoff": [
+      "190,333,112,137",
+      "1465,496,127,148",
+      "1596,496,120,147"
+    ],
+    "clips": [
+      "jump_squat",
+      "takeoff_backward",
+      "air_rise_loop",
+      "air_apex_loop",
+      "air_fall_loop",
+      "land_heavy",
+      "idle"
+    ],
+    "maxRafGap": 26.09999990463257
+  }
+]

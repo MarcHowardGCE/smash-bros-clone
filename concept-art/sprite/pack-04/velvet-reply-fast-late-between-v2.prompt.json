@@ -1,0 +1,16 @@
+{
+  "tool": "built-in image_gen",
+  "date": "2026-11-18",
+  "identityReference": "velvet-reply-idle.png",
+  "prompt": "ONE full-body sprite The Velvet Reply facing RIGHT three-quarter. LATE FAST FALL in-between. First reference exact costume/identity/ink; second reference diagonal fast-fall dive; third near-upright final descent. IMPORTANT pose is halfway between second and third: entire torso and legs form a diagonal line leaning FORWARD approximately 30 DEGREES from vertical, visibly more inclined than third; DO NOT draw upright. Head aligned with inclined torso but face looking right, arms sweep down/back with open hands behind hip line. Legs extended together, dark heeled boots below and left of hips. Copper hair streams diagonally UP AND BACK, not straight vertical. Same head/torso scale and costume: dark plum-black flared jumpsuit gold piping, black fishnet/crossed straps high collar, SILVER belt buckle cuffs hoops, copper-auburn waves cheek beauty mark. Crisp textured ink. Complete airborne silhouette generous margins, TRUE TRANSPARENT background. No glow halo haze mist floor shadow gradient blur writing effects.",
+  "status": "accepted",
+  "poseReferences": [
+    "velvet-reply-air-4.png",
+    "velvet-reply-dash-fall-5.png"
+  ],
+  "preparation": {
+    "alphaFloor": 5,
+    "worldHeight": 82,
+    "preserveSource": true
+  }
+}

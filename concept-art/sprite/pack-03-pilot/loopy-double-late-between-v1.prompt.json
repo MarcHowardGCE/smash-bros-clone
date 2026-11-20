@@ -1,0 +1,10 @@
+{
+  "tool": "built-in image_gen",
+  "date": "2026-11-19",
+  "prompt": "Create ONE full-body transparent-background 2D gameplay sprite: a Loopy double-jump in-between matching the TWO attached SHIPPED poses, exact identity, proportions, body mass, costume, colors and inked cartoon style. Face RIGHT. Golden shaggy deer, brown branching antlers, long black nose, sleepy grinning eyes, cream ankle fur and brown split hooves. BLANK CREAM jersey with PURPLE trim, ragged PURPLE shorts and purple/cream wristbands. No number49, no numbers/letters/logos. Whole antlers and hooves with generous transparent padding. Keep reference torso breadth and head size; avoid elongated shins or tiny torso. Flat cel shading only INSIDE crisp black contour. Alpha ZERO immediately outside contour and in limb/antler gaps. NO halo, haze, blur, diffuse lighting, shadow, ground, speed trails, particles or text. Ignore any red stray pixels outside reference1; these aren't costume. A two-thirds transition from reference1's open/asymmetric air-jump to reference2's tucked guard: rear hand nearly closed and drawing to waist, front fist near chest, knees bending toward compact reference2. Keep feet close, chest breadth and head size unchanged. Almost settled into rising guard.",
+  "source": "C:\\Users\\misac\\.codex\\generated_images\\01a1d512-1266-7be0-b658-8ca4590e1a8c\\exec-2f7a0d3f-934a-469a-929b-a9cd5733a4d0.png",
+  "references": [
+    "loopy-shipped-double-1.png",
+    "loopy-shipped-double-2.png"
+  ]
+}

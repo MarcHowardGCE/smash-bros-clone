@@ -1,0 +1,2690 @@
+[
+  {
+    "fighter": "loopy",
+    "partner": "mrs-tasselbottom",
+    "facing": -1,
+    "move": "FORWARD_THROW",
+    "phase": "pummel",
+    "samples": 24,
+    "matched": 18,
+    "labelMismatches": 0,
+    "cropMismatches": 0,
+    "maxRootDifference": 0,
+    "flags": []
+  },
+  {
+    "fighter": "loopy",
+    "partner": "mrs-tasselbottom",
+    "facing": -1,
+    "move": "FORWARD_THROW",
+    "phase": "release",
+    "samples": 45,
+    "matched": 36,
+    "labelMismatches": 0,
+    "cropMismatches": 0,
+    "maxRootDifference": 0,
+    "flags": []
+  },
+  {
+    "fighter": "loopy",
+    "partner": "mrs-tasselbottom",
+    "facing": -1,
+    "move": "BACK_THROW",
+    "phase": "pummel",
+    "samples": 24,
+    "matched": 17,
+    "labelMismatches": 0,
+    "cropMismatches": 0,
+    "maxRootDifference": 0,
+    "flags": []
+  },
+  {
+    "fighter": "loopy",
+    "partner": "mrs-tasselbottom",
+    "facing": -1,
+    "move": "BACK_THROW",
+    "phase": "release",
+    "samples": 45,
+    "matched": 35,
+    "labelMismatches": 0,
+    "cropMismatches": 0,
+    "maxRootDifference": 0,
+    "flags": []
+  },
+  {
+    "fighter": "loopy",
+    "partner": "mrs-tasselbottom",
+    "facing": -1,
+    "move": "UP_THROW",
+    "phase": "pummel",
+    "samples": 24,
+    "matched": 18,
+    "labelMismatches": 0,
+    "cropMismatches": 0,
+    "maxRootDifference": 0,
+    "flags": []
+  },
+  {
+    "fighter": "loopy",
+    "partner": "mrs-tasselbottom",
+    "facing": -1,
+    "move": "UP_THROW",
+    "phase": "release",
+    "samples": 45,
+    "matched": 36,
+    "labelMismatches": 0,
+    "cropMismatches": 0,
+    "maxRootDifference": 0,
+    "flags": []
+  },
+  {
+    "fighter": "loopy",
+    "partner": "mrs-tasselbottom",
+    "facing": -1,
+    "move": "DOWN_THROW",
+    "phase": "pummel",
+    "samples": 23,
+    "matched": 16,
+    "labelMismatches": 0,
+    "cropMismatches": 0,
+    "maxRootDifference": 0,
+    "flags": []
+  },
+  {
+    "fighter": "loopy",
+    "partner": "mrs-tasselbottom",
+    "facing": -1,
+    "move": "DOWN_THROW",
+    "phase": "release",
+    "samples": 45,
+    "matched": 34,
+    "labelMismatches": 0,
+    "cropMismatches": 0,
+    "maxRootDifference": 0,
+    "flags": []
+  },
+  {
+    "fighter": "loopy",
+    "partner": "mrs-tasselbottom",
+    "facing": 1,
+    "move": "FORWARD_THROW",
+    "phase": "pummel",
+    "samples": 24,
+    "matched": 19,
+    "labelMismatches": 0,
+    "cropMismatches": 0,
+    "maxRootDifference": 0,
+    "flags": []
+  },
+  {
+    "fighter": "loopy",
+    "partner": "mrs-tasselbottom",
+    "facing": 1,
+    "move": "FORWARD_THROW",
+    "phase": "release",
+    "samples": 46,
+    "matched": 38,
+    "labelMismatches": 0,
+    "cropMismatches": 0,
+    "maxRootDifference": 0,
+    "flags": []
+  },
+  {
+    "fighter": "loopy",
+    "partner": "mrs-tasselbottom",
+    "facing": 1,
+    "move": "BACK_THROW",
+    "phase": "pummel",
+    "samples": 24,
+    "matched": 17,
+    "labelMismatches": 0,
+    "cropMismatches": 0,
+    "maxRootDifference": 0,
+    "flags": []
+  },
+  {
+    "fighter": "loopy",
+    "partner": "mrs-tasselbottom",
+    "facing": 1,
+    "move": "BACK_THROW",
+    "phase": "release",
+    "samples": 46,
+    "matched": 35,
+    "labelMismatches": 0,
+    "cropMismatches": 0,
+    "maxRootDifference": 0,
+    "flags": []
+  },
+  {
+    "fighter": "loopy",
+    "partner": "mrs-tasselbottom",
+    "facing": 1,
+    "move": "UP_THROW",
+    "phase": "pummel",
+    "samples": 23,
+    "matched": 17,
+    "labelMismatches": 0,
+    "cropMismatches": 0,
+    "maxRootDifference": 0,
+    "flags": []
+  },
+  {
+    "fighter": "loopy",
+    "partner": "mrs-tasselbottom",
+    "facing": 1,
+    "move": "UP_THROW",
+    "phase": "release",
+    "samples": 46,
+    "matched": 35,
+    "labelMismatches": 0,
+    "cropMismatches": 0,
+    "maxRootDifference": 0,
+    "flags": []
+  },
+  {
+    "fighter": "loopy",
+    "partner": "mrs-tasselbottom",
+    "facing": 1,
+    "move": "DOWN_THROW",
+    "phase": "pummel",
+    "samples": 25,
+    "matched": 19,
+    "labelMismatches": 0,
+    "cropMismatches": 0,
+    "maxRootDifference": 0,
+    "flags": []
+  },
+  {
+    "fighter": "loopy",
+    "partner": "mrs-tasselbottom",
+    "facing": 1,
+    "move": "DOWN_THROW",
+    "phase": "release",
+    "samples": 46,
+    "matched": 34,
+    "labelMismatches": 0,
+    "cropMismatches": 0,
+    "maxRootDifference": 0,
+    "flags": []
+  },
+  {
+    "fighter": "mr-wrong",
+    "partner": "loopy",
+    "facing": -1,
+    "move": "FORWARD_THROW",
+    "phase": "pummel",
+    "samples": 23,
+    "matched": 17,
+    "labelMismatches": 0,
+    "cropMismatches": 0,
+    "maxRootDifference": 0,
+    "flags": []
+  },
+  {
+    "fighter": "mr-wrong",
+    "partner": "loopy",
+    "facing": -1,
+    "move": "FORWARD_THROW",
+    "phase": "release",
+    "samples": 44,
+    "matched": 35,
+    "labelMismatches": 0,
+    "cropMismatches": 0,
+    "maxRootDifference": 0,
+    "flags": []
+  },
+  {
+    "fighter": "mr-wrong",
+    "partner": "loopy",
+    "facing": -1,
+    "move": "BACK_THROW",
+    "phase": "pummel",
+    "samples": 23,
+    "matched": 17,
+    "labelMismatches": 0,
+    "cropMismatches": 0,
+    "maxRootDifference": 0,
+    "flags": []
+  },
+  {
+    "fighter": "mr-wrong",
+    "partner": "loopy",
+    "facing": -1,
+    "move": "BACK_THROW",
+    "phase": "release",
+    "samples": 44,
+    "matched": 35,
+    "labelMismatches": 0,
+    "cropMismatches": 0,
+    "maxRootDifference": 0,
+    "flags": []
+  },
+  {
+    "fighter": "mr-wrong",
+    "partner": "loopy",
+    "facing": -1,
+    "move": "UP_THROW",
+    "phase": "pummel",
+    "samples": 23,
+    "matched": 17,
+    "labelMismatches": 0,
+    "cropMismatches": 0,
+    "maxRootDifference": 0,
+    "flags": []
+  },
+  {
+    "fighter": "mr-wrong",
+    "partner": "loopy",
+    "facing": -1,
+    "move": "UP_THROW",
+    "phase": "release",
+    "samples": 44,
+    "matched": 34,
+    "labelMismatches": 0,
+    "cropMismatches": 0,
+    "maxRootDifference": 0,
+    "flags": []
+  },
+  {
+    "fighter": "mr-wrong",
+    "partner": "loopy",
+    "facing": -1,
+    "move": "DOWN_THROW",
+    "phase": "pummel",
+    "samples": 23,
+    "matched": 17,
+    "labelMismatches": 0,
+    "cropMismatches": 0,
+    "maxRootDifference": 0,
+    "flags": []
+  },
+  {
+    "fighter": "mr-wrong",
+    "partner": "loopy",
+    "facing": -1,
+    "move": "DOWN_THROW",
+    "phase": "release",
+    "samples": 44,
+    "matched": 33,
+    "labelMismatches": 0,
+    "cropMismatches": 0,
+    "maxRootDifference": 0,
+    "flags": []
+  },
+  {
+    "fighter": "mr-wrong",
+    "partner": "loopy",
+    "facing": 1,
+    "move": "FORWARD_THROW",
+    "phase": "pummel",
+    "samples": 24,
+    "matched": 18,
+    "labelMismatches": 0,
+    "cropMismatches": 0,
+    "maxRootDifference": 0,
+    "flags": []
+  },
+  {
+    "fighter": "mr-wrong",
+    "partner": "loopy",
+    "facing": 1,
+    "move": "FORWARD_THROW",
+    "phase": "release",
+    "samples": 44,
+    "matched": 35,
+    "labelMismatches": 0,
+    "cropMismatches": 0,
+    "maxRootDifference": 0,
+    "flags": []
+  },
+  {
+    "fighter": "mr-wrong",
+    "partner": "loopy",
+    "facing": 1,
+    "move": "BACK_THROW",
+    "phase": "pummel",
+    "samples": 23,
+    "matched": 18,
+    "labelMismatches": 0,
+    "cropMismatches": 0,
+    "maxRootDifference": 0,
+    "flags": []
+  },
+  {
+    "fighter": "mr-wrong",
+    "partner": "loopy",
+    "facing": 1,
+    "move": "BACK_THROW",
+    "phase": "release",
+    "samples": 45,
+    "matched": 36,
+    "labelMismatches": 0,
+    "cropMismatches": 0,
+    "maxRootDifference": 0,
+    "flags": []
+  },
+  {
+    "fighter": "mr-wrong",
+    "partner": "loopy",
+    "facing": 1,
+    "move": "UP_THROW",
+    "phase": "pummel",
+    "samples": 23,
+    "matched": 17,
+    "labelMismatches": 0,
+    "cropMismatches": 0,
+    "maxRootDifference": 0,
+    "flags": []
+  },
+  {
+    "fighter": "mr-wrong",
+    "partner": "loopy",
+    "facing": 1,
+    "move": "UP_THROW",
+    "phase": "release",
+    "samples": 44,
+    "matched": 34,
+    "labelMismatches": 0,
+    "cropMismatches": 0,
+    "maxRootDifference": 0,
+    "flags": []
+  },
+  {
+    "fighter": "mr-wrong",
+    "partner": "loopy",
+    "facing": 1,
+    "move": "DOWN_THROW",
+    "phase": "pummel",
+    "samples": 23,
+    "matched": 17,
+    "labelMismatches": 0,
+    "cropMismatches": 0,
+    "maxRootDifference": 0,
+    "flags": []
+  },
+  {
+    "fighter": "mr-wrong",
+    "partner": "loopy",
+    "facing": 1,
+    "move": "DOWN_THROW",
+    "phase": "release",
+    "samples": 44,
+    "matched": 33,
+    "labelMismatches": 0,
+    "cropMismatches": 0,
+    "maxRootDifference": 0,
+    "flags": []
+  },
+  {
+    "fighter": "mrs-tasselbottom",
+    "partner": "zane-corvo",
+    "facing": -1,
+    "move": "FORWARD_THROW",
+    "phase": "pummel",
+    "samples": 24,
+    "matched": 19,
+    "labelMismatches": 0,
+    "cropMismatches": 0,
+    "maxRootDifference": 0,
+    "flags": []
+  },
+  {
+    "fighter": "mrs-tasselbottom",
+    "partner": "zane-corvo",
+    "facing": -1,
+    "move": "FORWARD_THROW",
+    "phase": "release",
+    "samples": 46,
+    "matched": 37,
+    "labelMismatches": 0,
+    "cropMismatches": 0,
+    "maxRootDifference": 0,
+    "flags": []
+  },
+  {
+    "fighter": "mrs-tasselbottom",
+    "partner": "zane-corvo",
+    "facing": -1,
+    "move": "BACK_THROW",
+    "phase": "pummel",
+    "samples": 24,
+    "matched": 18,
+    "labelMismatches": 0,
+    "cropMismatches": 0,
+    "maxRootDifference": 0,
+    "flags": []
+  },
+  {
+    "fighter": "mrs-tasselbottom",
+    "partner": "zane-corvo",
+    "facing": -1,
+    "move": "BACK_THROW",
+    "phase": "release",
+    "samples": 46,
+    "matched": 37,
+    "labelMismatches": 0,
+    "cropMismatches": 0,
+    "maxRootDifference": 0,
+    "flags": []
+  },
+  {
+    "fighter": "mrs-tasselbottom",
+    "partner": "zane-corvo",
+    "facing": -1,
+    "move": "UP_THROW",
+    "phase": "pummel",
+    "samples": 25,
+    "matched": 18,
+    "labelMismatches": 0,
+    "cropMismatches": 0,
+    "maxRootDifference": 0,
+    "flags": []
+  },
+  {
+    "fighter": "mrs-tasselbottom",
+    "partner": "zane-corvo",
+    "facing": -1,
+    "move": "UP_THROW",
+    "phase": "release",
+    "samples": 47,
+    "matched": 37,
+    "labelMismatches": 0,
+    "cropMismatches": 0,
+    "maxRootDifference": 0,
+    "flags": []
+  },
+  {
+    "fighter": "mrs-tasselbottom",
+    "partner": "zane-corvo",
+    "facing": -1,
+    "move": "DOWN_THROW",
+    "phase": "pummel",
+    "samples": 25,
+    "matched": 19,
+    "labelMismatches": 0,
+    "cropMismatches": 0,
+    "maxRootDifference": 0,
+    "flags": []
+  },
+  {
+    "fighter": "mrs-tasselbottom",
+    "partner": "zane-corvo",
+    "facing": -1,
+    "move": "DOWN_THROW",
+    "phase": "release",
+    "samples": 48,
+    "matched": 37,
+    "labelMismatches": 0,
+    "cropMismatches": 0,
+    "maxRootDifference": 0,
+    "flags": []
+  },
+  {
+    "fighter": "mrs-tasselbottom",
+    "partner": "zane-corvo",
+    "facing": 1,
+    "move": "FORWARD_THROW",
+    "phase": "pummel",
+    "samples": 24,
+    "matched": 17,
+    "labelMismatches": 0,
+    "cropMismatches": 0,
+    "maxRootDifference": 0,
+    "flags": []
+  },
+  {
+    "fighter": "mrs-tasselbottom",
+    "partner": "zane-corvo",
+    "facing": 1,
+    "move": "FORWARD_THROW",
+    "phase": "release",
+    "samples": 48,
+    "matched": 39,
+    "labelMismatches": 0,
+    "cropMismatches": 0,
+    "maxRootDifference": 0,
+    "flags": []
+  },
+  {
+    "fighter": "mrs-tasselbottom",
+    "partner": "zane-corvo",
+    "facing": 1,
+    "move": "BACK_THROW",
+    "phase": "pummel",
+    "samples": 25,
+    "matched": 18,
+    "labelMismatches": 0,
+    "cropMismatches": 0,
+    "maxRootDifference": 0,
+    "flags": []
+  },
+  {
+    "fighter": "mrs-tasselbottom",
+    "partner": "zane-corvo",
+    "facing": 1,
+    "move": "BACK_THROW",
+    "phase": "release",
+    "samples": 47,
+    "matched": 36,
+    "labelMismatches": 0,
+    "cropMismatches": 0,
+    "maxRootDifference": 0,
+    "flags": []
+  },
+  {
+    "fighter": "mrs-tasselbottom",
+    "partner": "zane-corvo",
+    "facing": 1,
+    "move": "UP_THROW",
+    "phase": "pummel",
+    "samples": 24,
+    "matched": 17,
+    "labelMismatches": 0,
+    "cropMismatches": 0,
+    "maxRootDifference": 0,
+    "flags": []
+  },
+  {
+    "fighter": "mrs-tasselbottom",
+    "partner": "zane-corvo",
+    "facing": 1,
+    "move": "UP_THROW",
+    "phase": "release",
+    "samples": 47,
+    "matched": 37,
+    "labelMismatches": 0,
+    "cropMismatches": 0,
+    "maxRootDifference": 0,
+    "flags": []
+  },
+  {
+    "fighter": "mrs-tasselbottom",
+    "partner": "zane-corvo",
+    "facing": 1,
+    "move": "DOWN_THROW",
+    "phase": "pummel",
+    "samples": 24,
+    "matched": 19,
+    "labelMismatches": 0,
+    "cropMismatches": 0,
+    "maxRootDifference": 0,
+    "flags": []
+  },
+  {
+    "fighter": "mrs-tasselbottom",
+    "partner": "zane-corvo",
+    "facing": 1,
+    "move": "DOWN_THROW",
+    "phase": "release",
+    "samples": 46,
+    "matched": 34,
+    "labelMismatches": 0,
+    "cropMismatches": 0,
+    "maxRootDifference": 0,
+    "flags": []
+  },
+  {
+    "fighter": "velvet-reply",
+    "partner": "mr-wrong",
+    "facing": -1,
+    "move": "FORWARD_THROW",
+    "phase": "pummel",
+    "samples": 24,
+    "matched": 18,
+    "labelMismatches": 0,
+    "cropMismatches": 0,
+    "maxRootDifference": 0,
+    "flags": []
+  },
+  {
+    "fighter": "velvet-reply",
+    "partner": "mr-wrong",
+    "facing": -1,
+    "move": "FORWARD_THROW",
+    "phase": "release",
+    "samples": 45,
+    "matched": 36,
+    "labelMismatches": 0,
+    "cropMismatches": 0,
+    "maxRootDifference": 6.9897566838911045,
+    "flags": [
+      {
+        "elapsed": 215.19999999925494,
+        "states": [
+          [
+            "ATTACK",
+            10
+          ],
+          [
+            "HITSTUN",
+            0
+          ]
+        ],
+        "actual": [
+          [
+            "forward_throw",
+            "1139,1838,119,164"
+          ],
+          [
+            "throw_victim",
+            "713,387,176,117"
+          ]
+        ],
+        "expected": [
+          [
+            "forward_throw",
+            "1139,1838,119,164"
+          ],
+          [
+            "throw_victim",
+            "713,387,176,117"
+          ]
+        ],
+        "rootDifference": 6.9897566838911045
+      },
+      {
+        "elapsed": 241.09999999776483,
+        "states": [
+          [
+            "ATTACK",
+            12
+          ],
+          [
+            "HITSTUN",
+            2
+          ]
+        ],
+        "actual": [
+          [
+            "forward_throw",
+            "1624,1659,130,175"
+          ],
+          [
+            "throw_victim",
+            "145,402,124,182"
+          ]
+        ],
+        "expected": [
+          [
+            "forward_throw",
+            "1624,1659,130,175"
+          ],
+          [
+            "throw_victim",
+            "145,402,124,182"
+          ]
+        ],
+        "rootDifference": 5.824797236575871
+      },
+      {
+        "elapsed": 266.5,
+        "states": [
+          [
+            "ATTACK",
+            13
+          ],
+          [
+            "HITSTUN",
+            3
+          ]
+        ],
+        "actual": [
+          [
+            "forward_throw",
+            "1624,1659,130,175"
+          ],
+          [
+            "throw_victim",
+            "145,402,124,182"
+          ]
+        ],
+        "expected": [
+          [
+            "forward_throw",
+            "1624,1659,130,175"
+          ],
+          [
+            "throw_victim",
+            "145,402,124,182"
+          ]
+        ],
+        "rootDifference": 5.24231751291831
+      }
+    ]
+  },
+  {
+    "fighter": "velvet-reply",
+    "partner": "mr-wrong",
+    "facing": -1,
+    "move": "BACK_THROW",
+    "phase": "pummel",
+    "samples": 23,
+    "matched": 18,
+    "labelMismatches": 0,
+    "cropMismatches": 0,
+    "maxRootDifference": 0,
+    "flags": []
+  },
+  {
+    "fighter": "velvet-reply",
+    "partner": "mr-wrong",
+    "facing": -1,
+    "move": "BACK_THROW",
+    "phase": "release",
+    "samples": 44,
+    "matched": 35,
+    "labelMismatches": 0,
+    "cropMismatches": 0,
+    "maxRootDifference": 6.989756683891149,
+    "flags": [
+      {
+        "elapsed": 215.20000000298023,
+        "states": [
+          [
+            "ATTACK",
+            12
+          ],
+          [
+            "HITSTUN",
+            0
+          ]
+        ],
+        "actual": [
+          [
+            "back_throw",
+            "1464,1838,117,164"
+          ],
+          [
+            "throw_victim",
+            "1396,387,215,95"
+          ]
+        ],
+        "expected": [
+          [
+            "back_throw",
+            "1464,1838,117,164"
+          ],
+          [
+            "throw_victim",
+            "1396,387,215,95"
+          ]
+        ],
+        "rootDifference": 6.989756683891149
+      },
+      {
+        "elapsed": 241.5,
+        "states": [
+          [
+            "ATTACK",
+            14
+          ],
+          [
+            "HITSTUN",
+            2
+          ]
+        ],
+        "actual": [
+          [
+            "back_throw",
+            "2,2,91,164"
+          ],
+          [
+            "throw_victim",
+            "273,402,127,163"
+          ]
+        ],
+        "expected": [
+          [
+            "back_throw",
+            "2,2,91,164"
+          ],
+          [
+            "throw_victim",
+            "273,402,127,163"
+          ]
+        ],
+        "rootDifference": 5.8247972365759155
+      },
+      {
+        "elapsed": 268.30000000074506,
+        "states": [
+          [
+            "ATTACK",
+            15
+          ],
+          [
+            "HITSTUN",
+            3
+          ]
+        ],
+        "actual": [
+          [
+            "back_throw",
+            "2,2,91,164"
+          ],
+          [
+            "throw_victim",
+            "273,402,127,163"
+          ]
+        ],
+        "expected": [
+          [
+            "back_throw",
+            "2,2,91,164"
+          ],
+          [
+            "throw_victim",
+            "273,402,127,163"
+          ]
+        ],
+        "rootDifference": 5.24231751291831
+      }
+    ]
+  },
+  {
+    "fighter": "velvet-reply",
+    "partner": "mr-wrong",
+    "facing": -1,
+    "move": "UP_THROW",
+    "phase": "pummel",
+    "samples": 24,
+    "matched": 19,
+    "labelMismatches": 0,
+    "cropMismatches": 0,
+    "maxRootDifference": 0,
+    "flags": []
+  },
+  {
+    "fighter": "velvet-reply",
+    "partner": "mr-wrong",
+    "facing": -1,
+    "move": "UP_THROW",
+    "phase": "release",
+    "samples": 44,
+    "matched": 35,
+    "labelMismatches": 0,
+    "cropMismatches": 0,
+    "maxRootDifference": 6.9897566838911045,
+    "flags": [
+      {
+        "elapsed": 219.10000000149012,
+        "states": [
+          [
+            "ATTACK",
+            12
+          ],
+          [
+            "HITSTUN",
+            0
+          ]
+        ],
+        "actual": [
+          [
+            "up_throw",
+            "1794,1838,108,197"
+          ],
+          [
+            "throw_victim",
+            "1910,387,111,164"
+          ]
+        ],
+        "expected": [
+          [
+            "up_throw",
+            "1794,1838,108,197"
+          ],
+          [
+            "throw_victim",
+            "1910,387,111,164"
+          ]
+        ],
+        "rootDifference": 6.9897566838911045
+      },
+      {
+        "elapsed": 245.19999999925494,
+        "states": [
+          [
+            "ATTACK",
+            13
+          ],
+          [
+            "HITSTUN",
+            1
+          ]
+        ],
+        "actual": [
+          [
+            "up_throw",
+            "1794,1838,108,197"
+          ],
+          [
+            "throw_victim",
+            "1910,387,111,164"
+          ]
+        ],
+        "expected": [
+          [
+            "up_throw",
+            "1794,1838,108,197"
+          ],
+          [
+            "throw_victim",
+            "1910,387,111,164"
+          ]
+        ],
+        "rootDifference": 6.407276960233475
+      },
+      {
+        "elapsed": 271.1000000014901,
+        "states": [
+          [
+            "ATTACK",
+            15
+          ],
+          [
+            "HITSTUN",
+            3
+          ]
+        ],
+        "actual": [
+          [
+            "up_throw",
+            "2,2,91,164"
+          ],
+          [
+            "throw_victim",
+            "404,402,151,179"
+          ]
+        ],
+        "expected": [
+          [
+            "up_throw",
+            "2,2,91,164"
+          ],
+          [
+            "throw_victim",
+            "404,402,151,179"
+          ]
+        ],
+        "rootDifference": 5.24231751291831
+      }
+    ]
+  },
+  {
+    "fighter": "velvet-reply",
+    "partner": "mr-wrong",
+    "facing": -1,
+    "move": "DOWN_THROW",
+    "phase": "pummel",
+    "samples": 23,
+    "matched": 17,
+    "labelMismatches": 0,
+    "cropMismatches": 0,
+    "maxRootDifference": 0,
+    "flags": []
+  },
+  {
+    "fighter": "velvet-reply",
+    "partner": "mr-wrong",
+    "facing": -1,
+    "move": "DOWN_THROW",
+    "phase": "release",
+    "samples": 45,
+    "matched": 33,
+    "labelMismatches": 0,
+    "cropMismatches": 0,
+    "maxRootDifference": 6.407276960233431,
+    "flags": [
+      {
+        "elapsed": 291.6000000014901,
+        "states": [
+          [
+            "ATTACK",
+            15
+          ],
+          [
+            "HITSTUN",
+            1
+          ]
+        ],
+        "actual": [
+          [
+            "down_throw",
+            "119,2,118,171"
+          ],
+          [
+            "throw_victim",
+            "1396,387,215,95"
+          ]
+        ],
+        "expected": [
+          [
+            "down_throw",
+            "119,2,118,171"
+          ],
+          [
+            "throw_victim",
+            "1396,387,215,95"
+          ]
+        ],
+        "rootDifference": 6.407276960233431
+      },
+      {
+        "elapsed": 316.9000000022352,
+        "states": [
+          [
+            "ATTACK",
+            16
+          ],
+          [
+            "HITSTUN",
+            2
+          ]
+        ],
+        "actual": [
+          [
+            "down_throw",
+            "2,2,91,164"
+          ],
+          [
+            "throw_victim",
+            "559,402,150,191"
+          ]
+        ],
+        "expected": [
+          [
+            "down_throw",
+            "2,2,91,164"
+          ],
+          [
+            "throw_victim",
+            "559,402,150,191"
+          ]
+        ],
+        "rootDifference": 5.824797236575871
+      },
+      {
+        "elapsed": 339.9000000022352,
+        "states": [
+          [
+            "ATTACK",
+            18
+          ],
+          [
+            "HITSTUN",
+            4
+          ]
+        ],
+        "actual": [
+          [
+            "down_throw",
+            "2,2,91,164"
+          ],
+          [
+            "throw_victim",
+            "893,387,155,144"
+          ]
+        ],
+        "expected": [
+          [
+            "down_throw",
+            "2,2,91,164"
+          ],
+          [
+            "throw_victim",
+            "893,387,155,144"
+          ]
+        ],
+        "rootDifference": 4.659837789260637
+      }
+    ]
+  },
+  {
+    "fighter": "velvet-reply",
+    "partner": "mr-wrong",
+    "facing": 1,
+    "move": "FORWARD_THROW",
+    "phase": "pummel",
+    "samples": 25,
+    "matched": 19,
+    "labelMismatches": 0,
+    "cropMismatches": 0,
+    "maxRootDifference": 0,
+    "flags": []
+  },
+  {
+    "fighter": "velvet-reply",
+    "partner": "mr-wrong",
+    "facing": 1,
+    "move": "FORWARD_THROW",
+    "phase": "release",
+    "samples": 47,
+    "matched": 38,
+    "labelMismatches": 0,
+    "cropMismatches": 0,
+    "maxRootDifference": 6.9897566838911045,
+    "flags": [
+      {
+        "elapsed": 203.89999999850988,
+        "states": [
+          [
+            "ATTACK",
+            10
+          ],
+          [
+            "HITSTUN",
+            0
+          ]
+        ],
+        "actual": [
+          [
+            "forward_throw",
+            "1139,1838,119,164"
+          ],
+          [
+            "throw_victim",
+            "713,387,176,117"
+          ]
+        ],
+        "expected": [
+          [
+            "forward_throw",
+            "1139,1838,119,164"
+          ],
+          [
+            "throw_victim",
+            "713,387,176,117"
+          ]
+        ],
+        "rootDifference": 6.9897566838911045
+      },
+      {
+        "elapsed": 228.79999999701977,
+        "states": [
+          [
+            "ATTACK",
+            11
+          ],
+          [
+            "HITSTUN",
+            1
+          ]
+        ],
+        "actual": [
+          [
+            "forward_throw",
+            "1139,1838,119,164"
+          ],
+          [
+            "throw_victim",
+            "713,387,176,117"
+          ]
+        ],
+        "expected": [
+          [
+            "forward_throw",
+            "1139,1838,119,164"
+          ],
+          [
+            "throw_victim",
+            "713,387,176,117"
+          ]
+        ],
+        "rootDifference": 6.407276960233431
+      },
+      {
+        "elapsed": 254,
+        "states": [
+          [
+            "ATTACK",
+            13
+          ],
+          [
+            "HITSTUN",
+            3
+          ]
+        ],
+        "actual": [
+          [
+            "forward_throw",
+            "1624,1659,130,175"
+          ],
+          [
+            "throw_victim",
+            "145,402,124,182"
+          ]
+        ],
+        "expected": [
+          [
+            "forward_throw",
+            "1624,1659,130,175"
+          ],
+          [
+            "throw_victim",
+            "145,402,124,182"
+          ]
+        ],
+        "rootDifference": 5.24231751291831
+      }
+    ]
+  },
+  {
+    "fighter": "velvet-reply",
+    "partner": "mr-wrong",
+    "facing": 1,
+    "move": "BACK_THROW",
+    "phase": "pummel",
+    "samples": 24,
+    "matched": 18,
+    "labelMismatches": 0,
+    "cropMismatches": 0,
+    "maxRootDifference": 0,
+    "flags": []
+  },
+  {
+    "fighter": "velvet-reply",
+    "partner": "mr-wrong",
+    "facing": 1,
+    "move": "BACK_THROW",
+    "phase": "release",
+    "samples": 45,
+    "matched": 34,
+    "labelMismatches": 0,
+    "cropMismatches": 0,
+    "maxRootDifference": 6.407276960233475,
+    "flags": [
+      {
+        "elapsed": 256.1000000014901,
+        "states": [
+          [
+            "ATTACK",
+            13
+          ],
+          [
+            "HITSTUN",
+            1
+          ]
+        ],
+        "actual": [
+          [
+            "back_throw",
+            "1464,1838,117,164"
+          ],
+          [
+            "throw_victim",
+            "1396,387,215,95"
+          ]
+        ],
+        "expected": [
+          [
+            "back_throw",
+            "1464,1838,117,164"
+          ],
+          [
+            "throw_victim",
+            "1396,387,215,95"
+          ]
+        ],
+        "rootDifference": 6.407276960233475
+      },
+      {
+        "elapsed": 279.3999999985099,
+        "states": [
+          [
+            "ATTACK",
+            14
+          ],
+          [
+            "HITSTUN",
+            2
+          ]
+        ],
+        "actual": [
+          [
+            "back_throw",
+            "2,2,91,164"
+          ],
+          [
+            "throw_victim",
+            "273,402,127,163"
+          ]
+        ],
+        "expected": [
+          [
+            "back_throw",
+            "2,2,91,164"
+          ],
+          [
+            "throw_victim",
+            "273,402,127,163"
+          ]
+        ],
+        "rootDifference": 5.8247972365759155
+      },
+      {
+        "elapsed": 305.1000000014901,
+        "states": [
+          [
+            "ATTACK",
+            16
+          ],
+          [
+            "HITSTUN",
+            4
+          ]
+        ],
+        "actual": [
+          [
+            "back_throw",
+            "2,2,91,164"
+          ],
+          [
+            "throw_victim",
+            "893,387,155,144"
+          ]
+        ],
+        "expected": [
+          [
+            "back_throw",
+            "2,2,91,164"
+          ],
+          [
+            "throw_victim",
+            "893,387,155,144"
+          ]
+        ],
+        "rootDifference": 4.659837789260751
+      }
+    ]
+  },
+  {
+    "fighter": "velvet-reply",
+    "partner": "mr-wrong",
+    "facing": 1,
+    "move": "UP_THROW",
+    "phase": "pummel",
+    "samples": 23,
+    "matched": 18,
+    "labelMismatches": 0,
+    "cropMismatches": 0,
+    "maxRootDifference": 0,
+    "flags": []
+  },
+  {
+    "fighter": "velvet-reply",
+    "partner": "mr-wrong",
+    "facing": 1,
+    "move": "UP_THROW",
+    "phase": "release",
+    "samples": 45,
+    "matched": 34,
+    "labelMismatches": 0,
+    "cropMismatches": 0,
+    "maxRootDifference": 6.407276960233475,
+    "flags": [
+      {
+        "elapsed": 262.6000000014901,
+        "states": [
+          [
+            "ATTACK",
+            13
+          ],
+          [
+            "HITSTUN",
+            1
+          ]
+        ],
+        "actual": [
+          [
+            "up_throw",
+            "1794,1838,108,197"
+          ],
+          [
+            "throw_victim",
+            "1910,387,111,164"
+          ]
+        ],
+        "expected": [
+          [
+            "up_throw",
+            "1794,1838,108,197"
+          ],
+          [
+            "throw_victim",
+            "1910,387,111,164"
+          ]
+        ],
+        "rootDifference": 6.407276960233475
+      },
+      {
+        "elapsed": 286.1000000014901,
+        "states": [
+          [
+            "ATTACK",
+            14
+          ],
+          [
+            "HITSTUN",
+            2
+          ]
+        ],
+        "actual": [
+          [
+            "up_throw",
+            "2,2,91,164"
+          ],
+          [
+            "throw_victim",
+            "404,402,151,179"
+          ]
+        ],
+        "expected": [
+          [
+            "up_throw",
+            "2,2,91,164"
+          ],
+          [
+            "throw_victim",
+            "404,402,151,179"
+          ]
+        ],
+        "rootDifference": 5.824797236575986
+      },
+      {
+        "elapsed": 312.5,
+        "states": [
+          [
+            "ATTACK",
+            16
+          ],
+          [
+            "HITSTUN",
+            4
+          ]
+        ],
+        "actual": [
+          [
+            "up_throw",
+            "2,2,91,164"
+          ],
+          [
+            "throw_victim",
+            "893,387,155,144"
+          ]
+        ],
+        "expected": [
+          [
+            "up_throw",
+            "2,2,91,164"
+          ],
+          [
+            "throw_victim",
+            "893,387,155,144"
+          ]
+        ],
+        "rootDifference": 4.659837789260637
+      }
+    ]
+  },
+  {
+    "fighter": "velvet-reply",
+    "partner": "mr-wrong",
+    "facing": 1,
+    "move": "DOWN_THROW",
+    "phase": "pummel",
+    "samples": 23,
+    "matched": 18,
+    "labelMismatches": 0,
+    "cropMismatches": 0,
+    "maxRootDifference": 0,
+    "flags": []
+  },
+  {
+    "fighter": "velvet-reply",
+    "partner": "mr-wrong",
+    "facing": 1,
+    "move": "DOWN_THROW",
+    "phase": "release",
+    "samples": 44,
+    "matched": 33,
+    "labelMismatches": 0,
+    "cropMismatches": 0,
+    "maxRootDifference": 6.9897566838911045,
+    "flags": [
+      {
+        "elapsed": 273,
+        "states": [
+          [
+            "ATTACK",
+            14
+          ],
+          [
+            "HITSTUN",
+            0
+          ]
+        ],
+        "actual": [
+          [
+            "down_throw",
+            "119,2,118,171"
+          ],
+          [
+            "throw_victim",
+            "1396,387,215,95"
+          ]
+        ],
+        "expected": [
+          [
+            "down_throw",
+            "119,2,118,171"
+          ],
+          [
+            "throw_victim",
+            "1396,387,215,95"
+          ]
+        ],
+        "rootDifference": 6.9897566838911045
+      },
+      {
+        "elapsed": 299.3999999985099,
+        "states": [
+          [
+            "ATTACK",
+            16
+          ],
+          [
+            "HITSTUN",
+            2
+          ]
+        ],
+        "actual": [
+          [
+            "down_throw",
+            "2,2,91,164"
+          ],
+          [
+            "throw_victim",
+            "559,402,150,191"
+          ]
+        ],
+        "expected": [
+          [
+            "down_throw",
+            "2,2,91,164"
+          ],
+          [
+            "throw_victim",
+            "559,402,150,191"
+          ]
+        ],
+        "rootDifference": 5.824797236575871
+      },
+      {
+        "elapsed": 326.8999999985099,
+        "states": [
+          [
+            "ATTACK",
+            17
+          ],
+          [
+            "HITSTUN",
+            3
+          ]
+        ],
+        "actual": [
+          [
+            "down_throw",
+            "2,2,91,164"
+          ],
+          [
+            "throw_victim",
+            "559,402,150,191"
+          ]
+        ],
+        "expected": [
+          [
+            "down_throw",
+            "2,2,91,164"
+          ],
+          [
+            "throw_victim",
+            "559,402,150,191"
+          ]
+        ],
+        "rootDifference": 5.24231751291831
+      }
+    ]
+  },
+  {
+    "fighter": "zane-corvo",
+    "partner": "velvet-reply",
+    "facing": -1,
+    "move": "FORWARD_THROW",
+    "phase": "pummel",
+    "samples": 23,
+    "matched": 18,
+    "labelMismatches": 0,
+    "cropMismatches": 0,
+    "maxRootDifference": 0,
+    "flags": []
+  },
+  {
+    "fighter": "zane-corvo",
+    "partner": "velvet-reply",
+    "facing": -1,
+    "move": "FORWARD_THROW",
+    "phase": "release",
+    "samples": 46,
+    "matched": 37,
+    "labelMismatches": 0,
+    "cropMismatches": 0,
+    "maxRootDifference": 3.3732969927629943,
+    "flags": [
+      {
+        "elapsed": 203.59999999776483,
+        "states": [
+          [
+            "ATTACK",
+            10
+          ],
+          [
+            "HITSTUN",
+            0
+          ]
+        ],
+        "actual": [
+          [
+            "forward_throw",
+            "1283,2,120,164"
+          ],
+          [
+            "throw_victim",
+            "241,2,106,92"
+          ]
+        ],
+        "expected": [
+          [
+            "forward_throw",
+            "1283,2,120,164"
+          ],
+          [
+            "throw_victim",
+            "241,2,106,92"
+          ]
+        ],
+        "rootDifference": 3.3732969927629943
+      },
+      {
+        "elapsed": 228.19999999925494,
+        "states": [
+          [
+            "ATTACK",
+            11
+          ],
+          [
+            "HITSTUN",
+            1
+          ]
+        ],
+        "actual": [
+          [
+            "forward_throw",
+            "1283,2,120,164"
+          ],
+          [
+            "throw_victim",
+            "241,2,106,92"
+          ]
+        ],
+        "expected": [
+          [
+            "forward_throw",
+            "1283,2,120,164"
+          ],
+          [
+            "throw_victim",
+            "241,2,106,92"
+          ]
+        ],
+        "rootDifference": 3.0921889100327924
+      },
+      {
+        "elapsed": 254.19999999925494,
+        "states": [
+          [
+            "ATTACK",
+            13
+          ],
+          [
+            "HITSTUN",
+            3
+          ]
+        ],
+        "actual": [
+          [
+            "forward_throw",
+            "1794,1744,121,157"
+          ],
+          [
+            "throw_victim",
+            "241,2,106,92"
+          ]
+        ],
+        "expected": [
+          [
+            "forward_throw",
+            "1794,1744,121,157"
+          ],
+          [
+            "throw_victim",
+            "241,2,106,92"
+          ]
+        ],
+        "rootDifference": 2.5299727445722744
+      }
+    ]
+  },
+  {
+    "fighter": "zane-corvo",
+    "partner": "velvet-reply",
+    "facing": -1,
+    "move": "BACK_THROW",
+    "phase": "pummel",
+    "samples": 23,
+    "matched": 18,
+    "labelMismatches": 0,
+    "cropMismatches": 0,
+    "maxRootDifference": 0,
+    "flags": []
+  },
+  {
+    "fighter": "zane-corvo",
+    "partner": "velvet-reply",
+    "facing": -1,
+    "move": "BACK_THROW",
+    "phase": "release",
+    "samples": 44,
+    "matched": 35,
+    "labelMismatches": 0,
+    "cropMismatches": 0,
+    "maxRootDifference": 3.3570843570844318,
+    "flags": [
+      {
+        "elapsed": 221.80000000074506,
+        "states": [
+          [
+            "ATTACK",
+            12
+          ],
+          [
+            "HITSTUN",
+            0
+          ]
+        ],
+        "actual": [
+          [
+            "back_throw",
+            "1624,2,127,164"
+          ],
+          [
+            "throw_victim",
+            "351,2,132,87"
+          ]
+        ],
+        "expected": [
+          [
+            "back_throw",
+            "1624,2,127,164"
+          ],
+          [
+            "throw_victim",
+            "351,2,132,87"
+          ]
+        ],
+        "rootDifference": 3.3570843570844318
+      },
+      {
+        "elapsed": 247.19999999925494,
+        "states": [
+          [
+            "ATTACK",
+            14
+          ],
+          [
+            "HITSTUN",
+            2
+          ]
+        ],
+        "actual": [
+          [
+            "back_throw",
+            "2,2,96,164"
+          ],
+          [
+            "throw_victim",
+            "351,2,132,87"
+          ]
+        ],
+        "expected": [
+          [
+            "back_throw",
+            "2,2,96,164"
+          ],
+          [
+            "throw_victim",
+            "351,2,132,87"
+          ]
+        ],
+        "rootDifference": 2.0142506142506136
+      },
+      {
+        "elapsed": 274,
+        "states": [
+          [
+            "ATTACK",
+            16
+          ],
+          [
+            "HITSTUN",
+            4
+          ]
+        ],
+        "actual": [
+          [
+            "back_throw",
+            "2,2,96,164"
+          ],
+          [
+            "throw_victim",
+            "351,2,132,87"
+          ]
+        ],
+        "expected": [
+          [
+            "back_throw",
+            "2,2,96,164"
+          ],
+          [
+            "throw_victim",
+            "351,2,132,87"
+          ]
+        ],
+        "rootDifference": 0.6714168714169091
+      }
+    ]
+  },
+  {
+    "fighter": "zane-corvo",
+    "partner": "velvet-reply",
+    "facing": -1,
+    "move": "UP_THROW",
+    "phase": "pummel",
+    "samples": 23,
+    "matched": 17,
+    "labelMismatches": 0,
+    "cropMismatches": 0,
+    "maxRootDifference": 0,
+    "flags": []
+  },
+  {
+    "fighter": "zane-corvo",
+    "partner": "velvet-reply",
+    "facing": -1,
+    "move": "UP_THROW",
+    "phase": "release",
+    "samples": 45,
+    "matched": 35,
+    "labelMismatches": 0,
+    "cropMismatches": 0,
+    "maxRootDifference": 3.106990054560227,
+    "flags": [
+      {
+        "elapsed": 255,
+        "states": [
+          [
+            "ATTACK",
+            13
+          ],
+          [
+            "HITSTUN",
+            1
+          ]
+        ],
+        "actual": [
+          [
+            "up_throw",
+            "2,171,103,168"
+          ],
+          [
+            "throw_victim",
+            "487,2,61,130"
+          ]
+        ],
+        "expected": [
+          [
+            "up_throw",
+            "2,171,103,168"
+          ],
+          [
+            "throw_victim",
+            "487,2,61,130"
+          ]
+        ],
+        "rootDifference": 3.106990054560227
+      },
+      {
+        "elapsed": 281.80000000074506,
+        "states": [
+          [
+            "ATTACK",
+            14
+          ],
+          [
+            "HITSTUN",
+            2
+          ]
+        ],
+        "actual": [
+          [
+            "up_throw",
+            "2,2,96,164"
+          ],
+          [
+            "throw_victim",
+            "487,2,61,130"
+          ]
+        ],
+        "expected": [
+          [
+            "up_throw",
+            "2,2,96,164"
+          ],
+          [
+            "throw_victim",
+            "487,2,61,130"
+          ]
+        ],
+        "rootDifference": 2.824536413236619
+      },
+      {
+        "elapsed": 308,
+        "states": [
+          [
+            "ATTACK",
+            16
+          ],
+          [
+            "HITSTUN",
+            4
+          ]
+        ],
+        "actual": [
+          [
+            "up_throw",
+            "2,2,96,164"
+          ],
+          [
+            "throw_victim",
+            "487,2,61,130"
+          ]
+        ],
+        "expected": [
+          [
+            "up_throw",
+            "2,2,96,164"
+          ],
+          [
+            "throw_victim",
+            "487,2,61,130"
+          ]
+        ],
+        "rootDifference": 2.259629130589186
+      }
+    ]
+  },
+  {
+    "fighter": "zane-corvo",
+    "partner": "velvet-reply",
+    "facing": -1,
+    "move": "DOWN_THROW",
+    "phase": "pummel",
+    "samples": 24,
+    "matched": 18,
+    "labelMismatches": 0,
+    "cropMismatches": 0,
+    "maxRootDifference": 0,
+    "flags": []
+  },
+  {
+    "fighter": "zane-corvo",
+    "partner": "velvet-reply",
+    "facing": -1,
+    "move": "DOWN_THROW",
+    "phase": "release",
+    "samples": 46,
+    "matched": 34,
+    "labelMismatches": 0,
+    "cropMismatches": 0,
+    "maxRootDifference": 3.401899604899446,
+    "flags": [
+      {
+        "elapsed": 284.0999999977648,
+        "states": [
+          [
+            "ATTACK",
+            14
+          ],
+          [
+            "HITSTUN",
+            0
+          ]
+        ],
+        "actual": [
+          [
+            "down_throw",
+            "333,171,119,154"
+          ],
+          [
+            "throw_victim",
+            "552,2,164,52"
+          ]
+        ],
+        "expected": [
+          [
+            "down_throw",
+            "333,171,119,154"
+          ],
+          [
+            "throw_victim",
+            "552,2,164,52"
+          ]
+        ],
+        "rootDifference": 3.401899604899446
+      },
+      {
+        "elapsed": 308.30000000074506,
+        "states": [
+          [
+            "ATTACK",
+            16
+          ],
+          [
+            "HITSTUN",
+            2
+          ]
+        ],
+        "actual": [
+          [
+            "down_throw",
+            "2,2,96,164"
+          ],
+          [
+            "throw_victim",
+            "552,2,164,52"
+          ]
+        ],
+        "expected": [
+          [
+            "down_throw",
+            "2,2,96,164"
+          ],
+          [
+            "throw_victim",
+            "552,2,164,52"
+          ]
+        ],
+        "rootDifference": 2.834916337416184
+      },
+      {
+        "elapsed": 333.30000000074506,
+        "states": [
+          [
+            "ATTACK",
+            17
+          ],
+          [
+            "HITSTUN",
+            3
+          ]
+        ],
+        "actual": [
+          [
+            "down_throw",
+            "2,2,96,164"
+          ],
+          [
+            "throw_victim",
+            "552,2,164,52"
+          ]
+        ],
+        "expected": [
+          [
+            "down_throw",
+            "2,2,96,164"
+          ],
+          [
+            "throw_victim",
+            "552,2,164,52"
+          ]
+        ],
+        "rootDifference": 2.5514247036746096
+      }
+    ]
+  },
+  {
+    "fighter": "zane-corvo",
+    "partner": "velvet-reply",
+    "facing": 1,
+    "move": "FORWARD_THROW",
+    "phase": "pummel",
+    "samples": 24,
+    "matched": 17,
+    "labelMismatches": 0,
+    "cropMismatches": 0,
+    "maxRootDifference": 0,
+    "flags": []
+  },
+  {
+    "fighter": "zane-corvo",
+    "partner": "velvet-reply",
+    "facing": 1,
+    "move": "FORWARD_THROW",
+    "phase": "release",
+    "samples": 45,
+    "matched": 37,
+    "labelMismatches": 0,
+    "cropMismatches": 0,
+    "maxRootDifference": 3.3732969927629943,
+    "flags": [
+      {
+        "elapsed": 183.10000000149012,
+        "states": [
+          [
+            "ATTACK",
+            10
+          ],
+          [
+            "HITSTUN",
+            0
+          ]
+        ],
+        "actual": [
+          [
+            "forward_throw",
+            "1283,2,120,164"
+          ],
+          [
+            "throw_victim",
+            "241,2,106,92"
+          ]
+        ],
+        "expected": [
+          [
+            "forward_throw",
+            "1283,2,120,164"
+          ],
+          [
+            "throw_victim",
+            "241,2,106,92"
+          ]
+        ],
+        "rootDifference": 3.3732969927629943
+      },
+      {
+        "elapsed": 208.19999999925494,
+        "states": [
+          [
+            "ATTACK",
+            12
+          ],
+          [
+            "HITSTUN",
+            2
+          ]
+        ],
+        "actual": [
+          [
+            "forward_throw",
+            "1794,1744,121,157"
+          ],
+          [
+            "throw_victim",
+            "241,2,106,92"
+          ]
+        ],
+        "expected": [
+          [
+            "forward_throw",
+            "1794,1744,121,157"
+          ],
+          [
+            "throw_victim",
+            "241,2,106,92"
+          ]
+        ],
+        "rootDifference": 2.8110808273024768
+      },
+      {
+        "elapsed": 230.69999999925494,
+        "states": [
+          [
+            "ATTACK",
+            13
+          ],
+          [
+            "HITSTUN",
+            3
+          ]
+        ],
+        "actual": [
+          [
+            "forward_throw",
+            "1794,1744,121,157"
+          ],
+          [
+            "throw_victim",
+            "241,2,106,92"
+          ]
+        ],
+        "expected": [
+          [
+            "forward_throw",
+            "1794,1744,121,157"
+          ],
+          [
+            "throw_victim",
+            "241,2,106,92"
+          ]
+        ],
+        "rootDifference": 2.5299727445722744
+      }
+    ]
+  },
+  {
+    "fighter": "zane-corvo",
+    "partner": "velvet-reply",
+    "facing": 1,
+    "move": "BACK_THROW",
+    "phase": "pummel",
+    "samples": 24,
+    "matched": 18,
+    "labelMismatches": 0,
+    "cropMismatches": 0,
+    "maxRootDifference": 0,
+    "flags": []
+  },
+  {
+    "fighter": "zane-corvo",
+    "partner": "velvet-reply",
+    "facing": 1,
+    "move": "BACK_THROW",
+    "phase": "release",
+    "samples": 47,
+    "matched": 37,
+    "labelMismatches": 0,
+    "cropMismatches": 0,
+    "maxRootDifference": 2.6856674856675227,
+    "flags": [
+      {
+        "elapsed": 230.39999999850988,
+        "states": [
+          [
+            "ATTACK",
+            13
+          ],
+          [
+            "HITSTUN",
+            1
+          ]
+        ],
+        "actual": [
+          [
+            "back_throw",
+            "1624,2,127,164"
+          ],
+          [
+            "throw_victim",
+            "351,2,132,87"
+          ]
+        ],
+        "expected": [
+          [
+            "back_throw",
+            "1624,2,127,164"
+          ],
+          [
+            "throw_victim",
+            "351,2,132,87"
+          ]
+        ],
+        "rootDifference": 2.6856674856675227
+      },
+      {
+        "elapsed": 252.30000000074506,
+        "states": [
+          [
+            "ATTACK",
+            14
+          ],
+          [
+            "HITSTUN",
+            2
+          ]
+        ],
+        "actual": [
+          [
+            "back_throw",
+            "2,2,96,164"
+          ],
+          [
+            "throw_victim",
+            "351,2,132,87"
+          ]
+        ],
+        "expected": [
+          [
+            "back_throw",
+            "2,2,96,164"
+          ],
+          [
+            "throw_victim",
+            "351,2,132,87"
+          ]
+        ],
+        "rootDifference": 2.0142506142506136
+      },
+      {
+        "elapsed": 277.19999999925494,
+        "states": [
+          [
+            "ATTACK",
+            15
+          ],
+          [
+            "HITSTUN",
+            3
+          ]
+        ],
+        "actual": [
+          [
+            "back_throw",
+            "2,2,96,164"
+          ],
+          [
+            "throw_victim",
+            "351,2,132,87"
+          ]
+        ],
+        "expected": [
+          [
+            "back_throw",
+            "2,2,96,164"
+          ],
+          [
+            "throw_victim",
+            "351,2,132,87"
+          ]
+        ],
+        "rootDifference": 1.3428337428337045
+      }
+    ]
+  },
+  {
+    "fighter": "zane-corvo",
+    "partner": "velvet-reply",
+    "facing": 1,
+    "move": "UP_THROW",
+    "phase": "pummel",
+    "samples": 24,
+    "matched": 17,
+    "labelMismatches": 0,
+    "cropMismatches": 0,
+    "maxRootDifference": 0,
+    "flags": []
+  },
+  {
+    "fighter": "zane-corvo",
+    "partner": "velvet-reply",
+    "facing": 1,
+    "move": "UP_THROW",
+    "phase": "release",
+    "samples": 47,
+    "matched": 37,
+    "labelMismatches": 0,
+    "cropMismatches": 0,
+    "maxRootDifference": 3.106990054560227,
+    "flags": [
+      {
+        "elapsed": 237.60000000149012,
+        "states": [
+          [
+            "ATTACK",
+            13
+          ],
+          [
+            "HITSTUN",
+            1
+          ]
+        ],
+        "actual": [
+          [
+            "up_throw",
+            "2,171,103,168"
+          ],
+          [
+            "throw_victim",
+            "487,2,61,130"
+          ]
+        ],
+        "expected": [
+          [
+            "up_throw",
+            "2,171,103,168"
+          ],
+          [
+            "throw_victim",
+            "487,2,61,130"
+          ]
+        ],
+        "rootDifference": 3.106990054560227
+      },
+      {
+        "elapsed": 261.9000000022352,
+        "states": [
+          [
+            "ATTACK",
+            14
+          ],
+          [
+            "HITSTUN",
+            2
+          ]
+        ],
+        "actual": [
+          [
+            "up_throw",
+            "2,2,96,164"
+          ],
+          [
+            "throw_victim",
+            "487,2,61,130"
+          ]
+        ],
+        "expected": [
+          [
+            "up_throw",
+            "2,2,96,164"
+          ],
+          [
+            "throw_victim",
+            "487,2,61,130"
+          ]
+        ],
+        "rootDifference": 2.824536413236619
+      },
+      {
+        "elapsed": 286.80000000074506,
+        "states": [
+          [
+            "ATTACK",
+            16
+          ],
+          [
+            "HITSTUN",
+            4
+          ]
+        ],
+        "actual": [
+          [
+            "up_throw",
+            "2,2,96,164"
+          ],
+          [
+            "throw_victim",
+            "487,2,61,130"
+          ]
+        ],
+        "expected": [
+          [
+            "up_throw",
+            "2,2,96,164"
+          ],
+          [
+            "throw_victim",
+            "487,2,61,130"
+          ]
+        ],
+        "rootDifference": 2.259629130589186
+      }
+    ]
+  },
+  {
+    "fighter": "zane-corvo",
+    "partner": "velvet-reply",
+    "facing": 1,
+    "move": "DOWN_THROW",
+    "phase": "pummel",
+    "samples": 25,
+    "matched": 19,
+    "labelMismatches": 0,
+    "cropMismatches": 0,
+    "maxRootDifference": 0,
+    "flags": []
+  },
+  {
+    "fighter": "zane-corvo",
+    "partner": "velvet-reply",
+    "facing": 1,
+    "move": "DOWN_THROW",
+    "phase": "release",
+    "samples": 46,
+    "matched": 35,
+    "labelMismatches": 0,
+    "cropMismatches": 0,
+    "maxRootDifference": 3.401899604899446,
+    "flags": [
+      {
+        "elapsed": 262.4000000022352,
+        "states": [
+          [
+            "ATTACK",
+            14
+          ],
+          [
+            "HITSTUN",
+            0
+          ]
+        ],
+        "actual": [
+          [
+            "down_throw",
+            "333,171,119,154"
+          ],
+          [
+            "throw_victim",
+            "552,2,164,52"
+          ]
+        ],
+        "expected": [
+          [
+            "down_throw",
+            "333,171,119,154"
+          ],
+          [
+            "throw_victim",
+            "552,2,164,52"
+          ]
+        ],
+        "rootDifference": 3.401899604899446
+      },
+      {
+        "elapsed": 285.19999999925494,
+        "states": [
+          [
+            "ATTACK",
+            15
+          ],
+          [
+            "HITSTUN",
+            1
+          ]
+        ],
+        "actual": [
+          [
+            "down_throw",
+            "333,171,119,154"
+          ],
+          [
+            "throw_victim",
+            "552,2,164,52"
+          ]
+        ],
+        "expected": [
+          [
+            "down_throw",
+            "333,171,119,154"
+          ],
+          [
+            "throw_victim",
+            "552,2,164,52"
+          ]
+        ],
+        "rootDifference": 3.1184079711578714
+      },
+      {
+        "elapsed": 310,
+        "states": [
+          [
+            "ATTACK",
+            16
+          ],
+          [
+            "HITSTUN",
+            2
+          ]
+        ],
+        "actual": [
+          [
+            "down_throw",
+            "2,2,96,164"
+          ],
+          [
+            "throw_victim",
+            "552,2,164,52"
+          ]
+        ],
+        "expected": [
+          [
+            "down_throw",
+            "2,2,96,164"
+          ],
+          [
+            "throw_victim",
+            "552,2,164,52"
+          ]
+        ],
+        "rootDifference": 2.834916337416184
+      }
+    ]
+  }
+]

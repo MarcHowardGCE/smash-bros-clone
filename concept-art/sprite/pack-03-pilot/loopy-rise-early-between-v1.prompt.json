@@ -1,0 +1,10 @@
+{
+  "tool": "built-in image_gen",
+  "date": "2026-11-19",
+  "prompt": "Create ONE transparent-background full-body 2D gameplay sprite: Loopy rise-animation in-between matching the TWO attached shipped endpoints in identity, exact costume, body proportions and inked cartoon style. Face RIGHT. Golden yellow shaggy deer, brown branching antlers, long black nose, sleepy grinning eyes, cream ankle fur and dark brown split hooves. BLANK CREAM basketball jersey with PURPLE trim, ragged PURPLE shorts, purple/cream wristbands. NO number49, no numbers, letters or logos. Both legs airborne bent softly, loose boxing guard. Keep full antlers and hooves with transparent padding. Flat cel shading INSIDE silhouette ONLY. HARD CUTOUT: alpha ZERO immediately outside crisp black contour, including every antler/limb gap. NO external diffuse lighting, shadows, halo, aura, blur, haze, background, particles, ground or text. Preserve lanky anatomy, head/torso/antler ratios. Pose2 of6: 20% transition from first reference to second. Near first pose, knees slightly more flexed, shoulders gently lifting and tail lagging. A subtle early rise drawing, no big gesture or change of camera.",
+  "source": "C:\\Users\\misac\\.codex\\generated_images\\01a1d512-1266-7be0-b658-8ca4590e1a8c\\exec-5602f7f0-12fd-469d-b706-d4107e0c2c88.png",
+  "references": [
+    "loopy-shipped-air_rise_loop-0.png",
+    "loopy-shipped-air_rise_loop-1.png"
+  ]
+}

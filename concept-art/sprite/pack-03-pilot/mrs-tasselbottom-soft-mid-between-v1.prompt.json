@@ -1,0 +1,11 @@
+{
+  "source": "C:\\Users\\misac\\.codex\\generated_images\\01a1d512-1266-7be0-b658-8ca4590e1a8c\\exec-47eea074-7366-4bc8-9db8-b21f31a0fcfb.png",
+  "prompt": "Create ONE transparent full-body Mrs. Tasselbottom soft-landing recovery sprite. Reference1 shipped idle is PRIMARY COLOR AUTHORITY. Reference2 and3 shipped soft-landing middle and upright endpoint are POSE references. Draw MID in-between one third from compressed reference2 toward standing reference3: knees still bent but torso lifting slightly, open reaching hand starting to curl and retract, other hand near chest. BOTH burgundy shoes firmly planted on same horizontal baseline. RIGHT-facing three-quarter elderly sly smiling face, large head/hands relative to broad gown. Gown must match shipped DARK DEEP PLUM-PURPLE midtone #4A053E RGB74,5,62, near-black plum shadows, restrained highlights; NOT bright magenta or generic saturated royal purple. Exact gold rope swags/tassels and epaulets, warm cream layered lace hem/cuffs, white-lavender curls, tiny tilted burgundy hat gold crown pins, dark burgundy gold-buckled shoes. Bold outlined detailed illustrated game sprite, no redesign. Entire crown/hands/shoes fully inside transparent padding. Genuine transparent alpha, opaque character interior. NO halo, mist, glow, floor, cast shadow, dust, effects, red crop fringe, text or background.",
+  "references": [
+    "mrs-tasselbottom-shipped-idle-0.png",
+    "mrs-tasselbottom-shipped-soft-1.png",
+    "mrs-tasselbottom-shipped-soft-2.png"
+  ],
+  "tool": "built-in image_gen",
+  "date": "2026-11-20"
+}

@@ -1,0 +1,15 @@
+{
+  "tool": "built-in image_gen",
+  "date": "2026-11-18",
+  "identityReference": "zane-corvo-idle.png",
+  "prompt": "ONE full body production sprite of Zane Corvo facing RIGHT three-quarter. Canonical identity/costume is reference1. References2 and3 are adjacent apex poses: create EARLY APEX between tightly tucked ref2 and opening ref3. Knees still high but beginning to lower, boots slightly separating, hands lowered slightly outward beginning to open; steady torso/head proportions. Preserve exact brown-black biker jacket with silver studs/zips, dark buttoned waistcoat, silver chain, square silver belt buckle, dark trousers, chunky cream-laced dark boots, tousled brown hair and stubble, half-lidded face. Same fine textured ink and compact shading, no costume changes. Single clear intermediate silhouette, fully airborne. All extremities within generous margins. TRUE TRANSPARENT background. No ground, floor shadow, glow, halo, mist, blur, gradients, effects or writing.",
+  "preparation": {
+    "alphaFloor": 5,
+    "worldHeight": 70,
+    "preserveSource": true
+  },
+  "poseReferences": [
+    "zane-corvo-air-1.png",
+    "zane-corvo-apex-between-prepared-v1.png"
+  ]
+}

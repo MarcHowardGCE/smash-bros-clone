@@ -1,0 +1,9 @@
+{
+  "tool": "built-in image_gen",
+  "date": "2026-11-19",
+  "prompt": "Clean this exact Loopy gameplay sprite. Remove ONLY the bright RED stray pixels outside the character, visible behind shoulder/arm, in the leg gaps and around edges. They are crop contamination, not costume. Preserve character pose, dimensions, golden fur, blank cream jersey/purple trim, purple shorts, face, antlers, brown hooves, ink shading and silhouette as closely as possible. Do not redesign, stretch legs or alter body proportions. Full body, transparent background, alpha zero outside contour. NO halo/shadow/haze or new decorations. Keep the existing pose with hooves spread to left and right beneath knees.",
+  "source": "C:\\Users\\misac\\.codex\\generated_images\\01a1d512-1266-7be0-b658-8ca4590e1a8c\\exec-489d4acd-ff4c-4eb4-94f5-7d9aecd49e69.png",
+  "references": [
+    "loopy-shipped-air_fall_loop-0.png"
+  ]
+}

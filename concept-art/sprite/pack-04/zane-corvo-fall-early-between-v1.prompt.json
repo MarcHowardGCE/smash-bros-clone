@@ -1,0 +1,16 @@
+{
+  "tool": "built-in image_gen",
+  "date": "2026-11-18",
+  "identityReference": "concept-art/sprite/pack-04/zane-corvo-idle.png",
+  "poseReferenceSources": [
+    "apps/client/public/fighter-art-pack-04-v1/zane-corvo-air-2.png",
+    "apps/client/public/fighter-art-pack-04-v1/zane-corvo-fall-between-prepared-v1.png"
+  ],
+  "status": "rejected: too similar to existing middle pose; never registered",
+  "prompt": "Draw ONE full-body production game sprite of Zane Corvo facing RIGHT, three-quarter side view, an EARLY FALL in-between. Reference 1 controls exact shipped identity, face, anatomy, costume, palette and ink/hatching style. References 2 and 3 are neighboring fall poses. Interpolate one-third from open-handed upright descent (2) toward the guarded leaning descent (3): torso only begins leaning forward, elbows begin drawing inward, fingers just begin curling, trailing boot starts to drift backward while leading boot lowers a little. Knees stay moderately bent and both boots are airborne. Clearly distinct from both endpoints, not walking/running or an attack. Preserve tousled brown hair, stubble, half-lidded expression, dark brown-black biker leather jacket with silver studs/zips, buttoned dark waistcoat, silver chain, belt, dark trousers and chunky cream-laced boots. No redesign or new accessories. Same compact textured ink artwork and head/torso proportions. Entire silhouette with all fingers/boot tips visible and generous margins. TRUE transparent background with crisp antialiased ink; NO scene, ground, shadows, mist, glow, halo, gradient, blur, streaks, lettering or colored fringe. Do not copy pose-reference backgrounds.",
+  "preparation": {
+    "clearAlphaAtMost": 5,
+    "worldHeight": 82,
+    "preserveSource": true
+  }
+}

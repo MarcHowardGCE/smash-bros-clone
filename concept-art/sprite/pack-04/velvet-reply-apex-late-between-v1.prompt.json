@@ -1,0 +1,15 @@
+{
+  "tool": "built-in image_gen",
+  "date": "2026-11-18",
+  "identityReference": "velvet-reply-idle.png",
+  "prompt": "ONE full-body production sprite The Velvet Reply facing RIGHT three-quarter: LATE APEX, one-third from reference2 bent-knee middle apex toward reference3 falling endpoint. Reference1 canonical identity costume ink/palette. Knees lower and begin extending, thighs less horizontal than ref2, boots fully airborne below knees and slightly staggered; hands still open laterally at hip level. Distinct intermediate silhouette, upright steady torso and same head proportions. Copper-auburn flowing hair, cheek beauty mark, half-lidded eyes; exact dark plum-black FLARED jumpsuit fine gold piping, fishnet chest/sleeves crossed black straps, high collar, SILVER rectangular belt buckle/cuffs/hoops, dark HEELED boots. No wardrobe changes. Whole silhouette generous margins. TRUE TRANSPARENT background; no floor/shadow/glow/halo/mist/gradient/blur/effects/text. Crisp textured ink.",
+  "preparation": {
+    "alphaFloor": 5,
+    "worldHeight": 77,
+    "preserveSource": true
+  },
+  "poseReferences": [
+    "velvet-reply-apex-between-prepared-v1.png",
+    "velvet-reply-air-2.png"
+  ]
+}

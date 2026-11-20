@@ -1,0 +1,15 @@
+{
+  "baseline": "six-rise",
+  "current": "six-apex",
+  "cases": 8,
+  "fields": [
+    "state",
+    "frame",
+    "y",
+    "vy",
+    "grounded",
+    "facing",
+    "fast"
+  ],
+  "equal": true
+}
